@@ -1,0 +1,39 @@
+{
+  "name": "marko-language-server",
+  "description": "Marko Language Server",
+  "version": "0.0.2",
+  "author": "Diego Berrocal",
+  "license": "MIT",
+  "bin": {
+    "marko-language-server": "./bin/marko-language-server"
+  },
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=6"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "homepage": "https://github.com/marko-js/marko-language-server/tree/master/server/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/marko-language-server/tree/master/server"
+  },
+  "dependencies": {
+    "escape-string-regexp": "^1.0.5",
+    "lasso-package-root": "^1.0.1",
+    "marko": "^4.7.4",
+    "resolve-from": "^4.0.0",
+    "vscode-languageserver": "^4.0.0",
+    "vscode-uri": "^1.0.1"
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.1",
+    "typescript": "^2.9.1"
+  }
+}

@@ -1,0 +1,6 @@
+node_modules
+server/dist
+clients/vscode/out
+clients/vscode/server
+.DS_Store
+lerna-debug.log
