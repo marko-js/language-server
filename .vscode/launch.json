@@ -3,14 +3,14 @@
   "compounds": [
     {
       "name": "All",
-      "configurations": ["Launch Client", "Attach to Server"]
+      "configurations": ["Launch VSCode Client", "Attach to Server"]
     }
   ],
   "configurations": [
     {
       "type": "extensionHost",
       "request": "launch",
-      "name": "Launch Client",
+      "name": "Launch VSCode Client",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
       "internalConsoleOptions": "neverOpen",
