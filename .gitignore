@@ -1,6 +1,4 @@
 node_modules
-server/dist
-clients/vscode/out
-clients/vscode/server
+**/*/out
 .DS_Store
 lerna-debug.log

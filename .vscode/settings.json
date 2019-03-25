@@ -4,12 +4,9 @@
   },
   "tslint.enable": true,
   "search.exclude": {
-    "server/dist": true,
+    "server/out": true,
     "clients/vscode/out": true
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.tsc.autoDetect": "on",
-  "vim.useSystemClipboard": true,
-  "vim.visualstar": true,
-  "vim.statusBarColorControl": true
+  "typescript.tsc.autoDetect": "on"
 }

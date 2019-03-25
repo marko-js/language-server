@@ -6,10 +6,54 @@
   "license": "MIT",
   "version": "0.0.2",
   "publisher": "MarkoJS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/marko-language-server/tree/master/"
+  },
   "engines": {
     "vscode": "^1.23.0"
   },
-	"devDependencies": {
-		"lerna": "^2.11.0"
-	}
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:marko"
+  ],
+  "main": "./clients/vscode/out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Marko Language Server configuration",
+      "properties": {
+        "marko.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VSCode and the language server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "cd clients/vscode && npm run update-vscode && cd ../.. && npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd clients/vscode && npm install && cd ../../server && npm install && cd ..",
+    "compile:client": "tsc -p ./clients/vscode",
+    "watch:client": "tsc -w -p ./clients/vscode",
+    "compile:server": "tsc -p ./server/tsconfig.json",
+    "watch:server": "tsc -w -p ./server/tsconfig.json",
+    "clean": "rm -Rf clients/vscode/out && rm -Rf server/out"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.0",
+    "lerna": "^2.11.0",
+    "tslint": "^5.14.0",
+    "typescript": "^3.1.3"
+  }
 }

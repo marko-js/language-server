@@ -6,16 +6,6 @@
   "license": "MIT",
   "version": "0.0.2",
   "publisher": "MarkoJS",
-  "scripts": {
-    "postinstall": "(cd ../../server; npm install) && if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/.bin/vscode-install; fi",
-    "clean": "rm -rf ./out ./server",
-    "compile:client": "tsc -p .",
-    "watch:client": "tsc -w -p .",
-    "compile:server": "tsc -p ../../server/tsconfig.json",
-    "watch:server": "tsc -w -p ../../server/tsconfig.json",
-    "watch": "npm run watch:client & npm run watch:server",
-    "compile": "npm run compile:client && npm run compile:server"
-  },
   "homepage": "https://github.com/marko-js/marko-language-server/tree/master/clients/vscode/README.md",
   "repository": {
     "type": "git",
@@ -24,40 +14,16 @@
   "engines": {
     "vscode": "^1.23.0"
   },
-  "categories": [
-    "Programming Languages"
-  ],
-  "activationEvents": [
-    "onLanguage:marko"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "Marko Language Server configuration",
-      "properties": {
-        "marko.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VSCode and the language server."
-        }
-      }
-    }
+  "scripts": {
+    "update-vscode": "vscode-install",
+    "postinstall": "vscode-install"
   },
   "dependencies": {
-    "vscode-languageclient": "^4.2.1",
-    "vscode-languageserver-types": "^3.8.1"
+    "vscode-languageclient": "^4.2.1"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.3.1",
-    "typescript": "^2.9.1",
-    "vscode": "^1.1.18"
+    "vscode": "1.1.13"
   }
 }
