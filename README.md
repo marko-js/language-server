@@ -1,10 +1,10 @@
 # Marko Language Support
 
 Using the [Language Server Protocol](https://langserver.org/) to improve Marko's developer experience. 
-Server implementation can be found [here](https://github.com/marko-js/marko-language-server/tree/master/server).
+Server implementation can be found [here](server).
 
 ## Supported clients
-- [vscode](https://github.com/marko-js/marko-language-server/tree/master/clients/vscode)
+- [vscode](clients/vscode)
 
 # Development
 
