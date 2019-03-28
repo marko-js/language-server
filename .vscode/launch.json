@@ -12,7 +12,7 @@
       "request": "launch",
       "name": "Launch VSCode Client",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
+      "args": ["--extensionDevelopmentPath=${workspaceRoot}/clients/vscode/"],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "outFiles": ["${workspaceRoot}/clients/vscode/out/**/*.js"],
