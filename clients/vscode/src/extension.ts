@@ -9,9 +9,8 @@ Use of this source code is governed by an MIT-style
 license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 * ------------------------------------------------------------------------------------------ */
-import * as path from "path";
 
-import { workspace, ExtensionContext } from "vscode";
+import { workspace } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -21,11 +20,9 @@ import {
 
 let client: LanguageClient;
 
-export function activate(context: ExtensionContext) {
+export function activate() {
   // The server is implemented in node
-  let serverModule = context.asAbsolutePath(
-    path.join("server", "out", "server.js")
-  );
+  let serverModule = require.resolve("@marko/language-server");
   
   // The debug options for the server
   // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
