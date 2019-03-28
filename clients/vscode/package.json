@@ -14,16 +14,63 @@
   "engines": {
     "vscode": "^1.23.0"
   },
-  "scripts": {
-    "update-vscode": "vscode-install",
-    "postinstall": "vscode-install"
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:marko"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "marko",
+        "aliases": [
+          "Marko",
+          "marko"
+        ],
+        "extensions": [
+          ".marko"
+        ],
+        "configuration": "./marko.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "marko",
+        "scopeName": "text.marko",
+        "path": "./syntaxes/marko.tmLanguage"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "marko",
+        "path": "./snippets/marko.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Marko Language Server configuration",
+      "properties": {
+        "marko.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VSCode and the language server."
+        }
+      }
+    }
   },
+  "icon": "img/marko.png",
   "dependencies": {
-    "vscode-languageclient": "^4.2.1"
+    "@marko/language-server": "^0.0.2",
+    "vscode-languageclient": "^5.2.1",
+    "vscode": "^1.1.33"
   },
-  "devDependencies": {
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^10.3.1",
-    "vscode": "1.1.13"
-  }
+  "main": "./out/extension.js",
+  "private": true
 }
