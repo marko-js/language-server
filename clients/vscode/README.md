@@ -5,8 +5,8 @@ Marko tooling for VS Code, powered by [marko-language-server](../../server)
 
 # Features
 - [X] Go To Definition
+- [X] Syntax HighLighting
 - [ ] Autocompletion
-- [ ] Syntax HighLighting (There is another extension for this: https://marketplace.visualstudio.com/items?itemName=pcanella.marko)
 - [ ] Tag Matching
 - [ ] Linting
 - [ ] Debugging
