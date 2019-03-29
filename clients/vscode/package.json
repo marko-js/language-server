@@ -5,7 +5,7 @@
   "author": "Diego Berrocal",
   "license": "MIT",
   "version": "0.0.2",
-  "publisher": "MarkoJS",
+  "publisher": "Marko-JS",
   "homepage": "https://github.com/marko-js/marko-language-server/tree/master/clients/vscode/README.md",
   "repository": {
     "type": "git",
