@@ -1,5 +1,5 @@
 {
-  "name": "marko-language-server",
+  "name": "@marko/language-server",
   "description": "Marko Language Server",
   "version": "0.0.2",
   "author": "Diego Berrocal",
@@ -7,13 +7,13 @@
   "bin": {
     "marko-language-server": "./bin/marko-language-server"
   },
-  "main": "dist/server.js",
+  "main": "./out/server.js",
   "engines": {
     "node": ">=6"
   },
   "files": [
-    "dist",
-    "bin"
+    "bin",
+    "out"
   ],
   "homepage": "https://github.com/marko-js/marko-language-server/tree/master/server/README.md",
   "repository": {
@@ -23,17 +23,10 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "lasso-package-root": "^1.0.1",
-    "marko": "^4.7.4",
+    "marko": "^4.16.4",
     "resolve-from": "^4.0.0",
-    "vscode-languageserver": "^4.0.0",
-    "vscode-uri": "^1.0.1"
+    "vscode-languageserver": "^5.2.1",
+    "vscode-uri": "^1.0.6"
   },
-  "scripts": {
-    "compile": "tsc -p .",
-    "watch": "tsc -w -p ."
-  },
-  "devDependencies": {
-    "@types/node": "^10.3.1",
-    "typescript": "^2.9.1"
-  }
+  "scripts": {}
 }

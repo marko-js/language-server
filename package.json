@@ -1,15 +1,31 @@
 {
   "name": "marko-language-support",
-  "displayName": "Marko Language Support",
   "description": "Adds marko language support to many editors",
   "author": "Diego Berrocal",
   "license": "MIT",
   "version": "0.0.2",
   "publisher": "MarkoJS",
-  "engines": {
-    "vscode": "^1.23.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/marko-language-server/tree/master/"
   },
-	"devDependencies": {
-		"lerna": "^2.11.0"
-	}
+  "scripts": {
+    "vscode:prepublish": "cd clients/vscode && npm run update-vscode && cd ../.. && npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "prepublishOnly": "npm run compile",
+    "postinstall": "lerna bootstrap",
+    "compile:client": "tsc -p ./clients/vscode",
+    "watch:client": "tsc -w -p ./clients/vscode",
+    "compile:server": "tsc -p ./server/tsconfig.json",
+    "watch:server": "tsc -w -p ./server/tsconfig.json",
+    "clean": "rm -Rf clients/vscode/out && rm -Rf server/out"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.0",
+    "@types/mocha": "^2.2.42",
+    "lerna": "^2.11.0",
+    "tslint": "^5.14.0",
+    "typescript": "^3.1.3"
+  }
 }

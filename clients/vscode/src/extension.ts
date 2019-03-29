@@ -9,41 +9,63 @@ Use of this source code is governed by an MIT-style
 license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 * ------------------------------------------------------------------------------------------ */
-import * as path from 'path';
 
-import { workspace, ExtensionContext } from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
+import { workspace } from "vscode";
+import {
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+  TransportKind
+} from "vscode-languageclient";
 
-export function activate(context: ExtensionContext) {
+let client: LanguageClient;
 
+export function activate() {
   // The server is implemented in node
-  let serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+  let serverModule = require.resolve("@marko/language-server");
+  
   // The debug options for the server
+  // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
   let debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   let serverOptions: ServerOptions = {
-    run : { module: serverModule, transport: TransportKind.ipc },
-    debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
-  }
+    run: { module: serverModule, transport: TransportKind.ipc },
+    debug: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+      options: debugOptions
+    }
+  };
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     // Register the server for marko text documents
-    documentSelector: [{scheme: 'file', language: 'marko'}],
+    documentSelector: [{ scheme: "file", language: "marko" }],
     synchronize: {
-      // Synchronize the setting section 'languageServerExample' to the server
-      configurationSection: 'marko',
+      // Synchronize the setting section 'marko' to the server
+      configurationSection: "marko",
       // Notify the server about file changes to '.clientrc files contain in the workspace
-      fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
+      fileEvents: workspace.createFileSystemWatcher("**/.clientrc")
     }
-  }
+  };
 
   // Create the language client and start the client.
-  let disposable = new LanguageClient('marko', 'Marko Language Server', serverOptions, clientOptions).start();
+  client = new LanguageClient(
+    "marko",
+    "Marko Language Server",
+    serverOptions,
+    clientOptions
+  );
 
-  // Push the disposable to the context's subscriptions so that the
-  // client can be deactivated on extension deactivation
-  context.subscriptions.push(disposable);
+  // Start the client. This will also launch the server
+  client.start();
+}
+
+export function deactivate(): Thenable<void> {
+  if (!client) {
+    return undefined;
+  }
+  return client.stop();
 }
