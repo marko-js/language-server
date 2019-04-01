@@ -68,7 +68,9 @@
   "icon": "img/marko.png",
   "dependencies": {
     "@marko/language-server": "^0.0.2",
-    "vscode-languageclient": "^5.2.1",
+    "vscode-languageclient": "^5.2.1"
+  },
+  "devDependencies": {
     "vscode": "^1.1.33"
   },
   "main": "./out/extension.js",
