@@ -29,6 +29,7 @@ const connection =
   process.argv.length <= 2
     ? createConnection(process.stdin, process.stdout) // no arg specified
     : createConnection(ProposedFeatures.all);
+const DEBUG = process.env.DEBUG === 'true' || false;
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
@@ -99,7 +100,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
 connection.onDidChangeWatchedFiles(_change => {
   // Monitored files have change in VSCode
-  connection.console.log("We recevied an file change event");
+  DEBUG && connection.console.log("We recevied an file change event");
 });
 
 // This handler provides the initial list of the completion items.
