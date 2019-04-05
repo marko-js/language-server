@@ -30,6 +30,7 @@ var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
 var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
 
 const escapeStringRegexp = require("escape-string-regexp");
+const DEBUG = process.env.DEBUG === 'true' || false;
 
 /*
 NOTE: It would be nice to have a Cache for all the documents that have
@@ -122,7 +123,7 @@ async function getScopeAtPos(offset: number, text: string) {
 
         // Don't process when the offset is not inside a tag or we found our tag already
         if (found || offset < startPos || offset > endPos) return;
-        console.log(`Searching for character '${text[offset]}'
+        DEBUG && console.log(`Searching for character '${text[offset]}'
                              in string: '${text.slice(startPos, endPos)}'`);
 
         found = true;
@@ -139,7 +140,7 @@ async function getScopeAtPos(offset: number, text: string) {
         // Tag Scope
         // If tag name starts with '@' then it's an inner section that should be
         // defined int he marko.json file
-        console.log(
+        DEBUG && console.log(
           `Looking in tagName: ${text.slice(startPos, tagNameEndPos)}`
         );
         if (offset <= tagNameEndPos) {
@@ -160,13 +161,13 @@ async function getScopeAtPos(offset: number, text: string) {
 
           if (!attribute.argument) {
             // Check if cursor is on the attribute name
-            console.log(
+            DEBUG && console.log(
               `Looking in attributePosEndPos: ${text.slice(
                 attribute.pos,
                 attribute.endPos
               )}`
             );
-            console.log(
+            DEBUG && console.log(
               `Looking in attributeName: ${text.slice(
                 attrNamePos,
                 attribute.pos
@@ -186,7 +187,7 @@ async function getScopeAtPos(offset: number, text: string) {
             }
           } else {
             // Cursor is in the argument of `onClick('myOnClickHandler')` like attributes
-            console.log(
+            DEBUG && console.log(
               `Looking in Attribute's Argument: ${text.slice(
                 attribute.argument.pos + 1,
                 attribute.argument.endPos
@@ -207,7 +208,7 @@ async function getScopeAtPos(offset: number, text: string) {
         return resolve(defaultTagScope);
       },
       onFinish: function() {
-        console.log("================Finished!!!==============");
+        DEBUG && console.log("================Finished!!!==============");
         // TODO: Maybe this is not right? we need it to resolve somehow
         if (!found) resolve(false);
       }
@@ -344,7 +345,7 @@ export class MLS {
   }
 
   initialize(workspacePath: string, docManager: TextDocuments) {
-    console.log(workspacePath);
+    DEBUG && console.log(workspacePath);
     this.docManager = docManager;
   }
 
@@ -353,7 +354,7 @@ export class MLS {
   }
 
   async onCompletion(positionParams: TextDocumentPositionParams) {
-    console.log(positionParams);
+    DEBUG && console.log(positionParams);
     return {
       items: [
         {
