@@ -22,9 +22,9 @@
     "clean": "rm -Rf clients/vscode/out && rm -Rf server/out"
   },
   "devDependencies": {
-    "@types/node": "^8.0.0",
     "@types/mocha": "^2.2.42",
-    "lerna": "^2.11.0",
+    "@types/node": "^8.0.0",
+    "lerna": "^3.13.3",
     "tslint": "^5.14.0",
     "typescript": "^3.1.3"
   }
