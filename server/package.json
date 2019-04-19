@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Diego Berrocal",
   "license": "MIT",
   "bin": {
