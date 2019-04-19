@@ -15,15 +15,15 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 ## Go to Definition
 - Go To Tags
 
-![goToTag](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToTag.gif)
+![goToTag](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToTag.gif?raw=true)
 
 - Custom Attribute Names
 
-![goToAttrName](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToAttrName.gif)
+![goToAttrName](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToAttrName.gif?raw=true)
 
 - Custom Handlers
 
-![goToAttrValue](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToAttrValue.gif)
+![goToAttrValue](https://github.com/marko-js/marko-language-server/blob/master/clients/vscode/img/goToAttrValue.gif?raw=true)
 
 # License
 
