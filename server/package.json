@@ -21,6 +21,7 @@
     "url": "https://github.com/marko-js/marko-language-server/tree/master/server"
   },
   "dependencies": {
+    "@marko/prettyprint": "^2.0.5",
     "escape-string-regexp": "^1.0.5",
     "lasso-package-root": "^1.0.1",
     "marko": "^4.16.4",

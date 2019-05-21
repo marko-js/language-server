@@ -19,10 +19,14 @@ import {
   Position,
   TextDocument,
   TextDocumentPositionParams,
-  TextDocuments
+  TextDocuments,
+  TextEdit,
+  DocumentFormattingParams,
+  Range
 } from "vscode-languageserver/lib/main";
 import { IConnection } from "vscode-languageserver";
 import URI from "vscode-uri";
+import * as prettyPrint from '@marko/prettyprint';
 
 const { loadMarkoCompiler } = require("./util/marko");
 
@@ -110,9 +114,9 @@ It returns the TAG ScopeType when the cursor is inside an open tag. This complic
  */
 async function getScopeAtPos(offset: number, text: string) {
   let found: boolean = false;
-  return new Promise(function(resolve: (tag: Scope | boolean) => any) {
+  return new Promise(function (resolve: (tag: Scope | boolean) => any) {
     const parser = createParser({
-      onOpenTag: function(event: any) {
+      onOpenTag: function (event: any) {
         const {
           pos: startPos,
           endPos,
@@ -207,7 +211,7 @@ async function getScopeAtPos(offset: number, text: string) {
         }
         return resolve(defaultTagScope);
       },
-      onFinish: function() {
+      onFinish: function () {
         DEBUG && console.log("================Finished!!!==============");
         // TODO: Maybe this is not right? we need it to resolve somehow
         if (!found) resolve(false);
@@ -342,6 +346,7 @@ export class MLS {
   private setupLanguageFeatures() {
     this.connection.onCompletion(this.onCompletion.bind(this));
     this.connection.onDefinition(this.onDefinition.bind(this));
+    this.connection.onDocumentFormatting(this.onDocumentFormatting.bind(this));
   }
 
   initialize(workspacePath: string, docManager: TextDocuments) {
@@ -392,4 +397,43 @@ export class MLS {
     // ATTR_NAME: Return the marko.json file if it exists, and otherwise go to the first usage of input.ATTR_NAME (or all of them)
     // ATTR_VALUE: Check if this is a handler to the ATTR_NAME and return the definition of this handler either in the template or in the component.json
   }
+
+  onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
+    const doc = this.docManager.get(textDocument.uri)!;
+    const { path } = URI.parse(textDocument.uri);
+    let edits:TextEdit[] = [];
+
+    try {
+      const prettyPrintOptions = Object.assign({}, options, {
+        filename: path,
+        compiler: loadMarkoCompiler(path),
+      })
+
+      const pretty = prettyPrint(doc.getText(), prettyPrintOptions);
+      const range = Range.create(
+        Position.create(0, 0),
+        Position.create(doc.lineCount, 0)
+      );
+      edits = [TextEdit.replace(range, pretty)];
+    } catch (e) {
+      this.displayErrorMessage('Formatting failed: "' + e.message + '"');
+    }
+    return edits;
+  }
+
+
+  /**
+   * Custom Notifications
+   */
+
+  displayInfoMessage(msg: string): void {
+    this.connection.sendNotification('$/displayInfo', msg);
+  }
+  displayWarningMessage(msg: string): void {
+    this.connection.sendNotification('$/displayWarning', msg);
+  }
+  displayErrorMessage(msg: string): void {
+    this.connection.sendNotification('$/displayError', msg);
+  }
+
 }
