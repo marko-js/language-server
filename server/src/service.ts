@@ -72,7 +72,6 @@ export interface MLS {
   dispose(): void;
 }
 
-
 // TODO: It would be good to have the parser run once instead of each time we need
 // to get information from our template. It should have regions
 
@@ -374,14 +373,6 @@ export class MLS {
     this.docManager.onDidChangeContent((change: TextDocumentChangeEvent) => {
       this.triggerValidation(change.document);
     });
-
-    // this.connection.onDidChangeWatchedFiles(({ changes }) => {
-    //   changes.forEach(c => {
-    //     if (c.type === FileChangeType.Changed) {
-    //       const fsPath = Uri.parse(c.uri).fsPath;
-    //       jsMode.onDocumentChanged!(fsPath);
-    //     }
-    //   });
 
     this.docManager.all().forEach(d => {
       this.triggerValidation(d);
