@@ -71,6 +71,7 @@ connection.onInitialize((params: InitializeParams) => {
       // Tell the client that the server works in FULL text document sync mode
       textDocumentSync: documents.syncKind,
       // Tell the client that we have reference provider as well
+      documentFormattingProvider : true,
       definitionProvider: true,
       completionProvider: {
         resolveProvider: true,
@@ -102,7 +103,6 @@ connection.onDidChangeWatchedFiles(_change => {
   // Monitored files have change in VSCode
   DEBUG && connection.console.log("We recevied an file change event");
 });
-
 // This handler provides the initial list of the completion items.
 // connection.onCompletion(async (completionParams: TextDocumentPositionParams): CompletionItem[] => {
 // });

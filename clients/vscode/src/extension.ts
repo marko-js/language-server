@@ -23,7 +23,7 @@ let client: LanguageClient;
 export function activate() {
   // The server is implemented in node
   let serverModule = require.resolve("@marko/language-server");
-  
+
   // The debug options for the server
   // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
   let debugOptions = { execArgv: ["--nolazy", "--inspect=6009"], env: { DEBUG: true} };
