@@ -22,7 +22,10 @@ import {
   TextDocuments,
   TextEdit,
   DocumentFormattingParams,
-  Range
+  Range,
+  Diagnostic,
+  TextDocumentChangeEvent,
+  DiagnosticSeverity,
 } from "vscode-languageserver/lib/main";
 import { IConnection } from "vscode-languageserver";
 import URI from "vscode-uri";
@@ -32,7 +35,7 @@ const { loadMarkoCompiler } = require("./util/marko");
 
 var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
 var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
-
+const markoErrorRegExp = new RegExp('.*\\[(.*)\\:(\\d+)\\:(\\d+)\\](.*)', 'gi');
 const escapeStringRegexp = require("escape-string-regexp");
 const DEBUG = process.env.DEBUG === 'true' || false;
 
@@ -69,6 +72,7 @@ export interface MLS {
   dispose(): void;
 }
 
+
 // TODO: It would be good to have the parser run once instead of each time we need
 // to get information from our template. It should have regions
 
@@ -104,6 +108,20 @@ function getComponentJSFilePath(documentPath: string): string | null {
   }
 
   return null;
+}
+
+function createRangeFromContext(context: IMarkoErrorOutput) {
+  const start = context.pos
+  const end = context.endPos;
+  return createRange(start.line - 1, start.column, end.line - 1, end.column);
+}
+
+function createRange(startLine: number, stratColumn: number, endLine?: number, endColumn?: number): Range {
+  return {
+    start: Position.create(startLine, stratColumn),
+    end: Position.create(endLine || startLine, endColumn || stratColumn)
+  }
+
 }
 
 /*
@@ -343,15 +361,37 @@ export class MLS {
     });
   }
 
+  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+  private validationDelayMs = 200;
+
   private setupLanguageFeatures() {
     this.connection.onCompletion(this.onCompletion.bind(this));
     this.connection.onDefinition(this.onDefinition.bind(this));
     this.connection.onDocumentFormatting(this.onDocumentFormatting.bind(this));
   }
 
+  private setupFileChangeListeners() {
+    this.docManager.onDidChangeContent((change: TextDocumentChangeEvent) => {
+      this.triggerValidation(change.document);
+    });
+
+    // this.connection.onDidChangeWatchedFiles(({ changes }) => {
+    //   changes.forEach(c => {
+    //     if (c.type === FileChangeType.Changed) {
+    //       const fsPath = Uri.parse(c.uri).fsPath;
+    //       jsMode.onDocumentChanged!(fsPath);
+    //     }
+    //   });
+
+    this.docManager.all().forEach(d => {
+      this.triggerValidation(d);
+    });
+  }
+
   initialize(workspacePath: string, docManager: TextDocuments) {
     DEBUG && console.log(workspacePath);
     this.docManager = docManager;
+    this.setupFileChangeListeners()
   }
 
   dispose(): void {
@@ -398,10 +438,83 @@ export class MLS {
     // ATTR_VALUE: Check if this is a handler to the ATTR_NAME and return the definition of this handler either in the template or in the component.json
   }
 
+  private triggerValidation(textDocument: TextDocument): void {
+
+    this.cleanPendingValidation(textDocument);
+    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+      delete this.pendingValidationRequests[textDocument.uri];
+      this.validateTextDocument(textDocument);
+    }, this.validationDelayMs);
+  }
+
+  cleanPendingValidation(textDocument: TextDocument): void {
+    const request = this.pendingValidationRequests[textDocument.uri];
+    if (request) {
+      clearTimeout(request);
+      delete this.pendingValidationRequests[textDocument.uri];
+    }
+  }
+
+
+  validateTextDocument(textDocument: TextDocument): void {
+    const diagnostics: Diagnostic[] = this.doValidate(textDocument);
+    this.connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  }
+
+  doValidate(doc: TextDocument): Diagnostic[] {
+    const { path } = URI.parse(doc.uri);
+    const compiler = loadMarkoCompiler(path);
+    let diagnostics: Diagnostic[] = [];
+    let context: any;
+    let message;
+    let errorThrown = false;
+
+    try {
+      message = compiler.compile(doc.getText(), path, {
+        writeToDisk: false,
+        onContext: ((innerContext: any) => {
+          context = innerContext;
+        })
+      });
+    } catch (e) {
+      message = e.message;
+      errorThrown = true;
+    }
+
+    if (context && context.hasErrors()) {
+      // If marko exported onContext thne use that to create diagnostic output
+      return context.getErrors().map((error: IMarkoErrorOutput) => {
+        return Diagnostic.create(
+          createRangeFromContext(error),
+          error.message,
+          DiagnosticSeverity.Error,
+          error.code,
+          path,
+        );
+      });
+    } else if (errorThrown) {
+      // 0: full line, 1: filename, 2: line number 3: column, 4 message
+      let matches;
+      // Iterate through all regexp matches for the given message
+      while (matches = markoErrorRegExp.exec(message)) {
+        const line = parseInt(matches[2], 10) - 1; // Line starts at 0
+        const col = parseInt(matches[3], 10);
+        diagnostics.push(Diagnostic.create(
+          createRange(line, col),
+          matches[4],
+          DiagnosticSeverity.Error,
+          '',
+          matches[1],
+        ));
+      }
+    }
+    return diagnostics;
+  }
+
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const doc = this.docManager.get(textDocument.uri)!;
     const { path } = URI.parse(textDocument.uri);
-    let edits:TextEdit[] = [];
+    let edits: TextEdit[] = [];
 
     try {
       const prettyPrintOptions = Object.assign({}, options, {
