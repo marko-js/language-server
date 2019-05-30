@@ -1,3 +1,4 @@
+
 /*
 Copyright 2018 eBay Inc.
 Author/Developer: Diego Berrocal
@@ -25,4 +26,17 @@ interface IMarkoErrorPosInfo {
     column: number;
     line: number;
     path: string;
+}
+
+interface IMarkoAttribute {
+    allowExpressions: boolean;
+    html: boolean;
+    name: string;
+    pattern: string;
+    required: boolean;
+    setFlag: string;
+    type: string;
+    enum:string[];
+    filePath:string;
+    key:string;
 }

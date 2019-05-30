@@ -31,7 +31,8 @@ import { IConnection } from "vscode-languageserver";
 import URI from "vscode-uri";
 import * as prettyPrint from '@marko/prettyprint';
 
-const { loadMarkoCompiler } = require("./util/marko");
+import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup } from './util/marko'
+import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments } from "./util/autocomplete";
 
 var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
 var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
@@ -75,19 +76,6 @@ export interface MLS {
 // TODO: It would be good to have the parser run once instead of each time we need
 // to get information from our template. It should have regions
 
-enum ScopeType {
-  TAG,
-  ATTR_NAME,
-  ATTR_VALUE,
-  NO_SCOPE,
-  TEXT
-}
-
-interface Scope {
-  tagName: string;
-  data?: any;
-  scopeType: ScopeType;
-}
 
 function createTextDocument(filename: string): TextDocument {
   const uri = URI.file(filename).toString();
@@ -123,6 +111,7 @@ function createRange(startLine: number, stratColumn: number, endLine?: number, e
 
 }
 
+
 /*
 This gives scope at position.
 
@@ -133,6 +122,13 @@ async function getScopeAtPos(offset: number, text: string) {
   let found: boolean = false;
   return new Promise(function (resolve: (tag: Scope | boolean) => any) {
     const parser = createParser({
+      onError: (error: any, data: any) => {
+        resolve({
+          tagName: error.code,
+          scopeType: ScopeType.NO_SCOPE,
+          data
+        });
+      },
       onOpenTag: function (event: any) {
         const {
           pos: startPos,
@@ -143,7 +139,7 @@ async function getScopeAtPos(offset: number, text: string) {
         } = event;
 
         // Don't process when the offset is not inside a tag or we found our tag already
-        if (found || offset < startPos || offset > endPos) return;
+        if (checkPosition(found, event, offset)) return;
         DEBUG && console.log(`Searching for character '${text[offset]}'
                              in string: '${text.slice(startPos, endPos)}'`);
 
@@ -228,7 +224,7 @@ async function getScopeAtPos(offset: number, text: string) {
         }
         return resolve(defaultTagScope);
       },
-      onFinish: function () {
+      onfinish: function () {
         DEBUG && console.log("================Finished!!!==============");
         // TODO: Maybe this is not right? we need it to resolve somehow
         if (!found) resolve(false);
@@ -236,16 +232,6 @@ async function getScopeAtPos(offset: number, text: string) {
     });
     parser.parse(text);
   });
-}
-
-function getTagLibLookup(document: TextDocument) {
-  const { path: dir } = URI.parse(document.uri);
-  return loadMarkoCompiler(dir).buildTaglibLookup(dir);
-}
-
-function getTag(document: TextDocument, tagName: string) {
-  const tagLibLookup = getTagLibLookup(document);
-  return tagLibLookup.getTag(tagName);
 }
 
 function findDefinitionForTag(
@@ -390,17 +376,32 @@ export class MLS {
   }
 
   async onCompletion(positionParams: TextDocumentPositionParams) {
-    DEBUG && console.log(positionParams);
-    return {
-      items: [
-        {
-          label: "I'm first"
-        },
-        {
-          label: "I'm second"
-        }
-      ]
-    };
+    console.log('pos param', positionParams);
+   const doc = this.docManager.get(positionParams.textDocument.uri);
+    const offset = doc.offsetAt(positionParams.position);
+    const scopeAtPos = <Scope>await getAutocomleteAtText(offset, doc.getText());
+    const tagLibLookup = getTagLibLookup(doc);
+    const args:IAutocompleteArguments = {
+      doc,
+      offset,
+      scopeAtPos,
+      tagLibLookup,
+    }
+
+    switch (scopeAtPos.scopeType) {
+      case ScopeType.TAG:
+        return getTagAutocomplete(args);
+      case ScopeType.ATTR_NAME:
+        return getAttributeAutocomplete(args);
+      case ScopeType.CLOSE_TAG:
+        return getCloseTagAutocomplete(args);
+      case ScopeType.ATTR_VALUE:
+        console.log('attr value');
+        break;
+      default:
+        console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
+    }
+    return {};
   }
 
   async onDefinition(positionParams: TextDocumentPositionParams) {
