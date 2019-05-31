@@ -10,7 +10,6 @@ license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 * ------------------------------------------------------------------------------------------ */
 
-import defaultMarkoCompiler = require("marko/compiler");
 import { TextDocument } from "vscode-languageserver";
 import URI from "vscode-uri";
 const markoCompilerCache: any = {};
@@ -18,11 +17,17 @@ const resolveFrom = require("resolve-from");
 const lassoPackageRoot = require("lasso-package-root");
 const versionRegExp = /^[0-9]+/;
 const versionCache: any = {};
+const defaultCompilers:any = {
+  marko: require('marko/compiler'),
+  CodeWriter: require('marko/dist/compiler/CodeWriter')
+  // CodeWriter: require('marko/compiler/CodeWriter'),
+}
 
 export interface Scope {
   tagName: string;
   data?: any;
   scopeType: ScopeType;
+  event?: IHtMLJSParserEvent;
 }
 
 export enum ScopeType {
@@ -35,28 +40,56 @@ export enum ScopeType {
 }
 
 export interface IHtMLJSParserEventAttributes {
-  argument:{[key:string]: string};
-  endPos:number
-  name:string;
-  pos:number;
-  value:string;
-  literalValue:string;
+  argument: { [key: string]: string };
+  endPos: number
+  name: string;
+  pos: number;
+  value: string;
+  literalValue: string;
+}
+
+export interface IHTMLJSParserEventShortClass {
+  rawParts: [{
+    pos: number;
+    endPos: number;
+    text: string;
+  }];
+  value: string;
 }
 
 
 export interface IHtMLJSParserEvent {
   attributes: IHtMLJSParserEventAttributes[];
-  endPos:number;
-  pos:number
-  concise:boolean
-  emptyTagName:string
-  openTagOnly:boolean
-  selfClosed:boolean;
-  tagName:string;
-  tagNameEndPos:number;
-  tagNameExpression:string
-  type:string
+  shorthandClassNames: IHTMLJSParserEventShortClass[];
+  endPos: number;
+  pos: number
+  concise: boolean
+  emptyTagName: string
+  openTagOnly: boolean
+  selfClosed: boolean;
+  tagName: string;
+  tagNameEndPos: number;
+  tagNameExpression: string
+  type: string
 
+}
+
+export function loadCompilerComponent(component:string, dir: string) {
+  let rootDir = lassoPackageRoot.getRootDir(dir);
+  const cacheLookup = `${rootDir}-${component}`
+  if (!rootDir) {
+    return;
+  }
+
+  let codeWriter = markoCompilerCache[cacheLookup];
+  if (!codeWriter) {
+    let codeWriterPath = resolveFrom.silent(rootDir, `marko/compiler/${component}`);
+    if (codeWriterPath) {
+      codeWriter = require(codeWriterPath);
+    }
+    markoCompilerCache[cacheLookup] = codeWriter =
+      codeWriter || defaultCompilers[component];
+  }
 }
 
 export function loadMarkoCompiler(dir: string) {
@@ -84,7 +117,7 @@ export function loadMarkoCompiler(dir: string) {
       }
     }
     markoCompilerCache[rootDir] = markoCompiler =
-      markoCompiler || defaultMarkoCompiler;
+      markoCompiler || defaultCompilers.marko;
   }
 
   return markoCompiler;

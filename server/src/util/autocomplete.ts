@@ -1,9 +1,7 @@
 import { createParser } from "htmljs-parser";
 import { ScopeType, Scope, IHtMLJSParserEvent } from "./marko";
 import { CompletionList, TextDocument, Position } from "vscode-languageserver";
-import {
-    getLESSLanguageService,
-  } from 'vscode-css-languageservice';
+import { getStyleAutocomplete } from "./stylesheet";
 const DEBUG = process.env.DEBUG === 'true' || false;
 
 export interface IAutocompleteArguments {
@@ -52,7 +50,7 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                 resolve({
                     tagName: error.code,
                     scopeType: ScopeType.NO_SCOPE,
-                    data
+                    data,
                 });
             },
             onOpenTag: (event: IHtMLJSParserEvent) => {
@@ -61,7 +59,7 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                     endPos,
                     tagName,
                     tagNameEndPos,
-                    attributes
+                    attributes,
                 } = event;
 
                 // Don't process when the offset is not inside a tag or we found our tag already
@@ -78,7 +76,8 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                 if (offset <= tagNameEndPos) {
                     return resolve({
                         tagName,
-                        scopeType: ScopeType.TAG
+                        scopeType: ScopeType.TAG,
+                        event,
                     });
                 }
 
@@ -97,20 +96,23 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                             return resolve({
                                 tagName,
                                 data: attribute.name,
-                                scopeType: ScopeType.ATTR_NAME
+                                scopeType: ScopeType.ATTR_NAME,
+                                event,
                             });
                         } else if (attribute.argument) {
 
                             return resolve({
                                 tagName,
                                 data: attribute.argument.value.slice(1, -1),
-                                scopeType: ScopeType.ATTR_VALUE
+                                scopeType: ScopeType.ATTR_VALUE,
+                                event,
                             })
                         } else {
                             return resolve({
                                 tagName,
                                 data: attribute.value,
-                                scopeType: ScopeType.ATTR_VALUE
+                                scopeType: ScopeType.ATTR_VALUE,
+                                event,
                             })
                         }
                     }
@@ -129,6 +131,7 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                     tagName,
                     data: tagName,
                     scopeType: ScopeType.CLOSE_TAG,
+                    event,
                 })
             },
             //  onString: (event: any) => {
@@ -175,9 +178,7 @@ function getHTMLAttrAutiocomplete(options: IAutocompleteArguments): CompletionLi
 export function getAttributeAutocomplete(options: IAutocompleteArguments): CompletionList {
     switch(options.scopeAtPos.tagName) {
         case 'style':
-                const languageService = getLESSLanguageService();
-                const list =languageService.doComplete(options.doc, options.position, languageService.parseStylesheet(options.doc));
-                return list;
+            return getStyleAutocomplete(options);
         case 'class':
             return null;
         default:

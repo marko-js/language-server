@@ -31,7 +31,7 @@ import { IConnection } from "vscode-languageserver";
 import URI from "vscode-uri";
 import * as prettyPrint from '@marko/prettyprint';
 
-import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup } from './util/marko'
+import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup, loadCompilerComponent } from './util/marko'
 import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments } from "./util/autocomplete";
 
 var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
@@ -510,9 +510,12 @@ export class MLS {
     let edits: TextEdit[] = [];
 
     try {
+      const compiler = loadMarkoCompiler(path);
       const prettyPrintOptions = Object.assign({}, options, {
         filename: path,
-        compiler: loadMarkoCompiler(path),
+        compiler,
+        markoCompiler: compiler,
+        CodeWriter: loadCompilerComponent('CodeWriter', path),
       })
 
       const pretty = prettyPrint(doc.getText(), prettyPrintOptions);

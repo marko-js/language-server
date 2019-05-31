@@ -10,6 +10,7 @@ https://opensource.org/licenses/MIT.
 
 declare module "@marko/prettyprint";
 declare module "marko/compiler";
+declare module "marko/compiler/CodeWriter";
 declare module "marko/env";
 declare module "htmljs-parser";
 
