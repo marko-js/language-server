@@ -1,13 +1,17 @@
 import { createParser } from "htmljs-parser";
 import { ScopeType, Scope, IHtMLJSParserEvent } from "./marko";
-import { CompletionItemKind, InsertTextFormat, CompletionList, TextDocument } from "vscode-languageserver";
+import { CompletionList, TextDocument, Position } from "vscode-languageserver";
+import {
+    getLESSLanguageService,
+  } from 'vscode-css-languageservice';
 const DEBUG = process.env.DEBUG === 'true' || false;
 
 export interface IAutocompleteArguments {
     doc: TextDocument;
     offset: number;
     scopeAtPos: Scope;
-    tagLibLookup: any
+    tagLibLookup: any;
+    position: Position;
 }
 
 export function checkPosition(found: boolean, event: any, offset: number) {
@@ -30,9 +34,9 @@ export function generateAutocomplete(attributes: { [key: string]: IMarkoAttribut
         ret.items.push({
             label: attr.name,
             documentation: attr.html ? `Standard ${attr.name}HTML tag` : 'Marko tag',
-            kind: CompletionItemKind.Snippet,
-            insertTextFormat: InsertTextFormat.Snippet,
-            insertText: `${attr.name}="\${1}"`
+            // kind: CompletionItemKind.Snippet,
+            // insertTextFormat: InsertTextFormat.Snippet,
+            // insertText: `${attr.name}="\${1}"`
 
         });
 
@@ -146,8 +150,7 @@ export async function getAutocomleteAtText(offset: number, text: string) {
         parser.parse(text);
     });
 }
-
-export function getAttributeAutocomplete(options: IAutocompleteArguments): CompletionList {
+function getHTMLAttrAutiocomplete(options: IAutocompleteArguments): CompletionList {
     const {
         scopeAtPos,
         tagLibLookup,
@@ -166,6 +169,20 @@ export function getAttributeAutocomplete(options: IAutocompleteArguments): Compl
 
 
     return generateAutocomplete(attributeObjects);
+
+}
+
+export function getAttributeAutocomplete(options: IAutocompleteArguments): CompletionList {
+    switch(options.scopeAtPos.tagName) {
+        case 'style':
+                const languageService = getLESSLanguageService();
+                const list =languageService.doComplete(options.doc, options.position, languageService.parseStylesheet(options.doc));
+                return list;
+        case 'class':
+            return null;
+        default:
+            return getHTMLAttrAutiocomplete(options);
+    }
 }
 
 export function getCloseTagAutocomplete(options: IAutocompleteArguments): CompletionList {

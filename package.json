@@ -27,5 +27,9 @@
     "lerna": "^3.13.3",
     "tslint": "^5.14.0",
     "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "vscode-css-languageservice": "^3.0.13",
+    "vscode-emmet-helper": "^1.2.15"
   }
 }

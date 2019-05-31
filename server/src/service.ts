@@ -376,16 +376,17 @@ export class MLS {
   }
 
   async onCompletion(positionParams: TextDocumentPositionParams) {
-    console.log('pos param', positionParams);
-   const doc = this.docManager.get(positionParams.textDocument.uri);
+    DEBUG && console.log('pos param', positionParams);
+    const doc = this.docManager.get(positionParams.textDocument.uri);
     const offset = doc.offsetAt(positionParams.position);
     const scopeAtPos = <Scope>await getAutocomleteAtText(offset, doc.getText());
     const tagLibLookup = getTagLibLookup(doc);
-    const args:IAutocompleteArguments = {
+    const args: IAutocompleteArguments = {
       doc,
       offset,
       scopeAtPos,
       tagLibLookup,
+      position: positionParams.position,
     }
 
     switch (scopeAtPos.scopeType) {
@@ -396,10 +397,10 @@ export class MLS {
       case ScopeType.CLOSE_TAG:
         return getCloseTagAutocomplete(args);
       case ScopeType.ATTR_VALUE:
-        console.log('attr value');
+        DEBUG && console.log('attr value');
         break;
       default:
-        console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
+        DEBUG && console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
     }
     return {};
   }
