@@ -22,17 +22,21 @@ import {
   TextDocuments,
   TextEdit,
   DocumentFormattingParams,
-  Range
+  Range,
+  Diagnostic,
+  TextDocumentChangeEvent,
+  DiagnosticSeverity,
 } from "vscode-languageserver/lib/main";
 import { IConnection } from "vscode-languageserver";
 import URI from "vscode-uri";
 import * as prettyPrint from '@marko/prettyprint';
 
-const { loadMarkoCompiler } = require("./util/marko");
+import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup, loadCompilerComponent } from './util/marko'
+import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments } from "./util/autocomplete";
 
 var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
 var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
-
+const markoErrorRegExp = new RegExp('.*\\[(.*)\\:(\\d+)\\:(\\d+)\\](.*)', 'gi');
 const escapeStringRegexp = require("escape-string-regexp");
 const DEBUG = process.env.DEBUG === 'true' || false;
 
@@ -72,19 +76,6 @@ export interface MLS {
 // TODO: It would be good to have the parser run once instead of each time we need
 // to get information from our template. It should have regions
 
-enum ScopeType {
-  TAG,
-  ATTR_NAME,
-  ATTR_VALUE,
-  NO_SCOPE,
-  TEXT
-}
-
-interface Scope {
-  tagName: string;
-  data?: any;
-  scopeType: ScopeType;
-}
 
 function createTextDocument(filename: string): TextDocument {
   const uri = URI.file(filename).toString();
@@ -106,6 +97,21 @@ function getComponentJSFilePath(documentPath: string): string | null {
   return null;
 }
 
+function createRangeFromContext(context: IMarkoErrorOutput) {
+  const start = context.pos
+  const end = context.endPos;
+  return createRange(start.line - 1, start.column, end.line - 1, end.column);
+}
+
+function createRange(startLine: number, stratColumn: number, endLine?: number, endColumn?: number): Range {
+  return {
+    start: Position.create(startLine, stratColumn),
+    end: Position.create(endLine || startLine, endColumn || stratColumn)
+  }
+
+}
+
+
 /*
 This gives scope at position.
 
@@ -116,6 +122,13 @@ async function getScopeAtPos(offset: number, text: string) {
   let found: boolean = false;
   return new Promise(function (resolve: (tag: Scope | boolean) => any) {
     const parser = createParser({
+      onError: (error: any, data: any) => {
+        resolve({
+          tagName: error.code,
+          scopeType: ScopeType.NO_SCOPE,
+          data
+        });
+      },
       onOpenTag: function (event: any) {
         const {
           pos: startPos,
@@ -126,7 +139,7 @@ async function getScopeAtPos(offset: number, text: string) {
         } = event;
 
         // Don't process when the offset is not inside a tag or we found our tag already
-        if (found || offset < startPos || offset > endPos) return;
+        if (checkPosition(found, event, offset)) return;
         DEBUG && console.log(`Searching for character '${text[offset]}'
                              in string: '${text.slice(startPos, endPos)}'`);
 
@@ -211,7 +224,7 @@ async function getScopeAtPos(offset: number, text: string) {
         }
         return resolve(defaultTagScope);
       },
-      onFinish: function () {
+      onfinish: function () {
         DEBUG && console.log("================Finished!!!==============");
         // TODO: Maybe this is not right? we need it to resolve somehow
         if (!found) resolve(false);
@@ -219,16 +232,6 @@ async function getScopeAtPos(offset: number, text: string) {
     });
     parser.parse(text);
   });
-}
-
-function getTagLibLookup(document: TextDocument) {
-  const { path: dir } = URI.parse(document.uri);
-  return loadMarkoCompiler(dir).buildTaglibLookup(dir);
-}
-
-function getTag(document: TextDocument, tagName: string) {
-  const tagLibLookup = getTagLibLookup(document);
-  return tagLibLookup.getTag(tagName);
 }
 
 function findDefinitionForTag(
@@ -343,15 +346,29 @@ export class MLS {
     });
   }
 
+  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+  private validationDelayMs = 200;
+
   private setupLanguageFeatures() {
     this.connection.onCompletion(this.onCompletion.bind(this));
     this.connection.onDefinition(this.onDefinition.bind(this));
     this.connection.onDocumentFormatting(this.onDocumentFormatting.bind(this));
   }
 
+  private setupFileChangeListeners() {
+    this.docManager.onDidChangeContent((change: TextDocumentChangeEvent) => {
+      this.triggerValidation(change.document);
+    });
+
+    this.docManager.all().forEach(d => {
+      this.triggerValidation(d);
+    });
+  }
+
   initialize(workspacePath: string, docManager: TextDocuments) {
     DEBUG && console.log(workspacePath);
     this.docManager = docManager;
+    this.setupFileChangeListeners()
   }
 
   dispose(): void {
@@ -359,17 +376,33 @@ export class MLS {
   }
 
   async onCompletion(positionParams: TextDocumentPositionParams) {
-    DEBUG && console.log(positionParams);
-    return {
-      items: [
-        {
-          label: "I'm first"
-        },
-        {
-          label: "I'm second"
-        }
-      ]
-    };
+    DEBUG && console.log('pos param', positionParams);
+    const doc = this.docManager.get(positionParams.textDocument.uri);
+    const offset = doc.offsetAt(positionParams.position);
+    const scopeAtPos = <Scope>await getAutocomleteAtText(offset, doc.getText());
+    const tagLibLookup = getTagLibLookup(doc);
+    const args: IAutocompleteArguments = {
+      doc,
+      offset,
+      scopeAtPos,
+      tagLibLookup,
+      position: positionParams.position,
+    }
+
+    switch (scopeAtPos.scopeType) {
+      case ScopeType.TAG:
+        return getTagAutocomplete(args);
+      case ScopeType.ATTR_NAME:
+        return getAttributeAutocomplete(args);
+      case ScopeType.CLOSE_TAG:
+        return getCloseTagAutocomplete(args);
+      case ScopeType.ATTR_VALUE:
+        DEBUG && console.log('attr value');
+        break;
+      default:
+        DEBUG && console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
+    }
+    return {};
   }
 
   async onDefinition(positionParams: TextDocumentPositionParams) {
@@ -398,15 +431,91 @@ export class MLS {
     // ATTR_VALUE: Check if this is a handler to the ATTR_NAME and return the definition of this handler either in the template or in the component.json
   }
 
+  private triggerValidation(textDocument: TextDocument): void {
+
+    this.cleanPendingValidation(textDocument);
+    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+      delete this.pendingValidationRequests[textDocument.uri];
+      this.validateTextDocument(textDocument);
+    }, this.validationDelayMs);
+  }
+
+  cleanPendingValidation(textDocument: TextDocument): void {
+    const request = this.pendingValidationRequests[textDocument.uri];
+    if (request) {
+      clearTimeout(request);
+      delete this.pendingValidationRequests[textDocument.uri];
+    }
+  }
+
+
+  validateTextDocument(textDocument: TextDocument): void {
+    const diagnostics: Diagnostic[] = this.doValidate(textDocument);
+    this.connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  }
+
+  doValidate(doc: TextDocument): Diagnostic[] {
+    const { path } = URI.parse(doc.uri);
+    const compiler = loadMarkoCompiler(path);
+    let diagnostics: Diagnostic[] = [];
+    let context: any;
+    let message;
+    let errorThrown = false;
+
+    try {
+      message = compiler.compile(doc.getText(), path, {
+        writeToDisk: false,
+        onContext: ((innerContext: any) => {
+          context = innerContext;
+        })
+      });
+    } catch (e) {
+      message = e.message;
+      errorThrown = true;
+    }
+
+    if (context && context.hasErrors()) {
+      // If marko exported onContext thne use that to create diagnostic output
+      return context.getErrors().map((error: IMarkoErrorOutput) => {
+        return Diagnostic.create(
+          createRangeFromContext(error),
+          error.message,
+          DiagnosticSeverity.Error,
+          error.code,
+          path,
+        );
+      });
+    } else if (errorThrown) {
+      // 0: full line, 1: filename, 2: line number 3: column, 4 message
+      let matches;
+      // Iterate through all regexp matches for the given message
+      while (matches = markoErrorRegExp.exec(message)) {
+        const line = parseInt(matches[2], 10) - 1; // Line starts at 0
+        const col = parseInt(matches[3], 10);
+        diagnostics.push(Diagnostic.create(
+          createRange(line, col),
+          matches[4],
+          DiagnosticSeverity.Error,
+          '',
+          matches[1],
+        ));
+      }
+    }
+    return diagnostics;
+  }
+
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const doc = this.docManager.get(textDocument.uri)!;
     const { path } = URI.parse(textDocument.uri);
-    let edits:TextEdit[] = [];
+    let edits: TextEdit[] = [];
 
     try {
+      const compiler = loadMarkoCompiler(path);
       const prettyPrintOptions = Object.assign({}, options, {
         filename: path,
-        compiler: loadMarkoCompiler(path),
+        compiler,
+        markoCompiler: compiler,
+        CodeWriter: loadCompilerComponent('CodeWriter', path),
       })
 
       const pretty = prettyPrint(doc.getText(), prettyPrintOptions);

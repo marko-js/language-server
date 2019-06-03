@@ -13,8 +13,6 @@ https://opensource.org/licenses/MIT.
 import {
   createConnection,
   TextDocuments,
-  TextDocument,
-  Diagnostic,
   InitializeParams,
   ProposedFeatures
 } from "vscode-languageserver";
@@ -80,24 +78,6 @@ connection.onInitialize((params: InitializeParams) => {
     }
   };
 });
-
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
-documents.onDidChangeContent(change => {
-  validateTextDocument(change.document);
-});
-
-// The settings have changed. Is send on server activation
-// as well.
-connection.onDidChangeConfiguration(() => {
-  // Revalidate any open text documents
-  documents.all().forEach(validateTextDocument);
-});
-
-function validateTextDocument(textDocument: TextDocument): void {
-  let diagnostics: Diagnostic[] = [];
-  connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
 
 connection.onDidChangeWatchedFiles(_change => {
   // Monitored files have change in VSCode

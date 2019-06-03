@@ -26,6 +26,7 @@
     "lasso-package-root": "^1.0.1",
     "marko": "^4.16.4",
     "resolve-from": "^4.0.0",
+    "vscode-css-languageservice": "^3.0.13",
     "vscode-languageserver": "^5.2.1",
     "vscode-uri": "^1.0.6"
   },
