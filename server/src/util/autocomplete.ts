@@ -187,10 +187,14 @@ export function getAttributeAutocomplete(options: IAutocompleteArguments): Compl
 }
 
 export function getCloseTagAutocomplete(options: IAutocompleteArguments): CompletionList {
+    let tagName = options.scopeAtPos.tagName;
+    if (tagName.startsWith('${')) {
+        tagName = '';
+    }
     return {
         isIncomplete: false,
         items: [{
-            label: options.scopeAtPos.tagName,
+            label: tagName
         }]
     }
 
