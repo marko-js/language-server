@@ -6,8 +6,9 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 # Features
 - [X] Go To Definition
 - [X] Syntax HighLighting
-- [ ] Autocompletion
-- [ ] Tag Matching
+- [X] Autocompletion
+- [X] Tag Matching
+- [X] Error reporting
 - [ ] Linting
 - [ ] Debugging
 
