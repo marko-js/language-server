@@ -36,7 +36,8 @@ export enum ScopeType {
   ATTR_VALUE,
   NO_SCOPE,
   TEXT,
-  CLOSE_TAG
+  CLOSE_TAG,
+  JAVASCRIPT,
 }
 
 export interface IHtMLJSParserEventAttributes {
@@ -62,6 +63,7 @@ export interface IHtMLJSParserEvent {
   attributes: IHtMLJSParserEventAttributes[];
   shorthandClassNames: IHTMLJSParserEventShortClass[];
   endPos: number;
+  value: string;
   pos: number
   concise: boolean
   emptyTagName: string

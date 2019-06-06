@@ -32,7 +32,7 @@ import URI from "vscode-uri";
 import * as prettyPrint from '@marko/prettyprint';
 
 import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup, loadCompilerComponent } from './util/marko'
-import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments } from "./util/autocomplete";
+import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments, getJavascriptAutocomplete } from "./util/autocomplete";
 
 var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
 var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
@@ -399,6 +399,8 @@ export class MLS {
       case ScopeType.ATTR_VALUE:
         DEBUG && console.log('attr value');
         break;
+      case ScopeType.JAVASCRIPT:
+        return getJavascriptAutocomplete(args);
       default:
         DEBUG && console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
     }
