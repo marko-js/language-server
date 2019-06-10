@@ -1,6 +1,7 @@
 import { createParser } from "htmljs-parser";
 import { ScopeType, Scope, IHtMLJSParserEvent } from "./marko";
-import { CompletionList, TextDocument, Position } from "vscode-languageserver";
+import { CompletionList, TextDocument, Position  } from "vscode-languageserver";
+
 import { getStyleAutocomplete } from "./stylesheet";
 const DEBUG = process.env.DEBUG === 'true' || false;
 
@@ -119,6 +120,16 @@ export async function getAutocomleteAtText(offset: number, text: string) {
                 }
                 // return resolve(defaultTagScope);
             },
+            onPlaceholder: (event: IHtMLJSParserEvent) => {
+                if (checkPosition(found, event, offset)) return;
+                    resolve({
+                        tagName: null,
+                        data: event.value,
+                        scopeType: ScopeType.JAVASCRIPT,
+                        event,
+                    });
+
+            },
             onCloseTag: (event: IHtMLJSParserEvent) => {
                 const {
                     tagName,
@@ -183,6 +194,15 @@ export function getAttributeAutocomplete(options: IAutocompleteArguments): Compl
             return null;
         default:
             return getHTMLAttrAutiocomplete(options);
+    }
+}
+
+export function getJavascriptAutocomplete(options: IAutocompleteArguments):CompletionList {
+    // createLanguageService()
+    switch(options.scopeAtPos.tagName) {
+        default:
+
+    return null;
     }
 }
 
