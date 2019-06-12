@@ -4,7 +4,7 @@
   "description": "Marko Tooling for VSCode",
   "author": "Diego Berrocal",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "publisher": "Marko-JS",
   "homepage": "https://github.com/marko-js/marko-language-server/tree/master/clients/vscode/README.md",
   "repository": {
@@ -67,7 +67,7 @@
   },
   "icon": "img/marko.png",
   "dependencies": {
-    "@marko/language-server": "^0.0.3",
+    "@marko/language-server": "^0.1.0",
     "vscode-languageclient": "^5.2.1"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@
   "description": "Adds marko language support to many editors",
   "author": "Diego Berrocal",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "publisher": "MarkoJS",
   "repository": {
     "type": "git",
