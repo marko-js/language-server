@@ -12,12 +12,13 @@ https://opensource.org/licenses/MIT.
 
 import { TextDocument } from "vscode-languageserver";
 import URI from "vscode-uri";
+import { EmbeddedRegion } from "./document";
 const markoCompilerCache: any = {};
 const resolveFrom = require("resolve-from");
 const lassoPackageRoot = require("lasso-package-root");
 const versionRegExp = /^[0-9]+/;
 const versionCache: any = {};
-const defaultCompilers:any = {
+const defaultCompilers: any = {
   marko: require('marko/compiler'),
   CodeWriter: require('marko/dist/compiler/CodeWriter')
   // CodeWriter: require('marko/compiler/CodeWriter'),
@@ -25,6 +26,7 @@ const defaultCompilers:any = {
 
 export interface Scope {
   tagName: string;
+  regions?: EmbeddedRegion[];
   data?: any;
   scopeType: ScopeType;
   event?: IHtMLJSParserEvent;
@@ -58,9 +60,22 @@ export interface IHTMLJSParserEventShortClass {
   value: string;
 }
 
+export interface IHTMLJSParserArgument {
+  endAfterGroup: boolean;
+  endPos: number;
+  // groupStack:
+  isStringLiteral: boolean;
+  lastLeftParenPos: number;
+  lastRightParenPos: number;
+  // parentState:Object {name: "STATE_TAG_ARGS", eol: , eof: , …}
+  pos: number;
+  value: string;
+}
+
 
 export interface IHtMLJSParserEvent {
   attributes: IHtMLJSParserEventAttributes[];
+  argument?: IHTMLJSParserArgument;
   shorthandClassNames: IHTMLJSParserEventShortClass[];
   endPos: number;
   value: string;
@@ -76,7 +91,7 @@ export interface IHtMLJSParserEvent {
 
 }
 
-export function loadCompilerComponent(component:string, dir: string) {
+export function loadCompilerComponent(component: string, dir: string) {
   let rootDir = lassoPackageRoot.getRootDir(dir);
   const cacheLookup = `${rootDir}-${component}`
   if (!rootDir) {

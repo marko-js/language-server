@@ -4,9 +4,13 @@ import {
     getCSSLanguageService,
     getSCSSLanguageService,
     CompletionList,
+    TextDocument,
 } from 'vscode-css-languageservice';
+import { getSingleTypeDocument } from "./document";
+import { IHtMLJSParserEvent } from "./marko";
 
-type CSSParserCallback = (options: IAutocompleteArguments) => CompletionList;
+export const supportedCSSList = ['less', 'css', 'sass'];
+type CSSParserCallback = (embeddedDoc: TextDocument, options: IAutocompleteArguments) => CompletionList;
 
 
 interface ISupportedCSS {
@@ -21,22 +25,21 @@ const supportedCSS: ISupportedCSS = {
 }
 
 
-function lessParser(options: IAutocompleteArguments) {
+function lessParser(embeddedDoc:TextDocument, options: IAutocompleteArguments) {
     const languageService = getLESSLanguageService();
-    return languageService.doComplete(options.doc, options.position, languageService.parseStylesheet(options.doc));
+    return languageService.doComplete(embeddedDoc, options.position, languageService.parseStylesheet(embeddedDoc));
 }
-function scssParser(options: IAutocompleteArguments) {
+function scssParser(embeddedDoc:TextDocument, options: IAutocompleteArguments) {
     const languageService = getSCSSLanguageService();
-    return languageService.doComplete(options.doc, options.position, languageService.parseStylesheet(options.doc));
+    return languageService.doComplete(embeddedDoc, options.position, languageService.parseStylesheet(embeddedDoc));
 }
 
-function cssParser(options: IAutocompleteArguments) {
+function cssParser(embeddedDoc:TextDocument, options: IAutocompleteArguments) {
     const languageService = getCSSLanguageService();
-    return languageService.doComplete(options.doc, options.position, languageService.parseStylesheet(options.doc));
+    return languageService.doComplete(embeddedDoc, options.position, languageService.parseStylesheet(embeddedDoc));
 }
 
-export function getStyleType(options: IAutocompleteArguments) {
-    const event = options.scopeAtPos.event;
+export function getStyleType(event: IHtMLJSParserEvent) {
     let found: CSSParserCallback;
     try {
         event.shorthandClassNames.forEach((e) => {
@@ -52,6 +55,7 @@ export function getStyleType(options: IAutocompleteArguments) {
 }
 
 export function getStyleAutocomplete(options: IAutocompleteArguments): CompletionList {
-    const parser = getStyleType(options);
-    return parser ? parser(options) : null;
+    const parser = getStyleType(options.scopeAtPos.event);
+    const embeddedDoc = getSingleTypeDocument(options.doc, options.scopeAtPos.regions, 'style');
+    return parser ? parser(embeddedDoc, options) : null;
 }
