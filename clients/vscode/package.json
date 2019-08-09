@@ -1,24 +1,14 @@
 {
   "name": "marko-vscode",
-  "displayName": "Marko VSCode",
   "description": "Marko Tooling for VSCode",
-  "author": "Diego Berrocal",
-  "license": "MIT",
   "version": "0.1.0",
-  "publisher": "Marko-JS",
-  "homepage": "https://github.com/marko-js/marko-language-server/tree/master/clients/vscode/README.md",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marko-js/marko-language-server/tree/master/clients/vscode/"
-  },
-  "engines": {
-    "vscode": "^1.23.0"
-  },
-  "categories": [
-    "Programming Languages"
-  ],
+  "author": "Diego Berrocal",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "activationEvents": [
     "onLanguage:marko"
+  ],
+  "categories": [
+    "Programming Languages"
   ],
   "contributes": {
     "languages": [
@@ -65,14 +55,28 @@
       }
     }
   },
-  "icon": "img/marko.png",
   "dependencies": {
     "@marko/language-server": "^0.1.0",
     "vscode-languageclient": "^5.2.1"
   },
   "devDependencies": {
-    "vscode": "^1.1.33"
+    "vscode": "^1.1.36"
   },
-  "main": "./out/extension.js",
-  "private": true
+  "displayName": "Marko VSCode",
+  "engines": {
+    "vscode": "^1.23.0"
+  },
+  "homepage": "https://github.com/marko-js/language-server/tree/master/clients/vscode/README.md",
+  "icon": "img/marko.png",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "private": true,
+  "publisher": "Marko-JS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
+  },
+  "scripts": {
+    "vscode:prepublish": "cd ../../ && npm run build"
+  }
 }

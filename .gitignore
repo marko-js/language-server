@@ -1,4 +1,19 @@
+# Editor
+*.sublime*
+.vscode/settings.json
+
+# OSX
+*.DS_Store
+
+# NPM
 node_modules
-**/*/out
-.DS_Store
-lerna-debug.log
+
+# Build
+dist
+
+# Logging
+*.log
+
+# Coverage
+coverage
+.nyc_output

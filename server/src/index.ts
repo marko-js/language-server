@@ -1,15 +1,3 @@
-/* --------------------------------------------------------------------------------------------
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the MIT License. See License.txt in the project root for license information.
-
-Modifications Copyright 2018 eBay Inc.
-Author/Developer: Diego Berrocal
-
-Use of this source code is governed by an MIT-style
-license that can be found in the LICENSE file or at
-https://opensource.org/licenses/MIT.
-* ------------------------------------------------------------------------------------------ */
-
 import {
   createConnection,
   TextDocuments,
@@ -27,24 +15,24 @@ const connection =
   process.argv.length <= 2
     ? createConnection(process.stdin, process.stdout) // no arg specified
     : createConnection(ProposedFeatures.all);
-const DEBUG = process.env.DEBUG === 'true' || false;
+const DEBUG = process.env.DEBUG === "true";
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-let documents: TextDocuments = new TextDocuments();
+const documents: TextDocuments = new TextDocuments();
 
 // let hasConfigurationCapability: boolean = false;
 // let hasWorkspaceFolderCapability: boolean = false;
 // let hasDiagnosticRelatedInformationCapability: boolean = false;
 
-// After the server has started the client sends an initilize request. The server receives
-// in the passed params the rootPath of the workspace plus the client capabilites.
+// After the server has started the client sends an initialize request. The server receives
+// in the passed params the rootPath of the workspace plus the client capabilities.
 let workspaceRoot: string;
 connection.onInitialize((params: InitializeParams) => {
-  workspaceRoot = params.rootPath;
+  workspaceRoot = params.rootPath as string;
 
   // let capabilities = params.capabilities;
   // // Does the client support the `workspace/configuration` request?
@@ -69,7 +57,7 @@ connection.onInitialize((params: InitializeParams) => {
       // Tell the client that the server works in FULL text document sync mode
       textDocumentSync: documents.syncKind,
       // Tell the client that we have reference provider as well
-      documentFormattingProvider : true,
+      documentFormattingProvider: true,
       definitionProvider: true,
       completionProvider: {
         resolveProvider: true,
@@ -81,7 +69,9 @@ connection.onInitialize((params: InitializeParams) => {
 
 connection.onDidChangeWatchedFiles(_change => {
   // Monitored files have change in VSCode
-  DEBUG && connection.console.log("We recevied an file change event");
+  if (DEBUG) {
+    console.log("We received an file change event");
+  }
 });
 // This handler provides the initial list of the completion items.
 // connection.onCompletion(async (completionParams: TextDocumentPositionParams): CompletionItem[] => {

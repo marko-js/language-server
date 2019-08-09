@@ -1,20 +1,20 @@
-import { platform } from 'os';
-import Uri from 'vscode-uri';
+import { platform } from "os";
+import { URI } from "vscode-uri";
 
 export function getFileFsPath(documentUri: string): string {
-  return Uri.parse(documentUri).fsPath;
+  return URI.parse(documentUri).fsPath;
 }
 
 export function getFilePath(documentUri: string): string {
-  const IS_WINDOWS = platform() === 'win32';
+  const IS_WINDOWS = platform() === "win32";
   if (IS_WINDOWS) {
     // Windows have a leading slash like /C:/Users/pine
-    return Uri.parse(documentUri).path.slice(1);
+    return URI.parse(documentUri).path.slice(1);
   } else {
-    return Uri.parse(documentUri).path;
+    return URI.parse(documentUri).path;
   }
 }
 
 export function normalizeFileNameToFsPath(fileName: string) {
-  return Uri.file(fileName).fsPath;
+  return URI.file(fileName).fsPath;
 }

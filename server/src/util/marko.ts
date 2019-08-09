@@ -10,26 +10,26 @@ license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 * ------------------------------------------------------------------------------------------ */
 
+import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver";
-import URI from "vscode-uri";
 import { EmbeddedRegion } from "./document";
+import resolveFrom from "resolve-from";
+import lassoPackageRoot from "lasso-package-root";
+
 const markoCompilerCache: any = {};
-const resolveFrom = require("resolve-from");
-const lassoPackageRoot = require("lasso-package-root");
 const versionRegExp = /^[0-9]+/;
 const versionCache: any = {};
 const defaultCompilers: any = {
-  marko: require('marko/compiler'),
-  CodeWriter: require('marko/dist/compiler/CodeWriter')
-  // CodeWriter: require('marko/compiler/CodeWriter'),
-}
+  marko: require("marko/compiler"),
+  CodeWriter: require("marko/dist/compiler/CodeWriter")
+};
 
 export interface Scope {
-  tagName: string;
+  tagName?: string;
   regions?: EmbeddedRegion[];
   data?: any;
   scopeType: ScopeType;
-  event?: IHtMLJSParserEvent;
+  event?: IHtmlJSParserEvent;
 }
 
 export enum ScopeType {
@@ -39,28 +39,30 @@ export enum ScopeType {
   NO_SCOPE,
   TEXT,
   CLOSE_TAG,
-  JAVASCRIPT,
+  JAVASCRIPT
 }
 
-export interface IHtMLJSParserEventAttributes {
+export interface IHtmlJSParserEventAttributes {
   argument: { [key: string]: string };
-  endPos: number
+  endPos: number;
   name: string;
   pos: number;
   value: string;
   literalValue: string;
 }
 
-export interface IHTMLJSParserEventShortClass {
-  rawParts: [{
-    pos: number;
-    endPos: number;
-    text: string;
-  }];
+export interface IHtmlJSParserEventShortClass {
+  rawParts: [
+    {
+      pos: number;
+      endPos: number;
+      text: string;
+    }
+  ];
   value: string;
 }
 
-export interface IHTMLJSParserArgument {
+export interface IHtmlJSParserArgument {
   endAfterGroup: boolean;
   endPos: number;
   // groupStack:
@@ -72,35 +74,36 @@ export interface IHTMLJSParserArgument {
   value: string;
 }
 
-
-export interface IHtMLJSParserEvent {
-  attributes: IHtMLJSParserEventAttributes[];
-  argument?: IHTMLJSParserArgument;
-  shorthandClassNames: IHTMLJSParserEventShortClass[];
+export interface IHtmlJSParserEvent {
+  attributes: IHtmlJSParserEventAttributes[];
+  argument?: IHtmlJSParserArgument;
+  shorthandClassNames: IHtmlJSParserEventShortClass[];
   endPos: number;
   value: string;
-  pos: number
-  concise: boolean
-  emptyTagName: string
-  openTagOnly: boolean
+  pos: number;
+  concise: boolean;
+  emptyTagName: string;
+  openTagOnly: boolean;
   selfClosed: boolean;
   tagName: string;
   tagNameEndPos: number;
-  tagNameExpression: string
-  type: string
-
+  tagNameExpression: string;
+  type: string;
 }
 
 export function loadCompilerComponent(component: string, dir: string) {
-  let rootDir = lassoPackageRoot.getRootDir(dir);
-  const cacheLookup = `${rootDir}-${component}`
+  const rootDir = lassoPackageRoot.getRootDir(dir);
+  const cacheLookup = `${rootDir}-${component}`;
   if (!rootDir) {
     return;
   }
 
   let codeWriter = markoCompilerCache[cacheLookup];
   if (!codeWriter) {
-    let codeWriterPath = resolveFrom.silent(rootDir, `marko/compiler/${component}`);
+    const codeWriterPath = resolveFrom.silent(
+      rootDir,
+      `marko/compiler/${component}`
+    );
     if (codeWriterPath) {
       codeWriter = require(codeWriterPath);
     }
@@ -110,23 +113,24 @@ export function loadCompilerComponent(component: string, dir: string) {
 }
 
 export function loadMarkoCompiler(dir: string) {
-  let rootDir = lassoPackageRoot.getRootDir(dir);
+  const rootDir = lassoPackageRoot.getRootDir(dir);
   if (!rootDir) {
     return;
   }
 
   let markoCompiler = markoCompilerCache[rootDir];
   if (!markoCompiler) {
-    let markoCompilerPath = resolveFrom.silent(rootDir, "marko/compiler");
+    const markoCompilerPath = resolveFrom.silent(rootDir, "marko/compiler");
     if (markoCompilerPath) {
-      var packageJsonPath = resolveFrom.silent(rootDir, "marko/package.json", true);
-      var pkg = require(packageJsonPath);
+      const { version } = require(resolveFrom(
+        rootDir,
+        "marko/package.json"
+      ));
 
-      var version = pkg.version;
       if (version) {
-        var versionMatches = versionRegExp.exec(version);
+        const versionMatches = versionRegExp.exec(version);
         if (versionMatches) {
-          var majorVersion = parseInt(versionMatches[0], 10);
+          const majorVersion = parseInt(versionMatches[0], 10);
           if (majorVersion >= 3) {
             markoCompiler = require(markoCompilerPath);
           }
@@ -145,19 +149,22 @@ export function getMarkoMajorVersion(dir: string) {
     return null;
   }
 
-  let rootDir = lassoPackageRoot.getRootDir(dir);
+  const rootDir = lassoPackageRoot.getRootDir(dir);
   if (!rootDir) {
     return;
   }
 
   let majorVersion = versionCache[rootDir];
   if (majorVersion === undefined) {
-    var packageJsonPath = resolveFrom.silent(rootDir, "marko/package.json", true);
+    const packageJsonPath = resolveFrom.silent(
+      rootDir,
+      "marko/package.json"
+    );
+
     if (packageJsonPath) {
-      var pkg = require(packageJsonPath);
-      var version = pkg.version;
+      const { version } = require(packageJsonPath);
       if (version) {
-        var versionMatches = versionRegExp.exec(version);
+        const versionMatches = versionRegExp.exec(version);
         if (versionMatches) {
           majorVersion = parseInt(versionMatches[0], 10);
         }
@@ -170,8 +177,8 @@ export function getMarkoMajorVersion(dir: string) {
 }
 
 export function clearCache() {
-  for (let dir in markoCompilerCache) {
-    let markoCompiler = markoCompilerCache[dir];
+  for (const dir in markoCompilerCache) {
+    const markoCompiler = markoCompilerCache[dir];
     markoCompiler.clearCaches();
   }
 }

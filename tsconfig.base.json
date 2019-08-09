@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es2016"],
+    "pretty": true,
+    "target": "es5",
+    "sourceMap": true,
+    "declaration": true,
+    "stripInternal": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true
+  }
+}

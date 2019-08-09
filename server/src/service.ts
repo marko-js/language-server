@@ -1,15 +1,3 @@
-/* --------------------------------------------------------------------------------------------
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the MIT License. See License.txt in the project root for license information.
-
-Modifications Copyright 2018 eBay Inc.
-Author/Developer: Diego Berrocal
-
-Use of this source code is governed by an MIT-style
-license that can be found in the LICENSE file or at
-https://opensource.org/licenses/MIT.
-* ------------------------------------------------------------------------------------------ */
-
 import * as fs from "fs";
 import { createParser } from "htmljs-parser";
 import * as path from "path";
@@ -25,20 +13,35 @@ import {
   Range,
   Diagnostic,
   TextDocumentChangeEvent,
-  DiagnosticSeverity,
+  DiagnosticSeverity
 } from "vscode-languageserver/lib/main";
+import { URI } from "vscode-uri";
 import { IConnection } from "vscode-languageserver";
-import URI from "vscode-uri";
-import * as prettyPrint from '@marko/prettyprint';
+import escapeStringRegexp from "escape-string-regexp";
+import * as prettyPrint from "@marko/prettyprint";
 
-import { loadMarkoCompiler, Scope, ScopeType, getTag, getTagLibLookup, loadCompilerComponent } from './util/marko'
-import { getAutocomleteAtText, checkPosition, getAttributeAutocomplete, getTagAutocomplete, getCloseTagAutocomplete, IAutocompleteArguments, getJavascriptAutocomplete } from "./util/autocomplete";
+import {
+  loadMarkoCompiler,
+  Scope,
+  ScopeType,
+  getTag,
+  getTagLibLookup,
+  loadCompilerComponent
+} from "./util/marko";
+import {
+  getAutocomleteAtText,
+  checkPosition,
+  getAttributeAutocomplete,
+  getTagAutocomplete,
+  getCloseTagAutocomplete,
+  IAutocompleteArguments,
+  getJavascriptAutocomplete
+} from "./util/autocomplete";
 
-var tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
-var attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
-const markoErrorRegExp = new RegExp('.*\\[(.*)\\:(\\d+)\\:(\\d+)\\](.*)', 'gi');
-const escapeStringRegexp = require("escape-string-regexp");
-const DEBUG = process.env.DEBUG === 'true' || false;
+const tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
+const attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
+const markoErrorRegExp = new RegExp(".*\\[(.*)\\:(\\d+)\\:(\\d+)\\](.*)", "gi");
+const DEBUG = process.env.DEBUG === "true" || false;
 
 /*
 NOTE: It would be nice to have a Cache for all the documents that have
@@ -76,7 +79,6 @@ export interface MLS {
 // TODO: It would be good to have the parser run once instead of each time we need
 // to get information from our template. It should have regions
 
-
 function createTextDocument(filename: string): TextDocument {
   const uri = URI.file(filename).toString();
   const content = fs.readFileSync(filename, "utf-8");
@@ -98,19 +100,22 @@ function getComponentJSFilePath(documentPath: string): string | null {
 }
 
 function createRangeFromContext(context: IMarkoErrorOutput) {
-  const start = context.pos
+  const start = context.pos;
   const end = context.endPos;
   return createRange(start.line - 1, start.column, end.line - 1, end.column);
 }
 
-function createRange(startLine: number, stratColumn: number, endLine?: number, endColumn?: number): Range {
+function createRange(
+  startLine: number,
+  stratColumn: number,
+  endLine?: number,
+  endColumn?: number
+): Range {
   return {
     start: Position.create(startLine, stratColumn),
     end: Position.create(endLine || startLine, endColumn || stratColumn)
-  }
-
+  };
 }
-
 
 /*
 This gives scope at position.
@@ -120,7 +125,7 @@ It returns the TAG ScopeType when the cursor is inside an open tag. This complic
  */
 async function getScopeAtPos(offset: number, text: string) {
   let found: boolean = false;
-  return new Promise(function (resolve: (tag: Scope | boolean) => any) {
+  return new Promise((resolve: (tag: Scope | boolean) => void) => {
     const parser = createParser({
       onError: (error: any, data: any) => {
         resolve({
@@ -129,7 +134,7 @@ async function getScopeAtPos(offset: number, text: string) {
           data
         });
       },
-      onOpenTag: function (event: any) {
+      onOpenTag(event: any) {
         const {
           pos: startPos,
           endPos,
@@ -139,9 +144,14 @@ async function getScopeAtPos(offset: number, text: string) {
         } = event;
 
         // Don't process when the offset is not inside a tag or we found our tag already
-        if (checkPosition(found, event, offset)) return;
-        DEBUG && console.log(`Searching for character '${text[offset]}'
-                             in string: '${text.slice(startPos, endPos)}'`);
+        if (checkPosition(found, event, offset)) {
+          return;
+        }
+
+        if (DEBUG) {
+          console.log(`Searching for character '${text[offset]}'
+          in string: '${text.slice(startPos, endPos)}'`);
+        }
 
         found = true;
         const defaultTagScope = {
@@ -152,14 +162,19 @@ async function getScopeAtPos(offset: number, text: string) {
         const validCharAtPos =
           tagNameCharsRegExp.test(text.charAt(offset)) ||
           attrNameCharsRegExp.test(text.charAt(offset));
-        if (!validCharAtPos) return resolve(defaultTagScope);
+        if (!validCharAtPos) {
+          return resolve(defaultTagScope);
+        }
 
         // Tag Scope
         // If tag name starts with '@' then it's an inner section that should be
         // defined int he marko.json file
-        DEBUG && console.log(
-          `Looking in tagName: ${text.slice(startPos, tagNameEndPos)}`
-        );
+        if (DEBUG) {
+          console.log(
+            `Looking in tagName: ${text.slice(startPos, tagNameEndPos)}`
+          );
+        }
+
         if (offset <= tagNameEndPos) {
           return resolve({
             tagName,
@@ -174,22 +189,28 @@ async function getScopeAtPos(offset: number, text: string) {
           // Attributes are ordered and if the start of the attribute
           // name is higher than the offset, then the offset must be
           // in a place that doesn't interest us
-          if (offset < attrNamePos) return resolve(defaultTagScope);
+          if (offset < attrNamePos) {
+            return resolve(defaultTagScope);
+          }
 
           if (!attribute.argument) {
             // Check if cursor is on the attribute name
-            DEBUG && console.log(
-              `Looking in attributePosEndPos: ${text.slice(
-                attribute.pos,
-                attribute.endPos
-              )}`
-            );
-            DEBUG && console.log(
-              `Looking in attributeName: ${text.slice(
-                attrNamePos,
-                attribute.pos
-              )}`
-            );
+            if (DEBUG) {
+              console.log(
+                `Looking in attributePosEndPos: ${text.slice(
+                  attribute.pos,
+                  attribute.endPos
+                )}`
+              );
+
+              console.log(
+                `Looking in attributeName: ${text.slice(
+                  attrNamePos,
+                  attribute.pos
+                )}`
+              );
+            }
+
             // pos and endPos are for the value of the Attribute
             //  m y - a t t r = " h e l l o "
             //                ^             ^
@@ -204,12 +225,15 @@ async function getScopeAtPos(offset: number, text: string) {
             }
           } else {
             // Cursor is in the argument of `onClick('myOnClickHandler')` like attributes
-            DEBUG && console.log(
-              `Looking in Attribute's Argument: ${text.slice(
-                attribute.argument.pos + 1,
-                attribute.argument.endPos
-              )}`
-            );
+            if (DEBUG) {
+              console.log(
+                `Looking in Attribute's Argument: ${text.slice(
+                  attribute.argument.pos + 1,
+                  attribute.argument.endPos
+                )}`
+              );
+            }
+
             if (
               offset >= attribute.argument.pos + 1 &&
               offset <= attribute.argument.endPos
@@ -224,10 +248,14 @@ async function getScopeAtPos(offset: number, text: string) {
         }
         return resolve(defaultTagScope);
       },
-      onfinish: function () {
-        DEBUG && console.log("================Finished!!!==============");
+      onfinish() {
+        if (DEBUG) {
+          console.log("================Finished!!!==============");
+        }
         // TODO: Maybe this is not right? we need it to resolve somehow
-        if (!found) resolve(false);
+        if (!found) {
+          resolve(false);
+        }
       }
     });
     parser.parse(text);
@@ -240,12 +268,13 @@ function findDefinitionForTag(
 ): Definition {
   const { template = false, renderer = false, taglibId } = getTag(
     document,
-    tagName
+    tagName!
   );
 
   // We can either have renderers defined where there are no templates.
-  if (!template && !renderer)
+  if (!template && !renderer) {
     throw new Error(`Couldn't find a definition for tag: ${tagName}`);
+  }
 
   const refPath = template || renderer;
 
@@ -275,9 +304,11 @@ function findDefinitionForTag(
 function findDefinitionForAttrName(
   document: TextDocument,
   { tagName, data: attrName }: Scope
-): Definition {
-  let attrDef = getTagLibLookup(document).getAttribute(tagName, attrName);
-  if (!attrDef || !attrDef.filePath) return null;
+): Definition | null {
+  const attrDef = getTagLibLookup(document).getAttribute(tagName, attrName);
+  if (!attrDef || !attrDef.filePath) {
+    return null;
+  }
 
   const attrDefDocument: TextDocument = createTextDocument(attrDef.filePath);
 
@@ -286,7 +317,7 @@ function findDefinitionForAttrName(
     .getText()
     .match(new RegExp(`"@?${escapeStringRegexp(attrName)}"`));
   if (match) {
-    const index = match.index;
+    const index = match.index as number;
     return {
       uri: attrDefDocument.uri,
       range: {
@@ -307,18 +338,20 @@ function findDefinitionForAttrName(
 function findDefinitionForAttrValue(
   document: TextDocument,
   { data: attrValue }: Scope
-): Definition {
+): Definition | null {
   const documentPath = URI.parse(document.uri).fsPath;
-  const componentJSPath = getComponentJSFilePath(documentPath);
+  const componentJSPath = getComponentJSFilePath(documentPath) as string;
 
-  if (!getComponentJSFilePath) return null;
+  if (!getComponentJSFilePath) {
+    return null;
+  }
 
   const componentJSDocument: TextDocument = createTextDocument(componentJSPath);
   const handlerRegExp = new RegExp(`${attrValue}\\s*[(]|${attrValue}\\s*[:]`);
 
   const match = componentJSDocument.getText().match(handlerRegExp);
   if (match) {
-    const index = match.index;
+    const index = match.index as number;
     return {
       uri: componentJSDocument.uri,
       range: {
@@ -338,56 +371,47 @@ function findDefinitionForAttrValue(
 }
 
 export class MLS {
+  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+  private validationDelayMs = 200;
   constructor(private workspacePath: string, private connection: IConnection) {
-    this.workspacePath;
     this.setupLanguageFeatures();
     this.connection.onShutdown(() => {
       this.dispose();
     });
   }
 
-  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
-  private validationDelayMs = 200;
+  public initialize(workspacePath: string, docManager: TextDocuments) {
+    if (DEBUG) {
+      console.log(workspacePath);
+    }
 
-  private setupLanguageFeatures() {
-    this.connection.onCompletion(this.onCompletion.bind(this));
-    this.connection.onDefinition(this.onDefinition.bind(this));
-    this.connection.onDocumentFormatting(this.onDocumentFormatting.bind(this));
-  }
-
-  private setupFileChangeListeners() {
-    this.docManager.onDidChangeContent((change: TextDocumentChangeEvent) => {
-      this.triggerValidation(change.document);
-    });
-
-    this.docManager.all().forEach(d => {
-      this.triggerValidation(d);
-    });
-  }
-
-  initialize(workspacePath: string, docManager: TextDocuments) {
-    DEBUG && console.log(workspacePath);
     this.docManager = docManager;
-    this.setupFileChangeListeners()
+    this.setupFileChangeListeners();
   }
 
-  dispose(): void {
+  public dispose(): void {
     return;
   }
 
-  async onCompletion(positionParams: TextDocumentPositionParams) {
-    DEBUG && console.log('pos param', positionParams);
-    const doc = this.docManager.get(positionParams.textDocument.uri);
+  public async onCompletion(positionParams: TextDocumentPositionParams) {
+    if (DEBUG) {
+      console.log("pos param", positionParams);
+    }
+
+    const doc = this.docManager.get(positionParams.textDocument.uri)!;
     const offset = doc.offsetAt(positionParams.position);
-    const scopeAtPos = <Scope>await getAutocomleteAtText(offset, doc.getText());
+    const scopeAtPos = (await getAutocomleteAtText(
+      offset,
+      doc.getText()
+    )) as Scope;
     const tagLibLookup = getTagLibLookup(doc);
     const args: IAutocompleteArguments = {
       doc,
       offset,
       scopeAtPos,
       tagLibLookup,
-      position: positionParams.position,
-    }
+      position: positionParams.position
+    };
 
     switch (scopeAtPos.scopeType) {
       case ScopeType.TAG:
@@ -397,22 +421,28 @@ export class MLS {
       case ScopeType.CLOSE_TAG:
         return getCloseTagAutocomplete(args);
       case ScopeType.ATTR_VALUE:
-        DEBUG && console.log('attr value');
+        if (DEBUG) {
+          console.log("attr value");
+        }
         break;
       case ScopeType.JAVASCRIPT:
         return getJavascriptAutocomplete(args);
       default:
-        DEBUG && console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
+        if (DEBUG) {
+          console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
+        }
     }
     return {};
   }
 
-  async onDefinition(positionParams: TextDocumentPositionParams) {
-    const doc = this.docManager.get(positionParams.textDocument.uri);
+  public async onDefinition(positionParams: TextDocumentPositionParams) {
+    const doc = this.docManager.get(positionParams.textDocument.uri)!;
     const offset = doc.offsetAt(positionParams.position);
 
-    const scopeAtPos = <Scope>await getScopeAtPos(offset, doc.getText());
-    if (!scopeAtPos) return null;
+    const scopeAtPos = (await getScopeAtPos(offset, doc.getText())) as Scope;
+    if (!scopeAtPos) {
+      return null;
+    }
 
     const { scopeType } = scopeAtPos;
 
@@ -433,16 +463,7 @@ export class MLS {
     // ATTR_VALUE: Check if this is a handler to the ATTR_NAME and return the definition of this handler either in the template or in the component.json
   }
 
-  private triggerValidation(textDocument: TextDocument): void {
-
-    this.cleanPendingValidation(textDocument);
-    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-      delete this.pendingValidationRequests[textDocument.uri];
-      this.validateTextDocument(textDocument);
-    }, this.validationDelayMs);
-  }
-
-  cleanPendingValidation(textDocument: TextDocument): void {
+  public cleanPendingValidation(textDocument: TextDocument): void {
     const request = this.pendingValidationRequests[textDocument.uri];
     if (request) {
       clearTimeout(request);
@@ -450,26 +471,25 @@ export class MLS {
     }
   }
 
-
-  validateTextDocument(textDocument: TextDocument): void {
+  public validateTextDocument(textDocument: TextDocument): void {
     const diagnostics: Diagnostic[] = this.doValidate(textDocument);
     this.connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
   }
 
-  doValidate(doc: TextDocument): Diagnostic[] {
-    const { path } = URI.parse(doc.uri);
-    const compiler = loadMarkoCompiler(path);
-    let diagnostics: Diagnostic[] = [];
+  public doValidate(doc: TextDocument): Diagnostic[] {
+    const { path: filePath } = URI.parse(doc.uri);
+    const compiler = loadMarkoCompiler(filePath);
+    const diagnostics: Diagnostic[] = [];
     let context: any;
     let message;
     let errorThrown = false;
 
     try {
-      message = compiler.compile(doc.getText(), path, {
+      message = compiler.compile(doc.getText(), filePath, {
         writeToDisk: false,
-        onContext: ((innerContext: any) => {
+        onContext: (innerContext: any) => {
           context = innerContext;
-        })
+        }
       });
     } catch (e) {
       message = e.message;
@@ -484,41 +504,46 @@ export class MLS {
           error.message,
           DiagnosticSeverity.Error,
           error.code,
-          path,
+          filePath
         );
       });
     } else if (errorThrown) {
       // 0: full line, 1: filename, 2: line number 3: column, 4 message
       let matches;
       // Iterate through all regexp matches for the given message
-      while (matches = markoErrorRegExp.exec(message)) {
+      while ((matches = markoErrorRegExp.exec(message))) {
         const line = parseInt(matches[2], 10) - 1; // Line starts at 0
         const col = parseInt(matches[3], 10);
-        diagnostics.push(Diagnostic.create(
-          createRange(line, col),
-          matches[4],
-          DiagnosticSeverity.Error,
-          '',
-          matches[1],
-        ));
+        diagnostics.push(
+          Diagnostic.create(
+            createRange(line, col),
+            matches[4],
+            DiagnosticSeverity.Error,
+            "",
+            matches[1]
+          )
+        );
       }
     }
     return diagnostics;
   }
 
-  onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
+  public onDocumentFormatting({
+    textDocument,
+    options
+  }: DocumentFormattingParams): TextEdit[] {
     const doc = this.docManager.get(textDocument.uri)!;
-    const { path } = URI.parse(textDocument.uri);
+    const { path: filePath } = URI.parse(textDocument.uri);
     let edits: TextEdit[] = [];
 
     try {
-      const compiler = loadMarkoCompiler(path);
+      const compiler = loadMarkoCompiler(filePath);
       const prettyPrintOptions = Object.assign({}, options, {
-        filename: path,
+        filename: filePath,
         compiler,
         markoCompiler: compiler,
-        CodeWriter: loadCompilerComponent('CodeWriter', path),
-      })
+        CodeWriter: loadCompilerComponent("CodeWriter", filePath)
+      });
 
       const pretty = prettyPrint(doc.getText(), prettyPrintOptions);
       const range = Range.create(
@@ -532,19 +557,41 @@ export class MLS {
     return edits;
   }
 
-
   /**
    * Custom Notifications
    */
 
-  displayInfoMessage(msg: string): void {
-    this.connection.sendNotification('$/displayInfo', msg);
+  public displayInfoMessage(msg: string): void {
+    this.connection.sendNotification("$/displayInfo", msg);
   }
-  displayWarningMessage(msg: string): void {
-    this.connection.sendNotification('$/displayWarning', msg);
+  public displayWarningMessage(msg: string): void {
+    this.connection.sendNotification("$/displayWarning", msg);
   }
-  displayErrorMessage(msg: string): void {
-    this.connection.sendNotification('$/displayError', msg);
+  public displayErrorMessage(msg: string): void {
+    this.connection.sendNotification("$/displayError", msg);
   }
 
+  private setupLanguageFeatures() {
+    this.connection.onCompletion(this.onCompletion.bind(this));
+    this.connection.onDefinition(this.onDefinition.bind(this));
+    this.connection.onDocumentFormatting(this.onDocumentFormatting.bind(this));
+  }
+
+  private setupFileChangeListeners() {
+    this.docManager.onDidChangeContent((change: TextDocumentChangeEvent) => {
+      this.triggerValidation(change.document);
+    });
+
+    this.docManager.all().forEach(d => {
+      this.triggerValidation(d);
+    });
+  }
+
+  private triggerValidation(textDocument: TextDocument): void {
+    this.cleanPendingValidation(textDocument);
+    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+      delete this.pendingValidationRequests[textDocument.uri];
+      this.validateTextDocument(textDocument);
+    }, this.validationDelayMs);
+  }
 }

@@ -1,66 +1,73 @@
 import { TextDocument } from "vscode-languageserver";
 
 export type LanguageId =
-    | 'marko'
-    | 'css'
-    | 'scss'
-    | 'less'
-    | 'javascript'
-    | 'typescript';
+  | "marko"
+  | "css"
+  | "scss"
+  | "less"
+  | "javascript"
+  | "typescript";
 
-export type RegionType = 'template' | 'script' | 'style' | 'custom';
+export type RegionType = "template" | "script" | "style" | "custom";
 
 export interface EmbeddedRegion {
-    languageId: LanguageId;
-    start: number;
-    end: number;
-    type: RegionType;
+  languageId: LanguageId;
+  start: number;
+  end: number;
+  type: RegionType;
 }
 
 function strip(content: string, region: EmbeddedRegion, type: RegionType) {
-    let newContent: string = content;
-    function doStrip(stripper: string) {
-        if (newContent.startsWith(stripper)) {
-            newContent = newContent.slice(stripper.length);
-        }
+  let newContent: string = content;
+  function doStrip(stripper: string) {
+    if (newContent.startsWith(stripper)) {
+      newContent = newContent.slice(stripper.length);
     }
-    // Strips content of needleess text
-    if (type === 'style') {
-        doStrip(`${type}.${region.languageId}`);
-        doStrip(type);
-    }
-    return newContent;
+  }
+  // Strips content of needleess text
+  if (type === "style") {
+    doStrip(`${type}.${region.languageId}`);
+    doStrip(type);
+  }
+  return newContent;
 }
 
 export function getSingleTypeDocument(
-    document: TextDocument,
-    regions: EmbeddedRegion[],
-    type: RegionType
+  document: TextDocument,
+  regions: EmbeddedRegion[],
+  type: RegionType
 ): TextDocument {
-    const oldContent = document.getText();
-    let newContent = oldContent
-        .split('\n')
-        .map(line => ' '.repeat(line.length))
-        .join('\n');
+  const oldContent = document.getText();
+  let newContent = oldContent
+    .split("\n")
+    .map(line => " ".repeat(line.length))
+    .join("\n");
 
-    let langId: string = defaultLanguageIdForBlockTypes[type];
+  let langId: string = defaultLanguageIdForBlockTypes[type];
 
-    for (const r of regions) {
-        if (r.type === type) {
-            newContent = newContent.slice(0, r.start) + oldContent.slice(r.start, r.end) + newContent.slice(r.end);
-            newContent = strip(newContent, r, type);
-            langId = r.languageId;
-        }
+  for (const r of regions) {
+    if (r.type === type) {
+      newContent =
+        newContent.slice(0, r.start) +
+        oldContent.slice(r.start, r.end) +
+        newContent.slice(r.end);
+      newContent = strip(newContent, r, type);
+      langId = r.languageId;
     }
+  }
 
-    return TextDocument.create(document.uri, langId, document.version, newContent);
+  return TextDocument.create(
+    document.uri,
+    langId,
+    document.version,
+    newContent
+  );
 }
 
-
 const defaultLanguageIdForBlockTypes: { [type: string]: string } = {
-    template: 'marko',
-    script: 'javascript',
-    style: 'css'
+  template: "marko",
+  script: "javascript",
+  style: "css"
 };
 
 // export function parseMarkoRegions(document: TextDocument) {
