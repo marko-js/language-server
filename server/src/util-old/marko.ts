@@ -110,10 +110,7 @@ export function loadMarkoCompiler(dir: string) {
   if (!markoCompiler) {
     const markoCompilerPath = resolveFrom.silent(rootDir, "marko/compiler");
     if (markoCompilerPath) {
-      const { version } = require(resolveFrom(
-        rootDir,
-        "marko/package.json"
-      ));
+      const { version } = require(resolveFrom(rootDir, "marko/package.json"));
 
       if (version) {
         const versionMatches = versionRegExp.exec(version);
@@ -144,10 +141,7 @@ export function getMarkoMajorVersion(dir: string) {
 
   let majorVersion = versionCache[rootDir];
   if (majorVersion === undefined) {
-    const packageJsonPath = resolveFrom.silent(
-      rootDir,
-      "marko/package.json"
-    );
+    const packageJsonPath = resolveFrom.silent(rootDir, "marko/package.json");
 
     if (packageJsonPath) {
       const { version } = require(packageJsonPath);

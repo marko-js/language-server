@@ -124,6 +124,8 @@ export function parseUntilOffset(options: {
           tag.parent = parentTag as ParserEvents.OpenTag;
         }
 
+        // Currently the parser has the wrong end position here with tag params :\
+        tag.endPos = tag.pos + tag.tagName.length;
         parentTag = tag;
         finish(tag);
       },
