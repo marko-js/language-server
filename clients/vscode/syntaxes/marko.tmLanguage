@@ -801,6 +801,14 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#comment-line</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-block</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#expression-common</string>
 				</dict>
 				<dict>
