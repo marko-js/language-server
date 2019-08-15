@@ -1,35 +1,18 @@
 import {
+  Definition,
   IConnection,
   CompletionList,
   CompletionParams,
   TextDocuments,
-  TextDocument
+  TextDocument,
+  TextDocumentPositionParams
 } from "vscode-languageserver";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import { getTagLibLookup } from "./utils/compiler";
 import getCompletion from "./utils/completions";
+import getDefinition from "./utils/definitions";
 
 // const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
-
-// function createTextDocument(filename: string): TextDocument {
-//   const uri = URI.file(filename).toString();
-//   const content = fs.readFileSync(filename, "utf-8");
-//   return TextDocument.create(uri, "plaintext", 0, content);
-// }
-
-// function getComponentJSFilePath(documentPath: string): string | null {
-//   const dir = path.dirname(documentPath);
-//   const possibleFileNames = ["component.js", "widget.js", "index.js"];
-
-//   for (const fileName of possibleFileNames) {
-//     const filePath = path.join(dir, fileName);
-//     if (fs.existsSync(filePath)) {
-//       return filePath;
-//     }
-//   }
-
-//   return null;
-// }
 
 export class MLS {
   public static start(connection: IConnection) {
@@ -53,7 +36,7 @@ export class MLS {
     // );
 
     connection.onInitialize(() => {
-      // connection.onDefinition(this.onDefinition);
+      connection.onDefinition(this.onDefinition);
       // connection.onDocumentFormatting(this.onDocumentFormatting);
       // this.documents
       //   .all()
@@ -63,7 +46,7 @@ export class MLS {
         capabilities: {
           textDocumentSync: this.documents.syncKind,
           // documentFormattingProvider: true,
-          // definitionProvider: true,
+          definitionProvider: true,
           completionProvider: {
             triggerCharacters: [".", ":", "<", ">", "@", "/"]
           }
@@ -87,33 +70,20 @@ export class MLS {
     );
   };
 
-  // public async onDefinition(positionParams: TextDocumentPositionParams) {
-  //   const doc = this.documents.get(positionParams.textDocument.uri)!;
-  //   const offset = doc.offsetAt(positionParams.position);
-
-  //   const scopeAtPos = (await getScopeAtPos(offset, doc.getText())) as Scope;
-  //   if (!scopeAtPos || scopeAtPos.scopeType === ScopeType.NO_SCOPE) {
-  //     return null;
-  //   }
-
-  //   const { scopeType } = scopeAtPos;
-
-  //   switch (scopeType) {
-  //     case ScopeType.TAG:
-  //       return findDefinitionForTag(doc, scopeAtPos);
-  //     case ScopeType.ATTR_NAME:
-  //       return findDefinitionForAttrName(doc, scopeAtPos);
-  //     case ScopeType.ATTR_VALUE:
-  //       return findDefinitionForAttrValue(doc, scopeAtPos);
-  //     default:
-  //       throw new Error(`Couldn't match the scopeType: ${scopeType}`);
-  //   }
-
-  //   // do a switch case with the textScope
-  //   // TAG: just return the template + the marko.json file if it exists
-  //   // ATTR_NAME: Return the marko.json file if it exists, and otherwise go to the first usage of input.ATTR_NAME (or all of them)
-  //   // ATTR_VALUE: Check if this is a handler to the ATTR_NAME and return the definition of this handler either in the template or in the component.json
-  // }
+  public onDefinition = (params: TextDocumentPositionParams): Definition => {
+    const doc = this.documents.get(params.textDocument.uri)!;
+    const taglib = getTagLibLookup(doc);
+    return getDefinition(
+      taglib,
+      doc,
+      params,
+      parseUntilOffset({
+        taglib,
+        offset: doc.offsetAt(params.position),
+        text: doc.getText()
+      })
+    );
+  };
 
   public cleanPendingValidation(textDocument: TextDocument): void {
     const request = this.pendingValidationRequests[textDocument.uri];

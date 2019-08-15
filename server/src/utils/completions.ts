@@ -22,8 +22,7 @@ export default function getCompletion(
   event: ParserEvents.Any | null
 ): CompletionList {
   if (event) {
-    const doc = params.textDocument;
-    const filePath = URI.parse(doc.uri).path;
+    const filePath = URI.parse(document.uri).path;
 
     switch (event.type) {
       case "openTagName": {
@@ -61,7 +60,9 @@ export default function getCompletion(
                 /^[^_]/.test(it.name) || !/\/node_modules\//.test(it.filePath)
             )
             .map(it => {
+              const label = it.isNestedTag ? `@${it.name}` : it.name;
               const fileForTag = it.template || it.renderer || it.filePath;
+              const fileURIForTag = URI.file(fileForTag).toString();
               const relativeFileForTag = path.relative(fileForTag, filePath);
               const nodeModuleMatch = /\/node_modules\/((?:\@[^/]+\/)?[^/]+)/.exec(
                 fileForTag
@@ -76,9 +77,9 @@ export default function getCompletion(
                   ? `Built in [<${it.name}>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${it.name}) HTML tag.`
                   : nodeModuleName
                   ? isCoreTag
-                    ? `Core Marko [<${it.name}>](file://${fileForTag}) tag.`
-                    : `Custom Marko tag discovered from the ["${nodeModuleName}"](file://${fileForTag}) npm package.`
-                  : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](file://${fileForTag})`
+                    ? `Core Marko [<${it.name}>](${fileURIForTag}) tag.`
+                    : `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
+                  : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](${fileURIForTag})`
               };
 
               const autocomplete = it.autocomplete && it.autocomplete[0];
@@ -88,14 +89,14 @@ export default function getCompletion(
               }
 
               return {
+                label,
                 documentation,
                 range: completionRange,
                 kind: CompletionItemKind.Class,
                 insertTextFormat: InsertTextFormat.Snippet,
-                label: it.isNestedTag ? `@${it.name}` : it.name,
                 textEdit: TextEdit.replace(
                   completionRange,
-                  autocomplete ? autocomplete.snippet : it.name
+                  autocomplete ? autocomplete.snippet : label
                 )
               };
             })
