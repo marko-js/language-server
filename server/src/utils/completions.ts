@@ -117,10 +117,12 @@ export default function getCompletion(
         if (tagDef) {
           Object.assign(allAttributes, tagDef.attributes);
 
+          // Add user defined pattern attributes.
           if (tagDef.patternAttributes) {
             patternAttributes.push(...tagDef.patternAttributes);
           }
 
+          // Add attributes from listed groups.
           if (tagDef.attributeGroups) {
             tagDef.attributeGroups.forEach(group =>
               Object.assign(
@@ -129,8 +131,16 @@ export default function getCompletion(
               )
             );
           }
+
+          // Ignore nested tag attributes.
+          if (tagDef.nestedTags) {
+            Object.values(tagDef.nestedTags).forEach(def => {
+              delete allAttributes[def.targetProperty];
+            });
+          }
         }
 
+        // TODO: improve pattern attributes matching.
         patternAttributes.forEach(attr => {
           const name = attr.pattern!.test(event.name)
             ? event.name

@@ -1,44 +1,15 @@
 import {
   IConnection,
+  CompletionList,
   CompletionParams,
   TextDocuments,
   TextDocument
 } from "vscode-languageserver";
-import { CompletionItem, CompletionList } from "vscode-css-languageservice";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import { getTagLibLookup } from "./utils/compiler";
 import getCompletion from "./utils/completions";
 
-// import {
-//   loadMarkoCompiler,
-//   Scope,
-//   ScopeType,
-//   getTag,
-//   getTagLibLookup,
-//   loadCompilerComponent
-// } from "./util/marko";
-
-// import {
-//   getAutocomleteAtText,
-//   checkPosition,
-//   getAttributeAutocomplete,
-//   getTagAutocomplete,
-//   getCloseTagAutocomplete,
-//   IAutocompleteArguments,
-//   getJavascriptAutocomplete
-// } from "./util/autocomplete";
-
-// const tagNameCharsRegExp = /[a-zA-Z0-9_.:-]/;
-// const attrNameCharsRegExp = /[a-zA-Z0-9_#.:-]/;
 // const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
-// const DEBUG = process.env.DEBUG === "true";
-
-/*
-NOTE: It would be nice to have a Cache for all the documents that have
-been parsed already so we don't have to do it every time.
-
-For now let's just reparse every document we need to.
-*/
 
 // function createTextDocument(filename: string): TextDocument {
 //   const uri = URI.file(filename).toString();
@@ -60,277 +31,6 @@ For now let's just reparse every document we need to.
 //   return null;
 // }
 
-// function createRangeFromContext(context: IMarkoErrorOutput) {
-//   const start = context.pos;
-//   const end = context.endPos;
-//   return createRange(start.line - 1, start.column, end.line - 1, end.column);
-// }
-
-// function createRange(
-//   startLine: number,
-//   stratColumn: number,
-//   endLine?: number,
-//   endColumn?: number
-// ): Range {
-//   return {
-//     start: Position.create(startLine, stratColumn),
-//     end: Position.create(endLine || startLine, endColumn || stratColumn)
-//   };
-// }
-
-/*
-This gives scope at position.
-
-It returns the TAG ScopeType when the cursor is inside an open tag. This complicates the Hover and error messages
-
- */
-// async function getScopeAtPos(offset: number, text: string) {
-//   let found: boolean = false;
-//   return new Promise((resolve: (tag: Scope | boolean) => void) => {
-//     const parser = createParser({
-//       onError: (error: any, data: any) => {
-//         resolve({
-//           tagName: error.code,
-//           scopeType: ScopeType.NO_SCOPE,
-//           data
-//         });
-//       },
-//       onOpenTag(event: any) {
-//         const {
-//           pos: startPos,
-//           endPos,
-//           tagName,
-//           tagNameEndPos,
-//           attributes
-//         } = event;
-
-//         // Don't process when the offset is not inside a tag or we found our tag already
-//         if (checkPosition(found, event, offset)) {
-//           return;
-//         }
-
-//         if (DEBUG) {
-//           console.log(`Searching for character '${text[offset]}'
-//           in string: '${text.slice(startPos, endPos)}'`);
-//         }
-
-//         found = true;
-//         const defaultTagScope = {
-//           tagName,
-//           scopeType: ScopeType.NO_SCOPE
-//         };
-
-//         const validCharAtPos =
-//           tagNameCharsRegExp.test(text.charAt(offset)) ||
-//           attrNameCharsRegExp.test(text.charAt(offset));
-//         if (!validCharAtPos) {
-//           return resolve(defaultTagScope);
-//         }
-
-//         // Tag Scope
-//         // If tag name starts with '@' then it's an inner section that should be
-//         // defined int he marko.json file
-//         if (DEBUG) {
-//           console.log(
-//             `Looking in tagName: ${text.slice(startPos, tagNameEndPos)}`
-//           );
-//         }
-
-//         if (offset <= tagNameEndPos) {
-//           return resolve({
-//             tagName,
-//             scopeType: ScopeType.TAG
-//           });
-//         }
-
-//         for (const attribute of attributes) {
-//           // Non event-handling attributes (i.e. not on-* or on*) have their position
-//           // set to the position of the value they have.
-//           const attrNamePos = attribute.pos - attribute.name.length;
-//           // Attributes are ordered and if the start of the attribute
-//           // name is higher than the offset, then the offset must be
-//           // in a place that doesn't interest us
-//           if (offset < attrNamePos) {
-//             return resolve(defaultTagScope);
-//           }
-
-//           if (!attribute.argument) {
-//             // Check if cursor is on the attribute name
-//             if (DEBUG) {
-//               console.log(
-//                 `Looking in attributePosEndPos: ${text.slice(
-//                   attribute.pos,
-//                   attribute.endPos
-//                 )}`
-//               );
-
-//               console.log(
-//                 `Looking in attributeName: ${text.slice(
-//                   attrNamePos,
-//                   attribute.pos
-//                 )}`
-//               );
-//             }
-
-//             // pos and endPos are for the value of the Attribute
-//             //  m y - a t t r = " h e l l o "
-//             //                ^             ^
-//             //               pos          endPos
-//             // So we need to make sure the offset is between pos - length of attrName and pos
-//             if (offset >= attrNamePos && offset <= attribute.pos) {
-//               return resolve({
-//                 tagName,
-//                 data: attribute.name,
-//                 scopeType: ScopeType.ATTR_NAME
-//               });
-//             }
-//           } else {
-//             // Cursor is in the argument of `onClick('myOnClickHandler')` like attributes
-//             if (DEBUG) {
-//               console.log(
-//                 `Looking in Attribute's Argument: ${text.slice(
-//                   attribute.argument.pos + 1,
-//                   attribute.argument.endPos
-//                 )}`
-//               );
-//             }
-
-//             if (
-//               offset >= attribute.argument.pos + 1 &&
-//               offset <= attribute.argument.endPos
-//             ) {
-//               return resolve({
-//                 tagName,
-//                 data: attribute.argument.value.slice(1, -1),
-//                 scopeType: ScopeType.ATTR_VALUE
-//               });
-//             }
-//           }
-//         }
-//         return resolve(defaultTagScope);
-//       },
-//       onfinish() {
-//         if (DEBUG) {
-//           console.log("================Finished!!!==============");
-//         }
-//         // TODO: Maybe this is not right? we need it to resolve somehow
-//         if (!found) {
-//           resolve(false);
-//         }
-//       }
-//     });
-//     parser.parse(text);
-//   });
-// }
-
-// function findDefinitionForTag(
-//   document: TextDocument,
-//   { tagName }: Scope
-// ): Definition {
-//   const { template = false, renderer = false, taglibId } = getTag(
-//     document,
-//     tagName!
-//   );
-
-//   // We can either have renderers defined where there are no templates.
-//   if (!template && !renderer) {
-//     throw new Error(`Couldn't find a definition for tag: ${tagName}`);
-//   }
-
-//   const refPath = template || renderer;
-
-//   const definitions = [
-//     {
-//       uri: URI.file(refPath).toString(),
-//       range: {
-//         start: Position.create(0, 0),
-//         end: Position.create(0, 0)
-//       }
-//     }
-//   ];
-
-//   if (taglibId) {
-//     definitions.push({
-//       uri: URI.file(taglibId).toString(),
-//       range: {
-//         start: Position.create(0, 0),
-//         end: Position.create(0, 0)
-//       }
-//     });
-//   }
-
-//   return definitions;
-// }
-
-// function findDefinitionForAttrName(
-//   document: TextDocument,
-//   { tagName, data: attrName }: Scope
-// ): Definition | null {
-//   const attrDef = getTagLibLookup(document).getAttribute(tagName, attrName);
-//   if (!attrDef || !attrDef.filePath) {
-//     return null;
-//   }
-
-//   const attrDefDocument: TextDocument = createTextDocument(attrDef.filePath);
-
-//   // Search for "@visible"
-//   const match = attrDefDocument
-//     .getText()
-//     .match(new RegExp(`"@?${escapeStringRegexp(attrName)}"`));
-//   if (match) {
-//     const index = match.index as number;
-//     return {
-//       uri: attrDefDocument.uri,
-//       range: {
-//         start: attrDefDocument.positionAt(index),
-//         end: attrDefDocument.positionAt(index + match[0].length)
-//       }
-//     };
-//   }
-//   return {
-//     uri: attrDefDocument.uri,
-//     range: {
-//       start: Position.create(0, 0),
-//       end: Position.create(0, 0)
-//     }
-//   };
-// }
-
-// function findDefinitionForAttrValue(
-//   document: TextDocument,
-//   { data: attrValue }: Scope
-// ): Definition | null {
-//   const documentPath = URI.parse(document.uri).fsPath;
-//   const componentJSPath = getComponentJSFilePath(documentPath) as string;
-
-//   if (!getComponentJSFilePath) {
-//     return null;
-//   }
-
-//   const componentJSDocument: TextDocument = createTextDocument(componentJSPath);
-//   const handlerRegExp = new RegExp(`${attrValue}\\s*[(]|${attrValue}\\s*[:]`);
-
-//   const match = componentJSDocument.getText().match(handlerRegExp);
-//   if (match) {
-//     const index = match.index as number;
-//     return {
-//       uri: componentJSDocument.uri,
-//       range: {
-//         start: componentJSDocument.positionAt(index),
-//         end: componentJSDocument.positionAt(index + match[0].length)
-//       }
-//     };
-//   }
-
-//   return {
-//     uri: componentJSDocument.uri,
-//     range: {
-//       start: Position.create(0, 0),
-//       end: Position.create(0, 0)
-//     }
-//   };
-// }
-
 export class MLS {
   public static start(connection: IConnection) {
     return new MLS(connection);
@@ -348,7 +48,6 @@ export class MLS {
     connection.listen();
 
     connection.onCompletion(this.onCompletion);
-    connection.onCompletionResolve(this.onCompletionResolve);
     // this.documents.onDidChangeContent(change =>
     //   this.triggerValidation(change.document)
     // );
@@ -366,7 +65,6 @@ export class MLS {
           // documentFormattingProvider: true,
           // definitionProvider: true,
           completionProvider: {
-            resolveProvider: true,
             triggerCharacters: [".", ":", "<", ">", "@", "/"]
           }
         }
@@ -387,44 +85,6 @@ export class MLS {
         text: doc.getText()
       })
     );
-    // const scopeAtPos = (await getAutocomleteAtText(
-    //   offset,
-    //   doc.getText()
-    // )) as Scope;
-    // const tagLibLookup = getTagLibLookup(doc);
-    // const args: IAutocompleteArguments = {
-    //   doc,
-    //   offset,
-    //   scopeAtPos,
-    //   tagLibLookup,
-    //   position: positionParams.position
-    // };
-
-    // switch (scopeAtPos.scopeType) {
-    //   case ScopeType.TAG:
-    //     return getTagAutocomplete(args);
-    //   case ScopeType.ATTR_NAME:
-    //     return getAttributeAutocomplete(args);
-    //   case ScopeType.CLOSE_TAG:
-    //     return getCloseTagAutocomplete(args);
-    //   case ScopeType.ATTR_VALUE:
-    //     if (DEBUG) {
-    //       console.log("attr value");
-    //     }
-    //     break;
-    //   case ScopeType.JAVASCRIPT:
-    //     return getJavascriptAutocomplete(args);
-    //   default:
-    //     if (DEBUG) {
-    //       console.log(`Couldn't match the scopeType: ${scopeAtPos.scopeType}`);
-    //     }
-    // }
-    // return {};
-  };
-
-  public onCompletionResolve = (item: CompletionItem) => {
-    console.log("completion resolve");
-    return item;
   };
 
   // public async onDefinition(positionParams: TextDocumentPositionParams) {
