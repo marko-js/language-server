@@ -1,15 +1,3 @@
-/* --------------------------------------------------------------------------------------------
-* Copyright (c) Patrick Steele-Idem. All rights reserved.
-* Licensed under the MIT License. See License.txt in the project root for license information.
-
-Modifications Copyright 2018 eBay Inc.
-Author/Developer: Diego Berrocal
-
-Use of this source code is governed by an MIT-style
-license that can be found in the LICENSE file or at
-https://opensource.org/licenses/MIT.
-* ------------------------------------------------------------------------------------------ */
-
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver";
 import { EmbeddedRegion } from "./document";
@@ -189,6 +177,5 @@ export function getTagLibLookup(document: TextDocument) {
 }
 
 export function getTag(document: TextDocument, tagName: string) {
-  const tagLibLookup = getTagLibLookup(document);
-  return tagLibLookup.getTag(tagName);
+  return getTagLibLookup(document).getTag(tagName);
 }

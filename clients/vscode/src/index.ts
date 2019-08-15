@@ -49,9 +49,10 @@ export function activate() {
   client.start();
 }
 
-export function deactivate(): Thenable<void> {
+export function deactivate(): Thenable<void> | void {
   if (!client) {
-    return Promise.resolve();
+    return undefined;
   }
+
   return client.stop();
 }

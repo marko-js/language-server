@@ -1,16 +1,16 @@
 import * as fs from "fs";
-import { getFileFsPath, getFilePath } from "../util/paths";
+import { getFileFsPath, getFilePath } from "../util-old/paths";
 import * as ts from "typescript";
 import * as tsModule from "typescript";
 import { TextDocument } from "vscode-languageserver";
-import { IAutocompleteArguments } from "../util/autocomplete";
+import { IAutocompleteArguments } from "../util-old/autocomplete";
 // import { getSingleTypeDocument } from '../util/document';
 // import { LanguageService } from 'vscode-css-languageservice';
 
 // TODO add initial files
 const scriptFileNameSet = new Set();
 const localScriptRegionDocuments = new Map<string, TextDocument>();
-let currentScriptDoc: TextDocument;
+// let currentScriptDoc: TextDocument;
 
 function getDefaultCompilerOptions() {
   const defaultCompilerOptions: ts.CompilerOptions = {

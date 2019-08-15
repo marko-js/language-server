@@ -28,13 +28,13 @@
       {
         "language": "marko",
         "scopeName": "text.marko",
-        "path": "./syntaxes/marko.tmLanguage"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "marko",
-        "path": "./snippets/marko.json"
+        "path": "./syntaxes/marko.tmLanguage",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.css.less": "less",
+          "source.css.scss": "scss",
+          "source.js": "javascript"
+        }
       }
     ],
     "configuration": {
