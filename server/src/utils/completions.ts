@@ -6,6 +6,7 @@ import {
   CompletionItemKind,
   InsertTextFormat,
   MarkupKind,
+  MarkupContent,
   TextDocument,
   TextEdit,
   Range
@@ -38,7 +39,10 @@ export default function getCompletion(
 
         if (isAttributeTag) {
           const parentTag = findNonControlFlowParent(event);
-          const parentTagDef = parentTag && taglib.getTag(parentTag.tagName);
+          const parentTagDef =
+            parentTag &&
+            !parentTag.tagNameExpression &&
+            taglib.getTag(parentTag.tagName);
           tags =
             (parentTagDef &&
               parentTagDef.nestedTags &&
@@ -98,6 +102,118 @@ export default function getCompletion(
         );
       }
 
+      case "attributeName": {
+        const completionRange = Range.create(
+          document.positionAt(event.pos),
+          document.positionAt(event.endPos)
+        );
+
+        const defaultTagDef = taglib.getTag("*");
+        const tagDef =
+          !event.tag.tagNameExpression && taglib.getTag(event.tag.tagName);
+        const allAttributes = Object.assign({}, defaultTagDef.attributes);
+        const patternAttributes = defaultTagDef.patternAttributes || [];
+
+        if (tagDef) {
+          Object.assign(allAttributes, tagDef.attributes);
+
+          if (tagDef.patternAttributes) {
+            patternAttributes.push(...tagDef.patternAttributes);
+          }
+
+          if (tagDef.attributeGroups) {
+            tagDef.attributeGroups.forEach(group =>
+              Object.assign(
+                allAttributes,
+                (taglib as any).merged.attributeGroups[group]
+              )
+            );
+          }
+        }
+
+        patternAttributes.forEach(attr => {
+          const name = attr.pattern!.test(event.name)
+            ? event.name
+            : attr.name.slice(0, attr.name.indexOf("*"));
+          allAttributes[name] = attr;
+        });
+
+        delete allAttributes["*"];
+
+        return CompletionList.create(
+          Object.entries(allAttributes)
+            .filter(([, def]) => !def.deprecated)
+            .filter(
+              ([name, def]) =>
+                /^[^_]/.test(name) || !/\/node_modules\//.test(def.filePath)
+            )
+            .map(([name, def]) => {
+              const type = def.type || (def.html ? "string" : null);
+              let label = name;
+              let snippet = name;
+              let documentation: MarkupContent | undefined;
+
+              if (def.enum) {
+                snippet += `="\${1|${def.enum.join()}|}"$0`;
+              } else {
+                switch (type) {
+                  case "string":
+                    snippet += '="$1"$0';
+                    break;
+                  case "function":
+                    snippet += "=($1)$0";
+                    break;
+                  case "statement":
+                  case "boolean":
+                  case "flag":
+                    break;
+                  default:
+                    snippet += "=";
+                    break;
+                }
+              }
+
+              const autocomplete = def.autocomplete && def.autocomplete[0];
+
+              if (autocomplete) {
+                label = autocomplete.displayText || label;
+                snippet = autocomplete.snippet || snippet;
+
+                if (autocomplete.descriptionMoreURL) {
+                  documentation = {
+                    kind: MarkupKind.Markdown,
+                    value: `[More Info](${autocomplete.descriptionMoreURL})`
+                  };
+                }
+              }
+
+              return {
+                label,
+                documentation,
+                detail: def.description,
+                kind: CompletionItemKind.Property,
+                insertTextFormat: InsertTextFormat.Snippet,
+                textEdit: TextEdit.replace(completionRange, snippet)
+              };
+            })
+        );
+      }
+
+      case "attributeModifier": {
+        return CompletionList.create([
+          {
+            label: "scoped",
+            kind: CompletionItemKind.Keyword,
+            detail: "Use to prefix with a unique ID"
+          },
+          {
+            label: "no-update",
+            kind: CompletionItemKind.Keyword,
+            detail: "Use to skip future updates to this attribute"
+          }
+        ]);
+      }
+
       case "openTag": {
         if (event.openTagOnly) {
           break;
@@ -115,15 +231,20 @@ export default function getCompletion(
       }
 
       case "closeTag": {
-        const nextChar = document.getText()[document.offsetAt(params.position)]; // this would be the next char because we insert a closing bracket for the parser.
-        const closingTagStr = event.tagName + (nextChar === ">" ? "" : ">");
+        const closingTagStr = `</${event.tagName}>`;
 
         return CompletionList.create([
           {
             label: closingTagStr,
             kind: CompletionItemKind.Class,
             insertTextFormat: InsertTextFormat.Snippet,
-            insertText: closingTagStr
+            textEdit: TextEdit.replace(
+              Range.create(
+                document.positionAt(event.pos),
+                document.positionAt(event.endPos)
+              ),
+              closingTagStr
+            )
           }
         ]);
       }

@@ -9,25 +9,34 @@ export interface AttributeDefinition {
   allowExpressions: boolean;
   filePath: string;
   name: string;
-  type: string | null;
-  pattern: string | null;
+  type?: string;
+  html?: boolean;
+  enum?: string[];
+  pattern?: RegExp;
   required: boolean;
   defaultValue: unknown;
-  description: string | void;
+  description?: string;
+  deprecated: boolean;
+  autocomplete: Array<{
+    displayText: string;
+    snippet: string;
+    descriptionMoreURL?: string;
+  }>;
 }
-
 export interface TagDefinition {
   dir: string;
   filePath: string;
+  attributeGroups?: string[];
+  patternAttributes?: AttributeDefinition[];
   attributes: { [x: string]: AttributeDefinition };
-  nestedTags: null | {
+  nestedTags?: {
     [x: string]: TagDefinition & {
       isNestedTag: true;
       isRepeated: boolean;
       targetProperty: string;
     };
   };
-  autocomplete: Array<{
+  autocomplete?: Array<{
     displayText: string;
     snippet: string;
     descriptionMoreURL?: string;
@@ -47,6 +56,7 @@ export interface TagDefinition {
 export interface TagLibLookup {
   getTagsSorted(): TagDefinition[];
   getTag(tagName: string): TagDefinition;
+  getAttribute(tagName: string, attrName: string): AttributeDefinition;
 }
 
 export function loadMarkoCompiler(dir: string) {

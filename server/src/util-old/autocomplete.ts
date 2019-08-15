@@ -321,8 +321,6 @@ export function getCloseTagAutocomplete(
 export function getTagAutocomplete(
   options: IAutocompleteArguments
 ): CompletionList {
-  debugger;
-  
   const tagLibLookup = options.tagLibLookup;
   const allTags = tagLibLookup.merged.tags;
   // const startText = doc.getText().slice(0, offset);

@@ -16,8 +16,8 @@ export namespace ParserEvents {
 
   export interface OpenTag extends Tag {
     type: "openTag";
-    argument: string | undefined; // TODO: check
-    params: string | undefined; // TODO: check
+    argument: { pos: number; endPos: number; value: string } | undefined; // TODO: check
+    params: { pos: number; endPos: number; value: string } | undefined; // TODO: check
     attributes: Attribute[];
     nestedTags: { [x: string]: Tag } | void;
     openTagOnly: boolean;
@@ -48,7 +48,42 @@ export namespace ParserEvents {
     withinString: boolean;
   }
 
-  export type Any = Error | OpenTagName | OpenTag | CloseTag | Placeholder;
+  // Extended events
+  export interface AttributeName {
+    type: "attributeName";
+    tag: OpenTag;
+    name: string;
+    pos: number;
+    endPos: number;
+  }
+
+  export interface AttributeModifier {
+    type: "attributeModifier";
+    tag: OpenTag;
+    name: string;
+    modifier: string;
+    pos: number;
+    endPos: number;
+  }
+
+  export interface AttributeValue {
+    type: "attributeValue";
+    tag: OpenTag;
+    name: string;
+    value: string;
+    pos: number;
+    endPos: number;
+  }
+
+  export type Any =
+    | Error
+    | OpenTagName
+    | OpenTag
+    | CloseTag
+    | Placeholder
+    | AttributeName
+    | AttributeModifier
+    | AttributeValue;
 
   interface Tag {
     tagName: string;
@@ -63,7 +98,7 @@ export namespace ParserEvents {
 
   interface Attribute {
     name: string;
-    argument: string | undefined;
+    argument: { pos: number; endPos: number; value: string } | undefined;
     value: string | undefined;
     pos: number;
     endPos: number;
@@ -96,13 +131,71 @@ export function parseUntilOffset(options: {
         tag.parent = parentTag!.parent;
         parentTag = tag;
 
-        for (const attribute of tag.attributes) {
-          if (attribute.name === "...") {
+        let attrEndPos = tag.tagNameEndPos;
+        for (const attr of tag.attributes) {
+          const attrStartPos = text.indexOf(attr.name, attrEndPos);
+
+          if (attr.name.slice(0, 3) === "...") {
+            attrEndPos = attr.argument ? attr.argument.endPos + 1 : attr.endPos;
             continue;
           }
 
-          // TODO
+          const match = /:(.*)$/.exec(attr.name);
+          const modifier = match && match[1];
+          let name = attr.name;
+
+          if (modifier) {
+            name = name.slice(0, name.length - modifier.length - 1);
+            const modifierStartPos = attrStartPos + name.length;
+            const modifierEndPos = modifierStartPos + modifier.length + 1;
+            if (
+              finish({
+                type: "attributeModifier",
+                tag,
+                name,
+                modifier,
+                pos: modifierStartPos,
+                endPos: modifierEndPos
+              })
+            ) {
+              return;
+            }
+          }
+
+          const attrNameEndPos = attrStartPos + name.length;
+
+          if (
+            finish({
+              type: "attributeName",
+              tag,
+              name,
+              pos: attrStartPos,
+              endPos: attrNameEndPos
+            })
+          ) {
+            return;
+          }
+
+          if (attr.value) {
+            attrEndPos = attr.endPos;
+            const valueStartPos = attr.pos + 1; // Add one to account for "=".
+            if (
+              finish({
+                type: "attributeValue",
+                tag,
+                name,
+                value: text.slice(valueStartPos, attrEndPos), // We use the raw value to ignore things like non standard placeholders.
+                pos: valueStartPos,
+                endPos: attr.endPos
+              })
+            ) {
+              break;
+            }
+          } else {
+            attrEndPos = attr.argument ? attr.argument.endPos + 1 : attr.endPos;
+          }
         }
+
         finish(tag);
       },
       onCloseTag(tag: ParserEvents.CloseTag) {
@@ -118,13 +211,8 @@ export function parseUntilOffset(options: {
     }
   );
 
-  parser.parse(
-    `${
-      text.slice(offset - 2, offset) === "</"
-        ? text.slice(0, offset) + ">" + text.slice(offset)
-        : text
-    }\n`
-  ); // A new line prevents the parser from erroring before emitting some events.
+  // A new line prevents the parser from erroring before emitting some events.
+  parser.parse(`${text}\n`);
 
   return result as ParserEvents.Any | null;
 

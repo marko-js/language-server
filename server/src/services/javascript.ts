@@ -10,7 +10,7 @@ import { IAutocompleteArguments } from "../util-old/autocomplete";
 // TODO add initial files
 const scriptFileNameSet = new Set();
 const localScriptRegionDocuments = new Map<string, TextDocument>();
-// let currentScriptDoc: TextDocument;
+const currentScriptDoc: TextDocument;
 
 function getDefaultCompilerOptions() {
   const defaultCompilerOptions: ts.CompilerOptions = {
