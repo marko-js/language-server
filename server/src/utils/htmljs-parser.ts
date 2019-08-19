@@ -125,6 +125,10 @@ export function parseUntilOffset(options: {
         }
 
         // Currently the parser has the wrong end position here with tag params :\
+        if (!tag.concise) {
+          tag.pos += 1;
+        }
+
         tag.endPos = tag.pos + tag.tagName.length;
         parentTag = tag;
         finish(tag);

@@ -2,6 +2,7 @@ import path from "path";
 import { URI } from "vscode-uri";
 import {
   CompletionList,
+  CompletionItem,
   CompletionParams,
   CompletionItemKind,
   InsertTextFormat,
@@ -31,10 +32,7 @@ export default function getCompletion(
           (params.context && params.context.triggerCharacter) ||
           event.tagName[0];
         const isAttributeTag = triggerCharacter === "@";
-        const completionRange = Range.create(
-          document.positionAt(event.pos + 1),
-          document.positionAt(event.endPos - 1)
-        );
+        const tagNameRange = rangeFromEvent(document, event);
 
         if (isAttributeTag) {
           const parentTag = findNonControlFlowParent(event);
@@ -91,23 +89,19 @@ export default function getCompletion(
               return {
                 label,
                 documentation,
-                range: completionRange,
                 kind: CompletionItemKind.Class,
                 insertTextFormat: InsertTextFormat.Snippet,
                 textEdit: TextEdit.replace(
-                  completionRange,
-                  autocomplete ? autocomplete.snippet : label
+                  tagNameRange,
+                  (autocomplete && autocomplete.snippet) || label
                 )
-              };
+              } as CompletionItem;
             })
         );
       }
 
       case "attributeName": {
-        const completionRange = Range.create(
-          document.positionAt(event.pos),
-          document.positionAt(event.endPos)
-        );
+        const attrNameRange = rangeFromEvent(document, event);
 
         const defaultTagDef = taglib.getTag("*");
         const tagDef =
@@ -204,8 +198,8 @@ export default function getCompletion(
                 detail: def.description,
                 kind: CompletionItemKind.Property,
                 insertTextFormat: InsertTextFormat.Snippet,
-                textEdit: TextEdit.replace(completionRange, snippet)
-              };
+                textEdit: TextEdit.replace(attrNameRange, snippet)
+              } as CompletionItem;
             })
         );
       }
@@ -250,10 +244,7 @@ export default function getCompletion(
             kind: CompletionItemKind.Class,
             insertTextFormat: InsertTextFormat.Snippet,
             textEdit: TextEdit.replace(
-              Range.create(
-                document.positionAt(event.pos),
-                document.positionAt(event.endPos)
-              ),
+              rangeFromEvent(document, event),
               closingTagStr
             )
           }
@@ -277,4 +268,11 @@ function findNonControlFlowParent(tag: ParserEvents.OpenTagName) {
   }
 
   return null;
+}
+
+function rangeFromEvent(document: TextDocument, event: ParserEvents.Any) {
+  return Range.create(
+    document.positionAt(event.pos),
+    document.positionAt(event.endPos)
+  );
 }
