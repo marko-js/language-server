@@ -135,7 +135,6 @@ export default function getCompletion(
           }
         }
 
-        // TODO: improve pattern attributes matching.
         patternAttributes.forEach(attr => {
           const name = attr.pattern!.test(event.name)
             ? event.name
@@ -224,7 +223,9 @@ export default function getCompletion(
           break;
         }
 
-        const closingTagStr = `</${event.tagName}>`;
+        const closingTagStr = `</${
+          event.tagName[0] === "$" ? "" : event.tagName
+        }>`;
         return CompletionList.create([
           {
             label: closingTagStr,
@@ -236,6 +237,10 @@ export default function getCompletion(
       }
 
       case "closeTag": {
+        if (event.tagName[0] === "$") {
+          break;
+        }
+
         const closingTagStr = `</${event.tagName}>`;
 
         return CompletionList.create([
