@@ -57,6 +57,10 @@ export interface TagLibLookup {
   getTagsSorted(): TagDefinition[];
   getTag(tagName: string): TagDefinition;
   getAttribute(tagName: string, attrName: string): AttributeDefinition;
+  forEachAttribute(
+    tagName: string,
+    callback: (attr: AttributeDefinition, tag: TagDefinition) => void
+  ): void;
 }
 
 export function loadMarkoCompiler(dir: string) {

@@ -7,10 +7,10 @@ import {
   TextDocument,
   TextDocumentPositionParams
 } from "vscode-languageserver";
-import { parseUntilOffset } from "./utils/htmljs-parser";
 import { getTagLibLookup } from "./utils/compiler";
-import getCompletion from "./utils/completions";
-import getDefinition from "./utils/definitions";
+import { parseUntilOffset } from "./utils/htmljs-parser";
+import * as completionTypes from "./utils/completions";
+import * as definitionTypes from "./utils/definitions";
 
 // const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
 
@@ -58,31 +58,30 @@ export class MLS {
   public onCompletion = (params: CompletionParams): CompletionList => {
     const doc = this.documents.get(params.textDocument.uri)!;
     const taglib = getTagLibLookup(doc);
-    return getCompletion(
+    const event = parseUntilOffset({
       taglib,
-      doc,
-      params,
-      parseUntilOffset({
-        taglib,
-        offset: doc.offsetAt(params.position),
-        text: doc.getText()
-      })
+      offset: doc.offsetAt(params.position),
+      text: doc.getText()
+    });
+
+    const handler = event && completionTypes[event.type];
+    return (
+      (handler && handler(taglib, doc, params, event)) ||
+      CompletionList.create()
     );
   };
 
   public onDefinition = (params: TextDocumentPositionParams): Definition => {
     const doc = this.documents.get(params.textDocument.uri)!;
     const taglib = getTagLibLookup(doc);
-    return getDefinition(
+    const event = parseUntilOffset({
       taglib,
-      doc,
-      params,
-      parseUntilOffset({
-        taglib,
-        offset: doc.offsetAt(params.position),
-        text: doc.getText()
-      })
-    );
+      offset: doc.offsetAt(params.position),
+      text: doc.getText()
+    });
+
+    const handler = event && definitionTypes[event.type];
+    return handler && handler(taglib, doc, params, event);
   };
 
   public cleanPendingValidation(textDocument: TextDocument): void {

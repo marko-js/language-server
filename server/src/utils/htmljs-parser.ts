@@ -16,16 +16,22 @@ export namespace ParserEvents {
 
   export interface OpenTag extends Tag {
     type: "openTag";
-    argument: { pos: number; endPos: number; value: string } | undefined; // TODO: check
-    params: { pos: number; endPos: number; value: string } | undefined; // TODO: check
+    argument: { pos: number; endPos: number; value: string } | undefined;
+    params: { pos: number; endPos: number; value: string } | undefined;
+    shorthandClassNames:
+      | Array<{
+          value: string;
+          rawParts: Array<{ text: string; pos: number; endPos: number }>;
+        }>
+      | undefined;
     attributes: Attribute[];
-    nestedTags: { [x: string]: Tag } | void;
+    nestedTags: { [x: string]: Tag } | undefined;
     openTagOnly: boolean;
     selfClosed: boolean;
     tagNameEndPos: number;
     isNestedTag: boolean;
     isRepeated: boolean;
-    targetProperty: string | void;
+    targetProperty: string | undefined;
   }
 
   export interface CloseTag {
@@ -75,6 +81,15 @@ export namespace ParserEvents {
     endPos: number;
   }
 
+  export interface StyleContent {
+    type: "styleContent";
+    language: "css" | "less" | "scss";
+    block: boolean;
+    content: string;
+    pos: number;
+    endPos: number;
+  }
+
   export type Any =
     | Error
     | OpenTagName
@@ -83,7 +98,8 @@ export namespace ParserEvents {
     | Placeholder
     | AttributeName
     | AttributeModifier
-    | AttributeValue;
+    | AttributeValue
+    | StyleContent;
 
   interface Tag {
     tagName: string;
@@ -104,6 +120,12 @@ export namespace ParserEvents {
     endPos: number;
   }
 }
+
+const SUPPORTED_STYLE_LANGS = {
+  css: true,
+  scss: true,
+  less: true
+};
 
 export function parseUntilOffset(options: {
   offset: number;
@@ -136,6 +158,35 @@ export function parseUntilOffset(options: {
       onOpenTag(tag: ParserEvents.OpenTag) {
         tag.parent = parentTag!.parent;
         parentTag = tag;
+
+        if (tag.tagName === "style") {
+          const firstAttr = tag.attributes[0];
+          const isBlock = firstAttr.name.startsWith("{");
+
+          if (isBlock) {
+            const content = firstAttr.name.slice(1, -1);
+            const pos = text.indexOf(content, tag.tagNameEndPos);
+            const endPos = pos + content.length;
+            const requestedLanguage =
+              tag.shorthandClassNames &&
+              tag.shorthandClassNames[0].rawParts[0].text;
+            const language =
+              requestedLanguage && SUPPORTED_STYLE_LANGS[requestedLanguage]
+                ? (requestedLanguage as keyof typeof SUPPORTED_STYLE_LANGS)
+                : "css";
+
+            finish({
+              type: "styleContent",
+              language,
+              block: true,
+              content: text.slice(pos, endPos),
+              pos,
+              endPos
+            });
+
+            return;
+          }
+        }
 
         let attrEndPos = tag.tagNameEndPos;
         for (const attr of tag.attributes) {
