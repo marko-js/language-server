@@ -81,6 +81,15 @@ export namespace ParserEvents {
     endPos: number;
   }
 
+  export interface Text {
+    type: "text";
+    value: string;
+    // Added manually.
+    pos: number;
+    endPos: number;
+    parent: OpenTag | null;
+  }
+
   export interface StyleContent {
     type: "styleContent";
     language: "css" | "less" | "scss";
@@ -99,6 +108,7 @@ export namespace ParserEvents {
     | AttributeName
     | AttributeModifier
     | AttributeValue
+    | Text
     | StyleContent;
 
   interface Tag {
@@ -141,35 +151,35 @@ export function parseUntilOffset(options: {
       onError: includeErrors && finish,
       onScriptlet: finish,
       onPlaceholder: finish,
-      onOpenTagName(tag: ParserEvents.OpenTagName) {
+      onOpenTagName(ev: ParserEvents.OpenTagName) {
         if (parentTag) {
-          tag.parent = parentTag as ParserEvents.OpenTag;
+          ev.parent = parentTag as ParserEvents.OpenTag;
         }
 
         // Currently the parser has the wrong end position here with tag params :\
-        if (!tag.concise) {
-          tag.pos += 1;
+        if (!ev.concise) {
+          ev.pos += 1;
         }
 
-        tag.endPos = tag.pos + tag.tagName.length;
-        parentTag = tag;
-        finish(tag);
+        ev.endPos = ev.pos + ev.tagName.length;
+        parentTag = ev;
+        finish(ev);
       },
-      onOpenTag(tag: ParserEvents.OpenTag) {
-        tag.parent = parentTag!.parent;
-        parentTag = tag;
+      onOpenTag(ev: ParserEvents.OpenTag) {
+        ev.parent = parentTag!.parent;
+        parentTag = ev;
 
-        if (tag.tagName === "style") {
-          const firstAttr = tag.attributes[0];
-          const isBlock = firstAttr.name.startsWith("{");
+        if (ev.tagName === "style") {
+          const firstAttr = ev.attributes[0];
+          const isBlock = firstAttr && firstAttr.name.startsWith("{");
 
           if (isBlock) {
             const content = firstAttr.name.slice(1, -1);
-            const pos = text.indexOf(content, tag.tagNameEndPos);
+            const pos = text.indexOf(content, ev.tagNameEndPos);
             const endPos = pos + content.length;
             const requestedLanguage =
-              tag.shorthandClassNames &&
-              tag.shorthandClassNames[0].rawParts[0].text;
+              ev.shorthandClassNames &&
+              ev.shorthandClassNames[0].rawParts[0].text;
             const language =
               requestedLanguage && SUPPORTED_STYLE_LANGS[requestedLanguage]
                 ? (requestedLanguage as keyof typeof SUPPORTED_STYLE_LANGS)
@@ -188,8 +198,8 @@ export function parseUntilOffset(options: {
           }
         }
 
-        let attrEndPos = tag.tagNameEndPos;
-        for (const attr of tag.attributes) {
+        let attrEndPos = ev.tagNameEndPos;
+        for (const attr of ev.attributes) {
           const attrStartPos = text.indexOf(attr.name, attrEndPos);
 
           if (attr.name.slice(0, 3) === "...") {
@@ -208,7 +218,7 @@ export function parseUntilOffset(options: {
             if (
               finish({
                 type: "attributeModifier",
-                tag,
+                tag: ev,
                 name,
                 modifier,
                 pos: modifierStartPos,
@@ -224,7 +234,7 @@ export function parseUntilOffset(options: {
           if (
             finish({
               type: "attributeName",
-              tag,
+              tag: ev,
               name,
               pos: attrStartPos,
               endPos: attrNameEndPos
@@ -239,7 +249,7 @@ export function parseUntilOffset(options: {
             if (
               finish({
                 type: "attributeValue",
-                tag,
+                tag: ev,
                 name,
                 value: text.slice(valueStartPos, attrEndPos), // We use the raw value to ignore things like non standard placeholders.
                 pos: valueStartPos,
@@ -253,16 +263,39 @@ export function parseUntilOffset(options: {
           }
         }
 
-        finish(tag);
+        finish(ev);
       },
-      onCloseTag(tag: ParserEvents.CloseTag) {
+      onText(ev: ParserEvents.Text) {
+        ev.endPos = parser.pos as number;
+        ev.pos = ev.endPos - ev.value.length;
+
+        if (parentTag) {
+          ev.parent = parentTag as ParserEvents.OpenTag;
+
+          if (parentTag.tagName === "style") {
+            finish({
+              type: "styleContent",
+              language: "css",
+              block: false,
+              content: ev.value,
+              pos: ev.pos,
+              endPos: ev.endPos
+            });
+
+            return;
+          }
+        }
+
+        finish(ev);
+      },
+      onCloseTag(ev: ParserEvents.CloseTag) {
         parentTag = parentTag && parentTag.parent;
-        finish(tag);
+        finish(ev);
       }
     },
     {
-      isOpenTagOnly(tagName: string) {
-        const tagDef = taglib.getTag(tagName);
+      isOpenTagOnly(ev: string) {
+        const tagDef = taglib.getTag(ev);
         return tagDef && tagDef.openTagOnly;
       }
     }
