@@ -1,9 +1,8 @@
+import path from "path";
 import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
 import { TextDocument } from "vscode-languageserver";
-
-const markoCompilerCache: any = {};
 
 export interface AttributeDefinition {
   allowExpressions: boolean;
@@ -63,26 +62,21 @@ export interface TagLibLookup {
   ): void;
 }
 
-export function loadMarkoCompiler(dir: string) {
+export function loadMarkoFile(dir: string, request: string) {
+  const fullRequest = path.join("marko/src", request);
+  return require(isCompatibleCompilerInstalled(dir)
+    ? resolveFrom(dir, fullRequest)
+    : fullRequest);
+}
+
+export function isCompatibleCompilerInstalled(dir: string) {
   const rootDir = lassoPackageRoot.getRootDir(dir);
-  if (!rootDir) {
-    return;
-  }
-
-  let cached = markoCompilerCache[rootDir];
-
-  if (!cached) {
-    const compilerPath = resolveFrom.silent(rootDir, "marko/compiler");
-    markoCompilerCache[rootDir] = cached = require(compilerPath &&
-      /4\./.test(require(resolveFrom(rootDir, "marko/package.json")).version)
-      ? compilerPath
-      : "marko/compiler");
-  }
-
-  return cached;
+  const packagePath =
+    rootDir && resolveFrom.silent(rootDir, "marko/package.json");
+  return packagePath && /4\./.test(require(packagePath).version);
 }
 
 export function getTagLibLookup(document: TextDocument): TagLibLookup {
-  const { path } = URI.parse(document.uri);
-  return loadMarkoCompiler(path).buildTaglibLookup(path);
+  const { path: filePath } = URI.parse(document.uri);
+  return loadMarkoFile(filePath, "compiler").buildTaglibLookup(filePath);
 }

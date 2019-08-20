@@ -1,18 +1,25 @@
+import { URI } from "vscode-uri";
 import {
+  Range,
   Definition,
   IConnection,
   CompletionList,
   CompletionParams,
+  Diagnostic,
+  DiagnosticSeverity,
+  DocumentFormattingParams,
   TextDocuments,
   TextDocument,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
+  TextEdit
 } from "vscode-languageserver";
-import { getTagLibLookup } from "./utils/compiler";
+import prettyPrint from "@marko/prettyprint";
+import { getTagLibLookup, loadMarkoFile } from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import * as completionTypes from "./utils/completions";
 import * as definitionTypes from "./utils/definitions";
 
-// const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
+const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
 
 export class MLS {
   public static start(connection: IConnection) {
@@ -20,7 +27,7 @@ export class MLS {
   }
 
   private documents = new TextDocuments();
-  // private validationDelayMs = 800;
+  private validationDelayMs = 800;
   private pendingValidationRequests: {
     [uri: string]: ReturnType<typeof setTimeout>;
   } = {};
@@ -31,21 +38,19 @@ export class MLS {
     connection.listen();
 
     connection.onCompletion(this.onCompletion);
-    // this.documents.onDidChangeContent(change =>
-    //   this.triggerValidation(change.document)
-    // );
+    this.documents.onDidChangeContent(change =>
+      this.queueValidation(change.document)
+    );
 
     connection.onInitialize(() => {
       connection.onDefinition(this.onDefinition);
-      // connection.onDocumentFormatting(this.onDocumentFormatting);
-      // this.documents
-      //   .all()
-      //   .forEach(document => this.triggerValidation(document));
+      connection.onDocumentFormatting(this.onDocumentFormatting);
+      this.documents.all().forEach(doc => this.queueValidation(doc));
 
       return {
         capabilities: {
           textDocumentSync: this.documents.syncKind,
-          // documentFormattingProvider: true,
+          documentFormattingProvider: true,
           definitionProvider: true,
           completionProvider: {
             triggerCharacters: [".", ":", "<", ">", "@", "/"]
@@ -84,114 +89,109 @@ export class MLS {
     return handler && handler(taglib, doc, params, event);
   };
 
-  public cleanPendingValidation(textDocument: TextDocument): void {
-    const request = this.pendingValidationRequests[textDocument.uri];
-    if (request) {
-      clearTimeout(request);
-      delete this.pendingValidationRequests[textDocument.uri];
+  public doValidate(doc: TextDocument): Diagnostic[] {
+    const { path: filePath } = URI.parse(doc.uri);
+    const compiler = loadMarkoFile(filePath, "compiler");
+    const diagnostics: Diagnostic[] = [];
+    let context: any;
+    let message: string;
+    let errorThrown = false;
+
+    try {
+      message = compiler.compile(doc.getText(), filePath, {
+        writeToDisk: false,
+        onContext: (innerContext: any) => {
+          context = innerContext;
+        }
+      });
+    } catch (e) {
+      message = e.message;
+      errorThrown = true;
     }
+
+    if (context && context.hasErrors()) {
+      // If marko exported onContext then use that to create diagnostic output
+      return context.getErrors().map((error: any) => {
+        return Diagnostic.create(
+          Range.create(0, 0, 0, 0),
+          error.message,
+          DiagnosticSeverity.Error,
+          error.code,
+          filePath
+        );
+      });
+    } else if (errorThrown) {
+      // 0: full line, 1: filename, 2: line number 3: column, 4 message
+      let matches: RegExpExecArray | null = null;
+      // Iterate through all regexp matches for the given message
+      while ((matches = markoErrorRegExp.exec(message))) {
+        const line = parseInt(matches[2], 10) - 1; // Line starts at 0
+        const col = parseInt(matches[3], 10);
+        diagnostics.push(
+          Diagnostic.create(
+            Range.create(line, col, line, col),
+            matches[4],
+            DiagnosticSeverity.Error,
+            "",
+            matches[1]
+          )
+        );
+      }
+    }
+    return diagnostics;
   }
 
-  // public doValidate(doc: TextDocument): Diagnostic[] {
-  //   const { path: filePath } = URI.parse(doc.uri);
-  //   const compiler = loadMarkoCompiler(filePath);
-  //   const diagnostics: Diagnostic[] = [];
-  //   let context: any;
-  //   let message;
-  //   let errorThrown = false;
+  public onDocumentFormatting = ({
+    textDocument,
+    options
+  }: DocumentFormattingParams): TextEdit[] => {
+    const doc = this.documents.get(textDocument.uri)!;
+    const { path: filename } = URI.parse(textDocument.uri);
 
-  //   try {
-  //     message = compiler.compile(doc.getText(), filePath, {
-  //       writeToDisk: false,
-  //       onContext: (innerContext: any) => {
-  //         context = innerContext;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     message = e.message;
-  //     errorThrown = true;
-  //   }
+    try {
+      const text = doc.getText();
+      const markoCompiler = loadMarkoFile(filename, "compiler");
+      const CodeWriter = loadMarkoFile(filename, "compiler/CodeWriter");
+      const formatted = prettyPrint(text, {
+        markoCompiler,
+        CodeWriter,
+        filename,
+        indent: (options.insertSpaces ? " " : "\t").repeat(options.tabSize)
+      });
 
-  //   if (context && context.hasErrors()) {
-  //     // If marko exported onContext thne use that to create diagnostic output
-  //     return context.getErrors().map((error: IMarkoErrorOutput) => {
-  //       return Diagnostic.create(
-  //         createRangeFromContext(error),
-  //         error.message,
-  //         DiagnosticSeverity.Error,
-  //         error.code,
-  //         filePath
-  //       );
-  //     });
-  //   } else if (errorThrown) {
-  //     // 0: full line, 1: filename, 2: line number 3: column, 4 message
-  //     let matches;
-  //     // Iterate through all regexp matches for the given message
-  //     while ((matches = markoErrorRegExp.exec(message))) {
-  //       const line = parseInt(matches[2], 10) - 1; // Line starts at 0
-  //       const col = parseInt(matches[3], 10);
-  //       diagnostics.push(
-  //         Diagnostic.create(
-  //           createRange(line, col),
-  //           matches[4],
-  //           DiagnosticSeverity.Error,
-  //           "",
-  //           matches[1]
-  //         )
-  //       );
-  //     }
-  //   }
-  //   return diagnostics;
-  // }
+      return [
+        TextEdit.replace(
+          Range.create(doc.positionAt(0), doc.positionAt(text.length)),
+          formatted
+        )
+      ];
+    } catch (e) {
+      this.displayMessage("error", 'Formatting failed: "' + e.message + '"');
+    }
 
-  // public onDocumentFormatting({
-  //   textDocument,
-  //   options
-  // }: DocumentFormattingParams): TextEdit[] {
-  //   const doc = this.documents.get(textDocument.uri)!;
-  //   const { path: filePath } = URI.parse(textDocument.uri);
-  //   let edits: TextEdit[] = [];
+    return [];
+  };
 
-  //   try {
-  //     const compiler = loadMarkoCompiler(filePath);
-  //     const prettyPrintOptions = Object.assign({}, options, {
-  //       filename: filePath,
-  //       compiler,
-  //       markoCompiler: compiler,
-  //       CodeWriter: loadCompilerComponent("CodeWriter", filePath)
-  //     });
+  private queueValidation(textDocument: TextDocument): void {
+    const previousRequest = this.pendingValidationRequests[textDocument.uri];
+    if (previousRequest) {
+      clearTimeout(previousRequest);
+      delete this.pendingValidationRequests[textDocument.uri];
+    }
 
-  //     const pretty = prettyPrint(doc.getText(), prettyPrintOptions);
-  //     const range = Range.create(
-  //       Position.create(0, 0),
-  //       Position.create(doc.lineCount, 0)
-  //     );
-  //     edits = [TextEdit.replace(range, pretty)];
-  //   } catch (e) {
-  //     this.displayMessage('error', 'Formatting failed: "' + e.message + '"');
-  //   }
-  //   return edits;
-  // }
+    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
+      delete this.pendingValidationRequests[textDocument.uri];
+      this.connection.sendDiagnostics({
+        uri: textDocument.uri,
+        diagnostics: this.doValidate(textDocument)
+      });
+    }, this.validationDelayMs);
+  }
 
-  /**
-   * Custom Notifications
-   */
-
-  public displayMessage(type: "info" | "warning" | "error", msg: string) {
+  private displayMessage(type: "info" | "warning" | "error", msg: string) {
     this.connection.sendNotification(
       `$/display${type[0].toUpperCase() + type.slice(1)}`,
       msg
     );
   }
-
-  // private triggerValidation(textDocument: TextDocument): void {
-  //   this.cleanPendingValidation(textDocument);
-  //   this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-  //     delete this.pendingValidationRequests[textDocument.uri];
-  //     this.connection.sendDiagnostics({
-  //       uri: textDocument.uri,
-  //       diagnostics: this.doValidate(textDocument)
-  //     });
-  //   }, this.validationDelayMs);
-  // }
 }

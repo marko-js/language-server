@@ -618,8 +618,6 @@
 		</dict>
 		<key>component-style-css</key>
 		<dict>
-			<key>applyEndPatternLast</key>
-			<integer>1</integer>
 			<key>begin</key>
 			<string>^(style)(?:\.([a-z]+))?\s+(\{)</string>
 			<key>beginCaptures</key>
@@ -662,8 +660,6 @@
 		</dict>
 		<key>component-style-less</key>
 		<dict>
-			<key>applyEndPatternLast</key>
-			<integer>1</integer>
 			<key>begin</key>
 			<string>^(style)\.(less)\s+(\{)</string>
 			<key>beginCaptures</key>
@@ -706,8 +702,6 @@
 		</dict>
 		<key>component-style-scss</key>
 		<dict>
-			<key>applyEndPatternLast</key>
-			<integer>1</integer>
 			<key>begin</key>
 			<string>^(style)\.(scss)\s+(\{)</string>
 			<key>beginCaptures</key>
