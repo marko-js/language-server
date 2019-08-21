@@ -44,9 +44,12 @@ export function attributeName(
     }
 
     const type = attr.type || (attr.html ? "string" : null);
+    const documentation: MarkupContent = {
+      kind: MarkupKind.Markdown,
+      value: attr.description || ""
+    };
     let label = attr.name;
     let snippet = attr.name;
-    let documentation: MarkupContent | undefined;
 
     if (attr.enum) {
       snippet += `="\${1|${attr.enum.join()}|}"$0`;
@@ -78,17 +81,17 @@ export function attributeName(
       snippet = autocomplete.snippet || snippet;
 
       if (autocomplete.descriptionMoreURL) {
-        documentation = {
-          kind: MarkupKind.Markdown,
-          value: `[More Info](${autocomplete.descriptionMoreURL})`
-        };
+        if (documentation.value) {
+          documentation.value += `\n\n`;
+        }
+
+        documentation.value += `[More Info](${autocomplete.descriptionMoreURL})`;
       }
     }
 
     completions.push({
       label,
-      documentation,
-      detail: attr.description,
+      documentation: documentation.value ? documentation : undefined,
       kind: CompletionItemKind.Property,
       insertTextFormat: InsertTextFormat.Snippet,
       textEdit: TextEdit.replace(attrNameRange, snippet)

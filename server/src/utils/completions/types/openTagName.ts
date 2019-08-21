@@ -44,13 +44,13 @@ export function openTagName(
 
   return CompletionList.create(
     tags
-      // .filter(it => !it.deprecated)
+      .filter(it => !it.deprecated)
       .filter(it => it.name !== "*")
       .filter(
         it => /^[^_]/.test(it.name) || !/\/node_modules\//.test(it.filePath)
       )
       .map(it => {
-        const label = it.isNestedTag ? `@${it.name}` : it.name;
+        let label = it.isNestedTag ? `@${it.name}` : it.name;
         const fileForTag = it.template || it.renderer || it.filePath;
         const fileURIForTag = URI.file(fileForTag).toString();
         const relativeFileForTag = path.relative(
@@ -75,10 +75,24 @@ export function openTagName(
             : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](${fileURIForTag})`
         };
 
+        if (it.description) {
+          documentation.value += `\n\n${it.description}`;
+        }
+
         const autocomplete = it.autocomplete && it.autocomplete[0];
-        const moreInfo = autocomplete && autocomplete.descriptionMoreURL;
-        if (moreInfo) {
-          documentation.value += `\n\n[More Info](${moreInfo})`;
+
+        if (autocomplete) {
+          if (autocomplete.displayText) {
+            label = autocomplete.displayText;
+          }
+
+          if (autocomplete.description) {
+            documentation.value += `\n\n${autocomplete.description}`;
+          }
+
+          if (autocomplete.descriptionMoreURL) {
+            documentation.value += `\n\n[More Info](${autocomplete.descriptionMoreURL})`;
+          }
         }
 
         return {

@@ -19,6 +19,7 @@ export interface AttributeDefinition {
   autocomplete: Array<{
     displayText: string;
     snippet: string;
+    description: string;
     descriptionMoreURL?: string;
   }>;
 }
@@ -28,6 +29,7 @@ export interface TagDefinition {
   attributeGroups?: string[];
   patternAttributes?: AttributeDefinition[];
   attributes: { [x: string]: AttributeDefinition };
+  description?: string;
   nestedTags?: {
     [x: string]: TagDefinition & {
       isNestedTag: true;
@@ -38,6 +40,7 @@ export interface TagDefinition {
   autocomplete?: Array<{
     displayText: string;
     snippet: string;
+    description: string;
     descriptionMoreURL?: string;
   }>;
   html: boolean;
