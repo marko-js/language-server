@@ -13,13 +13,19 @@ import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup } from "../../compiler";
 import { shiftCompletionRanges, shiftPosition } from "../../utils";
 
+const services = {
+  css: getCSSLanguageService,
+  scss: getSCSSLanguageService,
+  less: getLESSLanguageService
+};
+
 export function styleContent(
   taglib: TagLibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.StyleContent
 ) {
-  const service = getService(event.language);
+  const service = services[event.language]();
   const startPos = document.positionAt(event.pos);
   const relativePos = shiftPosition(
     params.position,
@@ -39,15 +45,4 @@ export function styleContent(
   );
 
   return shiftCompletionRanges(completions, startPos);
-}
-
-function getService(language: "css" | "scss" | "less") {
-  switch (language) {
-    case "css":
-      return getCSSLanguageService();
-    case "scss":
-      return getSCSSLanguageService();
-    case "less":
-      return getLESSLanguageService();
-  }
 }
