@@ -13,9 +13,9 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "build": "lerna exec --parallel -- tsc",
+    "build": "tsc -b ./server ./clients/vscode",
     "format": "prettier \"**/*.{ts,js,json,md}\" --write",
-    "lint": "lerna exec -- tsc --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
+    "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
     "postinstall": "lerna bootstrap --hoist",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish",
