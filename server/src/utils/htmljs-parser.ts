@@ -21,9 +21,7 @@ export namespace ParserEvents {
     shorthandClassNames:
       | Array<{
           value: string;
-          rawParts:
-            | Array<{ text: string; pos: number; endPos: number }>
-            | undefined;
+          rawParts: Array<{ text: string; pos: number; endPos: number }>;
         }>
       | undefined;
     attributes: Attribute[];
@@ -181,7 +179,7 @@ export function parseUntilOffset(options: {
             const endPos = pos + content.length;
             const requestedLanguage =
               ev.shorthandClassNames &&
-              ev.shorthandClassNames[0].rawParts &&
+              ev.shorthandClassNames[0].rawParts[0] &&
               ev.shorthandClassNames[0].rawParts[0].text;
             const language =
               requestedLanguage && SUPPORTED_STYLE_LANGS[requestedLanguage]
