@@ -76,8 +76,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
-  },
-  "scripts": {
-    "publish": "npm i && vsce publish"
   }
 }
