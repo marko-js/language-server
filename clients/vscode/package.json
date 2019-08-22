@@ -1,5 +1,5 @@
 {
-  "name": "marko-vscode",
+  "name": "@marko/client-vscode",
   "description": "Marko Tooling for VSCode",
   "version": "0.2.3",
   "author": "Diego Berrocal",
