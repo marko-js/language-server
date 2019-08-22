@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.2...marko-vscode@0.2.3) (2019-08-22)
+
+
+### Bug Fixes
+
+* postpublish script ([dd44896](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/dd44896))
+
+
+
+
+
 ## [0.2.2](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.1...marko-vscode@0.2.2) (2019-08-22)
 
 
