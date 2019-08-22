@@ -1,0 +1,6 @@
+src
+CHANGELOG.md
+**/*.ts
+**/*.map
+**/*.d.ts
+**/tsconfig.json
