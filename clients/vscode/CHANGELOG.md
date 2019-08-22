@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.3...marko-vscode@0.2.4) (2019-08-22)
+
+
+### Bug Fixes
+
+* **marko-vscode:** add vscodeignore file ([b5ef205](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/b5ef205))
+
+
+
+
+
 ## [0.2.3](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.2...marko-vscode@0.2.3) (2019-08-22)
 
 
