@@ -5,7 +5,7 @@
   "author": "Diego Berrocal",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "bin": {
-    "marko-language-server": "./dist/bin/marko-language-server"
+    "marko-language-server": "./dist/bin.js"
   },
   "dependencies": {
     "@marko/prettyprint": "^2.1.2",
