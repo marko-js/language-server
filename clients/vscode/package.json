@@ -1,7 +1,7 @@
 {
   "name": "@marko/client-vscode",
   "description": "Marko Tooling for VSCode",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "author": "Diego Berrocal",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "activationEvents": [
