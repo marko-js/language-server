@@ -1,31 +1,24 @@
 {
-  "name": "marko-language-support",
-  "description": "Adds marko language support to many editors",
-  "author": "Diego Berrocal",
-  "license": "MIT",
-  "version": "0.1.0",
-  "publisher": "MarkoJS",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marko-js/marko-language-server/tree/master/"
+  "devDependencies": {
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/config-lerna-scopes": "^8.1.0",
+    "@types/node": "^12.7.1",
+    "husky": "^3.0.3",
+    "lerna": "^3.16.4",
+    "lint-staged": "^9.2.1",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3"
   },
   "scripts": {
-    "vscode:prepublish": "cd clients/vscode && npm run update-vscode && cd ../.. && npm run compile",
-    "compile": "tsc -b",
-    "watch": "tsc -b -w",
-    "prepublishOnly": "npm run compile",
-    "postinstall": "lerna bootstrap",
-    "compile:client": "tsc -p ./clients/vscode",
-    "watch:client": "tsc -w -p ./clients/vscode",
-    "compile:server": "tsc -p ./server/tsconfig.json",
-    "watch:server": "tsc -w -p ./server/tsconfig.json",
-    "clean": "rm -Rf clients/vscode/out && rm -Rf server/out"
-  },
-  "devDependencies": {
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^8.0.0",
-    "lerna": "^3.13.3",
-    "tslint": "^5.14.0",
-    "typescript": "^3.4.5"
+    "build": "tsc -b ./server ./clients/vscode",
+    "format": "prettier \"**/*.{ts,js,json,md}\" --write",
+    "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
+    "postinstall": "lerna bootstrap --hoist",
+    "prepublishOnly": "npm run build",
+    "publish": "lerna publish",
+    "watch": "npm run build -- -w"
   }
 }

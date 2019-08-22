@@ -110,6 +110,8 @@
 					<string>punctuation.separator.key-value.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=([,;]|\s|$))</string>
 			<key>patterns</key>
@@ -173,6 +175,8 @@
 					<string>punctuation.section.scope.begin.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>endCaptures</key>
@@ -269,6 +273,8 @@
 					<string>punctuation.separator.key-value.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=([,;]|\s|$))</string>
 			<key>patterns</key>
@@ -293,6 +299,8 @@
 					<string>punctuation.separator.key-value.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=[,;]|\s|/&gt;|&gt;)</string>
 			<key>patterns</key>
@@ -433,6 +441,8 @@
 					<string>meta.brace.round.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\)</string>
 			<key>endCaptures</key>
@@ -598,14 +608,16 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#component-style-scss</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#component-style-css</string>
 				</dict>
 			</array>
 		</dict>
 		<key>component-style-css</key>
 		<dict>
-			<key>applyEndPatternLast</key>
-			<integer>1</integer>
 			<key>begin</key>
 			<string>^(style)(?:\.([a-z]+))?\s+(\{)</string>
 			<key>beginCaptures</key>
@@ -626,6 +638,8 @@
 					<string>punctuation.section.scope.begin.css</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.css</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>endCaptures</key>
@@ -646,8 +660,6 @@
 		</dict>
 		<key>component-style-less</key>
 		<dict>
-			<key>applyEndPatternLast</key>
-			<integer>1</integer>
 			<key>begin</key>
 			<string>^(style)\.(less)\s+(\{)</string>
 			<key>beginCaptures</key>
@@ -665,9 +677,11 @@
 				<key>3</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.section.scope.begin.less</string>
+					<string>punctuation.section.scope.begin.css</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.css.less</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>endCaptures</key>
@@ -675,7 +689,7 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.section.scope.end.less</string>
+					<string>punctuation.section.scope.end.css</string>
 				</dict>
 			</dict>
 			<key>patterns</key>
@@ -683,6 +697,48 @@
 				<dict>
 					<key>include</key>
 					<string>source.css.less</string>
+				</dict>
+			</array>
+		</dict>
+		<key>component-style-scss</key>
+		<dict>
+			<key>begin</key>
+			<string>^(style)\.(scss)\s+(\{)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>storage.type.marko.scss</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>storage.modifier.marko.scss</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.begin.css</string>
+				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>source.css.scss</string>
+			<key>end</key>
+			<string>\}</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.end.css</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>source.css.scss</string>
 				</dict>
 			</array>
 		</dict>
@@ -737,6 +793,14 @@
 			<string>A JavaScript expression</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#comment-line</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-block</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#expression-common</string>
@@ -938,6 +1002,8 @@
 					<string>punctuation.section.scope.begin.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>endCaptures</key>
@@ -970,6 +1036,8 @@
 					<string>meta.brace.square.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\]</string>
 			<key>endCaptures</key>
@@ -1002,6 +1070,8 @@
 					<string>meta.brace.round.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\)</string>
 			<key>endCaptures</key>
@@ -1422,6 +1492,8 @@
 							<string>punctuation.section.scope.begin.js</string>
 						</dict>
 					</dict>
+					<key>contentName</key>
+					<string>source.js</string>
 					<key>end</key>
 					<string>\}</string>
 					<key>endCaptures</key>
@@ -1453,6 +1525,8 @@
 							<string>punctuation.section.scope.begin.js</string>
 						</dict>
 					</dict>
+					<key>contentName</key>
+					<string>source.js</string>
 					<key>end</key>
 					<string>\)</string>
 					<key>endCaptures</key>
@@ -1484,6 +1558,8 @@
 							<string>punctuation.section.scope.begin.js</string>
 						</dict>
 					</dict>
+					<key>contentName</key>
+					<string>source.js</string>
 					<key>end</key>
 					<string>\]</string>
 					<key>endCaptures</key>
@@ -1592,7 +1668,7 @@
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>source.js.embedded</string>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=\n)</string>
 			<key>patterns</key>
@@ -1723,6 +1799,8 @@
 			</dict>
 			<key>comment</key>
 			<string>${ } placeholder note: should be punctuation.section.embedded.js</string>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\}</string>
 			<key>name</key>
@@ -1783,6 +1861,8 @@
 			</dict>
 			<key>comment</key>
 			<string>Scriptlet block</string>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>%&gt;</string>
 			<key>patterns</key>
@@ -1818,7 +1898,7 @@
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>source.js.embedded</string>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=\n)</string>
 			<key>patterns</key>
@@ -2232,7 +2312,9 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>HTML style tag</string>
+			<string>HTML script tag</string>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(&lt;/)(script)?(&gt;)|/&gt;</string>
 			<key>endCaptures</key>
@@ -2423,6 +2505,8 @@
 			</dict>
 			<key>comment</key>
 			<string>HTML style tag</string>
+			<key>contentName</key>
+			<string>source.css</string>
 			<key>end</key>
 			<string>(&lt;/)(style)?(&gt;)|(/&gt;)</string>
 			<key>endCaptures</key>
@@ -2478,6 +2562,8 @@
 					<string>meta.pipe.js</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>\|</string>
 			<key>endCaptures</key>
@@ -2518,6 +2604,8 @@
 			<string>\s+-[-]+\s</string>
 			<key>comment</key>
 			<string>HTML script tag with nested JavaScript code</string>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>(?=\n)</string>
 			<key>patterns</key>
@@ -2544,6 +2632,8 @@
 			</dict>
 			<key>comment</key>
 			<string>HTML script tag with nested JavaScript code</string>
+			<key>contentName</key>
+			<string>source.js</string>
 			<key>end</key>
 			<string>^(?!(\1\s)|\s*$)</string>
 			<key>patterns</key>

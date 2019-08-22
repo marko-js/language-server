@@ -1,7 +1,4 @@
 {
   "version": "independent",
-  "packages": [
-    "clients/*",
-    "server"
-  ]
+  "packages": ["clients/*", "server"]
 }

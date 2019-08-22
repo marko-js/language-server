@@ -13,13 +13,7 @@
       "name": "Launch VSCode Client",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}/clients/vscode/"],
-      "internalConsoleOptions": "neverOpen",
-      "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/clients/vscode/out/**/*.js"],
-      "preLaunchTask": {
-        "type": "npm",
-        "script": "watch"
-      }
+      "outFiles": ["${workspaceRoot}/clients/vscode/dist/**/*.js"]
     },
     {
       "type": "node",
@@ -28,7 +22,7 @@
       "port": 6009,
       "restart": true,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/server/out/**/*.js"]
+      "outFiles": ["${workspaceRoot}/server/dist/**/*.js"]
     }
   ]
 }

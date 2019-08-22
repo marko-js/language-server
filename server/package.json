@@ -3,32 +3,38 @@
   "description": "Marko Language Server",
   "version": "0.1.0",
   "author": "Diego Berrocal",
-  "license": "MIT",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "bin": {
-    "marko-language-server": "./bin/marko-language-server"
+    "marko-language-server": "./dist/bin.js"
   },
-  "main": "./out/server.js",
+  "dependencies": {
+    "@marko/prettyprint": "^2.1.2",
+    "escape-string-regexp": "^2.0.0",
+    "lasso-package-root": "^1.0.1",
+    "marko": "^4.18.11",
+    "resolve-from": "^5.0.0",
+    "vscode-css-languageservice": "^4.0.2",
+    "vscode-languageserver": "^5.2.1",
+    "vscode-uri": "^2.0.3"
+  },
   "engines": {
     "node": ">=6"
   },
   "files": [
-    "bin",
-    "out"
+    "dist"
   ],
-  "homepage": "https://github.com/marko-js/marko-language-server/tree/master/server/README.md",
+  "homepage": "https://github.com/marko-js/language-server/tree/master/server/README.md",
+  "keywords": [
+    "autocomplete",
+    "intellisense",
+    "language",
+    "marko",
+    "server"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/marko-js/marko-language-server/tree/master/server"
-  },
-  "dependencies": {
-    "@marko/prettyprint": "^2.0.5",
-    "escape-string-regexp": "^1.0.5",
-    "lasso-package-root": "^1.0.1",
-    "marko": "^4.16.4",
-    "resolve-from": "^4.0.0",
-    "vscode-css-languageservice": "^3.0.13",
-    "vscode-languageserver": "^5.2.1",
-    "vscode-uri": "^1.0.6"
-  },
-  "scripts": {}
+    "url": "https://github.com/marko-js/language-server/tree/master/server"
+  }
 }
