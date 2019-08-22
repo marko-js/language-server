@@ -75,8 +75,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
-  },
-  "scripts": {
-    "vscode:prepublish": "cd ../../ && npm run build"
   }
 }

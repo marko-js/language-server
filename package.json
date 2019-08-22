@@ -10,15 +10,17 @@
     "prettier": "^1.18.2",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "vsce": "^1.66.0"
   },
   "scripts": {
     "build": "tsc -b ./server ./clients/vscode",
     "format": "prettier \"**/*.{ts,js,json,md}\" --write",
     "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
-    "postinstall": "lerna bootstrap --hoist",
+    "postinstall": "lerna bootstrap",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish",
+    "postpublish": "(cd ./clients/vscode && vsce publish)",
     "watch": "npm run build -- -w"
   }
 }
