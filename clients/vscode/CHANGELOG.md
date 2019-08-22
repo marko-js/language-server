@@ -1,0 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.0.3...marko-vscode@0.2.0) (2019-08-22)
+
+
+### Bug Fixes
+
+* gif url to include raw as query param ([1fdedd9](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/1fdedd9))
+
+
+### Features
+
+* javascript autocomplete and fixed issues with style ([9b84dd2](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/9b84dd2))
