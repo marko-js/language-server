@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.1...marko-vscode@0.2.2) (2019-08-22)
+
+
+### Bug Fixes
+
+* missing tslib dependency ([fa86608](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/fa86608))
+
+
+
+
+
 ## [0.2.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.0...marko-vscode@0.2.1) (2019-08-22)
 
 
