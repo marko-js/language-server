@@ -1,14 +1,14 @@
 import { URI } from "vscode-uri";
 import {
   Range,
-  Location,
+  LocationLink,
   TextDocument,
   TextDocumentPositionParams
 } from "vscode-languageserver";
 import escapeRegexp from "escape-string-regexp";
 import { TagLibLookup } from "../../compiler";
 import { ParserEvents } from "../../htmljs-parser";
-import { START_OF_FILE, createTextDocument } from "../../utils";
+import { START_OF_FILE, createTextDocument, rangeFromEvent } from "../../utils";
 
 export function attributeName(
   taglib: TagLibLookup,
@@ -33,9 +33,9 @@ export function attributeName(
 
   if (/\/marko(?:-tag)?\.json$/.test(attrEntryFile)) {
     const tagDefDoc = createTextDocument(attrEntryFile);
-    const match = new RegExp(`"@${escapeRegexp(event.name)}"`).exec(
-      tagDefDoc.getText()
-    );
+    const match = new RegExp(
+      `"@${escapeRegexp(event.name)}"\s*:\s*[^\r\n,]+`
+    ).exec(tagDefDoc.getText());
 
     if (match && match.index) {
       range = Range.create(
@@ -45,5 +45,10 @@ export function attributeName(
     }
   }
 
-  return Location.create(URI.file(attrEntryFile).toString(), range);
+  return LocationLink.create(
+    URI.file(attrEntryFile).toString(),
+    range,
+    range,
+    rangeFromEvent(document, event)
+  );
 }

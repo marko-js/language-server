@@ -90,15 +90,20 @@ export class MLS {
   };
 
   public doValidate(doc: TextDocument): Diagnostic[] {
-    const { path: filePath } = URI.parse(doc.uri);
-    const compiler = loadMarkoFile(filePath, "compiler");
+    const { fsPath, scheme } = URI.parse(doc.uri);
+
+    if (scheme !== "file") {
+      return [];
+    }
+
+    const compiler = loadMarkoFile(fsPath, "compiler");
     const diagnostics: Diagnostic[] = [];
     let context: any;
     let message: string;
     let errorThrown = false;
 
     try {
-      message = compiler.compile(doc.getText(), filePath, {
+      message = compiler.compile(doc.getText(), fsPath, {
         writeToDisk: false,
         onContext: (innerContext: any) => {
           context = innerContext;
@@ -117,7 +122,7 @@ export class MLS {
           error.message,
           DiagnosticSeverity.Error,
           error.code,
-          filePath
+          fsPath
         );
       });
     } else if (errorThrown) {
@@ -146,16 +151,16 @@ export class MLS {
     options
   }: DocumentFormattingParams): TextEdit[] => {
     const doc = this.documents.get(textDocument.uri)!;
-    const { path: filename } = URI.parse(textDocument.uri);
+    const { fsPath } = URI.parse(textDocument.uri);
 
     try {
       const text = doc.getText();
-      const markoCompiler = loadMarkoFile(filename, "compiler");
-      const CodeWriter = loadMarkoFile(filename, "compiler/CodeWriter");
+      const markoCompiler = loadMarkoFile(fsPath, "compiler");
+      const CodeWriter = loadMarkoFile(fsPath, "compiler/CodeWriter");
       const formatted = prettyPrint(text, {
         markoCompiler,
         CodeWriter,
-        filename,
+        filename: fsPath,
         indent: (options.insertSpaces ? " " : "\t").repeat(options.tabSize)
       });
 

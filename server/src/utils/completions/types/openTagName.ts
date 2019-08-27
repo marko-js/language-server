@@ -20,7 +20,7 @@ export function openTagName(
   params: CompletionParams,
   event: ParserEvents.OpenTagName
 ) {
-  const currentTemplateFilePath = URI.parse(document.uri).path;
+  const { fsPath: currentTemplateFilePath } = URI.parse(document.uri);
   let tags: TagDefinition[];
   const triggerCharacter =
     (params.context && params.context.triggerCharacter) || event.tagName[0];

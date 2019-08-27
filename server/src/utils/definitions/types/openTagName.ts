@@ -1,7 +1,7 @@
 import { URI } from "vscode-uri";
 import {
   Range,
-  Location,
+  LocationLink,
   TextDocument,
   TextDocumentPositionParams
 } from "vscode-languageserver";
@@ -11,7 +11,8 @@ import { TagLibLookup, TagDefinition } from "../../compiler";
 import {
   START_OF_FILE,
   findNonControlFlowParent,
-  createTextDocument
+  createTextDocument,
+  rangeFromEvent
 } from "../../utils";
 
 export function openTagName(
@@ -43,9 +44,9 @@ export function openTagName(
 
   if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
     const tagDefDoc = createTextDocument(tagEntryFile);
-    const match = new RegExp(`"<${escapeRegexp(event.tagName)}>"`).exec(
-      tagDefDoc.getText()
-    );
+    const match = new RegExp(
+      `"<${escapeRegexp(event.tagName)}>"\s*:\s*[^\r\n,]+`
+    ).exec(tagDefDoc.getText());
 
     if (match && match.index) {
       range = Range.create(
@@ -55,5 +56,10 @@ export function openTagName(
     }
   }
 
-  return Location.create(URI.file(tagEntryFile).toString(), range);
+  return LocationLink.create(
+    URI.file(tagEntryFile).toString(),
+    range,
+    range,
+    rangeFromEvent(document, event)
+  );
 }

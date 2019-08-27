@@ -11,7 +11,7 @@ import { ParserEvents } from "./htmljs-parser";
 
 export const START_OF_FILE = Range.create(
   Position.create(0, 0),
-  Position.create(0, 0)
+  Position.create(0, Number.MAX_SAFE_INTEGER)
 );
 
 export function findNonControlFlowParent(tag: ParserEvents.OpenTagName) {
