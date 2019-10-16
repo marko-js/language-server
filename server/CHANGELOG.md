@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.2.2...@marko/language-server@0.2.3) (2019-10-16)
+
+
+### Bug Fixes
+
+* clear Marko caches between completions ([677fc01](https://github.com/marko-js/language-server/tree/master/server/commit/677fc01))
+
+
+
+
+
 ## [0.2.2](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.2.1...@marko/language-server@0.2.2) (2019-08-27)
 
 
