@@ -30,7 +30,7 @@ export function activate() {
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     // Register the server for marko text documents
-    documentSelector: [{ scheme: "file", language: "marko" }],
+    documentSelector: [{ language: "marko" }],
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko"

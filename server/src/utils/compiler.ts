@@ -81,5 +81,7 @@ export function isCompatibleCompilerInstalled(dir: string) {
 
 export function getTagLibLookup(document: TextDocument): TagLibLookup {
   const { fsPath } = URI.parse(document.uri);
-  return loadMarkoFile(fsPath, "compiler").buildTaglibLookup(fsPath);
+  const compiler = loadMarkoFile(fsPath, "compiler");
+  compiler.clearCaches();
+  return compiler.buildTaglibLookup(fsPath);
 }
