@@ -201,13 +201,20 @@ export function parseUntilOffset(options: {
 
         let attrEndPos = ev.tagNameEndPos;
         for (const attr of ev.attributes) {
-          const attrStartPos = text.indexOf(attr.name, attrEndPos);
+          if (!attr.name) {
+            // Legacy dynamic attrs.
+            if (attr.value !== undefined) {
+              attrEndPos += attr.value.length;
+            }
+            continue;
+          }
 
           if (attr.name.slice(0, 3) === "...") {
             attrEndPos = attr.argument ? attr.argument.endPos + 1 : attr.endPos;
             continue;
           }
 
+          const attrStartPos = text.indexOf(attr.name, attrEndPos);
           const match = /:(.*)$/.exec(attr.name);
           const modifier = match && match[1];
           let name = attr.name;
