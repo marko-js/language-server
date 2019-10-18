@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.7...marko-vscode@0.3.0) (2019-10-18)
+
+
+### Features
+
+* **language-server:** add support for legacy dynamic attrs ([6ea0ddd](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/6ea0ddd))
+
+
+
+
+
 ## [0.2.7](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.6...marko-vscode@0.2.7) (2019-10-18)
 
 
