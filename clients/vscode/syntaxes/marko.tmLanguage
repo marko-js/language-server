@@ -118,7 +118,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -281,7 +281,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -457,7 +457,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -1018,7 +1018,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -1052,7 +1052,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -1086,7 +1086,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -1809,7 +1809,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
@@ -2578,7 +2578,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#expression</string>
+					<string>#js</string>
 				</dict>
 			</array>
 		</dict>
