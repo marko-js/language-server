@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.3.0...marko-vscode@0.3.1) (2019-10-18)
+
+
+### Bug Fixes
+
+* **language-server:** improve syntax highlighting for embedded js ([7f5760b](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/7f5760b))
+
+
+
+
+
 # [0.3.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.7...marko-vscode@0.3.0) (2019-10-18)
 
 
