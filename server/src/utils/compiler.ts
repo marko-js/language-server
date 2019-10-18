@@ -76,7 +76,7 @@ export function isCompatibleCompilerInstalled(dir: string) {
   const rootDir = lassoPackageRoot.getRootDir(dir);
   const packagePath =
     rootDir && resolveFrom.silent(rootDir, "marko/package.json");
-  return packagePath && /4\./.test(require(packagePath).version);
+  return packagePath && /^4\./.test(require(packagePath).version);
 }
 
 export function getTagLibLookup(document: TextDocument): TagLibLookup {
