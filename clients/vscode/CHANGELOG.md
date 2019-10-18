@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.7](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.6...marko-vscode@0.2.7) (2019-10-18)
+
+
+### Bug Fixes
+
+* **language-server:** issue with checking for older Marko versions ([c8315f8](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/c8315f8))
+
+
+
+
+
 ## [0.2.6](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.2.5...marko-vscode@0.2.6) (2019-10-16)
 
 
