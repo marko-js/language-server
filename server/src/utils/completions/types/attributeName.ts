@@ -23,7 +23,9 @@ export function attributeName(
   const attrNameRange = rangeFromEvent(document, event);
   const tagDef =
     !event.tag.tagNameExpression && taglib.getTag(event.tag.tagName);
+  const tagName = (tagDef && tagDef.name) || "*";
   const nestedTagAttrs: { [x: string]: boolean } = {};
+  const neverAttrs: Set<string> = new Set();
 
   if (tagDef && tagDef.nestedTags) {
     for (const key in tagDef.nestedTags) {
@@ -32,11 +34,18 @@ export function attributeName(
     }
   }
 
-  taglib.forEachAttribute((tagDef && tagDef.name) || "*", (attr, parent) => {
+  taglib.forEachAttribute(tagName, attr => {
+    if (attr.type === "never") {
+      neverAttrs.add(attr.name);
+    }
+  });
+
+  taglib.forEachAttribute(tagName, (attr, parent) => {
     if (
       attr.deprecated ||
       nestedTagAttrs[attr.name] ||
       attr.name === "*" ||
+      neverAttrs.has(attr.name) ||
       (attr.name[0] === "_" &&
         /\/node_modules\//.test(attr.filePath || parent.filePath))
     ) {
@@ -65,8 +74,6 @@ export function attributeName(
         case "boolean":
         case "flag":
           break;
-        case "never":
-          return;
         default:
           snippet += "=";
           break;
