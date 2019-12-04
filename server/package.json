@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Diego Berrocal",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "bin": {

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.4.0...@marko/language-server@0.4.1) (2019-12-04)
+
+
+### Bug Fixes
+
+* never attribute takes precidence ([93a1b44](https://github.com/marko-js/language-server/tree/master/server/commit/93a1b44))
+
+
+
+
+
 # [0.4.0](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.3.0...@marko/language-server@0.4.0) (2019-12-04)
 
 
