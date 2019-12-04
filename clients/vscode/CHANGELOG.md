@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.3.1...marko-vscode@0.4.0) (2019-12-04)
+
+
+### Features
+
+* add never type to attr def to allow blacklisting attrs ([0ef17c6](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/0ef17c6))
+
+
+
+
+
 ## [0.3.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.3.0...marko-vscode@0.3.1) (2019-10-18)
 
 
