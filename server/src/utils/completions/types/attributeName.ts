@@ -65,6 +65,8 @@ export function attributeName(
         case "boolean":
         case "flag":
           break;
+        case "never":
+          return;
         default:
           snippet += "=";
           break;
