@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.4.1...marko-vscode@0.5.0) (2020-08-18)
+
+
+### Features
+
+* **marko-vscode:** allow breakpoints in Marko files ([7d3b872](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/7d3b872))
+
+
+
+
+
 ## [0.4.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.4.0...marko-vscode@0.4.1) (2019-12-04)
 
 
