@@ -24,6 +24,11 @@
         "configuration": "./marko.configuration.json"
       }
     ],
+    "breakpoints": [
+      {
+        "language": "marko"
+      }
+    ],
     "grammars": [
       {
         "language": "marko",
