@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.5.0...marko-vscode@0.6.0) (2020-08-28)
+
+
+### Features
+
+* improve syntax highlighting ([abd890e](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/abd890e))
+
+
+
+
+
 # [0.5.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.4.1...marko-vscode@0.5.0) (2020-08-18)
 
 
