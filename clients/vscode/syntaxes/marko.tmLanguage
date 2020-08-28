@@ -232,8 +232,13 @@
 							<dict>
 								<key>1</key>
 								<dict>
-									<key>name</key>
-									<string>punctuation.separator.key-value.marko</string>
+									<key>patterns</key>
+									<array>
+										<dict>
+											<key>include</key>
+											<string>source.js</string>
+										</dict>
+									</array>
 								</dict>
 							</dict>
 							<key>comment</key>
@@ -1164,8 +1169,13 @@
 					<dict>
 						<key>1</key>
 						<dict>
-							<key>name</key>
-							<string>punctuation.separator.key-value.marko</string>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>source.js</string>
+								</dict>
+							</array>
 						</dict>
 					</dict>
 					<key>comment</key>
