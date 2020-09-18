@@ -224,6 +224,21 @@
 							<string>#javascript-args</string>
 						</dict>
 						<dict>
+							<key>begin</key>
+							<string>(?&lt;=\))\s*(?={)</string>
+							<key>comment</key>
+							<string>Shorthand method body</string>
+							<key>end</key>
+							<string>(?&lt;=})</string>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>source.js</string>
+								</dict>
+							</array>
+						</dict>
+						<dict>
 							<key>applyEndPatternLast</key>
 							<integer>1</integer>
 							<key>begin</key>
@@ -308,6 +323,10 @@
 					<string>Consume any whitespace after a comma</string>
 					<key>end</key>
 					<string>(?!\S)</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#invalid</string>
 				</dict>
 			</array>
 		</dict>
@@ -1228,6 +1247,21 @@
 				<dict>
 					<key>include</key>
 					<string>#javascript-args</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?&lt;=\))\s*(?={)</string>
+					<key>comment</key>
+					<string>Shorthand method body</string>
+					<key>end</key>
+					<string>(?&lt;=})</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.js</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
