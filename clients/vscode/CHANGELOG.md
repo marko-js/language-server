@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.7.0...marko-vscode@0.7.1) (2020-09-18)
+
+
+### Bug Fixes
+
+* **marko-vscode:** highlight event handlers ([b3e60a7](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/b3e60a7))
+
+
+
+
+
 # [0.7.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.6.1...marko-vscode@0.7.0) (2020-09-18)
 
 
