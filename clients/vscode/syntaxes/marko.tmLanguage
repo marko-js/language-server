@@ -224,21 +224,6 @@
 							<string>#javascript-args</string>
 						</dict>
 						<dict>
-							<key>begin</key>
-							<string>(?&lt;=\))\s*(?={)</string>
-							<key>comment</key>
-							<string>Shorthand method body</string>
-							<key>end</key>
-							<string>(?&lt;=})</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>source.js</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
 							<key>applyEndPatternLast</key>
 							<integer>1</integer>
 							<key>begin</key>
@@ -1007,7 +992,7 @@
 								(?:\b(?:new|typeof|instanceof|in)\b)| # Keyword operators
 								\&amp;\&amp;|\|\|| # Logical operators
 								[\^|&amp;]| # Bitwise operators
-								[!=]=|[!=]==|&lt;|&lt;[=&lt;]| # Comparison operators (Note you cannot use * or ? here)
+								[!=]=|[!=]==|&lt;|&lt;[=&lt;]|=&gt;| # Comparison operators (Note you cannot use * or ? here)
 								[?:]| # Ternary operators
 								[-+*%](?!-) # Arithmetic operators
 							)</string>
@@ -1175,6 +1160,22 @@
 					<array>
 						<dict>
 							<key>include</key>
+							<string>source.js#comment</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#destructuring-variable</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#var-single-variable</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#variable-initializer</string>
+						</dict>
+						<dict>
+							<key>include</key>
 							<string>#javascript-expression</string>
 						</dict>
 					</array>
@@ -1240,6 +1241,26 @@
 					<array>
 						<dict>
 							<key>include</key>
+							<string>source.js#comment</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#destructuring-parameter</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#parameter-name</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#type-annotation</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#variable-initializer</string>
+						</dict>
+						<dict>
+							<key>include</key>
 							<string>source.js</string>
 						</dict>
 					</array>
@@ -1247,21 +1268,6 @@
 				<dict>
 					<key>include</key>
 					<string>#javascript-args</string>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>(?&lt;=\))\s*(?={)</string>
-					<key>comment</key>
-					<string>Shorthand method body</string>
-					<key>end</key>
-					<string>(?&lt;=})</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>source.js</string>
-						</dict>
-					</array>
 				</dict>
 			</array>
 		</dict>
