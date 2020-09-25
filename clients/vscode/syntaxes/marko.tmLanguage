@@ -197,18 +197,23 @@
 					<key>applyEndPatternLast</key>
 					<integer>1</integer>
 					<key>begin</key>
-					<string>(?:\s+|,)(?:(key|on(?:-?[a-zA-Z_$]+)+|no-update(?:-body)?(?:-if)?)|([a-zA-Z_$]+(?:\-[a-zA-Z_$]+)*))</string>
+					<string>(?:\s+|,)(?:(key|on(?:-?[a-zA-Z_$]+)+|no-update(?:-body)?(?:-if)?)|([a-zA-Z_$]+(?:\-[a-zA-Z_$]+)*))(:[a-zA-Z_$]+(?:\-[a-zA-Z_$]+)*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>support.function.attribute-name.marko</string>
+							<string>support.type.attribute-name.marko</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
 							<string>entity.other.attribute-name.marko</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>support.function.attribute-name.marko</string>
 						</dict>
 					</dict>
 					<key>comment</key>
