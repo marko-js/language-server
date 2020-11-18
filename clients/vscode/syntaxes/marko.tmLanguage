@@ -1158,7 +1158,7 @@
 					<key>contentName</key>
 					<string>source.js</string>
 					<key>end</key>
-					<string>(?=\=|\s|&gt;|$|\||\()</string>
+					<string>(?=\=|\s|&gt;|$|\||\(|/)</string>
 					<key>name</key>
 					<string>meta.embedded.js</string>
 					<key>patterns</key>
@@ -1634,7 +1634,7 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|await|let|const|effect)(?=\b)</string>
+									<string>(for|if|while|else-if|else|macro|await|let|const|effect|provide|receive|import|yield)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>
