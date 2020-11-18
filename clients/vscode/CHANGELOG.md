@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.2](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.1...marko-vscode@0.8.2) (2020-11-18)
+
+
+### Bug Fixes
+
+* **marko-vscode:** improve tag var highlighting ([0372458](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/0372458))
+
+
+
+
+
 ## [0.8.1](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.0...marko-vscode@0.8.1) (2020-09-25)
 
 
