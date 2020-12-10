@@ -1165,19 +1165,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.js#comment</string>
-						</dict>
-						<dict>
-							<key>include</key>
 							<string>source.js#destructuring-variable</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#var-single-variable</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#variable-initializer</string>
 						</dict>
 						<dict>
 							<key>include</key>
@@ -1246,23 +1234,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.js#comment</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#destructuring-parameter</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#parameter-name</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#type-annotation</string>
-						</dict>
-						<dict>
-							<key>include</key>
-							<string>source.js#variable-initializer</string>
+							<string>source.js#function-parameters-body</string>
 						</dict>
 						<dict>
 							<key>include</key>
@@ -1634,7 +1606,7 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|await|let|const|effect|provide|receive|import|yield)(?=\b)</string>
+									<string>(for|if|while|else-if|else|macro|tag|await|let|const|effect|mount|set|get|import|yield)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>
