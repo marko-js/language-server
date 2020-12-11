@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.4](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.3...marko-vscode@0.8.4) (2020-12-11)
+
+
+### Bug Fixes
+
+* **marko-vscode:** improve regexp highlighting ([0183e76](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/0183e76))
+
+
+
+
+
 ## [0.8.3](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.2...marko-vscode@0.8.3) (2020-12-10)
 
 
