@@ -980,11 +980,25 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(?=/)(?!&lt;[\]})A-Z0-9.&lt;%]\s*/)(?!/?&gt;|$)</string>
+					<string>/(?!&lt;[\]})A-Z0-9.&lt;%]\s*/)(?!/?&gt;|$)</string>
+					<key>captures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>string.regexp.js</string>
+						</dict>
+					</dict>
+					<key>contentName</key>
+					<string>source.js</string>
 					<key>end</key>
-					<string>(?&lt;=/)</string>
+					<string>/[gimsuy]*</string>
 					<key>patterns</key>
 					<array>
+						<dict>
+							<key>include</key>
+							<string>source.js#regexp</string>
+						</dict>
 						<dict>
 							<key>include</key>
 							<string>source.js</string>
@@ -1163,6 +1177,14 @@
 					<string>meta.embedded.js</string>
 					<key>patterns</key>
 					<array>
+						<dict>
+							<key>comment</key>
+							<string>Match identifiers</string>
+							<key>match</key>
+							<string>[a-zA-Z$_][0-9a-zA-Z$_]*</string>
+							<key>name</key>
+							<string>variable.other.constant.object.js</string>
+						</dict>
 						<dict>
 							<key>include</key>
 							<string>source.js#destructuring-variable</string>
