@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.4...marko-vscode@0.9.0) (2021-02-05)
+
+
+### Features
+
+* update with latest vscode deps, some refactoring ([006238a](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/006238aa8d972b0a3683a0eaf0038d37af5235fc))
+
+
+
+
+
 ## [0.8.4](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.3...marko-vscode@0.8.4) (2020-12-11)
 
 

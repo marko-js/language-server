@@ -1,23 +1,23 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "author": "Diego Berrocal",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "bin": {
     "marko-language-server": "./dist/bin.js"
   },
   "dependencies": {
-    "@types/vscode": "^1.53.0",
     "@marko/prettyprint": "^3.0.0",
+    "@types/vscode": "^1.53.0",
     "escape-string-regexp": "^4.0.0",
     "lasso-package-root": "^1.0.1",
     "marko": "^4.23.12",
     "resolve-from": "^5.0.0",
     "tslib": "^2.1.0",
-    "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-css-languageservice": "^5.1.0",
     "vscode-languageserver": "^7.0.0",
+    "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-uri": "^3.0.2"
   },
   "files": [

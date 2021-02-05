@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.4.1...@marko/language-server@0.5.0) (2021-02-05)
+
+
+### Features
+
+* update with latest vscode deps, some refactoring ([006238a](https://github.com/marko-js/language-server/tree/master/server/commit/006238aa8d972b0a3683a0eaf0038d37af5235fc))
+
+
+
+
+
 ## [0.4.1](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.4.0...@marko/language-server@0.4.1) (2019-12-04)
 
 
