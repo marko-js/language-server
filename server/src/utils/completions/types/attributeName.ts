@@ -6,9 +6,9 @@ import {
   MarkupKind,
   MarkupContent,
   InsertTextFormat,
-  TextDocument,
-  TextEdit
+  TextEdit,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup } from "../../compiler";
 import { rangeFromEvent } from "../../utils";
@@ -34,7 +34,7 @@ export function attributeName(
     }
   }
 
-  taglib.forEachAttribute(tagName, attr => {
+  taglib.forEachAttribute(tagName, (attr) => {
     if (attr.type === "never") {
       neverAttrs.add(attr.name);
     }
@@ -55,7 +55,7 @@ export function attributeName(
     const type = attr.type || (attr.html ? "string" : null);
     const documentation: MarkupContent = {
       kind: MarkupKind.Markdown,
-      value: attr.description || ""
+      value: attr.description || "",
     };
     let label = attr.name;
     let snippet = attr.name;
@@ -103,7 +103,7 @@ export function attributeName(
       documentation: documentation.value ? documentation : undefined,
       kind: CompletionItemKind.Property,
       insertTextFormat: InsertTextFormat.Snippet,
-      textEdit: TextEdit.replace(attrNameRange, snippet)
+      textEdit: TextEdit.replace(attrNameRange, snippet),
     });
   });
 

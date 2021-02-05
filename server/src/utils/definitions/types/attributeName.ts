@@ -2,9 +2,9 @@ import { URI } from "vscode-uri";
 import {
   Range,
   LocationLink,
-  TextDocument,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import escapeRegexp from "escape-string-regexp";
 import { TagLibLookup } from "../../compiler";
 import { ParserEvents } from "../../htmljs-parser";

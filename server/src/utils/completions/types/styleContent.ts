@@ -1,12 +1,9 @@
-import {
-  Position,
-  CompletionParams,
-  TextDocument
-} from "vscode-languageserver";
+import { Position, CompletionParams } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   getCSSLanguageService,
   getSCSSLanguageService,
-  getLESSLanguageService
+  getLESSLanguageService,
 } from "vscode-css-languageservice";
 
 import { ParserEvents } from "../../htmljs-parser";
@@ -16,7 +13,7 @@ import { shiftCompletionRanges, shiftPosition } from "../../utils";
 const services = {
   css: getCSSLanguageService,
   scss: getSCSSLanguageService,
-  less: getLESSLanguageService
+  less: getLESSLanguageService,
 };
 
 export function styleContent(

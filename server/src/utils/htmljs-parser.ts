@@ -19,10 +19,10 @@ export namespace ParserEvents {
     argument: { pos: number; endPos: number; value: string } | undefined;
     params: { pos: number; endPos: number; value: string } | undefined;
     shorthandClassNames:
-      | Array<{
+      | {
           value: string;
-          rawParts: Array<{ text: string; pos: number; endPos: number }>;
-        }>
+          rawParts: { text: string; pos: number; endPos: number }[];
+        }[]
       | undefined;
     attributes: Attribute[];
     nestedTags: { [x: string]: Tag } | undefined;
@@ -134,7 +134,7 @@ export namespace ParserEvents {
 const SUPPORTED_STYLE_LANGS = {
   css: true,
   scss: true,
-  less: true
+  less: true,
 };
 
 export function parseUntilOffset(options: {
@@ -192,7 +192,7 @@ export function parseUntilOffset(options: {
               block: true,
               content: text.slice(pos, endPos),
               pos,
-              endPos
+              endPos,
             });
 
             return;
@@ -230,7 +230,7 @@ export function parseUntilOffset(options: {
                 name,
                 modifier,
                 pos: modifierStartPos,
-                endPos: modifierEndPos
+                endPos: modifierEndPos,
               })
             ) {
               return;
@@ -245,7 +245,7 @@ export function parseUntilOffset(options: {
               tag: ev,
               name,
               pos: attrStartPos,
-              endPos: attrNameEndPos
+              endPos: attrNameEndPos,
             })
           ) {
             return;
@@ -261,7 +261,7 @@ export function parseUntilOffset(options: {
                 name,
                 value: text.slice(valueStartPos, attrEndPos), // We use the raw value to ignore things like non standard placeholders.
                 pos: valueStartPos,
-                endPos: attr.endPos
+                endPos: attr.endPos,
               })
             ) {
               break;
@@ -287,7 +287,7 @@ export function parseUntilOffset(options: {
               block: false,
               content: ev.value,
               pos: ev.pos,
-              endPos: ev.endPos
+              endPos: ev.endPos,
             });
 
             return;
@@ -299,13 +299,13 @@ export function parseUntilOffset(options: {
       onCloseTag(ev: ParserEvents.CloseTag) {
         parentTag = parentTag && parentTag.parent;
         finish(ev);
-      }
+      },
     },
     {
       isOpenTagOnly(ev: string) {
         const tagDef = taglib.getTag(ev);
         return tagDef && tagDef.openTagOnly;
-      }
+      },
     }
   );
 

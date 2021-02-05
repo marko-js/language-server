@@ -3,8 +3,8 @@ import {
   CompletionList,
   CompletionItemKind,
   InsertTextFormat,
-  TextDocument
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup } from "../../compiler";
 
@@ -26,7 +26,7 @@ export function openTag(
       label: closingTagStr,
       kind: CompletionItemKind.Class,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText: `\n\t$0\n${closingTagStr}`
-    }
+      insertText: `\n\t$0\n${closingTagStr}`,
+    },
   ]);
 }

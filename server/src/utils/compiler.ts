@@ -2,7 +2,7 @@ import path from "path";
 import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
-import { TextDocument } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 export interface AttributeDefinition {
   allowExpressions: boolean;
@@ -16,12 +16,12 @@ export interface AttributeDefinition {
   defaultValue: unknown;
   description?: string;
   deprecated: boolean;
-  autocomplete: Array<{
+  autocomplete: {
     displayText: string;
     snippet: string;
     description: string;
     descriptionMoreURL?: string;
-  }>;
+  }[];
 }
 export interface TagDefinition {
   dir: string;
@@ -37,12 +37,12 @@ export interface TagDefinition {
       targetProperty: string;
     };
   };
-  autocomplete?: Array<{
+  autocomplete?: {
     displayText: string;
     snippet: string;
     description: string;
     descriptionMoreURL?: string;
-  }>;
+  }[];
   html: boolean;
   name: string;
   taglibId: string;
@@ -66,7 +66,7 @@ export interface TagLibLookup {
 }
 
 export function loadMarkoFile(dir: string, request: string) {
-  const fullRequest = path.join("marko/src", request);
+  const fullRequest = path.join("marko", "src", request);
   return require(isCompatibleCompilerInstalled(dir)
     ? resolveFrom(dir, fullRequest)
     : fullRequest);

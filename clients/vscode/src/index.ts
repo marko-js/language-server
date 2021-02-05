@@ -2,8 +2,8 @@ import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
-  TransportKind
-} from "vscode-languageclient";
+  TransportKind,
+} from "vscode-languageclient/node";
 
 let client: LanguageClient;
 const serverModule = require.resolve("@marko/language-server");
@@ -12,8 +12,8 @@ export function activate() {
   // The debug options for the server
   // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
   const debugOptions = {
-    execArgv: ["--nolazy", "--inspect=6009"],
-    env: { DEBUG: true }
+    execArgv: ["--nolazy", "--inspect=6009", "--enable-source-maps"],
+    env: { DEBUG: true },
   };
 
   // If the extension is launched in debug mode then the debug server options are used
@@ -23,8 +23,8 @@ export function activate() {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: debugOptions
-    }
+      options: debugOptions,
+    },
   };
 
   // Options to control the language client
@@ -33,8 +33,8 @@ export function activate() {
     documentSelector: [{ language: "marko" }],
     synchronize: {
       // Synchronize the setting section 'marko' to the server
-      configurationSection: "marko"
-    }
+      configurationSection: "marko",
+    },
   };
 
   // Create the language client and start the client.

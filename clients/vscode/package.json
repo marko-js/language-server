@@ -62,15 +62,12 @@
   },
   "dependencies": {
     "@marko/language-server": "^0.4.1",
-    "tslib": "^1.10.0",
-    "vscode-languageclient": "^5.2.1"
-  },
-  "devDependencies": {
-    "vscode": "^1.1.36"
+    "tslib": "^2.1.0",
+    "vscode-languageclient": "^7.0.0"
   },
   "displayName": "Marko VSCode",
   "engines": {
-    "vscode": "^1.23.0"
+    "vscode": "^1.52.0"
   },
   "homepage": "https://github.com/marko-js/language-server/tree/master/clients/vscode/README.md",
   "icon": "img/marko.png",

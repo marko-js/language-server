@@ -6,10 +6,10 @@ import {
   CompletionItem,
   CompletionList,
   InsertTextFormat,
-  TextDocument,
   MarkupKind,
-  TextEdit
+  TextEdit,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup, TagDefinition } from "../../compiler";
 import { rangeFromEvent, findNonControlFlowParent } from "../../utils";
@@ -39,17 +39,17 @@ export function openTagName(
         Object.values(parentTagDef.nestedTags)) ||
       [];
   } else {
-    tags = taglib.getTagsSorted().filter(it => !it.isNestedTag);
+    tags = taglib.getTagsSorted().filter((it) => !it.isNestedTag);
   }
 
   return CompletionList.create(
     tags
-      .filter(it => !it.deprecated)
-      .filter(it => it.name !== "*")
+      .filter((it) => !it.deprecated)
+      .filter((it) => it.name !== "*")
       .filter(
-        it => /^[^_]/.test(it.name) || !/\/node_modules\//.test(it.filePath)
+        (it) => /^[^_]/.test(it.name) || !/\/node_modules\//.test(it.filePath)
       )
-      .map(it => {
+      .map((it) => {
         let label = it.isNestedTag ? `@${it.name}` : it.name;
         const fileForTag = it.template || it.renderer || it.filePath;
         const fileURIForTag = URI.file(fileForTag).toString();
@@ -72,7 +72,7 @@ export function openTagName(
             ? isCoreTag
               ? `Core Marko [<${it.name}>](${fileURIForTag}) tag.`
               : `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
-            : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](${fileURIForTag})`
+            : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](${fileURIForTag})`,
         };
 
         if (it.description) {
@@ -103,7 +103,7 @@ export function openTagName(
           textEdit: TextEdit.replace(
             tagNameRange,
             (autocomplete && autocomplete.snippet) || label
-          )
+          ),
         } as CompletionItem;
       })
   );

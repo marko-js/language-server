@@ -3,9 +3,9 @@ import {
   CompletionList,
   CompletionItemKind,
   InsertTextFormat,
-  TextDocument,
-  TextEdit
+  TextEdit,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup } from "../../compiler";
 import { rangeFromEvent } from "../../utils";
@@ -27,7 +27,10 @@ export function closeTag(
       label: closingTagStr,
       kind: CompletionItemKind.Class,
       insertTextFormat: InsertTextFormat.Snippet,
-      textEdit: TextEdit.replace(rangeFromEvent(document, event), closingTagStr)
-    }
+      textEdit: TextEdit.replace(
+        rangeFromEvent(document, event),
+        closingTagStr
+      ),
+    },
   ]);
 }

@@ -2,9 +2,9 @@ import { URI } from "vscode-uri";
 import {
   Range,
   LocationLink,
-  TextDocument,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import escapeRegexp from "escape-string-regexp";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup, TagDefinition } from "../../compiler";
@@ -12,7 +12,7 @@ import {
   START_OF_FILE,
   findNonControlFlowParent,
   createTextDocument,
-  rangeFromEvent
+  rangeFromEvent,
 } from "../../utils";
 
 export function openTagName(

@@ -2,16 +2,17 @@ import fs from "fs";
 import { URI } from "vscode-uri";
 import {
   CompletionList,
-  TextDocument,
   TextEdit,
   Position,
-  Range
+  Range,
+  InsertReplaceEdit,
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "./htmljs-parser";
 
 export const START_OF_FILE = Range.create(
   Position.create(0, 0),
-  Position.create(0, Number.MAX_SAFE_INTEGER)
+  Position.create(0, 0)
 );
 
 export function findNonControlFlowParent(tag: ParserEvents.OpenTagName) {
@@ -45,20 +46,34 @@ export function createTextDocument(filename: string): TextDocument {
 }
 
 export function shiftCompletionRanges(list: CompletionList, offset: Position) {
-  list.items.forEach(item => {
+  list.items.forEach((item) => {
     if (item.additionalTextEdits) {
-      item.additionalTextEdits.forEach(edit => shiftRange(edit, offset));
+      item.additionalTextEdits.forEach((edit) =>
+        shiftRange(edit.range, offset)
+      );
     }
 
     if (item.textEdit) {
-      shiftRange(item.textEdit, offset);
+      shiftEdit(item.textEdit, offset);
     }
   });
 
   return list;
 }
 
-export function shiftRange({ range }: TextEdit, offset: Position) {
+export function shiftEdit(
+  edit: TextEdit | InsertReplaceEdit,
+  offset: Position
+) {
+  if (TextEdit.is(edit)) {
+    shiftRange(edit.range, offset);
+  } else {
+    shiftRange(edit.insert, offset);
+    shiftRange(edit.replace, offset);
+  }
+}
+
+export function shiftRange(range: Range | undefined, offset: Position) {
   if (range) {
     shiftPosition(range.start, offset);
     shiftPosition(range.end, offset);
