@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["es2017"],
+    "lib": ["es2017", "DOM"],
     "pretty": true,
-    "target": "es5",
+    "target": "es2017",
+    "module": "CommonJS",
     "sourceMap": true,
     "declaration": true,
     "stripInternal": true,

@@ -13,16 +13,19 @@ export function attributeModifier(
   params: CompletionParams,
   event: ParserEvents.OpenTagName
 ) {
-  return CompletionList.create([
-    {
-      label: "scoped",
-      kind: CompletionItemKind.Keyword,
-      detail: "Use to prefix with a unique ID",
-    },
-    {
-      label: "no-update",
-      kind: CompletionItemKind.Keyword,
-      detail: "Use to skip future updates to this attribute",
-    },
-  ]);
+  return CompletionList.create(
+    [
+      {
+        label: "scoped",
+        kind: CompletionItemKind.Keyword,
+        detail: "Use to prefix with a unique ID",
+      },
+      {
+        label: "no-update",
+        kind: CompletionItemKind.Keyword,
+        detail: "Use to skip future updates to this attribute",
+      },
+    ],
+    true
+  );
 }

@@ -21,12 +21,15 @@ export function openTag(
 
   const closingTagStr = `</${event.tagName[0] === "$" ? "" : event.tagName}>`;
 
-  return CompletionList.create([
-    {
-      label: closingTagStr,
-      kind: CompletionItemKind.Class,
-      insertTextFormat: InsertTextFormat.Snippet,
-      insertText: `\n\t$0\n${closingTagStr}`,
-    },
-  ]);
+  return CompletionList.create(
+    [
+      {
+        label: closingTagStr,
+        kind: CompletionItemKind.Class,
+        insertTextFormat: InsertTextFormat.Snippet,
+        insertText: `\n\t$0\n${closingTagStr}`,
+      },
+    ],
+    true
+  );
 }

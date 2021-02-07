@@ -35,13 +35,9 @@ Server implementation can be found [here](server).
 - [`npm i -g @marko/language-server`](https://www.npmjs.com/package/@marko/language-server)
 - run `LSP: Enable Language Server` from the command palette and register `marko-language-server`.
 
-### Atom (coming soon)
+### Atom
 
-- want to contribute? [atom-languageclient](https://github.com/atom/atom-languageclient)
-
-### Brackets (coming soon)
-
-- want to contribute? [creating an lsp extension](https://github.com/adobe/brackets/wiki/Language-Server-Protocol-Support-in-Brackets#creating-an-lsp-extension)
+- Marko has an [official plugin for Atom](https://github.com/marko-js/atom-language-marko) not based on the Language Server.
 
 ## Development
 

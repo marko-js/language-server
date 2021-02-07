@@ -107,5 +107,5 @@ export function attributeName(
     });
   });
 
-  return CompletionList.create(completions);
+  return CompletionList.create(completions, true);
 }

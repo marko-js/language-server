@@ -6,21 +6,6 @@
 	<array>
 		<string>marko</string>
 	</array>
-	<key>injections</key>
-	<dict>
-		<key>L:^text.marko meta.embedded.js</key>
-		<dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>match</key>
-					<string>(?&lt;=\b)(input|state|out|component)(?=\b)</string>
-					<key>name</key>
-					<string>variable.other.constant.object.js</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
 	<key>name</key>
 	<string>Marko</string>
 	<key>patterns</key>
@@ -401,6 +386,66 @@
 			<key>name</key>
 			<string>meta.section.marko-html-line</string>
 		</dict>
+		<key>concise-open-tag-content</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#tag-before-attrs</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>\s*\[</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.section.scope.begin.marko</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>]</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.section.scope.end.marko</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#attrs</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#invalid</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?!^)(?= )</string>
+					<key>end</key>
+					<string>(?=--)|(?&lt;!,)(?=\n)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#attrs</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#invalid</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
 		<key>concise-script-block</key>
 		<dict>
 			<key>begin</key>
@@ -575,7 +620,7 @@
 							<array>
 								<dict>
 									<key>include</key>
-									<string>#open-tag-content</string>
+									<string>#concise-open-tag-content</string>
 								</dict>
 								<dict>
 									<key>include</key>
@@ -598,7 +643,7 @@
 							<array>
 								<dict>
 									<key>include</key>
-									<string>#open-tag-content</string>
+									<string>#concise-open-tag-content</string>
 								</dict>
 								<dict>
 									<key>include</key>
@@ -621,7 +666,7 @@
 							<array>
 								<dict>
 									<key>include</key>
-									<string>#open-tag-content</string>
+									<string>#concise-open-tag-content</string>
 								</dict>
 								<dict>
 									<key>include</key>
@@ -632,69 +677,6 @@
 							<string>(?=^\1\s+(\S|$))</string>
 						</dict>
 					</array>
-					<key>repository</key>
-					<dict>
-						<key>open-tag-content</key>
-						<dict>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#tag-before-attrs</string>
-								</dict>
-								<dict>
-									<key>begin</key>
-									<string>\s*\[</string>
-									<key>beginCaptures</key>
-									<dict>
-										<key>0</key>
-										<dict>
-											<key>name</key>
-											<string>punctuation.section.scope.begin.marko</string>
-										</dict>
-									</dict>
-									<key>end</key>
-									<string>]</string>
-									<key>endCaptures</key>
-									<dict>
-										<key>0</key>
-										<dict>
-											<key>name</key>
-											<string>punctuation.section.scope.end.marko</string>
-										</dict>
-									</dict>
-									<key>patterns</key>
-									<array>
-										<dict>
-											<key>include</key>
-											<string>#attrs</string>
-										</dict>
-										<dict>
-											<key>include</key>
-											<string>#invalid</string>
-										</dict>
-									</array>
-								</dict>
-								<dict>
-									<key>begin</key>
-									<string>(?!^)(?= )</string>
-									<key>end</key>
-									<string>(?=--)|(?&lt;!,)(?=\n)</string>
-									<key>patterns</key>
-									<array>
-										<dict>
-											<key>include</key>
-											<string>#attrs</string>
-										</dict>
-										<dict>
-											<key>include</key>
-											<string>#invalid</string>
-										</dict>
-									</array>
-								</dict>
-							</array>
-						</dict>
-					</dict>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -1073,6 +1055,31 @@
 				<dict>
 					<key>include</key>
 					<string>source.js</string>
+				</dict>
+			</array>
+		</dict>
+		<key>open-tag-content</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#tag-before-attrs</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?= )</string>
+					<key>comment</key>
+					<string>Attributes begin after the first space within the tag name</string>
+					<key>end</key>
+					<string>(?=/?&gt;)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#attrs</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
@@ -1553,34 +1560,6 @@
 					</array>
 				</dict>
 			</array>
-			<key>repository</key>
-			<dict>
-				<key>open-tag-content</key>
-				<dict>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>#tag-before-attrs</string>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(?= )</string>
-							<key>comment</key>
-							<string>Attributes begin after the first space within the tag name</string>
-							<key>end</key>
-							<string>(?=/?&gt;)</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#attrs</string>
-								</dict>
-							</array>
-						</dict>
-					</array>
-				</dict>
-			</dict>
 		</dict>
 		<key>tag-name</key>
 		<dict>
@@ -1636,7 +1615,7 @@
 									<key>comment</key>
 									<string>Attribute tag.</string>
 									<key>match</key>
-									<string>@.*</string>
+									<string>@.+</string>
 									<key>name</key>
 									<string>entity.other.attribute-name.marko</string>
 								</dict>
@@ -1644,7 +1623,7 @@
 									<key>comment</key>
 									<string>Native or userland tag.</string>
 									<key>match</key>
-									<string>.*</string>
+									<string>.+</string>
 									<key>name</key>
 									<string>entity.name.tag.marko</string>
 								</dict>

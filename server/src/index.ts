@@ -14,17 +14,20 @@ import {
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import prettyPrint from "@marko/prettyprint";
+import { isDeepStrictEqual } from "util";
 import { getTagLibLookup, loadMarkoFile } from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import * as completionTypes from "./utils/completions";
 import * as definitionTypes from "./utils/definitions";
 
 const connection = createConnection(ProposedFeatures.all);
+const prevDiagnostics = new WeakMap<TextDocument, Diagnostic[]>();
+const diagnosticTimeouts = new WeakMap<
+  TextDocument,
+  ReturnType<typeof setTimeout>
+>();
 const documents = new TextDocuments(TextDocument);
 const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
-const pendingValidationRequests: {
-  [uri: string]: ReturnType<typeof setTimeout>;
-} = {};
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
@@ -34,7 +37,7 @@ process.on("unhandledRejection", console.error);
 connection.onInitialize(() => {
   return {
     capabilities: {
-      textDocumentSync: TextDocumentSyncKind.Full,
+      textDocumentSync: TextDocumentSyncKind.Incremental,
       documentFormattingProvider: true,
       definitionProvider: true,
       completionProvider: {
@@ -61,7 +64,7 @@ connection.onCompletion(
     const handler = event && completionTypes[event.type];
     return (
       (handler && handler(taglib, doc, params, event)) ||
-      CompletionList.create()
+      CompletionList.create([], true)
     );
   }
 );
@@ -86,8 +89,8 @@ connection.onDocumentFormatting(
 
     try {
       const text = doc.getText();
-      const markoCompiler = loadMarkoFile(fsPath, "compiler");
-      const CodeWriter = loadMarkoFile(fsPath, "compiler/CodeWriter");
+      const markoCompiler = require("marko/dist/compiler");
+      const CodeWriter = require("marko/dist/compiler/CodeWriter");
       const formatted = prettyPrint(text, {
         markoCompiler,
         CodeWriter,
@@ -114,14 +117,24 @@ documents.onDidChangeContent((change) => {
 });
 
 function queueValidation(doc: TextDocument) {
-  clearTimeout(pendingValidationRequests[doc.uri]);
-  pendingValidationRequests[doc.uri] = setTimeout(() => {
-    delete pendingValidationRequests[doc.uri];
-    connection.sendDiagnostics({
-      uri: doc.uri,
-      diagnostics: doValidate(doc),
-    });
-  }, 800);
+  clearTimeout(diagnosticTimeouts.get(doc)!);
+  diagnosticTimeouts.set(
+    doc,
+    setTimeout(() => {
+      const prevDiag = prevDiagnostics.get(doc);
+      const nextDiag = doValidate(doc);
+
+      if (prevDiag && isDeepStrictEqual(prevDiag, nextDiag)) {
+        return;
+      }
+
+      prevDiagnostics.set(doc, nextDiag);
+      connection.sendDiagnostics({
+        uri: doc.uri,
+        diagnostics: nextDiag,
+      });
+    }, 800)
+  );
 }
 
 function doValidate(doc: TextDocument): Diagnostic[] {
@@ -172,7 +185,7 @@ function doValidate(doc: TextDocument): Diagnostic[] {
           Range.create(line, col, line, col),
           matches[4],
           DiagnosticSeverity.Error,
-          "",
+          undefined,
           matches[1]
         )
       );

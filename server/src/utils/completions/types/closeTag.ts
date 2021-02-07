@@ -22,15 +22,18 @@ export function closeTag(
 
   const closingTagStr = `</${event.tagName}>`;
 
-  return CompletionList.create([
-    {
-      label: closingTagStr,
-      kind: CompletionItemKind.Class,
-      insertTextFormat: InsertTextFormat.Snippet,
-      textEdit: TextEdit.replace(
-        rangeFromEvent(document, event),
-        closingTagStr
-      ),
-    },
-  ]);
+  return CompletionList.create(
+    [
+      {
+        label: closingTagStr,
+        kind: CompletionItemKind.Class,
+        insertTextFormat: InsertTextFormat.Snippet,
+        textEdit: TextEdit.replace(
+          rangeFromEvent(document, event),
+          closingTagStr
+        ),
+      },
+    ],
+    true
+  );
 }

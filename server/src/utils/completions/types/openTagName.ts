@@ -105,6 +105,7 @@ export function openTagName(
             (autocomplete && autocomplete.snippet) || label
           ),
         } as CompletionItem;
-      })
+      }),
+    true
   );
 }
