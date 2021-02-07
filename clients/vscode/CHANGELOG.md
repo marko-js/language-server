@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.9.0...marko-vscode@0.10.0) (2021-02-07)
+
+
+### Features
+
+* improve support for future atom client ([54edd9e](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/54edd9e4d0c27938714b3241a01a9c5bf03e5134))
+
+
+
+
+
 # [0.9.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.8.4...marko-vscode@0.9.0) (2021-02-05)
 
 

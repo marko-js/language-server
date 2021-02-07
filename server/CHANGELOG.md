@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.5.0...@marko/language-server@0.6.0) (2021-02-07)
+
+
+### Features
+
+* improve support for future atom client ([54edd9e](https://github.com/marko-js/language-server/tree/master/server/commit/54edd9e4d0c27938714b3241a01a9c5bf03e5134))
+
+
+
+
+
 # [0.5.0](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.4.1...@marko/language-server@0.5.0) (2021-02-05)
 
 
