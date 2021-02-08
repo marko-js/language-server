@@ -309,8 +309,20 @@ export function parseUntilOffset(options: {
     }
   );
 
-  // A new line prevents the parser from erroring before emitting some events.
-  parser.parse(`${text}\n`);
+  try {
+    // A new line prevents the parser from erroring before emitting some events.
+    parser.parse(`${text}\n`);
+  } catch (err) {
+    return includeErrors
+      ? ({
+          type: "error",
+          code: "UNEXPECTED_TOKEN",
+          message: err.message,
+          pos: parser.pos,
+          endPos: parser.pos,
+        } as ParserEvents.Error)
+      : null;
+  }
 
   return result as ParserEvents.Any | null;
 
