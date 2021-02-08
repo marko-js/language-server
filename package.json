@@ -15,11 +15,13 @@
     "vsce": "^1.85.0"
   },
   "scripts": {
-    "build": "tsc -b ./server ./clients/vscode",
+    "build": "tsc -b ./server ./clients/vscode ./clients/atom",
     "format": "prettier \"**/*.{ts,js,json,md}\" --write",
-    "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
+    "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tsc -p ./clients/atom --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
     "postinstall": "lerna bootstrap --hoist",
-    "postpublish": "(cd ./clients/vscode && npm i && vsce publish)",
+    "postpublish": "npm run publish:atom && npm run publish:vscode",
+    "publish:atom": "(cd ./clients/atom && npm i && apm publish)",
+    "publish:vscode": "(cd ./clients/vscode && npm i && vsce publish)",
     "publish": "npm run build && lerna publish",
     "watch": "npm run build -- -w"
   }
