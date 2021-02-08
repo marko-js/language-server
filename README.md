@@ -37,7 +37,7 @@ Server implementation can be found [here](server).
 
 ### Atom
 
-- Marko has an [official plugin for Atom](https://github.com/marko-js/atom-language-marko) not based on the Language Server.
+- install [`language-marko`](https://atom.io/packages/language-marko) from the atom package registry ([plugin source](clients/atom))
 
 ## Development
 
