@@ -1,3 +1,0 @@
-[submodule "clients/atom"]
-	path = clients/atom
-	url = git@github.com:marko-js/atom-language-marko.git
