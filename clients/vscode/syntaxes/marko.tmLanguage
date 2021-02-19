@@ -182,7 +182,7 @@
 					<key>applyEndPatternLast</key>
 					<integer>1</integer>
 					<key>begin</key>
-					<string>(?:\s+|,)(?:(key|on(?:-?[a-zA-Z0-9_$]+)+|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$]+(?:-?[a-zA-Z0-9_$]+)*))(:[a-zA-Z0-9_$]+(?:-?[a-zA-Z_$]+)*)?</string>
+					<string>(?:\s+|,)(?:(key|on[a-zA-Z0-9_$-]+|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$][a-zA-Z0-9_$-]*))(:[a-zA-Z0-9_$][a-zA-Z0-9_$-]*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -298,6 +298,10 @@
 					<string>Consume any whitespace after a comma</string>
 					<key>end</key>
 					<string>(?!\S)</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#javascript-comment-multiline</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -659,7 +663,7 @@
 						</dict>
 						<dict>
 							<key>begin</key>
-							<string>^(\s*)(?=\${|[@a-zA-Z_#.])</string>
+							<string>^(\s*)(?=[a-zA-Z0-9_$:@-])</string>
 							<key>comment</key>
 							<string>Normal concise tag</string>
 							<key>patterns</key>
@@ -837,19 +841,12 @@
 				</dict>
 			</array>
 		</dict>
-		<key>javascript-comments</key>
+		<key>javascript-comment-line</key>
 		<dict>
-			<key>patterns</key>
-			<array>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
 				<dict>
-					<key>begin</key>
-					<string>\s*(?=/\*)</string>
-					<key>comment</key>
-					<string>JavaScript /* block comment */</string>
-					<key>contentName</key>
-					<string>source.js</string>
-					<key>end</key>
-					<string>(?&lt;=\*/)</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -858,26 +855,43 @@
 						</dict>
 					</array>
 				</dict>
+			</dict>
+			<key>comment</key>
+			<string>JavaScript // single line comment</string>
+			<key>contentName</key>
+			<string>source.js</string>
+			<key>match</key>
+			<string>\s*//.*$</string>
+		</dict>
+		<key>javascript-comment-multiline</key>
+		<dict>
+			<key>begin</key>
+			<string>\s*(?=/\*)</string>
+			<key>comment</key>
+			<string>JavaScript /* block comment */</string>
+			<key>contentName</key>
+			<string>source.js</string>
+			<key>end</key>
+			<string>(?&lt;=\*/)</string>
+			<key>patterns</key>
+			<array>
 				<dict>
-					<key>captures</key>
-					<dict>
-						<key>0</key>
-						<dict>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>source.js</string>
-								</dict>
-							</array>
-						</dict>
-					</dict>
-					<key>comment</key>
-					<string>JavaScript // single line comment</string>
-					<key>contentName</key>
+					<key>include</key>
 					<string>source.js</string>
-					<key>match</key>
-					<string>\s*//.*$</string>
+				</dict>
+			</array>
+		</dict>
+		<key>javascript-comments</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#javascript-comment-multiline</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#javascript-comment-line</string>
 				</dict>
 			</array>
 		</dict>
@@ -1159,7 +1173,7 @@
 					<key>comment</key>
 					<string>Shorthand class or ID attribute</string>
 					<key>match</key>
-					<string>[#.][a-zA-Z_$]+(?:\-[a-zA-Z0-9_$]+)*</string>
+					<string>[#.][a-zA-Z0-9_$-]*</string>
 					<key>name</key>
 					<string>entity.other.attribute-name.marko</string>
 				</dict>
@@ -1474,7 +1488,7 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>\s*(&lt;)(?=\${|[@a-zA-Z_#.])</string>
+					<string>\s*(&lt;)(?=[a-zA-Z0-9_$:@-])</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -1515,7 +1529,7 @@
 							<key>comment</key>
 							<string>Body content</string>
 							<key>end</key>
-							<string>\s*(&lt;/)(@?[a-zA-Z_]+(?:[:-]?[a-zA-Z0-9_]+)*)?(.*?)(&gt;)</string>
+							<string>\s*(&lt;/)([a-zA-Z0-9_$:@-]+)?(.*?)(&gt;)</string>
 							<key>endCaptures</key>
 							<dict>
 								<key>1</key>
@@ -1599,7 +1613,7 @@
 				<dict>
 					<key>captures</key>
 					<dict>
-						<key>1</key>
+						<key>0</key>
 						<dict>
 							<key>patterns</key>
 							<array>
@@ -1631,7 +1645,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(@?[a-zA-Z_]+(?:[:-]?[a-zA-Z0-9_]+)*)</string>
+					<string>[a-zA-Z0-9_$:@-]+</string>
 				</dict>
 			</array>
 		</dict>
