@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.3](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.2...marko-vscode@0.10.3) (2021-02-19)
+
+
+### Bug Fixes
+
+* **marko-vscode:** syntax highlighting improvements ([4228c48](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/4228c48068204fe6f098a3a59e88234e62d1c668))
+
+
+
+
+
 ## [0.10.2](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.1...marko-vscode@0.10.2) (2021-02-11)
 
 
