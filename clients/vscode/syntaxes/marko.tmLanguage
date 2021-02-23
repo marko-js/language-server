@@ -663,7 +663,7 @@
 						</dict>
 						<dict>
 							<key>begin</key>
-							<string>^(\s*)(?=[a-zA-Z0-9_$:@-])</string>
+							<string>^(\s*)(?=[a-zA-Z0-9_$@])</string>
 							<key>comment</key>
 							<string>Normal concise tag</string>
 							<key>patterns</key>
@@ -1173,7 +1173,7 @@
 					<key>comment</key>
 					<string>Shorthand class or ID attribute</string>
 					<key>match</key>
-					<string>[#.][a-zA-Z0-9_$-]*</string>
+					<string>[#.][a-zA-Z0-9_$][a-zA-Z0-9_$-]*</string>
 					<key>name</key>
 					<string>entity.other.attribute-name.marko</string>
 				</dict>
@@ -1488,7 +1488,7 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>\s*(&lt;)(?=[a-zA-Z0-9_$:@-])</string>
+					<string>\s*(&lt;)(?=[a-zA-Z0-9_$@])</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -1645,7 +1645,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>[a-zA-Z0-9_$:@-]+</string>
+					<string>[a-zA-Z0-9_$@][a-zA-Z0-9_$@:-]*</string>
 				</dict>
 			</array>
 		</dict>
