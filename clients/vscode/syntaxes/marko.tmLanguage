@@ -1208,7 +1208,15 @@
 						</dict>
 						<dict>
 							<key>include</key>
-							<string>source.js#destructuring-variable</string>
+							<string>source.js#object-binding-pattern</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#array-binding-pattern</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>source.js#var-single-variable</string>
 						</dict>
 						<dict>
 							<key>include</key>
