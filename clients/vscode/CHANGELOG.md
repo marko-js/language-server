@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.5](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.4...marko-vscode@0.10.5) (2021-03-10)
+
+
+### Bug Fixes
+
+* **marko-vscode:** tag variable destructuring syntax highlighting ([0cb8ee6](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/0cb8ee6c86a162464b9c2fbdd95eee8aabb118cb))
+
+
+
+
+
 ## [0.10.4](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.3...marko-vscode@0.10.4) (2021-02-23)
 
 
