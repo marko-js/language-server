@@ -5,9 +5,9 @@ import {
   TextDocumentPositionParams,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import escapeRegexp from "escape-string-regexp";
 import { ParserEvents } from "../../htmljs-parser";
 import { TagLibLookup, TagDefinition } from "../../compiler";
+import RegExpBuilder from "../../regexp-builder";
 import {
   START_OF_FILE,
   findNonControlFlowParent,
@@ -44,9 +44,9 @@ export function openTagName(
 
   if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
     const tagDefDoc = createTextDocument(tagEntryFile);
-    const match = new RegExp(
-      `"<${escapeRegexp(event.tagName)}>"\s*:\s*[^\r\n,]+`
-    ).exec(tagDefDoc.getText());
+    const match = RegExpBuilder`/"<${event.tagName}>"\s*:\s*[^\r\n,]+/g`.exec(
+      tagDefDoc.getText()
+    );
 
     if (match && match.index) {
       range = Range.create(

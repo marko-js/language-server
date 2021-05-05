@@ -5,9 +5,9 @@ import {
   TextDocumentPositionParams,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import escapeRegexp from "escape-string-regexp";
 import { TagLibLookup } from "../../compiler";
 import { ParserEvents } from "../../htmljs-parser";
+import RegExpBuilder from "../../regexp-builder";
 import { START_OF_FILE, createTextDocument, rangeFromEvent } from "../../utils";
 
 export function attributeName(
@@ -33,9 +33,9 @@ export function attributeName(
 
   if (/\/marko(?:-tag)?\.json$/.test(attrEntryFile)) {
     const tagDefDoc = createTextDocument(attrEntryFile);
-    const match = new RegExp(
-      `"@${escapeRegexp(event.name)}"\s*:\s*[^\r\n,]+`
-    ).exec(tagDefDoc.getText());
+    const match = RegExpBuilder`/"@${event.name}"\s*:\s*[^\r\n,]+/g`.exec(
+      tagDefDoc.getText()
+    );
 
     if (match && match.index) {
       range = Range.create(
