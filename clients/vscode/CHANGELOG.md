@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.7](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.6...marko-vscode@0.10.7) (2021-05-05)
+
+**Note:** Version bump only for package marko-vscode
+
+
+
+
+
 ## [0.10.6](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.5...marko-vscode@0.10.6) (2021-03-10)
 
 **Note:** Version bump only for package marko-vscode

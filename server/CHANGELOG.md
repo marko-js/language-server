@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.6.1...@marko/language-server@0.6.2) (2021-05-05)
+
+**Note:** Version bump only for package @marko/language-server
+
+
+
+
+
 ## [0.6.1](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.6.0...@marko/language-server@0.6.1) (2021-02-08)
 
 
