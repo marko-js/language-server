@@ -453,10 +453,10 @@
 		<key>concise-script-block</key>
 		<dict>
 			<key>begin</key>
-			<string>\s*(--+)\s*$</string>
+			<string>(\s+)(--+)\s*$</string>
 			<key>beginCaptures</key>
 			<dict>
-				<key>1</key>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.section.scope.begin.marko</string>
@@ -465,10 +465,10 @@
 			<key>comment</key>
 			<string>--- Embedded concise script content block. ---</string>
 			<key>end</key>
-			<string>\1</string>
+			<string>(\2)|(?=^(?!\1)\s*\S)</string>
 			<key>endCaptures</key>
 			<dict>
-				<key>0</key>
+				<key>1</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.section.scope.end.marko</string>
@@ -515,10 +515,10 @@
 		<key>concise-style-block</key>
 		<dict>
 			<key>begin</key>
-			<string>\s*(--+)\s*$</string>
+			<string>(\s+)(--+)\s*$</string>
 			<key>beginCaptures</key>
 			<dict>
-				<key>1</key>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.section.scope.begin.marko</string>
@@ -529,10 +529,10 @@
 			<key>contentName</key>
 			<string>source.css</string>
 			<key>end</key>
-			<string>\1</string>
+			<string>(\2)|(?=^(?!\1)\s*\S)</string>
 			<key>endCaptures</key>
 			<dict>
-				<key>0</key>
+				<key>1</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.section.scope.end.marko</string>
@@ -545,6 +545,78 @@
 				<dict>
 					<key>include</key>
 					<string>#content-embedded-style</string>
+				</dict>
+			</array>
+		</dict>
+		<key>concise-style-block-less</key>
+		<dict>
+			<key>begin</key>
+			<string>(\s+)(--+)\s*$</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.begin.marko</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>--- Embedded concise style content block. ---</string>
+			<key>contentName</key>
+			<string>source.less</string>
+			<key>end</key>
+			<string>(\2)|(?=^(?!\1)\s*\S)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.end.marko</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.section.marko-style-block</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#content-embedded-style-less</string>
+				</dict>
+			</array>
+		</dict>
+		<key>concise-style-block-scss</key>
+		<dict>
+			<key>begin</key>
+			<string>(\s+)(--+)\s*$</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.begin.marko</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>--- Embedded concise style content block. ---</string>
+			<key>contentName</key>
+			<string>source.scss</string>
+			<key>end</key>
+			<string>(\2)|(?=^(?!\1)\s*\S)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.end.marko</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.section.marko-style-block</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#content-embedded-style-scss</string>
 				</dict>
 			</array>
 		</dict>
@@ -575,6 +647,66 @@
 				<dict>
 					<key>include</key>
 					<string>#content-embedded-style</string>
+				</dict>
+			</array>
+		</dict>
+		<key>concise-style-line-less</key>
+		<dict>
+			<key>applyEndPatternLast</key>
+			<integer>1</integer>
+			<key>begin</key>
+			<string>\s*(--+)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.begin.marko</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>-- Embedded concise style content line.</string>
+			<key>contentName</key>
+			<string>source.less</string>
+			<key>end</key>
+			<string>$</string>
+			<key>name</key>
+			<string>meta.section.marko-style-line</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#content-embedded-style-less</string>
+				</dict>
+			</array>
+		</dict>
+		<key>concise-style-line-scss</key>
+		<dict>
+			<key>applyEndPatternLast</key>
+			<integer>1</integer>
+			<key>begin</key>
+			<string>\s*(--+)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.section.scope.begin.marko</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>-- Embedded concise style content line.</string>
+			<key>contentName</key>
+			<string>source.scss</string>
+			<key>end</key>
+			<string>$</string>
+			<key>name</key>
+			<string>meta.section.marko-style-line</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#content-embedded-style-scss</string>
 				</dict>
 			</array>
 		</dict>
@@ -615,6 +747,52 @@
 					<string>A concise html tag.</string>
 					<key>patterns</key>
 					<array>
+						<dict>
+							<key>begin</key>
+							<string>^(\s*)(?=style\.less\b)</string>
+							<key>comment</key>
+							<string>Concise style tag less</string>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>#concise-open-tag-content</string>
+								</dict>
+								<dict>
+									<key>include</key>
+									<string>#concise-style-block-less</string>
+								</dict>
+								<dict>
+									<key>include</key>
+									<string>#concise-style-line-less</string>
+								</dict>
+							</array>
+							<key>while</key>
+							<string>(?=^\1\s+(\S|$))</string>
+						</dict>
+						<dict>
+							<key>begin</key>
+							<string>^(\s*)(?=style\.scss\b)</string>
+							<key>comment</key>
+							<string>Concise style tag scss</string>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>#concise-open-tag-content</string>
+								</dict>
+								<dict>
+									<key>include</key>
+									<string>#concise-style-block-scss</string>
+								</dict>
+								<dict>
+									<key>include</key>
+									<string>#concise-style-line-scss</string>
+								</dict>
+							</array>
+							<key>while</key>
+							<string>(?=^\1\s+(\S|$))</string>
+						</dict>
 						<dict>
 							<key>begin</key>
 							<string>^(\s*)(?=style\b)</string>
@@ -717,6 +895,38 @@
 				<dict>
 					<key>include</key>
 					<string>source.css</string>
+				</dict>
+			</array>
+		</dict>
+		<key>content-embedded-style-less</key>
+		<dict>
+			<key>name</key>
+			<string>meta.embedded.css.less</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#placeholder</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>source.css.less</string>
+				</dict>
+			</array>
+		</dict>
+		<key>content-embedded-style-scss</key>
+		<dict>
+			<key>name</key>
+			<string>meta.embedded.css.scss</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#placeholder</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>source.css.scss</string>
 				</dict>
 			</array>
 		</dict>
@@ -1338,6 +1548,164 @@
 				</dict>
 				<dict>
 					<key>begin</key>
+					<string>\s*(&lt;)(?=style\.less\b)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.begin.marko</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>HTML style tag with less</string>
+					<key>end</key>
+					<string>/&gt;|(?&lt;=\&gt;)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.end.marko</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#open-tag-content</string>
+						</dict>
+						<dict>
+							<key>begin</key>
+							<string>&gt;</string>
+							<key>beginCaptures</key>
+							<dict>
+								<key>0</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+							</dict>
+							<key>comment</key>
+							<string>Style body content</string>
+							<key>contentName</key>
+							<string>source.less</string>
+							<key>end</key>
+							<string>\s*(&lt;/)(style)?(&gt;)</string>
+							<key>endCaptures</key>
+							<dict>
+								<key>1</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+								<key>2</key>
+								<dict>
+									<key>patterns</key>
+									<array>
+										<dict>
+											<key>include</key>
+											<string>#tag-name</string>
+										</dict>
+									</array>
+								</dict>
+								<key>3</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+							</dict>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>#content-embedded-style-less</string>
+								</dict>
+							</array>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>\s*(&lt;)(?=style\.scss\b)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.begin.marko</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>HTML style tag with scss</string>
+					<key>end</key>
+					<string>/&gt;|(?&lt;=\&gt;)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.end.marko</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#open-tag-content</string>
+						</dict>
+						<dict>
+							<key>begin</key>
+							<string>&gt;</string>
+							<key>beginCaptures</key>
+							<dict>
+								<key>0</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+							</dict>
+							<key>comment</key>
+							<string>Style body content</string>
+							<key>contentName</key>
+							<string>source.less</string>
+							<key>end</key>
+							<string>\s*(&lt;/)(style)?(&gt;)</string>
+							<key>endCaptures</key>
+							<dict>
+								<key>1</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+								<key>2</key>
+								<dict>
+									<key>patterns</key>
+									<array>
+										<dict>
+											<key>include</key>
+											<string>#tag-name</string>
+										</dict>
+									</array>
+								</dict>
+								<key>3</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.tag.end.marko</string>
+								</dict>
+							</dict>
+							<key>patterns</key>
+							<array>
+								<dict>
+									<key>include</key>
+									<string>#content-embedded-style-scss</string>
+								</dict>
+							</array>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>begin</key>
 					<string>\s*(&lt;)(?=style\b)</string>
 					<key>beginCaptures</key>
 					<dict>
@@ -1621,7 +1989,17 @@
 				<dict>
 					<key>captures</key>
 					<dict>
-						<key>0</key>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.tag.marko</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.marko.css</string>
+						</dict>
+						<key>3</key>
 						<dict>
 							<key>patterns</key>
 							<array>
@@ -1629,7 +2007,7 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|tag|await|let|const|effect|mount|set|get|import|yield)(?=\b)</string>
+									<string>(for|if|while|else-if|else|macro|tag|await|let|const|effect|set|get|id|lifecycle|yield)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>
@@ -1653,7 +2031,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>[a-zA-Z0-9_$@][a-zA-Z0-9_$@:-]*</string>
+					<string>(style)\.([a-zA-Z0-9$_-]+(?:\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_$@][a-zA-Z0-9_$@:-]*)</string>
 				</dict>
 			</array>
 		</dict>
