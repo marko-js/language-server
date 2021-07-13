@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.11.0...marko-vscode@0.12.0) (2021-07-13)
+
+
+### Features
+
+* syntax highlight new tags, binding syntax and method shorthand ([9c86b38](https://github.com/marko-js/language-server/tree/master/clients/vscode/commit/9c86b38373b364d5a5cd10f7b53373dfa8acc529))
+
+
+
+
+
 # [0.11.0](https://github.com/marko-js/language-server/tree/master/clients/vscode/compare/marko-vscode@0.10.7...marko-vscode@0.11.0) (2021-06-30)
 
 
