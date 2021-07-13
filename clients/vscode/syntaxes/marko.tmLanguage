@@ -182,7 +182,7 @@
 					<key>applyEndPatternLast</key>
 					<integer>1</integer>
 					<key>begin</key>
-					<string>(?:\s+|,)(?:(key|on[a-zA-Z0-9_$-]+|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$][a-zA-Z0-9_$-]*))(:[a-zA-Z0-9_$][a-zA-Z0-9_$-]*)?</string>
+					<string>(?:\s+|,)(?:(key|on[a-zA-Z0-9_$-]+|[a-zA-Z0-9_$]+Change|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$][a-zA-Z0-9_$-]*))(:[a-zA-Z0-9_$][a-zA-Z0-9_$-]*)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -211,13 +211,13 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>#javascript-args</string>
+							<string>#html-args-or-method</string>
 						</dict>
 						<dict>
 							<key>applyEndPatternLast</key>
 							<integer>1</integer>
 							<key>begin</key>
-							<string>\s*(=)\s*</string>
+							<string>\s*(:?=)\s*</string>
 							<key>beginCaptures</key>
 							<dict>
 								<key>1</key>
@@ -966,6 +966,35 @@
 				</dict>
 			</array>
 		</dict>
+		<key>html-args-or-method</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#javascript-args</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?&lt;=\))\s*(?=\{)</string>
+					<key>comment</key>
+					<string>Attribute method shorthand following parens</string>
+					<key>contentName</key>
+					<string>source.js</string>
+					<key>end</key>
+					<string>(?&lt;=\})</string>
+					<key>name</key>
+					<string>meta.embedded.js</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.js</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
 		<key>html-comments</key>
 		<dict>
 			<key>patterns</key>
@@ -1403,7 +1432,7 @@
 					<key>contentName</key>
 					<string>source.js</string>
 					<key>end</key>
-					<string>(?=\=|\s|&gt;|$|\||\(|/)</string>
+					<string>(?=:?\=|\s|&gt;|$|\||\(|/)</string>
 					<key>name</key>
 					<string>meta.embedded.js</string>
 					<key>patterns</key>
@@ -1438,7 +1467,7 @@
 					<key>applyEndPatternLast</key>
 					<integer>1</integer>
 					<key>begin</key>
-					<string>\s*(=)\s*</string>
+					<string>\s*(:?=)\s*</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -1505,7 +1534,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#javascript-args</string>
+					<string>#html-args-or-method</string>
 				</dict>
 			</array>
 		</dict>
@@ -2007,7 +2036,7 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|tag|await|let|const|effect|set|get|id|lifecycle|yield)(?=\b)</string>
+									<string>(for|if|while|else-if|else|macro|tag|await|let|const|props|effect|set|get|id|lifecycle|return)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>
