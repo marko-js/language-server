@@ -2036,7 +2036,7 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|tag|await|let|const|props|effect|set|get|id|lifecycle|return)(?=\b)</string>
+									<string>(for|if|while|else-if|else|macro|tag|await|let|const|attrs|effect|set|get|id|lifecycle|return)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>
