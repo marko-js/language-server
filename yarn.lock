@@ -1640,7 +1640,7 @@ braces@^3.0.1:
   dependencies:
     fill-range "^7.0.1"
 
-browser-refresh-client@^1.0.0:
+browser-refresh-client@1.1.4, browser-refresh-client@^1.0.0:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/browser-refresh-client/-/browser-refresh-client-1.1.4.tgz#8e5ff8475fe1d541d2ae81f7a1aea05ae21a6217"
   integrity sha1-jl/4R1/h1UHSroH3oa6gWuIaYhc=
@@ -2576,7 +2576,7 @@ eventemitter3@^4.0.4:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-events-light@^1.0.0:
+events-light@^1.0.0, events-light@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/events-light/-/events-light-1.0.5.tgz#964e63450ba0af4a6b022aa955b17ffef657b5ee"
   integrity sha1-lk5jRQugr0prAiqpVbF//vZXte4=
@@ -3952,6 +3952,25 @@ marko@^4.14.21:
     self-closing-tags "^1.0.1"
     simple-sha1 "^2.1.0"
     strip-json-comments "^2.0.1"
+    warp10 "^2.0.1"
+
+marko@^5.14.1:
+  version "5.14.1"
+  resolved "https://registry.yarnpkg.com/marko/-/marko-5.14.1.tgz#52cd771e4aa0ca27f05bef7277d4ac7aec419827"
+  integrity sha512-TpV2mZO1L1Gsdg2lM3w9aXoZ84StpDqDf33Ta0JaJJQ1a816P3Ps/C2Iwlk1LvESqY+XoEQ7bDEtCLHhWIPDUw==
+  dependencies:
+    "@marko/compiler" "^5.14.1"
+    "@marko/translator-default" "^5.14.1"
+    app-module-path "^2.2.0"
+    argly "^1.2.0"
+    browser-refresh-client "1.1.4"
+    complain "^1.6.0"
+    events-light "^1.0.5"
+    listener-tracker "^2.0.0"
+    minimatch "^3.0.4"
+    raptor-util "^3.2.0"
+    resolve-from "^5.0.0"
+    self-closing-tags "^1.0.1"
     warp10 "^2.0.1"
 
 mdurl@^1.0.1:
