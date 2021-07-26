@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "author": "Diego Berrocal",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "bin": {
@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@marko/compiler": "^5.14.1",
-    "@marko/translator-default": "^5.14.1",
     "@marko/prettyprint": "^3.0.1",
+    "@marko/translator-default": "^5.14.1",
     "@types/vscode": "^1.55.0",
     "lasso-package-root": "^1.0.1",
-    "resolve-from": "^5.0.0",
     "magic-string": "^0.25.7",
+    "resolve-from": "^5.0.0",
     "tslib": "^2.2.0",
     "vscode-css-languageservice": "^5.1.1",
     "vscode-languageserver": "^7.0.0",

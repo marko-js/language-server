@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/marko-js/language-server/compare/@marko/language-server@0.6.2...@marko/language-server@0.7.0) (2021-07-26)
+
+
+### Features
+
+* upgrade to Marko 5, stop surfacing taglib errors ([e9b3a7e](https://github.com/marko-js/language-server/commit/e9b3a7e9a9e14ab31983e52b906b780dd49528a6))
+
+
+
+
+
 ## [0.6.2](https://github.com/marko-js/language-server/tree/master/server/compare/@marko/language-server@0.6.1...@marko/language-server@0.6.2) (2021-05-05)
 
 **Note:** Version bump only for package @marko/language-server
