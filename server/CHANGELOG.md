@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.0...@marko/language-server@0.7.1) (2021-07-26)
+
+
+### Bug Fixes
+
+* add missing dep ([89293e4](https://github.com/marko-js/language-server/commit/89293e43721354489d28ab9b214355a3f394ece6))
+
+
+
+
+
 # [0.7.0](https://github.com/marko-js/language-server/compare/@marko/language-server@0.6.2...@marko/language-server@0.7.0) (2021-07-26)
 
 
