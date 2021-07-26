@@ -53,10 +53,6 @@ export function openTagName(
         let label = it.isNestedTag ? `@${it.name}` : it.name;
         const fileForTag = it.template || it.renderer || it.filePath;
         const fileURIForTag = URI.file(fileForTag).toString();
-        const relativeFileForTag = path.relative(
-          fileForTag,
-          currentTemplateFilePath
-        );
         const nodeModuleMatch = /\/node_modules\/((?:\@[^/]+\/)?[^/]+)/.exec(
           fileForTag
         );
@@ -72,7 +68,10 @@ export function openTagName(
             ? isCoreTag
               ? `Core Marko [<${it.name}>](${fileURIForTag}) tag.`
               : `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
-            : `Custom Marko tag discovered from:\n\n[${relativeFileForTag}](${fileURIForTag})`,
+            : `Custom Marko tag discovered from:\n\n[${path.relative(
+                currentTemplateFilePath,
+                fileForTag
+              )}](${fileURIForTag})`,
         };
 
         if (it.description) {

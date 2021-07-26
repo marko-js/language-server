@@ -1,3 +1,4 @@
+import { workspace } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -34,6 +35,12 @@ export function activate() {
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
+      fileEvents: workspace.createFileSystemWatcher(
+        "**/{components/*.marko,components/*/*.marko,marko.json,marko-tag.json}",
+        false,
+        false,
+        false
+      ),
     },
   };
 

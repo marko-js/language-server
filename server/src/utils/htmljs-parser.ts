@@ -311,7 +311,7 @@ export function parseUntilOffset(options: {
 
   try {
     // A new line prevents the parser from erroring before emitting some events.
-    parser.parse(`${text}\n`);
+    parser.parse(`${text.slice(0, offset)}/>`);
   } catch (err) {
     return includeErrors
       ? ({

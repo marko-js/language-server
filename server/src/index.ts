@@ -15,11 +15,21 @@ import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import prettyPrint from "@marko/prettyprint";
 import { isDeepStrictEqual } from "util";
-import { getTagLibLookup, loadMarkoFile } from "./utils/compiler";
+import { getTagLibLookup, getCompilerForDoc, Compiler } from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import * as completionTypes from "./utils/completions";
 import * as definitionTypes from "./utils/definitions";
 
+if (
+  typeof require !== "undefined" &&
+  require.extensions &&
+  !(".ts" in require.extensions)
+) {
+  // Prevent compiler hooks written in typescript to explode the language server.
+  require.extensions[".ts"] = undefined;
+}
+
+const cacheForCompiler = new WeakMap<Compiler, Map<unknown, unknown>>();
 const connection = createConnection(ProposedFeatures.all);
 const prevDiagnostics = new WeakMap<TextDocument, Diagnostic[]>();
 const diagnosticTimeouts = new WeakMap<
@@ -27,10 +37,14 @@ const diagnosticTimeouts = new WeakMap<
   ReturnType<typeof setTimeout>
 >();
 const documents = new TextDocuments(TextDocument);
-const markoErrorRegExp = /.*\[(.*)\:(\d+)\:(\d+)\](.*)/gi;
+const markoErrorRegExp = /^(.+?)(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
 
-console.log = connection.console.log.bind(connection.console);
-console.error = connection.console.error.bind(connection.console);
+console.log = (...args: unknown[]) => {
+  connection.console.log(args.join(" "));
+};
+console.error = (...args: unknown[]) => {
+  connection.console.error(args.join(" "));
+};
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
@@ -55,6 +69,8 @@ connection.onCompletion(
   (params: CompletionParams): CompletionList => {
     const doc = documents.get(params.textDocument.uri)!;
     const taglib = getTagLibLookup(doc);
+    if (!taglib) return CompletionList.create([], true);
+
     const event = parseUntilOffset({
       taglib,
       offset: doc.offsetAt(params.position),
@@ -72,6 +88,8 @@ connection.onCompletion(
 connection.onDefinition((params) => {
   const doc = documents.get(params.textDocument.uri)!;
   const taglib = getTagLibLookup(doc);
+  if (!taglib) return;
+
   const event = parseUntilOffset({
     taglib,
     offset: doc.offsetAt(params.position),
@@ -89,11 +107,7 @@ connection.onDocumentFormatting(
 
     try {
       const text = doc.getText();
-      const markoCompiler = require("marko/dist/compiler");
-      const CodeWriter = require("marko/dist/compiler/CodeWriter");
       const formatted = prettyPrint(text, {
-        markoCompiler,
-        CodeWriter,
         filename: fsPath,
         indent: (options.insertSpaces ? " " : "\t").repeat(options.tabSize),
       });
@@ -112,8 +126,24 @@ connection.onDocumentFormatting(
   }
 );
 
+connection.onDidChangeWatchedFiles(() => {
+  const clearedCompilers = new Set<Compiler>();
+  for (const doc of documents.all()) {
+    const compiler = getCompilerForDoc(doc);
+
+    if (!clearedCompilers.has(compiler)) {
+      clearCaches(compiler);
+      clearedCompilers.add(compiler);
+    }
+  }
+});
+
 documents.onDidChangeContent((change) => {
   queueValidation(change.document);
+
+  if (change.document.version > 1) {
+    clearCaches(getCompilerForDoc(change.document));
+  }
 });
 
 function queueValidation(doc: TextDocument) {
@@ -144,54 +174,47 @@ function doValidate(doc: TextDocument): Diagnostic[] {
     return [];
   }
 
-  const compiler = loadMarkoFile(fsPath, "compiler");
+  const compiler = getCompilerForDoc(doc);
   const diagnostics: Diagnostic[] = [];
-  let context: any;
-  let message: string;
-  let errorThrown = false;
 
   try {
-    message = compiler.compile(doc.getText(), fsPath, {
-      writeToDisk: false,
-      onContext: (innerContext: any) => {
-        context = innerContext;
-      },
+    compiler.compileSync(doc.getText(), fsPath, {
+      cache: getCacheForCompiler(compiler),
+      output: "source",
+      code: false,
     });
   } catch (e) {
-    message = e.message;
-    errorThrown = true;
-  }
-
-  if (context && context.hasErrors()) {
-    // If marko exported onContext then use that to create diagnostic output
-    return context.getErrors().map((error: any) => {
-      return Diagnostic.create(
-        Range.create(0, 0, 0, 0),
-        error.message,
-        DiagnosticSeverity.Error,
-        error.code,
-        fsPath
-      );
-    });
-  } else if (errorThrown) {
-    // 0: full line, 1: filename, 2: line number 3: column, 4 message
-    let matches: RegExpExecArray | null = null;
-    // Iterate through all regexp matches for the given message
-    while ((matches = markoErrorRegExp.exec(message))) {
-      const line = parseInt(matches[2], 10) - 1; // Line starts at 0
-      const col = parseInt(matches[3], 10);
+    let match: RegExpExecArray | null;
+    while ((match = markoErrorRegExp.exec(e.message))) {
+      const [, fileName, rawLine, rawCol, msg] = match;
+      const line = (parseInt(rawLine, 10) || 1) - 1;
+      const col = (parseInt(rawCol, 10) || 1) - 1;
       diagnostics.push(
         Diagnostic.create(
           Range.create(line, col, line, col),
-          matches[4],
+          msg,
           DiagnosticSeverity.Error,
           undefined,
-          matches[1]
+          fileName
         )
       );
     }
   }
+
   return diagnostics;
+}
+
+function clearCaches(compiler: Compiler) {
+  cacheForCompiler.get(compiler)!.clear();
+  compiler.taglib.clearCaches();
+}
+
+function getCacheForCompiler(compiler: Compiler) {
+  let cache = cacheForCompiler.get(compiler);
+  if (!cache) {
+    cacheForCompiler.set(compiler, cache = new Map());
+  }
+  return cache;
 }
 
 function displayMessage(type: "info" | "warning" | "error", msg: string) {
