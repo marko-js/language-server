@@ -1046,18 +1046,18 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@marko/babel-utils@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@marko/babel-utils/-/babel-utils-5.14.1.tgz#a2301a98ba6935bcc19b3049b4a7ac25fec6cbc4"
-  integrity sha512-MAtcDVQWssA+V4YroQsm3G4KXbSla/1djtZExemCjSKdYP31F+xFalRG0Hk718I3WUHr1M6yFS1i3JDr1/Z1+w==
+"@marko/babel-utils@^5.14.2":
+  version "5.14.2"
+  resolved "https://registry.yarnpkg.com/@marko/babel-utils/-/babel-utils-5.14.2.tgz#339cd6669fea42fe22ff6b1edf65116957f344b6"
+  integrity sha512-Te5164hYDKUSBtF0qz4IfiIh6oHgQhgSrDRilew8zMvkrbjNHl5peYpiJtoSLAONgdfCis88lU9Aoyq62Jh1pQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     jsesc "^3.0.2"
 
-"@marko/compiler@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@marko/compiler/-/compiler-5.14.1.tgz#d4b057eb0eba8d79eb6b95c071991ab1a5948a8f"
-  integrity sha512-m0qJFnbg68JAq8plrpAMmCW8pVKTHKiNlj8fXmzONmPMdOxG7cAIU/uWAp+mZs6KxEFNEKP6c/+rcaZU0IfWHw==
+"@marko/compiler@^5.14.2":
+  version "5.14.2"
+  resolved "https://registry.yarnpkg.com/@marko/compiler/-/compiler-5.14.2.tgz#2445f340b2765ec7d90ea2b27af620c7af11928f"
+  integrity sha512-Rp32ozHMLLTn7yNxFpLE1SUgs0vJ9dnbthPRw6BGNzdAKkuaX9EqbvoNV6hJVPnJhGsN+8POjWgKPX6d7D8Ogw==
   dependencies:
     "@babel/code-frame" "^7.12.13"
     "@babel/core" "^7.13.10"
@@ -1067,11 +1067,11 @@
     "@babel/runtime" "^7.13.10"
     "@babel/traverse" "^7.13.0"
     "@babel/types" "^7.13.0"
-    "@marko/babel-utils" "^5.14.1"
+    "@marko/babel-utils" "^5.14.2"
     complain "^1.6.0"
     enhanced-resolve "5.7.0"
     he "^1.2.0"
-    htmljs-parser "^2.9.1"
+    htmljs-parser "^2.10.0"
     jsesc "^3.0.2"
     lasso-package-root "^1.0.1"
     property-handlers "^1.1.1"
@@ -1099,13 +1099,13 @@
     resolve-from "^5.0.0"
     update-notifier "^5.1.0"
 
-"@marko/translator-default@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@marko/translator-default/-/translator-default-5.14.1.tgz#dda6afcca98836c85f24fe390785aaa376e6c4ef"
-  integrity sha512-SfZ1jYt6zVWKsW0X9wy064ROMZn58icmhAmMnf0dt0J6JdTE+E5jnEW0S7u+rvC4iekaA5IiuOlXFheQ8q+J6g==
+"@marko/translator-default@^5.14.2":
+  version "5.14.2"
+  resolved "https://registry.yarnpkg.com/@marko/translator-default/-/translator-default-5.14.2.tgz#9930f211cd474a737a8d4b3274d2b9f06371327d"
+  integrity sha512-yYDq4vWc7Uzfp368QVW9aLcKh19tiStUJzh08It6mZocwn6tuEEuImpMoytBIn89C/80u3STjj/foy4GEbXkZg==
   dependencies:
     "@babel/runtime" "^7.13.10"
-    "@marko/babel-utils" "^5.14.1"
+    "@marko/babel-utils" "^5.14.2"
     escape-string-regexp "^4.0.0"
     magic-string "^0.25.7"
     self-closing-tags "^1.0.1"
@@ -2397,9 +2397,9 @@ editorconfig@^0.15.2:
     sigmund "^1.0.1"
 
 electron-to-chromium@^1.3.723:
-  version "1.3.786"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.786.tgz#1fc572abc77e2f474725f8a61acf7e25ced9fbe2"
-  integrity sha512-AmvbLBj3hepRk8v/DHrFF8gINxOFfDbrn6Ts3PcK46/FBdQb5OMmpamSpZQXSkfi77FfBzYtQtAk+00LCLYMVw==
+  version "1.3.789"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.789.tgz#c3ea060ba1e36e41c87943a47ed2daadc545be2b"
+  integrity sha512-lK4xn6C6ZF1kgLaC/EhOtC1MSKENExj3rMwGVnBTfHW81Z/Hb1Rge5YaWawN/YOXy3xCaESuE4KWSD50kOZ9rQ==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -3056,10 +3056,10 @@ hosted-git-info@^4.0.0, hosted-git-info@^4.0.1:
   dependencies:
     lru-cache "^6.0.0"
 
-htmljs-parser@^2.7.1, htmljs-parser@^2.9.1:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/htmljs-parser/-/htmljs-parser-2.9.2.tgz#ecd468dbc8b2d6e3a6ea338bffaa730358781588"
-  integrity sha512-BkXKAikrCrFW2EoJ20DO8EzsK/sFXcOJWvue4KN62QXXrWY9Xv04SyR3LcsQrBAwlQ+DfOAtOUx3jF3Y4f+IzA==
+htmljs-parser@^2.10.0, htmljs-parser@^2.7.1:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/htmljs-parser/-/htmljs-parser-2.10.0.tgz#6030d0b35ba2cd60c27a851151d446ed0c3a1f67"
+  integrity sha512-HxGvSIIHpnC8WsVqZ/OAxPsgh8xIL7d0eb24TG/WwjxCbzjuxiJm6g8NHAlfFDYq4H9Q/kztAlUxQ/plS/IZfw==
   dependencies:
     char-props "^0.1.5"
     complain "^1.0.0"
@@ -3954,13 +3954,13 @@ marko@^4.14.21:
     strip-json-comments "^2.0.1"
     warp10 "^2.0.1"
 
-marko@^5.14.1:
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/marko/-/marko-5.14.1.tgz#52cd771e4aa0ca27f05bef7277d4ac7aec419827"
-  integrity sha512-TpV2mZO1L1Gsdg2lM3w9aXoZ84StpDqDf33Ta0JaJJQ1a816P3Ps/C2Iwlk1LvESqY+XoEQ7bDEtCLHhWIPDUw==
+marko@^5.14.2:
+  version "5.14.2"
+  resolved "https://registry.yarnpkg.com/marko/-/marko-5.14.2.tgz#e0383d5b9988afd5db0656877e0c057708903ce3"
+  integrity sha512-qZ/Nu5kKA4fCUXeTwOhdpg4Ve2VQuW1l30FCuJgkUhye6K5BTpe5GdyeUERCmhhY1NNnMdqwtd/3VwVYPE4VFg==
   dependencies:
-    "@marko/compiler" "^5.14.1"
-    "@marko/translator-default" "^5.14.1"
+    "@marko/compiler" "^5.14.2"
+    "@marko/translator-default" "^5.14.2"
     app-module-path "^2.2.0"
     argly "^1.2.0"
     browser-refresh-client "1.1.4"
@@ -4030,17 +4030,17 @@ micromatch@^4.0.2, micromatch@^4.0.4:
     braces "^3.0.1"
     picomatch "^2.2.3"
 
-mime-db@1.48.0:
-  version "1.48.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.48.0.tgz#e35b31045dd7eada3aaad537ed88a33afbef2d1d"
-  integrity sha512-FM3QwxV+TnZYQ2aRqhlKBMHxk10lTbMt3bBkMAp54ddrNeVSfcQYOOKuGuy3Ddrm38I04If834fOUSq1yzslJQ==
+mime-db@1.49.0:
+  version "1.49.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.49.0.tgz#f3dfde60c99e9cf3bc9701d687778f537001cbed"
+  integrity sha512-CIc8j9URtOVApSFCQIF+VBkX1RwXp/oMMOrqdyXSBXq5RWNEsRfyj1kiRnQgmNXmHxPoFIxOroKA3zcU9P+nAA==
 
 mime-types@^2.1.12, mime-types@~2.1.19:
-  version "2.1.31"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.31.tgz#a00d76b74317c61f9c2db2218b8e9f8e9c5c9e6b"
-  integrity sha512-XGZnNzm3QvgKxa8dpzyhFTHmpP3l5YNusmne07VUOXxou9CqUqYa/HBy124RqtVh/O2pECas/MOcsDgpilPOPg==
+  version "2.1.32"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.32.tgz#1d00e89e7de7fe02008db61001d9e02852670fd5"
+  integrity sha512-hJGaVS4G4c9TSMYh2n6SQAGrC4RnfU+daP8G7cSCmaqNjiOoUY0VHCMS42pxnQmVF1GWwFhbHWn3RIxCqTmZ9A==
   dependencies:
-    mime-db "1.48.0"
+    mime-db "1.49.0"
 
 mime@^1.3.4:
   version "1.6.0"
@@ -5707,9 +5707,9 @@ tapable@^2.2.0:
   integrity sha512-FBk4IesMV1rBxX2tfiK8RAmogtWn53puLOQlvO8XuwlgxcYbP4mVPS9Ph4aeamSyyVjOl24aYWAuc8U5kCVwMw==
 
 tar@^4.4.12:
-  version "4.4.14"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.14.tgz#994901b59ce34402be3907ed7c0332a9e38c43c5"
-  integrity sha512-ouN3XcSWYOAHmXZ+P4NEFJvqXL50To9OZBSQNNP30vBUFJFZZ0PLX15fnwupv6azfxMUfUDUr2fhYw4zGAEPcg==
+  version "4.4.15"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.15.tgz#3caced4f39ebd46ddda4d6203d48493a919697f8"
+  integrity sha512-ItbufpujXkry7bHH9NpQyTXPbJ72iTlXgkBAYsAjDXk3Ds8t/3NfO5P4xZGy7u+sYuQUbimgzswX4uQIEeNVOA==
   dependencies:
     chownr "^1.1.1"
     fs-minipass "^1.2.5"
@@ -5720,9 +5720,9 @@ tar@^4.4.12:
     yallist "^3.0.3"
 
 tar@^6.0.2, tar@^6.1.0:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.1.tgz#4d7da4b132b334bb8c175ed1de466fe9157ea0eb"
-  integrity sha512-GG0R7yt/CQkvG4fueXDi52Zskqxe2AyRJ+Wm54yqarnBgcX3qRIWh10qLVAAN+mlPFGTfP5UxvD3Fbi11UOTUQ==
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.2.tgz#1f045a90a6eb23557a603595f41a16c57d47adc6"
+  integrity sha512-EwKEgqJ7nJoS+s8QfLYVGMDmAsj+StbI2AM/RTHeUSsOw6Z8bwNBRv5z3CY0m7laC5qUAqruLX5AhMuc5deY3Q==
   dependencies:
     chownr "^2.0.0"
     fs-minipass "^2.0.0"
@@ -5990,9 +5990,9 @@ uc.micro@^1.0.1, uc.micro@^1.0.5:
   integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
 
 uglify-js@^3.1.4:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.0.tgz#2d723a0afee81e0d08db9354a9c277006e942386"
-  integrity sha512-R/tiGB1ZXp2BC+TkRGLwj8xUZgdfT2f4UZEgX6aVjJ5uttPrr4fYmwTWDGqVnBCLbOXRMY6nr/BTbwCtVfps0g==
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.1.tgz#e2cb9fe34db9cb4cf7e35d1d26dfea28e09a7d06"
+  integrity sha512-JhS3hmcVaXlp/xSo3PKY5R0JqKs5M3IV+exdLHW99qKvKivPO4Z8qbej6mte17SOPqAOVMjt/XGgWacnFSzM3g==
 
 uid-number@0.0.6:
   version "0.0.6"
@@ -6192,7 +6192,7 @@ vsce@~1.84.0:
     yauzl "^2.3.1"
     yazl "^2.2.2"
 
-vscode-css-languageservice@^5.1.1:
+vscode-css-languageservice@^5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-5.1.4.tgz#07e4c63f1c3bb06e6f3f329c32b490d20a601bab"
   integrity sha512-fIJZJMXbaBsK0ifBb2RmSiLtzwn6NrZnKn7O+0ziIjwAY+rPvSK9St2qqQXFU3reZVRAt/I4GBp40dC/THcUDA==
