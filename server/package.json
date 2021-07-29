@@ -8,13 +8,13 @@
     "marko-language-server": "./dist/bin.js"
   },
   "dependencies": {
-    "@marko/compiler": "^5.14.2",
+    "@marko/compiler": "^5.15.0",
     "@marko/prettyprint": "^3.0.1",
-    "@marko/translator-default": "^5.14.2",
-    "@types/vscode": "^1.55.0",
+    "@marko/translator-default": "^5.15.0",
+    "@types/vscode": "^1.58.1",
     "lasso-package-root": "^1.0.1",
     "magic-string": "^0.25.7",
-    "marko": "^5.14.2",
+    "marko": "^5.15.0",
     "resolve-from": "^5.0.0",
     "tslib": "^2.2.0",
     "vscode-css-languageservice": "^5.1.4",

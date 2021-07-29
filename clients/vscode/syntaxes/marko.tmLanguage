@@ -2036,7 +2036,15 @@
 									<key>comment</key>
 									<string>Core tag.</string>
 									<key>match</key>
-									<string>(for|if|while|else-if|else|macro|tag|await|let|const|attrs|effect|set|get|id|lifecycle|return)(?=\b)</string>
+									<string>(attrs|return|import)(?=\b)</string>
+									<key>name</key>
+									<string>support.type.builtin.marko</string>
+								</dict>
+								<dict>
+									<key>comment</key>
+									<string>Core tag.</string>
+									<key>match</key>
+									<string>(for|if|while|else-if|else|macro|tag|await|let|const|effect|set|get|id|lifecycle)(?=\b)</string>
 									<key>name</key>
 									<string>support.function.marko</string>
 								</dict>

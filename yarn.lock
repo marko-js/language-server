@@ -1046,18 +1046,18 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@marko/babel-utils@^5.14.2":
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/@marko/babel-utils/-/babel-utils-5.14.2.tgz#339cd6669fea42fe22ff6b1edf65116957f344b6"
-  integrity sha512-Te5164hYDKUSBtF0qz4IfiIh6oHgQhgSrDRilew8zMvkrbjNHl5peYpiJtoSLAONgdfCis88lU9Aoyq62Jh1pQ==
+"@marko/babel-utils@^5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@marko/babel-utils/-/babel-utils-5.15.0.tgz#d6ba3358ec8cf95b04923383a6d1a18a86646f54"
+  integrity sha512-m5kDoaOFk3oON20Igs6LguSmx2mKhF1XvS70EJC2PWFmaWAnpY0m9QtjPjYbOsdV6zGeh0/AYlF2T9RdBDsetA==
   dependencies:
     "@babel/runtime" "^7.13.10"
     jsesc "^3.0.2"
 
-"@marko/compiler@^5.14.2":
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/@marko/compiler/-/compiler-5.14.2.tgz#2445f340b2765ec7d90ea2b27af620c7af11928f"
-  integrity sha512-Rp32ozHMLLTn7yNxFpLE1SUgs0vJ9dnbthPRw6BGNzdAKkuaX9EqbvoNV6hJVPnJhGsN+8POjWgKPX6d7D8Ogw==
+"@marko/compiler@^5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@marko/compiler/-/compiler-5.15.0.tgz#1027d5b3b73d09f09f2aa1a04aebcf813319670d"
+  integrity sha512-Leco8Ng94pdsYbaV7rNGW6oQB/1k6bk6j9IsTLwHKnLVVtBDRu4QdudLZ3cWG6RdbUTp52q29pvfkPjZcuzLmg==
   dependencies:
     "@babel/code-frame" "^7.12.13"
     "@babel/core" "^7.13.10"
@@ -1067,7 +1067,7 @@
     "@babel/runtime" "^7.13.10"
     "@babel/traverse" "^7.13.0"
     "@babel/types" "^7.13.0"
-    "@marko/babel-utils" "^5.14.2"
+    "@marko/babel-utils" "^5.15.0"
     complain "^1.6.0"
     enhanced-resolve "5.7.0"
     he "^1.2.0"
@@ -1099,13 +1099,13 @@
     resolve-from "^5.0.0"
     update-notifier "^5.1.0"
 
-"@marko/translator-default@^5.14.2":
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/@marko/translator-default/-/translator-default-5.14.2.tgz#9930f211cd474a737a8d4b3274d2b9f06371327d"
-  integrity sha512-yYDq4vWc7Uzfp368QVW9aLcKh19tiStUJzh08It6mZocwn6tuEEuImpMoytBIn89C/80u3STjj/foy4GEbXkZg==
+"@marko/translator-default@^5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@marko/translator-default/-/translator-default-5.15.0.tgz#76329f52a807f0551c42d5514def138d419f817b"
+  integrity sha512-BUjfy4DNW5oGiXCto4gJVCgMzo2ZiCei2mny5b3Ee2qld7sjBXK4dnL0GnnuYBSIoNYnjBLQt8L1llH/kivAzg==
   dependencies:
     "@babel/runtime" "^7.13.10"
-    "@marko/babel-utils" "^5.14.2"
+    "@marko/babel-utils" "^5.15.0"
     escape-string-regexp "^4.0.0"
     magic-string "^0.25.7"
     self-closing-tags "^1.0.1"
@@ -1323,9 +1323,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@^15.0.2":
-  version "15.14.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.3.tgz#330763b973d0acacb7fdccc7594e1fb281ed1b1c"
-  integrity sha512-gliNP92vLGGha1nioYHIIT2WrZ450sxpRgyPCEyog2hMVi6LEbhY/Pkj+EDiGWrCXntZ9lrnE2+lTIlyYtaxCg==
+  version "15.14.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.4.tgz#aaf18436ef67f24676d92b8bbe0f5f41b08db3e8"
+  integrity sha512-yblJrsfCxdxYDUa2fM5sP93ZLk5xL3/+3MJei+YtsNbIdY75ePy2AiCfpq+onepzax+8/Yv+OD/fLNleWpCzVg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -1337,7 +1337,7 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/vscode@^1.55.0":
+"@types/vscode@^1.58.1":
   version "1.58.1"
   resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.58.1.tgz#7deae08792adc73fa57383244a0c79d3530df4f7"
   integrity sha512-sa76rDXiSif09he8KoaWWUQxsuBr2+uND0xn1GUbEODkuEjp2p7Rqd3t5qlvklfmAedLFdL7MdnsPa57uzwcOw==
@@ -1755,9 +1755,9 @@ camelcase@^6.2.0:
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
 
 caniuse-lite@^1.0.30001219:
-  version "1.0.30001247"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001247.tgz#105be7a8fb30cdd303275e769a9dfb87d4b3577a"
-  integrity sha512-4rS7co+7+AoOSPRPOPUt5/GdaqZc0EsUpWk66ofE3HJTAajUK2Ss2VwoNzVN69ghg8lYYlh0an0Iy4LIHHo9UQ==
+  version "1.0.30001248"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001248.tgz#26ab45e340f155ea5da2920dadb76a533cb8ebce"
+  integrity sha512-NwlQbJkxUFJ8nMErnGtT0QTM2TJ33xgz4KXJSMIrjXIbDVdaYueGyjOrLKRtJC+rTiWfi6j5cnZN1NBiSBJGNw==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -2397,9 +2397,9 @@ editorconfig@^0.15.2:
     sigmund "^1.0.1"
 
 electron-to-chromium@^1.3.723:
-  version "1.3.789"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.789.tgz#c3ea060ba1e36e41c87943a47ed2daadc545be2b"
-  integrity sha512-lK4xn6C6ZF1kgLaC/EhOtC1MSKENExj3rMwGVnBTfHW81Z/Hb1Rge5YaWawN/YOXy3xCaESuE4KWSD50kOZ9rQ==
+  version "1.3.790"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.790.tgz#5c569290929d92c8094fa08c79bc9393ca9e94e7"
+  integrity sha512-epMH/S2MkhBv+Y0+nHK8dC7bzmOaPwcmiYqt+VwxSUJLgPzkqZnGUEQ8eVhy5zGmgWm9tDDdXkHDzOEsVU979A==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -3954,13 +3954,13 @@ marko@^4.14.21:
     strip-json-comments "^2.0.1"
     warp10 "^2.0.1"
 
-marko@^5.14.2:
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/marko/-/marko-5.14.2.tgz#e0383d5b9988afd5db0656877e0c057708903ce3"
-  integrity sha512-qZ/Nu5kKA4fCUXeTwOhdpg4Ve2VQuW1l30FCuJgkUhye6K5BTpe5GdyeUERCmhhY1NNnMdqwtd/3VwVYPE4VFg==
+marko@^5.15.0:
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/marko/-/marko-5.15.0.tgz#49c58c5f218de6bbf9eb402b0ce57acddd494082"
+  integrity sha512-hGHjgXTBi+isumO3Io9aRYBxKpx4ly2xq7pj7JronccPBpHdlVLrXMuy1JI7KU4chefxZQRg5tlH6VwcRk2VQA==
   dependencies:
-    "@marko/compiler" "^5.14.2"
-    "@marko/translator-default" "^5.14.2"
+    "@marko/compiler" "^5.15.0"
+    "@marko/translator-default" "^5.15.0"
     app-module-path "^2.2.0"
     argly "^1.2.0"
     browser-refresh-client "1.1.4"
