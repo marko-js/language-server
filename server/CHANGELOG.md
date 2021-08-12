@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.4](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.3...@marko/language-server@0.7.4) (2021-08-12)
+
+
+### Bug Fixes
+
+* **server:** issue loading compiler ([b71fef5](https://github.com/marko-js/language-server/commit/b71fef5b67f01cbb1678689246c8e4e1c6637057))
+
+
+
+
+
 ## [0.7.3](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.2...@marko/language-server@0.7.3) (2021-07-29)
 
 **Note:** Version bump only for package @marko/language-server
