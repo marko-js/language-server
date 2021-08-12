@@ -1,3 +1,4 @@
+import path from "path";
 import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
@@ -73,7 +74,7 @@ export function getCompilerForDoc(doc: TextDocument): Compiler {
   if (!compiler) {
     compilerForDoc.set(
       doc,
-      (compiler = loadCompiler(URI.parse(doc.uri).fsPath))
+      (compiler = loadCompiler(path.dirname(URI.parse(doc.uri).fsPath)))
     );
   }
 

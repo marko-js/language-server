@@ -43,7 +43,7 @@ console.log = (...args: unknown[]) => {
   connection.console.log(args.join(" "));
 };
 console.error = (...args: unknown[]) => {
-  connection.console.error(args.join(" "));
+  connection.console.error(args.map(arg => (arg as Error).stack || arg).join("\n"));
 };
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
@@ -205,7 +205,7 @@ function doValidate(doc: TextDocument): Diagnostic[] {
 }
 
 function clearCaches(compiler: Compiler) {
-  cacheForCompiler.get(compiler)!.clear();
+  cacheForCompiler.get(compiler)?.clear();
   compiler.taglib.clearCaches();
 }
 
