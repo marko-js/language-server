@@ -310,8 +310,10 @@ export function parseUntilOffset(options: {
   );
 
   try {
-    // A new line prevents the parser from erroring before emitting some events.
-    parser.parse(`${text.slice(0, offset)}/>`);
+    // We only parse up to the end of the line the user is currently looking for.
+    const nextLine = text.indexOf("\n", offset);
+    const parseText = nextLine === -1 ? `${text}\n` : text.slice(0, nextLine + 1);
+    parser.parse(parseText);
   } catch (err) {
     return includeErrors
       ? ({
