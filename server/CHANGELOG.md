@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.5](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.4...@marko/language-server@0.7.5) (2021-10-09)
+
+
+### Bug Fixes
+
+* issue with  parser not emitting events ([c7ce48d](https://github.com/marko-js/language-server/commit/c7ce48d5591aaa71bfd41ca797fb20cd14201cd9))
+
+
+
+
+
 ## [0.7.4](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.3...@marko/language-server@0.7.4) (2021-08-12)
 
 
