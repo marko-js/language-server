@@ -13,7 +13,7 @@ import {
 } from "vscode-languageserver/node";
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import prettyPrint from "@marko/prettyprint";
+import * as prettier from "prettier";
 import { isDeepStrictEqual } from "util";
 import { getTagLibLookup, getCompilerForDoc, Compiler } from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
@@ -43,7 +43,9 @@ console.log = (...args: unknown[]) => {
   connection.console.log(args.join(" "));
 };
 console.error = (...args: unknown[]) => {
-  connection.console.error(args.map(arg => (arg as Error).stack || arg).join("\n"));
+  connection.console.error(
+    args.map((arg) => (arg as Error).stack || arg).join("\n")
+  );
 };
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
@@ -65,25 +67,23 @@ connection.onInitialized(() => {
   documents.all().forEach((doc) => queueValidation(doc));
 });
 
-connection.onCompletion(
-  (params: CompletionParams): CompletionList => {
-    const doc = documents.get(params.textDocument.uri)!;
-    const taglib = getTagLibLookup(doc);
-    if (!taglib) return CompletionList.create([], true);
+connection.onCompletion((params: CompletionParams): CompletionList => {
+  const doc = documents.get(params.textDocument.uri)!;
+  const taglib = getTagLibLookup(doc);
+  if (!taglib) return CompletionList.create([], true);
 
-    const event = parseUntilOffset({
-      taglib,
-      offset: doc.offsetAt(params.position),
-      text: doc.getText(),
-    });
+  const event = parseUntilOffset({
+    taglib,
+    offset: doc.offsetAt(params.position),
+    text: doc.getText(),
+  });
 
-    const handler = event && completionTypes[event.type];
-    return (
-      (handler && handler(taglib, doc, params, event)) ||
-      CompletionList.create([], true)
-    );
-  }
-);
+  const handler = event && completionTypes[event.type];
+  return (
+    (handler && handler(taglib, doc, params, event)) ||
+    CompletionList.create([], true)
+  );
+});
 
 connection.onDefinition((params) => {
   const doc = documents.get(params.textDocument.uri)!;
@@ -101,16 +101,26 @@ connection.onDefinition((params) => {
 });
 
 connection.onDocumentFormatting(
-  ({ textDocument, options }: DocumentFormattingParams): TextEdit[] => {
+  async ({
+    textDocument,
+    options,
+  }: DocumentFormattingParams): Promise<TextEdit[]> => {
     const doc = documents.get(textDocument.uri)!;
     const { fsPath } = URI.parse(textDocument.uri);
 
     try {
       const text = doc.getText();
-      const formatted = prettyPrint(text, {
-        filename: fsPath,
-        indent: (options.insertSpaces ? " " : "\t").repeat(options.tabSize),
-      });
+      const config = {
+        filepath: fsPath,
+        tabWidth: options.tabSize,
+        useTabs: options.insertSpaces === false,
+        ...(await prettier
+          .resolveConfig(fsPath, {
+            editorconfig: true,
+          })
+          .catch(() => null)),
+      };
+      const formatted = prettier.format(text, config);
 
       return [
         TextEdit.replace(
@@ -212,7 +222,7 @@ function clearCaches(compiler: Compiler) {
 function getCacheForCompiler(compiler: Compiler) {
   let cache = cacheForCompiler.get(compiler);
   if (!cache) {
-    cacheForCompiler.set(compiler, cache = new Map());
+    cacheForCompiler.set(compiler, (cache = new Map()));
   }
   return cache;
 }

@@ -5,6 +5,8 @@
     "@commitlint/config-conventional": "^12.1.1",
     "@commitlint/config-lerna-scopes": "^12.1.1",
     "@types/node": "^15.0.2",
+    "@types/prettier": "^2.4.1",
+    "@types/vscode": "^1.58.1",
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
     "lint-staged": "^10.5.4",
