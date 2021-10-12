@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.5...@marko/language-server@0.8.0) (2021-10-12)
+
+
+### Features
+
+* switch to prettier based formatter ([439ef33](https://github.com/marko-js/language-server/commit/439ef339da2bba5ab2bbd5741d42239251db5d8f))
+
+
+
+
+
 ## [0.7.5](https://github.com/marko-js/language-server/compare/@marko/language-server@0.7.4...@marko/language-server@0.7.5) (2021-10-09)
 
 
