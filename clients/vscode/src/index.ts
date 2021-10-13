@@ -1,4 +1,4 @@
-import { workspace } from "vscode";
+import { workspace, window } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -47,10 +47,16 @@ export function activate() {
   // Create the language client and start the client.
   client = new LanguageClient(
     "marko",
-    "Marko Language Server",
+    "Marko",
     serverOptions,
     clientOptions
   );
+
+  client.onReady().then(() => {
+    client.onNotification("showError", window.showErrorMessage);
+    client.onNotification("showWarning", window.showWarningMessage);
+    client.onNotification("showInformation", window.showInformationMessage);
+  });
 
   // Start the client. This will also launch the server
   client.start();

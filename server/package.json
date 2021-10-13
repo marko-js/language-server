@@ -13,7 +13,7 @@
     "lasso-package-root": "^1.0.1",
     "marko": "^5.16.0",
     "prettier": "^2.4.1",
-    "prettier-plugin-marko": "^1.1.0",
+    "prettier-plugin-marko": "^1.1.2",
     "resolve-from": "^5.0.0",
     "tslib": "^2.2.0",
     "vscode-css-languageservice": "^5.1.4",

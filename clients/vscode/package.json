@@ -44,7 +44,7 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Marko Language Server configuration",
+      "title": "Marko",
       "properties": {
         "marko.trace.server": {
           "scope": "window",

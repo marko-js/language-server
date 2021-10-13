@@ -2,6 +2,7 @@ import {
   createConnection,
   ProposedFeatures,
   Range,
+  Position,
   CompletionList,
   CompletionParams,
   Diagnostic,
@@ -14,7 +15,7 @@ import {
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as prettier from "prettier";
-import { isDeepStrictEqual } from "util";
+import { inspect, isDeepStrictEqual } from "util";
 import { getTagLibLookup, getCompilerForDoc, Compiler } from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import * as completionTypes from "./utils/completions";
@@ -105,10 +106,9 @@ connection.onDocumentFormatting(
     textDocument,
     options,
   }: DocumentFormattingParams): Promise<TextEdit[]> => {
-    const doc = documents.get(textDocument.uri)!;
-    const { fsPath } = URI.parse(textDocument.uri);
-
     try {
+      const doc = documents.get(textDocument.uri)!;
+      const { fsPath } = URI.parse(textDocument.uri);
       const text = doc.getText();
       const config = {
         filepath: fsPath,
@@ -129,10 +129,15 @@ connection.onDocumentFormatting(
         ),
       ];
     } catch (e) {
-      displayMessage("error", 'Formatting failed: "' + e.message + '"');
+      displayMessage("Error", inspect(e, { colors: false }));
     }
 
-    return [];
+    return [
+      TextEdit.replace(
+        Range.create(Position.create(0, 0), Position.create(0, 0)),
+        ""
+      ),
+    ];
   }
 );
 
@@ -227,11 +232,13 @@ function getCacheForCompiler(compiler: Compiler) {
   return cache;
 }
 
-function displayMessage(type: "info" | "warning" | "error", msg: string) {
-  connection.sendNotification(
-    `$/display${type[0].toUpperCase() + type.slice(1)}`,
-    msg
-  );
+function displayMessage(
+  type: "Information" | "Warning" | "Error",
+  msg: string
+) {
+  setImmediate(() => {
+    connection.sendNotification(`show${type}`, msg);
+  });
 }
 
 documents.listen(connection);
