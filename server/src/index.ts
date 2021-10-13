@@ -108,19 +108,19 @@ connection.onDocumentFormatting(
   }: DocumentFormattingParams): Promise<TextEdit[]> => {
     try {
       const doc = documents.get(textDocument.uri)!;
-      const { fsPath } = URI.parse(textDocument.uri);
+      const { fsPath, scheme } = URI.parse(textDocument.uri);
       const text = doc.getText();
-      const config = {
+      const formatted = prettier.format(text, {
+        parser: "marko",
         filepath: fsPath,
         tabWidth: options.tabSize,
         useTabs: options.insertSpaces === false,
-        ...(await prettier
+        ...(scheme === "file" ? await prettier
           .resolveConfig(fsPath, {
             editorconfig: true,
           })
-          .catch(() => null)),
-      };
-      const formatted = prettier.format(text, config);
+          .catch(() => null) : null),
+      });
 
       return [
         TextEdit.replace(
