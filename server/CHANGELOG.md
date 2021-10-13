@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.1](https://github.com/marko-js/language-server/compare/@marko/language-server@0.9.0...@marko/language-server@0.9.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* formatting untitled files ([f976ead](https://github.com/marko-js/language-server/commit/f976eadb25c962d87ff36f9130f368bdca87dd45))
+
+
+
+
+
 # [0.9.0](https://github.com/marko-js/language-server/compare/@marko/language-server@0.8.0...@marko/language-server@0.9.0) (2021-10-13)
 
 
