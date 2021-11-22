@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.1](https://github.com/marko-js/language-server/compare/@marko/language-server@0.10.0...@marko/language-server@0.10.1) (2021-11-22)
+
+
+### Bug Fixes
+
+* use fallback if cannot load user compiler ([9164a45](https://github.com/marko-js/language-server/commit/9164a45baf2b0a6300e9776d543522e1ba4472be))
+
+
+
+
+
 # [0.10.0](https://github.com/marko-js/language-server/compare/@marko/language-server@0.9.1...@marko/language-server@0.10.0) (2021-10-22)
 
 
