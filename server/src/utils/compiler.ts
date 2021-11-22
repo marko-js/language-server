@@ -89,15 +89,17 @@ export function getTagLibLookup(
   );
 }
 
-function loadCompiler(dir: string) {
-  return require(isCompatibleCompilerInstalled(dir)
-    ? resolveFrom(dir, "@marko/compiler")
-    : "@marko/compiler") as Compiler;
-}
-
-function isCompatibleCompilerInstalled(dir: string) {
+function loadCompiler(dir: string): Compiler {
   const rootDir = lassoPackageRoot.getRootDir(dir);
   const packagePath =
     rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
-  return Boolean(packagePath && /^5\./.test(require(packagePath).version));
+
+  if (packagePath && /^5\./.test(require(packagePath).version)) {
+    try {
+      return require(resolveFrom(dir, "@marko/compiler"));
+    } catch {}
+  }
+
+  return require("@marko/compiler");
 }
+
