@@ -16,7 +16,11 @@ import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as prettier from "prettier";
 import { inspect, isDeepStrictEqual } from "util";
-import { getTagLibLookup, getCompilerForDoc, Compiler } from "./utils/compiler";
+import {
+  getTagLibLookup,
+  getCompilerAndTranslatorForDoc,
+  Compiler,
+} from "./utils/compiler";
 import { parseUntilOffset } from "./utils/htmljs-parser";
 import * as completionTypes from "./utils/completions";
 import * as definitionTypes from "./utils/definitions";
@@ -115,11 +119,13 @@ connection.onDocumentFormatting(
         filepath: fsPath,
         tabWidth: options.tabSize,
         useTabs: options.insertSpaces === false,
-        ...(scheme === "file" ? await prettier
-          .resolveConfig(fsPath, {
-            editorconfig: true,
-          })
-          .catch(() => null) : null),
+        ...(scheme === "file"
+          ? await prettier
+              .resolveConfig(fsPath, {
+                editorconfig: true,
+              })
+              .catch(() => null)
+          : null),
       });
 
       return [
@@ -144,7 +150,7 @@ connection.onDocumentFormatting(
 connection.onDidChangeWatchedFiles(() => {
   const clearedCompilers = new Set<Compiler>();
   for (const doc of documents.all()) {
-    const compiler = getCompilerForDoc(doc);
+    const { compiler } = getCompilerAndTranslatorForDoc(doc);
 
     if (!clearedCompilers.has(compiler)) {
       clearCaches(compiler);
@@ -157,7 +163,7 @@ documents.onDidChangeContent((change) => {
   queueValidation(change.document);
 
   if (change.document.version > 1) {
-    clearCaches(getCompilerForDoc(change.document));
+    clearCaches(getCompilerAndTranslatorForDoc(change.document).compiler);
   }
 });
 
@@ -189,7 +195,7 @@ function doValidate(doc: TextDocument): Diagnostic[] {
     return [];
   }
 
-  const compiler = getCompilerForDoc(doc);
+  const { compiler, translator } = getCompilerAndTranslatorForDoc(doc);
   const diagnostics: Diagnostic[] = [];
 
   try {
@@ -197,6 +203,7 @@ function doValidate(doc: TextDocument): Diagnostic[] {
       cache: getCacheForCompiler(compiler),
       output: "source",
       code: false,
+      translator,
     });
   } catch (e) {
     let match: RegExpExecArray | null;

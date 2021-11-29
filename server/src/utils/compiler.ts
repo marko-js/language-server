@@ -56,6 +56,7 @@ export interface TagDefinition {
 }
 
 export type Compiler = typeof import("@marko/compiler");
+export type CompilerAndTranslator = { compiler: Compiler; translator: string };
 
 export interface TagLibLookup {
   getTagsSorted(): TagDefinition[];
@@ -67,39 +68,72 @@ export interface TagLibLookup {
   ): void;
 }
 
-const compilerForDoc = new WeakMap<TextDocument, Compiler>();
+const compilerAndTranslatorForDoc = new WeakMap<
+  TextDocument,
+  CompilerAndTranslator
+>();
 
-export function getCompilerForDoc(doc: TextDocument): Compiler {
-  let compiler = compilerForDoc.get(doc);
-  if (!compiler) {
-    compilerForDoc.set(
+export function getCompilerAndTranslatorForDoc(
+  doc: TextDocument
+): CompilerAndTranslator {
+  let compilerAndTranslator = compilerAndTranslatorForDoc.get(doc);
+  if (!compilerAndTranslator) {
+    compilerAndTranslatorForDoc.set(
       doc,
-      (compiler = loadCompiler(path.dirname(URI.parse(doc.uri).fsPath)))
+      (compilerAndTranslator = loadCompiler(
+        path.dirname(URI.parse(doc.uri).fsPath)
+      ))
     );
   }
 
-  return compiler;
+  return compilerAndTranslator;
 }
 
 export function getTagLibLookup(
   document: TextDocument
 ): TagLibLookup | undefined {
-  return getCompilerForDoc(document).taglib.buildLookup(
-    URI.parse(document.uri).fsPath
-  );
+  try {
+    const { compiler, translator } = getCompilerAndTranslatorForDoc(document);
+    return compiler.taglib.buildLookup(
+      URI.parse(document.uri).fsPath,
+      translator
+    );
+  } catch {}
 }
 
-function loadCompiler(dir: string): Compiler {
+function loadCompiler(dir: string): CompilerAndTranslator {
   const rootDir = lassoPackageRoot.getRootDir(dir);
-  const packagePath =
+  const pkgPath =
     rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
+  const pkg = pkgPath && require(pkgPath);
 
-  if (packagePath && /^5\./.test(require(packagePath).version)) {
+  if (pkg && /^5\./.test(pkg.version)) {
     try {
-      return require(resolveFrom(dir, "@marko/compiler"));
+      // Ensure translator is available in local package, or fallback to built in compiler.
+      let translator = ([] as string[])
+        .concat(
+          Object.keys(pkg.dependencies),
+          Object.keys(pkg.peerDependencies),
+          Object.keys(pkg.devDependencies)
+        )
+        .find((name) => /^marko$|^(@\/marko\/|marko-)translator-/.test(name));
+
+      if (translator === "marko" || !translator) {
+        // Fallback to compiler default translator
+        translator = require(resolveFrom(dir, "@marko/compiler/config"))
+          .translator as string;
+      }
+
+      require(resolveFrom(dir, translator));
+      return {
+        compiler: require(resolveFrom(dir, "@marko/compiler")),
+        translator,
+      };
     } catch {}
   }
 
-  return require("@marko/compiler");
+  return {
+    compiler: require("@marko/compiler"),
+    translator: "@marko/translator-default",
+  };
 }
-
