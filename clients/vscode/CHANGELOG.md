@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/marko-js/language-server/compare/marko-vscode@0.15.1...marko-vscode@0.16.0) (2021-11-29)
+
+
+### Features
+
+* improve support for using custom translators ([02ade04](https://github.com/marko-js/language-server/commit/02ade04fa1dd4dbeb5f40a2ac0259710ce06f455))
+
+
+
+
+
 ## [0.15.1](https://github.com/marko-js/language-server/compare/marko-vscode@0.15.0...marko-vscode@0.15.1) (2021-11-22)
 
 **Note:** Version bump only for package marko-vscode
