@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
   push:
-    branches: [main, next, "*.x"]
+    branches: [main]
 
 jobs:
   lint:
@@ -59,6 +59,8 @@ jobs:
         run: exit 0
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -73,7 +75,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Release
-        run: pnpm run release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:version
+          publish: pnpm ci:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
