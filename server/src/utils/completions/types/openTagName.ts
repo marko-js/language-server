@@ -11,11 +11,11 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup, TagDefinition } from "../../compiler";
+import { TaglibLookup, TagDefinition } from "../../compiler";
 import { rangeFromEvent, findNonControlFlowParent } from "../../utils";
 
 export function openTagName(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.OpenTagName

@@ -7,7 +7,7 @@ import {
 } from "vscode-css-languageservice";
 
 import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import { TaglibLookup } from "../../compiler";
 import { shiftCompletionRanges, shiftPosition } from "../../utils";
 
 const services = {
@@ -17,7 +17,7 @@ const services = {
 };
 
 export function styleContent(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.StyleContent

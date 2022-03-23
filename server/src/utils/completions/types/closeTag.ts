@@ -7,11 +7,11 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import { TaglibLookup } from "../../compiler";
 import { rangeFromEvent } from "../../utils";
 
 export function closeTag(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.CloseTag

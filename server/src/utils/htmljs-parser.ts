@@ -1,5 +1,5 @@
 import { createParser } from "htmljs-parser";
-import { TagLibLookup } from "./compiler";
+import { TaglibLookup } from "./compiler";
 
 export namespace ParserEvents {
   export interface Error {
@@ -140,7 +140,7 @@ const SUPPORTED_STYLE_LANGS = {
 export function parseUntilOffset(options: {
   offset: number;
   text: string;
-  taglib: TagLibLookup;
+  taglib: TaglibLookup;
   includeErrors?: boolean;
 }) {
   const { offset, text, taglib, includeErrors } = options;

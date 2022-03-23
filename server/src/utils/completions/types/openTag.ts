@@ -6,10 +6,10 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import { TaglibLookup } from "../../compiler";
 
 export function openTag(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.OpenTag

@@ -5,13 +5,13 @@ import {
   TextDocumentPositionParams,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { TagLibLookup } from "../../compiler";
+import { TaglibLookup } from "../../compiler";
 import { ParserEvents } from "../../htmljs-parser";
 import RegExpBuilder from "../../regexp-builder";
 import { START_OF_FILE, createTextDocument, rangeFromEvent } from "../../utils";
 
 export function attributeName(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: TextDocumentPositionParams,
   event: ParserEvents.AttributeName

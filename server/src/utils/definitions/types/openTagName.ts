@@ -6,7 +6,7 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup, TagDefinition } from "../../compiler";
+import { TaglibLookup, TagDefinition } from "../../compiler";
 import RegExpBuilder from "../../regexp-builder";
 import {
   START_OF_FILE,
@@ -16,7 +16,7 @@ import {
 } from "../../utils";
 
 export function openTagName(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
   params: TextDocumentPositionParams,
   event: ParserEvents.OpenTagName
