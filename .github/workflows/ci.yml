@@ -85,6 +85,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          createGithubReleases: true
           version: pnpm run version
           publish: pnpm run publish
           commit: "[ci] release"
