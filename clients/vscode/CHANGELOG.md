@@ -6,9 +6,6 @@
 
 - 26a76b7: Upgrade internal tooling. VSCode extension is now bundled for faster startup.
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
-
 # [0.16.0](https://github.com/marko-js/language-server/compare/marko-vscode@0.15.1...marko-vscode@0.16.0) (2021-11-29)
 
 ### Features
