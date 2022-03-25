@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.2
+
+### Patch Changes
+
+- [#43](https://github.com/marko-js/language-server/pull/43) [`75b6947`](https://github.com/marko-js/language-server/commit/75b69472509ad820d6e1afa5c3c4fe97fd072d1d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update example image urls
+
 ## 0.17.1
 
 ### Patch Changes
