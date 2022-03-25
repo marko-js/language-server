@@ -70,7 +70,7 @@ jobs:
           node-version: 16.x
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - name: Release
         id: changesets
         uses: changesets/action@v1
