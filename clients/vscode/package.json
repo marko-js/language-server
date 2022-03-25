@@ -82,6 +82,6 @@
   },
   "scripts": {
     "build": "tsc -b && node -r esbuild-register build",
-    "release": "export OUT=dist/marko.vsix; vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT"
+    "release": "export OUT=dist/marko.vsix; vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT"
   }
 }
