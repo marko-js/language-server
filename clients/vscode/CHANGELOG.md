@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.1
+
+### Patch Changes
+
+- [#41](https://github.com/marko-js/language-server/pull/41) [`a4d8a71`](https://github.com/marko-js/language-server/commit/a4d8a719620de49ee296b6c81f7402a9818171c4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Issue with demo images not included in extension.
+
 ## 0.17.0
 
 ### Minor Changes
