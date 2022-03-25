@@ -17,11 +17,8 @@
   },
   "private": true,
   "scripts": {
-    "ci:publish": "pnpm -r build && changeset publish && pnpm -r release",
-    "ci:version": "changeset version && pnpm install --no-frozen-lockfile",
-    "format": "pnpm lint:eslint -- --fix && pnpm lint:prettier -- --write",
-    "lint": "pnpm -r build && pnpm lint:eslint && pnpm lint:prettier -- -l",
-    "lint:eslint": "eslint -f visualstudio .",
-    "lint:prettier": "prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\""
+    "publish": "pnpm -r build && changeset publish && pnpm -r release",
+    "version": "changeset version && pnpm install --no-frozen-lockfile",
+    "format": "pnpm -r build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write"
   }
 }

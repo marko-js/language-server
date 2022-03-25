@@ -10,7 +10,7 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 - [x] Tag Matching
 - [x] Error reporting
 - [ ] Linting
-- [ ] Debugging
+- [x] Debugging
 
 # Demo
 
@@ -18,15 +18,15 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 
 - Go To Tags
 
-![goToTag](https://github.com/marko-js/language-server/blob/master/clients/vscode/img/goToTag.gif?raw=true)
+![goToTag](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToTag.gif)
 
 - Custom Attribute Names
 
-![goToAttrName](https://github.com/marko-js/language-server/blob/master/clients/vscode/img/goToAttrName.gif?raw=true)
+![goToAttrName](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToAttrName.gif)
 
 - Custom Handlers
 
-![goToAttrValue](https://github.com/marko-js/language-server/blob/master/clients/vscode/img/goToAttrValue.gif?raw=true)
+![goToAttrValue](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToAttrValue.gif)
 
 # License
 
