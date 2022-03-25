@@ -45,12 +45,10 @@ const documents = new TextDocuments(TextDocument);
 const markoErrorRegExp = /^(.+?)(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
 
 console.log = (...args: unknown[]) => {
-  connection.console.log(args.join(" "));
+  connection.console.log(args.map((v) => inspect(v)).join(" "));
 };
 console.error = (...args: unknown[]) => {
-  connection.console.error(
-    args.map((arg) => (arg as Error).stack || arg).join("\n")
-  );
+  connection.console.error(args.map((v) => inspect(v)).join(" "));
 };
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
@@ -83,9 +81,10 @@ connection.onCompletion((params: CompletionParams): CompletionList => {
     text: doc.getText(),
   });
 
-  const handler = event && completionTypes[event.type];
+  const handler =
+    event && completionTypes[event.type as keyof typeof completionTypes];
   return (
-    (handler && handler(taglib, doc, params, event)) ||
+    (handler && handler(taglib, doc, params, event as any)) ||
     CompletionList.create([], true)
   );
 });
@@ -101,8 +100,9 @@ connection.onDefinition((params) => {
     text: doc.getText(),
   });
 
-  const handler = event && definitionTypes[event.type];
-  return handler && handler(taglib, doc, params, event);
+  const handler =
+    event && definitionTypes[event.type as keyof typeof definitionTypes];
+  return handler && handler(taglib, doc, params, event as any);
 });
 
 connection.onDocumentFormatting(
@@ -207,7 +207,7 @@ function doValidate(doc: TextDocument): Diagnostic[] {
     });
   } catch (e) {
     let match: RegExpExecArray | null;
-    while ((match = markoErrorRegExp.exec(e.message))) {
+    while ((match = markoErrorRegExp.exec((e as Error).message))) {
       const [, fileName, rawLine, rawCol, msg] = match;
       const line = (parseInt(rawLine, 10) || 1) - 1;
       const col = (parseInt(rawCol, 10) || 1) - 1;

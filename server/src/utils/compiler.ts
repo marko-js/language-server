@@ -2,18 +2,21 @@ import path from "path";
 import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import type {
   AttributeDefinition,
   TagDefinition,
   TaglibLookup,
 } from "@marko/babel-utils";
 
+import * as builtinCompiler from "@marko/compiler";
+import * as builtinTranslator from "@marko/translator-default";
+
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
 export type CompilerAndTranslator = {
   compiler: Compiler;
-  translator: string;
+  translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
 };
 
 const compilerAndTranslatorForDoc = new WeakMap<
@@ -46,6 +49,7 @@ export function getTagLibLookup(
       URI.parse(document.uri).fsPath,
       translator
     );
+    // eslint-disable-next-line no-empty
   } catch {}
 }
 
@@ -77,11 +81,12 @@ function loadCompiler(dir: string): CompilerAndTranslator {
         compiler: require(resolveFrom(dir, "@marko/compiler")),
         translator,
       };
+      // eslint-disable-next-line no-empty
     } catch {}
   }
 
   return {
-    compiler: require("@marko/compiler"),
-    translator: "@marko/translator-default",
+    compiler: builtinCompiler,
+    translator: builtinTranslator,
   };
 }

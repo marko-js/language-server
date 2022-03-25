@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "ESNext"],
+    "strict": true,
+    "outDir": "dist",
+    "composite": true,
+    "target": "ESNext",
+    "sourceMap": false,
+    "declaration": true,
+    "incremental": true,
+    "module": "CommonJS",
+    "stripInternal": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "noImplicitReturns": false,
+    "noImplicitOverride": true,
+    "emitDeclarationOnly": true,
+    "allowUnreachableCode": false,
+    "importsNotUsedAsValues": "error",
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -3,4 +3,6 @@ CHANGELOG.md
 **/*.ts
 **/*.map
 **/*.d.ts
+**/*.vsix
 **/tsconfig.json
+**/.tsbuildinfo

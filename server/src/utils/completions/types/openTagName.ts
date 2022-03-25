@@ -1,17 +1,17 @@
 import path from "path";
 import { URI } from "vscode-uri";
 import {
+  type CompletionParams,
   CompletionItemKind,
-  CompletionParams,
   CompletionItem,
   CompletionList,
   InsertTextFormat,
   MarkupKind,
   TextEdit,
 } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "../../htmljs-parser";
-import { TaglibLookup, TagDefinition } from "../../compiler";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup, TagDefinition } from "../../compiler";
 import { rangeFromEvent, findNonControlFlowParent } from "../../utils";
 
 export function openTagName(
@@ -53,7 +53,7 @@ export function openTagName(
         let label = it.isNestedTag ? `@${it.name}` : it.name;
         const fileForTag = it.template || it.renderer || it.filePath;
         const fileURIForTag = URI.file(fileForTag).toString();
-        const nodeModuleMatch = /\/node_modules\/((?:\@[^/]+\/)?[^/]+)/.exec(
+        const nodeModuleMatch = /\/node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(
           fileForTag
         );
 

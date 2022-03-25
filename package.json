@@ -2,30 +2,25 @@
   "name": "marko-language-server-repo",
   "devDependencies": {
     "@changesets/cli": "^2.21.1",
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
-    "@commitlint/config-lerna-scopes": "^12.1.4",
     "@types/node": "^15.14.9",
-    "@types/prettier": "^2.4.4",
-    "@types/vscode": "^1.65.0",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "esbuild": "^0.14.27",
+    "esbuild-register": "^3.3.2",
+    "eslint": "^8.11.0",
+    "eslint-config-prettier": "^8.5.0",
     "husky": "^6.0.0",
-    "lerna": "^4.0.0",
     "lint-staged": "^10.5.4",
-    "ovsx": "^0.1.0",
     "prettier": "^2.6.0",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.6.2",
-    "vsce": "^2.7.0"
+    "typescript": "^4.6.2"
   },
   "private": true,
   "scripts": {
-    "build": "tsc -b ./server ./clients/vscode",
-    "format": "prettier \"**/*.{ts,js,json,md}\" --write",
-    "lint": "tsc -p ./server --noEmit && tsc -p ./clients/vscode --noEmit && tslint -t codeFrame -c tslint.json '{server,clients/*}/src/**/*.ts'",
-    "postpublish": "mkdir -p dist; export OUT=$PWD/dist/marko.vsix; (cd ./clients/vscode && npm i && vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT -p $OVSX_PAT)",
+    "ci:publish": "pnpm -r build && changeset publish && mkdir -p dist; export OUT=$PWD/dist/marko.vsix; (cd ./clients/vscode && vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT -p $OVSX_PAT)",
     "ci:version": "changeset version",
-    "ci:publish": "pnpm run build && changeset publish",
-    "watch": "pnpm build -- -w"
+    "format": "pnpm lint:eslint -- --fix && pnpm lint:prettier -- --write",
+    "lint": "pnpm -r build && pnpm lint:eslint && pnpm lint:prettier -- -l",
+    "lint:eslint": "eslint -f visualstudio .",
+    "lint:prettier": "prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\""
   }
 }
