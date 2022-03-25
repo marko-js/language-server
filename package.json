@@ -16,7 +16,7 @@
   },
   "private": true,
   "scripts": {
-    "ci:publish": "pnpm -r build && changeset publish && mkdir -p dist; export OUT=$PWD/dist/marko.vsix; (cd ./clients/vscode && vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT -p $OVSX_PAT)",
+    "ci:publish": "pnpm -r build && changeset publish && pnpm -r release",
     "ci:version": "changeset version",
     "format": "pnpm lint:eslint -- --fix && pnpm lint:prettier -- --write",
     "lint": "pnpm -r build && pnpm lint:eslint && pnpm lint:prettier -- -l",
