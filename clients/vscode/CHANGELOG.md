@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.3
+
+### Patch Changes
+
+- [`ec40058`](https://github.com/marko-js/language-server/commit/ec40058651fd9d0158109f5348d22cd5a27b4627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Attempt to fix issue with github release generation
+
 ## 0.17.2
 
 ### Patch Changes
