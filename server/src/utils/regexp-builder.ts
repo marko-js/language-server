@@ -27,5 +27,5 @@ export default function RegExpBuilder(
 }
 
 function escape(val: unknown) {
-  return String(val).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+  return String(val).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }

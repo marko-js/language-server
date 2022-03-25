@@ -12,17 +12,22 @@
       "request": "launch",
       "name": "Launch VSCode Client",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceRoot}/clients/vscode/"],
-      "outFiles": ["${workspaceRoot}/clients/vscode/dist/**/*.js"]
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
+        "${workspaceRoot}/test.marko"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/**/dist/*.js",
+        "!**/node_modules/**"
+      ]
     },
     {
       "type": "node",
       "request": "attach",
       "name": "Attach to Server",
       "port": 6009,
-      "restart": true,
-      "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/server/dist/**/*.js"]
+      "restart": true
     }
   ]
 }

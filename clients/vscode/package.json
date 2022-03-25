@@ -2,11 +2,10 @@
   "name": "marko-vscode",
   "description": "Marko Tooling for VSCode",
   "version": "0.16.0",
-  "author": "Diego Berrocal",
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "activationEvents": [
     "onLanguage:marko"
   ],
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "categories": [
     "Programming Languages"
   ],
@@ -60,14 +59,16 @@
       }
     }
   },
-  "dependencies": {
+  "devDependencies": {
     "@marko/language-server": "^0.11.0",
-    "tslib": "^2.2.0",
+    "@types/vscode": "^1.65.0",
+    "ovsx": "^0.1.0",
+    "vsce": "^2.7.0",
     "vscode-languageclient": "^7.0.0"
   },
   "displayName": "Marko VSCode",
   "engines": {
-    "vscode": "^1.52.0"
+    "vscode": "^1.65.0"
   },
   "homepage": "https://github.com/marko-js/language-server/tree/master/clients/vscode/README.md",
   "icon": "img/marko.png",
@@ -78,5 +79,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
+  },
+  "scripts": {
+    "build": "tsc -b && node -r esbuild-register build",
+    "release": "export OUT=dist/marko.vsix; vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT"
   }
 }

@@ -1,16 +1,16 @@
 import {
-  CompletionParams,
+  type CompletionParams,
   CompletionList,
   CompletionItemKind,
   InsertTextFormat,
 } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup } from "../../compiler";
 
 export function openTag(
-  taglib: TagLibLookup,
-  document: TextDocument,
+  _taglib: TaglibLookup,
+  _document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.OpenTag
 ) {

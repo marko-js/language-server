@@ -1,5 +1,5 @@
 import { createParser } from "htmljs-parser";
-import { TagLibLookup } from "./compiler";
+import type { TaglibLookup } from "./compiler";
 
 export namespace ParserEvents {
   export interface Error {
@@ -140,7 +140,7 @@ const SUPPORTED_STYLE_LANGS = {
 export function parseUntilOffset(options: {
   offset: number;
   text: string;
-  taglib: TagLibLookup;
+  taglib: TaglibLookup;
   includeErrors?: boolean;
 }) {
   const { offset, text, taglib, includeErrors } = options;
@@ -177,13 +177,14 @@ export function parseUntilOffset(options: {
             const content = firstAttr.name.slice(1, -1);
             const pos = text.indexOf(content, ev.tagNameEndPos);
             const endPos = pos + content.length;
-            const requestedLanguage =
-              ev.shorthandClassNames &&
+            const requestedLanguage = (ev.shorthandClassNames &&
               ev.shorthandClassNames[0].rawParts[0] &&
-              ev.shorthandClassNames[0].rawParts[0].text;
+              ev.shorthandClassNames[0].rawParts[0].text) as
+              | void
+              | keyof typeof SUPPORTED_STYLE_LANGS;
             const language =
               requestedLanguage && SUPPORTED_STYLE_LANGS[requestedLanguage]
-                ? (requestedLanguage as keyof typeof SUPPORTED_STYLE_LANGS)
+                ? requestedLanguage
                 : "css";
 
             finish({
@@ -311,15 +312,13 @@ export function parseUntilOffset(options: {
 
   try {
     // We only parse up to the end of the line the user is currently looking for.
-    const nextLine = text.indexOf("\n", offset);
-    const parseText = nextLine === -1 ? `${text}\n` : text.slice(0, nextLine + 1);
-    parser.parse(parseText);
+    parser.parse(`${text}\n`);
   } catch (err) {
     return includeErrors
       ? ({
           type: "error",
           code: "UNEXPECTED_TOKEN",
-          message: err.message,
+          message: (err as Error).message,
           pos: parser.pos,
           endPos: parser.pos,
         } as ParserEvents.Error)

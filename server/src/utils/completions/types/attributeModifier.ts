@@ -1,17 +1,17 @@
 import {
-  CompletionParams,
-  CompletionItemKind,
+  type CompletionParams,
   CompletionList,
+  CompletionItemKind,
 } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup } from "../../compiler";
 
 export function attributeModifier(
-  taglib: TagLibLookup,
-  document: TextDocument,
-  params: CompletionParams,
-  event: ParserEvents.OpenTagName
+  _taglib: TaglibLookup,
+  _document: TextDocument,
+  _params: CompletionParams,
+  _event: ParserEvents.OpenTagName
 ) {
   return CompletionList.create(
     [

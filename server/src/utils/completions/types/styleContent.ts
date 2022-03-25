@@ -1,4 +1,4 @@
-import { Position, CompletionParams } from "vscode-languageserver";
+import { type CompletionParams, Position } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   getCSSLanguageService,
@@ -6,8 +6,8 @@ import {
   getLESSLanguageService,
 } from "vscode-css-languageservice";
 
-import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup } from "../../compiler";
 import { shiftCompletionRanges, shiftPosition } from "../../utils";
 
 const services = {
@@ -17,7 +17,7 @@ const services = {
 };
 
 export function styleContent(
-  taglib: TagLibLookup,
+  _taglib: TaglibLookup,
   document: TextDocument,
   params: CompletionParams,
   event: ParserEvents.StyleContent

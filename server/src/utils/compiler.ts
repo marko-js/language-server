@@ -2,71 +2,22 @@ import path from "path";
 import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type {
+  AttributeDefinition,
+  TagDefinition,
+  TaglibLookup,
+} from "@marko/babel-utils";
 
-export interface AttributeDefinition {
-  allowExpressions: boolean;
-  filePath: string;
-  name: string;
-  type?: string;
-  html?: boolean;
-  enum?: string[];
-  pattern?: RegExp;
-  required: boolean;
-  defaultValue: unknown;
-  description?: string;
-  deprecated: boolean;
-  autocomplete: {
-    displayText: string;
-    snippet: string;
-    description: string;
-    descriptionMoreURL?: string;
-  }[];
-}
-export interface TagDefinition {
-  dir: string;
-  filePath: string;
-  attributeGroups?: string[];
-  patternAttributes?: AttributeDefinition[];
-  attributes: { [x: string]: AttributeDefinition };
-  description?: string;
-  nestedTags?: {
-    [x: string]: TagDefinition & {
-      isNestedTag: true;
-      isRepeated: boolean;
-      targetProperty: string;
-    };
-  };
-  autocomplete?: {
-    displayText: string;
-    snippet: string;
-    description: string;
-    descriptionMoreURL?: string;
-  }[];
-  html: boolean;
-  name: string;
-  taglibId: string;
-  template: string;
-  renderer: string;
-  deprecated: boolean;
-  isNestedTag: true;
-  isRepeated: boolean;
-  openTagOnly: boolean;
-  targetProperty: string;
-}
+import * as builtinCompiler from "@marko/compiler";
+import * as builtinTranslator from "@marko/translator-default";
 
 export type Compiler = typeof import("@marko/compiler");
-export type CompilerAndTranslator = { compiler: Compiler; translator: string };
-
-export interface TagLibLookup {
-  getTagsSorted(): TagDefinition[];
-  getTag(tagName: string): TagDefinition;
-  getAttribute(tagName: string, attrName: string): AttributeDefinition;
-  forEachAttribute(
-    tagName: string,
-    callback: (attr: AttributeDefinition, tag: TagDefinition) => void
-  ): void;
-}
+export { AttributeDefinition, TagDefinition, TaglibLookup };
+export type CompilerAndTranslator = {
+  compiler: Compiler;
+  translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
+};
 
 const compilerAndTranslatorForDoc = new WeakMap<
   TextDocument,
@@ -91,13 +42,14 @@ export function getCompilerAndTranslatorForDoc(
 
 export function getTagLibLookup(
   document: TextDocument
-): TagLibLookup | undefined {
+): TaglibLookup | undefined {
   try {
     const { compiler, translator } = getCompilerAndTranslatorForDoc(document);
     return compiler.taglib.buildLookup(
       URI.parse(document.uri).fsPath,
       translator
     );
+    // eslint-disable-next-line no-empty
   } catch {}
 }
 
@@ -129,11 +81,12 @@ function loadCompiler(dir: string): CompilerAndTranslator {
         compiler: require(resolveFrom(dir, "@marko/compiler")),
         translator,
       };
+      // eslint-disable-next-line no-empty
     } catch {}
   }
 
   return {
-    compiler: require("@marko/compiler"),
-    translator: "@marko/translator-default",
+    compiler: builtinCompiler,
+    translator: builtinTranslator,
   };
 }

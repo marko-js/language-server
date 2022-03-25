@@ -1,19 +1,19 @@
 import {
-  CompletionParams,
+  type CompletionParams,
   CompletionList,
   CompletionItemKind,
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup } from "../../compiler";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup } from "../../compiler";
 import { rangeFromEvent } from "../../utils";
 
 export function closeTag(
-  taglib: TagLibLookup,
+  _taglib: TaglibLookup,
   document: TextDocument,
-  params: CompletionParams,
+  _params: CompletionParams,
   event: ParserEvents.CloseTag
 ) {
   if (event.tagName[0] === "$") {

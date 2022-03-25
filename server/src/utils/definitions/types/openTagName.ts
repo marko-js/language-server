@@ -1,12 +1,12 @@
 import { URI } from "vscode-uri";
 import {
+  type TextDocumentPositionParams,
   Range,
   LocationLink,
-  TextDocumentPositionParams,
 } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "../../htmljs-parser";
-import { TagLibLookup, TagDefinition } from "../../compiler";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { ParserEvents } from "../../htmljs-parser";
+import type { TaglibLookup, TagDefinition } from "../../compiler";
 import RegExpBuilder from "../../regexp-builder";
 import {
   START_OF_FILE,
@@ -16,9 +16,9 @@ import {
 } from "../../utils";
 
 export function openTagName(
-  taglib: TagLibLookup,
+  taglib: TaglibLookup,
   document: TextDocument,
-  params: TextDocumentPositionParams,
+  _params: TextDocumentPositionParams,
   event: ParserEvents.OpenTagName
 ) {
   let tagDef: TagDefinition | null | undefined;
@@ -56,10 +56,12 @@ export function openTagName(
     }
   }
 
-  return LocationLink.create(
-    URI.file(tagEntryFile).toString(),
-    range,
-    range,
-    rangeFromEvent(document, event)
-  );
+  return [
+    LocationLink.create(
+      URI.file(tagEntryFile).toString(),
+      range,
+      range,
+      rangeFromEvent(document, event)
+    ),
+  ];
 }

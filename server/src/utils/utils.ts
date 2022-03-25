@@ -1,14 +1,14 @@
 import fs from "fs";
 import { URI } from "vscode-uri";
 import {
-  CompletionList,
+  type CompletionList,
+  type InsertReplaceEdit,
   TextEdit,
   Position,
   Range,
-  InsertReplaceEdit,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { ParserEvents } from "./htmljs-parser";
+import type { ParserEvents } from "./htmljs-parser";
 
 export const START_OF_FILE = Range.create(
   Position.create(0, 0),
