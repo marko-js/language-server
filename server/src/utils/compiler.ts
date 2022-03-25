@@ -49,7 +49,7 @@ export function getTagLibLookup(
       URI.parse(document.uri).fsPath,
       translator
     );
-  // eslint-disable-next-line no-empty
+    // eslint-disable-next-line no-empty
   } catch {}
 }
 
