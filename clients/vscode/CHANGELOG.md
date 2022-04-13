@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.4
+
+### Patch Changes
+
+- [#46](https://github.com/marko-js/language-server/pull/46) [`ec6ff7b`](https://github.com/marko-js/language-server/commit/ec6ff7bc284c65fe6f52017df617475acfa51567) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve syntax highlighting, including improved support for future typescript highlighting.
+
 ## 0.17.3
 
 ### Patch Changes
