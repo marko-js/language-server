@@ -32,12 +32,12 @@
       {
         "language": "marko",
         "scopeName": "text.marko",
-        "path": "./syntaxes/marko.tmLanguage",
+        "path": "./syntaxes/marko.tmLanguage.json",
         "embeddedLanguages": {
           "source.css": "css",
           "source.css.less": "less",
           "source.css.scss": "scss",
-          "source.js": "javascript"
+          "source.ts": "typescript"
         }
       }
     ],
