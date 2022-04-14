@@ -87,7 +87,7 @@
           "name": "meta.marko-spread-attribute",
           "contentName": "source.ts",
           "begin": "(?:\\s+|,|(?<=\\[))(\\.\\.\\.)",
-          "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?:await|async|class|new|typeof|function|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+          "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
           "patterns": [{ "include": "#javascript-expression" }],
           "beginCaptures": {
             "1": { "name": "keyword.operator.spread.marko" }
@@ -109,7 +109,7 @@
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
       "begin": "\\s*(:?=)\\s*",
-      "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?:await|async|class|new|typeof|function|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+      "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
       "patterns": [{ "include": "#javascript-expression" }],
       "beginCaptures": {
         "1": { "patterns": [{ "include": "source.ts" }] }
@@ -552,10 +552,8 @@
       "patterns": [
         {
           "comment": "We must match the some expressions ourselves since otherwise the js grammar can overstep.",
-          "match": "\\s*(?:await|new|typeof|void|in|instanceof|as|extends)\\s+",
-          "captures": {
-            "0": { "patterns": [{ "include": "source.ts" }] }
-          }
+          "match": "(?:\\s*\\b(?:as|await|extends|in|instanceof|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
+          "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         },
         {
           "comment": "We must match regexps since otherwise it can be cutoff by self closed tags or comments.",
