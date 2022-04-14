@@ -11,6 +11,7 @@ import type {
 
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
+builtinCompiler.configure({ translator: builtinTranslator as any });
 
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };

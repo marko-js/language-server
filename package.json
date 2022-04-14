@@ -1,19 +1,19 @@
 {
   "name": "marko-language-server-repo",
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.3",
-    "@changesets/cli": "^2.21.1",
+    "@changesets/changelog-github": "^0.4.4",
+    "@changesets/cli": "^2.22.0",
     "@types/node": "^15.14.9",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "esbuild": "^0.14.27",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "esbuild": "^0.14.36",
     "esbuild-register": "^3.3.2",
-    "eslint": "^8.11.0",
+    "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.6.0",
-    "typescript": "^4.6.2"
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
   },
   "private": true,
   "scripts": {
