@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.6
+
+### Patch Changes
+
+- [#50](https://github.com/marko-js/language-server/pull/50) [`38bf1d7`](https://github.com/marko-js/language-server/commit/38bf1d76edd0e22ecfe20ce9804d807a840c5cf6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix vscode engine version.
+
 ## 0.17.5
 
 ### Patch Changes
