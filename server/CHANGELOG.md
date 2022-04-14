@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.12.1
+
+### Patch Changes
+
+- [#48](https://github.com/marko-js/language-server/pull/48) [`5236ac4`](https://github.com/marko-js/language-server/commit/5236ac464faa7efdad9a7eefd5dfc3c30c3b9e32) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with prettier-marko not being bundled or found
+
 ## 0.12.0
 
 ### Minor Changes
