@@ -15,6 +15,7 @@ import {
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as prettier from "prettier";
+import * as markoPrettier from "prettier-plugin-marko";
 import { inspect, isDeepStrictEqual } from "util";
 import {
   getTagLibLookup,
@@ -117,6 +118,7 @@ connection.onDocumentFormatting(
       const formatted = prettier.format(text, {
         parser: "marko",
         filepath: fsPath,
+        plugins: [markoPrettier],
         tabWidth: options.tabSize,
         useTabs: options.insertSpaces === false,
         ...(scheme === "file"

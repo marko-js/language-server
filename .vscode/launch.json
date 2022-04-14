@@ -15,7 +15,7 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "${workspaceRoot}/test.marko"
+        "${workspaceRoot}/../htmljs-parser"
       ],
       "outFiles": [
         "${workspaceFolder}/**/dist/*.js",
