@@ -51,6 +51,15 @@
         "0": { "name": "punctuation.section.scope.end.marko.css" }
       }
     },
+    {
+      "comment": "JS/TS style block",
+      "name": "meta.embedded.ts",
+      "contentName": "source.ts",
+      "begin": "^\\s*(style)(\\b[^\\s]*\\.[tj]s)\\s+({)",
+      "end": "}",
+      "patterns": [{ "include": "source.ts" }],
+      "beginCaptures": {
+        "1": { "name": "support.type.builtin.marko" },
         "2": { "name": "storage.modifier.marko.css" },
         "3": { "name": "punctuation.section.scope.begin.marko.css" }
       },
@@ -346,6 +355,16 @@
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-scss" },
                 { "include": "#concise-style-line-scss" }
+              ]
+            },
+            {
+              "comment": "Concise style tag js/ts",
+              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.[tj]s\\b)",
+              "while": "(?=^\\1\\s+(\\S|$))",
+              "patterns": [
+                { "include": "#concise-open-tag-content" },
+                { "include": "#concise-script-block" },
+                { "include": "#concise-script-line" }
               ]
             },
             {
@@ -731,6 +750,35 @@
               "begin": ">",
               "end": "\\s*(</)(style)?(>)",
               "patterns": [{ "include": "#content-embedded-style-scss" }],
+              "beginCaptures": {
+                "0": { "name": "punctuation.definition.tag.end.marko" }
+              },
+              "endCaptures": {
+                "1": { "name": "punctuation.definition.tag.begin.marko" },
+                "2": { "patterns": [{ "include": "#tag-name" }] },
+                "3": { "name": "punctuation.definition.tag.end.marko" }
+              }
+            }
+          ],
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.marko" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.tag.end.marko" }
+          }
+        },
+        {
+          "comment": "HTML style tag with js/ts",
+          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.[tj]s\\b)",
+          "end": "/>|(?<=\\>)",
+          "patterns": [
+            { "include": "#open-tag-content" },
+            {
+              "comment": "Style body content",
+              "contentName": "source.ts",
+              "begin": ">",
+              "end": "\\s*(</)(style)?(>)",
+              "patterns": [{ "include": "#content-embedded-script" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
               },
