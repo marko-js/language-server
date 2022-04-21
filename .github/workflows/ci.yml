@@ -32,7 +32,7 @@ jobs:
         with:
           commit_message: "[ci] format"
           commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions@users.noreply.github.com"
+          commit_user_email: "dpiercey@ebay.com"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # test:
