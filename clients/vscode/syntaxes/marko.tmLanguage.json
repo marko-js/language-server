@@ -12,7 +12,7 @@
       "end": "}",
       "patterns": [{ "include": "source.css" }],
       "beginCaptures": {
-        "1": { "name": "storage.type.marko.css" },
+        "1": { "name": "support.type.builtin.marko" },
         "2": { "name": "punctuation.section.scope.begin.marko.css" }
       },
       "endCaptures": {
@@ -23,11 +23,11 @@
       "comment": "Less style block, eg: style.less { color: green }",
       "name": "meta.embedded.less",
       "contentName": "source.less",
-      "begin": "^\\s*(style)\\.(less)\\s+({)",
+      "begin": "^\\s*(style)(\\b[^\\s]*\\.less)\\s+({)",
       "end": "}",
       "patterns": [{ "include": "source.css.less" }],
       "beginCaptures": {
-        "1": { "name": "storage.type.marko.css" },
+        "1": { "name": "support.type.builtin.marko" },
         "2": { "name": "storage.modifier.marko.css" },
         "3": { "name": "punctuation.section.scope.begin.marko.css" }
       },
@@ -39,11 +39,18 @@
       "comment": "SCSS style block, eg: style.scss { color: green }",
       "name": "meta.embedded.scss",
       "contentName": "source.scss",
-      "begin": "^\\s*(style)\\.(scss)\\s+({)",
+      "begin": "^\\s*(style)(\\b[^\\s]*\\.scss)\\s+({)",
       "end": "}",
       "patterns": [{ "include": "source.css.scss" }],
       "beginCaptures": {
-        "1": { "name": "storage.type.marko.css" },
+        "1": { "name": "support.type.builtin.marko" },
+        "2": { "name": "storage.modifier.marko.css" },
+        "3": { "name": "punctuation.section.scope.begin.marko.css" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.scope.end.marko.css" }
+      }
+    },
         "2": { "name": "storage.modifier.marko.css" },
         "3": { "name": "punctuation.section.scope.begin.marko.css" }
       },
@@ -323,7 +330,7 @@
           "patterns": [
             {
               "comment": "Concise style tag less",
-              "begin": "^(\\s*)(?=style\\.less\\b)",
+              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.less\\b)",
               "while": "(?=^\\1\\s+(\\S|$))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -333,7 +340,7 @@
             },
             {
               "comment": "Concise style tag scss",
-              "begin": "^(\\s*)(?=style\\.scss\\b)",
+              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.scss\\b)",
               "while": "(?=^\\1\\s+(\\S|$))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -685,7 +692,7 @@
         },
         {
           "comment": "HTML style tag with less",
-          "begin": "\\s*(<)(?=style\\.less\\b)",
+          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.less\\b)",
           "end": "/>|(?<=\\>)",
           "patterns": [
             { "include": "#open-tag-content" },
@@ -714,7 +721,7 @@
         },
         {
           "comment": "HTML style tag with scss",
-          "begin": "\\s*(<)(?=style\\.scss\\b)",
+          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.scss\\b)",
           "end": "/>|(?<=\\>)",
           "patterns": [
             { "include": "#open-tag-content" },
@@ -851,16 +858,16 @@
       "comment": "Matches the tag name.",
       "patterns": [
         {
-          "match": "\\G(style)\\.([a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
+          "match": "\\G(style)\\b(\\.[a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
           "captures": {
-            "1": { "name": "entity.name.tag.marko" },
+            "1": { "name": "support.type.builtin.marko" },
             "2": { "name": "storage.type.marko.css" },
             "3": {
               "patterns": [
                 {
                   "comment": "Core tag.",
                   "name": "support.type.builtin.marko",
-                  "match": "(attrs|return)(?=\\b)"
+                  "match": "(attrs|return|style)(?=\\b)"
                 },
                 {
                   "comment": "Core tag.",
