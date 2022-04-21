@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.17.8
+
+### Patch Changes
+
+- [#54](https://github.com/marko-js/language-server/pull/54) [`bfb111f`](https://github.com/marko-js/language-server/commit/bfb111f701f61d98b3df8a56b84838496b2cb95f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve highlighting for script tags.
+
+* [#54](https://github.com/marko-js/language-server/pull/54) [`e29b9d1`](https://github.com/marko-js/language-server/commit/e29b9d17bb7129c8fde3822acee70e38efe96a89) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add syntax highlighting for js/ts style tags
+
+- [#54](https://github.com/marko-js/language-server/pull/54) [`0d9b230`](https://github.com/marko-js/language-server/commit/0d9b2309f85622b9cc850aec83a73539da31e599) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve tag variable highlighting
+
 ## 0.17.7
 
 ### Patch Changes
