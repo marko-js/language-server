@@ -34,7 +34,7 @@ importers:
 
   clients/vscode:
     specifiers:
-      '@marko/language-server': ^0.12.1
+      '@marko/language-server': ^0.12.2
       '@types/vscode': ^1.66.0
       ovsx: ^0.1.0
       vsce: ^2.7.0
