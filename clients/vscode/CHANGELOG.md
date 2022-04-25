@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.10
+
+### Patch Changes
+
+- [#64](https://github.com/marko-js/language-server/pull/64) [`cede407`](https://github.com/marko-js/language-server/commit/cede407fbb7676495fe4deb00711f365b50856c4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with manual css extenion on style block
+
 ## 0.17.9
 
 ### Patch Changes
