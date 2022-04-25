@@ -8,12 +8,13 @@
       "comment": "CSS style block, eg: style { color: green }",
       "name": "meta.embedded.css",
       "contentName": "source.css",
-      "begin": "^\\s*(style)\\s+({)",
+      "begin": "^\\s*(style)(\\b[^\\s]*\\.css)?\\s+({)",
       "end": "}",
       "patterns": [{ "include": "source.css" }],
       "beginCaptures": {
         "1": { "name": "support.type.builtin.marko" },
-        "2": { "name": "punctuation.section.scope.begin.marko.css" }
+        "2": { "name": "storage.modifier.marko.css" },
+        "3": { "name": "punctuation.section.scope.begin.marko.css" }
       },
       "endCaptures": {
         "0": { "name": "punctuation.section.scope.end.marko.css" }
