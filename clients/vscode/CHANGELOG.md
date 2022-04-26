@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.11
+
+### Patch Changes
+
+- [#66](https://github.com/marko-js/language-server/pull/66) [`6af8083`](https://github.com/marko-js/language-server/commit/6af8083c69fe02d620985b4166bede74eb5901f3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with builtin tag highlighting when tag name followed by :, - or @.
+
 ## 0.17.10
 
 ### Patch Changes
