@@ -922,7 +922,7 @@
                 {
                   "comment": "Core tag.",
                   "name": "support.function.marko",
-                  "match": "(for|if|while|else-if|else|macro|tag|await|try|async|let|const|effect|set|get|id|lifecycle)(?=\\b)"
+                  "match": "(for|if|while|else-if|else|macro|tag|await|try|async|let|const|effect|set|get|id|lifecycle)(?=\\b)(?![-:@])"
                 },
                 {
                   "comment": "Attribute tag.",
