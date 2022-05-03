@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.12
+
+### Patch Changes
+
+- [#68](https://github.com/marko-js/language-server/pull/68) [`8c0a6af`](https://github.com/marko-js/language-server/commit/8c0a6afdada3d866d3381a5060bb3e06089ed334) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improves the syntax highlighting for the <html-comment> tag.
+
 ## 0.17.11
 
 ### Patch Changes
