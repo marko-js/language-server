@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.13
+
+### Patch Changes
+
+- [#70](https://github.com/marko-js/language-server/pull/70) [`2f05e50`](https://github.com/marko-js/language-server/commit/2f05e50a318e75329aa13774cdc29684990fe618) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improves tag variable highlighting, especially with types
+
 ## 0.17.12
 
 ### Patch Changes
