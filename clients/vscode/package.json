@@ -1,7 +1,7 @@
 {
   "name": "marko-vscode",
   "description": "Marko Tooling for VSCode",
-  "version": "0.17.13",
+  "version": "0.17.14",
   "activationEvents": [
     "onLanguage:marko"
   ],
