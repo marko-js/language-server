@@ -692,9 +692,9 @@
           "name": "meta.embedded.ts",
           "contentName": "source.ts",
           "begin": "/(?![/*])",
-          "end": "(?=[;(|]|:?=|/?>|\\s+(?!:)|$)",
+          "end": "(?=[;(|/>]|:?=|\\s+[^:]|$)",
           "beginCaptures": {
-            "0": { "name": "punctuation.separator.key-value.marko" }
+            "0": { "name": "punctuation.separator.tag-variable.marko" }
           },
           "patterns": [
             {
@@ -703,7 +703,15 @@
               "name": "variable.other.constant.object.ts"
             },
             { "include": "source.ts#destructuring-variable" },
-            { "include": "source.ts#type-annotation" },
+            {
+              "comment": "Match type",
+              "begin": "\\s*:(?!=)",
+              "end": "(?=$|[,;\\](]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+              "patterns": [
+                { "include": "source.ts#type" },
+                { "include": "#javascript-expression" }
+              ]
+            },
             { "include": "#javascript-expression" }
           ]
         },
