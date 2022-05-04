@@ -974,14 +974,16 @@
             "3": {
               "patterns": [
                 {
-                  "comment": "Core tag.",
                   "name": "support.type.builtin.marko",
-                  "match": "(attrs|return|style)(?=\\b)"
+                  "match": "(attrs|style|effect|lifecycle)(?=\\b)"
                 },
                 {
-                  "comment": "Core tag.",
+                  "name": "keyword.control.flow.marko",
+                  "match": "(for|if|while|else-if|else|try|await|return)(?=\\b)"
+                },
+                {
                   "name": "support.function.marko",
-                  "match": "(for|if|while|else-if|else|macro|tag|await|try|async|let|const|effect|set|get|id|lifecycle|html-comment)(?=\\b)(?![-:@])"
+                  "match": "(macro|tag|async|let|const|set|get|id|html-comment)(?=\\b)(?![-:@])"
                 },
                 {
                   "comment": "Attribute tag.",
