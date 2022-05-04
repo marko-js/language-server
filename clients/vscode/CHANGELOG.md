@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.17.14
+
+### Patch Changes
+
+- [#72](https://github.com/marko-js/language-server/pull/72) [`b73b33f`](https://github.com/marko-js/language-server/commit/b73b33fe8d6b83f1a149479bb357b60c569d539b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve highlighting for tag variables with a typescript type
+
+* [#72](https://github.com/marko-js/language-server/pull/72) [`f76f84d`](https://github.com/marko-js/language-server/commit/f76f84daa80feeccb85f1d14280480af834a512c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Highlight control flow tags differently from other tags.
+
 ## 0.17.13
 
 ### Patch Changes
