@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.17.15
+
+### Patch Changes
+
+- [#74](https://github.com/marko-js/language-server/pull/74) [`3e298fc`](https://github.com/marko-js/language-server/commit/3e298fcec6852e2ae1b99a1f4abc0840c243d58e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with unary expressions (eg typeof) in attribute values that were part of a member expression (eg input.typeof) incorrectly highlighting
+
+* [#74](https://github.com/marko-js/language-server/pull/74) [`3e298fc`](https://github.com/marko-js/language-server/commit/3e298fcec6852e2ae1b99a1f4abc0840c243d58e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve attribute value highlighting when the value is unenclosed and spans multiple lines
+
+- [#74](https://github.com/marko-js/language-server/pull/74) [`3e298fc`](https://github.com/marko-js/language-server/commit/3e298fcec6852e2ae1b99a1f4abc0840c243d58e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Make concise mode html delimiters more visible.
+
 ## 0.17.14
 
 ### Patch Changes
