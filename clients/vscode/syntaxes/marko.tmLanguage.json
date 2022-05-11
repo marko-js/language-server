@@ -87,7 +87,7 @@
           "comment": "Attribute with optional value",
           "name": "meta.marko-attribute",
           "applyEndPatternLast": 1,
-          "begin": "(?:\\s+|,|(?<=\\[))(?:(key|on[a-zA-Z0-9_$-]+|[a-zA-Z0-9_$]+Change|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$][a-zA-Z0-9_$-]*))(:[a-zA-Z0-9_$][a-zA-Z0-9_$-]*)?",
+          "begin": "(?:(key|on[a-zA-Z0-9_$-]+|[a-zA-Z0-9_$]+Change|no-update(?:-body)?(?:-if)?)|([a-zA-Z0-9_$][a-zA-Z0-9_$-]*))(:[a-zA-Z0-9_$][a-zA-Z0-9_$-]*)?",
           "end": "(?=.|$)",
           "beginCaptures": {
             "1": { "name": "support.type.attribute-name.marko" },
@@ -103,8 +103,8 @@
           "comment": "A ...spread attribute",
           "name": "meta.marko-spread-attribute",
           "contentName": "source.ts",
-          "begin": "(?:\\s+|,|(?<=\\[))(\\.\\.\\.)",
-          "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+          "begin": "(\\.\\.\\.)",
+          "end": "(?=[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
           "patterns": [{ "include": "#javascript-expression" }],
           "beginCaptures": {
             "1": { "name": "keyword.operator.spread.marko" }
@@ -126,7 +126,7 @@
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
       "begin": "\\s*(:?=)\\s*",
-      "end": "(?=$|[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+      "end": "(?=[,;\\]]|/>|(?<=[^>=])>[^>=]|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
       "patterns": [{ "include": "#javascript-expression" }],
       "beginCaptures": {
         "1": { "patterns": [{ "include": "source.ts" }] }
@@ -192,6 +192,10 @@
       "end": "]",
       "patterns": [
         { "include": "#concise-attr-group" },
+        {
+          "begin": "\\s+",
+          "end": "(?=\\S)"
+        },
         { "include": "#attrs" },
         { "include": "#invalid" }
       ],
@@ -214,6 +218,10 @@
           "patterns": [
             { "include": "#concise-semi-eol" },
             { "include": "#concise-attr-group" },
+            {
+              "begin": "[ \\t]+",
+              "end": "(?=\\S)"
+            },
             { "include": "#attrs" },
             { "include": "#invalid" }
           ]
@@ -582,7 +590,6 @@
         "2": { "name": "entity.name.tag.marko" }
       }
     },
-    "html-string-attrs": {},
     "invalid": {
       "comment": "Used to highlight characters in places where all valid characters should have been matched.",
       "match": "\\S",
@@ -639,7 +646,7 @@
         { "include": "#tag-before-attrs" },
         {
           "comment": "Attributes begin after the first space within the tag name",
-          "begin": "(?= )",
+          "begin": "(?=\\s)",
           "end": "(?=/?>)",
           "patterns": [{ "include": "#attrs" }]
         }
@@ -706,7 +713,7 @@
             {
               "comment": "Match type",
               "begin": "\\s*:(?!=)",
-              "end": "(?=$|[,;\\](]|/>|(?<=[^>=])>[^>=]|(?<![!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^-]-|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s+(?![{+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>]))",
+              "end": "(?=[,;\\](]|/>|(?<=[^>=])>[^>=]|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
               "patterns": [
                 { "include": "source.ts#type" },
                 { "include": "#javascript-expression" }
@@ -715,7 +722,6 @@
             { "include": "#javascript-expression" }
           ]
         },
-        { "include": "#attr-value" },
         {
           "comment": "Parameters for a tag",
           "contentName": "source.ts",
@@ -732,7 +738,8 @@
             { "include": "source.ts" }
           ]
         },
-        { "include": "#html-args-or-method" }
+        { "include": "#html-args-or-method" },
+        { "include": "#attr-value" }
       ]
     },
     "tag-html": {
