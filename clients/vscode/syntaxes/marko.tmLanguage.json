@@ -139,18 +139,18 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-html-mode" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-html-line": {
       "comment": "-- HTML line within concise mode content. (content-html-mode w/o scriptlet)",
       "name": "meta.section.marko-html-line",
-      "match": "\\s*(--+)(?=\\s+\\S)(.*$)",
+      "match": "\\s*(--+)(?=\\s+\\S)(.*)($)",
       "captures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" },
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" },
         "2": {
           "patterns": [
             { "include": "#cdata" },
@@ -170,7 +170,8 @@
               "match": ".+?"
             }
           ]
-        }
+        },
+        "3": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-semi-eol": {
@@ -235,10 +236,10 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-embedded-comment" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-comment-line": {
@@ -249,9 +250,11 @@
       "end": "$",
       "patterns": [{ "include": "#content-embedded-comment" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
-      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
     },
     "concise-script-block": {
       "comment": "--- Embedded concise script content block. ---",
@@ -260,10 +263,10 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-embedded-script" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-script-line": {
@@ -274,9 +277,11 @@
       "end": "$",
       "patterns": [{ "include": "#content-embedded-script" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
-      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
     },
     "concise-style-block": {
       "comment": "--- Embedded concise style content block. ---",
@@ -286,10 +291,10 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-embedded-style" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-style-block-less": {
@@ -300,10 +305,10 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-embedded-style-less" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-style-block-scss": {
@@ -314,10 +319,10 @@
       "end": "\\1",
       "patterns": [{ "include": "#content-embedded-style-scss" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
       "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
     },
     "concise-style-line": {
@@ -329,9 +334,11 @@
       "end": "$",
       "patterns": [{ "include": "#content-embedded-style" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
-      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
     },
     "concise-style-line-less": {
       "comment": "-- Embedded concise style content line.",
@@ -342,9 +349,11 @@
       "end": "$",
       "patterns": [{ "include": "#content-embedded-style-less" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
-      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
     },
     "concise-style-line-scss": {
       "comment": "-- Embedded concise style content line.",
@@ -355,9 +364,11 @@
       "end": "$",
       "patterns": [{ "include": "#content-embedded-style-scss" }],
       "beginCaptures": {
-        "1": { "name": "punctuation.section.scope.begin.marko" }
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
       },
-      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
     },
     "content-concise-mode": {
       "comment": "Concise mode content block.",
