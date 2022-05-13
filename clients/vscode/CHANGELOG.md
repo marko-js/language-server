@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.17.16
+
+### Patch Changes
+
+- [#78](https://github.com/marko-js/language-server/pull/78) [`cb1d8a3`](https://github.com/marko-js/language-server/commit/cb1d8a3841fbf1b624a0483cf06425f48d4f5260) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add error highlighting when an extraneous html closing tag is found
+
+* [#76](https://github.com/marko-js/language-server/pull/76) [`1196b8a`](https://github.com/marko-js/language-server/commit/1196b8aef7ac7f28fe1cbaaf130fb962ede551e2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve highlighting, including concise mode identation tracking, fix issue with commas after attrs and fix cdata/doctype in some cases.
+
 ## 0.17.15
 
 ### Patch Changes
