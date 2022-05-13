@@ -382,6 +382,7 @@
         { "include": "#html-comment" },
         { "include": "#concise-html-block" },
         { "include": "#concise-html-line" },
+        { "include": "#invalid-close-tag" },
         { "include": "#tag-html" },
         {
           "comment": "A concise html tag.",
@@ -503,6 +504,7 @@
         { "include": "#doctype" },
         { "include": "#declaration" },
         { "include": "#html-comment" },
+        { "include": "#invalid-close-tag" },
         { "include": "#tag-html" },
         { "match": "\\\\.", "name": "text.marko" },
         { "include": "#placeholder" },
@@ -1040,6 +1042,11 @@
           ]
         }
       ]
+    },
+    "invalid-close-tag": {
+      "name": "invalid.illegal.character-not-allowed-here.marko",
+      "begin": "\\s*</.*?",
+      "end": ">"
     }
   }
 }
