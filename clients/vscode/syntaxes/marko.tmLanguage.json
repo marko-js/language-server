@@ -113,7 +113,7 @@
         {
           "comment": "Consume any whitespace after a comma",
           "begin": "\\s*(,(?!,))",
-          "end": "(?!\\S)",
+          "end": "(?=\\S)",
           "captures": {
             "1": { "name": "punctuation.separator.comma.marko" }
           }
@@ -214,14 +214,14 @@
         { "include": "#concise-semi-eol" },
         {
           "comment": "Matches unenclosed concise mode attributes.",
-          "begin": "(?!^)(?= )",
-          "end": "(?=--)|(?<!,)(?=\\n)",
+          "begin": "(?!^)[ \\t]",
+          "end": "(?=--)|(?=\\n)",
           "patterns": [
             { "include": "#concise-semi-eol" },
             { "include": "#concise-attr-group" },
             {
               "begin": "[ \\t]+",
-              "end": "(?=\\S)"
+              "end": "(?=\\S|\\n)"
             },
             { "include": "#attrs" },
             { "include": "#invalid" }
@@ -448,7 +448,7 @@
             },
             {
               "comment": "Normal concise tag",
-              "begin": "^\\s*(?=[a-zA-Z0-9_$@.#])",
+              "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#])",
               "while": "(?=^\\1\\s+(\\S|$))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -545,7 +545,7 @@
     "cdata": {
       "name": "meta.tag.metadata.cdata.marko",
       "contentName": "string.other.inline-data.marko",
-      "begin": "<!\\[CDATA\\[",
+      "begin": "\\s*<!\\[CDATA\\[",
       "end": "]]>",
       "beginCaptures": {
         "0": { "name": "punctuation.definition.tag.begin.marko" }
@@ -556,7 +556,7 @@
     },
     "doctype": {
       "name": "meta.tag.metadata.doctype.marko",
-      "begin": "<!(?=(?i:DOCTYPE\\s))",
+      "begin": "\\s*<!(?=(?i:DOCTYPE\\s))",
       "end": ">",
       "patterns": [
         {
@@ -657,7 +657,7 @@
         { "include": "#tag-before-attrs" },
         {
           "comment": "Attributes begin after the first space within the tag name",
-          "begin": "(?=\\s)",
+          "begin": "(?!/?>)",
           "end": "(?=/?>)",
           "patterns": [{ "include": "#attrs" }]
         }
@@ -723,12 +723,15 @@
             { "include": "source.ts#destructuring-variable" },
             {
               "comment": "Match type",
-              "begin": "\\s*:(?!=)",
+              "begin": "\\s*(:)(?!=)",
               "end": "(?=[,;\\](]|/>|(?<=[^>=])>[^>=]|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
               "patterns": [
                 { "include": "source.ts#type" },
                 { "include": "#javascript-expression" }
-              ]
+              ],
+              "beginCaptures": {
+                "1": { "name": "keyword.operator.type.annotation.ts" }
+              }
             },
             { "include": "#javascript-expression" }
           ]
