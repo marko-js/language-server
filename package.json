@@ -16,14 +16,19 @@
     "mocha": "^10.0.0",
     "mocha-snap": "^4.3.0",
     "prettier": "^2.6.2",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.3",
+    "tsx": "^3.4.2"
   },
   "private": true,
   "scripts": {
-    "change": "pnpm changeset add",
-    "format": "pnpm -r build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
-    "publish": "pnpm -r build && changeset publish && pnpm -r release",
-    "test": "pnpm -r test",
-    "version": "changeset version && pnpm install --no-frozen-lockfile"
-  }
+    "change": "npm exec changeset add",
+    "format": "npm run -ws build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
+    "release": "npm run -ws build && changeset publish",
+    "test": "npm run -ws --if-present test",
+    "version": "changeset version && npm i --package-lock-only"
+  },
+  "workspaces": [
+    "./server",
+    "./clients/*"
+  ]
 }
