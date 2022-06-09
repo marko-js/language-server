@@ -24,12 +24,14 @@ const opts: BuildOptions = {
   ],
 };
 
-build({
-  ...opts,
-  format: "cjs",
-});
-build({
-  ...opts,
-  format: "esm",
-  outExtension: { ".js": ".mjs" },
-});
+await Promise.all([
+  build({
+    ...opts,
+    format: "cjs",
+  }),
+  build({
+    ...opts,
+    format: "esm",
+    outExtension: { ".js": ".mjs" },
+  }),
+]);

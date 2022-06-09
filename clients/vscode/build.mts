@@ -12,14 +12,16 @@ const opts: BuildOptions = {
   mainFields: ["module", "main"],
 };
 
-build({
-  ...opts,
-  entryPoints: ["src/index.ts"],
-  external: ["vscode"],
-});
+await Promise.all([
+  build({
+    ...opts,
+    entryPoints: ["src/index.ts"],
+    external: ["vscode"],
+  }),
 
-build({
-  ...opts,
-  entryPoints: ["src/server.ts"],
-  external: ["@babel/plugin-transform-modules-commonjs"],
-});
+  build({
+    ...opts,
+    entryPoints: ["src/server.ts"],
+    external: ["@babel/plugin-transform-modules-commonjs"],
+  }),
+]);

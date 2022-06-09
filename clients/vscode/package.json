@@ -61,9 +61,11 @@
   },
   "devDependencies": {
     "@marko/language-server": "^0.12.2",
-    "@types/vscode": "^1.66.0",
+    "@types/vscode": "^1.67.0",
+    "@vscode/test-electron": "^2.1.3",
     "ovsx": "^0.1.0",
-    "vsce": "^2.7.0",
+    "tsx": "^3.4.2",
+    "vsce": "^2.9.1",
     "vscode-languageclient": "^7.0.0"
   },
   "displayName": "Marko VSCode",
@@ -81,7 +83,8 @@
     "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
   },
   "scripts": {
-    "build": "tsc -b && node -r esbuild-register build",
-    "release": "export OUT=dist/marko.vsix; vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT"
+    "build": "tsc -b && tsx build.mts",
+    "release": "export OUT=dist/marko.vsix; vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT",
+    "test": "tsx build-test.mts"
   }
 }
