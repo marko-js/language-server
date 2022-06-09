@@ -10,6 +10,7 @@ node_modules
 
 # Build
 dist
+**/.vscode-test
 
 # Logging
 *.log

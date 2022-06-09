@@ -1,5 +1,6 @@
 src
 CHANGELOG.md
+.vscode-test
 **/*.ts
 **/*.map
 **/*.d.ts

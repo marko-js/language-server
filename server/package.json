@@ -8,21 +8,22 @@
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@marko/babel-utils": "^5.21.1",
-    "@marko/compiler": "^5.21.2",
+    "@marko/compiler": "^5.21.4",
     "@marko/translator-default": "^5.21.2",
     "htmljs-parser": "^2.11.3",
     "lasso-package-root": "^1.0.1",
-    "marko": "^5.21.1",
+    "marko": "^5.21.2",
     "prettier": "^2.6.2",
-    "prettier-plugin-marko": "^1.2.0",
+    "prettier-plugin-marko": "^1.2.1",
     "resolve-from": "^5.0.0",
+    "tsx": "^3.4.2",
     "vscode-css-languageservice": "^5.4.2",
     "vscode-languageserver": "^7.0.0",
-    "vscode-languageserver-textdocument": "^1.0.4",
+    "vscode-languageserver-textdocument": "^1.0.5",
     "vscode-uri": "^3.0.3"
   },
   "devDependencies": {
-    "@types/prettier": "^2.6.1"
+    "@types/prettier": "^2.6.3"
   },
   "exports": {
     ".": {
@@ -51,6 +52,6 @@
     "url": "https://github.com/marko-js/language-server/tree/master/server"
   },
   "scripts": {
-    "build": "tsc -b && node -r esbuild-register build"
+    "build": "tsc -b && tsx build.mts"
   }
 }

@@ -22,13 +22,13 @@ export function attributeName(
   let range = START_OF_FILE;
 
   if (!attrDef) {
-    return;
+    return [];
   }
 
   const attrEntryFile = attrDef.filePath || (tagDef && tagDef.filePath);
 
   if (!attrEntryFile) {
-    return;
+    return [];
   }
 
   if (/\/marko(?:-tag)?\.json$/.test(attrEntryFile)) {

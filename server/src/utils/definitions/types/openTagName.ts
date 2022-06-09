@@ -1,3 +1,4 @@
+import path from "path";
 import { URI } from "vscode-uri";
 import {
   type TextDocumentPositionParams,
@@ -37,16 +38,21 @@ export function openTagName(
   }
 
   if (!tagDef) {
-    return;
+    return [];
   }
 
   const tagEntryFile = tagDef.template || tagDef.renderer || tagDef.filePath;
 
+  if (!path.isAbsolute(tagEntryFile)) {
+    return [];
+  }
+
   if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
     const tagDefDoc = createTextDocument(tagEntryFile);
-    const match = RegExpBuilder`/"<${event.tagName}>"\s*:\s*[^\r\n,]+/g`.exec(
-      tagDefDoc.getText()
-    );
+    const match =
+      RegExpBuilder`/"(?:<${event.tagName}>|${event.tagName})"\s*:\s*[^\r\n,]+/g`.exec(
+        tagDefDoc.getText()
+      );
 
     if (match && match.index) {
       range = Range.create(
