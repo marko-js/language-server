@@ -3,6 +3,8 @@ import { stream } from "fast-glob";
 import { mochaHooks } from "mocha-snap";
 
 export async function run() {
+  // enables typescript for imported files below.
+  // prettier-ignore
   await import(("tsx"));
 
   const mocha = new Mocha({

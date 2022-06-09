@@ -22,8 +22,9 @@
   "private": true,
   "scripts": {
     "change": "npm exec changeset add",
-    "format": "npm run -ws build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
-    "release": "npm run -ws build && changeset publish",
+    "build": "npm run -ws build",
+    "format": "npm run build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
+    "release": "npm run build && changeset publish",
     "test": "npm run -ws --if-present test",
     "version": "changeset version && npm i --package-lock-only"
   },

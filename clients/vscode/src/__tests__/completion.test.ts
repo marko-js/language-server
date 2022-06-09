@@ -1,8 +1,9 @@
 import { setTimeout } from "timers/promises";
 import vscode from "vscode";
 import snap from "mocha-snap";
+import { getTestDoc, updateTestDoc } from "./setup.test";
 
-describe("completions", () => {
+describe("completion", () => {
   it("tag name", async () => {
     await snap.inline(
       () => suggest("<spa█/>"),
@@ -61,32 +62,8 @@ style {
 });
 
 async function suggest(src: string) {
-  const editor = vscode.window.activeTextEditor!;
-  const doc = editor.document;
-
-  // Replace live editor text with requested src.
-  await editor.edit((builder) => {
-    builder.replace(
-      new vscode.Range(
-        new vscode.Position(0, 0),
-        doc.positionAt(doc.getText().length)
-      ),
-      src
-    );
-  });
-
-  // We use █ to denote where the cursor should be.
-  const pos = doc.positionAt(doc.getText().indexOf("█"));
-  editor.selection = new vscode.Selection(pos, pos);
-
-  // Strip out the cursor character.
-  await editor.edit((builder) => {
-    builder.replace(
-      new vscode.Range(pos, new vscode.Position(pos.line, pos.character + 1)),
-      ""
-    );
-  });
-
+  await updateTestDoc(src);
+  const doc = getTestDoc();
   const text = doc.getText();
 
   do {
