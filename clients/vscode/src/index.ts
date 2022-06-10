@@ -8,7 +8,7 @@ import {
 
 let client: LanguageClient;
 
-export function activate(ctx: ExtensionContext) {
+export async function activate(ctx: ExtensionContext) {
   const module = ctx.asAbsolutePath("dist/server");
   const transport = TransportKind.ipc;
   const serverOptions: ServerOptions = {
@@ -42,14 +42,11 @@ export function activate(ctx: ExtensionContext) {
   // Create the language client and start the client.
   client = new LanguageClient("marko", "Marko", serverOptions, clientOptions);
 
-  client.onReady().then(() => {
-    client.onNotification("showError", window.showErrorMessage);
-    client.onNotification("showWarning", window.showWarningMessage);
-    client.onNotification("showInformation", window.showInformationMessage);
-  });
-
+  client.onNotification("showError", window.showErrorMessage);
+  client.onNotification("showWarning", window.showWarningMessage);
+  client.onNotification("showInformation", window.showInformationMessage);
   // Start the client. This will also launch the server
-  client.start();
+  await client.start();
 }
 
 export function deactivate(): Thenable<void> | void {
