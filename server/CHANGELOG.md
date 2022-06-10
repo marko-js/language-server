@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.12.3
+
+### Patch Changes
+
+- [#79](https://github.com/marko-js/language-server/pull/79) [`f9198dd`](https://github.com/marko-js/language-server/commit/f9198dd026431ece0159c3c08322d8f69218d65a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade depencencies
+
+* [#81](https://github.com/marko-js/language-server/pull/81) [`4bcca51`](https://github.com/marko-js/language-server/commit/4bcca515615e800e5297564494e6b7f6aaf530a3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fixes an issue where goto definitions were erroring.
+
 ## 0.12.2
 
 ### Patch Changes
