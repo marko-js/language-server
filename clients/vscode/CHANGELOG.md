@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.17
+
+### Patch Changes
+
+- [#84](https://github.com/marko-js/language-server/pull/84) [`3b41c78`](https://github.com/marko-js/language-server/commit/3b41c78fe63df02e5d340c08cf6a8719153160bd) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Extension config improvements, including preventing messing with indentation"
+
 ## 0.17.16
 
 ### Patch Changes
