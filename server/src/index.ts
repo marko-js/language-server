@@ -83,7 +83,8 @@ connection.onCompletion((params: CompletionParams): CompletionList => {
   });
 
   const handler =
-    event && completionTypes[event.type as keyof typeof completionTypes];
+    event &&
+    completionTypes[event.type as unknown as keyof typeof completionTypes];
   return (
     (handler && handler(taglib, doc, params, event as any)) ||
     CompletionList.create([], true)
@@ -102,7 +103,8 @@ connection.onDefinition((params) => {
   });
 
   const handler =
-    event && definitionTypes[event.type as keyof typeof definitionTypes];
+    event &&
+    definitionTypes[event.type as unknown as keyof typeof definitionTypes];
   return handler && handler(taglib, doc, params, event as any);
 });
 
