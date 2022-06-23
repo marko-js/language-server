@@ -11,6 +11,8 @@ import {
   TextDocuments,
   TextEdit,
   TextDocumentSyncKind,
+  Definition,
+  DefinitionLink,
 } from "vscode-languageserver/node";
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -22,9 +24,10 @@ import {
   getCompilerAndTranslatorForDoc,
   Compiler,
 } from "./utils/compiler";
-import { parseUntilOffset } from "./utils/htmljs-parser";
+import { NodeType, Node, parse } from "./utils/parser";
 import * as completionTypes from "./utils/completions";
 import * as definitionTypes from "./utils/definitions";
+import type { CompletionMeta } from "./utils/completions/meta";
 
 if (
   typeof require !== "undefined" &&
@@ -72,40 +75,63 @@ connection.onInitialized(() => {
 });
 
 connection.onCompletion((params: CompletionParams): CompletionList => {
-  const doc = documents.get(params.textDocument.uri)!;
-  const taglib = getTagLibLookup(doc);
-  if (!taglib) return CompletionList.create([], true);
+  try {
+    const document = documents.get(params.textDocument.uri)!;
+    const lookup = getTagLibLookup(document);
+    if (!lookup) return CompletionList.create([], true);
 
-  const event = parseUntilOffset({
-    taglib,
-    offset: doc.offsetAt(params.position),
-    text: doc.getText(),
-  });
-
-  const handler =
-    event &&
-    completionTypes[event.type as unknown as keyof typeof completionTypes];
-  return (
-    (handler && handler(taglib, doc, params, event as any)) ||
-    CompletionList.create([], true)
-  );
+    const code = document.getText();
+    const parsed = parse(code);
+    const offset = document.offsetAt(params.position);
+    const node = parsed.nodeAt(offset);
+    const handler = completionTypes[
+      NodeType[node.type] as unknown as keyof typeof completionTypes
+    ] as unknown as
+      | undefined
+      | ((data: CompletionMeta<Node.AnyNode>) => CompletionList | void);
+    return (
+      handler?.({
+        document,
+        params,
+        lookup,
+        parsed,
+        offset,
+        code,
+        node,
+      }) || CompletionList.create([], true)
+    );
+  } catch (e) {
+    console.log(e);
+    return CompletionList.create([], true);
+  }
 });
 
 connection.onDefinition((params) => {
-  const doc = documents.get(params.textDocument.uri)!;
-  const taglib = getTagLibLookup(doc);
-  if (!taglib) return;
-
-  const event = parseUntilOffset({
-    taglib,
-    offset: doc.offsetAt(params.position),
-    text: doc.getText(),
-  });
-
-  const handler =
-    event &&
-    definitionTypes[event.type as unknown as keyof typeof definitionTypes];
-  return handler && handler(taglib, doc, params, event as any);
+  const document = documents.get(params.textDocument.uri)!;
+  const lookup = getTagLibLookup(document);
+  if (!lookup) return [];
+  const code = document.getText();
+  const parsed = parse(code);
+  const offset = document.offsetAt(params.position);
+  const node = parsed.nodeAt(offset);
+  const handler = definitionTypes[
+    NodeType[node.type] as unknown as keyof typeof definitionTypes
+  ] as unknown as
+    | undefined
+    | ((
+        data: CompletionMeta<Node.AnyNode>
+      ) => Definition | DefinitionLink[] | undefined | null);
+  return (
+    handler?.({
+      document,
+      params,
+      lookup,
+      parsed,
+      offset,
+      code,
+      node,
+    }) || []
+  );
 });
 
 connection.onDocumentFormatting(

@@ -1,7 +1,6 @@
 import path from "path";
 import { URI } from "vscode-uri";
 import {
-  type CompletionParams,
   CompletionItemKind,
   CompletionItem,
   CompletionList,
@@ -9,37 +8,33 @@ import {
   MarkupKind,
   TextEdit,
 } from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
-import type { ParserEvents } from "../../htmljs-parser";
-import type { TaglibLookup, TagDefinition } from "../../compiler";
-import { rangeFromEvent, findNonControlFlowParent } from "../../utils";
+import type { TagDefinition } from "@marko/babel-utils";
+import type { CompletionMeta } from "../meta";
+import { Node, NodeType } from "../../parser";
 
-export function openTagName(
-  taglib: TaglibLookup,
-  document: TextDocument,
-  params: CompletionParams,
-  event: ParserEvents.OpenTagName
-) {
+export function OpenTagName({
+  document,
+  lookup,
+  parsed,
+  node,
+}: CompletionMeta<Node.OpenTagName>) {
   const { fsPath: currentTemplateFilePath } = URI.parse(document.uri);
+  const tag = node.parent;
+  const tagNameLocation = parsed.locationAt(node);
   let tags: TagDefinition[];
-  const triggerCharacter =
-    (params.context && params.context.triggerCharacter) || event.tagName[0];
-  const isAttributeTag = triggerCharacter === "@";
-  const tagNameRange = rangeFromEvent(document, event);
 
-  if (isAttributeTag) {
-    const parentTag = findNonControlFlowParent(event);
+  if (tag.type === NodeType.AttrTag) {
+    let parentTag = tag.owner;
+    while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
     const parentTagDef =
-      parentTag &&
-      !parentTag.tagNameExpression &&
-      taglib.getTag(parentTag.tagName);
+      parentTag && parentTag.nameText && lookup.getTag(parentTag.nameText);
     tags =
       (parentTagDef &&
         parentTagDef.nestedTags &&
         Object.values(parentTagDef.nestedTags)) ||
       [];
   } else {
-    tags = taglib.getTagsSorted().filter((it) => !it.isNestedTag);
+    tags = lookup.getTagsSorted().filter((it) => !it.isNestedTag);
   }
 
   return CompletionList.create(
@@ -100,7 +95,7 @@ export function openTagName(
           kind: CompletionItemKind.Class,
           insertTextFormat: InsertTextFormat.Snippet,
           textEdit: TextEdit.replace(
-            tagNameRange,
+            tagNameLocation,
             (autocomplete && autocomplete.snippet) || label
           ),
         } as CompletionItem;

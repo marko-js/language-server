@@ -1,2 +1,2 @@
-export * from "./types/attributeName";
-export * from "./types/openTagName";
+export * from "./types/AttrName";
+export * from "./types/OpenTagName";

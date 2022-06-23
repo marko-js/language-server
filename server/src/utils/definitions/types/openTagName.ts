@@ -1,56 +1,46 @@
 import path from "path";
 import { URI } from "vscode-uri";
-import {
-  type TextDocumentPositionParams,
-  Range,
-  LocationLink,
-} from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
-import type { ParserEvents } from "../../htmljs-parser";
-import type { TaglibLookup, TagDefinition } from "../../compiler";
+import { Range, LocationLink } from "vscode-languageserver";
+import type { TagDefinition } from "../../compiler";
 import RegExpBuilder from "../../regexp-builder";
-import {
-  START_OF_FILE,
-  findNonControlFlowParent,
-  createTextDocument,
-  rangeFromEvent,
-} from "../../utils";
+import { START_OF_FILE, createTextDocument } from "../../utils";
+import type { DefinitionMeta } from "../meta";
+import { Node, NodeType } from "../../parser";
 
-export function openTagName(
-  taglib: TaglibLookup,
-  document: TextDocument,
-  _params: TextDocumentPositionParams,
-  event: ParserEvents.OpenTagName
-) {
+export function OpenTagName({
+  lookup,
+  parsed,
+  node,
+}: DefinitionMeta<Node.OpenTagName>) {
+  const tag = node.parent;
   let tagDef: TagDefinition | null | undefined;
   let range = START_OF_FILE;
-  const isAttributeTag = event.tagName[0] === "@";
 
-  if (isAttributeTag) {
-    const parentTag = findNonControlFlowParent(event);
+  if (tag.type === NodeType.AttrTag) {
+    let parentTag = tag.owner;
+    while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
     tagDef =
-      parentTag &&
-      (parentTag.tagNameExpression
-        ? undefined
-        : taglib.getTag(parentTag.tagName));
+      parentTag && parentTag.nameText
+        ? lookup.getTag(parentTag.nameText)
+        : undefined;
   } else {
-    tagDef = taglib.getTag(event.tagName);
+    tagDef = tag.nameText ? lookup.getTag(tag.nameText) : undefined;
   }
 
   if (!tagDef) {
-    return [];
+    return;
   }
 
   const tagEntryFile = tagDef.template || tagDef.renderer || tagDef.filePath;
 
   if (!path.isAbsolute(tagEntryFile)) {
-    return [];
+    return;
   }
 
   if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
     const tagDefDoc = createTextDocument(tagEntryFile);
     const match =
-      RegExpBuilder`/"(?:<${event.tagName}>|${event.tagName})"\s*:\s*[^\r\n,]+/g`.exec(
+      RegExpBuilder`/"(?:<${tag.nameText}>|${tag.nameText})"\s*:\s*[^\r\n,]+/g`.exec(
         tagDefDoc.getText()
       );
 
@@ -67,7 +57,7 @@ export function openTagName(
       URI.file(tagEntryFile).toString(),
       range,
       range,
-      rangeFromEvent(document, event)
+      parsed.locationAt(node)
     ),
   ];
 }

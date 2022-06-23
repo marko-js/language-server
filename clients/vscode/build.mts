@@ -1,8 +1,9 @@
 import { build, type BuildOptions } from "esbuild";
 
-const opts: BuildOptions = {
+await build({
   bundle: true,
-  minify: true,
+  minifySyntax: true,
+  minifyWhitespace: true,
   format: "cjs",
   outdir: "dist",
   outbase: "src",
@@ -10,18 +11,6 @@ const opts: BuildOptions = {
   target: ["node14"],
   sourcemap: "linked",
   mainFields: ["module", "main"],
-};
-
-await Promise.all([
-  build({
-    ...opts,
-    entryPoints: ["src/index.ts"],
-    external: ["vscode"],
-  }),
-
-  build({
-    ...opts,
-    entryPoints: ["src/server.ts"],
-    external: ["@babel/plugin-transform-modules-commonjs"],
-  }),
-]);
+  entryPoints: ["src/index.ts", "src/server.ts"],
+  external: ["vscode", "@babel/plugin-transform-modules-commonjs", "tsx"],
+})

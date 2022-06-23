@@ -15,7 +15,7 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "${workspaceRoot}/../htmljs-parser"
+        "/Users/dpiercey/dev/tmp/vite-tags-api"
       ],
       "outFiles": [
         "${workspaceFolder}/**/dist/*.js",
