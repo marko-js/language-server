@@ -4,8 +4,8 @@ import {
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-import type { CompletionMeta } from "../meta";
-import { Node, UNFINISHED } from "../../parser";
+import { type Node, UNFINISHED } from "../../../utils/parser";
+import type { CompletionMeta } from "..";
 
 const partialCloseTagReg = /<\/(?:[^><]*>)?/iy;
 

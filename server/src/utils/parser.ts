@@ -238,7 +238,7 @@ export function parse(source: string) {
   };
   let curBodyType: TagType;
   let curOpenTagStart: Range | undefined;
-  let curParent: Node.ParentNode | Node.AttrNode | Node.Statement = program;
+  let curParent: Node.ParentNode | Node.Statement = program;
   let curAttr: Node.AttrNamed | undefined = undefined;
   let curBody: Exclude<Node.ParentNode["body"], void> = program.body;
 
@@ -325,8 +325,17 @@ export function parse(source: string) {
       curOpenTagStart = range;
     },
     onOpenTagName(range) {
+      let concise = true;
+      let start = range.start;
       let type = NodeType.Tag;
       let nameText: string | undefined = undefined;
+
+      if (curOpenTagStart) {
+        concise = false;
+        start = curOpenTagStart.start;
+        curOpenTagStart = undefined;
+      }
+
       if (range.expressions.length) {
         curBodyType = TagType.html;
       } else {
@@ -390,15 +399,6 @@ export function parse(source: string) {
 
       const parent = curParent as Node.ParentNode;
       const end = UNFINISHED; // will be set later
-      let start = range.start;
-      let concise = true;
-
-      if (curOpenTagStart) {
-        start = curOpenTagStart.start;
-        concise = false;
-        curOpenTagStart = undefined;
-      }
-
       const name: Node.OpenTagName = {
         type: NodeType.OpenTagName,
         parent: undefined as unknown as Node.Tag,

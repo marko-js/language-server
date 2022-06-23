@@ -7,8 +7,8 @@ import {
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-import type { CompletionMeta } from "../meta";
-import type { Node } from "../../parser";
+import type { Node } from "../../../utils/parser";
+import type { CompletionMeta } from "..";
 
 export function AttrName({
   offset,

@@ -9,8 +9,9 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 import type { TagDefinition } from "@marko/babel-utils";
-import type { CompletionMeta } from "../meta";
-import { Node, NodeType } from "../../parser";
+import { type Node, NodeType } from "../../../utils/parser";
+import { getDocFile } from "../../../utils/doc-file";
+import type { CompletionMeta } from "..";
 
 export function OpenTagName({
   document,
@@ -18,7 +19,7 @@ export function OpenTagName({
   parsed,
   node,
 }: CompletionMeta<Node.OpenTagName>) {
-  const { fsPath: currentTemplateFilePath } = URI.parse(document.uri);
+  const currentTemplateFilePath = getDocFile(document);
   const tag = node.parent;
   const tagNameLocation = parsed.locationAt(node);
   let tags: TagDefinition[];

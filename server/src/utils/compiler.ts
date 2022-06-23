@@ -1,8 +1,7 @@
-import path from "path";
-import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
 import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { Connection, TextDocuments } from "vscode-languageserver";
 import type {
   AttributeDefinition,
   TagDefinition,
@@ -11,54 +10,79 @@ import type {
 
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
+import { getDocDir, getDocFile } from "./doc-file";
+import * as parser from "./parser";
+
+const compilerInfoByDir = new Map<string, CompilerInfo>();
 builtinCompiler.configure({ translator: builtinTranslator as any });
 
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
-export type CompilerAndTranslator = {
+export type CompilerInfo = {
+  cache: Map<unknown, unknown>;
+  parseCache: WeakMap<TextDocument, ReturnType<typeof parser.parse>>;
   compiler: Compiler;
   translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
 };
 
-const compilerAndTranslatorForDoc = new WeakMap<
-  TextDocument,
-  CompilerAndTranslator
->();
-
-export function getCompilerAndTranslatorForDoc(
-  doc: TextDocument
-): CompilerAndTranslator {
-  let compilerAndTranslator = compilerAndTranslatorForDoc.get(doc);
-  if (!compilerAndTranslator) {
-    compilerAndTranslatorForDoc.set(
-      doc,
-      (compilerAndTranslator = loadCompiler(
-        path.dirname(URI.parse(doc.uri).fsPath)
-      ))
-    );
+export function parse(doc: TextDocument) {
+  const compilerInfo = getCompilerInfo(doc);
+  let parsed = compilerInfo.parseCache.get(doc);
+  if (!parsed) {
+    compilerInfo.parseCache.set(doc, (parsed = parser.parse(doc.getText())));
   }
 
-  return compilerAndTranslator;
+  return parsed;
 }
 
-export function getTagLibLookup(
-  document: TextDocument
-): TaglibLookup | undefined {
+export function getCompilerInfo(doc: TextDocument): CompilerInfo {
+  const dir = getDocDir(doc);
+  let info = compilerInfoByDir.get(dir);
+  if (!info) {
+    info = loadCompilerInfo(dir);
+    compilerInfoByDir.set(dir, info);
+  }
+
+  return info;
+}
+
+export function getTagLibLookup(doc: TextDocument): TaglibLookup | undefined {
   try {
-    const { compiler, translator } = getCompilerAndTranslatorForDoc(document);
-    return compiler.taglib.buildLookup(
-      URI.parse(document.uri).fsPath,
-      translator
-    );
+    const { compiler, translator } = getCompilerInfo(doc);
+    return compiler.taglib.buildLookup(getDocFile(doc), translator);
     // eslint-disable-next-line no-empty
   } catch {}
 }
 
-function loadCompiler(dir: string): CompilerAndTranslator {
+export default function setup(
+  connection: Connection,
+  documents: TextDocuments<TextDocument>
+) {
+  connection.onDidChangeWatchedFiles(() => {
+    for (const dir of new Set(documents.all().map(getDocDir))) {
+      const info = compilerInfoByDir.get(dir);
+      if (info) {
+        info.cache.clear();
+        info.parseCache = new WeakMap();
+        info.compiler.taglib.clearCaches();
+      }
+    }
+  });
+
+  documents.onDidChangeContent(({ document }) => {
+    if (document.version > 1) {
+      getCompilerInfo(document)?.parseCache.delete(document);
+    }
+  });
+}
+
+function loadCompilerInfo(dir: string): CompilerInfo {
   const rootDir = lassoPackageRoot.getRootDir(dir);
   const pkgPath =
     rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
+  const cache = new Map();
+  const parseCache = new WeakMap();
 
   if (pkg && /^5\./.test(pkg.version)) {
     try {
@@ -79,6 +103,8 @@ function loadCompiler(dir: string): CompilerAndTranslator {
 
       require(resolveFrom(dir, translator));
       return {
+        cache,
+        parseCache,
         compiler: require(resolveFrom(dir, "@marko/compiler")),
         translator,
       };
@@ -87,6 +113,8 @@ function loadCompiler(dir: string): CompilerAndTranslator {
   }
 
   return {
+    cache,
+    parseCache,
     compiler: builtinCompiler,
     translator: builtinTranslator,
   };
