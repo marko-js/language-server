@@ -53,13 +53,17 @@ export default function setup(
 
   function doValidate(doc: TextDocument): Diagnostic[] {
     const { fsPath, scheme } = URI.parse(doc.uri);
+    const diagnostics: Diagnostic[] = [];
 
     if (scheme !== "file") {
-      return [];
+      return diagnostics;
     }
 
-    const { compiler, translator, cache } = getCompilerInfo(doc);
-    const diagnostics: Diagnostic[] = [];
+    const { compiler, translator, cache, lookup } = getCompilerInfo(doc);
+
+    if (!lookup) {
+      return diagnostics;
+    }
 
     try {
       compiler.compileSync(doc.getText(), fsPath, {

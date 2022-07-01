@@ -62,9 +62,9 @@
   "devDependencies": {
     "@marko/language-server": "^0.12.3",
     "@types/vscode": "^1.68.0",
-    "@vscode/test-electron": "^2.1.4",
+    "@vscode/test-electron": "^2.1.5",
     "ovsx": "^0.5.1",
-    "tsx": "^3.5.0",
+    "tsx": "^3.6.0",
     "vsce": "^2.9.2",
     "vscode-languageclient": "^8.0.1"
   },

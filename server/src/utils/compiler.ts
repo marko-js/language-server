@@ -10,9 +10,10 @@ import type {
 
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
-import { getDocDir, getDocFile } from "./doc-file";
+import { getDocDir } from "./doc-file";
 import * as parser from "./parser";
 
+const lookupKey = Symbol("lookup");
 const compilerInfoByDir = new Map<string, CompilerInfo>();
 builtinCompiler.configure({ translator: builtinTranslator as any });
 
@@ -20,16 +21,19 @@ export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
 export type CompilerInfo = {
   cache: Map<unknown, unknown>;
-  parseCache: WeakMap<TextDocument, ReturnType<typeof parser.parse>>;
+  lookup: TaglibLookup | null;
   compiler: Compiler;
   translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
 };
 
 export function parse(doc: TextDocument) {
   const compilerInfo = getCompilerInfo(doc);
-  let parsed = compilerInfo.parseCache.get(doc);
+  let parsed = compilerInfo.cache.get(doc) as
+    | ReturnType<typeof parser.parse>
+    | undefined;
   if (!parsed) {
-    compilerInfo.parseCache.set(doc, (parsed = parser.parse(doc.getText())));
+    const source = doc.getText();
+    compilerInfo.cache.set(doc, (parsed = parser.parse(source)));
   }
 
   return parsed;
@@ -46,14 +50,6 @@ export function getCompilerInfo(doc: TextDocument): CompilerInfo {
   return info;
 }
 
-export function getTagLibLookup(doc: TextDocument): TaglibLookup | undefined {
-  try {
-    const { compiler, translator } = getCompilerInfo(doc);
-    return compiler.taglib.buildLookup(getDocFile(doc), translator);
-    // eslint-disable-next-line no-empty
-  } catch {}
-}
-
 export default function setup(
   connection: Connection,
   documents: TextDocuments<TextDocument>
@@ -63,7 +59,6 @@ export default function setup(
       const info = compilerInfoByDir.get(dir);
       if (info) {
         info.cache.clear();
-        info.parseCache = new WeakMap();
         info.compiler.taglib.clearCaches();
       }
     }
@@ -71,7 +66,7 @@ export default function setup(
 
   documents.onDidChangeContent(({ document }) => {
     if (document.version > 1) {
-      getCompilerInfo(document)?.parseCache.delete(document);
+      getCompilerInfo(document)?.cache.delete(document);
     }
   });
 }
@@ -82,12 +77,13 @@ function loadCompilerInfo(dir: string): CompilerInfo {
     rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
   const cache = new Map();
-  const parseCache = new WeakMap();
+  let translator = builtinTranslator;
+  let compiler = builtinCompiler;
 
   if (pkg && /^5\./.test(pkg.version)) {
     try {
       // Ensure translator is available in local package, or fallback to built in compiler.
-      let translator = ([] as string[])
+      let checkTranslator = ([] as string[])
         .concat(
           Object.keys(pkg.dependencies),
           Object.keys(pkg.peerDependencies),
@@ -95,27 +91,38 @@ function loadCompilerInfo(dir: string): CompilerInfo {
         )
         .find((name) => /^marko$|^(@\/marko\/|marko-)translator-/.test(name));
 
-      if (translator === "marko" || !translator) {
+      if (checkTranslator === "marko" || !checkTranslator) {
         // Fallback to compiler default translator
-        translator = require(resolveFrom(dir, "@marko/compiler/config"))
+        checkTranslator = require(resolveFrom(dir, "@marko/compiler/config"))
           .translator as string;
       }
 
-      require(resolveFrom(dir, translator));
-      return {
-        cache,
-        parseCache,
-        compiler: require(resolveFrom(dir, "@marko/compiler")),
-        translator,
-      };
+      [compiler, translator] = [
+        require(resolveFrom(dir, "@marko/compiler")),
+        require(resolveFrom(dir, checkTranslator)),
+      ];
       // eslint-disable-next-line no-empty
     } catch {}
   }
 
   return {
     cache,
-    parseCache,
-    compiler: builtinCompiler,
-    translator: builtinTranslator,
+    get lookup() {
+      let lookup: TaglibLookup | null = cache.get(lookupKey);
+      if (lookup === undefined) {
+        // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
+        try {
+          lookup = compiler.taglib.buildLookup(dir, translator);
+        } catch {
+          lookup = null;
+        }
+
+        cache.set(lookupKey, lookup);
+      }
+
+      return lookup;
+    },
+    compiler,
+    translator,
   };
 }

@@ -12,6 +12,8 @@ export function OpenTagName({
   parsed,
   node,
 }: DefinitionMeta<Node.OpenTagName>) {
+  if (!lookup) return;
+
   const tag = node.parent;
   let tagDef: TagDefinition | null | undefined;
   let range = START_OF_FILE;

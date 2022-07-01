@@ -10,6 +10,8 @@ export function AttrName({
   parsed,
   node,
 }: DefinitionMeta<Node.AttrName>) {
+  if (!lookup) return;
+
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);
   const tagDef = tagName && lookup.getTag(tagName);

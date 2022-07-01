@@ -104,7 +104,7 @@ export namespace Node {
     concise: boolean;
     open: Range;
     close: Range | undefined;
-    nameText: string;
+    nameText: string | undefined;
     bodyType: TagType.html;
     name: OpenTagName;
     var: TagVar | undefined;
@@ -450,6 +450,8 @@ export function parse(source: string) {
           }
 
           tag.owner = owner;
+          // This name includes the full ancestry of the attribute tag and can be used in `TaglibLookup.getTag`.
+          tag.nameText = resolveAttrTagName(tag);
           pushAttr(owner, tag);
           // eslint-disable-next-line no-constant-condition
         } while (false);
@@ -643,6 +645,23 @@ function hasCloseTag(
   parent: Node.AnyNode
 ): parent is Node.ParentTag & { close: Range } {
   return (parent as Node.ParentTag).close !== undefined;
+}
+
+function resolveAttrTagName(tag: Node.AttrTag) {
+  let name = tag.nameText;
+  let parentTag: Node.ParentTag | undefined = tag.owner!;
+  do {
+    switch (parentTag.type) {
+      case NodeType.Tag:
+        return parentTag.nameText ? `${parentTag.nameText}:${name}` : undefined;
+      case NodeType.AttrTag:
+        name = `${parentTag.nameText}:${name}`;
+        parentTag = parentTag.owner;
+        break;
+      default:
+        return;
+    }
+  } while (parentTag);
 }
 
 /**

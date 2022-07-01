@@ -42,6 +42,8 @@ export function AttrName({
     }
   }
 
+  if (!lookup) return;
+
   const completions: CompletionItem[] = [];
   const attrNameLoc = parsed.locationAt(
     hasModifier

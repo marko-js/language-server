@@ -19,6 +19,8 @@ export function OpenTagName({
   parsed,
   node,
 }: CompletionMeta<Node.OpenTagName>) {
+  if (!lookup) return;
+
   const currentTemplateFilePath = getDocFile(document);
   const tag = node.parent;
   const tagNameLocation = parsed.locationAt(node);

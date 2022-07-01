@@ -1,4 +1,3 @@
-import type { TaglibLookup } from "@marko/babel-utils";
 import type {
   Connection,
   TextDocuments,
@@ -7,15 +6,15 @@ import type {
   DefinitionLink,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { parse, getTagLibLookup } from "../../utils/compiler";
+import { getCompilerInfo, parse } from "../../utils/compiler";
 import { NodeType } from "../../utils/parser";
 import { displayError } from "../messages";
 
 import { OpenTagName } from "./types/OpenTagName";
 import { AttrName } from "./types/AttrName";
 
-export interface DefinitionMeta<N = unknown> {
-  lookup: TaglibLookup;
+export interface DefinitionMeta<N = unknown>
+  extends ReturnType<typeof getCompilerInfo> {
   document: TextDocument;
   params: DefinitionParams;
   parsed: ReturnType<typeof parse>;
@@ -41,22 +40,19 @@ export default function setup(
     let result: Definition | DefinitionLink[] | void;
     try {
       const document = documents.get(params.textDocument.uri)!;
-      const lookup = getTagLibLookup(document);
-      if (lookup) {
-        const offset = document.offsetAt(params.position);
-        const code = document.getText();
-        const parsed = parse(document);
-        const node = parsed.nodeAt(offset);
-        result = HANDLERS[NodeType[node.type]]?.({
-          document,
-          params,
-          lookup,
-          parsed,
-          offset,
-          code,
-          node,
-        });
-      }
+      const offset = document.offsetAt(params.position);
+      const code = document.getText();
+      const parsed = parse(document);
+      const node = parsed.nodeAt(offset);
+      result = HANDLERS[NodeType[node.type]]?.({
+        document,
+        params,
+        parsed,
+        offset,
+        code,
+        node,
+        ...getCompilerInfo(document),
+      });
     } catch (e) {
       displayError(e);
     }

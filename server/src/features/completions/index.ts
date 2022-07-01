@@ -1,4 +1,3 @@
-import type { TaglibLookup } from "@marko/babel-utils";
 import {
   type Connection,
   type TextDocuments,
@@ -6,7 +5,7 @@ import {
   CompletionList,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { parse, getTagLibLookup } from "../../utils/compiler";
+import { getCompilerInfo, parse } from "../../utils/compiler";
 import { NodeType } from "../../utils/parser";
 import { displayError } from "../messages";
 
@@ -14,8 +13,8 @@ import { Tag } from "./types/Tag";
 import { OpenTagName } from "./types/OpenTagName";
 import { AttrName } from "./types/AttrName";
 
-export interface CompletionMeta<N = unknown> {
-  lookup: TaglibLookup;
+export interface CompletionMeta<N = unknown>
+  extends ReturnType<typeof getCompilerInfo> {
   document: TextDocument;
   params: CompletionParams;
   parsed: ReturnType<typeof parse>;
@@ -43,22 +42,19 @@ export default function setup(
 
     try {
       const document = documents.get(params.textDocument.uri)!;
-      const lookup = getTagLibLookup(document);
-      if (lookup) {
-        const offset = document.offsetAt(params.position);
-        const code = document.getText();
-        const parsed = parse(document);
-        const node = parsed.nodeAt(offset);
-        result = HANDLERS[NodeType[node.type]]?.({
-          document,
-          params,
-          lookup,
-          parsed,
-          offset,
-          code,
-          node,
-        });
-      }
+      const offset = document.offsetAt(params.position);
+      const code = document.getText();
+      const parsed = parse(document);
+      const node = parsed.nodeAt(offset);
+      result = HANDLERS[NodeType[node.type]]?.({
+        document,
+        params,
+        parsed,
+        offset,
+        code,
+        node,
+        ...getCompilerInfo(document),
+      });
     } catch (e) {
       displayError(e);
     }
