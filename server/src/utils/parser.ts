@@ -210,7 +210,7 @@ export namespace Node {
   export interface AttrValue extends Range {
     type: NodeType.AttrValue;
     parent: AttrNamed;
-    value: Range | undefined;
+    value: Range;
     bound: boolean;
   }
 

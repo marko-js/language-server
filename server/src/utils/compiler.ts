@@ -12,6 +12,7 @@ import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
 import { getDocDir } from "./doc-file";
 import * as parser from "./parser";
+import { extractStylesheet } from "../embeds/stylesheet";
 
 const lookupKey = Symbol("lookup");
 const compilerInfoByDir = new Map<string, CompilerInfo>();
@@ -23,17 +24,25 @@ export type CompilerInfo = {
   cache: Map<unknown, unknown>;
   lookup: TaglibLookup | null;
   compiler: Compiler;
-  translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
+  translator: builtinCompiler.Config["translator"];
 };
 
 export function parse(doc: TextDocument) {
   const compilerInfo = getCompilerInfo(doc);
   let parsed = compilerInfo.cache.get(doc) as
-    | ReturnType<typeof parser.parse>
+    | (ReturnType<typeof parser.parse> & {
+        stylesheet: ReturnType<typeof extractStylesheet>;
+      })
     | undefined;
   if (!parsed) {
     const source = doc.getText();
-    compilerInfo.cache.set(doc, (parsed = parser.parse(source)));
+    compilerInfo.cache.set(
+      doc,
+      (parsed = {
+        ...parser.parse(source),
+        stylesheet: extractStylesheet(source, compilerInfo.lookup),
+      })
+    );
   }
 
   return parsed;
