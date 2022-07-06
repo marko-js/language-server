@@ -12,11 +12,10 @@ import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
 import { getDocDir } from "./doc-file";
 import * as parser from "./parser";
-import { extractStylesheet } from "../embeds/stylesheet";
 
 const lookupKey = Symbol("lookup");
 const compilerInfoByDir = new Map<string, CompilerInfo>();
-builtinCompiler.configure({ translator: builtinTranslator as any });
+builtinCompiler.configure({ translator: builtinTranslator });
 
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
@@ -30,19 +29,11 @@ export type CompilerInfo = {
 export function parse(doc: TextDocument) {
   const compilerInfo = getCompilerInfo(doc);
   let parsed = compilerInfo.cache.get(doc) as
-    | (ReturnType<typeof parser.parse> & {
-        stylesheet: ReturnType<typeof extractStylesheet>;
-      })
+    | ReturnType<typeof parser.parse>
     | undefined;
   if (!parsed) {
     const source = doc.getText();
-    compilerInfo.cache.set(
-      doc,
-      (parsed = {
-        ...parser.parse(source),
-        stylesheet: extractStylesheet(source, compilerInfo.lookup),
-      })
-    );
+    compilerInfo.cache.set(doc, (parsed = parser.parse(source)));
   }
 
   return parsed;

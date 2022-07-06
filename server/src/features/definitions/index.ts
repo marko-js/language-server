@@ -8,7 +8,7 @@ import type {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompilerInfo, parse } from "../../utils/compiler";
 import { NodeType } from "../../utils/parser";
-import { displayError } from "../messages";
+import { displayError } from "../../utils/messages";
 
 import { OpenTagName } from "./types/OpenTagName";
 import { AttrName } from "./types/AttrName";

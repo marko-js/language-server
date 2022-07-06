@@ -1,42 +1,41 @@
 import {
   type CompletionItem,
   type MarkupContent,
-  CompletionList,
   CompletionItemKind,
   MarkupKind,
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
+
 import type { Node } from "../../../utils/parser";
-import type { CompletionMeta } from "..";
+import type { CompletionMeta, CompletionResult } from ".";
 
 export function AttrName({
   offset,
   node,
   parsed,
   lookup,
-}: CompletionMeta<Node.AttrName>) {
+}: CompletionMeta<Node.AttrName>): CompletionResult {
   let name = parsed.read(node);
+  if (name[0] === "{") return; // Ignore tag blocks.
+
   const modifierIndex = name.indexOf(":");
   const hasModifier = modifierIndex !== -1;
 
   if (hasModifier) {
     if (offset >= node.start + modifierIndex) {
-      return CompletionList.create(
-        [
-          {
-            label: "scoped",
-            kind: CompletionItemKind.Keyword,
-            detail: "Use to prefix with a unique ID",
-          },
-          {
-            label: "no-update",
-            kind: CompletionItemKind.Keyword,
-            detail: "Use to skip future updates to this attribute",
-          },
-        ],
-        true
-      );
+      return [
+        {
+          label: "scoped",
+          kind: CompletionItemKind.Keyword,
+          detail: "Use to prefix with a unique ID",
+        },
+        {
+          label: "no-update",
+          kind: CompletionItemKind.Keyword,
+          detail: "Use to skip future updates to this attribute",
+        },
+      ];
     } else {
       name = name.slice(0, modifierIndex);
     }
@@ -139,5 +138,5 @@ export function AttrName({
     });
   });
 
-  return CompletionList.create(completions, true);
+  return completions;
 }

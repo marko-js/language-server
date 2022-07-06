@@ -1,4 +1,4 @@
-import { workspace, window, type ExtensionContext } from "vscode";
+import { workspace, window, commands, type ExtensionContext } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -45,6 +45,7 @@ export async function activate(ctx: ExtensionContext) {
   client.onNotification("showError", window.showErrorMessage);
   client.onNotification("showWarning", window.showWarningMessage);
   client.onNotification("showInformation", window.showInformationMessage);
+  client.onNotification("executeCommand", commands.executeCommand);
   // Start the client. This will also launch the server
   await client.start();
 }
