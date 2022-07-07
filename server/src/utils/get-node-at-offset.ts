@@ -82,8 +82,9 @@ function childAtOffset<T extends Node.AnyNode[]>(
   children: T
 ): undefined | T[number] {
   let max = children.length - 1;
-  let min = 0;
+  if (max === -1) return undefined;
 
+  let min = 0;
   while (min < max) {
     const mid = (1 + min + max) >>> 1;
 

@@ -1,5 +1,6 @@
 import {
   createConnection,
+  DefinitionLink,
   Diagnostic,
   ProposedFeatures,
   TextDocuments,
@@ -9,7 +10,6 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { inspect, isDeepStrictEqual } from "util";
 import setupCompiler from "./utils/compiler";
 import setupMessages from "./utils/messages";
-import setupDefinitions from "./features/definitions";
 import service from "./service";
 
 if (
@@ -91,6 +91,16 @@ connection.onCompletion(async (params, cancel) => {
   );
 });
 
+connection.onDefinition(async (params, cancel) => {
+  return (
+    ((await service.findDefinition(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) as DefinitionLink[]) || null
+  );
+});
+
 connection.onDocumentFormatting(async (params, cancel) => {
   return (
     (await service.format(
@@ -119,12 +129,10 @@ function queueValidation(doc: TextDocument) {
       uri: doc.uri,
       diagnostics: nextDiag,
     });
-  }, 800);
+  }, 400);
 
   diagnosticTimeouts.set(doc, id);
 }
-
-setupDefinitions(connection, documents);
 
 documents.listen(connection);
 connection.listen();

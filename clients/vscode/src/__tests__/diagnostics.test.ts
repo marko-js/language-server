@@ -1,8 +1,11 @@
+import timers from "timers/promises";
 import vscode from "vscode";
 import snap from "mocha-snap";
-import { getTestDoc, updateTestDoc } from "./setup.test";
+import { updateTestDoc } from "./setup.test";
 
-describe("completion", () => {
+describe("diagnostics", () => {
+  // Ensure we wait for any pending diagnostics to be sent.
+  before(() => timers.setTimeout(600));
   it("missing tag end", async () => {
     await snap.inline(() => diagnostic("<span>"), `Missing ending "span" tag`);
   });
@@ -16,18 +19,18 @@ describe("completion", () => {
 });
 
 async function diagnostic(src: string) {
-  await Promise.all([updateTestDoc(src), waitForNewDiagnostics()]);
-  const [result] = vscode.languages.getDiagnostics(getTestDoc().uri);
-  return result!.message;
+  const pendingDiagnostic = waitForNewDiagnostic();
+  void updateTestDoc(src);
+  return (await pendingDiagnostic).message;
 }
 
-function waitForNewDiagnostics() {
-  return new Promise<void>((resolve) => {
+function waitForNewDiagnostic(): Promise<vscode.Diagnostic> {
+  return new Promise((resolve) => {
     const listener = vscode.languages.onDidChangeDiagnostics((change) => {
       const [result] = vscode.languages.getDiagnostics(change.uris[0]);
       if (result) {
         listener.dispose();
-        resolve();
+        resolve(result);
       }
     });
   });

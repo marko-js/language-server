@@ -30,12 +30,15 @@ export async function activate(ctx: ExtensionContext) {
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
-      fileEvents: workspace.createFileSystemWatcher(
-        "**/{*.marko,marko.json,marko-tag.json}",
-        false,
-        false,
-        false
-      ),
+      fileEvents: [
+        workspace.createFileSystemWatcher(
+          "**/{marko.json,marko-tag.json}",
+          false,
+          false,
+          false
+        ),
+        workspace.createFileSystemWatcher("**/*.marko", false, true, false),
+      ],
     },
   };
 

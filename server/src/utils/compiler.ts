@@ -55,20 +55,25 @@ export default function setup(
   documents: TextDocuments<TextDocument>
 ) {
   connection.onDidChangeWatchedFiles(() => {
-    for (const dir of new Set(documents.all().map(getDocDir))) {
-      const info = compilerInfoByDir.get(dir);
-      if (info) {
-        info.cache.clear();
-        info.compiler.taglib.clearCaches();
-      }
-    }
+    clearAllCaches();
   });
 
   documents.onDidChangeContent(({ document }) => {
     if (document.version > 1) {
-      getCompilerInfo(document)?.cache.delete(document);
+      if (document.uri.endsWith(".marko")) {
+        getCompilerInfo(document)?.cache.delete(document);
+      } else if (/[./\\]marko(?:-tag)?\.json$/.test(document.uri)) {
+        clearAllCaches();
+      }
     }
   });
+}
+
+function clearAllCaches() {
+  for (const [, info] of compilerInfoByDir) {
+    info.cache.clear();
+    info.compiler.taglib.clearCaches();
+  }
 }
 
 function loadCompilerInfo(dir: string): CompilerInfo {

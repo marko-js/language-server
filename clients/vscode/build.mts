@@ -13,8 +13,15 @@ await build({
   platform: "node",
   target: ["node14"],
   sourcemap: "linked",
-  entryPoints: ["src/index.ts", "src/server.ts"],
-  external: ["vscode", "@babel/plugin-transform-modules-commonjs", "tsx"],
+  entryPoints: ["src/index.ts", "src/server.ts", "src/__tests__/index.ts"],
+  external: [
+    "vscode",
+    "@babel/plugin-transform-modules-commonjs",
+    "mocha",
+    "mocha-snap",
+    "fast-glob",
+    "tsx",
+  ],
   plugins: [
     {
       name: "vscode-css-languageservice-fix",

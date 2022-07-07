@@ -5,13 +5,13 @@ import type { TagDefinition } from "../../../utils/compiler";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
 import { Node, NodeType } from "../../../utils/parser";
-import type { DefinitionMeta } from "..";
+import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function OpenTagName({
   lookup,
   parsed,
   node,
-}: DefinitionMeta<Node.OpenTagName>) {
+}: DefinitionMeta<Node.OpenTagName>): DefinitionResult {
   if (!lookup) return;
 
   const tag = node.parent;

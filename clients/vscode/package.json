@@ -85,6 +85,6 @@
   "scripts": {
     "build": "tsc -b && tsx build.mts",
     "release": "export OUT=dist/marko.vsix; vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT",
-    "test": "tsx build-test.mts"
+    "test": "tsx test.mts"
   }
 }

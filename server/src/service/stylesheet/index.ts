@@ -89,7 +89,30 @@ export default {
 
     return CompletionList.create([], true);
   },
+  async findDefinition(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
 
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffset = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result = service.findDefinition(
+        virtualDoc,
+        virtualDoc.positionAt(generatedOffset),
+        service.parseStylesheet(virtualDoc)
+      );
+
+      if (result && updateRange(doc, info, result.range)) {
+        return result;
+      }
+
+      break;
+    }
+  },
   async doValidate(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: Diagnostic[] = [];

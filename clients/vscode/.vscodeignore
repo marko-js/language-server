@@ -7,3 +7,4 @@ CHANGELOG.md
 **/*.vsix
 **/tsconfig.json
 **/.tsbuildinfo
+**/__tests__

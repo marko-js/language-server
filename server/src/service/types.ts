@@ -3,8 +3,11 @@ import type {
   CompletionItem,
   CompletionList,
   CompletionParams,
+  DefinitionParams,
   Diagnostic,
   DocumentFormattingParams,
+  Location,
+  LocationLink,
   TextEdit,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
@@ -18,6 +21,10 @@ type Handler<P, R> = (
 
 export type Plugin = {
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
-  format: Handler<DocumentFormattingParams, TextEdit[]>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
+  findDefinition: Handler<
+    DefinitionParams,
+    Location | LocationLink | (Location | LocationLink)[]
+  >;
+  format: Handler<DocumentFormattingParams, TextEdit[]>;
 };

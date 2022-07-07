@@ -1,22 +1,16 @@
+import type { DefinitionParams, DefinitionLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import {
-  CompletionItem,
-  CompletionList,
-  CompletionParams,
-} from "vscode-languageserver";
 import { getCompilerInfo, parse } from "../../../utils/compiler";
-
-import { Tag } from "./Tag";
+import { NodeType } from "../../../utils/parser";
+import type { Plugin, Result } from "../../types";
 import { OpenTagName } from "./OpenTagName";
 import { AttrName } from "./AttrName";
-import type { Plugin, Result } from "../../types";
-import { NodeType } from "../../../utils/parser";
 
-export type CompletionResult = Result<CompletionItem[]>;
-export interface CompletionMeta<N = unknown>
+export type DefinitionResult = Result<DefinitionLink[]>;
+export interface DefinitionMeta<N = unknown>
   extends ReturnType<typeof getCompilerInfo> {
   document: TextDocument;
-  params: CompletionParams;
+  params: DefinitionParams;
   parsed: ReturnType<typeof parse>;
   offset: number;
   code: string;
@@ -25,18 +19,17 @@ export interface CompletionMeta<N = unknown>
 
 const handlers: Record<
   string,
-  (data: CompletionMeta<any>) => CompletionResult
+  (data: DefinitionMeta<any>) => DefinitionResult
 > = {
-  Tag,
   OpenTagName,
   AttrName,
 };
 
-export const doComplete: Plugin["doComplete"] = async (doc, params) => {
+export const findDefinition: Plugin["findDefinition"] = async (doc, params) => {
   const parsed = parse(doc);
   const offset = doc.offsetAt(params.position);
   const node = parsed.nodeAt(offset);
-  return CompletionList.create(
+  return (
     (await handlers[NodeType[node.type]]?.({
       document: doc,
       params,
@@ -45,7 +38,6 @@ export const doComplete: Plugin["doComplete"] = async (doc, params) => {
       node,
       code: doc.getText(),
       ...getCompilerInfo(doc),
-    })) || [],
-    true
+    })) || []
   );
 };

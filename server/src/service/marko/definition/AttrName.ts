@@ -3,17 +3,19 @@ import { Range, LocationLink } from "vscode-languageserver";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
 import type { Node } from "../../../utils/parser";
-import type { DefinitionMeta } from "..";
+import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function AttrName({
   lookup,
   parsed,
   node,
-}: DefinitionMeta<Node.AttrName>) {
+}: DefinitionMeta<Node.AttrName>): DefinitionResult {
   if (!lookup) return;
 
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);
+  if (attrName[0] === "{") return; // Ignore tag blocks.
+
   const tagDef = tagName && lookup.getTag(tagName);
   const attrDef = lookup.getAttribute(tagName || "", attrName);
   let range = START_OF_FILE;
