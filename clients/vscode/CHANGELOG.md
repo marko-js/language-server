@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.19
+
+### Patch Changes
+
+- [#88](https://github.com/marko-js/language-server/pull/88) [`c0b7336`](https://github.com/marko-js/language-server/commit/c0b73363b73cd9803c0e58b521b3e1efa84fee7b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with extension release script.
+
 ## 0.17.18
 
 ### Patch Changes
