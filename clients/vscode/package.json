@@ -1,7 +1,7 @@
 {
   "name": "marko-vscode",
   "description": "Marko Tooling for VSCode",
-  "version": "0.17.20",
+  "version": "0.17.21",
   "activationEvents": [
     "onLanguage:marko"
   ],
@@ -60,7 +60,7 @@
     }
   },
   "devDependencies": {
-    "@marko/language-server": "^0.12.5",
+    "@marko/language-server": "^0.12.6",
     "@types/vscode": "^1.68.0",
     "@vscode/test-electron": "^2.1.5",
     "ovsx": "^0.5.1",
