@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.22
+
+### Patch Changes
+
+- [#96](https://github.com/marko-js/language-server/pull/96) [`7fba1e1`](https://github.com/marko-js/language-server/commit/7fba1e13b8f84e68d53a889525951288da9f6b08) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Better support bracket colorization.
+
 ## 0.17.21
 
 ### Patch Changes
