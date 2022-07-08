@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.17.20
+
+### Patch Changes
+
+- [#92](https://github.com/marko-js/language-server/pull/92) [`f0a97e3`](https://github.com/marko-js/language-server/commit/f0a97e39ddd148f160f0e7bab5af2e295edb1588) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve handling of untitled files.
+
+* [#92](https://github.com/marko-js/language-server/pull/92) [`53521d0`](https://github.com/marko-js/language-server/commit/53521d02bd97bddef9c931bb1769b2133d5f0fc9) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add hover provider for inline stylesheets
+
 ## 0.17.19
 
 ### Patch Changes
