@@ -11,9 +11,12 @@ import {
 describe("definition", () => {
   it("tag name", async () => {
     await writeTestFiles({
-      "components/test.marko": "<div/>",
+      "components/example.marko": "<div/>",
     });
-    await snap.inline(() => definition("<test█/>"), `components/test.marko`);
+    await snap.inline(
+      () => definition("<example█/>"),
+      `components/example.marko`
+    );
   });
 });
 

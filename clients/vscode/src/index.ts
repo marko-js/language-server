@@ -1,4 +1,4 @@
-import { workspace, window, type ExtensionContext } from "vscode";
+import { workspace, window, commands, type ExtensionContext } from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -30,12 +30,15 @@ export async function activate(ctx: ExtensionContext) {
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
-      fileEvents: workspace.createFileSystemWatcher(
-        "**/{components/*.marko,components/*/*.marko,marko.json,marko-tag.json}",
-        false,
-        false,
-        false
-      ),
+      fileEvents: [
+        workspace.createFileSystemWatcher(
+          "**/{marko.json,marko-tag.json}",
+          false,
+          false,
+          false
+        ),
+        workspace.createFileSystemWatcher("**/*.marko", false, true, false),
+      ],
     },
   };
 
@@ -45,6 +48,7 @@ export async function activate(ctx: ExtensionContext) {
   client.onNotification("showError", window.showErrorMessage);
   client.onNotification("showWarning", window.showWarningMessage);
   client.onNotification("showInformation", window.showInformationMessage);
+  client.onNotification("executeCommand", commands.executeCommand);
   // Start the client. This will also launch the server
   await client.start();
 }

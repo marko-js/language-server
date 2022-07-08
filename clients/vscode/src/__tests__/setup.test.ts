@@ -1,10 +1,11 @@
 import os from "os";
 import fs from "fs";
 import path from "path";
-import { setTimeout } from "timers/promises";
+import timers from "timers/promises";
 import vscode from "vscode";
 
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "marko-vscode-test"));
+const activeFile = path.join(tempDir, "test.marko");
 const tempFiles: Set<string> = new Set();
 const noop = () => {};
 
@@ -55,6 +56,11 @@ export async function writeTestFiles(files: Record<string, string>) {
       tempFiles.add(fileName);
       await fs.promises.mkdir(path.dirname(fileName)).catch(noop);
       await fs.promises.writeFile(fileName, files[entry]);
+      await vscode.commands.executeCommand(
+        "vscode.openWith",
+        vscode.Uri.file(fileName),
+        "marko"
+      );
     })
   );
 }
@@ -65,7 +71,6 @@ export function relativeToTempDir(fileName: string) {
 
 before(async () => {
   await vscode.extensions.getExtension("Marko-JS.marko-vscode")!.activate();
-  const activeFile = path.join(tempDir, "test.marko");
   await fs.promises.writeFile(activeFile, "");
   await vscode.commands.executeCommand(
     "vscode.openWith",
@@ -73,13 +78,19 @@ before(async () => {
     "marko"
   );
 
-  await setTimeout(500);
+  await timers.setTimeout(500);
 });
 
-after(() => vscode.commands.executeCommand("workbench.action.closeAllEditors"));
 afterEach(async () => {
   await Promise.all(
     Array.from(tempFiles).map((file) => fs.promises.unlink(file).catch(noop))
   );
   tempFiles.clear();
+});
+
+after(async () => {
+  await Promise.all([
+    vscode.commands.executeCommand("workbench.action.closeAllEditors"),
+    fs.promises.rm(tempDir, { recursive: true }).catch(noop),
+  ]);
 });

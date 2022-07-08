@@ -1,8 +1,7 @@
-import path from "path";
-import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
 import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { Connection, TextDocuments } from "vscode-languageserver";
 import type {
   AttributeDefinition,
   TagDefinition,
@@ -11,59 +10,85 @@ import type {
 
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
-builtinCompiler.configure({ translator: builtinTranslator as any });
+import { getDocDir } from "./doc-file";
+import * as parser from "./parser";
+
+const lookupKey = Symbol("lookup");
+const compilerInfoByDir = new Map<string, CompilerInfo>();
+builtinCompiler.configure({ translator: builtinTranslator });
 
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
-export type CompilerAndTranslator = {
+export type CompilerInfo = {
+  cache: Map<unknown, unknown>;
+  lookup: TaglibLookup | null;
   compiler: Compiler;
-  translator: any; // TODO should update the type in `@marko/compiler` to not just be string | undefined
+  translator: builtinCompiler.Config["translator"];
 };
 
-const compilerAndTranslatorForDoc = new WeakMap<
-  TextDocument,
-  CompilerAndTranslator
->();
-
-export function getCompilerAndTranslatorForDoc(
-  doc: TextDocument
-): CompilerAndTranslator {
-  let compilerAndTranslator = compilerAndTranslatorForDoc.get(doc);
-  if (!compilerAndTranslator) {
-    compilerAndTranslatorForDoc.set(
-      doc,
-      (compilerAndTranslator = loadCompiler(
-        path.dirname(URI.parse(doc.uri).fsPath)
-      ))
-    );
+export function parse(doc: TextDocument) {
+  const compilerInfo = getCompilerInfo(doc);
+  let parsed = compilerInfo.cache.get(doc) as
+    | ReturnType<typeof parser.parse>
+    | undefined;
+  if (!parsed) {
+    const source = doc.getText();
+    compilerInfo.cache.set(doc, (parsed = parser.parse(source)));
   }
 
-  return compilerAndTranslator;
+  return parsed;
 }
 
-export function getTagLibLookup(
-  document: TextDocument
-): TaglibLookup | undefined {
-  try {
-    const { compiler, translator } = getCompilerAndTranslatorForDoc(document);
-    return compiler.taglib.buildLookup(
-      URI.parse(document.uri).fsPath,
-      translator
-    );
-    // eslint-disable-next-line no-empty
-  } catch {}
+export function getCompilerInfo(doc: TextDocument): CompilerInfo {
+  const dir = getDocDir(doc);
+  let info = compilerInfoByDir.get(dir);
+  if (!info) {
+    info = loadCompilerInfo(dir);
+    compilerInfoByDir.set(dir, info);
+  }
+
+  return info;
 }
 
-function loadCompiler(dir: string): CompilerAndTranslator {
+export default function setup(
+  connection: Connection,
+  documents: TextDocuments<TextDocument>
+) {
+  connection.onDidChangeWatchedFiles(() => {
+    clearAllCaches();
+  });
+
+  documents.onDidChangeContent(({ document }) => {
+    if (document.version > 1) {
+      if (document.uri.endsWith(".marko")) {
+        getCompilerInfo(document)?.cache.delete(document);
+      } else if (/[./\\]marko(?:-tag)?\.json$/.test(document.uri)) {
+        clearAllCaches();
+      }
+    }
+  });
+}
+
+function clearAllCaches() {
+  for (const [, info] of compilerInfoByDir) {
+    info.cache.clear();
+    info.compiler.taglib.clearCaches();
+  }
+}
+
+function loadCompilerInfo(dir: string): CompilerInfo {
   const rootDir = lassoPackageRoot.getRootDir(dir);
   const pkgPath =
     rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
+  const cache = new Map();
+  let translator = builtinTranslator;
+  let compiler = builtinCompiler;
 
   if (pkg && /^5\./.test(pkg.version)) {
     try {
       // Ensure translator is available in local package, or fallback to built in compiler.
-      let translator = ([] as string[])
+      let checkTranslator = ([] as string[])
         .concat(
           Object.keys(pkg.dependencies),
           Object.keys(pkg.peerDependencies),
@@ -71,23 +96,38 @@ function loadCompiler(dir: string): CompilerAndTranslator {
         )
         .find((name) => /^marko$|^(@\/marko\/|marko-)translator-/.test(name));
 
-      if (translator === "marko" || !translator) {
+      if (checkTranslator === "marko" || !checkTranslator) {
         // Fallback to compiler default translator
-        translator = require(resolveFrom(dir, "@marko/compiler/config"))
+        checkTranslator = require(resolveFrom(dir, "@marko/compiler/config"))
           .translator as string;
       }
 
-      require(resolveFrom(dir, translator));
-      return {
-        compiler: require(resolveFrom(dir, "@marko/compiler")),
-        translator,
-      };
+      [compiler, translator] = [
+        require(resolveFrom(dir, "@marko/compiler")),
+        require(resolveFrom(dir, checkTranslator)),
+      ];
       // eslint-disable-next-line no-empty
     } catch {}
   }
 
   return {
-    compiler: builtinCompiler,
-    translator: builtinTranslator,
+    cache,
+    get lookup() {
+      let lookup: TaglibLookup | null = cache.get(lookupKey);
+      if (lookup === undefined) {
+        // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
+        try {
+          lookup = compiler.taglib.buildLookup(dir, translator);
+        } catch {
+          lookup = null;
+        }
+
+        cache.set(lookupKey, lookup);
+      }
+
+      return lookup;
+    },
+    compiler,
+    translator,
   };
 }

@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+		{
+			"type": "npm",
+			"label": "build",
+			"script": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+        "reveal": "never"
+      }
+		}
+  ]
+}

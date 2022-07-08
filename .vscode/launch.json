@@ -2,32 +2,64 @@
   "version": "0.2.0",
   "compounds": [
     {
-      "name": "All",
-      "configurations": ["Launch VSCode Client", "Attach to Server"]
+      "name": "Develop",
+      "stopAll": true,
+      "preLaunchTask": "build",
+      "configurations": ["Launch Client", "Attach to Server"],
+    },
+    {
+      "name": "Test",
+      "stopAll": true,
+      "preLaunchTask": "build",
+      "configurations": ["Launch Test Client", "Attach to Server"],
     }
   ],
   "configurations": [
     {
+      "name": "Launch Client",
       "type": "extensionHost",
       "request": "launch",
-      "name": "Launch VSCode Client",
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "${workspaceRoot}/../htmljs-parser"
+        "/Users/dpiercey/dev/tmp/vite-tags-api"
       ],
       "outFiles": [
-        "${workspaceFolder}/**/dist/*.js",
+        "${workspaceRoot}/**/dist/*.js",
         "!**/node_modules/**"
-      ]
+      ],
+      "presentation": {
+        "hidden": true
+      }
     },
     {
+      "name": "Launch Test Client",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
+        "--extensionTestsPath=${workspaceRoot}/clients/vscode/dist/__tests__/index.js"
+      ],
+      "outFiles": [
+        "${workspaceRoot}/**/dist/*.js",
+        "!**/node_modules/**"
+      ],
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "name": "Attach to Server",
       "type": "node",
       "request": "attach",
-      "name": "Attach to Server",
+      "restart": true,
       "port": 6009,
-      "restart": true
+      "presentation": {
+        "hidden": true
+      }
     }
   ]
 }

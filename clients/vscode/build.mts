@@ -1,27 +1,43 @@
-import { build, type BuildOptions } from "esbuild";
+import path from "path";
+import { build } from "esbuild";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
-const opts: BuildOptions = {
+await build({
   bundle: true,
-  minify: true,
+  minifySyntax: true,
+  minifyWhitespace: true,
   format: "cjs",
   outdir: "dist",
   outbase: "src",
   platform: "node",
   target: ["node14"],
   sourcemap: "linked",
-  mainFields: ["module", "main"],
-};
+  entryPoints: ["src/index.ts", "src/server.ts", "src/__tests__/index.ts"],
+  external: [
+    "vscode",
+    "@babel/plugin-transform-modules-commonjs",
+    "mocha",
+    "mocha-snap",
+    "fast-glob",
+    "tsx",
+  ],
+  plugins: [
+    {
+      name: "vscode-css-languageservice-fix",
+      async setup(build) {
+        // alias vscode-css-languageservice to it's esm version
+        // the default is a UMD definition that's incompatible with esbuild.
+        const pkg = "vscode-css-languageservice/package.json";
 
-await Promise.all([
-  build({
-    ...opts,
-    entryPoints: ["src/index.ts"],
-    external: ["vscode"],
-  }),
-
-  build({
-    ...opts,
-    entryPoints: ["src/server.ts"],
-    external: ["@babel/plugin-transform-modules-commonjs"],
-  }),
-]);
+        build.onResolve({ filter: /^vscode-css-languageservice$/ }, () => ({
+          path: path.join(
+            require.resolve(pkg),
+            "..",
+            require(pkg).module as string
+          ),
+        }));
+      },
+    },
+  ],
+});

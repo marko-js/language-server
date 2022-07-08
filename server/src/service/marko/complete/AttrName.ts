@@ -1,29 +1,60 @@
 import {
-  type CompletionParams,
   type CompletionItem,
   type MarkupContent,
-  CompletionList,
   CompletionItemKind,
   MarkupKind,
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
-import type { ParserEvents } from "../../htmljs-parser";
-import type { TaglibLookup } from "../../compiler";
-import { rangeFromEvent } from "../../utils";
 
-export function attributeName(
-  taglib: TaglibLookup,
-  document: TextDocument,
-  _params: CompletionParams,
-  event: ParserEvents.AttributeName
-) {
+import type { Node } from "../../../utils/parser";
+import type { CompletionMeta, CompletionResult } from ".";
+
+export function AttrName({
+  offset,
+  node,
+  parsed,
+  lookup,
+}: CompletionMeta<Node.AttrName>): CompletionResult {
+  let name = parsed.read(node);
+  if (name[0] === "{") return; // Ignore tag blocks.
+
+  const modifierIndex = name.indexOf(":");
+  const hasModifier = modifierIndex !== -1;
+
+  if (hasModifier) {
+    if (offset >= node.start + modifierIndex) {
+      return [
+        {
+          label: "scoped",
+          kind: CompletionItemKind.Keyword,
+          detail: "Use to prefix with a unique ID",
+        },
+        {
+          label: "no-update",
+          kind: CompletionItemKind.Keyword,
+          detail: "Use to skip future updates to this attribute",
+        },
+      ];
+    } else {
+      name = name.slice(0, modifierIndex);
+    }
+  }
+
+  if (!lookup) return;
+
   const completions: CompletionItem[] = [];
-  const attrNameRange = rangeFromEvent(document, event);
-  const tagDef =
-    !event.tag.tagNameExpression && taglib.getTag(event.tag.tagName);
-  const tagName = (tagDef && tagDef.name) || "*";
+  const attrNameLoc = parsed.locationAt(
+    hasModifier
+      ? {
+          start: node.start,
+          end: node.start + name.length,
+        }
+      : node
+  );
+
+  const tagName = node.parent.parent.nameText || "";
+  const tagDef = tagName && lookup.getTag(tagName);
   const nestedTagAttrs: { [x: string]: boolean } = {};
   const neverAttrs: Set<string> = new Set();
 
@@ -34,13 +65,13 @@ export function attributeName(
     }
   }
 
-  taglib.forEachAttribute(tagName, (attr) => {
+  lookup.forEachAttribute(tagName, (attr) => {
     if (attr.type === "never") {
       neverAttrs.add(attr.name);
     }
   });
 
-  taglib.forEachAttribute(tagName, (attr, parent) => {
+  lookup.forEachAttribute(tagName, (attr, parent) => {
     if (
       attr.deprecated ||
       nestedTagAttrs[attr.name] ||
@@ -103,9 +134,9 @@ export function attributeName(
       documentation: documentation.value ? documentation : undefined,
       kind: CompletionItemKind.Property,
       insertTextFormat: InsertTextFormat.Snippet,
-      textEdit: TextEdit.replace(attrNameRange, snippet),
+      textEdit: TextEdit.replace(attrNameLoc, snippet),
     });
   });
 
-  return CompletionList.create(completions, true);
+  return completions;
 }
