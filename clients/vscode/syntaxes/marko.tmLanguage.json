@@ -723,7 +723,34 @@
               "match": "[a-zA-Z$_][0-9a-zA-Z$_]*",
               "name": "variable.other.constant.object.ts"
             },
-            { "include": "source.ts#destructuring-variable" },
+            {
+              "comment": "Match object pattern",
+              "begin": "{",
+              "end": "}",
+              "patterns": [
+                { "include": "source.ts#object-binding-element" },
+                { "include": "#javascript-expression" }
+              ],
+              "captures": {
+                "0": {
+                  "name": "punctuation.definition.binding-pattern.object.ts"
+                }
+              }
+            },
+            {
+              "comment": "Match array pattern",
+              "begin": "\\[",
+              "end": "]",
+              "patterns": [
+                { "include": "source.ts#array-binding-element" },
+                { "include": "#javascript-expression" }
+              ],
+              "captures": {
+                "0": {
+                  "name": "punctuation.definition.binding-pattern.array.ts"
+                }
+              }
+            },
             {
               "comment": "Match type",
               "begin": "\\s*(:)(?!=)",
