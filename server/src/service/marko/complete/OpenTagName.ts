@@ -18,8 +18,6 @@ export function OpenTagName({
   parsed,
   node,
 }: CompletionMeta<Node.OpenTagName>): CompletionResult {
-  if (!lookup) return;
-
   const currentTemplateFilePath = getDocFile(document);
   const tag = node.parent;
   const tagNameLocation = parsed.locationAt(node);
@@ -64,10 +62,11 @@ export function OpenTagName({
           ? isCoreTag
             ? `Core Marko [<${it.name}>](${fileURIForTag}) tag.`
             : `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
-          : `Custom Marko tag discovered from:\n\n[${path.relative(
-              currentTemplateFilePath,
-              fileForTag
-            )}](${fileURIForTag})`,
+          : `Custom Marko tag discovered from:\n\n[${
+              currentTemplateFilePath
+                ? path.relative(currentTemplateFilePath, fileForTag)
+                : currentTemplateFilePath
+            }](${fileURIForTag})`,
       };
 
       if (it.description) {
