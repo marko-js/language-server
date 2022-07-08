@@ -6,6 +6,8 @@ import type {
   DefinitionParams,
   Diagnostic,
   DocumentFormattingParams,
+  Hover,
+  HoverParams,
   Location,
   LocationLink,
   TextEdit,
@@ -22,6 +24,7 @@ type Handler<P, R> = (
 export type Plugin = {
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
+  doHover: Handler<HoverParams, Hover>;
   findDefinition: Handler<
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]

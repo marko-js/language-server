@@ -46,6 +46,7 @@ connection.onInitialize(() => {
       textDocumentSync: TextDocumentSyncKind.Incremental,
       documentFormattingProvider: true,
       definitionProvider: true,
+      hoverProvider: true,
       completionProvider: {
         triggerCharacters: [
           ".",
@@ -98,6 +99,16 @@ connection.onDefinition(async (params, cancel) => {
       params,
       cancel
     )) as DefinitionLink[]) || null
+  );
+});
+
+connection.onHover(async (params, cancel) => {
+  return (
+    (await service.doHover(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
   );
 });
 

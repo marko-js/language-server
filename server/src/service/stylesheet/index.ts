@@ -51,7 +51,7 @@ export default {
       const result = service.doComplete(
         virtualDoc,
         virtualDoc.positionAt(generatedOffset),
-        service.parseStylesheet(virtualDoc)
+        info.parsed
       );
 
       for (const item of result.items) {
@@ -103,7 +103,7 @@ export default {
       const result = service.findDefinition(
         virtualDoc,
         virtualDoc.positionAt(generatedOffset),
-        service.parseStylesheet(virtualDoc)
+        info.parsed
       );
 
       if (result && updateRange(doc, info, result.range)) {
@@ -111,6 +111,28 @@ export default {
       }
 
       break;
+    }
+  },
+  async doHover(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffset = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result = service.doHover(
+        virtualDoc,
+        virtualDoc.positionAt(generatedOffset),
+        service.parseStylesheet(virtualDoc)
+      );
+
+      if (result && (!result.range || updateRange(doc, info, result.range))) {
+        return result;
+      }
     }
   },
   async doValidate(doc) {
