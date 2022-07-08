@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.17.21
+
+### Patch Changes
+
+- [#94](https://github.com/marko-js/language-server/pull/94) [`c724516`](https://github.com/marko-js/language-server/commit/c72451622f4f4411d3dad45cfcc7af9654a9a764) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve syntax highlighting for html mode comments.
+
+* [#94](https://github.com/marko-js/language-server/pull/94) [`bf304da`](https://github.com/marko-js/language-server/commit/bf304dadd5071a01322cef4fa2f5028119221504) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- [#94](https://github.com/marko-js/language-server/pull/94) [`41b6542`](https://github.com/marko-js/language-server/commit/41b6542834791b4fe4425acd25d5ac2c4b8a38b8) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve synyax highlighting for destructured tag variables.
+
 ## 0.17.20
 
 ### Patch Changes

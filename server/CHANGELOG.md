@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.12.6
+
+### Patch Changes
+
+- [#94](https://github.com/marko-js/language-server/pull/94) [`bf304da`](https://github.com/marko-js/language-server/commit/bf304dadd5071a01322cef4fa2f5028119221504) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
 ## 0.12.5
 
 ### Patch Changes
