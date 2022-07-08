@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.12.4
+
+### Patch Changes
+
+- [#86](https://github.com/marko-js/language-server/pull/86) [`7c35ae3`](https://github.com/marko-js/language-server/commit/7c35ae3b3aeb6e614355db1d1e0b07435768893d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor to better support embedded services (improved css completions).
+
+* [#86](https://github.com/marko-js/language-server/pull/86) [`7c35ae3`](https://github.com/marko-js/language-server/commit/7c35ae3b3aeb6e614355db1d1e0b07435768893d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Switch to upgraded parser / cst.
+
 ## 0.12.3
 
 ### Patch Changes
