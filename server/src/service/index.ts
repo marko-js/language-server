@@ -69,6 +69,17 @@ const service: Plugin = {
 
     return result;
   },
+  async doHover(doc, params, cancel) {
+    try {
+      for (const plugin of plugins) {
+        const result = await plugin.doHover?.(doc, params, cancel);
+        if (cancel.isCancellationRequested) return;
+        if (result) return result;
+      }
+    } catch (err) {
+      displayError(err);
+    }
+  },
   async doValidate(doc) {
     const result: Diagnostic[] = [];
     try {
