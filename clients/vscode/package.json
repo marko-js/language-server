@@ -84,7 +84,7 @@
   },
   "scripts": {
     "build": "tsc -b && tsx build.mts",
-    "release": "export OUT=dist/marko.vsix; vsce package -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT",
+    "release": "export OUT=dist/marko.vsix; vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT",
     "test": "tsx test.mts"
   }
 }
