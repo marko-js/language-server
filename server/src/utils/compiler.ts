@@ -1,3 +1,4 @@
+import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
 import type { TextDocument } from "vscode-languageserver-textdocument";
@@ -15,13 +16,19 @@ import * as parser from "./parser";
 
 const lookupKey = Symbol("lookup");
 const compilerInfoByDir = new Map<string, CompilerInfo>();
+const builtinInfo: CompilerInfo = {
+  cache: new Map(),
+  lookup: builtinCompiler.taglib.buildLookup(__dirname, builtinTranslator),
+  compiler: builtinCompiler,
+  translator: builtinTranslator,
+};
 builtinCompiler.configure({ translator: builtinTranslator });
 
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
 export type CompilerInfo = {
   cache: Map<unknown, unknown>;
-  lookup: TaglibLookup | null;
+  lookup: TaglibLookup;
   compiler: Compiler;
   translator: builtinCompiler.Config["translator"];
 };
@@ -41,6 +48,8 @@ export function parse(doc: TextDocument) {
 
 export function getCompilerInfo(doc: TextDocument): CompilerInfo {
   const dir = getDocDir(doc);
+  if (!dir) return builtinInfo;
+
   let info = compilerInfoByDir.get(dir);
   if (!info) {
     info = loadCompilerInfo(dir);
@@ -60,11 +69,21 @@ export default function setup(
 
   documents.onDidChangeContent(({ document }) => {
     if (document.version > 1) {
-      if (document.uri.endsWith(".marko")) {
-        getCompilerInfo(document)?.cache.delete(document);
+      if (document.languageId === "marko") {
+        getCompilerInfo(document).cache.delete(document);
       } else if (/[./\\]marko(?:-tag)?\.json$/.test(document.uri)) {
         clearAllCaches();
       }
+    }
+  });
+
+  documents.onDidClose(({ document }) => {
+    if (
+      document.languageId === "marko" &&
+      URI.parse(document.uri).scheme !== "file"
+    ) {
+      // Delete untitled files from the cache when closed.
+      getCompilerInfo(document).cache.delete(document);
     }
   });
 }
@@ -113,13 +132,13 @@ function loadCompilerInfo(dir: string): CompilerInfo {
   return {
     cache,
     get lookup() {
-      let lookup: TaglibLookup | null = cache.get(lookupKey);
+      let lookup: TaglibLookup = cache.get(lookupKey);
       if (lookup === undefined) {
         // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
         try {
           lookup = compiler.taglib.buildLookup(dir, translator);
         } catch {
-          lookup = null;
+          lookup = builtinInfo.lookup;
         }
 
         cache.set(lookupKey, lookup);

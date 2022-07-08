@@ -2,6 +2,7 @@ src
 CHANGELOG.md
 .vscode-test
 **/*.ts
+**/*.mts
 **/*.map
 **/*.d.ts
 **/*.vsix
