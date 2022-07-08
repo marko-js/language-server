@@ -157,6 +157,7 @@
             { "include": "#cdata" },
             { "include": "#doctype" },
             { "include": "#declaration" },
+            { "include": "#javascript-comments" },
             { "include": "#html-comment" },
             { "include": "#tag-html" },
             {
@@ -504,6 +505,7 @@
         { "include": "#cdata" },
         { "include": "#doctype" },
         { "include": "#declaration" },
+        { "include": "#javascript-comments" },
         { "include": "#html-comment" },
         { "include": "#invalid-close-tag" },
         { "include": "#tag-html" },
@@ -631,6 +633,7 @@
     "javascript-expression": {
       "comment": "Matches JavaScript source code, but always continues for certain types of expressions.",
       "patterns": [
+        { "include": "#javascript-comments" },
         {
           "comment": "We must match the some expressions ourselves since otherwise the js grammar can overstep.",
           "match": "(?:\\s*\\b(?:as|await|extends|in|instanceof|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
