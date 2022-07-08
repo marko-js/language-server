@@ -70,7 +70,7 @@
   },
   "displayName": "Marko VSCode",
   "engines": {
-    "vscode": "^1.66.0"
+    "vscode": "^1.68.0"
   },
   "homepage": "https://github.com/marko-js/language-server/tree/master/clients/vscode/README.md",
   "icon": "img/marko.png",
