@@ -392,7 +392,7 @@
             {
               "comment": "Concise Marko html-comment tag",
               "begin": "^(\\s*)(?=html-comment\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-comment-block" },
@@ -402,7 +402,7 @@
             {
               "comment": "Concise style tag less",
               "begin": "^(\\s*)(?=style\\b[^\\s]*\\.less\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-less" },
@@ -412,7 +412,7 @@
             {
               "comment": "Concise style tag scss",
               "begin": "^(\\s*)(?=style\\b[^\\s]*\\.scss\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-scss" },
@@ -422,7 +422,7 @@
             {
               "comment": "Concise style tag js/ts",
               "begin": "^(\\s*)(?=style\\b[^\\s]*\\.[tj]s\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-script-block" },
@@ -432,7 +432,7 @@
             {
               "comment": "Concise style tag",
               "begin": "^(\\s*)(?=style\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block" },
@@ -442,7 +442,7 @@
             {
               "comment": "Concise script tag",
               "begin": "^(\\s*)(?=script\\b)",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-script-block" },
@@ -452,7 +452,7 @@
             {
               "comment": "Normal concise tag",
               "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#])",
-              "while": "(?=^\\1\\s+(\\S|$))",
+              "while": "(?=^(?:[})\\]`]|*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#content-concise-mode" }
