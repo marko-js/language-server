@@ -16,6 +16,18 @@ describe("diagnostics", () => {
       `Missing value for attribute`
     );
   });
+
+  it("stylesheet missing property", async () => {
+    await snap.inline(
+      () =>
+        diagnostic(
+          `style {
+ body { color: }
+}`
+        ),
+      `property value expected`
+    );
+  });
 });
 
 async function diagnostic(src: string) {
