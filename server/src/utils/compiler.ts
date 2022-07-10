@@ -1,8 +1,6 @@
-import { URI } from "vscode-uri";
 import resolveFrom from "resolve-from";
 import lassoPackageRoot from "lasso-package-root";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import type { Connection, TextDocuments } from "vscode-languageserver";
 import type {
   AttributeDefinition,
   TagDefinition,
@@ -59,39 +57,14 @@ export function getCompilerInfo(doc: TextDocument): CompilerInfo {
   return info;
 }
 
-export default function setup(
-  connection: Connection,
-  documents: TextDocuments<TextDocument>
-) {
-  connection.onDidChangeWatchedFiles(() => {
-    clearAllCaches();
-  });
-
-  documents.onDidChangeContent(({ document }) => {
-    if (document.version > 1) {
-      if (document.languageId === "marko") {
-        getCompilerInfo(document).cache.delete(document);
-      } else if (/[./\\]marko(?:-tag)?\.json$/.test(document.uri)) {
-        clearAllCaches();
-      }
+export function clearCompilerCache(doc?: TextDocument) {
+  if (doc) {
+    getCompilerInfo(doc).cache.delete(doc);
+  } else {
+    for (const [, info] of compilerInfoByDir) {
+      info.cache.clear();
+      info.compiler.taglib.clearCaches();
     }
-  });
-
-  documents.onDidClose(({ document }) => {
-    if (
-      document.languageId === "marko" &&
-      URI.parse(document.uri).scheme !== "file"
-    ) {
-      // Delete untitled files from the cache when closed.
-      getCompilerInfo(document).cache.delete(document);
-    }
-  });
-}
-
-function clearAllCaches() {
-  for (const [, info] of compilerInfoByDir) {
-    info.cache.clear();
-    info.compiler.taglib.clearCaches();
   }
 }
 

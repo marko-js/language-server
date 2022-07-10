@@ -8,7 +8,7 @@ import {
 } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { inspect, isDeepStrictEqual } from "util";
-import setupCompiler from "./utils/compiler";
+import { clearCompilerCache } from "./utils/compiler";
 import setupMessages from "./utils/messages";
 import service from "./service";
 
@@ -22,11 +22,9 @@ if (
 }
 const documents = new TextDocuments(TextDocument);
 const connection = createConnection(ProposedFeatures.all);
-const prevDiagnostics = new WeakMap<TextDocument, Diagnostic[]>();
-const diagnosticTimeouts = new WeakMap<
-  TextDocument,
-  ReturnType<typeof setTimeout>
->();
+const prevDiags = new WeakMap<TextDocument, Diagnostic[]>();
+const pendingDiags = new WeakSet<TextDocument>();
+let diagnosticTimeout: ReturnType<typeof setTimeout> | undefined;
 
 console.log = (...args: unknown[]) => {
   connection.console.log(args.map((v) => inspect(v)).join(" "));
@@ -39,7 +37,6 @@ process.on("unhandledRejection", console.error);
 
 connection.onInitialize(() => {
   setupMessages(connection);
-  setupCompiler(connection, documents);
 
   return {
     capabilities: {
@@ -74,12 +71,12 @@ connection.onInitialize(() => {
   };
 });
 
-connection.onInitialized(() => {
-  documents.all().forEach((doc) => queueValidation(doc));
-});
-
-documents.onDidChangeContent((change) => {
-  queueValidation(change.document);
+connection.onDidChangeConfiguration(validateDocs);
+connection.onDidChangeWatchedFiles(validateDocs);
+documents.onDidChangeContent(({ document }) => {
+  queueDiagnostic();
+  pendingDiags.add(document);
+  clearCompilerCache(document);
 });
 
 connection.onCompletion(async (params, cancel) => {
@@ -122,27 +119,41 @@ connection.onDocumentFormatting(async (params, cancel) => {
   );
 });
 
-function queueValidation(doc: TextDocument) {
-  clearTimeout(diagnosticTimeouts.get(doc)!);
-  const id = setTimeout(async () => {
-    const prevDiag = prevDiagnostics.get(doc);
-    const nextDiag = (await service.doValidate(doc)) || [];
+function validateDocs() {
+  queueDiagnostic();
+  clearCompilerCache();
+  for (const doc of documents.all()) {
+    pendingDiags.add(doc);
+  }
+}
 
-    if (
-      diagnosticTimeouts.get(doc) !== id ||
-      (prevDiag && isDeepStrictEqual(prevDiag, nextDiag))
-    ) {
-      return;
+function queueDiagnostic() {
+  clearTimeout(diagnosticTimeout);
+  const id = (diagnosticTimeout = setTimeout(async () => {
+    const results = await Promise.all(
+      documents.all().map(async (doc) => {
+        if (!pendingDiags.delete(doc)) return;
+        const prevDiag = prevDiags.get(doc) || [];
+        const nextDiag = (await service.doValidate(doc)) || [];
+        if (isDeepStrictEqual(prevDiag, nextDiag)) return;
+        return [doc, nextDiag] as const;
+      })
+    );
+
+    // Check that it wasn't canceled.
+    if (id === diagnosticTimeout) {
+      for (const result of results) {
+        if (result) {
+          const [doc, diag] = result;
+          prevDiags.set(doc, diag);
+          connection.sendDiagnostics({
+            uri: doc.uri,
+            diagnostics: diag,
+          });
+        }
+      }
     }
-
-    prevDiagnostics.set(doc, nextDiag);
-    connection.sendDiagnostics({
-      uri: doc.uri,
-      diagnostics: nextDiag,
-    });
-  }, 400);
-
-  diagnosticTimeouts.set(doc, id);
+  }, 400));
 }
 
 documents.listen(connection);
