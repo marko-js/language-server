@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.23
+
+### Patch Changes
+
+- [#98](https://github.com/marko-js/language-server/pull/98) [`26589ef`](https://github.com/marko-js/language-server/commit/26589ef00a625b0164722c8f0062f394cd00e74e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with diagnostic cache not invalidating.
+
 ## 0.17.22
 
 ### Patch Changes
