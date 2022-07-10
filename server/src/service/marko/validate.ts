@@ -14,9 +14,10 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
   try {
     compiler.compileSync(doc.getText(), fsPath || "untitled.marko", {
       cache,
-      output: "source",
-      code: false,
       translator,
+      code: false,
+      output: "source",
+      sourceMaps: false,
     });
   } catch (e) {
     let match: RegExpExecArray | null;
