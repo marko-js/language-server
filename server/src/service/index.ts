@@ -4,6 +4,7 @@ import {
   DefinitionLink,
   Diagnostic,
   Location,
+  WorkspaceEdit,
 } from "vscode-languageserver";
 import { displayError } from "../utils/messages";
 import type { Plugin } from "./types";
@@ -78,6 +79,63 @@ const service: Plugin = {
       }
     } catch (err) {
       displayError(err);
+    }
+  },
+  async doRename(doc, params, cancel) {
+    let changes: WorkspaceEdit["changes"];
+    let changeAnnotations: WorkspaceEdit["changeAnnotations"];
+    let documentChanges: WorkspaceEdit["documentChanges"];
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.doRename?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) break;
+
+        if (cur) {
+          if (cur.changes) {
+            if (changes) {
+              for (const uri in cur.changes) {
+                if (changes[uri]) {
+                  changes[uri].push(...cur.changes[uri]);
+                } else {
+                  changes[uri] = cur.changes[uri];
+                }
+              }
+            } else {
+              changes = cur.changes;
+            }
+          }
+
+          if (cur.changeAnnotations) {
+            if (changeAnnotations) {
+              Object.assign(changeAnnotations, cur.changeAnnotations);
+            } else {
+              changeAnnotations = cur.changeAnnotations;
+            }
+          }
+
+          if (cur.documentChanges) {
+            if (documentChanges) {
+              documentChanges.push(...cur.documentChanges);
+            } else {
+              documentChanges = cur.documentChanges;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    if (changes || changeAnnotations || documentChanges) {
+      return {
+        changes,
+        changeAnnotations,
+        documentChanges,
+      };
     }
   },
   async doValidate(doc) {
