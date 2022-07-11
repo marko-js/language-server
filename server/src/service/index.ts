@@ -28,7 +28,7 @@ const service: Plugin = {
       );
       for (const pending of requests) {
         const cur = await pending;
-        if (cancel.isCancellationRequested) break;
+        if (cancel.isCancellationRequested) return;
         if (cur) {
           let items!: CompletionItem[];
           if (Array.isArray(cur)) {
@@ -57,7 +57,7 @@ const service: Plugin = {
       );
       for (const pending of requests) {
         const cur = await pending;
-        if (cancel.isCancellationRequested) break;
+        if (cancel.isCancellationRequested) return;
         if (cur) {
           if (Array.isArray(cur)) {
             result.push(...cur);
@@ -94,7 +94,7 @@ const service: Plugin = {
       );
       for (const pending of requests) {
         const cur = await pending;
-        if (cancel.isCancellationRequested) break;
+        if (cancel.isCancellationRequested) return;
 
         if (cur) {
           if (cur.changes) {
@@ -149,7 +149,7 @@ const service: Plugin = {
       );
       for (const pending of requests) {
         const cur = await pending;
-        if (cancel.isCancellationRequested) break;
+        if (cancel.isCancellationRequested) return;
         if (cur) {
           result.push(...cur);
         }
