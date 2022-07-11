@@ -2,12 +2,16 @@ import type {
   CancellationToken,
   CodeAction,
   CodeActionParams,
+  ColorInformation,
+  ColorPresentation,
+  ColorPresentationParams,
   Command,
   CompletionItem,
   CompletionList,
   CompletionParams,
   DefinitionParams,
   Diagnostic,
+  DocumentColorParams,
   DocumentFormattingParams,
   Hover,
   HoverParams,
@@ -36,5 +40,7 @@ export type Plugin = {
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]
   >;
+  findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
+  getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;
   format: Handler<DocumentFormattingParams, TextEdit[]>;
 };

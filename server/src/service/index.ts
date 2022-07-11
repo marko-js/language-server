@@ -1,5 +1,7 @@
 import {
   CodeAction,
+  ColorInformation,
+  ColorPresentation,
   Command,
   CompletionItem,
   CompletionList,
@@ -63,6 +65,54 @@ const service: Plugin = {
             result.push(...cur);
           } else {
             result.push(cur);
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
+  async findDocumentColors(doc, params, cancel) {
+    let result: ColorInformation[] | undefined;
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.findDocumentColors?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.push(...cur);
+          } else {
+            result = cur;
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
+  async getColorPresentations(doc, params, cancel) {
+    let result: ColorPresentation[] | undefined;
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.getColorPresentations?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.push(...cur);
+          } else {
+            result = cur;
           }
         }
       }
