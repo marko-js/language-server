@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.12.9
+
+### Patch Changes
+
+- [#106](https://github.com/marko-js/language-server/pull/106) [`0070dc0`](https://github.com/marko-js/language-server/commit/0070dc010f3d8bdfba1643c8bd8df32023aed392) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implements document highlight provider (currently for stylesheets).
+
+* [#108](https://github.com/marko-js/language-server/pull/108) [`2f9195b`](https://github.com/marko-js/language-server/commit/2f9195b06531613fefc74d0436d557107764cec1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implements references provider (currently for stylesheets).
+
 ## 0.12.8
 
 ### Patch Changes
