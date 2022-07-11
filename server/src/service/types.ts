@@ -19,6 +19,7 @@ import type {
   HoverParams,
   Location,
   LocationLink,
+  ReferenceParams,
   RenameParams,
   TextEdit,
   WorkspaceEdit,
@@ -42,6 +43,7 @@ export type Plugin = {
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]
   >;
+  findReferences: Handler<ReferenceParams, Location[]>;
   findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
   getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;

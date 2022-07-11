@@ -75,6 +75,30 @@ const service: Plugin = {
 
     return result;
   },
+  async findReferences(doc, params, cancel) {
+    let result: Location[] | undefined;
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.findReferences?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.push(...cur);
+          } else {
+            result = cur;
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
   async findDocumentHighlights(doc, params, cancel) {
     let result: DocumentHighlight[] | undefined;
 

@@ -6,6 +6,7 @@ import {
   InsertReplaceEdit,
   Range,
   TextDocumentEdit,
+  Location,
   TextEdit,
 } from "vscode-languageserver";
 import {
@@ -103,6 +104,32 @@ const StyleSheetService: Partial<Plugin> = {
       }
 
       break;
+    }
+  },
+  async findReferences(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffset = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result: Location[] = [];
+
+      for (const location of service.findReferences(
+        virtualDoc,
+        virtualDoc.positionAt(generatedOffset),
+        info.parsed
+      )) {
+        if (updateRange(doc, info, location.range)) {
+          result.push(location);
+        }
+      }
+
+      return result.length ? result : undefined;
     }
   },
   async findDocumentHighlights(doc, params) {
