@@ -33,7 +33,19 @@ export function extractStyleSheets(
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
       case NodeType.Tag:
-        if (node.body?.length) {
+        if (node.nameText === "style" && node.concise && node.attrs) {
+          const block = node.attrs.at(-1)!;
+          // Adds style blocks to the style sheet.
+          if (block.type === NodeType.AttrNamed && code[block.start] === "{") {
+            getExtractor(getFileExtFromTag(node)).write`${{
+              start: block.start + 1,
+              end: block.end - 1,
+            }}`;
+            break;
+          }
+        }
+
+        if (node.body) {
           if (node.nameText === "style") {
             const ext = getFileExtFromTag(node);
             for (const child of node.body) {
@@ -49,49 +61,41 @@ export function extractStyleSheets(
               }
             }
           } else {
-            if (node.attrs) {
-              for (const attr of node.attrs) {
-                if (
-                  // Check for string literal attribute values.
-                  attr.type === NodeType.AttrNamed &&
-                  attr.value?.type === NodeType.AttrValue &&
-                  /^['"]$/.test(code[attr.value.value.start])
-                ) {
-                  const name = read(attr.name);
-
-                  // TODO: support #style directive with custom extension, eg `#style.less=""`.
-                  // /^#style(?:\..*)/.test(name)
-
-                  // Adds inline style and #style attributes to the stylesheet.
-                  if (
-                    name === "#style" ||
-                    (name === "style" &&
-                      lookup &&
-                      node.nameText &&
-                      name === "style" &&
-                      lookup.getTag(node.nameText)?.html)
-                  ) {
-                    // Add inline "style" attribute.
-                    getExtractor("css").write`:root{${{
-                      start: attr.value.value.start + 1,
-                      end: attr.value.value.end - 1,
-                    }}}`;
-                  }
-                }
-              }
-            }
             for (const child of node.body) {
               visit(child);
             }
           }
-        } else if (node.nameText === "style" && node.concise && node.attrs) {
-          const block = node.attrs.at(-1)!;
-          // Adds style blocks to the style sheet.
-          if (block.type === NodeType.AttrNamed && code[block.start] === "{") {
-            getExtractor(getFileExtFromTag(node)).write`${{
-              start: block.start + 1,
-              end: block.end - 1,
-            }}`;
+        }
+
+        if (node.attrs) {
+          for (const attr of node.attrs) {
+            if (
+              // Check for string literal attribute values.
+              attr.type === NodeType.AttrNamed &&
+              attr.value?.type === NodeType.AttrValue &&
+              /^['"]$/.test(code[attr.value.value.start])
+            ) {
+              const name = read(attr.name);
+
+              // TODO: support #style directive with custom extension, eg `#style.less=""`.
+              // /^#style(?:\..*)/.test(name)
+
+              // Adds inline style and #style attributes to the stylesheet.
+              if (
+                name === "#style" ||
+                (name === "style" &&
+                  lookup &&
+                  node.nameText &&
+                  name === "style" &&
+                  lookup.getTag(node.nameText)?.html)
+              ) {
+                // Add inline "style" attribute.
+                getExtractor("css").write`:root{${{
+                  start: attr.value.value.start + 1,
+                  end: attr.value.value.end - 1,
+                }}}`;
+              }
+            }
           }
         }
         break;

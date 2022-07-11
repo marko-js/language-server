@@ -70,7 +70,7 @@ export function createExtractor(code: string) {
           const generatedStart = generatedMap[key];
           const sourceStart = generatedMap[key + 1];
           const sourceEnd = generatedMap[key + 2];
-          return sourceEnd - sourceStart <= generatedOffset - generatedStart
+          return sourceEnd - sourceStart < generatedOffset - generatedStart
             ? undefined
             : sourceStart + (generatedOffset - generatedStart);
         },
