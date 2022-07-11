@@ -46,6 +46,7 @@ connection.onInitialize(() => {
       hoverProvider: true,
       renameProvider: true,
       codeActionProvider: true,
+      referencesProvider: true,
       colorProvider: true,
       documentHighlightProvider: true,
       completionProvider: {
@@ -100,6 +101,16 @@ connection.onDefinition(async (params, cancel) => {
       params,
       cancel
     )) as DefinitionLink[]) || null
+  );
+});
+
+connection.onReferences(async (params, cancel) => {
+  return (
+    (await service.findReferences(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
   );
 });
 
