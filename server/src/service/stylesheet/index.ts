@@ -3,6 +3,7 @@ import {
   Diagnostic,
   InsertReplaceEdit,
   Range,
+  TextDocumentEdit,
   TextEdit,
 } from "vscode-languageserver";
 import {
@@ -36,7 +37,7 @@ const services: Record<string, () => LanguageService> = {
   scss: getSCSSLanguageService,
 };
 
-export default {
+const StyleSheetService: Partial<Plugin> = {
   async doComplete(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
@@ -56,30 +57,19 @@ export default {
 
       for (const item of result.items) {
         if (item.additionalTextEdits) {
-          for (const edit of item.additionalTextEdits) {
-            if (!updateRange(doc, info, edit.range)) {
-              edit.newText = "";
-              edit.range = START_OF_FILE;
-            }
+          for (const textEdit of item.additionalTextEdits) {
+            updateTextEdit(doc, info, textEdit);
           }
         }
 
         const { textEdit } = item;
         if (textEdit) {
           if ((textEdit as TextEdit).range) {
-            if (!updateRange(doc, info, (textEdit as TextEdit).range)) {
-              textEdit.newText = "";
-              (textEdit as TextEdit).range = START_OF_FILE;
-            }
+            updateTextEdit(doc, info, textEdit as TextEdit);
           }
 
           if ((textEdit as InsertReplaceEdit).insert) {
-            if (
-              !updateRange(doc, info, (textEdit as InsertReplaceEdit).insert)
-            ) {
-              textEdit.newText = "";
-              (textEdit as InsertReplaceEdit).insert = START_OF_FILE;
-            }
+            updateInsertReplaceEdit(doc, info, textEdit as InsertReplaceEdit);
           }
         }
       }
@@ -127,12 +117,55 @@ export default {
       const result = service.doHover(
         virtualDoc,
         virtualDoc.positionAt(generatedOffset),
-        service.parseStylesheet(virtualDoc)
+        info.parsed
       );
 
       if (result && (!result.range || updateRange(doc, info, result.range))) {
         return result;
       }
+    }
+  },
+  async doRename(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffset = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result = service.doRename(
+        virtualDoc,
+        virtualDoc.positionAt(generatedOffset),
+        params.newName,
+        info.parsed
+      );
+
+      if (result.changes) {
+        for (const uri in result.changes) {
+          if (uri === doc.uri) {
+            for (const textEdit of result.changes[uri]) {
+              updateTextEdit(doc, info, textEdit);
+            }
+          }
+        }
+      }
+
+      if (result.documentChanges) {
+        for (const change of result.documentChanges) {
+          if (TextDocumentEdit.is(change)) {
+            if (change.textDocument.uri === doc.uri) {
+              for (const textEdit of change.edits) {
+                updateTextEdit(doc, info, textEdit);
+              }
+            }
+          }
+        }
+      }
+
+      return result;
     }
   },
   async doValidate(doc) {
@@ -154,7 +187,31 @@ export default {
 
     return result;
   },
-} as Partial<Plugin>;
+};
+
+export { StyleSheetService as default };
+
+function updateTextEdit(
+  doc: TextDocument,
+  info: StyleSheetInfo,
+  textEdit: TextEdit
+) {
+  if (!updateRange(doc, info, textEdit.range)) {
+    textEdit.newText = "";
+    textEdit.range = START_OF_FILE;
+  }
+}
+
+function updateInsertReplaceEdit(
+  doc: TextDocument,
+  info: StyleSheetInfo,
+  insertReplaceEdit: InsertReplaceEdit
+) {
+  if (!updateRange(doc, info, insertReplaceEdit.insert)) {
+    insertReplaceEdit.newText = "";
+    insertReplaceEdit.insert = START_OF_FILE;
+  }
+}
 
 function updateRange(doc: TextDocument, info: StyleSheetInfo, range: Range) {
   const start = info.sourceOffsetAt(info.virtualDoc.offsetAt(range.start));

@@ -10,7 +10,9 @@ import type {
   HoverParams,
   Location,
   LocationLink,
+  RenameParams,
   TextEdit,
+  WorkspaceEdit,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -25,6 +27,7 @@ export type Plugin = {
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;
+  doRename: Handler<RenameParams, WorkspaceEdit>;
   findDefinition: Handler<
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]
