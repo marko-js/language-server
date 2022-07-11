@@ -47,6 +47,7 @@ connection.onInitialize(() => {
       renameProvider: true,
       codeActionProvider: true,
       colorProvider: true,
+      documentHighlightProvider: true,
       completionProvider: {
         triggerCharacters: [
           ".",
@@ -99,6 +100,16 @@ connection.onDefinition(async (params, cancel) => {
       params,
       cancel
     )) as DefinitionLink[]) || null
+  );
+});
+
+connection.onDocumentHighlight(async (params, cancel) => {
+  return (
+    (await service.findDocumentHighlights(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
   );
 });
 

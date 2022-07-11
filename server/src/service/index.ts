@@ -7,6 +7,7 @@ import {
   CompletionList,
   DefinitionLink,
   Diagnostic,
+  DocumentHighlight,
   Location,
   WorkspaceEdit,
 } from "vscode-languageserver";
@@ -65,6 +66,30 @@ const service: Plugin = {
             result.push(...cur);
           } else {
             result.push(cur);
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
+  async findDocumentHighlights(doc, params, cancel) {
+    let result: DocumentHighlight[] | undefined;
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.findDocumentHighlights?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.push(...cur);
+          } else {
+            result = cur;
           }
         }
       }

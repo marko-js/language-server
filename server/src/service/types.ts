@@ -13,6 +13,8 @@ import type {
   Diagnostic,
   DocumentColorParams,
   DocumentFormattingParams,
+  DocumentHighlight,
+  DocumentHighlightParams,
   Hover,
   HoverParams,
   Location,
@@ -40,6 +42,7 @@ export type Plugin = {
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]
   >;
+  findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
   getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;
   format: Handler<DocumentFormattingParams, TextEdit[]>;
