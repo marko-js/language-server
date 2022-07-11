@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.17.24
+
+### Patch Changes
+
+- [#105](https://github.com/marko-js/language-server/pull/105) [`09b6a55`](https://github.com/marko-js/language-server/commit/09b6a55e1353317013c68ccc4ba1c0c31fcd4261) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with css extraction
+
+* [#104](https://github.com/marko-js/language-server/pull/104) [`40865d0`](https://github.com/marko-js/language-server/commit/40865d01b7904ffcf874b20f3d663aaef84e3972) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implement document color provider (currently just for stylsheets).
+
+- [#100](https://github.com/marko-js/language-server/pull/100) [`6a23259`](https://github.com/marko-js/language-server/commit/6a232590c60dfccf5be69d92556de55b5746e280) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implement rename provider (currently just for stylsheets).
+
+* [#102](https://github.com/marko-js/language-server/pull/102) [`928d9dc`](https://github.com/marko-js/language-server/commit/928d9dcbecb6c109d5cfde2f70a8ab7808993d2e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implement code action provider (currently just for stylsheets).
+
 ## 0.17.23
 
 ### Patch Changes
