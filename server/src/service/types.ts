@@ -1,5 +1,8 @@
 import type {
   CancellationToken,
+  CodeAction,
+  CodeActionParams,
+  Command,
   CompletionItem,
   CompletionList,
   CompletionParams,
@@ -28,6 +31,7 @@ export type Plugin = {
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;
   doRename: Handler<RenameParams, WorkspaceEdit>;
+  doCodeActions: Handler<CodeActionParams, (Command | CodeAction)[]>;
   findDefinition: Handler<
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]

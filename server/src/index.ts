@@ -45,6 +45,7 @@ connection.onInitialize(() => {
       definitionProvider: true,
       hoverProvider: true,
       renameProvider: true,
+      codeActionProvider: true,
       completionProvider: {
         triggerCharacters: [
           ".",
@@ -113,6 +114,16 @@ connection.onHover(async (params, cancel) => {
 connection.onRenameRequest(async (params, cancel) => {
   return (
     (await service.doRename(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
+  );
+});
+
+connection.onCodeAction(async (params, cancel) => {
+  return (
+    (await service.doCodeActions(
       documents.get(params.textDocument.uri)!,
       params,
       cancel
