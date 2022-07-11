@@ -2,6 +2,7 @@ import {
   ColorInformation,
   CompletionList,
   Diagnostic,
+  DocumentHighlight,
   InsertReplaceEdit,
   Range,
   TextDocumentEdit,
@@ -102,6 +103,32 @@ const StyleSheetService: Partial<Plugin> = {
       }
 
       break;
+    }
+  },
+  async findDocumentHighlights(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffset = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result: DocumentHighlight[] = [];
+
+      for (const highlight of service.findDocumentHighlights(
+        virtualDoc,
+        virtualDoc.positionAt(generatedOffset),
+        info.parsed
+      )) {
+        if (updateRange(doc, info, highlight.range)) {
+          result.push(highlight);
+        }
+      }
+
+      return result.length ? result : undefined;
     }
   },
   async findDocumentColors(doc) {
