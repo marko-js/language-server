@@ -46,6 +46,7 @@ connection.onInitialize(() => {
       hoverProvider: true,
       renameProvider: true,
       codeActionProvider: true,
+      colorProvider: true,
       completionProvider: {
         triggerCharacters: [
           ".",
@@ -98,6 +99,26 @@ connection.onDefinition(async (params, cancel) => {
       params,
       cancel
     )) as DefinitionLink[]) || null
+  );
+});
+
+connection.onDocumentColor(async (params, cancel) => {
+  return (
+    (await service.findDocumentColors(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
+  );
+});
+
+connection.onColorPresentation(async (params, cancel) => {
+  return (
+    (await service.getColorPresentations(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
   );
 });
 

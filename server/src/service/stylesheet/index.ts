@@ -1,4 +1,5 @@
 import {
+  ColorInformation,
   CompletionList,
   Diagnostic,
   InsertReplaceEdit,
@@ -101,6 +102,69 @@ const StyleSheetService: Partial<Plugin> = {
       }
 
       break;
+    }
+  },
+  async findDocumentColors(doc) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const result: ColorInformation[] = [];
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      const { service, virtualDoc } = info;
+
+      for (const colorInfo of service.findDocumentColors(
+        virtualDoc,
+        info.parsed
+      )) {
+        if (updateRange(doc, info, colorInfo.range)) {
+          result.push(colorInfo);
+        }
+      }
+    }
+
+    if (result.length) {
+      return result;
+    }
+  },
+  async getColorPresentations(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.range.start);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffsetStart = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffsetStart === undefined) continue;
+
+      const generatedOffsetEnd = info.generatedOffsetAt(
+        doc.offsetAt(params.range.end)
+      );
+      if (generatedOffsetEnd === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result = service.getColorPresentations(
+        virtualDoc,
+        info.parsed,
+        params.color,
+        Range.create(
+          virtualDoc.positionAt(generatedOffsetStart),
+          virtualDoc.positionAt(generatedOffsetEnd)
+        )
+      );
+
+      for (const colorPresentation of result) {
+        if (colorPresentation.textEdit) {
+          updateTextEdit(doc, info, colorPresentation.textEdit);
+        }
+
+        if (colorPresentation.additionalTextEdits) {
+          for (const textEdit of colorPresentation.additionalTextEdits) {
+            updateTextEdit(doc, info, textEdit);
+          }
+        }
+      }
+
+      return result;
     }
   },
   async doHover(doc, params) {
