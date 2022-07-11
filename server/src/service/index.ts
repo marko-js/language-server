@@ -1,4 +1,6 @@
 import {
+  CodeAction,
+  Command,
   CompletionItem,
   CompletionList,
   DefinitionLink,
@@ -137,6 +139,26 @@ const service: Plugin = {
         documentChanges,
       };
     }
+  },
+  async doCodeActions(doc, params, cancel) {
+    const result: (Command | CodeAction)[] = [];
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.doCodeActions?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) break;
+        if (cur) {
+          result.push(...cur);
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
   },
   async doValidate(doc) {
     const result: Diagnostic[] = [];

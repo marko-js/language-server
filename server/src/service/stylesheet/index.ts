@@ -168,6 +168,45 @@ const StyleSheetService: Partial<Plugin> = {
       return result;
     }
   },
+  async doCodeActions(doc, params) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const sourceOffset = doc.offsetAt(params.range.start);
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      // Find the first stylesheet data that contains the offset.
+      const generatedOffsetStart = info.generatedOffsetAt(sourceOffset);
+      if (generatedOffsetStart === undefined) continue;
+
+      const generatedOffsetEnd = info.generatedOffsetAt(
+        doc.offsetAt(params.range.end)
+      );
+      if (generatedOffsetEnd === undefined) continue;
+
+      const { service, virtualDoc } = info;
+      const result = service.doCodeActions(
+        virtualDoc,
+        Range.create(
+          virtualDoc.positionAt(generatedOffsetStart),
+          virtualDoc.positionAt(generatedOffsetEnd)
+        ),
+        params.context,
+        info.parsed
+      );
+
+      if (result) {
+        for (const command of result) {
+          const edits = command.arguments?.[2] as TextEdit[]; // we know the css language service returns text edits here.
+          if (edits) {
+            for (const textEdit of edits) {
+              updateTextEdit(doc, info, textEdit);
+            }
+          }
+        }
+        return result;
+      }
+    }
+  },
   async doValidate(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: Diagnostic[] = [];
