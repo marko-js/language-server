@@ -8,7 +8,7 @@ import { Node, Range, NodeType } from "../../utils/parser";
 export function extractStyleSheets(
   code: string,
   program: Node.Program,
-  lookup: TaglibLookup | null | undefined
+  lookup: TaglibLookup
 ) {
   let placeholderId = 0;
   const extractorsByExt: Record<
@@ -84,7 +84,6 @@ export function extractStyleSheets(
               if (
                 name === "#style" ||
                 (name === "style" &&
-                  lookup &&
                   node.nameText &&
                   name === "style" &&
                   lookup.getTag(node.nameText)?.html)
