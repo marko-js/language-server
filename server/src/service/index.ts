@@ -8,6 +8,7 @@ import {
   DefinitionLink,
   Diagnostic,
   DocumentHighlight,
+  DocumentLink,
   Location,
   WorkspaceEdit,
 } from "vscode-languageserver";
@@ -81,6 +82,30 @@ const service: Plugin = {
     try {
       const requests = plugins.map((plugin) =>
         plugin.findReferences?.(doc, params, cancel)
+      );
+      for (const pending of requests) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.push(...cur);
+          } else {
+            result = cur;
+          }
+        }
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
+  async findDocumentLinks(doc, params, cancel) {
+    let result: DocumentLink[] | undefined;
+
+    try {
+      const requests = plugins.map((plugin) =>
+        plugin.findDocumentLinks?.(doc, params, cancel)
       );
       for (const pending of requests) {
         const cur = await pending;

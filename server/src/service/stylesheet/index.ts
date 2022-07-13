@@ -8,6 +8,7 @@ import {
   TextDocumentEdit,
   Location,
   TextEdit,
+  DocumentLink,
 } from "vscode-languageserver";
 import {
   getCSSLanguageService,
@@ -20,6 +21,7 @@ import { getCompilerInfo, parse } from "../../utils/compiler";
 import { START_OF_FILE } from "../../utils/utils";
 import type { Plugin } from "../types";
 import { extractStyleSheets } from "./extract";
+import { displayInformation } from "../../utils/messages";
 
 interface StyleSheetInfo {
   virtualDoc: TextDocument;
@@ -130,6 +132,35 @@ const StyleSheetService: Partial<Plugin> = {
       }
 
       return result.length ? result : undefined;
+    }
+  },
+  async findDocumentLinks(doc) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const result: DocumentLink[] = [];
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      const { service, virtualDoc } = info;
+
+      for (const link of service.findDocumentLinks(virtualDoc, info.parsed, {
+        resolveReference(ref, baseUrl) {
+          const resolved = new URL(ref, new URL(baseUrl, "resolve://"));
+          if (resolved.protocol === "resolve:") {
+            // `baseUrl` is a relative URL.
+            return resolved.pathname + resolved.search + resolved.hash;
+          }
+          return resolved.toString();
+        },
+      })) {
+        if (link.target && updateRange(doc, info, link.range)) {
+          result.push(link);
+        }
+      }
+    }
+
+    if (result.length) {
+      displayInformation(result.map((it) => it.target).join(","));
+      return result;
     }
   },
   async findDocumentHighlights(doc, params) {
