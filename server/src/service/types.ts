@@ -15,6 +15,8 @@ import type {
   DocumentFormattingParams,
   DocumentHighlight,
   DocumentHighlightParams,
+  DocumentLink,
+  DocumentLinkParams,
   Hover,
   HoverParams,
   Location,
@@ -44,6 +46,7 @@ export type Plugin = {
     Location | LocationLink | (Location | LocationLink)[]
   >;
   findReferences: Handler<ReferenceParams, Location[]>;
+  findDocumentLinks: Handler<DocumentLinkParams, DocumentLink[]>;
   findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
   getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;

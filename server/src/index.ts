@@ -47,6 +47,7 @@ connection.onInitialize(() => {
       renameProvider: true,
       codeActionProvider: true,
       referencesProvider: true,
+      documentLinkProvider: { resolveProvider: false },
       colorProvider: true,
       documentHighlightProvider: true,
       completionProvider: {
@@ -107,6 +108,16 @@ connection.onDefinition(async (params, cancel) => {
 connection.onReferences(async (params, cancel) => {
   return (
     (await service.findReferences(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
+  );
+});
+
+connection.onDocumentLinks(async (params, cancel) => {
+  return (
+    (await service.findDocumentLinks(
       documents.get(params.textDocument.uri)!,
       params,
       cancel
