@@ -19,6 +19,7 @@ import type {
   DocumentLinkParams,
   Hover,
   HoverParams,
+  InitializeParams,
   Location,
   LocationLink,
   ReferenceParams,
@@ -36,6 +37,7 @@ type Handler<P, R> = (
 ) => Result<R>;
 
 export type Plugin = {
+  initialize: (params: InitializeParams) => Promise<void> | void;
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;
