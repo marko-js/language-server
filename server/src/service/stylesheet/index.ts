@@ -9,19 +9,22 @@ import {
   Location,
   TextEdit,
   DocumentLink,
+  InitializeParams,
+  ColorPresentation,
 } from "vscode-languageserver";
 import {
   getCSSLanguageService,
   getLESSLanguageService,
   getSCSSLanguageService,
-  LanguageService,
+  type LanguageService,
+  type LanguageServiceOptions,
 } from "vscode-css-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompilerInfo, parse } from "../../utils/compiler";
-import { START_OF_FILE } from "../../utils/utils";
 import type { Plugin } from "../types";
 import { extractStyleSheets } from "./extract";
-import resolveUrl from "../../utils/resolve-url";
+import resolveReference from "../../utils/resolve-url";
+import fileSystemProvider from "../../utils/file-system";
 
 interface StyleSheetInfo {
   virtualDoc: TextDocument;
@@ -36,13 +39,20 @@ const cache = new WeakMap<
   Record<string, StyleSheetInfo>
 >();
 
-const services: Record<string, () => LanguageService> = {
+const services: Record<
+  string,
+  (options: LanguageServiceOptions) => LanguageService
+> = {
   css: getCSSLanguageService,
   less: getLESSLanguageService,
   scss: getSCSSLanguageService,
 };
+let clientCapabilities: InitializeParams["capabilities"] | undefined;
 
 const StyleSheetService: Partial<Plugin> = {
+  initialize(params) {
+    clientCapabilities = params.capabilities;
+  },
   async doComplete(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
@@ -54,28 +64,40 @@ const StyleSheetService: Partial<Plugin> = {
       if (generatedOffset === undefined) continue;
 
       const { service, virtualDoc } = info;
-      const result = service.doComplete(
+      const result = await service.doComplete2(
         virtualDoc,
         virtualDoc.positionAt(generatedOffset),
-        info.parsed
+        info.parsed,
+        { resolveReference }
       );
 
-      for (const item of result.items) {
-        if (item.additionalTextEdits) {
-          for (const textEdit of item.additionalTextEdits) {
-            updateTextEdit(doc, info, textEdit);
+      if (result.itemDefaults) {
+        const { editRange } = result.itemDefaults;
+        if (editRange) {
+          if ("start" in editRange) {
+            result.itemDefaults.editRange = getSourceRange(
+              doc,
+              info,
+              editRange
+            );
+          } else {
+            editRange.insert = getSourceRange(doc, info, editRange.insert)!;
+            editRange.replace = getSourceRange(doc, info, editRange.replace)!;
           }
         }
+      }
 
-        const { textEdit } = item;
-        if (textEdit) {
-          if ((textEdit as TextEdit).range) {
-            updateTextEdit(doc, info, textEdit as TextEdit);
-          }
+      for (const item of result.items) {
+        if (item.textEdit) {
+          item.textEdit = getSourceInsertReplaceEdit(doc, info, item.textEdit);
+        }
 
-          if ((textEdit as InsertReplaceEdit).insert) {
-            updateInsertReplaceEdit(doc, info, textEdit as InsertReplaceEdit);
-          }
+        if (item.additionalTextEdits) {
+          item.additionalTextEdits = getSourceEdits(
+            doc,
+            info,
+            item.additionalTextEdits
+          );
         }
       }
 
@@ -84,7 +106,7 @@ const StyleSheetService: Partial<Plugin> = {
 
     return CompletionList.create([], true);
   },
-  async findDefinition(doc, params) {
+  findDefinition(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
 
@@ -101,14 +123,20 @@ const StyleSheetService: Partial<Plugin> = {
         info.parsed
       );
 
-      if (result && updateRange(doc, info, result.range)) {
-        return result;
+      if (result) {
+        const range = getSourceRange(doc, info, result.range);
+        if (range) {
+          return {
+            range,
+            uri: doc.uri,
+          };
+        }
       }
 
       break;
     }
   },
-  async findReferences(doc, params) {
+  findReferences(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
 
@@ -126,15 +154,19 @@ const StyleSheetService: Partial<Plugin> = {
         virtualDoc.positionAt(generatedOffset),
         info.parsed
       )) {
-        if (updateRange(doc, info, location.range)) {
-          result.push(location);
+        const range = getSourceRange(doc, info, location.range);
+        if (range) {
+          result.push({
+            range,
+            uri: location.uri,
+          });
         }
       }
 
       return result.length ? result : undefined;
     }
   },
-  async findDocumentLinks(doc) {
+  findDocumentLinks(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: DocumentLink[] = [];
 
@@ -143,19 +175,23 @@ const StyleSheetService: Partial<Plugin> = {
       const { service, virtualDoc } = info;
 
       for (const link of service.findDocumentLinks(virtualDoc, info.parsed, {
-        resolveReference: resolveUrl,
+        resolveReference,
       })) {
-        if (link.target && updateRange(doc, info, link.range)) {
-          result.push(link);
+        const range = getSourceRange(doc, info, link.range);
+        if (range) {
+          result.push({
+            range,
+            target: link.target,
+            tooltip: link.tooltip,
+            data: link.data,
+          });
         }
       }
     }
 
-    if (result.length) {
-      return result;
-    }
+    return result.length ? result : undefined;
   },
-  async findDocumentHighlights(doc, params) {
+  findDocumentHighlights(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
 
@@ -173,15 +209,19 @@ const StyleSheetService: Partial<Plugin> = {
         virtualDoc.positionAt(generatedOffset),
         info.parsed
       )) {
-        if (updateRange(doc, info, highlight.range)) {
-          result.push(highlight);
+        const range = getSourceRange(doc, info, highlight.range);
+        if (range) {
+          result.push({
+            range,
+            kind: highlight.kind,
+          });
         }
       }
 
       return result.length ? result : undefined;
     }
   },
-  async findDocumentColors(doc) {
+  findDocumentColors(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: ColorInformation[] = [];
 
@@ -193,17 +233,19 @@ const StyleSheetService: Partial<Plugin> = {
         virtualDoc,
         info.parsed
       )) {
-        if (updateRange(doc, info, colorInfo.range)) {
-          result.push(colorInfo);
+        const range = getSourceRange(doc, info, colorInfo.range);
+        if (range) {
+          result.push({
+            range,
+            color: colorInfo.color,
+          });
         }
       }
     }
 
-    if (result.length) {
-      return result;
-    }
+    return result.length ? result : undefined;
   },
-  async getColorPresentations(doc, params) {
+  getColorPresentations(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.range.start);
 
@@ -219,7 +261,9 @@ const StyleSheetService: Partial<Plugin> = {
       if (generatedOffsetEnd === undefined) continue;
 
       const { service, virtualDoc } = info;
-      const result = service.getColorPresentations(
+      const result: ColorPresentation[] = [];
+
+      for (const colorPresentation of service.getColorPresentations(
         virtualDoc,
         info.parsed,
         params.color,
@@ -227,24 +271,27 @@ const StyleSheetService: Partial<Plugin> = {
           virtualDoc.positionAt(generatedOffsetStart),
           virtualDoc.positionAt(generatedOffsetEnd)
         )
-      );
+      )) {
+        const textEdit =
+          colorPresentation.textEdit &&
+          getSourceEdit(doc, info, colorPresentation.textEdit);
+        const additionalTextEdits =
+          colorPresentation.additionalTextEdits &&
+          getSourceEdits(doc, info, colorPresentation.additionalTextEdits);
 
-      for (const colorPresentation of result) {
-        if (colorPresentation.textEdit) {
-          updateTextEdit(doc, info, colorPresentation.textEdit);
-        }
-
-        if (colorPresentation.additionalTextEdits) {
-          for (const textEdit of colorPresentation.additionalTextEdits) {
-            updateTextEdit(doc, info, textEdit);
-          }
+        if (textEdit || additionalTextEdits) {
+          result.push({
+            label: colorPresentation.label,
+            textEdit,
+            additionalTextEdits,
+          });
         }
       }
 
-      return result;
+      return result.length ? result : undefined;
     }
   },
-  async doHover(doc, params) {
+  doHover(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.position);
 
@@ -261,8 +308,18 @@ const StyleSheetService: Partial<Plugin> = {
         info.parsed
       );
 
-      if (result && (!result.range || updateRange(doc, info, result.range))) {
-        return result;
+      if (result) {
+        if (result.range) {
+          const range = getSourceRange(doc, info, result.range);
+          if (range) {
+            return {
+              range,
+              contents: result.contents,
+            };
+          }
+        } else {
+          return result;
+        }
       }
     }
   },
@@ -287,9 +344,8 @@ const StyleSheetService: Partial<Plugin> = {
       if (result.changes) {
         for (const uri in result.changes) {
           if (uri === doc.uri) {
-            for (const textEdit of result.changes[uri]) {
-              updateTextEdit(doc, info, textEdit);
-            }
+            result.changes[uri] =
+              getSourceEdits(doc, info, result.changes[uri]) || [];
           }
         }
       }
@@ -298,9 +354,7 @@ const StyleSheetService: Partial<Plugin> = {
         for (const change of result.documentChanges) {
           if (TextDocumentEdit.is(change)) {
             if (change.textDocument.uri === doc.uri) {
-              for (const textEdit of change.edits) {
-                updateTextEdit(doc, info, textEdit);
-              }
+              change.edits = getSourceEdits(doc, info, change.edits) || [];
             }
           }
         }
@@ -309,7 +363,7 @@ const StyleSheetService: Partial<Plugin> = {
       return result;
     }
   },
-  async doCodeActions(doc, params) {
+  doCodeActions(doc, params) {
     const infoByExt = getStyleSheetInfo(doc);
     const sourceOffset = doc.offsetAt(params.range.start);
 
@@ -335,20 +389,17 @@ const StyleSheetService: Partial<Plugin> = {
         info.parsed
       );
 
-      if (result) {
-        for (const command of result) {
-          const edits = command.arguments?.[2] as TextEdit[]; // we know the css language service returns text edits here.
-          if (edits) {
-            for (const textEdit of edits) {
-              updateTextEdit(doc, info, textEdit);
-            }
-          }
+      for (const command of result) {
+        const edits = command.arguments?.[2];
+        if (edits && Array.isArray(edits) && isTextEdit(edits[0])) {
+          command.arguments![2] = getSourceEdits(doc, info, edits);
         }
-        return result;
       }
+
+      return result;
     }
   },
-  async doValidate(doc) {
+  doValidate(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: Diagnostic[] = [];
 
@@ -359,51 +410,100 @@ const StyleSheetService: Partial<Plugin> = {
         info.virtualDoc,
         info.parsed
       )) {
-        if (updateRange(doc, info, diag.range)) {
+        const range = getSourceRange(doc, info, diag.range);
+        if (range) {
+          diag.range = range;
           result.push(diag);
         }
       }
     }
 
-    return result;
+    return result.length ? result : undefined;
   },
 };
 
 export { StyleSheetService as default };
 
-function updateTextEdit(
+function getSourceEdits(
+  doc: TextDocument,
+  info: StyleSheetInfo,
+  edits: TextEdit[]
+): TextEdit[] | undefined {
+  const result: TextEdit[] = [];
+
+  for (const edit of edits) {
+    const sourceEdit = getSourceEdit(doc, info, edit);
+    if (sourceEdit) {
+      result.push(sourceEdit);
+    }
+  }
+
+  return result.length ? result : undefined;
+}
+
+function getSourceEdit(
   doc: TextDocument,
   info: StyleSheetInfo,
   textEdit: TextEdit
-) {
-  if (!updateRange(doc, info, textEdit.range)) {
-    textEdit.newText = "";
-    textEdit.range = START_OF_FILE;
+): TextEdit | undefined {
+  const range = getSourceRange(doc, info, textEdit.range);
+  if (range) {
+    return {
+      newText: textEdit.newText,
+      range,
+    };
   }
 }
 
-function updateInsertReplaceEdit(
+function getSourceInsertReplaceEdit(
   doc: TextDocument,
   info: StyleSheetInfo,
-  insertReplaceEdit: InsertReplaceEdit
-) {
-  if (!updateRange(doc, info, insertReplaceEdit.insert)) {
-    insertReplaceEdit.newText = "";
-    insertReplaceEdit.insert = START_OF_FILE;
+  textEdit: TextEdit | InsertReplaceEdit
+): TextEdit | InsertReplaceEdit | undefined {
+  if (isTextEdit(textEdit)) {
+    return getSourceEdit(doc, info, textEdit);
+  } else if (textEdit.replace) {
+    const range = getSourceRange(doc, info, textEdit.replace);
+    if (range) {
+      return {
+        newText: textEdit.newText,
+        replace: range,
+      } as InsertReplaceEdit;
+    }
+  } else {
+    const range = getSourceRange(doc, info, textEdit.insert);
+    if (range) {
+      return {
+        newText: textEdit.newText,
+        insert: range,
+      } as InsertReplaceEdit;
+    }
   }
 }
 
-function updateRange(doc: TextDocument, info: StyleSheetInfo, range: Range) {
+function getSourceRange(
+  doc: TextDocument,
+  info: StyleSheetInfo,
+  range: Range
+): Range | undefined {
   const start = info.sourceOffsetAt(info.virtualDoc.offsetAt(range.start));
-  const end = info.sourceOffsetAt(info.virtualDoc.offsetAt(range.end));
+  if (start === undefined) return;
 
-  if (start !== undefined || end !== undefined) {
-    range.start = doc.positionAt(start ?? end!);
-    range.end = doc.positionAt(end ?? start!);
-    return true;
+  let end: number | undefined = start;
+
+  if (
+    range.start.line !== range.end.line ||
+    range.start.character !== range.end.character
+  ) {
+    end = info.sourceOffsetAt(info.virtualDoc.offsetAt(range.end));
+    if (end === undefined) return;
   }
 
-  return false;
+  const pos = doc.positionAt(start);
+  return {
+    start: pos,
+    end: start === end ? pos : doc.positionAt(end),
+  };
 }
 
 function getStyleSheetInfo(doc: TextDocument): Record<string, StyleSheetInfo> {
@@ -420,7 +520,10 @@ function getStyleSheetInfo(doc: TextDocument): Record<string, StyleSheetInfo> {
     cached = {};
 
     for (const ext in results) {
-      const service = services[ext]?.();
+      const service = services[ext]?.({
+        fileSystemProvider,
+        clientCapabilities,
+      });
       if (!service) continue;
 
       const { generated, sourceOffsetAt, generatedOffsetAt } = results[ext];
@@ -444,4 +547,8 @@ function getStyleSheetInfo(doc: TextDocument): Record<string, StyleSheetInfo> {
   }
 
   return cached;
+}
+
+function isTextEdit(edit: TextEdit | InsertReplaceEdit): edit is TextEdit {
+  return (edit as TextEdit).range !== undefined;
 }

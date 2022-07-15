@@ -9,24 +9,9 @@ import {
   NodeType,
 } from "../../../utils/parser";
 import resolveUrl from "../../../utils/resolve-url";
+import isDocumentLinkAttr from "../util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
-const linkedAttrs: Record<string, Set<string>> = {
-  src: new Set([
-    "audio",
-    "embed",
-    "iframe",
-    "img",
-    "input",
-    "script",
-    "source",
-    "track",
-    "video",
-  ]),
-  href: new Set(["a", "area", "link"]),
-  data: new Set(["object"]),
-  poster: new Set(["video"]),
-};
 
 /**
  * Iterate over the Marko CST and extract all the file links in the document.
@@ -49,23 +34,16 @@ export function extractDocumentLinks(
       case NodeType.Tag:
         if (node.attrs && node.nameText) {
           for (const attr of node.attrs) {
-            if (
-              attr.type === NodeType.AttrNamed &&
-              attr.value?.type === NodeType.AttrValue &&
-              /^['"]$/.test(code[attr.value.value.start])
-            ) {
-              const attrName = read(attr.name);
-              if (linkedAttrs[attrName]?.has(node.nameText)) {
-                links.push(
-                  DocumentLink.create(
-                    {
-                      start: parsed.positionAt(attr.value.value.start),
-                      end: parsed.positionAt(attr.value.value.end),
-                    },
-                    resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
-                  )
-                );
-              }
+            if (isDocumentLinkAttr(doc, node, attr)) {
+              links.push(
+                DocumentLink.create(
+                  {
+                    start: parsed.positionAt(attr.value.value.start),
+                    end: parsed.positionAt(attr.value.value.end),
+                  },
+                  resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
+                )
+              );
             }
           }
         }

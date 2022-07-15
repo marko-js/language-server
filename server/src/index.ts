@@ -35,8 +35,9 @@ console.error = (...args: unknown[]) => {
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
-connection.onInitialize(() => {
+connection.onInitialize(async (params) => {
   setupMessages(connection);
+  await service.initialize(params);
 
   return {
     capabilities: {

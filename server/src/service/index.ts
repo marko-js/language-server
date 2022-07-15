@@ -23,6 +23,9 @@ const plugins = [MarkoPlugin, StyleSheetPlugin];
  * Facade to all embedded plugins, eg css, typescript and our own.
  */
 const service: Plugin = {
+  async initialize(params) {
+    await Promise.all(plugins.map((plugin) => plugin.initialize?.(params)));
+  },
   async doComplete(doc, params, cancel) {
     const result = CompletionList.create([], false);
 
