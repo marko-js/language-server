@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.17.26
+
+### Patch Changes
+
+- [#109](https://github.com/marko-js/language-server/pull/109) [`5f0ec0d`](https://github.com/marko-js/language-server/commit/5f0ec0d3f54ff36563bc959ed81e82d0da3adf1b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix regexp errors in syntax highlighting
+
+* [#111](https://github.com/marko-js/language-server/pull/111) [`f88ca6d`](https://github.com/marko-js/language-server/commit/f88ca6d3b57fd3401ab715751cba42af24f5f5fc) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve completions for file system paths.
+
+- [#109](https://github.com/marko-js/language-server/pull/109) [`771a6e7`](https://github.com/marko-js/language-server/commit/771a6e78c515e9c79d86f2dfe43e536d332be40e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implements document links provider.
+
 ## 0.17.25
 
 ### Patch Changes
