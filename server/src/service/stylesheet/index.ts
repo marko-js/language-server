@@ -166,7 +166,7 @@ const StyleSheetService: Partial<Plugin> = {
       return result.length ? result : undefined;
     }
   },
-  findDocumentLinks(doc) {
+  async findDocumentLinks(doc) {
     const infoByExt = getStyleSheetInfo(doc);
     const result: DocumentLink[] = [];
 
@@ -174,9 +174,11 @@ const StyleSheetService: Partial<Plugin> = {
       const info = infoByExt[ext];
       const { service, virtualDoc } = info;
 
-      for (const link of service.findDocumentLinks(virtualDoc, info.parsed, {
-        resolveReference,
-      })) {
+      for (const link of await service.findDocumentLinks2(
+        virtualDoc,
+        info.parsed,
+        { resolveReference }
+      )) {
         const range = getSourceRange(doc, info, link.range);
         if (range) {
           result.push({

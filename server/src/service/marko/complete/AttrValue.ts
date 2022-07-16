@@ -30,37 +30,39 @@ export async function AttrValue({
       end,
     });
 
-    let segmentStart = rawValue.lastIndexOf("/", relativeOffset);
-    if (segmentStart === -1) segmentStart = relativeOffset;
+    const segmentStart = rawValue.lastIndexOf("/", relativeOffset);
+    if (segmentStart === -1) return; // only resolve after a slash.
 
-    const resolveRequest = rawValue.slice(0, segmentStart) || ".";
-    const dir = resolveUrl(resolveRequest, document.uri);
+    const req = rawValue.slice(0, segmentStart);
+    const uri = resolveUrl(req, document.uri);
 
-    if (dir?.[0] === "/") {
+    if (uri) {
       const result: CompletionItem[] = [];
-      const curDir =
-        resolveRequest === "." ? dir : resolveUrl(".", document.uri);
-      const curFile = curDir === dir ? path.basename(document.uri) : undefined;
+      const curFile = req === "." ? path.basename(document.uri) : undefined;
       const replaceRange = Range.create(
         document.positionAt(start + segmentStart + 1),
         document.positionAt(start + rawValue.length)
       );
 
-      for (const [entry, type] of await fileSystem.readDirectory(dir)) {
+      for (const [entry, type] of await fileSystem.readDirectory(uri)) {
         if (entry[0] !== "." && entry !== curFile) {
-          const isDir = type === FileType.Directory;
-          const label = isDir ? `${entry}/` : entry;
-          result.push({
-            label,
-            kind: isDir ? CompletionItemKind.Folder : CompletionItemKind.File,
-            textEdit: TextEdit.replace(replaceRange, label),
-            command: isDir
+          result.push(
+            type === FileType.Directory
               ? {
-                  title: "Suggest",
-                  command: "editor.action.triggerSuggest",
+                  label: `${entry}/`,
+                  kind: CompletionItemKind.Folder,
+                  textEdit: TextEdit.replace(replaceRange, `${entry}/`),
+                  command: {
+                    title: "Suggest",
+                    command: "editor.action.triggerSuggest",
+                  },
                 }
-              : undefined,
-          });
+              : {
+                  label: entry,
+                  kind: CompletionItemKind.File,
+                  textEdit: TextEdit.replace(replaceRange, entry),
+                }
+          );
         }
       }
 
