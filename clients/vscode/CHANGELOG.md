@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.17.27
+
+### Patch Changes
+
+- [#112](https://github.com/marko-js/language-server/pull/112) [`7930415`](https://github.com/marko-js/language-server/commit/7930415f18e4f8dfcd736be21c414d4b80e8f458) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve filesystem completions.
+
+* [#112](https://github.com/marko-js/language-server/pull/112) [`2312c36`](https://github.com/marko-js/language-server/commit/2312c365472f4f280c251812f7d56f1e30e72b55) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix embedded language config for sass and less.
+
 ## 0.17.26
 
 ### Patch Changes
