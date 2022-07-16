@@ -10,6 +10,7 @@ import { Tag } from "./Tag";
 import { OpenTagName } from "./OpenTagName";
 import { AttrName } from "./AttrName";
 import { AttrValue } from "./AttrValue";
+import { Statement } from "./Statement";
 import type { Plugin, Result } from "../../types";
 import { NodeType } from "../../../utils/parser";
 
@@ -32,6 +33,7 @@ const handlers: Record<
   OpenTagName,
   AttrName,
   AttrValue,
+  Statement,
 };
 
 export const doComplete: Plugin["doComplete"] = async (doc, params) => {
