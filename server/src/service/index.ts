@@ -27,51 +27,48 @@ const service: Plugin = {
     await Promise.all(plugins.map((plugin) => plugin.initialize?.(params)));
   },
   async doComplete(doc, params, cancel) {
-    const result = CompletionList.create([], false);
+    let items: CompletionItem[] | undefined;
+    let isIncomplete = false;
+    // TODO: this should handle CompletionList.itemDefaults.
+    // If there is a single responding plugin, pass through, otherwise need to apply the defaults to the completion items for the plugin.
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.doComplete?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
         if (cur) {
-          let items!: CompletionItem[];
+          let curItems!: CompletionItem[];
           if (Array.isArray(cur)) {
-            items = cur;
+            curItems = cur;
           } else {
-            items = cur.items;
-            result.isIncomplete ||= cur.isIncomplete;
+            curItems = cur.items;
+            isIncomplete ||= cur.isIncomplete;
           }
 
-          result.items.push(...items);
+          items = items ? items.concat(curItems) : curItems;
         }
       }
     } catch (err) {
-      result.isIncomplete = true;
+      isIncomplete = true;
       displayError(err);
     }
 
-    return result;
+    if (items) {
+      return CompletionList.create(items, isIncomplete);
+    }
   },
   async findDefinition(doc, params, cancel) {
-    const result: (DefinitionLink | Location)[] = [];
+    let result: (Location | DefinitionLink)[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.findDefinition?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (Array.isArray(cur)) {
-            result.push(...cur);
-          } else {
-            result.push(cur);
-          }
-        }
+        if (cur) result = (result || []).concat(cur);
       }
     } catch (err) {
       displayError(err);
@@ -83,19 +80,12 @@ const service: Plugin = {
     let result: Location[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.findReferences?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.push(...cur);
-          } else {
-            result = cur;
-          }
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -107,19 +97,12 @@ const service: Plugin = {
     let result: DocumentLink[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.findDocumentLinks?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.push(...cur);
-          } else {
-            result = cur;
-          }
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -131,19 +114,12 @@ const service: Plugin = {
     let result: DocumentHighlight[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.findDocumentHighlights?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.push(...cur);
-          } else {
-            result = cur;
-          }
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -155,19 +131,12 @@ const service: Plugin = {
     let result: ColorInformation[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.findDocumentColors?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.push(...cur);
-          } else {
-            result = cur;
-          }
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -179,19 +148,12 @@ const service: Plugin = {
     let result: ColorPresentation[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.getColorPresentations?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.push(...cur);
-          } else {
-            result = cur;
-          }
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -216,22 +178,21 @@ const service: Plugin = {
     let documentChanges: WorkspaceEdit["documentChanges"];
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.doRename?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
 
         if (cur) {
           if (cur.changes) {
             if (changes) {
+              changes = { ...changes };
+
               for (const uri in cur.changes) {
-                if (changes[uri]) {
-                  changes[uri].push(...cur.changes[uri]);
-                } else {
-                  changes[uri] = cur.changes[uri];
-                }
+                changes[uri] = changes[uri]
+                  ? changes[uri].concat(cur.changes[uri])
+                  : cur.changes[uri];
               }
             } else {
               changes = cur.changes;
@@ -239,19 +200,18 @@ const service: Plugin = {
           }
 
           if (cur.changeAnnotations) {
-            if (changeAnnotations) {
-              Object.assign(changeAnnotations, cur.changeAnnotations);
-            } else {
-              changeAnnotations = cur.changeAnnotations;
-            }
+            changeAnnotations = changeAnnotations
+              ? {
+                  ...changeAnnotations,
+                  ...cur.changeAnnotations,
+                }
+              : cur.changeAnnotations;
           }
 
           if (cur.documentChanges) {
-            if (documentChanges) {
-              documentChanges.push(...cur.documentChanges);
-            } else {
-              documentChanges = cur.documentChanges;
-            }
+            documentChanges = documentChanges
+              ? documentChanges.concat(cur.documentChanges)
+              : cur.documentChanges;
           }
         }
       }
@@ -268,18 +228,15 @@ const service: Plugin = {
     }
   },
   async doCodeActions(doc, params, cancel) {
-    const result: (Command | CodeAction)[] = [];
+    let result: (Command | CodeAction)[] | undefined;
 
     try {
-      const requests = plugins.map((plugin) =>
+      for (const pending of plugins.map((plugin) =>
         plugin.doCodeActions?.(doc, params, cancel)
-      );
-      for (const pending of requests) {
+      )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;
-        if (cur) {
-          result.push(...cur);
-        }
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
@@ -288,12 +245,11 @@ const service: Plugin = {
     return result;
   },
   async doValidate(doc) {
-    const result: Diagnostic[] = [];
+    let result: Diagnostic[] | undefined;
     try {
-      const requests = plugins.map((plugin) => plugin.doValidate?.(doc));
-      for (const pending of requests) {
+      for (const pending of plugins.map((plugin) => plugin.doValidate?.(doc))) {
         const cur = await pending;
-        if (cur) result.push(...cur);
+        if (cur) result = result ? result.concat(cur) : cur;
       }
     } catch (err) {
       displayError(err);
