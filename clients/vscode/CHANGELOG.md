@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.28
+
+### Patch Changes
+
+- [#114](https://github.com/marko-js/language-server/pull/114) [`868a0fa`](https://github.com/marko-js/language-server/commit/868a0fa1930722c8461c4755f0be91433247355a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add auto completion for tag import shorthand.
+
 ## 0.17.27
 
 ### Patch Changes
