@@ -35,8 +35,8 @@
         "path": "./syntaxes/marko.tmLanguage.json",
         "embeddedLanguages": {
           "source.css": "css",
-          "source.css.less": "less",
-          "source.css.scss": "scss",
+          "source.less": "less",
+          "source.scss": "scss",
           "source.ts": "typescript"
         }
       }
