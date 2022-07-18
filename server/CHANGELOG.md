@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.12.13
+
+### Patch Changes
+
+- [#116](https://github.com/marko-js/language-server/pull/116) [`7ebc777`](https://github.com/marko-js/language-server/commit/7ebc777067b0d3a22c638eee72b31e8b2a4715cd) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implement document symbols provider.
+
+* [#118](https://github.com/marko-js/language-server/pull/118) [`7bb0f9a`](https://github.com/marko-js/language-server/commit/7bb0f9a6a2b611c75fcb81ace49b8c91051d0d2c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Implement hover provider for tag names.
+
 ## 0.12.12
 
 ### Patch Changes
