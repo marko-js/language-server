@@ -32,16 +32,16 @@ export default function getTagNameCompletion({
   );
 
   const nodeModuleName = nodeModuleMatch && nodeModuleMatch[1];
-  const isCoreTag = nodeModuleName === "marko";
-
+  const isCoreTag =
+    /^@?marko[/-]/.test(tag.taglibId) || nodeModuleName === "marko";
   const documentation = {
     kind: MarkupKind.Markdown,
     value: tag.html
-      ? `Built in [<${tag.name}>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
+      ? `Built in [&lt;${tag.name}&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
+      : isCoreTag
+      ? `Core Marko &lt;${tag.name}&gt; tag.`
       : nodeModuleName
-      ? isCoreTag
-        ? `Core Marko [<${tag.name}>](${fileURIForTag}) tag.`
-        : `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
+      ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
       : `Custom Marko tag discovered from:\n\n[${
           importer ? path.relative(importer, fileForTag) : fileForTag
         }](${fileURIForTag})`,
