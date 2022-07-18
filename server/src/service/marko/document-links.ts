@@ -2,21 +2,29 @@ import type { TaglibLookup } from "@marko/babel-utils";
 import { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import {
-  type Node,
-  type Range,
-  type parse,
-  NodeType,
-} from "../../../utils/parser";
-import resolveUrl from "../../../utils/resolve-url";
-import isDocumentLinkAttr from "../util/is-document-link-attr";
+import { getCompilerInfo, parse } from "../../utils/compiler";
+import { type Node, type Range, NodeType } from "../../utils/parser";
+import resolveUrl from "../../utils/resolve-url";
+import type { Plugin } from "../types";
+import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
+const cache = new WeakMap<ReturnType<typeof parse>, DocumentLink[]>();
+
+export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
+  const parsed = parse(doc);
+  let result = cache.get(parsed);
+  if (!result) {
+    result = extractDocumentLinks(doc, parsed, getCompilerInfo(doc).lookup);
+    cache.set(parsed, result);
+  }
+  return result;
+};
 
 /**
  * Iterate over the Marko CST and extract all the file links in the document.
  */
-export function extractDocumentLinks(
+function extractDocumentLinks(
   doc: TextDocument,
   parsed: ReturnType<typeof parse>,
   lookup: TaglibLookup
@@ -42,12 +50,18 @@ export function extractDocumentLinks(
         if (node.attrs && node.nameText) {
           for (const attr of node.attrs) {
             if (isDocumentLinkAttr(doc, node, attr)) {
-              links.push(
-                DocumentLink.create(
-                  parsed.locationAt(attr.value.value),
-                  resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
-                )
+              const resolved = resolveUrl(
+                read(attr.value.value).slice(1, -1),
+                doc.uri
               );
+              if (resolved) {
+                links.push(
+                  DocumentLink.create(
+                    parsed.locationAt(attr.value.value),
+                    resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
+                  )
+                );
+              }
             }
           }
         }
