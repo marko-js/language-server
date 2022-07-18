@@ -10,6 +10,7 @@ import {
   DocumentHighlight,
   DocumentLink,
   Location,
+  SymbolInformation,
   WorkspaceEdit,
 } from "vscode-languageserver";
 import { displayError } from "../utils/messages";
@@ -82,6 +83,23 @@ const service: Plugin = {
     try {
       for (const pending of plugins.map((plugin) =>
         plugin.findReferences?.(doc, params, cancel)
+      )) {
+        const cur = await pending;
+        if (cancel.isCancellationRequested) return;
+        if (cur) result = result ? result.concat(cur) : cur;
+      }
+    } catch (err) {
+      displayError(err);
+    }
+
+    return result;
+  },
+  async findDocumentSymbols(doc, params, cancel) {
+    let result: SymbolInformation[] | undefined;
+
+    try {
+      for (const pending of plugins.map((plugin) =>
+        plugin.findDocumentSymbols?.(doc, params, cancel)
       )) {
         const cur = await pending;
         if (cancel.isCancellationRequested) return;

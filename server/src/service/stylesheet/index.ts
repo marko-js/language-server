@@ -11,6 +11,7 @@ import {
   DocumentLink,
   InitializeParams,
   ColorPresentation,
+  SymbolInformation,
 } from "vscode-languageserver";
 import {
   getCSSLanguageService,
@@ -165,6 +166,38 @@ const StyleSheetService: Partial<Plugin> = {
 
       return result.length ? result : undefined;
     }
+  },
+  findDocumentSymbols(doc) {
+    const infoByExt = getStyleSheetInfo(doc);
+    const result: SymbolInformation[] = [];
+
+    for (const ext in infoByExt) {
+      const info = infoByExt[ext];
+      const { service, virtualDoc } = info;
+
+      for (const symbol of service.findDocumentSymbols(
+        virtualDoc,
+        info.parsed
+      )) {
+        if (symbol.location.uri === doc.uri) {
+          const range = getSourceRange(doc, info, symbol.location.range);
+          if (range) {
+            result.push({
+              kind: symbol.kind,
+              name: symbol.name,
+              tags: symbol.tags,
+              deprecated: symbol.deprecated,
+              containerName: symbol.containerName,
+              location: { uri: doc.uri, range },
+            });
+          }
+        } else {
+          result.push(symbol);
+        }
+      }
+    }
+
+    return result.length ? result : undefined;
   },
   async findDocumentLinks(doc) {
     const infoByExt = getStyleSheetInfo(doc);

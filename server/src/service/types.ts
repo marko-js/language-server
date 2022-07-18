@@ -17,6 +17,7 @@ import type {
   DocumentHighlightParams,
   DocumentLink,
   DocumentLinkParams,
+  DocumentSymbolParams,
   Hover,
   HoverParams,
   InitializeParams,
@@ -24,6 +25,7 @@ import type {
   LocationLink,
   ReferenceParams,
   RenameParams,
+  SymbolInformation,
   TextEdit,
   WorkspaceEdit,
 } from "vscode-languageserver";
@@ -48,6 +50,7 @@ export type Plugin = {
     Location | LocationLink | (Location | LocationLink)[]
   >;
   findReferences: Handler<ReferenceParams, Location[]>;
+  findDocumentSymbols: Handler<DocumentSymbolParams, SymbolInformation[]>;
   findDocumentLinks: Handler<DocumentLinkParams, DocumentLink[]>;
   findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
