@@ -31,16 +31,20 @@ export function extractDocumentLinks(
   const read = (range: Range) => code.slice(range.start, range.end);
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
+      case NodeType.AttrTag:
+        if (node.body) {
+          for (const child of node.body) {
+            visit(child);
+          }
+        }
+        break;
       case NodeType.Tag:
         if (node.attrs && node.nameText) {
           for (const attr of node.attrs) {
             if (isDocumentLinkAttr(doc, node, attr)) {
               links.push(
                 DocumentLink.create(
-                  {
-                    start: parsed.positionAt(attr.value.value.start),
-                    end: parsed.positionAt(attr.value.value.end),
-                  },
+                  parsed.locationAt(attr.value.value),
                   resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
                 )
               );
@@ -71,10 +75,10 @@ export function extractDocumentLinks(
         if (fileForTag) {
           links.push(
             DocumentLink.create(
-              {
-                start: parsed.positionAt(item.start + match.index),
-                end: parsed.positionAt(item.start + match.index + length),
-              },
+              parsed.locationAt({
+                start: item.start + match.index,
+                end: item.start + match.index + length,
+              }),
               fileForTag
             )
           );

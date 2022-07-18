@@ -32,6 +32,13 @@ export function extractStyleSheets(
   };
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
+      case NodeType.AttrTag:
+        if (node.body) {
+          for (const child of node.body) {
+            visit(child);
+          }
+        }
+        break;
       case NodeType.Tag:
         if (node.nameText === "style" && node.concise && node.attrs) {
           const block = node.attrs.at(-1)!;

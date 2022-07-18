@@ -51,6 +51,7 @@ connection.onInitialize(async (params) => {
       documentLinkProvider: { resolveProvider: false },
       colorProvider: true,
       documentHighlightProvider: true,
+      documentSymbolProvider: true,
       completionProvider: {
         triggerCharacters: [
           ".",
@@ -119,6 +120,16 @@ connection.onReferences(async (params, cancel) => {
 connection.onDocumentLinks(async (params, cancel) => {
   return (
     (await service.findDocumentLinks(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel
+    )) || null
+  );
+});
+
+connection.onDocumentSymbol(async (params, cancel) => {
+  return (
+    (await service.findDocumentSymbols(
       documents.get(params.textDocument.uri)!,
       params,
       cancel
