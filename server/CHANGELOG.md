@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.12.14
+
+### Patch Changes
+
+- [#120](https://github.com/marko-js/language-server/pull/120) [`536e7f4`](https://github.com/marko-js/language-server/commit/536e7f4044dd85ea23e05331876380d8175bae32) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
 ## 0.12.13
 
 ### Patch Changes

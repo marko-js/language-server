@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.17.30
+
+### Patch Changes
+
+- [#120](https://github.com/marko-js/language-server/pull/120) [`536e7f4`](https://github.com/marko-js/language-server/commit/536e7f4044dd85ea23e05331876380d8175bae32) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+* [#120](https://github.com/marko-js/language-server/pull/120) [`7200726`](https://github.com/marko-js/language-server/commit/72007269a8923dd9e042fd019c01f3377154a9e1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix syntax error in concise mode grammar regexp.
+
 ## 0.17.29
 
 ### Patch Changes
