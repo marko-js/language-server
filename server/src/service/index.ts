@@ -17,8 +17,9 @@ import { displayError } from "../utils/messages";
 import type { Plugin } from "./types";
 
 import MarkoPlugin from "./marko";
+import ScriptPlugin from "./script";
 import StyleSheetPlugin from "./stylesheet";
-const plugins = [MarkoPlugin, StyleSheetPlugin];
+const plugins = [MarkoPlugin, ScriptPlugin, StyleSheetPlugin];
 
 /**
  * Facade to all embedded plugins, eg css, typescript and our own.

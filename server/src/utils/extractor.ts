@@ -68,11 +68,12 @@ export function createExtractor(code: string) {
 
           const key = min * 3;
           const generatedStart = generatedMap[key];
+          if (generatedStart > generatedOffset) return;
           const sourceStart = generatedMap[key + 1];
           const sourceEnd = generatedMap[key + 2];
-          return sourceEnd - sourceStart < generatedOffset - generatedStart
-            ? undefined
-            : sourceStart + (generatedOffset - generatedStart);
+          if (sourceEnd - sourceStart >= generatedOffset - generatedStart) {
+            return sourceStart + (generatedOffset - generatedStart);
+          }
         },
         generatedOffsetAt(sourceOffset: number): number | undefined {
           let max = sourceMap.length / 3;

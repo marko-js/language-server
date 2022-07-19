@@ -1,13 +1,13 @@
 import type { TaglibLookup } from "@marko/babel-utils";
 import { createExtractor } from "../../utils/extractor";
-import { Node, Range, NodeType } from "../../utils/parser";
+import { Node, NodeType, parse } from "../../utils/parser";
 
 /**
  * Iterate over the Marko CST and extract all the stylesheets.
  */
 export function extractStyleSheets(
   code: string,
-  program: Node.Program,
+  parsed: ReturnType<typeof parse>,
   lookup: TaglibLookup
 ) {
   let placeholderId = 0;
@@ -15,7 +15,7 @@ export function extractStyleSheets(
     string,
     ReturnType<typeof createExtractor>
   > = {};
-  const read = (range: Range) => code.slice(range.start, range.end);
+  const { read, program } = parsed;
   const getExtractor = (ext: string) =>
     extractorsByExt[ext] || (extractorsByExt[ext] = createExtractor(code));
   const getFileExtFromTag = (tag: Node.Tag) => {

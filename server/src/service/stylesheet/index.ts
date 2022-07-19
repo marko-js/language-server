@@ -548,7 +548,7 @@ function getStyleSheetInfo(doc: TextDocument): Record<string, StyleSheetInfo> {
   if (!cached) {
     const results = extractStyleSheets(
       doc.getText(),
-      parsed.program,
+      parsed,
       getCompilerInfo(doc).lookup
     );
 
