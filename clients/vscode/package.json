@@ -64,9 +64,9 @@
     "@types/vscode": "^1.68.0",
     "@vscode/test-electron": "^2.1.5",
     "ovsx": "^0.5.1",
-    "tsx": "^3.7.1",
-    "vsce": "^2.9.2",
-    "vscode-languageclient": "^8.0.1"
+    "tsx": "^3.8.0",
+    "vsce": "^2.10.0",
+    "vscode-languageclient": "^8.0.2"
   },
   "displayName": "Marko VSCode",
   "engines": {
