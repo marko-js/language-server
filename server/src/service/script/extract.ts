@@ -85,6 +85,16 @@ export function extractScripts(
             case "return":
               // Handled at the root level.
               return;
+            case "style":
+              if (node.concise && node.attrs) {
+                const block = node.attrs.at(-1)!;
+                // Ignore style block attrs.
+                if (
+                  block.type === NodeType.AttrNamed &&
+                  code[block.start] === "{"
+                )
+                  return;
+              }
           }
 
           const tagDef = lookup.getTag(tagName);
@@ -117,6 +127,12 @@ export function extractScripts(
           // TODO: print dynamic tag call.
         }
 
+        if (node.attrs) {
+          extractor.write`(`;
+          addAttrs(node);
+          extractor.write`);`;
+        }
+
         addTmpl(node.name);
 
         if (node.shorthandId) {
@@ -131,12 +147,6 @@ export function extractScripts(
 
         if (node.args) addExpr(node.args.value);
         if (node.var) extractor.write`let ${node.var.value};`;
-        if (node.attrs) {
-          extractor.write`(`;
-          addAttrs(node);
-          extractor.write`);`;
-        }
-
         if (node.body) {
           extractor.write`{`;
           for (const child of node.body) visit(child);
@@ -216,7 +226,7 @@ export function extractScripts(
     if (attrsTag.var) {
       extractor.write`export default ((${attrsTag.var.value}) => {`;
     } else {
-      extractor.write`export default () => {`;
+      extractor.write`export default (() => {`;
     }
   } else {
     extractor.write`export default ((component, input, state) => {`;
