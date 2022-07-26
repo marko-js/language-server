@@ -1,13 +1,13 @@
 {
   "name": "marko-language-server-repo",
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.5",
-    "@changesets/cli": "^2.23.2",
+    "@changesets/changelog-github": "^0.4.6",
+    "@changesets/cli": "^2.24.1",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
-    "@typescript-eslint/parser": "^5.30.7",
-    "esbuild": "^0.14.49",
+    "@types/node": "^18.6.1",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "esbuild": "^0.14.50",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "fast-glob": "^3.2.11",
@@ -22,6 +22,7 @@
   "private": true,
   "scripts": {
     "build": "npm run -ws build",
+    "build:dev": "tsx ./clients/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
     "prepare": "husky install",

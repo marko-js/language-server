@@ -716,7 +716,7 @@
           "name": "meta.embedded.ts",
           "contentName": "source.ts",
           "begin": "/(?![/*])",
-          "end": "(?=[;(|/>]|:?=|\\s+[^:]|$)",
+          "end": "(?=[,;(|/>]|:?=|\\s+[^:]|$)",
           "beginCaptures": {
             "0": { "name": "punctuation.separator.tag-variable.marko" }
           },

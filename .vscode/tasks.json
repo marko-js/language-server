@@ -4,7 +4,7 @@
 		{
 			"type": "npm",
 			"label": "build",
-			"script": "build",
+			"script": "build:dev",
 			"group": {
 				"kind": "build",
 				"isDefault": true

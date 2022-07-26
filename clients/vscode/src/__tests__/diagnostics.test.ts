@@ -5,7 +5,7 @@ import { updateTestDoc } from "./setup.test";
 
 describe("diagnostics", () => {
   // Ensure we wait for any pending diagnostics to be sent.
-  before(() => timers.setTimeout(600));
+  before(() => timers.setTimeout(1800));
   it("missing tag end", async () => {
     await snap.inline(() => diagnostic("<span>"), `Missing ending "span" tag`);
   });

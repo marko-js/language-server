@@ -1,13 +1,16 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import { build, BuildOptions } from "esbuild";
 
 const opts: BuildOptions = {
-  entryPoints: ["src/index.ts"],
   bundle: true,
   outdir: "dist",
   outbase: "src",
   platform: "node",
   target: ["node14"],
   sourcemap: "linked",
+  entryPoints: ["src/index.ts"],
+  absWorkingDir: path.dirname(fileURLToPath(import.meta.url)),
   plugins: [
     {
       name: "external-modules",
