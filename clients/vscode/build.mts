@@ -4,25 +4,30 @@ import { build } from "esbuild";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
+const distDir = path.join(thisDir, "dist");
 const require = createRequire(thisDir);
 
-// We must copy over the lib.d.ts files from node_modules to our dist folder
-// since we're bundling typescript and it will look for them relative to the `__dirname` of the script.
-const tsLibFolder = path.join(
-  require.resolve("typescript/package.json"),
-  "../lib"
-);
 await Promise.all([
-  ...(
-    await fs.readdir(tsLibFolder)
-  ).map((entry) => {
-    if (/^lib\..*\.d\.ts$/.test(entry)) {
-      return fs.copyFile(
-        path.join(tsLibFolder, entry),
-        path.join("dist", entry)
-      );
+  (async () => {
+    // We must copy over the lib.d.ts files from node_modules to our dist folder
+    // since we're bundling typescript and it will look for them relative to the `__dirname` of the script.
+    const tsLibDir = path.join(
+      require.resolve("typescript/package.json"),
+      "../lib"
+    );
+    const [dir] = await Promise.all([
+      fs.opendir(tsLibDir),
+      fs.mkdir(distDir, { recursive: true }),
+    ]);
+    for await (const entry of dir) {
+      if (entry.isFile() && /^lib\..*\.d\.ts$/.test(entry.name)) {
+        await fs.copyFile(
+          path.join(tsLibDir, entry.name),
+          path.join(distDir, entry.name)
+        );
+      }
     }
-  }),
+  })(),
   build({
     bundle: true,
     minifySyntax: true,
