@@ -5,7 +5,7 @@ import type { Range } from "./parser";
  */
 export function createExtractor(code: string) {
   let generated = "";
-  const generatedMap: number[] = []; // grouped in sets of [generatedStart, sourceStart, sourceEnd] and sorted by generatedStart
+  const generatedMap: number[] = []; // grouped in sets of [generatedStart, sourceStart, length] and sorted by generatedStart
   return {
     write(strs: TemplateStringsArray, ...exprs: (string | Range)[]) {
       const len = exprs.length;
@@ -16,7 +16,11 @@ export function createExtractor(code: string) {
         if (typeof expr === "string") {
           generated += expr;
         } else {
-          generatedMap.push(generated.length, expr.start, expr.end);
+          generatedMap.push(
+            generated.length,
+            expr.start,
+            expr.end - expr.start
+          );
           generated += code.slice(expr.start, expr.end);
         }
       }
@@ -24,7 +28,7 @@ export function createExtractor(code: string) {
       generated += strs[len];
     },
     end() {
-      const sourceMap: typeof generatedMap = generatedMap.slice(); // grouped in sets of [generatedStart, sourceStart, sourceEnd] and sorted by sourceStart
+      const sourceMap: typeof generatedMap = generatedMap.slice(); // grouped in sets of [generatedStart, sourceStart, length] and sorted by sourceStart
       // Quick sort generatedMap by sourceStart
       (function sort(left: number, right: number) {
         if (left < right) {
@@ -68,11 +72,13 @@ export function createExtractor(code: string) {
 
           const key = min * 3;
           const generatedStart = generatedMap[key];
-          if (generatedStart > generatedOffset) return;
-          const sourceStart = generatedMap[key + 1];
-          const sourceEnd = generatedMap[key + 2];
-          if (sourceEnd - sourceStart >= generatedOffset - generatedStart) {
-            return sourceStart + (generatedOffset - generatedStart);
+          if (generatedOffset >= generatedStart) {
+            const length = generatedMap[key + 2];
+            const index = generatedOffset - generatedStart;
+            if (index <= length) {
+              const sourceStart = generatedMap[key + 1];
+              return sourceStart + index;
+            }
           }
         },
         generatedOffsetAt(sourceOffset: number): number | undefined {
@@ -91,12 +97,14 @@ export function createExtractor(code: string) {
 
           const key = min * 3;
           const sourceStart = sourceMap[key + 1];
-          const sourceEnd = sourceMap[key + 2];
-          if (sourceOffset < sourceStart || sourceOffset > sourceEnd)
-            return undefined;
-
-          const generatedStart = sourceMap[key];
-          return generatedStart + (sourceOffset - sourceStart);
+          if (sourceOffset >= sourceStart) {
+            const length = sourceMap[key + 2];
+            const index = sourceOffset - sourceStart;
+            if (index <= length) {
+              const generatedStart = sourceMap[key];
+              return generatedStart + index;
+            }
+          }
         },
       };
     },
