@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.12.15
+
+### Patch Changes
+
+- [#122](https://github.com/marko-js/language-server/pull/122) [`c748adc`](https://github.com/marko-js/language-server/commit/c748adcd1595d595e093d4b64fd48ce9fd63b65b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+* [#122](https://github.com/marko-js/language-server/pull/122) [`c748adc`](https://github.com/marko-js/language-server/commit/c748adcd1595d595e093d4b64fd48ce9fd63b65b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with displaying invalid diagnostics.
+
 ## 0.12.14
 
 ### Patch Changes
