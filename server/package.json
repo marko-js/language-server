@@ -8,9 +8,9 @@
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@marko/babel-utils": "^5.21.2",
-    "@marko/compiler": "^5.21.7",
-    "@marko/translator-default": "^5.21.3",
-    "htmljs-parser": "^5.0.3",
+    "@marko/compiler": "^5.22.1",
+    "@marko/translator-default": "^5.21.4",
+    "htmljs-parser": "^5.0.4",
     "lasso-package-root": "^1.0.1",
     "marko": "^5.21.3",
     "prettier": "^2.7.1",
