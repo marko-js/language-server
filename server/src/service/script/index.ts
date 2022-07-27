@@ -1,23 +1,31 @@
 import path from "path";
 import ts from "typescript";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompilerInfo, parse } from "../../utils/compiler";
 import type { Plugin } from "../types";
 import { extractScripts } from "./extract";
-import { displayInformation } from "../../utils/messages";
-import { inspect } from "util";
 import {
+  CompletionItem,
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
 } from "vscode-languageserver";
 import type { Location } from "htmljs-parser";
+import * as documents from "../../utils/text-documents";
 import { START_OF_FILE } from "../../utils/utils";
 import { URI } from "vscode-uri";
 
+interface ProjectInfo {
+  basePath: string;
+  configPath: string | undefined;
+  fileNames: string[];
+  options: ts.CompilerOptions;
+  service: ts.LanguageService;
+  getVirtualFileName(doc: TextDocument): string | undefined;
+}
+
 interface ScriptInfo {
-  virtualDoc: TextDocument;
-  snapshot: ts.IScriptSnapshot;
+  generated: string;
   sourceOffsetAt(generatedOffset: number): number | undefined;
   sourceLocationAt(
     generatedOffsetStart: number,
@@ -26,98 +34,125 @@ interface ScriptInfo {
   generatedOffsetAt(sourceOffset: number): number | undefined;
 }
 
-const cache = new WeakMap<ReturnType<typeof parse>, ScriptInfo>();
+const projectsCacheKey = Symbol();
+const parseCache = new WeakMap<ReturnType<typeof parse>, ScriptInfo>();
+const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
+const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
+const markoFileReg = /\.marko$/;
+const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)/;
+
 const ScriptService: Partial<Plugin> = {
-  async doValidate(doc) {
+  doComplete(doc, params) {
     const info = getScriptInfo(doc);
-    const { fsPath } = URI.parse(info.virtualDoc.uri);
-    const tsConfigPath = findTSConfigPath(fsPath);
-    const basePath =
-      (tsConfigPath && path.dirname(tsConfigPath)) || process.cwd();
-    const tsProject = getTSProject(basePath, tsConfigPath);
-    const tsPkgFile =
-      tsConfigPath &&
-      ts.resolveModuleName(
-        "typescript/package.json",
-        tsConfigPath,
-        tsProject.options,
-        ts.sys
-      ).resolvedModule?.resolvedFileName;
-    const defaultLibFile = path.join(
-      tsPkgFile ? path.join(tsPkgFile, "../lib") : __dirname,
-      ts.getDefaultLibFileName(tsProject.options)
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffset = info.generatedOffsetAt(sourceOffset);
+    if (generatedOffset === undefined) return;
+
+    const { fsPath, scheme } = URI.parse(doc.uri);
+    if (scheme !== "file") return;
+
+    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const completions = service.getCompletionsAtPosition(
+      getVirtualFileName(doc)!,
+      generatedOffset,
+      undefined
     );
-    const service = ts.createLanguageService({
-      // resolveModuleNames: () => {}, // TODO
-      readDirectory: ts.sys.readDirectory,
-      getDefaultLibFileName() {
-        return defaultLibFile;
-      },
-      readFile: (filename) => {
-        if (filename === fsPath) {
-          return info.virtualDoc.getText();
+    if (!completions || completions.entries.length === 0) return;
+
+    const result: CompletionItem[] = [];
+
+    for (const completion of completions.entries) {
+      result.push({
+        label: completion.name,
+        sortText: completion.sortText,
+        preselect: completion.isRecommended,
+      });
+    }
+
+    return result;
+  },
+  doHover(doc, params) {
+    const info = getScriptInfo(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffset = info.generatedOffsetAt(sourceOffset);
+    if (generatedOffset === undefined) return;
+
+    const { fsPath, scheme } = URI.parse(doc.uri);
+    if (scheme !== "file") return;
+
+    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const quickInfo = service.getQuickInfoAtPosition(
+      getVirtualFileName(doc)!,
+      generatedOffset
+    );
+    if (!quickInfo) return;
+    const { textSpan } = quickInfo;
+    const range = info.sourceLocationAt(
+      textSpan.start,
+      textSpan.start + textSpan.length
+    );
+
+    if (!range) return;
+
+    let contents = "";
+
+    const displayParts = ts.displayPartsToString(quickInfo.displayParts);
+    if (displayParts) {
+      contents += `\`\`\`typescript\n${displayParts}\n\`\`\``;
+    }
+
+    const documentation = printDocumentation(
+      quickInfo.documentation,
+      quickInfo.tags
+    );
+    if (documentation) {
+      contents += `\n---\n${documentation}`;
+    }
+
+    return {
+      range,
+      contents,
+    };
+  },
+  doValidate(doc) {
+    const info = getScriptInfo(doc);
+    const { fsPath, scheme } = URI.parse(doc.uri);
+    if (scheme !== "file") return;
+
+    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const virtualFsPath = getVirtualFileName(doc)!;
+
+    let results: Diagnostic[] | undefined;
+    for (const tsDiag of service.getSuggestionDiagnostics(virtualFsPath)) {
+      addDiag(tsDiag);
+    }
+
+    for (const tsDiag of service.getSyntacticDiagnostics(virtualFsPath)) {
+      addDiag(tsDiag);
+    }
+
+    for (const tsDiag of service.getSemanticDiagnostics(virtualFsPath)) {
+      addDiag(tsDiag);
+    }
+
+    return results;
+
+    function addDiag(tsDiag: ts.Diagnostic) {
+      const diag = convertDiag(info, tsDiag);
+      if (diag) {
+        if (results) {
+          results.push(diag);
         } else {
-          return ts.sys.readFile(removeVirtualFileExt(filename));
-        }
-      },
-      fileExists: (filename) => {
-        return (
-          filename === fsPath ||
-          ts.sys.fileExists(removeVirtualFileExt(filename))
-        );
-      },
-      getScriptFileNames() {
-        return [fsPath];
-      },
-      getScriptVersion() {
-        return `${info.virtualDoc.version}`;
-      },
-      getScriptSnapshot(filename) {
-        if (filename === fsPath) {
-          return info.snapshot;
-        } else {
-          return ts.ScriptSnapshot.fromString(
-            ts.sys.readFile(removeVirtualFileExt(filename)) || ""
-          );
-        }
-      },
-
-      getCompilationSettings() {
-        return tsProject.options;
-      },
-
-      getCurrentDirectory() {
-        return basePath;
-      },
-    });
-
-    try {
-      let results: Diagnostic[] | undefined;
-      const tsDiags = [
-        ...service.getSuggestionDiagnostics(fsPath),
-        ...service.getSyntacticDiagnostics(fsPath),
-        ...service.getSemanticDiagnostics(fsPath),
-      ];
-      for (const tsDiag of tsDiags) {
-        const cur = getDiag(info, tsDiag);
-        if (cur) {
-          if (results) {
-            results.push(cur);
-          } else {
-            results = [cur];
-          }
+          results = [diag];
         }
       }
-      return results;
-    } catch (err) {
-      displayInformation(inspect(err));
     }
   },
 };
 
 function getScriptInfo(doc: TextDocument): ScriptInfo {
   const parsed = parse(doc);
-  let cached = cache.get(parsed);
+  let cached = parseCache.get(parsed);
 
   if (!cached) {
     const { generated, sourceOffsetAt, generatedOffsetAt } = extractScripts(
@@ -126,17 +161,10 @@ function getScriptInfo(doc: TextDocument): ScriptInfo {
       getCompilerInfo(doc).lookup
     );
 
-    const virtualDoc = TextDocument.create(
-      addVirtualFileExt(doc.uri),
-      "typescript",
-      doc.version,
-      generated
-    );
-
-    cache.set(
+    parseCache.set(
       parsed,
       (cached = {
-        virtualDoc,
+        generated,
         sourceOffsetAt,
         generatedOffsetAt,
         sourceLocationAt(
@@ -149,22 +177,247 @@ function getScriptInfo(doc: TextDocument): ScriptInfo {
           if (end === undefined) return;
           return parsed.locationAt({ start, end });
         },
-        snapshot: ts.ScriptSnapshot.fromString(generated),
       })
     );
   }
   return cached;
 }
 
-function addVirtualFileExt(filename: string) {
-  return `${filename}.ts`;
+function getTSProject(docFsPath: string): ProjectInfo {
+  let configPath: string | undefined;
+  let virtualExt = ts.Extension.Js;
+
+  if (docFsPath) {
+    configPath = ts.findConfigFile(
+      docFsPath,
+      ts.sys.fileExists,
+      "tsconfig.json"
+    );
+
+    if (configPath) {
+      virtualExt = ts.Extension.Ts;
+    } else {
+      configPath = ts.findConfigFile(
+        docFsPath,
+        ts.sys.fileExists,
+        "jsconfig.json"
+      );
+    }
+  }
+
+  const basePath = (configPath && path.dirname(configPath)) || process.cwd();
+  const compilerInfo = getCompilerInfo(basePath);
+  let projectCache = compilerInfo.cache.get(projectsCacheKey) as
+    | Map<string, ProjectInfo>
+    | undefined;
+  let cached: ProjectInfo | undefined;
+
+  // The typescript project and it's language service is
+  // cached with the Marko compiler cache.
+  // This causes the cache to be properly cleared when files change.
+  if (projectCache) {
+    cached = projectCache.get(basePath);
+    if (cached) return cached;
+  } else {
+    // Within the compiler cache we store a map
+    // of project paths to project info.
+    projectCache = new Map();
+    compilerInfo.cache.set(projectsCacheKey, projectCache);
+  }
+
+  const { fileNames, options } = ts.parseJsonConfigFileContent(
+    (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) || {
+      compilerOptions: { lib: ["dom", "node", "esnext"] },
+    },
+    ts.sys,
+    basePath,
+    undefined,
+    configPath,
+    undefined,
+    [
+      {
+        extension: ".marko",
+        isMixedContent: true,
+        scriptKind: ts.ScriptKind.Deferred,
+      },
+    ]
+  );
+
+  options.module = ts.ModuleKind.ESNext;
+  options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
+  options.noEmit =
+    options.allowJs =
+    options.declaration =
+    options.isolatedModules =
+    options.resolveJsonModule =
+    options.allowNonTsExtensions =
+      true;
+
+  const tsPkgFile =
+    configPath &&
+    ts.resolveModuleName("typescript/package.json", configPath, options, ts.sys)
+      .resolvedModule?.resolvedFileName;
+  const defaultLibFile = path.join(
+    tsPkgFile ? path.join(tsPkgFile, "../lib") : __dirname,
+    ts.getDefaultLibFileName(options)
+  );
+
+  const project: ProjectInfo = {
+    basePath,
+    configPath,
+    fileNames,
+    options,
+    getVirtualFileName(doc) {
+      const { scheme, fsPath } = URI.parse(doc.uri);
+      if (scheme === "file") return addVirtualExt(fsPath);
+    },
+    service: ts.createLanguageService({
+      resolveModuleNames(moduleNames, containingFile) {
+        return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
+          if (markoFileReg.test(moduleName)) {
+            if (moduleName[0] === ".") {
+              return {
+                resolvedFileName: path.join(
+                  containingFile,
+                  "..",
+                  addVirtualExt(moduleName)
+                ),
+                extension: ts.Extension.Ts,
+                isExternalLibraryImport: true,
+              };
+            } else if (path.isAbsolute(moduleName)) {
+              return {
+                resolvedFileName: addVirtualExt(moduleName),
+                extension: ts.Extension.Ts,
+                isExternalLibraryImport: true,
+              };
+            } else {
+              const [, nodeModuleName, relativeModulePath] =
+                modulePartsReg.exec(moduleName)!;
+              const { resolvedModule } = ts.resolveModuleName(
+                `${nodeModuleName}/package.json`,
+                containingFile,
+                options,
+                ts.sys
+              );
+
+              if (resolvedModule) {
+                return {
+                  resolvedFileName: path.join(
+                    resolvedModule.resolvedFileName,
+                    "..",
+                    addVirtualExt(relativeModulePath)
+                  ),
+                  extension: ts.Extension.Ts,
+                  isExternalLibraryImport: true,
+                };
+              }
+
+              return;
+            }
+          }
+
+          return ts.resolveModuleName(
+            moduleName,
+            containingFile,
+            options,
+            ts.sys
+          ).resolvedModule;
+        });
+      },
+      readDirectory: ts.sys.readDirectory,
+      getDefaultLibFileName() {
+        return defaultLibFile;
+      },
+      readFile: (filename) => {
+        const doc = documents.get(virtualFileToURI(filename));
+        if (doc) {
+          return markoFileReg.test(filename)
+            ? getScriptInfo(doc).generated
+            : doc.getText();
+        } else {
+          return ts.sys.readFile(filename) || "";
+        }
+      },
+      fileExists: (filename) => {
+        return documents.get(virtualFileToURI(filename)) !== undefined;
+      },
+      getScriptFileNames() {
+        return Array.from(documents.getAllOpen(), (doc) => {
+          const { scheme, fsPath } = URI.parse(doc.uri);
+          if (scheme === "file") return addVirtualExt(fsPath);
+        }).filter(Boolean) as string[];
+      },
+      getScriptVersion(filename) {
+        return `${documents.get(virtualFileToURI(filename))?.version ?? -1}`;
+      },
+      getScriptSnapshot(filename) {
+        const doc = documents.get(virtualFileToURI(filename));
+        if (!doc) return;
+
+        let snapshot = snapshotCache.get(doc);
+        if (!snapshot || snapshotVersions.get(snapshot) !== doc.version) {
+          snapshot = ts.ScriptSnapshot.fromString(
+            markoFileReg.test(doc.uri)
+              ? getScriptInfo(doc).generated
+              : doc.getText()
+          );
+
+          snapshotVersions.set(snapshot, doc.version);
+          snapshotCache.set(doc, snapshot);
+        }
+
+        return snapshot;
+      },
+
+      getCompilationSettings() {
+        return options;
+      },
+
+      getCurrentDirectory() {
+        return basePath;
+      },
+    }),
+  };
+
+  projectCache.set(basePath, project);
+  return project;
+
+  function addVirtualExt(filename: string) {
+    return filename + virtualExt;
+  }
+
+  function removeVirtualFileExt(filename: string) {
+    return filename.replace(/\.marko\.[jt]s$/, ".marko");
+  }
+
+  function virtualFileToURI(filename: string) {
+    return removeVirtualFileExt(URI.parse(filename).fsPath);
+  }
 }
 
-function removeVirtualFileExt(filename: string) {
-  return filename.replace(/\.marko\.ts$/, ".marko");
+function printDocumentation(
+  docs: ts.SymbolDisplayPart[] | undefined,
+  tags: ts.JSDocTagInfo[] | undefined
+) {
+  let result = "";
+  if (docs) {
+    result += ts.displayPartsToString(docs);
+  }
+
+  if (tags) {
+    for (const tag of tags) {
+      const text = ts.displayPartsToString(tag.text);
+      result += `*@${tag.name}*${
+        text ? (/\n/.test(text) ? `\n${text}` : `- ${text}`) : ""
+      }`;
+    }
+  }
+
+  return result;
 }
 
-function getDiag(
+function convertDiag(
   info: ScriptInfo,
   tsDiag: ts.Diagnostic
 ): Diagnostic | undefined {
@@ -178,14 +431,14 @@ function getDiag(
       range,
       source: "ts",
       code: tsDiag.code,
-      tags: getDiagTags(tsDiag),
-      severity: getDiagSeverity(tsDiag),
+      tags: convertDiagTags(tsDiag),
+      severity: convertDiagSeverity(tsDiag),
       message: ts.flattenDiagnosticMessageText(tsDiag.messageText, "\n"),
     };
   }
 }
 
-function getDiagSeverity(tsDiag: ts.Diagnostic) {
+function convertDiagSeverity(tsDiag: ts.Diagnostic) {
   switch (tsDiag.category) {
     case ts.DiagnosticCategory.Error:
       return DiagnosticSeverity.Error;
@@ -198,7 +451,7 @@ function getDiagSeverity(tsDiag: ts.Diagnostic) {
   }
 }
 
-function getDiagTags(tsDiag: ts.Diagnostic) {
+function convertDiagTags(tsDiag: ts.Diagnostic) {
   let tags: DiagnosticTag[] | undefined;
 
   if (tsDiag.reportsDeprecated) {
@@ -211,56 +464,6 @@ function getDiagTags(tsDiag: ts.Diagnostic) {
   }
 
   return tags;
-}
-
-function findTSConfigPath(docFsPath: string | undefined): string | undefined {
-  if (docFsPath) {
-    return ts.findConfigFile(docFsPath, ts.sys.fileExists, "tsconfig.json");
-  }
-}
-
-function getTSProject(
-  basePath: string,
-  tsConfigPath: string | undefined
-): ts.ParsedCommandLine {
-  const configData: ts.TsConfigSourceFile = (tsConfigPath &&
-    ts.readConfigFile(tsConfigPath, ts.sys.readFile).config) || {
-    compilerOptions: {
-      lib: ["dom", "node", "esnext"],
-    } as ts.CompilerOptions,
-  };
-
-  const project = ts.parseJsonConfigFileContent(
-    configData,
-    ts.sys,
-    basePath,
-    undefined,
-    tsConfigPath,
-    undefined,
-    [
-      {
-        extension: ".marko",
-        isMixedContent: true,
-        scriptKind: ts.ScriptKind.Deferred,
-      },
-    ]
-  );
-
-  return {
-    ...project,
-    fileNames: project.fileNames.map(removeVirtualFileExt),
-    options: {
-      ...project.options,
-      noEmit: true,
-      allowJs: true,
-      declaration: false,
-      isolatedModules: true,
-      resolveJsonModule: true,
-      allowNonTsExtensions: true,
-      module: ts.ModuleKind.ESNext,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    },
-  };
 }
 
 export { ScriptService as default };

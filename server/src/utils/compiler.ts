@@ -12,9 +12,10 @@ import * as builtinTranslator from "@marko/translator-default";
 import { getDocDir } from "./doc-file";
 import * as parser from "./parser";
 
-const lookupKey = Symbol("lookup");
+const lookupKey = Symbol();
 const compilerInfoByDir = new Map<string, CompilerInfo>();
 const builtinInfo: CompilerInfo = {
+  rootDir: process.cwd(),
   cache: new Map(),
   lookup: builtinCompiler.taglib.buildLookup(__dirname, builtinTranslator),
   compiler: builtinCompiler,
@@ -25,6 +26,7 @@ builtinCompiler.configure({ translator: builtinTranslator });
 export type Compiler = typeof import("@marko/compiler");
 export { AttributeDefinition, TagDefinition, TaglibLookup };
 export type CompilerInfo = {
+  rootDir: string;
   cache: Map<unknown, unknown>;
   lookup: TaglibLookup;
   compiler: Compiler;
@@ -44,8 +46,8 @@ export function parse(doc: TextDocument) {
   return parsed;
 }
 
-export function getCompilerInfo(doc: TextDocument): CompilerInfo {
-  const dir = getDocDir(doc);
+export function getCompilerInfo(doc: string | TextDocument): CompilerInfo {
+  const dir = typeof doc === "string" ? doc : getDocDir(doc);
   if (!dir) return builtinInfo;
 
   let info = compilerInfoByDir.get(dir);
@@ -61,17 +63,19 @@ export function clearCompilerCache(doc?: TextDocument) {
   if (doc) {
     getCompilerInfo(doc).cache.delete(doc);
   } else {
+    const clearedCompilers = new Set<CompilerInfo>();
     for (const [, info] of compilerInfoByDir) {
+      if (clearedCompilers.has(info)) continue;
       info.cache.clear();
       info.compiler.taglib.clearCaches();
+      clearedCompilers.add(info);
     }
   }
 }
 
 function loadCompilerInfo(dir: string): CompilerInfo {
-  const rootDir = lassoPackageRoot.getRootDir(dir);
-  const pkgPath =
-    rootDir && resolveFrom.silent(rootDir, "@marko/compiler/package.json");
+  const rootDir = lassoPackageRoot.getRootDir(dir) || builtinInfo.rootDir;
+  const pkgPath = resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
   const cache = new Map();
   let translator = builtinTranslator;
@@ -103,6 +107,7 @@ function loadCompilerInfo(dir: string): CompilerInfo {
   }
 
   return {
+    rootDir,
     cache,
     get lookup() {
       let lookup: TaglibLookup = cache.get(lookupKey);
