@@ -343,10 +343,14 @@ function getTSProject(docFsPath: string): ProjectInfo {
         return documents.get(virtualFileToURI(filename)) !== undefined;
       },
       getScriptFileNames() {
-        return Array.from(documents.getAllOpen(), (doc) => {
+        const result = new Set<string>(fileNames);
+        for (const doc of documents.getAllOpen()) {
           const { scheme, fsPath } = URI.parse(doc.uri);
-          if (scheme === "file") return addVirtualExt(fsPath);
-        }).filter(Boolean) as string[];
+          if (scheme === "file") result.add(fsPath);
+        }
+        return Array.from(result, (fileName) =>
+          markoFileReg.test(fileName) ? addVirtualExt(fileName) : fileName
+        );
       },
       getScriptVersion(filename) {
         return `${documents.get(virtualFileToURI(filename))?.version ?? -1}`;
@@ -392,7 +396,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
   }
 
   function virtualFileToURI(filename: string) {
-    return removeVirtualFileExt(URI.parse(filename).fsPath);
+    return URI.file(removeVirtualFileExt(filename)).toString();
   }
 }
 

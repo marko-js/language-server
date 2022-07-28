@@ -34,14 +34,6 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 connection.onInitialize(async (params) => {
-  documents.setup(connection, (changeDoc) => {
-    if (changeDoc) {
-      queueDiagnostic();
-      clearCompilerCache(changeDoc);
-    } else {
-      validateDocs();
-    }
-  });
   setupMessages(connection);
   await service.initialize(params);
 
@@ -83,6 +75,15 @@ connection.onInitialize(async (params) => {
       },
     },
   };
+});
+
+documents.setup(connection, (changeDoc) => {
+  if (changeDoc) {
+    queueDiagnostic();
+    clearCompilerCache(changeDoc);
+  } else {
+    validateDocs();
+  }
 });
 
 connection.onDidChangeConfiguration(validateDocs);

@@ -6,6 +6,8 @@ import { createExtractor } from "../../utils/extractor";
 import { Node, Range, NodeType, Ranges, parse } from "../../utils/parser";
 import { URI } from "vscode-uri";
 
+const blockReg = /(?<=\s*){/y;
+
 /**
  * Iterate over the Marko CST and extract all the script content.
  */
@@ -76,6 +78,16 @@ export function extractScripts(
         return;
       case NodeType.Placeholder:
         addExpr(node.value);
+        return;
+      case NodeType.Scriptlet:
+        extractor.write`${
+          node.block
+            ? {
+                start: node.value.start + 1,
+                end: node.value.end - 1,
+              }
+            : node.value
+        };`;
         return;
       case NodeType.Tag: {
         const tagName = node.nameText;
@@ -207,13 +219,23 @@ export function extractScripts(
             // TODO needs to extend Marko.Component
             addExpr(node);
             break;
-          case "s": // static
-            // todo: pull out blocks
+          case "s": {
+            // static
+            let start = node.start + "static ".length;
+            let end = node.end;
+            blockReg.lastIndex = start;
+
+            if (blockReg.test(code)) {
+              start = blockReg.lastIndex;
+              end--;
+            }
+
             extractor.write`${{
-              start: node.start + "static ".length,
-              end: node.end,
+              start,
+              end,
             }};`;
             break;
+          }
         }
         break;
       case NodeType.Comment:
@@ -229,7 +251,9 @@ export function extractScripts(
       extractor.write`export default (() => {`;
     }
   } else {
-    extractor.write`export default ((component, input, state) => {`;
+    extractor.write`// @ts-expect-error We expect the compiler to error because we are checking if "Input" is defined as a type.
+type __input__ = MARKO_NOT_DECLARED extends any ? 0 extends 1 & Input ? Record<string, any> : Input : never;
+export default ((component, input: __input__, state) => {`;
     // TODO should output code to invoke this function with something like
     // 1 as unknown as typeof __input__, 1 as unknown as Component["state"], 1 as Component
     // state should be undefined if we didn't find a component.

@@ -23,7 +23,7 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "/Users/dpiercey/dev/tmp/vite-tags-api"
+        "/Users/dpiercey/dev/tmp/demo"
       ],
       "outFiles": [
         "${workspaceRoot}/**/dist/*.js",
