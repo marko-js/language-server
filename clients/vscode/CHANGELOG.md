@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.32
+
+### Patch Changes
+
+- [#124](https://github.com/marko-js/language-server/pull/124) [`26c0644`](https://github.com/marko-js/language-server/commit/26c0644cb260723025fbb5c96fbaadb0a5526cf2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Enable Marko's formatter by default without needing to specify it in your vscode config.
+
 ## 0.17.31
 
 ### Patch Changes
