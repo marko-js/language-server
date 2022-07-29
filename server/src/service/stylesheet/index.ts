@@ -44,9 +44,9 @@ const services: Record<
   string,
   (options: LanguageServiceOptions) => LanguageService
 > = {
-  css: getCSSLanguageService,
-  less: getLESSLanguageService,
-  scss: getSCSSLanguageService,
+  ".css": getCSSLanguageService,
+  ".less": getLESSLanguageService,
+  ".scss": getSCSSLanguageService,
 };
 let clientCapabilities: InitializeParams["capabilities"] | undefined;
 

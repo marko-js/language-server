@@ -1,6 +1,8 @@
 import { createParser, TagType, Range, Ranges } from "htmljs-parser";
 import { getNodeAtOffset } from "./get-node-at-offset";
 
+const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
+
 export { Range, Ranges };
 
 export const UNFINISHED = Number.MAX_SAFE_INTEGER;
@@ -25,9 +27,13 @@ export enum NodeType {
   Doctype,
   Declaration,
   Comment,
-  Statement,
   Placeholder,
   Scriptlet,
+  Import,
+  Export,
+  Class,
+  Style,
+  Static,
 }
 
 export namespace Node {
@@ -52,11 +58,15 @@ export namespace Node {
     | Doctype
     | Declaration
     | Comment
-    | Statement
     | Placeholder
-    | Scriptlet;
+    | Scriptlet
+    | Import
+    | Export
+    | Class
+    | Style
+    | Static;
   export type ParentNode = Program | Tag | AttrTag;
-  export type StaticNode = Comment | Statement;
+  export type StaticNode = Comment | Import | Export | Class | Style | Static;
   export type ParentTag = Tag | AttrTag;
   export type AttrNode = AttrNamed | AttrSpread | AttrTag;
   export type ChildNode =
@@ -147,11 +157,6 @@ export namespace Node {
     parent: ParentTag;
   }
 
-  export interface Statement extends Range {
-    type: NodeType.Statement;
-    parent: ParentNode;
-  }
-
   export interface Text extends Range {
     type: NodeType.Text;
     parent: ParentNode;
@@ -225,6 +230,33 @@ export namespace Node {
     type: NodeType.AttrSpread;
     parent: ParentTag;
   }
+
+  export interface Import extends Range {
+    type: NodeType.Import;
+    parent: ParentNode;
+  }
+
+  export interface Export extends Range {
+    type: NodeType.Export;
+    parent: ParentNode;
+  }
+
+  export interface Class extends Range {
+    type: NodeType.Class;
+    parent: ParentNode;
+  }
+
+  export interface Style extends Range {
+    type: NodeType.Style;
+    parent: ParentNode;
+    ext: string | undefined;
+    value: Range;
+  }
+
+  export interface Static extends Range {
+    type: NodeType.Static;
+    parent: ParentNode;
+  }
 }
 
 export function parse(source: string) {
@@ -236,17 +268,14 @@ export function parse(source: string) {
     start: 0,
     end: source.length,
   };
-  let curBodyType: TagType;
   let curOpenTagStart: Range | undefined;
-  let curParent: Node.ParentNode | Node.Statement = program;
-  let curAttr: Node.AttrNamed | undefined = undefined;
-  let curBody: Exclude<Node.ParentNode["body"], void> = program.body;
+  let curParent: Node.ParentNode = program;
+  let curStatic: Node.StaticNode | undefined;
+  let curAttr: Node.AttrNamed | undefined;
 
   const parser = createParser({
     onText(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Text,
         parent: curParent,
         start: range.start,
@@ -254,9 +283,7 @@ export function parse(source: string) {
       });
     },
     onCDATA(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.CDATA,
         parent: curParent,
         value: range.value,
@@ -265,9 +292,7 @@ export function parse(source: string) {
       });
     },
     onDoctype(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Doctype,
         parent: curParent,
         value: range.value,
@@ -276,9 +301,7 @@ export function parse(source: string) {
       });
     },
     onDeclaration(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Declaration,
         parent: curParent,
         value: range.value,
@@ -287,9 +310,7 @@ export function parse(source: string) {
       });
     },
     onComment(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Comment,
         parent: curParent,
         value: range.value,
@@ -298,9 +319,7 @@ export function parse(source: string) {
       });
     },
     onPlaceholder(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Placeholder,
         parent: curParent,
         value: range.value,
@@ -310,9 +329,7 @@ export function parse(source: string) {
       });
     },
     onScriptlet(range) {
-      // @ts-expect-error we know we are in a Tag or Program
-      declare const curParent: Node.ParentNode;
-      curBody.push({
+      pushBody(curParent, {
         type: NodeType.Scriptlet,
         parent: curParent,
         value: range.value,
@@ -328,6 +345,7 @@ export function parse(source: string) {
       let concise = true;
       let start = range.start;
       let type = NodeType.Tag;
+      let bodyType = TagType.html;
       let nameText: string | undefined = undefined;
 
       if (curOpenTagStart) {
@@ -336,10 +354,81 @@ export function parse(source: string) {
         curOpenTagStart = undefined;
       }
 
-      if (range.expressions.length) {
-        curBodyType = TagType.html;
-      } else {
+      if (!range.expressions.length) {
         switch ((nameText = parser.read(range))) {
+          // All statement types will early return.
+          case "style": {
+            styleBlockReg.lastIndex = range.end;
+            const styleBlockMatch = styleBlockReg.exec(source);
+
+            if (styleBlockMatch) {
+              const [{ length }, ext] = styleBlockMatch;
+              pushStatic(
+                program,
+                (curStatic = {
+                  type: NodeType.Style,
+                  parent: program,
+                  ext: ext || undefined,
+                  value: {
+                    start: range.end + length,
+                    end: UNFINISHED,
+                  },
+                  start: range.start,
+                  end: UNFINISHED,
+                })
+              );
+              return TagType.statement;
+            } else {
+              return TagType.text;
+            }
+          }
+          case "class":
+            pushStatic(
+              program,
+              (curStatic = {
+                type: NodeType.Class,
+                parent: program,
+                start: range.start,
+                end: UNFINISHED,
+              })
+            );
+            return TagType.statement;
+          case "export":
+            pushStatic(
+              program,
+              (curStatic = {
+                type: NodeType.Export,
+                parent: program,
+                start: range.start,
+                end: UNFINISHED,
+              })
+            );
+            return TagType.statement;
+          case "import":
+            pushStatic(
+              program,
+              (curStatic = {
+                type: NodeType.Import,
+                parent: program,
+                start: range.start,
+                end: UNFINISHED,
+              })
+            );
+            return TagType.statement;
+          case "static":
+            pushStatic(
+              program,
+              (curStatic = {
+                type: NodeType.Static,
+                parent: program,
+                start: range.start,
+                end: UNFINISHED,
+              })
+            );
+            return TagType.statement;
+
+          // The following are all still tags,
+          // but with a different body type.
           case "area":
           case "base":
           case "br":
@@ -354,51 +443,23 @@ export function parse(source: string) {
           case "source":
           case "track":
           case "wbr":
-            curBodyType = TagType.void;
+            bodyType = TagType.void;
             break;
           case "html-comment":
           case "script":
-          case "style":
           case "textarea":
-            curBodyType = TagType.text;
+            bodyType = TagType.text;
             break;
-          case "class":
-          case "export":
-          case "import":
-          case "static": {
-            // Copy comments before statements into the static section.
-            let i = program.body.length;
-            for (; i--; ) {
-              const prev = program.body[i];
-              if (prev.type === NodeType.Comment) {
-                program.static.push(prev);
-              } else {
-                break;
-              }
-            }
-
-            program.body.length = i + 1; // Remove comments that were copied from above.
-            program.static.push(
-              (curParent = {
-                type: NodeType.Statement,
-                parent: program,
-                start: range.start,
-                end: UNFINISHED, // will be set later
-              })
-            );
-            return (curBodyType = TagType.statement);
-          }
           default:
             if (nameText[0] === "@") {
               type = NodeType.AttrTag;
             }
-            curBodyType = TagType.html;
             break;
         }
       }
 
       const parent = curParent as Node.ParentNode;
-      const end = UNFINISHED; // will be set later
+      const end = UNFINISHED;
       const name: Node.OpenTagName = {
         type: NodeType.OpenTagName,
         parent: undefined as unknown as Node.Tag,
@@ -425,7 +486,7 @@ export function parse(source: string) {
             shorthandClassNames: undefined,
             attrs: undefined,
             selfClosed: false,
-            bodyType: curBodyType,
+            bodyType,
             body: undefined,
             close: undefined,
             start,
@@ -457,9 +518,9 @@ export function parse(source: string) {
         } while (false);
       }
 
-      curBody.push(tag);
+      pushBody(parent, tag);
       curOpenTagStart = undefined;
-      return curBodyType;
+      return bodyType;
     },
     onTagShorthandId(range) {
       // @ts-expect-error we know we are in a Tag
@@ -590,21 +651,26 @@ export function parse(source: string) {
       });
     },
     onOpenTagEnd(range) {
-      curAttr = undefined;
+      if (curStatic) {
+        if (curStatic.type === NodeType.Style) {
+          curStatic.value.end = range.end - 1;
+        }
 
-      if (curBodyType === TagType.statement) {
-        curParent.end = range.end;
-        curParent = curParent.parent as Node.ParentNode;
+        curStatic.end = range.end;
+        curStatic = undefined;
       } else {
+        curAttr = undefined;
+
         const tag = curParent as Node.ParentTag;
         tag.open.end = range.end;
 
-        if (range.selfClosed || curBodyType === TagType.void) {
+        if (range.selfClosed) {
           curParent = tag.parent;
-          tag.selfClosed = range.selfClosed;
           tag.end = range.end;
-        } else {
-          curBody = tag.body = [];
+          tag.selfClosed = range.selfClosed;
+        } else if (tag.bodyType === TagType.void) {
+          curParent = tag.parent;
+          tag.end = range.end;
         }
       }
     },
@@ -619,7 +685,7 @@ export function parse(source: string) {
     onCloseTagEnd(range) {
       if (hasCloseTag(curParent)) curParent.close.end = range.end;
       curParent.end = range.end;
-      curBody = (curParent = curParent.parent as Node.ParentNode).body!;
+      curParent = curParent.parent as Node.ParentNode;
     },
   });
 
@@ -631,6 +697,30 @@ export function parse(source: string) {
     nodeAt: (offset: number) => getNodeAtOffset(offset, program),
     program,
   };
+}
+
+function pushStatic(program: Node.Program, node: Node.StaticNode) {
+  // Copy comments before statements into the static section.
+  let i = program.body.length;
+  for (; i--; ) {
+    const prev = program.body[i];
+    if (prev.type === NodeType.Comment) {
+      program.static.push(prev);
+    } else {
+      break;
+    }
+  }
+
+  program.body.length = i + 1; // Remove comments that were copied from above.
+  program.static.push(node);
+}
+
+function pushBody(parent: Node.ParentNode, node: Node.ChildNode) {
+  if (parent.body) {
+    parent.body.push(node);
+  } else {
+    parent.body = [node];
+  }
 }
 
 function pushAttr(parent: Node.ParentTag, node: Node.AttrNode) {

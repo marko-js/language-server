@@ -80,14 +80,16 @@ export function extractScripts(
         addExpr(node.value);
         return;
       case NodeType.Scriptlet:
-        extractor.write`${
-          node.block
-            ? {
-                start: node.value.start + 1,
-                end: node.value.end - 1,
-              }
-            : node.value
-        };`;
+        if (node.block) {
+          blockReg.lastIndex = node.value.start;
+          blockReg.test(code);
+          extractor.write`${{
+            start: blockReg.lastIndex,
+            end: node.value.end - 1,
+          }};`;
+        } else {
+          extractor.write`${node.value};`;
+        }
         return;
       case NodeType.Tag: {
         const tagName = node.nameText;
@@ -97,16 +99,6 @@ export function extractScripts(
             case "return":
               // Handled at the root level.
               return;
-            case "style":
-              if (node.concise && node.attrs) {
-                const block = node.attrs.at(-1)!;
-                // Ignore style block attrs.
-                if (
-                  block.type === NodeType.AttrNamed &&
-                  code[block.start] === "{"
-                )
-                  return;
-              }
           }
 
           const tagDef = lookup.getTag(tagName);
@@ -182,62 +174,56 @@ export function extractScripts(
 
   for (const node of program.static) {
     switch (node.type) {
-      case NodeType.Statement:
-        switch (code.charAt(node.start)) {
-          case "e": // export
-            extractor.write`${node};`;
-            break;
-          case "i": {
-            // import
-            const tagImport = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
-            tagImport.lastIndex = node.start + "import ".length;
-            const tagImportMatch = tagImport.exec(code);
+      case NodeType.Class:
+        // TODO needs to extend Marko.Component
+        addExpr(node);
+        break;
+      case NodeType.Export:
+        extractor.write`${node};`;
+        break;
+      case NodeType.Import: {
+        const tagImport = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
+        tagImport.lastIndex = node.start + "import ".length;
+        const tagImportMatch = tagImport.exec(code);
 
-            if (tagImportMatch) {
-              // Here we're looking for Marko's shorthand imports for tags and pre-resolving them so typescript knows what we're loading.
-              const [{ length }, , tagName] = tagImportMatch;
-              const templatePath = resolveTemplatePath(
-                fsPath,
-                lookup.getTag(tagName)
-              );
-              if (templatePath) {
-                extractor.write`${{
-                  start: node.start,
-                  end: tagImportMatch.index,
-                }}${templatePath}${{
-                  start: tagImportMatch.index + length,
-                  end: node.end,
-                }};`;
-                break;
-              }
-            }
-
-            extractor.write`${node};`;
-            break;
-          }
-          case "c": // class
-            // TODO needs to extend Marko.Component
-            addExpr(node);
-            break;
-          case "s": {
-            // static
-            let start = node.start + "static ".length;
-            let end = node.end;
-            blockReg.lastIndex = start;
-
-            if (blockReg.test(code)) {
-              start = blockReg.lastIndex;
-              end--;
-            }
-
+        if (tagImportMatch) {
+          // Here we're looking for Marko's shorthand imports for tags and pre-resolving them so typescript knows what we're loading.
+          const [{ length }, , tagName] = tagImportMatch;
+          const templatePath = resolveTemplatePath(
+            fsPath,
+            lookup.getTag(tagName)
+          );
+          if (templatePath) {
             extractor.write`${{
-              start,
-              end,
+              start: node.start,
+              end: tagImportMatch.index,
+            }}${templatePath}${{
+              start: tagImportMatch.index + length,
+              end: node.end,
             }};`;
             break;
           }
         }
+
+        extractor.write`${node};`;
         break;
+      }
+      case NodeType.Static: {
+        let start = node.start + "static ".length;
+        let end = node.end;
+        blockReg.lastIndex = start;
+
+        if (blockReg.test(code)) {
+          start = blockReg.lastIndex;
+          end--;
+        }
+
+        extractor.write`${{
+          start,
+          end,
+        }};`;
+        break;
+      }
       case NodeType.Comment:
         extractor.write`/*${node.value}*/`;
         break;

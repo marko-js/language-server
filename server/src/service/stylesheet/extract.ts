@@ -18,18 +18,7 @@ export function extractStyleSheets(
   const { read, program } = parsed;
   const getExtractor = (ext: string) =>
     extractorsByExt[ext] || (extractorsByExt[ext] = createExtractor(code));
-  const getFileExtFromTag = (tag: Node.Tag) => {
-    const prefixEnd = tag.shorthandClassNames
-      ? tag.shorthandClassNames.at(-1)!.end
-      : tag.name.end;
 
-    return tag.shorthandClassNames
-      ? read({
-          start: tag.shorthandClassNames[0].start,
-          end: prefixEnd,
-        }).replace(/^.*\./, "")
-      : "css";
-  };
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
       case NodeType.AttrTag:
@@ -40,21 +29,12 @@ export function extractStyleSheets(
         }
         break;
       case NodeType.Tag:
-        if (node.nameText === "style" && node.concise && node.attrs) {
-          const block = node.attrs.at(-1)!;
-          // Adds style blocks to the style sheet.
-          if (block.type === NodeType.AttrNamed && code[block.start] === "{") {
-            getExtractor(getFileExtFromTag(node)).write`${{
-              start: block.start + 1,
-              end: block.end - 1,
-            }}`;
-            break;
-          }
-        }
-
         if (node.body) {
           if (node.nameText === "style") {
-            const ext = getFileExtFromTag(node);
+            const ext = node.shorthandClassNames
+              ? read(node.shorthandClassNames.at(-1)!)
+              : ".css";
+
             for (const child of node.body) {
               switch (child.type) {
                 case NodeType.Text:
@@ -107,6 +87,12 @@ export function extractStyleSheets(
         break;
     }
   };
+
+  for (const node of program.static) {
+    if (node.type === NodeType.Style) {
+      getExtractor(node.ext || ".css").write`${node.value}`;
+    }
+  }
 
   for (const node of program.body) visit(node);
 

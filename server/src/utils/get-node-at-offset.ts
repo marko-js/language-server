@@ -4,8 +4,8 @@ export function getNodeAtOffset(
   offset: number,
   program: Node.Program
 ): Node.AnyNode {
-  const bodyNode = childAtOffset(offset, program.body);
-  if (bodyNode) return visitChildNode(offset, bodyNode);
+  const childNode = childAtOffset(offset, program.body);
+  if (childNode) return visitChildNode(offset, childNode);
   return childAtOffset(offset, program.static) || program;
 }
 

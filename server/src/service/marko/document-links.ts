@@ -3,7 +3,7 @@ import { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 import { getCompilerInfo, parse } from "../../utils/compiler";
-import { type Node, type Range, NodeType } from "../../utils/parser";
+import { type Node, NodeType } from "../../utils/parser";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
 import isDocumentLinkAttr from "./util/is-document-link-attr";
@@ -34,9 +34,7 @@ function extractDocumentLinks(
   }
 
   const links: DocumentLink[] = [];
-  const { program } = parsed;
-  const code = doc.getText();
-  const read = (range: Range) => code.slice(range.start, range.end);
+  const { program, read } = parsed;
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
       case NodeType.AttrTag:
@@ -75,11 +73,11 @@ function extractDocumentLinks(
     }
   };
 
-  for (const item of program.static) {
+  for (const node of program.static) {
     // check for import statement (this currently only support the tag import shorthand).
-    if (item.type === NodeType.Statement && code[item.start] === "i") {
+    if (node.type === NodeType.Import) {
       importTagReg.lastIndex = 0;
-      const value = parsed.read(item);
+      const value = parsed.read(node);
       const match = importTagReg.exec(value);
       if (match) {
         const [{ length }, , tagName] = match;
@@ -90,8 +88,8 @@ function extractDocumentLinks(
           links.push(
             DocumentLink.create(
               parsed.locationAt({
-                start: item.start + match.index,
-                end: item.start + match.index + length,
+                start: node.start + match.index,
+                end: node.start + match.index + length,
               }),
               fileForTag
             )
@@ -101,8 +99,8 @@ function extractDocumentLinks(
     }
   }
 
-  for (const item of program.body) {
-    visit(item);
+  for (const node of program.body) {
+    visit(node);
   }
 
   return links;
