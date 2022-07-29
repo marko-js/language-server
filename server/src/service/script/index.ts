@@ -6,6 +6,7 @@ import type { Plugin } from "../types";
 import { extractScripts } from "./extract";
 import {
   CompletionItem,
+  CompletionItemKind,
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
@@ -14,6 +15,7 @@ import type { Location } from "htmljs-parser";
 import * as documents from "../../utils/text-documents";
 import { START_OF_FILE } from "../../utils/utils";
 import { URI } from "vscode-uri";
+import { relativeImportPath } from "relative-import-path";
 
 interface ProjectInfo {
   basePath: string;
@@ -40,6 +42,7 @@ const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
 const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
 const markoFileReg = /\.marko$/;
 const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)/;
+const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 
 const ScriptService: Partial<Plugin> = {
   doComplete(doc, params) {
@@ -55,21 +58,76 @@ const ScriptService: Partial<Plugin> = {
     const completions = service.getCompletionsAtPosition(
       getVirtualFileName(doc)!,
       generatedOffset,
-      undefined
+      {
+        triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
+        includeCompletionsWithInsertText: true,
+        includeCompletionsForModuleExports: true,
+        // TODO: the rest must be derived from vscode config
+      }
     );
     if (!completions || completions.entries.length === 0) return;
 
     const result: CompletionItem[] = [];
 
     for (const completion of completions.entries) {
+      const { replacementSpan, insertText } = completion;
+      let { name: label } = completion;
+      let textEdit: CompletionItem["textEdit"];
+      let detail: CompletionItem["detail"];
+
+      if (completion.source && completion.hasAction) {
+        // TODO: test this
+        // TODO: should shorten replacement when importing a Marko file that can be discovered through taglib.
+        label = relativeImportPath(fsPath, completion.source);
+        detail = completion.source;
+      }
+
+      if (completion.sourceDisplay) {
+        // TODO: test this
+        detail = ts.displayPartsToString(completion.sourceDisplay);
+      }
+
+      if (completion.labelDetails) {
+        // TODO: test this
+        detail = completion.labelDetails.detail;
+      }
+
+      if (completion.kindModifiers) {
+        // TODO
+      }
+
+      if (replacementSpan) {
+        const range = info.sourceLocationAt(
+          replacementSpan.start,
+          replacementSpan.start + replacementSpan.length
+        );
+
+        if (range) {
+          textEdit = {
+            range,
+            newText: insertText || label,
+          };
+        } else {
+          continue;
+        }
+      }
+
       result.push({
-        label: completion.name,
-        sortText: completion.sortText,
+        detail,
+        filterText: insertText,
+        insertText,
+        kind: convertCompletionItemKind(completion.kind),
+        label,
         preselect: completion.isRecommended,
+        sortText: completion.sortText,
+        textEdit,
       });
     }
 
-    return result;
+    return {
+      isIncomplete: true,
+      items: result,
+    };
   },
   doHover(doc, params) {
     const info = getScriptInfo(doc);
@@ -468,6 +526,87 @@ function convertDiagTags(tsDiag: ts.Diagnostic) {
   }
 
   return tags;
+}
+
+function convertCompletionItemKind(kind: ts.ScriptElementKind) {
+  switch (kind) {
+    case ts.ScriptElementKind.warning:
+    case ts.ScriptElementKind.linkText:
+      return CompletionItemKind.Text;
+
+    case ts.ScriptElementKind.keyword:
+    case ts.ScriptElementKind.primitiveType:
+      return CompletionItemKind.Keyword;
+
+    case ts.ScriptElementKind.scriptElement:
+      return CompletionItemKind.File;
+
+    case ts.ScriptElementKind.directory:
+      return CompletionItemKind.Folder;
+
+    case ts.ScriptElementKind.label:
+    case ts.ScriptElementKind.string:
+      return CompletionItemKind.Constant;
+
+    case ts.ScriptElementKind.moduleElement:
+    case ts.ScriptElementKind.externalModuleName:
+      return CompletionItemKind.Module;
+
+    case ts.ScriptElementKind.typeElement:
+    case ts.ScriptElementKind.classElement:
+    case ts.ScriptElementKind.localClassElement:
+      return CompletionItemKind.Class;
+
+    case ts.ScriptElementKind.interfaceElement:
+      return CompletionItemKind.Interface;
+
+    case ts.ScriptElementKind.enumElement:
+      return CompletionItemKind.Enum;
+
+    case ts.ScriptElementKind.enumMemberElement:
+      return CompletionItemKind.EnumMember;
+
+    case ts.ScriptElementKind.alias:
+    case ts.ScriptElementKind.letElement:
+    case ts.ScriptElementKind.constElement:
+    case ts.ScriptElementKind.variableElement:
+    case ts.ScriptElementKind.parameterElement:
+    case ts.ScriptElementKind.localVariableElement:
+      return CompletionItemKind.Variable;
+
+    case ts.ScriptElementKind.functionElement:
+    case ts.ScriptElementKind.localFunctionElement:
+      return CompletionItemKind.Function;
+
+    case ts.ScriptElementKind.callSignatureElement:
+    case ts.ScriptElementKind.memberFunctionElement:
+    case ts.ScriptElementKind.indexSignatureElement:
+    case ts.ScriptElementKind.constructSignatureElement:
+      return CompletionItemKind.Method;
+
+    case ts.ScriptElementKind.memberGetAccessorElement:
+    case ts.ScriptElementKind.memberSetAccessorElement:
+    case ts.ScriptElementKind.memberVariableElement:
+      return CompletionItemKind.Field;
+
+    case ts.ScriptElementKind.constructorImplementationElement:
+      return CompletionItemKind.Constructor;
+
+    case ts.ScriptElementKind.typeParameterElement:
+      return CompletionItemKind.TypeParameter;
+
+    case ts.ScriptElementKind.link:
+    case ts.ScriptElementKind.linkName:
+      return CompletionItemKind.Reference;
+
+    default:
+      return CompletionItemKind.Property;
+  }
+}
+
+function getTSTriggerChar(char: string | undefined) {
+  if (char && tsTriggerChars.has(char))
+    return char as ts.CompletionsTriggerCharacter;
 }
 
 export { ScriptService as default };
