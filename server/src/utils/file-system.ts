@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import { type FileStat, FileType } from "vscode-css-languageservice";
 import { fileURLToPath } from "url";
+import { type FileStat, FileType } from "vscode-css-languageservice";
 
 export { FileStat, FileType };
 export default {
@@ -33,21 +33,18 @@ async function stat(uri: string): Promise<FileStat> {
 }
 
 async function readDirectory(uri: string): Promise<[string, FileType][]> {
+  const result: [string, FileType][] = [];
+
   try {
-    const entries = await fs.readdir(fileURLToPath(uri));
-    const base = uri.at(-1) === "/" ? uri : `${uri}/`;
-    return (
-      await Promise.all(
-        entries.map(
-          async (entry) =>
-            [entry, (await stat(new URL(entry, base).toString())).type] as [
-              string,
-              FileType
-            ]
-        )
-      )
-    ).filter(([, type]) => type !== FileType.Unknown);
+    for await (const entry of await fs.opendir(fileURLToPath(uri))) {
+      if (entry.isFile()) {
+        result.push([entry.name, FileType.File]);
+      } else if (entry.isDirectory()) {
+        result.push([entry.name, FileType.Directory]);
+      }
+    }
   } catch {
-    return [];
+    // ignore
   }
+  return result;
 }
