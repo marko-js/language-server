@@ -57,6 +57,11 @@
           "description": "Traces the communication between VSCode and the language server."
         }
       }
+    },
+    "configurationDefaults": {
+      "[marko]": {
+        "editor.defaultFormatter": "Marko-JS.marko-vscode"
+      }
     }
   },
   "devDependencies": {
