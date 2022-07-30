@@ -23,7 +23,7 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { getCompilerInfo, parse } from "../../utils/compiler";
+import { getCompilerInfo, getParsed } from "../../utils/compiler";
 import type { Extracted } from "../../utils/extractor";
 import fileSystemProvider from "../../utils/file-system";
 import type { Parsed } from "../../utils/parser";
@@ -460,7 +460,7 @@ function getGeneratedRange(
 }
 
 function extract(doc: TextDocument) {
-  const parsed = parse(doc);
+  const parsed = getParsed(doc);
   let cached = extractCache.get(parsed);
 
   if (!cached) {

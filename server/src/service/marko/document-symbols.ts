@@ -5,14 +5,14 @@ import { URI } from "vscode-uri";
 
 import type { Plugin } from "../types";
 import { type Node, NodeType, type Parsed } from "../../utils/parser";
-import { getCompilerInfo, parse } from "../../utils/compiler";
+import { getCompilerInfo, getParsed } from "../../utils/compiler";
 
 const cache = new WeakMap<Parsed, SymbolInformation[]>();
 
 export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (
   doc
 ) => {
-  const parsed = parse(doc);
+  const parsed = getParsed(doc);
   let result = cache.get(parsed);
   if (!result) {
     result = extractDocumentSymbols(doc, parsed, getCompilerInfo(doc).lookup);

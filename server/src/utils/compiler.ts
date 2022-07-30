@@ -1,8 +1,4 @@
-import type {
-  AttributeDefinition,
-  TagDefinition,
-  TaglibLookup,
-} from "@marko/babel-utils";
+import type { TaglibLookup } from "@marko/babel-utils";
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
 import lassoPackageRoot from "lasso-package-root";
@@ -24,7 +20,6 @@ const builtinInfo: CompilerInfo = {
 builtinCompiler.configure({ translator: builtinTranslator });
 
 export type Compiler = typeof import("@marko/compiler");
-export { AttributeDefinition, TagDefinition, TaglibLookup };
 export type CompilerInfo = {
   rootDir: string;
   cache: Map<unknown, unknown>;
@@ -33,15 +28,15 @@ export type CompilerInfo = {
   translator: builtinCompiler.Config["translator"];
 };
 
-export function parse(doc: TextDocument) {
-  const compilerInfo = getCompilerInfo(doc);
-  let parsed = compilerInfo.cache.get(doc) as parser.Parsed | undefined;
-  if (!parsed) {
-    const source = doc.getText();
-    compilerInfo.cache.set(doc, (parsed = parser.parse(source)));
+export function getParsed(doc: TextDocument) {
+  const cache = getCompilerInfo(doc).cache as Map<TextDocument, parser.Parsed>;
+  let cached = cache.get(doc);
+  if (!cached) {
+    cached = parser.parse(doc.getText());
+    cache.set(doc, cached);
   }
 
-  return parsed;
+  return cached;
 }
 
 export function getCompilerInfo(doc: string | TextDocument): CompilerInfo {

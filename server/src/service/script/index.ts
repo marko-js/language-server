@@ -12,7 +12,7 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { getCompilerInfo, parse } from "../../utils/compiler";
+import { getCompilerInfo, getParsed } from "../../utils/compiler";
 import type { Extracted } from "../../utils/extractor";
 import type { Parsed } from "../../utils/parser";
 import * as documents from "../../utils/text-documents";
@@ -203,7 +203,7 @@ const ScriptService: Partial<Plugin> = {
 };
 
 function extract(doc: TextDocument) {
-  const parsed = parse(doc);
+  const parsed = getParsed(doc);
   let cached = extractCache.get(parsed);
 
   if (!cached) {

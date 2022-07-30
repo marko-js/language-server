@@ -3,7 +3,7 @@ import { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { getCompilerInfo, parse } from "../../utils/compiler";
+import { getCompilerInfo, getParsed } from "../../utils/compiler";
 import { type Node, NodeType, type Parsed } from "../../utils/parser";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
@@ -14,7 +14,7 @@ const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
 const cache = new WeakMap<Parsed, DocumentLink[]>();
 
 export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
-  const parsed = parse(doc);
+  const parsed = getParsed(doc);
   let result = cache.get(parsed);
   if (!result) {
     result = extractDocumentLinks(doc, parsed, getCompilerInfo(doc).lookup);

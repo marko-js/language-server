@@ -4,7 +4,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import {
   type CompilerInfo,
   getCompilerInfo,
-  parse,
+  getParsed,
 } from "../../../utils/compiler";
 import { NodeType, type Parsed } from "../../../utils/parser";
 import type { Plugin, Result } from "../../types";
@@ -31,7 +31,7 @@ const handlers: Record<
 };
 
 export const findDefinition: Plugin["findDefinition"] = async (doc, params) => {
-  const parsed = parse(doc);
+  const parsed = getParsed(doc);
   const offset = doc.offsetAt(params.position);
   const node = parsed.nodeAt(offset);
   return (

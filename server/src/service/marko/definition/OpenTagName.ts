@@ -2,8 +2,8 @@ import path from "path";
 
 import { URI } from "vscode-uri";
 import { LocationLink, Range } from "vscode-languageserver";
+import type { TagDefinition } from "@marko/babel-utils";
 
-import type { TagDefinition } from "../../../utils/compiler";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
 import { Node, NodeType } from "../../../utils/parser";
