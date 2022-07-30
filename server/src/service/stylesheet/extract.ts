@@ -1,23 +1,29 @@
+import {
+  createExtractor,
+  type Extracted,
+  type Extractor,
+} from "../../utils/extractor";
+import { type Node, type Parsed, NodeType } from "../../utils/parser";
 import type { TaglibLookup } from "@marko/babel-utils";
-import { createExtractor } from "../../utils/extractor";
-import { Node, NodeType, parse } from "../../utils/parser";
 
 /**
  * Iterate over the Marko CST and extract all the stylesheets.
  */
 export function extractStyleSheets(
   code: string,
-  parsed: ReturnType<typeof parse>,
+  parsed: Parsed,
   lookup: TaglibLookup
 ) {
   let placeholderId = 0;
-  const extractorsByExt: Record<
-    string,
-    ReturnType<typeof createExtractor>
-  > = {};
+  const extractorsByExt = new Map<string, Extractor>();
   const { read, program } = parsed;
-  const getExtractor = (ext: string) =>
-    extractorsByExt[ext] || (extractorsByExt[ext] = createExtractor(code));
+  const getExtractor = (ext: string) => {
+    let extractor = extractorsByExt.get(ext);
+    if (!extractor) {
+      extractorsByExt.set(ext, (extractor = createExtractor(parsed)));
+    }
+    return extractor;
+  };
 
   const visit = (node: Node.ChildNode) => {
     switch (node.type) {
@@ -94,16 +100,14 @@ export function extractStyleSheets(
     }
   }
 
-  for (const node of program.body) visit(node);
-
-  const resultsByExt: Record<
-    string,
-    ReturnType<ReturnType<typeof createExtractor>["end"]>
-  > = {};
-
-  for (const ext in extractorsByExt) {
-    resultsByExt[ext] = extractorsByExt[ext].end();
+  for (const node of program.body) {
+    visit(node);
   }
 
-  return resultsByExt;
+  const extractedByExt = new Map<string, Extracted>();
+  for (const [ext, extractor] of extractorsByExt) {
+    extractedByExt.set(ext, extractor.end());
+  }
+
+  return extractedByExt;
 }

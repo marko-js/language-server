@@ -1,11 +1,20 @@
-import { createParser, TagType, Range, Ranges } from "htmljs-parser";
 import { getNodeAtOffset } from "./get-node-at-offset";
+import { createParser, TagType, type Range, type Ranges } from "htmljs-parser";
 
 const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
-
-export { Range, Ranges };
-
 export const UNFINISHED = Number.MAX_SAFE_INTEGER;
+
+export {
+  getLines,
+  getPosition,
+  getLocation,
+  type Range,
+  type Ranges,
+  type Position,
+  type Location,
+} from "htmljs-parser";
+
+export type Parsed = ReturnType<typeof parse>;
 export enum NodeType {
   Program,
   Tag,

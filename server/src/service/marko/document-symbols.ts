@@ -1,12 +1,12 @@
-import { URI } from "vscode-uri";
+import { getCompilerInfo, parse } from "../../utils/compiler";
+import { type Node, type Parsed, NodeType } from "../../utils/parser";
+import type { Plugin } from "../types";
 import type { TaglibLookup } from "@marko/babel-utils";
 import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { type Node, NodeType } from "../../utils/parser";
-import { getCompilerInfo, parse } from "../../utils/compiler";
-import type { Plugin } from "../types";
+import { URI } from "vscode-uri";
 
-const cache = new WeakMap<ReturnType<typeof parse>, SymbolInformation[]>();
+const cache = new WeakMap<Parsed, SymbolInformation[]>();
 
 export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (
   doc
@@ -25,7 +25,7 @@ export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (
  */
 function extractDocumentSymbols(
   doc: TextDocument,
-  parsed: ReturnType<typeof parse>,
+  parsed: Parsed,
   lookup: TaglibLookup
 ): SymbolInformation[] {
   if (URI.parse(doc.uri).scheme === "untitled") {

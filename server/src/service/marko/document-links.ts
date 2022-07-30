@@ -1,15 +1,15 @@
+import { getCompilerInfo, parse } from "../../utils/compiler";
+import { type Node, type Parsed, NodeType } from "../../utils/parser";
+import resolveUrl from "../../utils/resolve-url";
+import type { Plugin } from "../types";
+import isDocumentLinkAttr from "./util/is-document-link-attr";
 import type { TaglibLookup } from "@marko/babel-utils";
 import { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import { getCompilerInfo, parse } from "../../utils/compiler";
-import { type Node, NodeType } from "../../utils/parser";
-import resolveUrl from "../../utils/resolve-url";
-import type { Plugin } from "../types";
-import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
-const cache = new WeakMap<ReturnType<typeof parse>, DocumentLink[]>();
+const cache = new WeakMap<Parsed, DocumentLink[]>();
 
 export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
   const parsed = parse(doc);
@@ -26,7 +26,7 @@ export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
  */
 function extractDocumentLinks(
   doc: TextDocument,
-  parsed: ReturnType<typeof parse>,
+  parsed: Parsed,
   lookup: TaglibLookup
 ): DocumentLink[] {
   if (URI.parse(doc.uri).scheme === "untitled") {

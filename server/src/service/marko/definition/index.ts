@@ -1,17 +1,20 @@
+import {
+  getCompilerInfo,
+  parse,
+  type CompilerInfo,
+} from "../../../utils/compiler";
+import { NodeType, type Parsed } from "../../../utils/parser";
+import type { Plugin, Result } from "../../types";
+import { AttrName } from "./AttrName";
+import { OpenTagName } from "./OpenTagName";
 import type { DefinitionParams, DefinitionLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { getCompilerInfo, parse } from "../../../utils/compiler";
-import { NodeType } from "../../../utils/parser";
-import type { Plugin, Result } from "../../types";
-import { OpenTagName } from "./OpenTagName";
-import { AttrName } from "./AttrName";
 
 export type DefinitionResult = Result<DefinitionLink[]>;
-export interface DefinitionMeta<N = unknown>
-  extends ReturnType<typeof getCompilerInfo> {
+export interface DefinitionMeta<N = unknown> extends CompilerInfo {
   document: TextDocument;
   params: DefinitionParams;
-  parsed: ReturnType<typeof parse>;
+  parsed: Parsed;
   offset: number;
   code: string;
   node: N;

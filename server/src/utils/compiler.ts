@@ -1,16 +1,15 @@
-import resolveFrom from "resolve-from";
-import lassoPackageRoot from "lasso-package-root";
-import type { TextDocument } from "vscode-languageserver-textdocument";
+import { getDocDir } from "./doc-file";
+import * as parser from "./parser";
 import type {
   AttributeDefinition,
   TagDefinition,
   TaglibLookup,
 } from "@marko/babel-utils";
-
 import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
-import { getDocDir } from "./doc-file";
-import * as parser from "./parser";
+import lassoPackageRoot from "lasso-package-root";
+import resolveFrom from "resolve-from";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 
 const lookupKey = Symbol();
 const compilerInfoByDir = new Map<string, CompilerInfo>();
@@ -35,9 +34,7 @@ export type CompilerInfo = {
 
 export function parse(doc: TextDocument) {
   const compilerInfo = getCompilerInfo(doc);
-  let parsed = compilerInfo.cache.get(doc) as
-    | ReturnType<typeof parser.parse>
-    | undefined;
+  let parsed = compilerInfo.cache.get(doc) as parser.Parsed | undefined;
   if (!parsed) {
     const source = doc.getText();
     compilerInfo.cache.set(doc, (parsed = parser.parse(source)));

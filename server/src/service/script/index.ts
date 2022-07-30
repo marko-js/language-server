@@ -1,9 +1,13 @@
-import path from "path";
-import ts from "typescript";
-import type { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompilerInfo, parse } from "../../utils/compiler";
+import type { Extracted } from "../../utils/extractor";
+import type { Parsed } from "../../utils/parser";
+import * as documents from "../../utils/text-documents";
+import { START_OF_FILE } from "../../utils/utils";
 import type { Plugin } from "../types";
 import { extractScripts } from "./extract";
+import path from "path";
+import { relativeImportPath } from "relative-import-path";
+import ts from "typescript";
 import {
   CompletionItem,
   CompletionItemKind,
@@ -11,11 +15,8 @@ import {
   DiagnosticSeverity,
   DiagnosticTag,
 } from "vscode-languageserver";
-import type { Location } from "htmljs-parser";
-import * as documents from "../../utils/text-documents";
-import { START_OF_FILE } from "../../utils/utils";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import { relativeImportPath } from "relative-import-path";
 
 interface ProjectInfo {
   basePath: string;
@@ -26,18 +27,8 @@ interface ProjectInfo {
   getVirtualFileName(doc: TextDocument): string | undefined;
 }
 
-interface ScriptInfo {
-  generated: string;
-  sourceOffsetAt(generatedOffset: number): number | undefined;
-  sourceLocationAt(
-    generatedOffsetStart: number,
-    generatedOffsetEnd: number
-  ): Location | undefined;
-  generatedOffsetAt(sourceOffset: number): number | undefined;
-}
-
 const projectsCacheKey = Symbol();
-const parseCache = new WeakMap<ReturnType<typeof parse>, ScriptInfo>();
+const extractCache = new WeakMap<Parsed, Extracted>();
 const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
 const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
 const markoFileReg = /\.marko$/;
@@ -46,9 +37,9 @@ const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 
 const ScriptService: Partial<Plugin> = {
   doComplete(doc, params) {
-    const info = getScriptInfo(doc);
+    const extracted = extract(doc);
     const sourceOffset = doc.offsetAt(params.position);
-    const generatedOffset = info.generatedOffsetAt(sourceOffset);
+    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
     const { fsPath, scheme } = URI.parse(doc.uri);
@@ -97,14 +88,14 @@ const ScriptService: Partial<Plugin> = {
       }
 
       if (replacementSpan) {
-        const range = info.sourceLocationAt(
+        const sourceRange = extracted.sourceLocationAt(
           replacementSpan.start,
           replacementSpan.start + replacementSpan.length
         );
 
-        if (range) {
+        if (sourceRange) {
           textEdit = {
-            range,
+            range: sourceRange,
             newText: insertText || label,
           };
         } else {
@@ -130,9 +121,9 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doHover(doc, params) {
-    const info = getScriptInfo(doc);
+    const extracted = extract(doc);
     const sourceOffset = doc.offsetAt(params.position);
-    const generatedOffset = info.generatedOffsetAt(sourceOffset);
+    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
     const { fsPath, scheme } = URI.parse(doc.uri);
@@ -145,12 +136,12 @@ const ScriptService: Partial<Plugin> = {
     );
     if (!quickInfo) return;
     const { textSpan } = quickInfo;
-    const range = info.sourceLocationAt(
+    const sourceRange = extracted.sourceLocationAt(
       textSpan.start,
       textSpan.start + textSpan.length
     );
 
-    if (!range) return;
+    if (!sourceRange) return;
 
     let contents = "";
 
@@ -168,12 +159,12 @@ const ScriptService: Partial<Plugin> = {
     }
 
     return {
-      range,
+      range: sourceRange,
       contents,
     };
   },
   doValidate(doc) {
-    const info = getScriptInfo(doc);
+    const extracted = extract(doc);
     const { fsPath, scheme } = URI.parse(doc.uri);
     if (scheme !== "file") return;
 
@@ -196,7 +187,7 @@ const ScriptService: Partial<Plugin> = {
     return results;
 
     function addDiag(tsDiag: ts.Diagnostic) {
-      const diag = convertDiag(info, tsDiag);
+      const diag = convertDiag(extracted, tsDiag);
       if (diag) {
         if (results) {
           results.push(diag);
@@ -208,34 +199,14 @@ const ScriptService: Partial<Plugin> = {
   },
 };
 
-function getScriptInfo(doc: TextDocument): ScriptInfo {
+function extract(doc: TextDocument) {
   const parsed = parse(doc);
-  let cached = parseCache.get(parsed);
+  let cached = extractCache.get(parsed);
 
   if (!cached) {
-    const { generated, sourceOffsetAt, generatedOffsetAt } = extractScripts(
-      doc,
+    extractCache.set(
       parsed,
-      getCompilerInfo(doc).lookup
-    );
-
-    parseCache.set(
-      parsed,
-      (cached = {
-        generated,
-        sourceOffsetAt,
-        generatedOffsetAt,
-        sourceLocationAt(
-          generatedStart: number,
-          generatedEnd: number
-        ): Location | undefined {
-          const start = sourceOffsetAt(generatedStart);
-          if (start === undefined) return;
-          const end = sourceOffsetAt(generatedEnd);
-          if (end === undefined) return;
-          return parsed.locationAt({ start, end });
-        },
-      })
+      (cached = extractScripts(doc, parsed, getCompilerInfo(doc).lookup))
     );
   }
   return cached;
@@ -391,7 +362,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
         const doc = documents.get(virtualFileToURI(filename));
         if (doc) {
           return markoFileReg.test(filename)
-            ? getScriptInfo(doc).generated
+            ? extract(doc).generated
             : doc.getText();
         } else {
           return ts.sys.readFile(filename) || "";
@@ -420,9 +391,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
         let snapshot = snapshotCache.get(doc);
         if (!snapshot || snapshotVersions.get(snapshot) !== doc.version) {
           snapshot = ts.ScriptSnapshot.fromString(
-            markoFileReg.test(doc.uri)
-              ? getScriptInfo(doc).generated
-              : doc.getText()
+            markoFileReg.test(doc.uri) ? extract(doc).generated : doc.getText()
           );
 
           snapshotVersions.set(snapshot, doc.version);
@@ -480,17 +449,17 @@ function printDocumentation(
 }
 
 function convertDiag(
-  info: ScriptInfo,
+  extracted: Extracted,
   tsDiag: ts.Diagnostic
 ): Diagnostic | undefined {
-  const range =
+  const sourceRange =
     tsDiag.start === undefined
       ? START_OF_FILE
-      : info.sourceLocationAt(tsDiag.start, tsDiag.start + tsDiag.length!);
+      : extracted.sourceLocationAt(tsDiag.start, tsDiag.start + tsDiag.length!);
 
-  if (range) {
+  if (sourceRange) {
     return {
-      range,
+      range: sourceRange,
       source: "ts",
       code: tsDiag.code,
       tags: convertDiagTags(tsDiag),

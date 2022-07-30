@@ -1,9 +1,20 @@
-import type { Range } from "./parser";
+import {
+  getLines,
+  getPosition,
+  getLocation,
+  type Parsed,
+  type Range,
+  type Position,
+  type Location,
+} from "./parser";
+
+export type Extractor = ReturnType<typeof createExtractor>;
+export type Extracted = ReturnType<Extractor["end"]>;
 
 /**
  * Utility to build up generate code from source ranges while maintaining a source mapping.
  */
-export function createExtractor(code: string) {
+export function createExtractor({ read, positionAt, locationAt }: Parsed) {
   let generated = "";
   const generatedMap: number[] = []; // grouped in sets of [generatedStart, sourceStart, length] and sorted by generatedStart
   return {
@@ -21,7 +32,7 @@ export function createExtractor(code: string) {
             expr.start,
             expr.end - expr.start
           );
-          generated += code.slice(expr.start, expr.end);
+          generated += read(expr);
         }
       }
 
@@ -29,6 +40,7 @@ export function createExtractor(code: string) {
     },
     end() {
       const sourceMap: typeof generatedMap = generatedMap.slice(); // grouped in sets of [generatedStart, sourceStart, length] and sorted by sourceStart
+      let generatedLines: number[] | undefined;
       // Quick sort generatedMap by sourceStart
       (function sort(left: number, right: number) {
         if (left < right) {
@@ -81,6 +93,23 @@ export function createExtractor(code: string) {
             }
           }
         },
+
+        sourcePositionAt(generatedOffset: number): Position | undefined {
+          const sourceOffset = this.sourceOffsetAt(generatedOffset);
+          if (sourceOffset !== undefined) return positionAt(sourceOffset);
+        },
+
+        sourceLocationAt(
+          generatedStart: number,
+          generatedEnd: number
+        ): Location | undefined {
+          const start = this.sourceOffsetAt(generatedStart);
+          if (start === undefined) return;
+          const end = this.sourceOffsetAt(generatedEnd);
+          if (end === undefined) return;
+          return locationAt({ start, end });
+        },
+
         generatedOffsetAt(sourceOffset: number): number | undefined {
           let max = sourceMap.length / 3;
           let min = 0;
@@ -105,6 +134,31 @@ export function createExtractor(code: string) {
               return generatedStart + index;
             }
           }
+        },
+
+        generatedPositionAt(sourceOffset: number): Position | undefined {
+          const generatedOffset = this.generatedOffsetAt(sourceOffset);
+          if (generatedOffset !== undefined) {
+            return getPosition(
+              generatedLines || (generatedLines = getLines(generated)),
+              generatedOffset
+            );
+          }
+        },
+
+        generatedLocationAt(
+          sourceStart: number,
+          sourceEnd: number
+        ): Location | undefined {
+          const generatedStart = this.generatedOffsetAt(sourceStart);
+          if (generatedStart === undefined) return;
+          const generatedEnd = this.generatedOffsetAt(sourceEnd);
+          if (generatedEnd === undefined) return;
+          return getLocation(
+            generatedLines || (generatedLines = getLines(generated)),
+            generatedStart,
+            generatedEnd
+          );
         },
       };
     },

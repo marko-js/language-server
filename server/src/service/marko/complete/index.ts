@@ -1,25 +1,27 @@
-import type { TextDocument } from "vscode-languageserver-textdocument";
+import {
+  getCompilerInfo,
+  parse,
+  type CompilerInfo,
+} from "../../../utils/compiler";
+import { NodeType, type Parsed } from "../../../utils/parser";
+import type { Plugin, Result } from "../../types";
+import { AttrName } from "./AttrName";
+import { AttrValue } from "./AttrValue";
+import { Import } from "./Import";
+import { OpenTagName } from "./OpenTagName";
+import { Tag } from "./Tag";
 import {
   CompletionItem,
   CompletionList,
   CompletionParams,
 } from "vscode-languageserver";
-import { getCompilerInfo, parse } from "../../../utils/compiler";
-
-import { Tag } from "./Tag";
-import { OpenTagName } from "./OpenTagName";
-import { AttrName } from "./AttrName";
-import { AttrValue } from "./AttrValue";
-import { Import } from "./Import";
-import type { Plugin, Result } from "../../types";
-import { NodeType } from "../../../utils/parser";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 
 export type CompletionResult = Result<CompletionItem[]>;
-export interface CompletionMeta<N = unknown>
-  extends ReturnType<typeof getCompilerInfo> {
+export interface CompletionMeta<N = unknown> extends CompilerInfo {
   document: TextDocument;
   params: CompletionParams;
-  parsed: ReturnType<typeof parse>;
+  parsed: Parsed;
   offset: number;
   code: string;
   node: N;

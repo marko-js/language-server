@@ -1,9 +1,15 @@
-import { relativeImportPath } from "relative-import-path";
-import type { TextDocument } from "vscode-languageserver-textdocument";
+import { createExtractor } from "../../utils/extractor";
+import {
+  NodeType,
+  type Node,
+  type Range,
+  type Ranges,
+  type Parsed,
+} from "../../utils/parser";
 import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
 import { types as t } from "@marko/compiler";
-import { createExtractor } from "../../utils/extractor";
-import { Node, Range, NodeType, Ranges, parse } from "../../utils/parser";
+import { relativeImportPath } from "relative-import-path";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 const blockReg = /(?<=\s*){/y;
@@ -13,13 +19,13 @@ const blockReg = /(?<=\s*){/y;
  */
 export function extractScripts(
   doc: TextDocument,
-  parsed: ReturnType<typeof parse>,
+  parsed: Parsed,
   lookup: TaglibLookup
 ) {
   const code = doc.getText();
   const { program } = parsed;
   const { fsPath } = URI.parse(doc.uri);
-  const extractor = createExtractor(code);
+  const extractor = createExtractor(parsed);
   const addExpr = (range: Range) => extractor.write`(${range});`;
   const addTmpl = (range: Ranges.Template) => {
     for (const expr of range.expressions) extractor.write`(${expr.value});`;
