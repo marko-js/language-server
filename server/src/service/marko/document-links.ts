@@ -1,5 +1,5 @@
 import type { TaglibLookup } from "@marko/babel-utils";
-import { DocumentLink } from "vscode-languageserver";
+import type { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
@@ -55,12 +55,13 @@ function extractDocumentLinks(
                 doc.uri
               );
               if (resolved) {
-                links.push(
-                  DocumentLink.create(
-                    parsed.locationAt(attr.value.value),
-                    resolveUrl(read(attr.value.value).slice(1, -1), doc.uri)
-                  )
-                );
+                links.push({
+                  range: parsed.locationAt(attr.value.value),
+                  target: resolveUrl(
+                    read(attr.value.value).slice(1, -1),
+                    doc.uri
+                  ),
+                });
               }
             }
           }
@@ -87,15 +88,13 @@ function extractDocumentLinks(
         const fileForTag = tagDef && (tagDef.template || tagDef.renderer);
 
         if (fileForTag) {
-          links.push(
-            DocumentLink.create(
-              parsed.locationAt({
-                start: node.start + match.index,
-                end: node.start + match.index + length,
-              }),
-              fileForTag
-            )
-          );
+          links.push({
+            range: parsed.locationAt({
+              start: node.start + match.index,
+              end: node.start + match.index + length,
+            }),
+            target: fileForTag,
+          });
         }
       }
     }

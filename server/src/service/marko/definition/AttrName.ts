@@ -1,9 +1,9 @@
+import fs from "fs";
 import { URI } from "vscode-uri";
-import { LocationLink, Range } from "vscode-languageserver";
 
 import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
-import type { Node } from "../../../utils/parser";
+import { START_OF_FILE } from "../../../utils/utils";
+import { type Node, getLines, getLocation } from "../../../utils/parser";
 
 import type { DefinitionMeta, DefinitionResult } from ".";
 
@@ -14,8 +14,6 @@ export function AttrName({
 }: DefinitionMeta<Node.AttrName>): DefinitionResult {
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);
-  if (attrName[0] === "{") return; // Ignore tag blocks.
-
   const tagDef = tagName && lookup.getTag(tagName);
   const attrDef = lookup.getAttribute(tagName || "", attrName);
   let range = START_OF_FILE;
@@ -31,25 +29,26 @@ export function AttrName({
   }
 
   if (/\/marko(?:-tag)?\.json$/.test(attrEntryFile)) {
-    const tagDefDoc = createTextDocument(attrEntryFile);
+    const tagDefSource = fs.readFileSync(attrEntryFile, "utf-8");
     const match = RegExpBuilder`/"@${attrName}"\s*:\s*[^\r\n,]+/g`.exec(
-      tagDefDoc.getText()
+      tagDefSource
     );
 
     if (match && match.index) {
-      range = Range.create(
-        tagDefDoc.positionAt(match.index),
-        tagDefDoc.positionAt(match.index + match[0].length)
+      range = getLocation(
+        getLines(tagDefSource),
+        match.index,
+        match.index + match[0].length
       );
     }
   }
 
   return [
-    LocationLink.create(
-      URI.file(attrEntryFile).toString(),
-      range,
-      range,
-      parsed.locationAt(node)
-    ),
+    {
+      targetUri: URI.file(attrEntryFile).toString(),
+      targetRange: range,
+      targetSelectionRange: range,
+      originSelectionRange: parsed.locationAt(node),
+    },
   ];
 }

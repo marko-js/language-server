@@ -39,19 +39,21 @@ function extractDocumentSymbols(
     switch (node.type) {
       case NodeType.Tag:
       case NodeType.AttrTag:
-        symbols.push(
-          SymbolInformation.create(
+        symbols.push({
+          name:
             (node.type === NodeType.AttrTag
               ? node.nameText?.slice(node.nameText.indexOf("@"))
               : node.nameText) || "<${...}>",
+          kind:
             (node.nameText &&
               lookup.getTag(node.nameText)?.html &&
               SymbolKind.Property) ||
-              SymbolKind.Class,
-            parsed.locationAt(node),
-            doc.uri
-          )
-        );
+            SymbolKind.Class,
+          location: {
+            uri: doc.uri,
+            range: parsed.locationAt(node),
+          },
+        });
 
         if (node.body) {
           for (const child of node.body) {

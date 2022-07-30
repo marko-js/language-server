@@ -1,4 +1,4 @@
-import { Range, TextEdit } from "vscode-languageserver";
+import { TextEdit } from "vscode-languageserver";
 import { URI } from "vscode-uri";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
@@ -28,12 +28,19 @@ export const format: Plugin["format"] = async (doc, params, cancel) => {
     if (cancel.isCancellationRequested) return;
 
     // TODO: format selection
-    return [
+    const ret = [
       TextEdit.replace(
-        Range.create(doc.positionAt(0), doc.positionAt(text.length)),
+        {
+          start: {
+            line: 0,
+            character: 0,
+          },
+          end: doc.positionAt(text.length),
+        },
         prettier.format(text, options)
       ),
     ];
+    return ret;
   } catch (e) {
     displayError(e);
   }

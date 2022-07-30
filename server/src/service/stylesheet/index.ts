@@ -9,7 +9,6 @@ import {
 import {
   ColorInformation,
   ColorPresentation,
-  CompletionList,
   Diagnostic,
   DocumentHighlight,
   DocumentLink,
@@ -97,8 +96,6 @@ const StyleSheetService: Partial<Plugin> = {
 
       return result;
     }
-
-    return CompletionList.create([], true);
   },
   findDefinition(doc, params) {
     const sourceOffset = doc.offsetAt(params.position);

@@ -3,7 +3,6 @@ import path from "path";
 import {
   CompletionItem,
   CompletionItemKind,
-  Range,
   TextEdit,
 } from "vscode-languageserver";
 
@@ -42,10 +41,10 @@ export async function AttrValue({
     if (uri) {
       const result: CompletionItem[] = [];
       const curFile = req === "." ? path.basename(document.uri) : undefined;
-      const replaceRange = Range.create(
-        document.positionAt(start + segmentStart + 1),
-        document.positionAt(start + rawValue.length)
-      );
+      const replaceRange = parsed.locationAt({
+        start: start + segmentStart + 1,
+        end: start + rawValue.length,
+      });
 
       for (const [entry, type] of await fileSystem.readDirectory(uri)) {
         if (entry[0] !== "." && entry !== curFile) {

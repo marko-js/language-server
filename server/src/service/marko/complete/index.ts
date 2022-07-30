@@ -1,8 +1,4 @@
-import {
-  CompletionItem,
-  CompletionList,
-  CompletionParams,
-} from "vscode-languageserver";
+import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import {
@@ -44,16 +40,17 @@ export const doComplete: Plugin["doComplete"] = async (doc, params) => {
   const parsed = getParsed(doc);
   const offset = doc.offsetAt(params.position);
   const node = parsed.nodeAt(offset);
-  return CompletionList.create(
-    (await handlers[NodeType[node.type]]?.({
-      document: doc,
-      params,
-      parsed,
-      offset,
-      node,
-      code: doc.getText(),
-      ...getCompilerInfo(doc),
-    })) || [],
-    true
-  );
+  return {
+    items:
+      (await handlers[NodeType[node.type]]?.({
+        document: doc,
+        params,
+        parsed,
+        offset,
+        node,
+        code: doc.getText(),
+        ...getCompilerInfo(doc),
+      })) || [],
+    isIncomplete: true,
+  };
 };

@@ -1,12 +1,17 @@
+import fs from "fs";
 import path from "path";
 
 import { URI } from "vscode-uri";
-import { LocationLink, Range } from "vscode-languageserver";
 import type { TagDefinition } from "@marko/babel-utils";
 
 import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
-import { Node, NodeType } from "../../../utils/parser";
+import { START_OF_FILE } from "../../../utils/utils";
+import {
+  type Node,
+  NodeType,
+  getLines,
+  getLocation,
+} from "../../../utils/parser";
 
 import type { DefinitionMeta, DefinitionResult } from ".";
 
@@ -41,26 +46,27 @@ export function OpenTagName({
   }
 
   if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
-    const tagDefDoc = createTextDocument(tagEntryFile);
+    const tagDefSource = fs.readFileSync(tagEntryFile, "utf-8");
     const match =
       RegExpBuilder`/"(?:<${tag.nameText}>|${tag.nameText})"\s*:\s*[^\r\n,]+/g`.exec(
-        tagDefDoc.getText()
+        tagDefSource
       );
 
     if (match && match.index) {
-      range = Range.create(
-        tagDefDoc.positionAt(match.index),
-        tagDefDoc.positionAt(match.index + match[0].length)
+      range = getLocation(
+        getLines(tagDefSource),
+        match.index,
+        match.index + match[0].length
       );
     }
   }
 
   return [
-    LocationLink.create(
-      URI.file(tagEntryFile).toString(),
-      range,
-      range,
-      parsed.locationAt(node)
-    ),
+    {
+      targetUri: URI.file(tagEntryFile).toString(),
+      targetRange: range,
+      targetSelectionRange: range,
+      originSelectionRange: parsed.locationAt(node),
+    },
   ];
 }

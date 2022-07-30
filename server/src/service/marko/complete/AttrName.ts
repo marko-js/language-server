@@ -18,8 +18,6 @@ export function AttrName({
   lookup,
 }: CompletionMeta<Node.AttrName>): CompletionResult {
   let name = parsed.read(node);
-  if (name[0] === "{") return; // Ignore tag blocks.
-
   const modifierIndex = name.indexOf(":");
   const hasModifier = modifierIndex !== -1;
 

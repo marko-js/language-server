@@ -1,10 +1,9 @@
-import {
+import type {
   CodeAction,
   ColorInformation,
   ColorPresentation,
   Command,
   CompletionItem,
-  CompletionList,
   DefinitionLink,
   Diagnostic,
   DocumentHighlight,
@@ -58,9 +57,7 @@ const service: Plugin = {
       displayError(err);
     }
 
-    if (items) {
-      return CompletionList.create(items, isIncomplete);
-    }
+    if (items) return { items, isIncomplete };
   },
   async findDefinition(doc, params, cancel) {
     let result: (Location | DefinitionLink)[] | undefined;
