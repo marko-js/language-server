@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.17.33
+
+### Patch Changes
+
+- [#126](https://github.com/marko-js/language-server/pull/126) [`7eb56d4`](https://github.com/marko-js/language-server/commit/7eb56d4afb6b9ba792a8347f06202c9d20b5a5cf) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade Marko dependencies.
+
 ## 0.17.32
 
 ### Patch Changes
