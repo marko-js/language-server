@@ -1,4 +1,5 @@
 import fs from "fs";
+
 import { URI } from "vscode-uri";
 import { Connection, FileChangeType } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";

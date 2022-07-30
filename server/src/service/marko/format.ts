@@ -2,6 +2,7 @@ import { Range, TextEdit } from "vscode-languageserver";
 import { URI } from "vscode-uri";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
+
 import { displayError } from "../../utils/messages";
 import type { Plugin } from "../types";
 

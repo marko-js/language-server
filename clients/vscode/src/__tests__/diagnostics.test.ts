@@ -1,6 +1,8 @@
 import timers from "timers/promises";
 import vscode from "vscode";
+
 import snap from "mocha-snap";
+
 import { updateTestDoc } from "./setup.test";
 
 describe("diagnostics", () => {

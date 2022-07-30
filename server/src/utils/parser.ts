@@ -1,5 +1,6 @@
+import { type Range, type Ranges, TagType, createParser } from "htmljs-parser";
+
 import { getNodeAtOffset } from "./get-node-at-offset";
-import { createParser, TagType, type Range, type Ranges } from "htmljs-parser";
 
 const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
 export const UNFINISHED = Number.MAX_SAFE_INTEGER;

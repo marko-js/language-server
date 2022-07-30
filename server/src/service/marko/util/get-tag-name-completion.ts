@@ -1,12 +1,13 @@
 import path from "path";
+
 import type { TagDefinition } from "@marko/babel-utils";
 import {
   type CompletionItem,
-  type Range,
   CompletionItemKind,
   CompletionItemTag,
   InsertTextFormat,
   MarkupKind,
+  type Range,
   TextEdit,
 } from "vscode-languageserver";
 import { URI } from "vscode-uri";

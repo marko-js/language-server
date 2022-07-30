@@ -1,13 +1,14 @@
 import {
   type CompletionItem,
-  type MarkupContent,
   CompletionItemKind,
-  MarkupKind,
   InsertTextFormat,
+  type MarkupContent,
+  MarkupKind,
   TextEdit,
 } from "vscode-languageserver";
 
 import type { Node } from "../../../utils/parser";
+
 import type { CompletionMeta, CompletionResult } from ".";
 
 export function AttrName({

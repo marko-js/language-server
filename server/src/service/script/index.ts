@@ -1,11 +1,5 @@
-import { getCompilerInfo, parse } from "../../utils/compiler";
-import type { Extracted } from "../../utils/extractor";
-import type { Parsed } from "../../utils/parser";
-import * as documents from "../../utils/text-documents";
-import { START_OF_FILE } from "../../utils/utils";
-import type { Plugin } from "../types";
-import { extractScripts } from "./extract";
 import path from "path";
+
 import { relativeImportPath } from "relative-import-path";
 import ts from "typescript";
 import {
@@ -17,6 +11,15 @@ import {
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
+import { getCompilerInfo, parse } from "../../utils/compiler";
+import type { Extracted } from "../../utils/extractor";
+import type { Parsed } from "../../utils/parser";
+import * as documents from "../../utils/text-documents";
+import { START_OF_FILE } from "../../utils/utils";
+import type { Plugin } from "../types";
+
+import { extractScripts } from "./extract";
 
 interface ProjectInfo {
   basePath: string;

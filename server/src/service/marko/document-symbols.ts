@@ -1,10 +1,11 @@
-import { getCompilerInfo, parse } from "../../utils/compiler";
-import { type Node, type Parsed, NodeType } from "../../utils/parser";
-import type { Plugin } from "../types";
 import type { TaglibLookup } from "@marko/babel-utils";
 import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
+import type { Plugin } from "../types";
+import { type Node, NodeType, type Parsed } from "../../utils/parser";
+import { getCompilerInfo, parse } from "../../utils/compiler";
 
 const cache = new WeakMap<Parsed, SymbolInformation[]>();
 

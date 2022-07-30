@@ -13,9 +13,10 @@ import {
   SymbolInformation,
   WorkspaceEdit,
 } from "vscode-languageserver";
-import { displayError } from "../utils/messages";
-import type { Plugin } from "./types";
 
+import { displayError } from "../utils/messages";
+
+import type { Plugin } from "./types";
 import MarkoPlugin from "./marko";
 import ScriptPlugin from "./script";
 import StyleSheetPlugin from "./stylesheet";

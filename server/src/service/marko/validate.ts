@@ -1,4 +1,5 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+
 import { getCompilerInfo } from "../../utils/compiler";
 import { getDocFile } from "../../utils/doc-file";
 import type { Plugin } from "../types";

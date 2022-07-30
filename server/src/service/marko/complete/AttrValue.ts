@@ -1,14 +1,17 @@
 import path from "path";
+
 import {
   CompletionItem,
   CompletionItemKind,
   Range,
   TextEdit,
 } from "vscode-languageserver";
+
 import type { Node } from "../../../utils/parser";
 import isDocumentLinkAttr from "../util/is-document-link-attr";
 import fileSystem, { FileType } from "../../../utils/file-system";
 import resolveUrl from "../../../utils/resolve-url";
+
 import type { CompletionMeta } from ".";
 
 export async function AttrValue({

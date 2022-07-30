@@ -1,10 +1,11 @@
+import type { TaglibLookup } from "@marko/babel-utils";
+
 import {
-  createExtractor,
   type Extracted,
   type Extractor,
+  createExtractor,
 } from "../../utils/extractor";
-import { type Node, type Parsed, NodeType } from "../../utils/parser";
-import type { TaglibLookup } from "@marko/babel-utils";
+import { type Node, NodeType, type Parsed } from "../../utils/parser";
 
 /**
  * Iterate over the Marko CST and extract all the stylesheets.

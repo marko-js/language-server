@@ -1,12 +1,14 @@
-import { getCompilerInfo, parse } from "../../utils/compiler";
-import { type Node, type Parsed, NodeType } from "../../utils/parser";
-import resolveUrl from "../../utils/resolve-url";
-import type { Plugin } from "../types";
-import isDocumentLinkAttr from "./util/is-document-link-attr";
 import type { TaglibLookup } from "@marko/babel-utils";
 import { DocumentLink } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
+import { getCompilerInfo, parse } from "../../utils/compiler";
+import { type Node, NodeType, type Parsed } from "../../utils/parser";
+import resolveUrl from "../../utils/resolve-url";
+import type { Plugin } from "../types";
+
+import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
 const cache = new WeakMap<Parsed, DocumentLink[]>();

@@ -1,12 +1,14 @@
+import { inspect, isDeepStrictEqual } from "util";
+
 import {
-  createConnection,
   DefinitionLink,
   Diagnostic,
   ProposedFeatures,
   TextDocumentSyncKind,
+  createConnection,
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { inspect, isDeepStrictEqual } from "util";
+
 import { clearCompilerCache } from "./utils/compiler";
 import * as documents from "./utils/text-documents";
 import setupMessages from "./utils/messages";

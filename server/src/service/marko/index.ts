@@ -1,4 +1,5 @@
 import type { Plugin } from "../types";
+
 import { doComplete } from "./complete";
 import { doValidate } from "./validate";
 import { doHover } from "./hover";

@@ -1,16 +1,17 @@
-import { createExtractor } from "../../utils/extractor";
-import {
-  NodeType,
-  type Node,
-  type Range,
-  type Ranges,
-  type Parsed,
-} from "../../utils/parser";
 import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
 import { types as t } from "@marko/compiler";
 import { relativeImportPath } from "relative-import-path";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
+import {
+  type Node,
+  NodeType,
+  type Parsed,
+  type Range,
+  type Ranges,
+} from "../../utils/parser";
+import { createExtractor } from "../../utils/extractor";
 
 const blockReg = /(?<=\s*){/y;
 

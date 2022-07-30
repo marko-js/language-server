@@ -1,5 +1,3 @@
-import { getDocDir } from "./doc-file";
-import * as parser from "./parser";
 import type {
   AttributeDefinition,
   TagDefinition,
@@ -10,6 +8,9 @@ import * as builtinTranslator from "@marko/translator-default";
 import lassoPackageRoot from "lasso-package-root";
 import resolveFrom from "resolve-from";
 import type { TextDocument } from "vscode-languageserver-textdocument";
+
+import * as parser from "./parser";
+import { getDocDir } from "./doc-file";
 
 const lookupKey = Symbol();
 const compilerInfoByDir = new Map<string, CompilerInfo>();

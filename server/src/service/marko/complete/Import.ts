@@ -1,8 +1,10 @@
-import type { Node } from "../../../utils/parser";
-import type { CompletionMeta, CompletionResult } from ".";
 import { CompletionItem, TextEdit } from "vscode-languageserver";
+
+import type { Node } from "../../../utils/parser";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 import { getDocFile } from "../../../utils/doc-file";
+
+import type { CompletionMeta, CompletionResult } from ".";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
 

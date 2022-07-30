@@ -1,10 +1,13 @@
 import path from "path";
+
 import { URI } from "vscode-uri";
-import { Range, LocationLink } from "vscode-languageserver";
+import { LocationLink, Range } from "vscode-languageserver";
+
 import type { TagDefinition } from "../../../utils/compiler";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
 import { Node, NodeType } from "../../../utils/parser";
+
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function OpenTagName({

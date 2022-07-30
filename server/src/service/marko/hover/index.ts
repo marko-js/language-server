@@ -1,13 +1,15 @@
+import type { Hover, HoverParams } from "vscode-languageserver";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+
 import {
+  type CompilerInfo,
   getCompilerInfo,
   parse,
-  type CompilerInfo,
 } from "../../../utils/compiler";
 import { NodeType, type Parsed } from "../../../utils/parser";
 import type { Plugin, Result } from "../../types";
+
 import { OpenTagName } from "./OpenTagName";
-import type { HoverParams, Hover } from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
 
 export type HoverResult = Result<Hover>;
 export interface HoverMeta<N = unknown> extends CompilerInfo {

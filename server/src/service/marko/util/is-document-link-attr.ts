@@ -1,4 +1,5 @@
 import type { TextDocument } from "vscode-languageserver-textdocument";
+
 import { type Node, NodeType } from "../../../utils/parser";
 
 const linkedAttrs: Map<string, Set<string>> = new Map([

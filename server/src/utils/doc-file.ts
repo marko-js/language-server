@@ -1,5 +1,6 @@
-import type { TextDocument } from "vscode-languageserver-textdocument";
 import path from "path";
+
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 export function getDocDir(doc: TextDocument): string | undefined {

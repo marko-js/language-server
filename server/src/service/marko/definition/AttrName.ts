@@ -1,8 +1,10 @@
 import { URI } from "vscode-uri";
-import { Range, LocationLink } from "vscode-languageserver";
+import { LocationLink, Range } from "vscode-languageserver";
+
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_OF_FILE, createTextDocument } from "../../../utils/utils";
 import type { Node } from "../../../utils/parser";
+
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function AttrName({

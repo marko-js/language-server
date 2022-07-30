@@ -1,4 +1,5 @@
 import { inspect } from "util";
+
 import type { Connection } from "vscode-languageserver";
 
 let connection!: Connection;

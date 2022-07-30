@@ -1,8 +1,10 @@
+import type { CompletionItem } from "vscode-languageserver";
+
 import { type Node, NodeType } from "../../../utils/parser";
 import { getDocFile } from "../../../utils/doc-file";
-import type { CompletionMeta, CompletionResult } from ".";
 import getTagNameCompletion from "../util/get-tag-name-completion";
-import type { CompletionItem } from "vscode-languageserver";
+
+import type { CompletionMeta, CompletionResult } from ".";
 
 export function OpenTagName({
   document,

@@ -1,34 +1,36 @@
+import {
+  type LanguageService,
+  type LanguageServiceOptions,
+  type Stylesheet,
+  getCSSLanguageService,
+  getLESSLanguageService,
+  getSCSSLanguageService,
+} from "vscode-css-languageservice";
+import {
+  ColorInformation,
+  ColorPresentation,
+  CompletionList,
+  Diagnostic,
+  DocumentHighlight,
+  DocumentLink,
+  InitializeParams,
+  InsertReplaceEdit,
+  Location,
+  Range,
+  SymbolInformation,
+  TextDocumentEdit,
+  TextEdit,
+} from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
+
 import { getCompilerInfo, parse } from "../../utils/compiler";
 import type { Extracted } from "../../utils/extractor";
 import fileSystemProvider from "../../utils/file-system";
 import type { Parsed } from "../../utils/parser";
 import resolveReference from "../../utils/resolve-url";
 import type { Plugin } from "../types";
+
 import { extractStyleSheets } from "./extract";
-import {
-  getCSSLanguageService,
-  getLESSLanguageService,
-  getSCSSLanguageService,
-  type Stylesheet,
-  type LanguageService,
-  type LanguageServiceOptions,
-} from "vscode-css-languageservice";
-import {
-  ColorInformation,
-  CompletionList,
-  Diagnostic,
-  DocumentHighlight,
-  InsertReplaceEdit,
-  Range,
-  TextDocumentEdit,
-  Location,
-  TextEdit,
-  DocumentLink,
-  InitializeParams,
-  ColorPresentation,
-  SymbolInformation,
-} from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
 
 interface ExtractedStyles extends Extracted {
   service: LanguageService;

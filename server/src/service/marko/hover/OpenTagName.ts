@@ -1,9 +1,11 @@
+import type { MarkupContent } from "vscode-languageserver";
+
 import type { Node } from "../../../utils/parser";
 import { getDocFile } from "../../../utils/doc-file";
-import type { HoverMeta, HoverResult } from ".";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 import { START_OF_FILE } from "../../../utils/utils";
-import type { MarkupContent } from "vscode-languageserver";
+
+import type { HoverMeta, HoverResult } from ".";
 
 export function OpenTagName({
   document,

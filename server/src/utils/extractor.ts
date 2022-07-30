@@ -1,11 +1,11 @@
 import {
-  getLines,
-  getPosition,
-  getLocation,
-  type Parsed,
-  type Range,
-  type Position,
   type Location,
+  type Parsed,
+  type Position,
+  type Range,
+  getLines,
+  getLocation,
+  getPosition,
 } from "./parser";
 
 export type Extractor = ReturnType<typeof createExtractor>;
