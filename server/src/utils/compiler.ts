@@ -8,12 +8,13 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import * as parser from "./parser";
 import { getDocDir } from "./doc-file";
 
+const cwd = process.cwd();
 const lookupKey = Symbol();
 const compilerInfoByDir = new Map<string, CompilerInfo>();
 const builtinInfo: CompilerInfo = {
-  rootDir: process.cwd(),
+  rootDir: cwd,
   cache: new Map(),
-  lookup: builtinCompiler.taglib.buildLookup(__dirname, builtinTranslator),
+  lookup: builtinCompiler.taglib.buildLookup(cwd, builtinTranslator),
   compiler: builtinCompiler,
   translator: builtinTranslator,
 };
@@ -67,7 +68,7 @@ export function clearCompilerCache(doc?: TextDocument) {
 }
 
 function loadCompilerInfo(dir: string): CompilerInfo {
-  const rootDir = lassoPackageRoot.getRootDir(dir) || builtinInfo.rootDir;
+  const rootDir = lassoPackageRoot.getRootDir(dir) || cwd;
   const pkgPath = resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
   const cache = new Map();
