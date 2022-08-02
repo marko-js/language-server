@@ -88,7 +88,7 @@ export function setup(connection: Connection) {
     );
 
     openDocs.add(newDoc);
-    missingFiles.delete(ref.uri);
+    fileExists.set(ref.uri, true);
     docs.set(ref.uri, newDoc);
   });
 
@@ -118,10 +118,12 @@ export function setup(connection: Connection) {
     for (const change of params.changes) {
       switch (change.type) {
         case FileChangeType.Created:
-          missingFiles.delete(change.uri);
+          fileExists.set(change.uri, true);
           break;
         case FileChangeType.Deleted:
         case FileChangeType.Changed: {
+          fileExists.set(change.uri, change.type === FileChangeType.Changed);
+
           // When a file that's in our cache is changed or deleted and not in an open editor
           // we clear the file from the cache since it will be reloaded when read.
           const doc = docs.get(change.uri);
