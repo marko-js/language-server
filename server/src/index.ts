@@ -11,6 +11,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import { clearCompilerCache } from "./utils/compiler";
 import * as documents from "./utils/text-documents";
+import * as workspace from "./utils/workspace";
 import setupMessages from "./utils/messages";
 import service from "./service";
 
@@ -79,7 +80,11 @@ connection.onInitialize(async (params) => {
   };
 });
 
-documents.setup(connection, (changeDoc) => {
+workspace.setup(connection);
+workspace.onConfigChange(validateDocs);
+
+documents.setup(connection);
+documents.onFileChange((changeDoc) => {
   if (changeDoc) {
     queueDiagnostic();
     clearCompilerCache(changeDoc);
@@ -88,7 +93,6 @@ documents.setup(connection, (changeDoc) => {
   }
 });
 
-connection.onDidChangeConfiguration(validateDocs);
 connection.onCompletion(async (params, cancel) => {
   return (
     (await service.doComplete(

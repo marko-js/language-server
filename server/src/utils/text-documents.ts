@@ -1,12 +1,18 @@
 import fs from "fs";
-
 import { URI } from "vscode-uri";
 import { Connection, FileChangeType } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
+export type FileChangeHandler = (document: TextDocument | undefined) => void;
+
 const docs = new Map<string, TextDocument>();
 const openDocs = new Set<TextDocument>();
-const missingFiles = new Set<string>();
+const fileExists = new Map<string, boolean>();
+const fileChangeHandlers: Set<FileChangeHandler> = new Set();
+
+export function onFileChange(handler: FileChangeHandler) {
+  fileChangeHandlers.add(handler);
+}
 
 export function getAllOpen() {
   return openDocs;
@@ -18,7 +24,7 @@ export function get(uri: string) {
 
   const { fsPath, scheme } = URI.parse(uri);
   if (scheme === "file") {
-    if (missingFiles.has(uri)) return undefined;
+    if (fileExists.get(uri) === false) return undefined;
     try {
       const newDoc = TextDocument.create(
         uri,
@@ -28,21 +34,38 @@ export function get(uri: string) {
       );
 
       docs.set(uri, newDoc);
+      fileExists.set(uri, true);
       return newDoc;
     } catch {
-      missingFiles.add(uri);
+      fileExists.set(uri, false);
     }
   }
+}
+
+export function exists(uri: string) {
+  const cached = fileExists.get(uri);
+  if (cached !== undefined) return cached;
+
+  const { fsPath, scheme } = URI.parse(uri);
+  if (scheme === "file") {
+    try {
+      fs.accessSync(fsPath);
+      fileExists.set(uri, true);
+      return true;
+    } catch {
+      fileExists.set(uri, false);
+      return false;
+    }
+  }
+
+  return false;
 }
 
 export function isOpen(doc: TextDocument) {
   return openDocs.has(doc);
 }
 
-export function setup(
-  connection: Connection,
-  onFilesChanged: (document: TextDocument | undefined) => void
-) {
+export function setup(connection: Connection) {
   connection.onDidOpenTextDocument((params) => {
     const ref = params.textDocument;
     const existingDoc = docs.get(ref.uri);
@@ -75,7 +98,7 @@ export function setup(
     const doc = docs.get(ref.uri);
     if (changes.length > 0 && ref.version != null && doc) {
       TextDocument.update(doc, changes, ref.version);
-      onFilesChanged(doc);
+      emitFileChange(doc);
     }
   });
 
@@ -109,7 +132,7 @@ export function setup(
       }
     }
 
-    onFilesChanged(undefined);
+    emitFileChange(undefined);
   });
 }
 
@@ -126,5 +149,11 @@ function getLanguageId(uri: string) {
       return "typescript";
     default:
       return ext;
+  }
+}
+
+function emitFileChange(doc: TextDocument | undefined) {
+  for (const handler of fileChangeHandlers) {
+    handler(doc);
   }
 }

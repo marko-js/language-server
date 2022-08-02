@@ -5,9 +5,11 @@ import ts from "typescript";
 import {
   CompletionItem,
   CompletionItemKind,
+  CompletionItemTag,
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
+  InsertTextFormat,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
@@ -17,12 +19,14 @@ import type { Extracted } from "../../utils/extractor";
 import type { Parsed } from "../../utils/parser";
 import * as documents from "../../utils/text-documents";
 import { START_OF_FILE } from "../../utils/utils";
+import { getConfig } from "../../utils/workspace";
 import type { Plugin } from "../types";
 
 import { extractScripts } from "./extract";
 
 interface ProjectInfo {
   basePath: string;
+  scriptKind: ScriptKind;
   configPath: string | undefined;
   fileNames: string[];
   options: ts.CompilerOptions;
@@ -37,9 +41,16 @@ const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
 const markoFileReg = /\.marko$/;
 const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)/;
 const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
+const optionalModifierReg = /\boptional\b/;
+const deprecatedModifierReg = /\bdeprecated\b/;
+const colorModifierReg = /\bcolor\b/;
+enum ScriptKind {
+  TS,
+  JS,
+}
 
 const ScriptService: Partial<Plugin> = {
-  doComplete(doc, params) {
+  async doComplete(doc, params) {
     const extracted = extract(doc);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
@@ -48,46 +59,54 @@ const ScriptService: Partial<Plugin> = {
     const { fsPath, scheme } = URI.parse(doc.uri);
     if (scheme !== "file") return;
 
-    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const project = getTSProject(fsPath);
+    const { service, getVirtualFileName } = project;
     const completions = service.getCompletionsAtPosition(
       getVirtualFileName(doc)!,
       generatedOffset,
       {
+        ...(await getProjectPreferences(project)),
+        ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
-        includeCompletionsWithInsertText: true,
-        includeCompletionsForModuleExports: true,
-        // TODO: the rest must be derived from vscode config
       }
     );
-    if (!completions || completions.entries.length === 0) return;
+    if (!completions?.entries.length) return;
 
     const result: CompletionItem[] = [];
 
     for (const completion of completions.entries) {
-      const { replacementSpan, insertText } = completion;
-      let { name: label } = completion;
+      const { replacementSpan } = completion;
+      let { name: label, insertText } = completion;
       let textEdit: CompletionItem["textEdit"];
       let detail: CompletionItem["detail"];
+      let kind: CompletionItem["kind"];
+      let tags: CompletionItem["tags"];
+      let labelDetails: CompletionItem["labelDetails"];
 
       if (completion.source && completion.hasAction) {
-        // TODO: test this
-        // TODO: should shorten replacement when importing a Marko file that can be discovered through taglib.
-        label = relativeImportPath(fsPath, completion.source);
-        detail = completion.source;
+        detail = relativeImportPath(fsPath, completion.source);
       }
 
       if (completion.sourceDisplay) {
-        // TODO: test this
-        detail = ts.displayPartsToString(completion.sourceDisplay);
-      }
-
-      if (completion.labelDetails) {
-        // TODO: test this
-        detail = completion.labelDetails.detail;
+        const description = ts.displayPartsToString(completion.sourceDisplay);
+        if (description !== label) {
+          labelDetails = { description };
+        }
       }
 
       if (completion.kindModifiers) {
-        // TODO
+        if (optionalModifierReg.test(completion.kindModifiers)) {
+          insertText = label;
+          label += "?";
+        }
+
+        if (deprecatedModifierReg.test(completion.kindModifiers)) {
+          tags = [CompletionItemTag.Deprecated];
+        }
+
+        if (colorModifierReg.test(completion.kindModifiers)) {
+          kind = CompletionItemKind.Color;
+        }
       }
 
       if (replacementSpan) {
@@ -107,14 +126,19 @@ const ScriptService: Partial<Plugin> = {
       }
 
       result.push({
-        detail,
-        filterText: insertText,
-        insertText,
-        kind: convertCompletionItemKind(completion.kind),
+        tags,
         label,
-        preselect: completion.isRecommended,
-        sortText: completion.sortText,
+        detail,
         textEdit,
+        insertText,
+        labelDetails,
+        filterText: insertText,
+        sortText: completion.sortText,
+        preselect: completion.isRecommended || undefined,
+        kind: kind || convertCompletionItemKind(completion.kind),
+        insertTextFormat: completion.isSnippet
+          ? InsertTextFormat.Snippet
+          : undefined,
       });
     }
 
@@ -218,6 +242,7 @@ function extract(doc: TextDocument) {
 function getTSProject(docFsPath: string): ProjectInfo {
   let configPath: string | undefined;
   let virtualExt = ts.Extension.Js;
+  let scriptKind = ScriptKind.JS;
 
   if (docFsPath) {
     configPath = ts.findConfigFile(
@@ -228,6 +253,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
 
     if (configPath) {
       virtualExt = ts.Extension.Ts;
+      scriptKind = ScriptKind.TS;
     } else {
       configPath = ts.findConfigFile(
         docFsPath,
@@ -257,24 +283,26 @@ function getTSProject(docFsPath: string): ProjectInfo {
     compilerInfo.cache.set(projectsCacheKey, projectCache);
   }
 
-  const { fileNames, options } = ts.parseJsonConfigFileContent(
-    (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) || {
-      compilerOptions: { lib: ["dom", "node", "esnext"] },
-    },
-    ts.sys,
-    basePath,
-    undefined,
-    configPath,
-    undefined,
-    [
-      {
-        extension: ".marko",
-        isMixedContent: true,
-        scriptKind: ts.ScriptKind.Deferred,
+  const { fileNames, options, projectReferences } =
+    ts.parseJsonConfigFileContent(
+      (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) || {
+        compilerOptions: { lib: ["dom", "node", "esnext"] },
       },
-    ]
-  );
+      ts.sys,
+      basePath,
+      undefined,
+      configPath,
+      undefined,
+      [
+        {
+          extension: ".marko",
+          isMixedContent: true,
+          scriptKind: ts.ScriptKind.Deferred,
+        },
+      ]
+    );
 
+  options.rootDir ??= basePath;
   options.module = ts.ModuleKind.ESNext;
   options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
   options.noEmit =
@@ -299,6 +327,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
     configPath,
     fileNames,
     options,
+    scriptKind,
     getVirtualFileName(doc) {
       const { scheme, fsPath } = URI.parse(doc.uri);
       if (scheme === "file") return addVirtualExt(fsPath);
@@ -309,7 +338,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
           if (markoFileReg.test(moduleName)) {
             if (moduleName[0] === ".") {
               return {
-                resolvedFileName: path.join(
+                resolvedFileName: path.resolve(
                   containingFile,
                   "..",
                   addVirtualExt(moduleName)
@@ -357,9 +386,20 @@ function getTSProject(docFsPath: string): ProjectInfo {
           ).resolvedModule;
         });
       },
-      readDirectory: ts.sys.readDirectory,
+      readDirectory: (path, extensions, exclude, include, depth) => {
+        return ts.sys.readDirectory(
+          path,
+          extensions ? extensions.concat(".marko") : [".marko"],
+          exclude,
+          include,
+          depth
+        );
+      },
       getDefaultLibFileName() {
         return defaultLibFile;
+      },
+      getProjectReferences() {
+        return projectReferences;
       },
       readFile: (filename) => {
         const doc = documents.get(virtualFileToURI(filename));
@@ -367,12 +407,10 @@ function getTSProject(docFsPath: string): ProjectInfo {
           return markoFileReg.test(filename)
             ? extract(doc).generated
             : doc.getText();
-        } else {
-          return ts.sys.readFile(filename) || "";
         }
       },
       fileExists: (filename) => {
-        return documents.get(virtualFileToURI(filename)) !== undefined;
+        return documents.exists(virtualFileToURI(filename));
       },
       getScriptFileNames() {
         const result = new Set<string>(fileNames);
@@ -380,6 +418,11 @@ function getTSProject(docFsPath: string): ProjectInfo {
           const { scheme, fsPath } = URI.parse(doc.uri);
           if (scheme === "file") result.add(fsPath);
         }
+
+        for (const fileName of fileNames) {
+          result.add(fileName);
+        }
+
         return Array.from(result, (fileName) =>
           markoFileReg.test(fileName) ? addVirtualExt(fileName) : fileName
         );
@@ -428,6 +471,63 @@ function getTSProject(docFsPath: string): ProjectInfo {
   function virtualFileToURI(filename: string) {
     return URI.file(removeVirtualFileExt(filename)).toString();
   }
+}
+
+async function getProjectPreferences(
+  project: ProjectInfo
+): Promise<ts.UserPreferences> {
+  const configName =
+    project.scriptKind === ScriptKind.JS ? "javascript" : "typescript";
+  const [preferencesConfig, suggestConfig, inlayHintsConfig] =
+    await Promise.all([
+      getConfig(`${configName}.preferences`),
+      getConfig(`${configName}.suggest`),
+      getConfig(`${configName}.inlayHints`),
+    ]);
+
+  return {
+    disableSuggestions: suggestConfig.enabled === false,
+    quotePreference: preferencesConfig.quoteStyle || "auto",
+    includeCompletionsForModuleExports: suggestConfig.autoImports ?? true,
+    includeCompletionsForImportStatements:
+      suggestConfig.includeCompletionsForImportStatements ?? true,
+    includeCompletionsWithSnippetText:
+      suggestConfig.includeCompletionsWithSnippetText ?? true,
+    includeAutomaticOptionalChainCompletions:
+      suggestConfig.includeAutomaticOptionalChainCompletions ?? true,
+    includeCompletionsWithInsertText: true,
+    includeCompletionsWithClassMemberSnippets:
+      suggestConfig.classMemberSnippets?.enabled ?? true,
+    includeCompletionsWithObjectLiteralMethodSnippets:
+      suggestConfig.objectLiteralMethodSnippets?.enabled ?? true,
+    useLabelDetailsInCompletionEntries: true,
+    allowIncompleteCompletions: true,
+    importModuleSpecifierPreference:
+      preferencesConfig.importModuleSpecifierPreference,
+    importModuleSpecifierEnding:
+      preferencesConfig.importModuleSpecifierEnding || "auto",
+    allowTextChangesInNewFiles: true,
+    providePrefixAndSuffixTextForRename: true,
+    includePackageJsonAutoImports:
+      preferencesConfig.includePackageJsonAutoImports ?? true,
+    provideRefactorNotApplicableReason: true,
+    jsxAttributeCompletionStyle:
+      preferencesConfig.jsxAttributeCompletionStyle ?? "auto",
+    includeInlayParameterNameHints:
+      inlayHintsConfig.parameterNames?.enabled ?? "none",
+    includeInlayParameterNameHintsWhenArgumentMatchesName:
+      !inlayHintsConfig.parameterNames?.suppressWhenArgumentMatchesName,
+    includeInlayFunctionParameterTypeHints:
+      inlayHintsConfig.parameterTypes?.enabled ?? true,
+    includeInlayVariableTypeHints:
+      inlayHintsConfig.variableTypes?.enabled ?? true,
+    includeInlayPropertyDeclarationTypeHints:
+      inlayHintsConfig.propertyDeclarationTypes?.enabled ?? true,
+    includeInlayFunctionLikeReturnTypeHints:
+      inlayHintsConfig.functionLikeReturnTypes?.enabled ?? true,
+    includeInlayEnumMemberValueHints:
+      inlayHintsConfig.enumMemberValues?.enabled ?? true,
+  };
 }
 
 function printDocumentation(
