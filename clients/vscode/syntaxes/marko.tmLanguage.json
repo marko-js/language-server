@@ -157,7 +157,7 @@
             { "include": "#cdata" },
             { "include": "#doctype" },
             { "include": "#declaration" },
-            { "include": "#javascript-comments" },
+            { "include": "#javascript-comments-after-whitespace" },
             { "include": "#html-comment" },
             { "include": "#tag-html" },
             {
@@ -505,7 +505,7 @@
         { "include": "#cdata" },
         { "include": "#doctype" },
         { "include": "#declaration" },
-        { "include": "#javascript-comments" },
+        { "include": "#javascript-comments-after-whitespace" },
         { "include": "#html-comment" },
         { "include": "#invalid-close-tag" },
         { "include": "#tag-html" },
@@ -624,6 +624,25 @@
           "comment": "JavaScript // single line comment",
           "contentName": "source.ts",
           "match": "\\s*//.*$",
+          "captures": {
+            "0": { "patterns": [{ "include": "source.ts" }] }
+          }
+        }
+      ]
+    },
+    "javascript-comments-after-whitespace": {
+      "patterns": [
+        {
+          "comment": "JavaScript /* block comment */",
+          "contentName": "source.ts",
+          "begin": "(?:^|\\s+)(?=/\\*)",
+          "end": "(?<=\\*/)",
+          "patterns": [{ "include": "source.ts" }]
+        },
+        {
+          "comment": "JavaScript // single line comment",
+          "contentName": "source.ts",
+          "match": "(?:^|\\s+)//.*$",
           "captures": {
             "0": { "patterns": [{ "include": "source.ts" }] }
           }

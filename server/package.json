@@ -10,7 +10,7 @@
     "@marko/babel-utils": "^5.21.2",
     "@marko/compiler": "^5.22.2",
     "@marko/translator-default": "^5.21.4",
-    "htmljs-parser": "^5.1.0",
+    "htmljs-parser": "^5.1.1",
     "lasso-package-root": "^1.0.1",
     "marko": "^5.21.5",
     "prettier": "^2.7.1",
