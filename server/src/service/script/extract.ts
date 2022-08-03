@@ -27,9 +27,9 @@ export function extractScripts(
   const { program } = parsed;
   const { fsPath } = URI.parse(doc.uri);
   const extractor = createExtractor(parsed);
-  const addExpr = (range: Range) => extractor.write`(${range});`;
+  const addExpr = (range: Range) => extractor.write`(${range});\n`;
   const addTmpl = (range: Ranges.Template) => {
-    for (const expr of range.expressions) extractor.write`(${expr.value});`;
+    for (const expr of range.expressions) extractor.write`(${expr.value});\n`;
   };
   const addAttrs = (tag: Node.Tag) => {
     extractor.write`{`;
@@ -93,9 +93,9 @@ export function extractScripts(
           extractor.write`${{
             start: blockReg.lastIndex,
             end: node.value.end - 1,
-          }};`;
+          }}\n`;
         } else {
-          extractor.write`${node.value};`;
+          extractor.write`${node.value}\n`;
         }
         return;
       case NodeType.Tag: {
@@ -141,7 +141,7 @@ export function extractScripts(
         if (node.attrs) {
           extractor.write`(`;
           addAttrs(node);
-          extractor.write`);`;
+          extractor.write`);\n`;
         }
 
         addTmpl(node.name);
@@ -157,11 +157,11 @@ export function extractScripts(
         }
 
         if (node.args) addExpr(node.args.value);
-        if (node.var) extractor.write`let ${node.var.value};`;
+        if (node.var) extractor.write`let ${node.var.value};\n`;
         if (node.body) {
-          extractor.write`{`;
+          extractor.write`{\n`;
           for (const child of node.body) visit(child);
-          extractor.write`}`;
+          extractor.write`\n}`;
         }
 
         return;
@@ -186,7 +186,7 @@ export function extractScripts(
         addExpr(node);
         break;
       case NodeType.Export:
-        extractor.write`${node};`;
+        extractor.write`${node}\n`;
         break;
       case NodeType.Import: {
         const tagImport = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
@@ -207,12 +207,12 @@ export function extractScripts(
             }}${templatePath}${{
               start: tagImportMatch.index + length,
               end: node.end,
-            }};`;
+            }}\n`;
             break;
           }
         }
 
-        extractor.write`${node};`;
+        extractor.write`${node}\n`;
         break;
       }
       case NodeType.Static: {
@@ -228,7 +228,7 @@ export function extractScripts(
         extractor.write`${{
           start,
           end,
-        }};`;
+        }}\n`;
         break;
       }
       case NodeType.Comment:
@@ -239,9 +239,9 @@ export function extractScripts(
 
   if (attrsTag) {
     if (attrsTag.var) {
-      extractor.write`export default ((${attrsTag.var.value}) => {`;
+      extractor.write`export default ((\n${attrsTag.var.value}\n) => {\n`;
     } else {
-      extractor.write`export default (() => {`;
+      extractor.write`export default (() => {\n`;
     }
   } else {
     extractor.write`// @ts-expect-error We expect the compiler to error because we are checking if "Input" is defined as a type.
@@ -262,7 +262,7 @@ export default ((component, input: __input__, state) => {`;
     visit(node);
   }
 
-  extractor.write`}) as unknown as Marko.Template<__input__>`;
+  extractor.write`\n}) as unknown as Marko.Template<__input__>`;
   return extractor.end();
 }
 

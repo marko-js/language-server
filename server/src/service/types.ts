@@ -41,6 +41,10 @@ type Handler<P, R> = (
 export type Plugin = {
   initialize: (params: InitializeParams) => Promise<void> | void;
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
+  doCompletionResolve: (
+    item: CompletionItem,
+    token: CancellationToken
+  ) => Result<CompletionItem>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;
   doRename: Handler<RenameParams, WorkspaceEdit>;

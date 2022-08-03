@@ -54,6 +54,7 @@ connection.onInitialize(async (params) => {
       documentHighlightProvider: true,
       documentSymbolProvider: true,
       completionProvider: {
+        resolveProvider: true,
         triggerCharacters: [
           ".",
           ":",
@@ -101,6 +102,10 @@ connection.onCompletion(async (params, cancel) => {
       cancel
     )) || null
   );
+});
+
+connection.onCompletionResolve(async (item, cancel) => {
+  return (await service.doCompletionResolve(item, cancel)) || item;
 });
 
 connection.onDefinition(async (params, cancel) => {

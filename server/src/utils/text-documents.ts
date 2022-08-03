@@ -10,6 +10,8 @@ const openDocs = new Set<TextDocument>();
 const fileExists = new Map<string, boolean>();
 const fileChangeHandlers: Set<FileChangeHandler> = new Set();
 
+export let projectVersion = 0;
+
 export function onFileChange(handler: FileChangeHandler) {
   fileChangeHandlers.add(handler);
 }
@@ -155,6 +157,8 @@ function getLanguageId(uri: string) {
 }
 
 function emitFileChange(doc: TextDocument | undefined) {
+  projectVersion++;
+
   for (const handler of fileChangeHandlers) {
     handler(doc);
   }

@@ -59,13 +59,13 @@ const ScriptService: Partial<Plugin> = {
     const { fsPath, scheme } = URI.parse(doc.uri);
     if (scheme !== "file") return;
 
-    const project = getTSProject(fsPath);
-    const { service, getVirtualFileName } = project;
+    const { service, scriptKind, getVirtualFileName } = getTSProject(fsPath);
+    const virtualFileName = getVirtualFileName(doc)!;
     const completions = service.getCompletionsAtPosition(
-      getVirtualFileName(doc)!,
+      virtualFileName,
       generatedOffset,
       {
-        ...(await getProjectPreferences(project)),
+        ...(await getPreferences(scriptKind)),
         ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
       }
@@ -82,12 +82,14 @@ const ScriptService: Partial<Plugin> = {
       let kind: CompletionItem["kind"];
       let tags: CompletionItem["tags"];
       let labelDetails: CompletionItem["labelDetails"];
+      let source = completion.source;
 
-      if (completion.source && completion.hasAction) {
-        detail = relativeImportPath(fsPath, completion.source);
-      }
-
-      if (completion.sourceDisplay) {
+      if (source && completion.hasAction) {
+        if (source[0] === ".") {
+          source = path.resolve(fsPath, "..", source);
+        }
+        detail = relativeImportPath(fsPath, source);
+      } else if (completion.sourceDisplay) {
         const description = ts.displayPartsToString(completion.sourceDisplay);
         if (description !== label) {
           labelDetails = { description };
@@ -139,6 +141,13 @@ const ScriptService: Partial<Plugin> = {
         insertTextFormat: completion.isSnippet
           ? InsertTextFormat.Snippet
           : undefined,
+        data: completion.data && {
+          originalData: completion.data,
+          originalName: completion.name,
+          originalSource: source,
+          generatedOffset,
+          virtualFileName,
+        },
       });
     }
 
@@ -146,6 +155,55 @@ const ScriptService: Partial<Plugin> = {
       isIncomplete: true,
       items: result,
     };
+  },
+  async doCompletionResolve(item) {
+    const { data } = item;
+    if (!data) return;
+    const { virtualFileName } = data;
+    if (!virtualFileName) return;
+    const doc = documents.get(virtualFileToURI(virtualFileName));
+    if (!doc) return;
+
+    const { service, scriptKind } = getTSProject(virtualFileName);
+    const detail = service.getCompletionEntryDetails(
+      virtualFileName,
+      data.generatedOffset,
+      data.originalName,
+      {},
+      data.originalSource,
+      await getPreferences(scriptKind),
+      data.originalData
+    );
+
+    if (!detail?.codeActions) return;
+
+    const extracted = extract(doc);
+    const textEdits: CompletionItem["additionalTextEdits"] =
+      (item.additionalTextEdits = item.additionalTextEdits || []);
+
+    for (const action of detail.codeActions) {
+      for (const change of action.changes) {
+        if (change.fileName !== virtualFileName) continue;
+        for (const { span, newText } of change.textChanges) {
+          const sourceRange =
+            span.start === 0 && span.length === 0
+              ? START_OF_FILE
+              : extracted.sourceLocationAt(
+                  span.start,
+                  span.start + span.length
+                );
+
+          if (sourceRange) {
+            textEdits.push({
+              newText,
+              range: sourceRange,
+            });
+          }
+        }
+      }
+    }
+
+    return item;
   },
   doHover(doc, params) {
     const extracted = extract(doc);
@@ -333,6 +391,34 @@ function getTSProject(docFsPath: string): ProjectInfo {
       if (scheme === "file") return addVirtualExt(fsPath);
     },
     service: ts.createLanguageService({
+      getNewLine() {
+        return ts.sys.newLine;
+      },
+
+      useCaseSensitiveFileNames() {
+        return ts.sys.useCaseSensitiveFileNames;
+      },
+
+      getCompilationSettings() {
+        return options;
+      },
+
+      getCurrentDirectory() {
+        return basePath;
+      },
+
+      getProjectVersion() {
+        return documents.projectVersion.toString(32);
+      },
+
+      getDefaultLibFileName() {
+        return defaultLibFile;
+      },
+
+      getProjectReferences() {
+        return projectReferences;
+      },
+
       resolveModuleNames(moduleNames, containingFile) {
         return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
           if (markoFileReg.test(moduleName)) {
@@ -386,6 +472,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
           ).resolvedModule;
         });
       },
+
       readDirectory: (path, extensions, exclude, include, depth) => {
         return ts.sys.readDirectory(
           path,
@@ -395,12 +482,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
           depth
         );
       },
-      getDefaultLibFileName() {
-        return defaultLibFile;
-      },
-      getProjectReferences() {
-        return projectReferences;
-      },
+
       readFile: (filename) => {
         const doc = documents.get(virtualFileToURI(filename));
         if (doc) {
@@ -409,9 +491,11 @@ function getTSProject(docFsPath: string): ProjectInfo {
             : doc.getText();
         }
       },
+
       fileExists: (filename) => {
         return documents.exists(virtualFileToURI(filename));
       },
+
       getScriptFileNames() {
         const result = new Set<string>(fileNames);
         for (const doc of documents.getAllOpen()) {
@@ -427,9 +511,11 @@ function getTSProject(docFsPath: string): ProjectInfo {
           markoFileReg.test(fileName) ? addVirtualExt(fileName) : fileName
         );
       },
+
       getScriptVersion(filename) {
         return `${documents.get(virtualFileToURI(filename))?.version ?? -1}`;
       },
+
       getScriptSnapshot(filename) {
         const doc = documents.get(virtualFileToURI(filename));
         if (!doc) return;
@@ -446,14 +532,6 @@ function getTSProject(docFsPath: string): ProjectInfo {
 
         return snapshot;
       },
-
-      getCompilationSettings() {
-        return options;
-      },
-
-      getCurrentDirectory() {
-        return basePath;
-      },
     }),
   };
 
@@ -463,21 +541,20 @@ function getTSProject(docFsPath: string): ProjectInfo {
   function addVirtualExt(filename: string) {
     return filename + virtualExt;
   }
-
-  function removeVirtualFileExt(filename: string) {
-    return filename.replace(/\.marko\.[jt]s$/, ".marko");
-  }
-
-  function virtualFileToURI(filename: string) {
-    return URI.file(removeVirtualFileExt(filename)).toString();
-  }
 }
 
-async function getProjectPreferences(
-  project: ProjectInfo
+function removeVirtualFileExt(filename: string) {
+  return filename.replace(/\.marko\.[jt]s$/, ".marko");
+}
+
+function virtualFileToURI(filename: string) {
+  return URI.file(removeVirtualFileExt(filename)).toString();
+}
+
+async function getPreferences(
+  scriptKind: ScriptKind
 ): Promise<ts.UserPreferences> {
-  const configName =
-    project.scriptKind === ScriptKind.JS ? "javascript" : "typescript";
+  const configName = scriptKind === ScriptKind.JS ? "javascript" : "typescript";
   const [preferencesConfig, suggestConfig, inlayHintsConfig] =
     await Promise.all([
       getConfig(`${configName}.preferences`),

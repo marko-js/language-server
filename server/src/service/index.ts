@@ -59,6 +59,17 @@ const service: Plugin = {
 
     if (items) return { items, isIncomplete };
   },
+  async doCompletionResolve(item, cancel) {
+    try {
+      for (const plugin of plugins) {
+        const result = await plugin.doCompletionResolve?.(item, cancel);
+        if (cancel.isCancellationRequested) return;
+        if (result) return result;
+      }
+    } catch (err) {
+      displayError(err);
+    }
+  },
   async findDefinition(doc, params, cancel) {
     let result: (Location | DefinitionLink)[] | undefined;
 
