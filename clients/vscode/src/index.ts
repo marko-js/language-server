@@ -32,7 +32,7 @@ export async function activate(ctx: ExtensionContext) {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
       fileEvents: workspace.createFileSystemWatcher(
-        "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cts,*.marko,marko.json,marko-tag.json,tsconfig.json,jsconfig.json}",
+        "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cts,*.marko,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}",
         false,
         false,
         false
