@@ -10,6 +10,7 @@ import {
   DiagnosticSeverity,
   DiagnosticTag,
   InsertTextFormat,
+  TextEdit,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
@@ -246,6 +247,71 @@ const ScriptService: Partial<Plugin> = {
     return {
       range: sourceRange,
       contents,
+    };
+  },
+  doRename(doc, params) {
+    const extracted = extract(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
+    if (generatedOffset === undefined) return;
+
+    const { fsPath, scheme } = URI.parse(doc.uri);
+    if (scheme !== "file") return;
+
+    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const virtualFileName = getVirtualFileName(doc)!;
+    const renameLocations = service.findRenameLocations(
+      virtualFileName,
+      generatedOffset,
+      false,
+      false,
+      false
+    );
+
+    if (!renameLocations) return;
+
+    const changes: { [uri: string]: TextEdit[] } = {};
+
+    for (const rename of renameLocations) {
+      const renameURI = virtualFileToURI(rename.fileName);
+      const renameDoc = documents.get(renameURI);
+      let edit: TextEdit | undefined;
+      if (!renameDoc) continue;
+      if (markoFileReg.test(renameURI)) {
+        const extracted = extract(renameDoc);
+        const sourceRange = extracted.sourceLocationAt(
+          rename.textSpan.start,
+          rename.textSpan.start + rename.textSpan.length
+        );
+        if (sourceRange) {
+          edit = {
+            newText: params.newName,
+            range: sourceRange,
+          };
+        }
+      } else {
+        edit = {
+          newText: params.newName,
+          range: {
+            start: renameDoc.positionAt(rename.textSpan.start),
+            end: renameDoc.positionAt(
+              rename.textSpan.start + rename.textSpan.length
+            ),
+          },
+        };
+      }
+
+      if (edit) {
+        if (changes[renameURI]) {
+          changes[renameURI].push(edit);
+        } else {
+          changes[renameURI] = [edit];
+        }
+      }
+    }
+
+    return {
+      changes,
     };
   },
   doValidate(doc) {

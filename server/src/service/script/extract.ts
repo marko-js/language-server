@@ -87,16 +87,7 @@ export function extractScripts(
         addExpr(node.value);
         return;
       case NodeType.Scriptlet:
-        if (node.block) {
-          blockReg.lastIndex = node.value.start;
-          blockReg.test(code);
-          extractor.write`${{
-            start: blockReg.lastIndex,
-            end: node.value.end - 1,
-          }}\n`;
-        } else {
-          extractor.write`${node.value}\n`;
-        }
+        extractor.write`${node.value}\n`;
         return;
       case NodeType.Tag: {
         const tagName = node.nameText;
@@ -124,7 +115,7 @@ export function extractScripts(
             if (t.isValidIdentifier(tagName)) {
               if (tagDef) {
                 extractor.write`
-// @ts-expect-error We expect the compiler to error because we are checking if "${tagName}" is defined.
+// @ts-expect-error We expect the compiler to error because we are checking the tag is defined.
 (1 as unknown as MARKO_NOT_DECLARED extends any ? 0 extends 1 & ${node.name} ? ${childImport} : ${node.name} : never)
 `;
               } else {
