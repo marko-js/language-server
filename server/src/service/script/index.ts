@@ -114,9 +114,9 @@ const ScriptService: Partial<Plugin> = {
       }
 
       if (replacementSpan) {
-        const sourceRange = extracted.sourceLocationAt(
-          replacementSpan.start,
-          replacementSpan.start + replacementSpan.length
+        const sourceRange = sourceLocationAtTextSpan(
+          extracted,
+          replacementSpan
         );
 
         if (sourceRange) {
@@ -187,13 +187,7 @@ const ScriptService: Partial<Plugin> = {
       for (const change of action.changes) {
         if (change.fileName !== virtualFileName) continue;
         for (const { span, newText } of change.textChanges) {
-          const sourceRange =
-            span.start === 0 && span.length === 0
-              ? START_OF_FILE
-              : extracted.sourceLocationAt(
-                  span.start,
-                  span.start + span.length
-                );
+          const sourceRange = sourceLocationAtTextSpan(extracted, span);
 
           if (sourceRange) {
             textEdits.push({
@@ -235,38 +229,24 @@ const ScriptService: Partial<Plugin> = {
 
       if (markoFileReg.test(targetUri)) {
         const extracted = extract(defDoc);
-        const sourceSelectionRange =
-          extracted.sourceLocationAt(
-            def.textSpan.start,
-            def.textSpan.start + def.textSpan.length
-          ) || START_OF_FILE;
-        const sourceContainerRange =
+        const targetSelectionRange =
+          sourceLocationAtTextSpan(extracted, def.textSpan) || START_OF_FILE;
+        const targetRange =
           (def.contextSpan &&
-            extracted.sourceLocationAt(
-              def.contextSpan.start,
-              def.contextSpan.start + def.contextSpan.length
-            )) ||
+            sourceLocationAtTextSpan(extracted, def.contextSpan)) ||
           START_OF_FILE;
         link = {
           targetUri,
-          targetRange: sourceContainerRange,
-          targetSelectionRange: sourceSelectionRange,
+          targetRange,
+          targetSelectionRange,
         };
       } else {
         link = {
           targetUri,
           targetRange: def.contextSpan
-            ? {
-                start: defDoc.positionAt(def.contextSpan.start),
-                end: defDoc.positionAt(
-                  def.contextSpan.start + def.contextSpan.length
-                ),
-              }
+            ? docLocationAtTextSpan(defDoc, def.contextSpan)
             : START_OF_FILE,
-          targetSelectionRange: {
-            start: defDoc.positionAt(def.textSpan.start),
-            end: defDoc.positionAt(def.textSpan.start + def.textSpan.length),
-          },
+          targetSelectionRange: docLocationAtTextSpan(defDoc, def.textSpan),
         };
       }
 
@@ -300,12 +280,8 @@ const ScriptService: Partial<Plugin> = {
       generatedOffset
     );
     if (!quickInfo) return;
-    const { textSpan } = quickInfo;
-    const sourceRange = extracted.sourceLocationAt(
-      textSpan.start,
-      textSpan.start + textSpan.length
-    );
 
+    const sourceRange = sourceLocationAtTextSpan(extracted, quickInfo.textSpan);
     if (!sourceRange) return;
 
     let contents = "";
@@ -358,9 +334,9 @@ const ScriptService: Partial<Plugin> = {
       if (!renameDoc) continue;
       if (markoFileReg.test(renameURI)) {
         const extracted = extract(renameDoc);
-        const sourceRange = extracted.sourceLocationAt(
-          rename.textSpan.start,
-          rename.textSpan.start + rename.textSpan.length
+        const sourceRange = sourceLocationAtTextSpan(
+          extracted,
+          rename.textSpan
         );
         if (sourceRange) {
           edit = {
@@ -371,12 +347,7 @@ const ScriptService: Partial<Plugin> = {
       } else {
         edit = {
           newText: params.newName,
-          range: {
-            start: renameDoc.positionAt(rename.textSpan.start),
-            end: renameDoc.positionAt(
-              rename.textSpan.start + rename.textSpan.length
-            ),
-          },
+          range: docLocationAtTextSpan(renameDoc, rename.textSpan),
         };
       }
 
@@ -428,6 +399,24 @@ const ScriptService: Partial<Plugin> = {
     }
   },
 };
+
+function sourceLocationAtTextSpan(
+  extracted: Extracted,
+  { start, length }: ts.TextSpan
+) {
+  if (start === 0 && length === 0) return START_OF_FILE;
+  return extracted.sourceLocationAt(start, start + length);
+}
+
+function docLocationAtTextSpan(
+  doc: TextDocument,
+  { start, length }: ts.TextSpan
+) {
+  return {
+    start: doc.positionAt(start),
+    end: doc.positionAt(start + length),
+  };
+}
 
 function extract(doc: TextDocument) {
   const parsed = getParsed(doc);
@@ -780,7 +769,7 @@ function convertDiag(
   const sourceRange =
     tsDiag.start === undefined
       ? START_OF_FILE
-      : extracted.sourceLocationAt(tsDiag.start, tsDiag.start + tsDiag.length!);
+      : sourceLocationAtTextSpan(extracted, tsDiag as ts.TextSpan);
 
   if (sourceRange) {
     return {
