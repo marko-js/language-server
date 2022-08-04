@@ -6,6 +6,7 @@ import {
   CompletionItem,
   CompletionItemKind,
   CompletionItemTag,
+  DefinitionLink,
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
@@ -205,6 +206,84 @@ const ScriptService: Partial<Plugin> = {
     }
 
     return item;
+  },
+  findDefinition(doc, params) {
+    const extracted = extract(doc);
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
+    if (generatedOffset === undefined) return;
+
+    const { fsPath, scheme } = URI.parse(doc.uri);
+    if (scheme !== "file") return;
+
+    const { service, getVirtualFileName } = getTSProject(fsPath);
+    const virtualFileName = getVirtualFileName(doc)!;
+    const definitions = service.getDefinitionAtPosition(
+      virtualFileName,
+      generatedOffset
+    );
+    if (!definitions) return;
+
+    let result: DefinitionLink[] | DefinitionLink | undefined;
+
+    for (const def of definitions) {
+      const targetUri = virtualFileToURI(def.fileName);
+      const defDoc = documents.get(targetUri);
+      if (!defDoc) continue;
+
+      let link: DefinitionLink | undefined;
+
+      if (markoFileReg.test(targetUri)) {
+        const extracted = extract(defDoc);
+        const sourceSelectionRange =
+          extracted.sourceLocationAt(
+            def.textSpan.start,
+            def.textSpan.start + def.textSpan.length
+          ) || START_OF_FILE;
+        const sourceContainerRange =
+          (def.contextSpan &&
+            extracted.sourceLocationAt(
+              def.contextSpan.start,
+              def.contextSpan.start + def.contextSpan.length
+            )) ||
+          START_OF_FILE;
+        link = {
+          targetUri,
+          targetRange: sourceContainerRange,
+          targetSelectionRange: sourceSelectionRange,
+        };
+      } else {
+        link = {
+          targetUri,
+          targetRange: def.contextSpan
+            ? {
+                start: defDoc.positionAt(def.contextSpan.start),
+                end: defDoc.positionAt(
+                  def.contextSpan.start + def.contextSpan.length
+                ),
+              }
+            : START_OF_FILE,
+          targetSelectionRange: {
+            start: defDoc.positionAt(def.textSpan.start),
+            end: defDoc.positionAt(def.textSpan.start + def.textSpan.length),
+          },
+        };
+      }
+
+      if (link) {
+        if (result) {
+          if (Array.isArray(result)) {
+            result.push(link);
+          } else {
+            result = [result, link];
+          }
+        } else {
+          result = link;
+        }
+      }
+    }
+
+    return result;
   },
   doHover(doc, params) {
     const extracted = extract(doc);
