@@ -212,15 +212,19 @@ const ScriptService: Partial<Plugin> = {
 
     const { service, getVirtualFileName } = getTSProject(fsPath);
     const virtualFileName = getVirtualFileName(doc)!;
-    const definitions = service.getDefinitionAtPosition(
+    const boundary = service.getDefinitionAndBoundSpan(
       virtualFileName,
       generatedOffset
     );
-    if (!definitions) return;
+    if (!boundary?.definitions) return;
 
+    const originSelectionRange = sourceLocationAtTextSpan(
+      extracted,
+      boundary.textSpan
+    );
     let result: DefinitionLink[] | DefinitionLink | undefined;
 
-    for (const def of definitions) {
+    for (const def of boundary.definitions) {
       const targetUri = virtualFileToURI(def.fileName);
       const defDoc = documents.get(targetUri);
       if (!defDoc) continue;
@@ -239,6 +243,7 @@ const ScriptService: Partial<Plugin> = {
           targetUri,
           targetRange,
           targetSelectionRange,
+          originSelectionRange,
         };
       } else {
         link = {
@@ -247,6 +252,7 @@ const ScriptService: Partial<Plugin> = {
             ? docLocationAtTextSpan(defDoc, def.contextSpan)
             : START_OF_FILE,
           targetSelectionRange: docLocationAtTextSpan(defDoc, def.textSpan),
+          originSelectionRange,
         };
       }
 
