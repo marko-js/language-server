@@ -506,8 +506,10 @@ function getTSProject(docFsPath: string): ProjectInfo {
   options.noEmit =
     options.allowJs =
     options.declaration =
+    options.skipLibCheck =
     options.isolatedModules =
     options.resolveJsonModule =
+    options.skipDefaultLibCheck =
     options.allowNonTsExtensions =
       true;
 
