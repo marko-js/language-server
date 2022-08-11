@@ -22,7 +22,7 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
+        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
         "/Users/dpiercey/dev/tmp/demo"
       ],
       "outFiles": [
@@ -40,8 +40,8 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "--extensionTestsPath=${workspaceRoot}/clients/vscode/dist/__tests__/index.js"
+        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
+        "--extensionTestsPath=${workspaceRoot}/packages/vscode/dist/__tests__/index.js"
       ],
       "outFiles": [
         "${workspaceRoot}/**/dist/*.js",

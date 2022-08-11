@@ -24,7 +24,7 @@
   "private": true,
   "scripts": {
     "build": "npm run -ws build",
-    "build:dev": "tsx ./clients/vscode/build.mts",
+    "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
     "prepare": "husky install",
@@ -33,7 +33,6 @@
     "version": "changeset version && npm i --package-lock-only"
   },
   "workspaces": [
-    "./server",
-    "./clients/*"
+    "./packages/*"
   ]
 }

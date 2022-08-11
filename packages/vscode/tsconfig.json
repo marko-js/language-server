@@ -8,7 +8,7 @@
   },
   "references": [
     {
-      "path": "../../server"
+      "path": "../language-server"
     }
   ]
 }
