@@ -29,10 +29,12 @@ const service: Plugin = {
     await Promise.all(plugins.map((plugin) => plugin.initialize?.(params)));
   },
   async doComplete(doc, params, cancel) {
-    let items: CompletionItem[] | undefined;
     let isIncomplete = false;
     // TODO: this should handle CompletionList.itemDefaults.
     // If there is a single responding plugin, pass through, otherwise need to apply the defaults to the completion items for the plugin.
+
+    // Used to filter out duplicate labels (highest sortText wins).
+    const itemsByLabel = new Map<string, CompletionItem>();
 
     try {
       for (const pending of plugins.map((plugin) =>
@@ -49,7 +51,17 @@ const service: Plugin = {
             isIncomplete ||= cur.isIncomplete;
           }
 
-          items = items ? items.concat(curItems) : curItems;
+          for (const item of curItems) {
+            const { label } = item;
+            const existingItem = itemsByLabel.get(label);
+            if (existingItem) {
+              if ((existingItem.sortText || label) < (item.sortText || label)) {
+                itemsByLabel.set(label, item);
+              }
+            } else {
+              itemsByLabel.set(label, item);
+            }
+          }
         }
       }
     } catch (err) {
@@ -57,7 +69,9 @@ const service: Plugin = {
       displayError(err);
     }
 
-    if (items) return { items, isIncomplete };
+    if (itemsByLabel.size) {
+      return { items: [...itemsByLabel.values()], isIncomplete };
+    }
   },
   async doCompletionResolve(item, cancel) {
     try {
