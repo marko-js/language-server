@@ -14,7 +14,7 @@ describe("diagnostics", () => {
 
   it("unknown tag", async () => {
     await snap.inline(
-      () => diagnostic("<span class=>"),
+      () => diagnostic("<span class= >"),
       `Missing value for attribute`
     );
   });

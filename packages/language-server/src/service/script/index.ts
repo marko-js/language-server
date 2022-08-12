@@ -78,7 +78,7 @@ const ScriptService: Partial<Plugin> = {
 
     for (const completion of completions.entries) {
       const { replacementSpan } = completion;
-      let { name: label, insertText } = completion;
+      let { name: label, insertText, sortText } = completion;
       let textEdit: CompletionItem["textEdit"];
       let detail: CompletionItem["detail"];
       let kind: CompletionItem["kind"];
@@ -91,6 +91,8 @@ const ScriptService: Partial<Plugin> = {
           source = path.resolve(fsPath, "..", source);
         }
         detail = relativeImportPath(fsPath, source);
+        // De-prioritize auto-imported completions.
+        sortText = `\uffff${sortText}`;
       } else if (completion.sourceDisplay) {
         const description = ts.displayPartsToString(completion.sourceDisplay);
         if (description !== label) {
@@ -134,10 +136,10 @@ const ScriptService: Partial<Plugin> = {
         label,
         detail,
         textEdit,
+        sortText,
         insertText,
         labelDetails,
         filterText: insertText,
-        sortText: completion.sortText,
         preselect: completion.isRecommended || undefined,
         kind: kind || convertCompletionItemKind(completion.kind),
         insertTextFormat: completion.isSnippet
@@ -187,8 +189,12 @@ const ScriptService: Partial<Plugin> = {
       for (const change of action.changes) {
         if (change.fileName !== virtualFileName) continue;
         for (const { span, newText } of change.textChanges) {
-          const sourceRange = sourceLocationAtTextSpan(extracted, span);
-
+          const sourceRange = /^\s*(?:import|export) /.test(newText)
+            ? // Ensure import inserts are always in the program root.
+              // TODO: this could probably be updated to more closely reflect
+              // where typescript wants to put the import/export.
+              START_OF_FILE
+            : sourceLocationAtTextSpan(extracted, span);
           if (sourceRange) {
             textEdits.push({
               newText,

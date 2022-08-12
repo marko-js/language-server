@@ -71,7 +71,7 @@ async function suggest(src: string) {
   do {
     // Retry triggering suggestion multiple times if it takes longer to process.
     await vscode.commands.executeCommand("editor.action.triggerSuggest");
-    await setTimeout(100);
+    await setTimeout(1000);
     await vscode.commands.executeCommand("acceptSelectedSuggestion");
   } while (doc.getText() === text);
 

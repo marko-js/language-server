@@ -54,14 +54,14 @@ export function OpenTagName({
             /^@?marko[/-]|[\\/]node_modules[\\/]/.test(tag.filePath))
         )
       ) {
-        result.push(
-          getTagNameCompletion({
-            tag,
-            range,
-            importer,
-            showAutoComplete: true,
-          })
-        );
+        const completion = getTagNameCompletion({
+          tag,
+          range,
+          importer,
+          showAutoComplete: true,
+        });
+        completion.sortText = `0${completion.label}`; // Ensure higher priority than typescript.
+        result.push(completion);
       }
     }
   }
