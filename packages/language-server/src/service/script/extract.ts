@@ -15,6 +15,8 @@ import { createExtractor } from "../../utils/extractor";
 
 const blockReg = /(?<=\s*){/y;
 
+// TODO: this file should be passed a `component.{js,ts}` path if there is one.
+
 /**
  * Iterate over the Marko CST and extract all the script content.
  */
@@ -61,7 +63,7 @@ export function extractScripts(
                     extractor.write`:(${value.value})`;
 
                     if (value.bound) {
-                      extractor.write`,${name}Change(_${name}){${value.value!}=_${name}}`;
+                      extractor.write`,${name}Change(_${name}){${value.value}=_${name}}`;
                     }
                   } else {
                     extractor.write`:true`;
@@ -87,7 +89,7 @@ export function extractScripts(
         addExpr(node.value);
         return;
       case NodeType.Scriptlet:
-        extractor.write`${node.value}\n`;
+        extractor.write`${node.value};\n`;
         return;
       case NodeType.Tag: {
         const tagName = node.nameText;

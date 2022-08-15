@@ -77,7 +77,7 @@
   "engines": {
     "vscode": "^1.68.0"
   },
-  "homepage": "https://github.com/marko-js/language-server/tree/master/clients/vscode/README.md",
+  "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
   "icon": "img/marko.png",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -85,7 +85,7 @@
   "publisher": "Marko-JS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/marko-js/language-server/tree/master/clients/vscode/"
+    "url": "https://github.com/marko-js/language-server/tree/main/clients/vscode/"
   },
   "scripts": {
     "build": "tsc -b && tsx build.mts",

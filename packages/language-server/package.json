@@ -39,7 +39,7 @@
     "!**/__tests__",
     "!**/*.tsbuildinfo"
   ],
-  "homepage": "https://github.com/marko-js/language-server/tree/master/server/README.md",
+  "homepage": "https://github.com/marko-js/language-server/tree/main/server/README.md",
   "keywords": [
     "autocomplete",
     "intellisense",
@@ -52,7 +52,7 @@
   "module": "./dist/index.mjs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/marko-js/language-server/tree/master/server"
+    "url": "https://github.com/marko-js/language-server/tree/main/server"
   },
   "scripts": {
     "build": "tsc -b && tsx build.mts"
