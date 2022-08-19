@@ -30,7 +30,7 @@ await Promise.all([
   })(),
   build({
     bundle: true,
-    minify: true,
+    minify: false,
     sourcesContent: false,
     absWorkingDir: thisDir,
     format: "cjs",
@@ -39,7 +39,12 @@ await Promise.all([
     platform: "node",
     target: ["node14"],
     sourcemap: "linked",
-    entryPoints: ["src/index.ts", "src/server.ts", "src/__tests__/index.ts"],
+    entryPoints: [
+      "src/index.ts",
+      "src/server.ts",
+      "src/ts-plugin.ts",
+      "src/__tests__/index.ts",
+    ],
     external: ["vscode", "mocha", "mocha-snap", "fast-glob", "tsx"],
     plugins: [
       {

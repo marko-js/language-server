@@ -18,7 +18,7 @@ export async function activate(ctx: ExtensionContext) {
       module,
       transport,
       options: {
-        execArgv: ["--nolazy", "--inspect=6009", "--enable-source-maps"],
+        execArgv: ["--inspect-brk=6009", "--enable-source-maps"],
         env: { DEBUG: true },
       },
     },

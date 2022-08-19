@@ -23,6 +23,12 @@
         "configuration": "./marko.configuration.json"
       }
     ],
+    "typescriptServerPlugins": [
+      {
+        "name": "marko-ts-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
     "breakpoints": [
       {
         "language": "marko"
@@ -89,7 +95,7 @@
   },
   "scripts": {
     "build": "tsc -b && tsx build.mts",
-    "release": "export OUT=dist/marko.vsix; vsce package --no-dependencies -o $OUT && vsce publish --packagePath $OUT && ovsx publish $OUT",
+    "release": "tsx release.mts",
     "test": "tsx test.mts"
   }
 }

@@ -5,13 +5,13 @@
       "name": "Develop",
       "stopAll": true,
       "preLaunchTask": "build",
-      "configurations": ["Launch Client", "Attach to Server"],
+      "configurations": ["Launch Client", "Attach to Server", "Attach to TypeScript Plugin"],
     },
     {
       "name": "Test",
       "stopAll": true,
       "preLaunchTask": "build",
-      "configurations": ["Launch Test Client", "Attach to Server"],
+      "configurations": ["Launch Test Client", "Attach to Server", "Attach to TypeScript Plugin"],
     }
   ],
   "configurations": [
@@ -29,6 +29,9 @@
         "${workspaceRoot}/**/dist/*.js",
         "!**/node_modules/**"
       ],
+      "env": {
+        "TSS_DEBUG_BRK": "5859"
+      },
       "presentation": {
         "hidden": true
       }
@@ -57,6 +60,20 @@
       "request": "attach",
       "restart": true,
       "port": 6009,
+      "timeout": 10e5,
+      "continueOnAttach": true,
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "name": "Attach to TypeScript Plugin",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 5859,
+      "timeout": 10e5,
+      "continueOnAttach": true,
       "presentation": {
         "hidden": true
       }
