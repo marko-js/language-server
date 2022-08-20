@@ -1,13 +1,15 @@
 import path from "path";
+import { parse } from "../utils/parser";
+import { PartialTagDef, extractScripts } from "../service/script/extract";
+
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
-const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)/;
+const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)$/;
+const htmlTagNameReg =
+  /^(?:a(?:(?:bbr|cronym|ddress|pplet|r(?:ea|ticle)|side|udio))?|b(?:(?:ase(?:font)?|d[io]|gsound|ig|l(?:ink|ockquote)|ody|r|utton))?|c(?:a(?:nvas|ption)|enter|ite|o(?:de|l(?:group)?|mmand|ntent))|d(?:ata(?:list)?|d|e(?:l|tails)|fn|i(?:alog|r|v)|l|t)|e(?:lement|m(?:bed)?)|f(?:i(?:eldset|g(?:caption|ure))|o(?:nt|oter|rm)|rame(?:set)?)|h(?:1|2|3|4|5|6|ead(?:er)?|group|r|tml)|i(?:(?:frame|m(?:age|g)|n(?:put|s)|sindex))?|k(?:bd|eygen)|l(?:abel|egend|i(?:(?:nk|sting))?)|m(?:a(?:in|p|r(?:k|quee)|th)|e(?:nu(?:item)?|t(?:a|er))|ulticol)|n(?:av|extid|o(?:br|embed|frames|script))|o(?:bject|l|pt(?:group|ion)|utput)|p(?:(?:aram|icture|laintext|r(?:e|ogress)))?|q|r(?:bc?|p|tc?|uby)|s(?:(?:amp|cript|e(?:ction|lect)|hadow|lot|mall|ource|pa(?:cer|n)|t(?:r(?:ike|ong)|yle)|u(?:b|mmary|p)|vg))?|t(?:able|body|d|e(?:mplate|xtarea)|foot|h(?:ead)?|i(?:me|tle)|r(?:ack)?|t)|ul?|v(?:ar|ideo)|wbr|xmp)$/;
 const configuredProjects = new WeakSet<
   import("typescript/lib/tsserverlibrary").server.Project
 >();
-
-// TODO:
-// track file move/remove/change and update snapshot cache.
 
 export function init({
   typescript: ts,
@@ -63,7 +65,11 @@ export function init({
       //   setNodeParents,
       //   scriptKind
       // ) => {
-      //   return createLanguageServiceSourceFile(
+      //   if (markoExtReg.test(fileName)) {
+      //     debugger;
+      //   }
+
+      //   const sourceFile = createLanguageServiceSourceFile(
       //     fileName,
       //     scriptSnapshot,
       //     scriptTargetOrOptions,
@@ -71,6 +77,12 @@ export function init({
       //     setNodeParents,
       //     scriptKind
       //   );
+
+      //   if (markoExtReg.test(fileName)) {
+      //     debugger;
+      //   }
+
+      //   return sourceFile;
       // };
 
       // ts.updateLanguageServiceSourceFile = (
@@ -80,14 +92,19 @@ export function init({
       //   textChangeRange,
       //   aggressiveChecks
       // ) => {
-      //   debugger;
-      //   return updateLanguageServiceSourceFile(
+      //   const updatedSourceFile = updateLanguageServiceSourceFile(
       //     sourceFile,
       //     scriptSnapshot,
       //     version,
       //     textChangeRange,
       //     aggressiveChecks
       //   );
+
+      //   if (markoExtReg.test(sourceFile.fileName)) {
+      //     debugger;
+      //   }
+
+      //   return updatedSourceFile;
       // };
 
       const onSourceFileChanged = (ps as any).onSourceFileChanged;
@@ -111,7 +128,19 @@ export function init({
         if (markoExtReg.test(fileName)) {
           let cached = snapshotCache.get(fileName);
           if (!cached) {
-            cached = ts.ScriptSnapshot.fromString("export default 1");
+            let code = lsh.readFile(fileName, "utf-8") || "";
+            if (code) {
+              const extracted = extractScripts(
+                code,
+                fileName,
+                parse(code),
+                getTagDef
+              );
+
+              code = extracted.generated;
+            }
+
+            cached = ts.ScriptSnapshot.fromString(code);
             snapshotCache.set(fileName, cached);
           }
 
@@ -158,15 +187,18 @@ export function init({
           const moduleName = moduleNames[i];
           if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
             if (moduleName[0] === ".") {
-              resolvedModules[i] = {
-                resolvedFileName: path.resolve(
-                  containingFile,
-                  "..",
-                  moduleName
-                ),
-                extension: ts.Extension.Dts,
-                isExternalLibraryImport: false,
-              };
+              const resolvedFileName = path.resolve(
+                containingFile,
+                "..",
+                moduleName
+              );
+              if (lsh.fileExists(resolvedFileName)) {
+                resolvedModules[i] = {
+                  resolvedFileName,
+                  extension: ts.Extension.Ts,
+                  isExternalLibraryImport: false,
+                };
+              }
             } else {
               const [, nodeModuleName, relativeModulePath] =
                 modulePartsReg.exec(moduleName)!;
@@ -180,15 +212,18 @@ export function init({
               );
 
               if (resolvedModule) {
-                resolvedModules[i] = {
-                  resolvedFileName: path.join(
-                    resolvedModule.resolvedFileName,
-                    "..",
-                    relativeModulePath
-                  ),
-                  extension: ts.Extension.Dts,
-                  isExternalLibraryImport: true,
-                };
+                const resolvedFileName = path.join(
+                  resolvedModule.resolvedFileName,
+                  "..",
+                  relativeModulePath
+                );
+                if (lsh.fileExists(resolvedFileName)) {
+                  resolvedModules[i] = {
+                    resolvedFileName,
+                    extension: ts.Extension.Ts,
+                    isExternalLibraryImport: true,
+                  };
+                }
               }
             }
           }
@@ -199,5 +234,12 @@ export function init({
 
       return ls;
     },
+  };
+}
+
+function getTagDef(name: string): PartialTagDef {
+  return {
+    html: htmlTagNameReg.test(name),
+    filename: undefined,
   };
 }

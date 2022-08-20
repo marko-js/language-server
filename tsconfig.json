@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "ESNext"],
+    "lib": ["ESNext"],
     "strict": true,
     "outDir": "dist",
     "composite": true,

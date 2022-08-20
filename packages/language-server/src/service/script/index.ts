@@ -435,9 +435,28 @@ function extract(doc: TextDocument) {
   let cached = extractCache.get(parsed);
 
   if (!cached) {
+    const compilerInfo = getCompilerInfo(doc);
     extractCache.set(
       parsed,
-      (cached = extractScripts(doc, parsed, getCompilerInfo(doc).lookup))
+      (cached = extractScripts(
+        doc.getText(),
+        URI.parse(doc.uri).fsPath,
+        parsed,
+        (tagName) => {
+          const def = compilerInfo.lookup.getTag(tagName);
+          if (def) {
+            return {
+              html: def.html,
+              filename: def.template || def.renderer,
+            };
+          }
+
+          return {
+            html: false,
+            filename: undefined,
+          };
+        }
+      ))
     );
   }
   return cached;

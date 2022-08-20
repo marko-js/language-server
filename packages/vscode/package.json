@@ -72,11 +72,12 @@
   },
   "devDependencies": {
     "@marko/language-server": "^0.12.17",
+    "@types/babel__helper-validator-identifier": "^7.15.0",
     "@types/vscode": "^1.68.0",
     "@vscode/test-electron": "^2.1.5",
     "ovsx": "^0.5.1",
-    "tsx": "^3.8.1",
-    "vsce": "^2.10.0",
+    "tsx": "^3.8.2",
+    "vsce": "^2.10.2",
     "vscode-languageclient": "^8.0.2"
   },
   "displayName": "Marko VSCode",
