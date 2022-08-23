@@ -1,5 +1,6 @@
 import path from "path";
 import { parse } from "../utils/parser";
+import type { Extracted } from "../utils/extractor";
 import { PartialTagDef, extractScripts } from "../service/script/extract";
 
 const markoExt = ".marko";
@@ -52,60 +53,61 @@ export function init({
         ? ts.ScriptKind.TS
         : ts.ScriptKind.JS;
       const snapshotCache = new Map<string, ts.IScriptSnapshot>();
+      const snapshotExtracted = new WeakMap<ts.IScriptSnapshot, Extracted>();
 
-      // const {
-      //   createLanguageServiceSourceFile,
-      //   updateLanguageServiceSourceFile,
-      // } = ts;
-      // ts.createLanguageServiceSourceFile = (
-      //   fileName,
-      //   scriptSnapshot,
-      //   scriptTargetOrOptions,
-      //   version,
-      //   setNodeParents,
-      //   scriptKind
-      // ) => {
-      //   if (markoExtReg.test(fileName)) {
-      //     debugger;
-      //   }
+      const {
+        createLanguageServiceSourceFile,
+        updateLanguageServiceSourceFile,
+      } = ts;
+      ts.createLanguageServiceSourceFile = (
+        fileName,
+        scriptSnapshot,
+        scriptTargetOrOptions,
+        version,
+        setNodeParents,
+        scriptKind
+      ) => {
+        const sourceFile = createLanguageServiceSourceFile(
+          fileName,
+          scriptSnapshot,
+          scriptTargetOrOptions,
+          version,
+          setNodeParents,
+          scriptKind
+        );
 
-      //   const sourceFile = createLanguageServiceSourceFile(
-      //     fileName,
-      //     scriptSnapshot,
-      //     scriptTargetOrOptions,
-      //     version,
-      //     setNodeParents,
-      //     scriptKind
-      //   );
+        const extracted = snapshotExtracted.get(scriptSnapshot);
 
-      //   if (markoExtReg.test(fileName)) {
-      //     debugger;
-      //   }
+        if (extracted) {
+          patchExtractedSourceFile(sourceFile, extracted);
+        }
 
-      //   return sourceFile;
-      // };
+        return sourceFile;
+      };
 
-      // ts.updateLanguageServiceSourceFile = (
-      //   sourceFile,
-      //   scriptSnapshot,
-      //   version,
-      //   textChangeRange,
-      //   aggressiveChecks
-      // ) => {
-      //   const updatedSourceFile = updateLanguageServiceSourceFile(
-      //     sourceFile,
-      //     scriptSnapshot,
-      //     version,
-      //     textChangeRange,
-      //     aggressiveChecks
-      //   );
+      ts.updateLanguageServiceSourceFile = (
+        sourceFile,
+        scriptSnapshot,
+        version,
+        textChangeRange,
+        aggressiveChecks
+      ) => {
+        const updatedSourceFile = updateLanguageServiceSourceFile(
+          sourceFile,
+          scriptSnapshot,
+          version,
+          textChangeRange,
+          aggressiveChecks
+        );
 
-      //   if (markoExtReg.test(sourceFile.fileName)) {
-      //     debugger;
-      //   }
+        const extracted = snapshotExtracted.get(scriptSnapshot);
 
-      //   return updatedSourceFile;
-      // };
+        if (extracted) {
+          patchExtractedSourceFile(sourceFile, extracted);
+        }
+
+        return updatedSourceFile;
+      };
 
       const onSourceFileChanged = (ps as any).onSourceFileChanged;
       (ps as any).onSourceFileChanged = (
@@ -128,7 +130,7 @@ export function init({
         if (markoExtReg.test(fileName)) {
           let cached = snapshotCache.get(fileName);
           if (!cached) {
-            let code = lsh.readFile(fileName, "utf-8") || "";
+            const code = lsh.readFile(fileName, "utf-8");
             if (code) {
               const extracted = extractScripts(
                 code,
@@ -137,10 +139,12 @@ export function init({
                 getTagDef
               );
 
-              code = extracted.generated;
+              cached = ts.ScriptSnapshot.fromString(extracted.generated);
+              snapshotExtracted.set(cached, extracted);
+            } else {
+              cached = ts.ScriptSnapshot.fromString("");
             }
 
-            cached = ts.ScriptSnapshot.fromString(code);
             snapshotCache.set(fileName, cached);
           }
 
@@ -234,6 +238,20 @@ export function init({
 
       return ls;
     },
+  };
+}
+
+function patchExtractedSourceFile(
+  sourceFile: ts.SourceFile,
+  extracted: Extracted
+) {
+  sourceFile.getLineAndCharacterOfPosition = (generatedOffset) => {
+    return (
+      extracted.sourcePositionAt(generatedOffset) || {
+        line: 0,
+        character: 0,
+      }
+    );
   };
 }
 
