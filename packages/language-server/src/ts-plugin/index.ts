@@ -12,6 +12,10 @@ const configuredProjects = new WeakSet<
   import("typescript/lib/tsserverlibrary").server.Project
 >();
 
+interface ExtractedSnapshot extends Extracted {
+  snapshot: ts.IScriptSnapshot;
+}
+
 export function init({
   typescript: ts,
 }: {
@@ -53,8 +57,7 @@ export function init({
         ? // If we have a `tsconfig.json` then Marko files will be processed as ts, otherwise js.
           ts.ScriptKind.TS
         : ts.ScriptKind.JS;
-      const snapshotCache = new Map<string, ts.IScriptSnapshot>();
-      const snapshotExtracted = new WeakMap<ts.IScriptSnapshot, Extracted>();
+      const snapshotCache = new Map<string, ExtractedSnapshot>();
 
       /**
        * SourceFile is used to store metadata about any file processed by TypeScript.
@@ -81,7 +84,7 @@ export function init({
           scriptKind
         );
 
-        const extracted = snapshotExtracted.get(scriptSnapshot);
+        const extracted = snapshotCache.get(fileName);
 
         if (extracted) {
           patchExtractedSourceFile(sourceFile, extracted);
@@ -105,7 +108,7 @@ export function init({
           aggressiveChecks
         );
 
-        const extracted = snapshotExtracted.get(scriptSnapshot);
+        const extracted = snapshotCache.get(sourceFile.fileName);
 
         if (extracted) {
           patchExtractedSourceFile(sourceFile, extracted);
@@ -145,25 +148,19 @@ export function init({
         if (markoExtReg.test(fileName)) {
           let cached = snapshotCache.get(fileName);
           if (!cached) {
-            const code = lsh.readFile(fileName, "utf-8");
-            if (code) {
-              const extracted = extractScripts(
-                code,
-                fileName,
-                parse(code),
-                getTagDef
-              );
+            const code = lsh.readFile(fileName, "utf-8") || "";
+            cached = extractScripts(
+              code,
+              fileName,
+              parse(code),
+              getTagDef
+            ) as ExtractedSnapshot;
 
-              cached = ts.ScriptSnapshot.fromString(extracted.generated);
-              snapshotExtracted.set(cached, extracted);
-            } else {
-              cached = ts.ScriptSnapshot.fromString("");
-            }
-
+            cached.snapshot = ts.ScriptSnapshot.fromString(cached.generated);
             snapshotCache.set(fileName, cached);
           }
 
-          return cached;
+          return cached.snapshot;
         }
 
         return getScriptSnapshot(fileName);
@@ -264,6 +261,45 @@ export function init({
         return resolvedModules;
       };
 
+      const findReferences = ls.findReferences!.bind(ls);
+      ls.findReferences = (fileName, position) => {
+        const original = findReferences(fileName, position);
+        if (!original) return;
+
+        const result: ts.ReferencedSymbol[] = [];
+        for (const referenced of original) {
+          let definition: ts.ReferencedSymbolDefinitionInfo | undefined =
+            referenced.definition;
+          const defExtracted = snapshotCache.get(definition.fileName);
+
+          if (defExtracted) {
+            definition = mapReferencedSymbolDefinitionInfo(
+              defExtracted,
+              definition
+            );
+            if (!definition) continue;
+          }
+
+          const references: ts.ReferencedSymbolEntry[] = [];
+          for (const ref of referenced.references) {
+            const refExtracted = snapshotCache.get(ref.fileName);
+            if (refExtracted) {
+              const mappedRef = mapReferencedSymbolEntry(refExtracted, ref);
+              if (mappedRef) references.push(mappedRef);
+            } else {
+              references.push(ref);
+            }
+          }
+
+          result.push({
+            definition,
+            references,
+          });
+        }
+
+        return result;
+      };
+
       return ls;
     },
   };
@@ -285,6 +321,53 @@ function patchExtractedSourceFile(
       }
     );
   };
+}
+
+function mapReferencedSymbolDefinitionInfo(
+  extracted: ExtractedSnapshot,
+  info: ts.ReferencedSymbolDefinitionInfo
+) {
+  const textSpan = sourceTextSpan(extracted, info.textSpan);
+  if (!textSpan) return;
+
+  // todo: originalFile
+
+  return {
+    ...info,
+    textSpan,
+    contextSpan:
+      info.contextSpan && sourceTextSpan(extracted, info.contextSpan),
+  };
+}
+
+function mapReferencedSymbolEntry(
+  extracted: ExtractedSnapshot,
+  entry: ts.ReferencedSymbolEntry
+) {
+  const textSpan = sourceTextSpan(extracted, entry.textSpan);
+  if (!textSpan) return;
+
+  // todo: originalFile
+
+  return {
+    ...entry,
+    textSpan,
+    contextSpan:
+      entry.contextSpan && sourceTextSpan(extracted, entry.contextSpan),
+  };
+}
+
+function sourceTextSpan(
+  extracted: Extracted,
+  { start, length }: ts.TextSpan
+): ts.TextSpan | undefined {
+  const sourceStart = extracted.sourceOffsetAt(start);
+  if (sourceStart !== undefined) {
+    return {
+      start: sourceStart,
+      length,
+    };
+  }
 }
 
 function getTagDef(name: string): PartialTagDef {
