@@ -50,11 +50,16 @@ export function init({
       const markoScriptKind = /[/\\]tsconfig.json$/.test(
         canonicalConfigFilePath || ""
       )
-        ? ts.ScriptKind.TS
+        ? // If we have a `tsconfig.json` then Marko files will be processed as ts, otherwise js.
+          ts.ScriptKind.TS
         : ts.ScriptKind.JS;
       const snapshotCache = new Map<string, ts.IScriptSnapshot>();
       const snapshotExtracted = new WeakMap<ts.IScriptSnapshot, Extracted>();
 
+      /**
+       * SourceFile is used to store metadata about any file processed by TypeScript.
+       * We patch this to ensure that methods which return line/character info point to the original Marko file.
+       */
       const {
         createLanguageServiceSourceFile,
         updateLanguageServiceSourceFile,
@@ -109,6 +114,9 @@ export function init({
         return updatedSourceFile;
       };
 
+      /**
+       * Here we invalidate our snapshot cache when TypeScripy invalidates the file.
+       */
       const onSourceFileChanged = (ps as any).onSourceFileChanged;
       (ps as any).onSourceFileChanged = (
         info: ts.server.ScriptInfo,
@@ -118,6 +126,9 @@ export function init({
         return onSourceFileChanged(info, eventKind);
       };
 
+      /**
+       * Trick TypeScript into thinking Marko files are TS/JS files.
+       */
       const getScriptKind = lsh.getScriptKind!.bind(lsh);
       lsh.getScriptKind = (fileName: string) => {
         return markoExtReg.test(fileName)
@@ -125,6 +136,10 @@ export function init({
           : getScriptKind(fileName);
       };
 
+      /**
+       * A script snapshot is an immuatble string of text representing the contents of a file.
+       * We patch it so that Marko files instead return their extracted ts code.
+       */
       const getScriptSnapshot = lsh.getScriptSnapshot!.bind(lsh);
       lsh.getScriptSnapshot = (fileName: string) => {
         if (markoExtReg.test(fileName)) {
@@ -154,6 +169,10 @@ export function init({
         return getScriptSnapshot(fileName);
       };
 
+      /**
+       * This ensures that any directory reads with specific file extensions also include Marko.
+       * It is used for example when completing the `from` property of the `import` statement.
+       */
       const readDirectory = lsh.readDirectory!.bind(lsh);
       lsh.readDirectory = (path, extensions, exclude, include, depth) => {
         return readDirectory(
@@ -165,6 +184,11 @@ export function init({
         );
       };
 
+      /**
+       * TypeScript doesn't know how to resolve `.marko` files.
+       * Below we first try to use TypeScripts normal resolution, and then fallback
+       * to seeing if a `.marko` file exists at the same location.
+       */
       const resolveModuleNames = lsh.resolveModuleNames!.bind(lsh);
       lsh.resolveModuleNames = (
         moduleNames,
@@ -191,6 +215,7 @@ export function init({
           const moduleName = moduleNames[i];
           if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
             if (moduleName[0] === ".") {
+              // For relative paths just see if it exists on disk.
               const resolvedFileName = path.resolve(
                 containingFile,
                 "..",
@@ -204,10 +229,13 @@ export function init({
                 };
               }
             } else {
+              // For other paths we treat it as a node_module and try resolving
+              // that modules `marko.json`. If the `marko.json` exists then we'll
+              // try resolving the `.marko` file relative to that.
               const [, nodeModuleName, relativeModulePath] =
                 modulePartsReg.exec(moduleName)!;
               const [resolvedModule] = resolveModuleNames(
-                [`${nodeModuleName}/package.json`],
+                [`${nodeModuleName}/marko.json`],
                 containingFile,
                 reusedNames,
                 redirectedReference,
@@ -241,6 +269,10 @@ export function init({
   };
 }
 
+/**
+ * Patches the `sourceFile` (which uses our extracted ts/js from the Marko code)
+ * to source map back to the original Marko file.
+ */
 function patchExtractedSourceFile(
   sourceFile: ts.SourceFile,
   extracted: Extracted
