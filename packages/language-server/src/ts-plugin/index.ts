@@ -50,7 +50,7 @@ export function init({
       }
 
       const { canonicalConfigFilePath } =
-        info.project as ts.server.ConfiguredProject;
+        project as ts.server.ConfiguredProject;
       const markoScriptKind = /[/\\]tsconfig.json$/.test(
         canonicalConfigFilePath || ""
       )
@@ -261,33 +261,30 @@ export function init({
         return resolvedModules;
       };
 
-      const findReferences = ls.findReferences!.bind(ls);
+      const { findReferences } = ls;
       ls.findReferences = (fileName, position) => {
-        const original = findReferences(fileName, position);
-        if (!original) return;
+        const symbols = findReferences(fileName, position);
+        if (!symbols) return;
 
         const result: ts.ReferencedSymbol[] = [];
-        for (const referenced of original) {
+        for (const symbol of symbols) {
           let definition: ts.ReferencedSymbolDefinitionInfo | undefined =
-            referenced.definition;
+            symbol.definition;
           const defExtracted = snapshotCache.get(definition.fileName);
 
           if (defExtracted) {
-            definition = mapReferencedSymbolDefinitionInfo(
-              defExtracted,
-              definition
-            );
+            definition = mapTextSpans(defExtracted, definition);
             if (!definition) continue;
           }
 
           const references: ts.ReferencedSymbolEntry[] = [];
-          for (const ref of referenced.references) {
-            const refExtracted = snapshotCache.get(ref.fileName);
+          for (const reference of symbol.references) {
+            const refExtracted = snapshotCache.get(reference.fileName);
             if (refExtracted) {
-              const mappedRef = mapReferencedSymbolEntry(refExtracted, ref);
-              if (mappedRef) references.push(mappedRef);
+              const updated = mapTextSpans(refExtracted, reference);
+              if (updated) references.push(updated);
             } else {
-              references.push(ref);
+              references.push(reference);
             }
           }
 
@@ -295,6 +292,37 @@ export function init({
             definition,
             references,
           });
+        }
+
+        return result;
+      };
+
+      const { findRenameLocations } = ls;
+      ls.findRenameLocations = (
+        fileName,
+        position,
+        findInStrings,
+        findInComments,
+        providePrefixAndSuffixTextForRename
+      ) => {
+        const renames = findRenameLocations(
+          fileName,
+          position,
+          findInStrings,
+          findInComments,
+          providePrefixAndSuffixTextForRename
+        );
+        if (!renames) return;
+
+        const result: ts.RenameLocation[] = [];
+        for (const rename of renames) {
+          const extracted = snapshotCache.get(rename.fileName);
+          if (extracted) {
+            const updated = mapTextSpans(extracted, rename);
+            if (updated) result.push(updated);
+          } else {
+            result.push(rename);
+          }
         }
 
         return result;
@@ -323,38 +351,21 @@ function patchExtractedSourceFile(
   };
 }
 
-function mapReferencedSymbolDefinitionInfo(
-  extracted: ExtractedSnapshot,
-  info: ts.ReferencedSymbolDefinitionInfo
-) {
-  const textSpan = sourceTextSpan(extracted, info.textSpan);
-  if (!textSpan) return;
-
-  // todo: originalFile
-
-  return {
-    ...info,
-    textSpan,
-    contextSpan:
-      info.contextSpan && sourceTextSpan(extracted, info.contextSpan),
-  };
-}
-
-function mapReferencedSymbolEntry(
-  extracted: ExtractedSnapshot,
-  entry: ts.ReferencedSymbolEntry
-) {
-  const textSpan = sourceTextSpan(extracted, entry.textSpan);
-  if (!textSpan) return;
-
-  // todo: originalFile
-
-  return {
-    ...entry,
-    textSpan,
-    contextSpan:
-      entry.contextSpan && sourceTextSpan(extracted, entry.contextSpan),
-  };
+function mapTextSpans<
+  T extends {
+    textSpan: ts.TextSpan;
+    contextSpan?: ts.TextSpan;
+  }
+>(extracted: ExtractedSnapshot, data: T) {
+  const textSpan = sourceTextSpan(extracted, data.textSpan);
+  if (textSpan) {
+    return {
+      ...data,
+      textSpan,
+      contextSpan:
+        data.contextSpan && sourceTextSpan(extracted, data.contextSpan),
+    };
+  }
 }
 
 function sourceTextSpan(
