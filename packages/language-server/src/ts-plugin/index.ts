@@ -11,6 +11,11 @@ const htmlTagNameReg =
 const configuredProjects = new WeakSet<
   import("typescript/lib/tsserverlibrary").server.Project
 >();
+const startLineCharacter = {
+  line: 0,
+  character: 0,
+};
+const getStartLineCharacter = () => startLineCharacter;
 
 interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -60,65 +65,7 @@ export function init({
       const snapshotCache = new Map<string, ExtractedSnapshot>();
 
       /**
-       * SourceFile is used to store metadata about any file processed by TypeScript.
-       * We patch this to ensure that methods which return line/character info point to the original Marko file.
-       */
-      const {
-        createLanguageServiceSourceFile,
-        updateLanguageServiceSourceFile,
-      } = ts;
-      ts.createLanguageServiceSourceFile = (
-        fileName,
-        scriptSnapshot,
-        scriptTargetOrOptions,
-        version,
-        setNodeParents,
-        scriptKind
-      ) => {
-        const sourceFile = createLanguageServiceSourceFile(
-          fileName,
-          scriptSnapshot,
-          scriptTargetOrOptions,
-          version,
-          setNodeParents,
-          scriptKind
-        );
-
-        const extracted = snapshotCache.get(fileName);
-
-        if (extracted) {
-          patchExtractedSourceFile(sourceFile, extracted);
-        }
-
-        return sourceFile;
-      };
-
-      ts.updateLanguageServiceSourceFile = (
-        sourceFile,
-        scriptSnapshot,
-        version,
-        textChangeRange,
-        aggressiveChecks
-      ) => {
-        const updatedSourceFile = updateLanguageServiceSourceFile(
-          sourceFile,
-          scriptSnapshot,
-          version,
-          textChangeRange,
-          aggressiveChecks
-        );
-
-        const extracted = snapshotCache.get(sourceFile.fileName);
-
-        if (extracted) {
-          patchExtractedSourceFile(sourceFile, extracted);
-        }
-
-        return updatedSourceFile;
-      };
-
-      /**
-       * Here we invalidate our snapshot cache when TypeScripy invalidates the file.
+       * Here we invalidate our snapshot cache when TypeScript invalidates the file.
        */
       const onSourceFileChanged = (ps as any).onSourceFileChanged;
       (ps as any).onSourceFileChanged = (
@@ -127,6 +74,22 @@ export function init({
       ) => {
         snapshotCache.delete(info.fileName);
         return onSourceFileChanged(info, eventKind);
+      };
+
+      /**
+       * Whenever TypeScript requests line/character info we return with the source
+       * file line/character if it exists.
+       */
+      const { toLineColumnOffset = getStartLineCharacter } = ls;
+      ls.toLineColumnOffset = (fileName, pos) => {
+        if (pos === 0) return startLineCharacter;
+
+        const extracted = snapshotCache.get(fileName);
+        if (extracted) {
+          return extracted.sourcePositionAt(pos) || startLineCharacter;
+        }
+
+        return toLineColumnOffset(fileName, pos);
       };
 
       /**
@@ -330,24 +293,6 @@ export function init({
 
       return ls;
     },
-  };
-}
-
-/**
- * Patches the `sourceFile` (which uses our extracted ts/js from the Marko code)
- * to source map back to the original Marko file.
- */
-function patchExtractedSourceFile(
-  sourceFile: ts.SourceFile,
-  extracted: Extracted
-) {
-  sourceFile.getLineAndCharacterOfPosition = (generatedOffset) => {
-    return (
-      extracted.sourcePositionAt(generatedOffset) || {
-        line: 0,
-        character: 0,
-      }
-    );
   };
 }
 
