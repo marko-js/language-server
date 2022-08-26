@@ -1,11 +1,8 @@
 import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import {
-  type CompilerInfo,
-  getCompilerInfo,
-  getParsed,
-} from "../../../utils/compiler";
+import type { CompilerInfo } from "../../../utils/compiler";
+import { getDocInfo } from "../../../utils/doc";
 import { NodeType, type Parsed } from "../../../utils/parser";
 import type { Plugin, Result } from "../../types";
 
@@ -37,7 +34,7 @@ const handlers: Record<
 };
 
 export const doComplete: Plugin["doComplete"] = async (doc, params) => {
-  const parsed = getParsed(doc);
+  const { parsed, info } = getDocInfo(doc);
   const offset = doc.offsetAt(params.position);
   const node = parsed.nodeAt(offset);
   return {
@@ -49,7 +46,7 @@ export const doComplete: Plugin["doComplete"] = async (doc, params) => {
         offset,
         node,
         code: doc.getText(),
-        ...getCompilerInfo(doc),
+        ...info,
       })) || [],
     isIncomplete: true,
   };

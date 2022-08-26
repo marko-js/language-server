@@ -1,7 +1,8 @@
+import path from "path";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { getCompilerInfo } from "../../utils/compiler";
-import { getDocFile } from "../../utils/doc-file";
+import { getDocFile } from "../../utils/doc";
 import type { Plugin } from "../types";
 
 const markoErrorRegExp =
@@ -11,7 +12,9 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
   const fsPath = getDocFile(doc);
   const diagnostics: Diagnostic[] = [];
 
-  const { compiler, translator, cache } = getCompilerInfo(doc);
+  const { compiler, translator, cache } = getCompilerInfo(
+    fsPath && path.dirname(fsPath)
+  );
 
   try {
     compiler.compileSync(doc.getText(), fsPath || "untitled.marko", {

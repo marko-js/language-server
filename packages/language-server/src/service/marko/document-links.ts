@@ -1,37 +1,29 @@
-import type { TaglibLookup } from "@marko/babel-utils";
 import type { DocumentLink } from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
-import { URI } from "vscode-uri";
+import { DocInfo, processDoc } from "../../utils/doc";
 
-import { getCompilerInfo, getParsed } from "../../utils/compiler";
-import { type Node, NodeType, type Parsed } from "../../utils/parser";
+import { type Node, NodeType } from "../../utils/parser";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
 
 import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
-const cache = new WeakMap<Parsed, DocumentLink[]>();
 
 export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
-  const parsed = getParsed(doc);
-  let result = cache.get(parsed);
-  if (!result) {
-    result = extractDocumentLinks(doc, parsed, getCompilerInfo(doc).lookup);
-    cache.set(parsed, result);
-  }
-  return result;
+  return processDoc(doc, extractDocumentLinks);
 };
 
 /**
  * Iterate over the Marko CST and extract all the file links in the document.
  */
-function extractDocumentLinks(
-  doc: TextDocument,
-  parsed: Parsed,
-  lookup: TaglibLookup
-): DocumentLink[] {
-  if (URI.parse(doc.uri).scheme === "untitled") {
+function extractDocumentLinks({
+  uri,
+  scheme,
+  parsed,
+  code,
+  info: { lookup },
+}: DocInfo): DocumentLink[] {
+  if (scheme !== "file") {
     return [];
   }
 
@@ -49,18 +41,15 @@ function extractDocumentLinks(
       case NodeType.Tag:
         if (node.attrs && node.nameText) {
           for (const attr of node.attrs) {
-            if (isDocumentLinkAttr(doc, node, attr)) {
+            if (isDocumentLinkAttr(code, node, attr)) {
               const resolved = resolveUrl(
                 read(attr.value.value).slice(1, -1),
-                doc.uri
+                uri
               );
               if (resolved) {
                 links.push({
                   range: parsed.locationAt(attr.value.value),
-                  target: resolveUrl(
-                    read(attr.value.value).slice(1, -1),
-                    doc.uri
-                  ),
+                  target: resolveUrl(read(attr.value.value).slice(1, -1), uri),
                 });
               }
             }

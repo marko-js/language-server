@@ -3,10 +3,6 @@ import * as builtinCompiler from "@marko/compiler";
 import * as builtinTranslator from "@marko/translator-default";
 import lassoPackageRoot from "lasso-package-root";
 import resolveFrom from "resolve-from";
-import type { TextDocument } from "vscode-languageserver-textdocument";
-
-import * as parser from "./parser";
-import { getDocDir } from "./doc-file";
 
 const cwd = process.cwd();
 const lookupKey = Symbol();
@@ -29,19 +25,7 @@ export type CompilerInfo = {
   translator: builtinCompiler.Config["translator"];
 };
 
-export function getParsed(doc: TextDocument) {
-  const cache = getCompilerInfo(doc).cache as Map<TextDocument, parser.Parsed>;
-  let cached = cache.get(doc);
-  if (!cached) {
-    cached = parser.parse(doc.getText());
-    cache.set(doc, cached);
-  }
-
-  return cached;
-}
-
-export function getCompilerInfo(doc: string | TextDocument): CompilerInfo {
-  const dir = typeof doc === "string" ? doc : getDocDir(doc);
+export function getCompilerInfo(dir?: string): CompilerInfo {
   if (!dir) return builtinInfo;
 
   let info = compilerInfoByDir.get(dir);
@@ -53,18 +37,8 @@ export function getCompilerInfo(doc: string | TextDocument): CompilerInfo {
   return info;
 }
 
-export function clearCompilerCache(doc?: TextDocument) {
-  if (doc) {
-    getCompilerInfo(doc).cache.delete(doc);
-  } else {
-    const clearedCompilers = new Set<CompilerInfo>();
-    for (const [, info] of compilerInfoByDir) {
-      if (clearedCompilers.has(info)) continue;
-      info.cache.clear();
-      info.compiler.taglib.clearCaches();
-      clearedCompilers.add(info);
-    }
-  }
+export function getCompilerInfos() {
+  return new Set(compilerInfoByDir.values());
 }
 
 function loadCompilerInfo(dir: string): CompilerInfo {

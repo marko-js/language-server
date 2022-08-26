@@ -21,7 +21,7 @@ export async function AttrValue({
   code,
 }: CompletionMeta<Node.AttrValue>): Promise<void | CompletionItem[]> {
   const attr = node.parent;
-  if (isDocumentLinkAttr(document, attr.parent, attr)) {
+  if (isDocumentLinkAttr(code, attr.parent, attr)) {
     const start = node.value.start + 1;
     if (code[start] !== ".") return; // only resolve relative paths
 

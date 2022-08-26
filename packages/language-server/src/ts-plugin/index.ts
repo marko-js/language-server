@@ -16,6 +16,7 @@ const startLineCharacter = {
   character: 0,
 };
 const getStartLineCharacter = () => startLineCharacter;
+// TODO: improve the import name for Marko components.
 
 interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;

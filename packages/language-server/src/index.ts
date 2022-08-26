@@ -9,11 +9,12 @@ import {
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import { clearCompilerCache } from "./utils/compiler";
+import { getCompilerInfo, getCompilerInfos } from "./utils/compiler";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";
 import setupMessages from "./utils/messages";
 import service from "./service";
+import { getDocDir } from "./utils/doc";
 
 if (
   typeof require !== "undefined" &&
@@ -88,7 +89,7 @@ documents.setup(connection);
 documents.onFileChange((changeDoc) => {
   if (changeDoc) {
     queueDiagnostic();
-    clearCompilerCache(changeDoc);
+    getCompilerInfo(getDocDir(changeDoc)).cache.delete(changeDoc);
   } else {
     validateDocs();
   }
@@ -220,7 +221,11 @@ connection.onDocumentFormatting(async (params, cancel) => {
 
 function validateDocs() {
   queueDiagnostic();
-  clearCompilerCache();
+
+  for (const info of getCompilerInfos()) {
+    info.cache.clear();
+    info.compiler.taglib.clearCaches();
+  }
 }
 
 function queueDiagnostic() {

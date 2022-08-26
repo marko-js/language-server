@@ -16,9 +16,9 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { getCompilerInfo, getParsed } from "../../utils/compiler";
+import { getCompilerInfo } from "../../utils/compiler";
+import { DocInfo, processDoc } from "../../utils/doc";
 import type { Extracted } from "../../utils/extractor";
-import type { Parsed } from "../../utils/parser";
 import * as documents from "../../utils/text-documents";
 import { START_OF_FILE } from "../../utils/utils";
 import { getConfig } from "../../utils/workspace";
@@ -37,7 +37,6 @@ interface ProjectInfo {
 }
 
 const projectsCacheKey = Symbol();
-const extractCache = new WeakMap<Parsed, Extracted>();
 const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
 const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
 const markoFileReg = /\.marko$/;
@@ -53,7 +52,7 @@ enum ScriptKind {
 
 const ScriptService: Partial<Plugin> = {
   async doComplete(doc, params) {
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -181,7 +180,7 @@ const ScriptService: Partial<Plugin> = {
 
     if (!detail?.codeActions) return;
 
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const textEdits: CompletionItem["additionalTextEdits"] =
       (item.additionalTextEdits = item.additionalTextEdits || []);
 
@@ -208,7 +207,7 @@ const ScriptService: Partial<Plugin> = {
     return item;
   },
   findDefinition(doc, params) {
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -238,7 +237,7 @@ const ScriptService: Partial<Plugin> = {
       let link: DefinitionLink | undefined;
 
       if (markoFileReg.test(targetUri)) {
-        const extracted = extract(defDoc);
+        const extracted = processDoc(defDoc, extract);
         const targetSelectionRange =
           sourceLocationAtTextSpan(extracted, def.textSpan) || START_OF_FILE;
         const targetRange =
@@ -278,7 +277,7 @@ const ScriptService: Partial<Plugin> = {
     return result;
   },
   doHover(doc, params) {
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -317,7 +316,7 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doRename(doc, params) {
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -345,7 +344,7 @@ const ScriptService: Partial<Plugin> = {
       let edit: TextEdit | undefined;
       if (!renameDoc) continue;
       if (markoFileReg.test(renameURI)) {
-        const extracted = extract(renameDoc);
+        const extracted = processDoc(renameDoc, extract);
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
           rename.textSpan
@@ -377,7 +376,7 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doValidate(doc) {
-    const extracted = extract(doc);
+    const extracted = processDoc(doc, extract);
     const { fsPath, scheme } = URI.parse(doc.uri);
     if (scheme !== "file") return;
 
@@ -430,36 +429,21 @@ function docLocationAtTextSpan(
   };
 }
 
-function extract(doc: TextDocument) {
-  const parsed = getParsed(doc);
-  let cached = extractCache.get(parsed);
+function extract({ filename, code, info, parsed }: DocInfo) {
+  return extractScripts(code, filename!, parsed, (tagName) => {
+    const def = info.lookup.getTag(tagName);
+    if (def) {
+      return {
+        html: def.html,
+        filename: def.template || def.renderer,
+      };
+    }
 
-  if (!cached) {
-    const compilerInfo = getCompilerInfo(doc);
-    extractCache.set(
-      parsed,
-      (cached = extractScripts(
-        doc.getText(),
-        URI.parse(doc.uri).fsPath,
-        parsed,
-        (tagName) => {
-          const def = compilerInfo.lookup.getTag(tagName);
-          if (def) {
-            return {
-              html: def.html,
-              filename: def.template || def.renderer,
-            };
-          }
-
-          return {
-            html: false,
-            filename: undefined,
-          };
-        }
-      ))
-    );
-  }
-  return cached;
+    return {
+      html: false,
+      filename: undefined,
+    };
+  });
 }
 
 function getTSProject(docFsPath: string): ProjectInfo {
@@ -487,7 +471,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
   }
 
   const basePath = (configPath && path.dirname(configPath)) || process.cwd();
-  const compilerInfo = getCompilerInfo(basePath);
+  const compilerInfo = getCompilerInfo(configPath && basePath);
   let projectCache = compilerInfo.cache.get(projectsCacheKey) as
     | Map<string, ProjectInfo>
     | undefined;
@@ -654,7 +638,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
         const doc = documents.get(virtualFileToURI(filename));
         if (doc) {
           return markoFileReg.test(filename)
-            ? extract(doc).generated
+            ? processDoc(doc, extract).generated
             : doc.getText();
         }
       },
@@ -690,7 +674,9 @@ function getTSProject(docFsPath: string): ProjectInfo {
         let snapshot = snapshotCache.get(doc);
         if (!snapshot || snapshotVersions.get(snapshot) !== doc.version) {
           snapshot = ts.ScriptSnapshot.fromString(
-            markoFileReg.test(doc.uri) ? extract(doc).generated : doc.getText()
+            markoFileReg.test(doc.uri)
+              ? processDoc(doc, extract).generated
+              : doc.getText()
           );
 
           snapshotVersions.set(snapshot, doc.version);

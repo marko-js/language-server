@@ -1,7 +1,7 @@
 import type { MarkupContent } from "vscode-languageserver";
 
 import type { Node } from "../../../utils/parser";
-import { getDocFile } from "../../../utils/doc-file";
+import { getDocFile } from "../../../utils/doc";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 import { START_OF_FILE } from "../../../utils/utils";
 

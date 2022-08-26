@@ -30,7 +30,7 @@ await Promise.all([
   })(),
   build({
     bundle: true,
-    minify: false,
+    minify: true,
     sourcesContent: false,
     absWorkingDir: thisDir,
     format: "cjs",

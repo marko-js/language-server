@@ -2,7 +2,7 @@ import { CompletionItem, TextEdit } from "vscode-languageserver";
 
 import type { Node } from "../../../utils/parser";
 import getTagNameCompletion from "../util/get-tag-name-completion";
-import { getDocFile } from "../../../utils/doc-file";
+import { getDocFile } from "../../../utils/doc";
 
 import type { CompletionMeta, CompletionResult } from ".";
 
