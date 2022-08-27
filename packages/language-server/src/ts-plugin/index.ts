@@ -80,11 +80,11 @@ export function init({
        */
       const { toLineColumnOffset = getStartLineCharacter } = ls;
       ls.toLineColumnOffset = (fileName, pos) => {
-        if (pos === 0) return startLineCharacter;
+        if (pos === 0) return START_POSITION;
 
         const extracted = snapshotCache.get(fileName);
         if (extracted) {
-          return extracted.sourcePositionAt(pos) || startLineCharacter;
+          return extracted.sourcePositionAt(pos) || START_POSITION;
         }
 
         return toLineColumnOffset(fileName, pos);
