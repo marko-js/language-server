@@ -1,33 +1,29 @@
 import { relativeImportPath } from "relative-import-path";
 
+import type { TagDefinition } from "@marko/babel-utils";
 import {
   type Node,
   NodeType,
-  type Parsed,
   type Range,
   type Ranges,
 } from "../../utils/parser";
+import type { MarkoFile } from "../../utils/file";
 import { createExtractor } from "../../utils/extractor";
 import { isValidIdentifier } from "../../utils/is-valid-identifier";
 
 const blockReg = /(?<=\s*){/y;
-
-export interface PartialTagDef {
-  html: boolean;
-  filename: string | undefined;
-}
 
 // TODO: this file should be passed a `component.{js,ts}` path if there is one.
 
 /**
  * Iterate over the Marko CST and extract all the script content.
  */
-export function extractScripts(
-  code: string,
-  filename: string,
-  parsed: Parsed,
-  getInfo: (name: string) => PartialTagDef
-) {
+export function extractScripts({
+  code,
+  filename,
+  parsed,
+  project: { lookup },
+}: Pick<MarkoFile, "code" | "filename" | "parsed" | "project">) {
   const { program } = parsed;
   const extractor = createExtractor(parsed);
   const addExpr = (range: Range) => extractor.write`(${range});\n`;
@@ -102,21 +98,21 @@ export function extractScripts(
               return;
           }
 
-          const tagInfo = getInfo(tagName);
-          if (tagInfo.html) {
+          const tagDef = lookup.getTag(tagName);
+          if (tagDef?.html) {
             // TODO
           } else {
             // TODO:
             // * handle return value
             // * must be kind of like a dynamic tag, at least if it's an identifier.
             // * probably should do something like `(1 as unknown as (attributes: Parameters<import("child.marko")>[0]) => void)(attrs)`
-            const templatePath = resolveTemplatePath(filename, tagInfo);
+            const templatePath = resolveTemplatePath(filename, tagDef);
             const childImport = templatePath
               ? `import("${templatePath}")`
               : "(1 as any)";
             // Check if this is possibly an identifier.
             if (isValidIdentifier(tagName)) {
-              if (tagInfo) {
+              if (tagDef) {
                 extractor.write`
 // @ts-expect-error We expect the compiler to error because we are checking the tag is defined.
 (1 as unknown as MARKO_NOT_DECLARED extends any ? 0 extends 1 & ${node.name} ? ${childImport} : ${node.name} : never)
@@ -190,7 +186,10 @@ export function extractScripts(
         if (tagImportMatch) {
           // Here we're looking for Marko's shorthand imports for tags and pre-resolving them so typescript knows what we're loading.
           const [{ length }, , tagName] = tagImportMatch;
-          const templatePath = resolveTemplatePath(filename, getInfo(tagName));
+          const templatePath = resolveTemplatePath(
+            filename,
+            lookup.getTag(tagName)
+          );
           if (templatePath) {
             extractor.write`${{
               start: node.start,
@@ -261,8 +260,9 @@ function isEmpty(range: Range) {
   return range.start === range.end;
 }
 
-function resolveTemplatePath(from: string, { filename }: PartialTagDef) {
+function resolveTemplatePath(from: string, def: TagDefinition | undefined) {
   // TODO: should handle when there is no renderer.
+  const filename = def && (def.template || def.renderer);
   if (filename) {
     return from ? relativeImportPath(from, filename) : filename;
   }

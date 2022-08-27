@@ -17,7 +17,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 import { getMarkoProject } from "../../utils/project";
-import { MarkoFile, processDoc } from "../../utils/file";
+import { processDoc } from "../../utils/file";
 import type { Extracted } from "../../utils/extractor";
 import * as documents from "../../utils/text-documents";
 import { START_LOCATION } from "../../utils/constants";
@@ -52,7 +52,7 @@ enum ScriptKind {
 
 const ScriptService: Partial<Plugin> = {
   async doComplete(doc, params) {
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -180,7 +180,7 @@ const ScriptService: Partial<Plugin> = {
 
     if (!detail?.codeActions) return;
 
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const textEdits: CompletionItem["additionalTextEdits"] =
       (item.additionalTextEdits = item.additionalTextEdits || []);
 
@@ -207,7 +207,7 @@ const ScriptService: Partial<Plugin> = {
     return item;
   },
   findDefinition(doc, params) {
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -237,7 +237,7 @@ const ScriptService: Partial<Plugin> = {
       let link: DefinitionLink | undefined;
 
       if (markoFileReg.test(targetUri)) {
-        const extracted = processDoc(defDoc, extract);
+        const extracted = processDoc(defDoc, extractScripts);
         const targetSelectionRange =
           sourceLocationAtTextSpan(extracted, def.textSpan) || START_LOCATION;
         const targetRange =
@@ -277,7 +277,7 @@ const ScriptService: Partial<Plugin> = {
     return result;
   },
   doHover(doc, params) {
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -316,7 +316,7 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doRename(doc, params) {
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -344,7 +344,7 @@ const ScriptService: Partial<Plugin> = {
       let edit: TextEdit | undefined;
       if (!renameDoc) continue;
       if (markoFileReg.test(renameURI)) {
-        const extracted = processDoc(renameDoc, extract);
+        const extracted = processDoc(renameDoc, extractScripts);
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
           rename.textSpan
@@ -376,7 +376,7 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doValidate(doc) {
-    const extracted = processDoc(doc, extract);
+    const extracted = processDoc(doc, extractScripts);
     const { fsPath, scheme } = URI.parse(doc.uri);
     if (scheme !== "file") return;
 
@@ -427,23 +427,6 @@ function docLocationAtTextSpan(
     start: doc.positionAt(start),
     end: doc.positionAt(start + length),
   };
-}
-
-function extract({ filename, code, project, parsed }: MarkoFile) {
-  return extractScripts(code, filename!, parsed, (tagName) => {
-    const def = project.lookup.getTag(tagName);
-    if (def) {
-      return {
-        html: def.html,
-        filename: def.template || def.renderer,
-      };
-    }
-
-    return {
-      html: false,
-      filename: undefined,
-    };
-  });
 }
 
 function getTSProject(docFsPath: string): TSProject {
@@ -638,7 +621,7 @@ function getTSProject(docFsPath: string): TSProject {
         const doc = documents.get(virtualFileToURI(filename));
         if (doc) {
           return markoFileReg.test(filename)
-            ? processDoc(doc, extract).generated
+            ? processDoc(doc, extractScripts).generated
             : doc.getText();
         }
       },
@@ -675,7 +658,7 @@ function getTSProject(docFsPath: string): TSProject {
         if (!snapshot || snapshotVersions.get(snapshot) !== doc.version) {
           snapshot = ts.ScriptSnapshot.fromString(
             markoFileReg.test(doc.uri)
-              ? processDoc(doc, extract).generated
+              ? processDoc(doc, extractScripts).generated
               : doc.getText()
           );
 
