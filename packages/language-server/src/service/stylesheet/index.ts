@@ -22,7 +22,7 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { DocInfo, processDoc } from "../../utils/doc";
+import { MarkoFile, processDoc } from "../../utils/file";
 import type { Extracted } from "../../utils/extractor";
 import fileSystemProvider from "../../utils/file-system";
 import resolveReference from "../../utils/resolve-url";
@@ -454,12 +454,12 @@ function getGeneratedRange(
   );
 }
 
-function extract({ uri, version, code, parsed, info }: DocInfo) {
+function extract({ uri, version, code, parsed, project }: MarkoFile) {
   const result: ExtractedStyles[] = [];
   for (const [ext, extracted] of extractStyleSheets(
     code,
     parsed,
-    info.lookup
+    project.lookup
   )) {
     const service = services[ext]?.({
       fileSystemProvider,

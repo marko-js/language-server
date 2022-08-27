@@ -1,53 +1,52 @@
 import type { TaglibLookup } from "@marko/babel-utils";
-import * as builtinCompiler from "@marko/compiler";
-import * as builtinTranslator from "@marko/translator-default";
+import * as defaultCompiler from "@marko/compiler";
+import * as defaultTranslator from "@marko/translator-default";
 import lassoPackageRoot from "lasso-package-root";
 import resolveFrom from "resolve-from";
 
 const cwd = process.cwd();
-const lookupKey = Symbol();
-const compilerInfoByDir = new Map<string, CompilerInfo>();
-const builtinInfo: CompilerInfo = {
+const kTaglib = Symbol("taglib");
+const projectsByDir = new Map<string, MarkoProject>();
+const defaultProject: MarkoProject = {
   rootDir: cwd,
   cache: new Map(),
-  lookup: builtinCompiler.taglib.buildLookup(cwd, builtinTranslator),
-  compiler: builtinCompiler,
-  translator: builtinTranslator,
+  lookup: defaultCompiler.taglib.buildLookup(cwd, defaultTranslator),
+  compiler: defaultCompiler,
+  translator: defaultTranslator,
 };
-builtinCompiler.configure({ translator: builtinTranslator });
+defaultCompiler.configure({ translator: defaultTranslator });
 
-export type Compiler = typeof import("@marko/compiler");
-export type CompilerInfo = {
+export type MarkoProject = {
   rootDir: string;
   cache: Map<unknown, unknown>;
   lookup: TaglibLookup;
-  compiler: Compiler;
-  translator: builtinCompiler.Config["translator"];
+  compiler: typeof import("@marko/compiler");
+  translator: defaultCompiler.Config["translator"];
 };
 
-export function getCompilerInfo(dir?: string): CompilerInfo {
-  if (!dir) return builtinInfo;
+export function getMarkoProject(dir?: string): MarkoProject {
+  if (!dir) return defaultProject;
 
-  let info = compilerInfoByDir.get(dir);
-  if (!info) {
-    info = loadCompilerInfo(dir);
-    compilerInfoByDir.set(dir, info);
+  let project = projectsByDir.get(dir);
+  if (!project) {
+    project = loadProject(dir);
+    projectsByDir.set(dir, project);
   }
 
-  return info;
+  return project;
 }
 
-export function getCompilerInfos() {
-  return new Set(compilerInfoByDir.values());
+export function getMarkoProjects() {
+  return new Set(projectsByDir.values());
 }
 
-function loadCompilerInfo(dir: string): CompilerInfo {
+function loadProject(dir: string): MarkoProject {
   const rootDir = lassoPackageRoot.getRootDir(dir) || cwd;
   const pkgPath = resolveFrom.silent(rootDir, "@marko/compiler/package.json");
   const pkg = pkgPath && require(pkgPath);
   const cache = new Map();
-  let translator = builtinTranslator;
-  let compiler = builtinCompiler;
+  let translator = defaultTranslator;
+  let compiler = defaultCompiler;
 
   if (pkg && /^5\./.test(pkg.version)) {
     try {
@@ -78,16 +77,16 @@ function loadCompilerInfo(dir: string): CompilerInfo {
     rootDir,
     cache,
     get lookup() {
-      let lookup: TaglibLookup = cache.get(lookupKey);
+      let lookup: TaglibLookup = cache.get(kTaglib);
       if (lookup === undefined) {
         // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
         try {
           lookup = compiler.taglib.buildLookup(dir, translator);
         } catch {
-          lookup = builtinInfo.lookup;
+          lookup = defaultProject.lookup;
         }
 
-        cache.set(lookupKey, lookup);
+        cache.set(kTaglib, lookup);
       }
 
       return lookup;

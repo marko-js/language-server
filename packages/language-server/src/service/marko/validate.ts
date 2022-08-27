@@ -1,23 +1,23 @@
 import path from "path";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { getCompilerInfo } from "../../utils/compiler";
-import { getDocFile } from "../../utils/doc";
+import { getMarkoProject } from "../../utils/project";
+import { getFSPath } from "../../utils/file";
 import type { Plugin } from "../types";
 
 const markoErrorRegExp =
   /^(.+?)\.marko(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
 
 export const doValidate: Plugin["doValidate"] = (doc) => {
-  const fsPath = getDocFile(doc);
+  const filename = getFSPath(doc);
   const diagnostics: Diagnostic[] = [];
 
-  const { compiler, translator, cache } = getCompilerInfo(
-    fsPath && path.dirname(fsPath)
+  const { compiler, translator, cache } = getMarkoProject(
+    filename && path.dirname(filename)
   );
 
   try {
-    compiler.compileSync(doc.getText(), fsPath || "untitled.marko", {
+    compiler.compileSync(doc.getText(), filename || "untitled.marko", {
       cache,
       translator,
       code: false,

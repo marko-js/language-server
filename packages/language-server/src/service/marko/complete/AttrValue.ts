@@ -14,11 +14,9 @@ import resolveUrl from "../../../utils/resolve-url";
 import type { CompletionMeta } from ".";
 
 export async function AttrValue({
-  document,
   offset,
   node,
-  parsed,
-  code,
+  file: { uri, parsed, code },
 }: CompletionMeta<Node.AttrValue>): Promise<void | CompletionItem[]> {
   const attr = node.parent;
   if (isDocumentLinkAttr(code, attr.parent, attr)) {
@@ -36,17 +34,17 @@ export async function AttrValue({
     if (segmentStart === -1) return; // only resolve after a slash.
 
     const req = rawValue.slice(0, segmentStart);
-    const uri = resolveUrl(req, document.uri);
+    const resolved = resolveUrl(req, uri);
 
-    if (uri) {
+    if (resolved) {
       const result: CompletionItem[] = [];
-      const curFile = req === "." ? path.basename(document.uri) : undefined;
+      const curFile = req === "." ? path.basename(uri) : undefined;
       const replaceRange = parsed.locationAt({
         start: start + segmentStart + 1,
         end: start + rawValue.length,
       });
 
-      for (const [entry, type] of await fileSystem.readDirectory(uri)) {
+      for (const [entry, type] of await fileSystem.readDirectory(resolved)) {
         if (entry[0] !== "." && entry !== curFile) {
           result.push(
             type === FileType.Directory

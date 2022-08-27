@@ -9,12 +9,12 @@ import {
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import { getCompilerInfo, getCompilerInfos } from "./utils/compiler";
+import { getMarkoProject, getMarkoProjects } from "./utils/project";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";
 import setupMessages from "./utils/messages";
+import { getFSDir } from "./utils/file";
 import service from "./service";
-import { getDocDir } from "./utils/doc";
 
 if (
   typeof require !== "undefined" &&
@@ -89,7 +89,7 @@ documents.setup(connection);
 documents.onFileChange((changeDoc) => {
   if (changeDoc) {
     queueDiagnostic();
-    getCompilerInfo(getDocDir(changeDoc)).cache.delete(changeDoc);
+    getMarkoProject(getFSDir(changeDoc)).cache.delete(changeDoc);
   } else {
     validateDocs();
   }
@@ -222,9 +222,9 @@ connection.onDocumentFormatting(async (params, cancel) => {
 function validateDocs() {
   queueDiagnostic();
 
-  for (const info of getCompilerInfos()) {
-    info.cache.clear();
-    info.compiler.taglib.clearCaches();
+  for (const project of getMarkoProjects()) {
+    project.cache.clear();
+    project.compiler.taglib.clearCaches();
   }
 }
 

@@ -1,20 +1,16 @@
 import type { Hover, HoverParams } from "vscode-languageserver";
-import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import type { CompilerInfo } from "../../../utils/compiler";
-import { getDocInfo } from "../../../utils/doc";
-import { NodeType, type Parsed } from "../../../utils/parser";
+import { MarkoFile, getMarkoFile } from "../../../utils/file";
+import { NodeType } from "../../../utils/parser";
 import type { Plugin, Result } from "../../types";
 
 import { OpenTagName } from "./OpenTagName";
 
 export type HoverResult = Result<Hover>;
-export interface HoverMeta<N = unknown> extends CompilerInfo {
-  document: TextDocument;
+export interface HoverMeta<N = unknown> {
+  file: MarkoFile;
   params: HoverParams;
-  parsed: Parsed;
   offset: number;
-  code: string;
   node: N;
 }
 
@@ -23,16 +19,13 @@ const handlers: Record<string, (data: HoverMeta<any>) => HoverResult> = {
 };
 
 export const doHover: Plugin["doHover"] = async (doc, params) => {
-  const { parsed, info } = getDocInfo(doc);
+  const file = getMarkoFile(doc);
   const offset = doc.offsetAt(params.position);
-  const node = parsed.nodeAt(offset);
+  const node = file.parsed.nodeAt(offset);
   return await handlers[NodeType[node.type]]?.({
-    document: doc,
+    file,
     params,
-    parsed,
     offset,
     node,
-    code: doc.getText(),
-    ...info,
   });
 };

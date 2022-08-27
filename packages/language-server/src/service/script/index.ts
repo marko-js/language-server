@@ -16,17 +16,17 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { getCompilerInfo } from "../../utils/compiler";
-import { DocInfo, processDoc } from "../../utils/doc";
+import { getMarkoProject } from "../../utils/project";
+import { MarkoFile, processDoc } from "../../utils/file";
 import type { Extracted } from "../../utils/extractor";
 import * as documents from "../../utils/text-documents";
-import { START_OF_FILE } from "../../utils/utils";
+import { START_LOCATION } from "../../utils/constants";
 import { getConfig } from "../../utils/workspace";
 import type { Plugin } from "../types";
 
 import { extractScripts } from "./extract";
 
-interface ProjectInfo {
+interface TSProject {
   basePath: string;
   scriptKind: ScriptKind;
   configPath: string | undefined;
@@ -36,7 +36,7 @@ interface ProjectInfo {
   getVirtualFileName(doc: TextDocument): string | undefined;
 }
 
-const projectsCacheKey = Symbol();
+const kTSProject = Symbol("ts-project");
 const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
 const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
 const markoFileReg = /\.marko$/;
@@ -192,7 +192,7 @@ const ScriptService: Partial<Plugin> = {
             ? // Ensure import inserts are always in the program root.
               // TODO: this could probably be updated to more closely reflect
               // where typescript wants to put the import/export.
-              START_OF_FILE
+              START_LOCATION
             : sourceLocationAtTextSpan(extracted, span);
           if (sourceRange) {
             textEdits.push({
@@ -239,11 +239,11 @@ const ScriptService: Partial<Plugin> = {
       if (markoFileReg.test(targetUri)) {
         const extracted = processDoc(defDoc, extract);
         const targetSelectionRange =
-          sourceLocationAtTextSpan(extracted, def.textSpan) || START_OF_FILE;
+          sourceLocationAtTextSpan(extracted, def.textSpan) || START_LOCATION;
         const targetRange =
           (def.contextSpan &&
             sourceLocationAtTextSpan(extracted, def.contextSpan)) ||
-          START_OF_FILE;
+          START_LOCATION;
         link = {
           targetUri,
           targetRange,
@@ -255,7 +255,7 @@ const ScriptService: Partial<Plugin> = {
           targetUri,
           targetRange: def.contextSpan
             ? docLocationAtTextSpan(defDoc, def.contextSpan)
-            : START_OF_FILE,
+            : START_LOCATION,
           targetSelectionRange: docLocationAtTextSpan(defDoc, def.textSpan),
           originSelectionRange,
         };
@@ -415,7 +415,7 @@ function sourceLocationAtTextSpan(
   extracted: Extracted,
   { start, length }: ts.TextSpan
 ) {
-  if (start === 0 && length === 0) return START_OF_FILE;
+  if (start === 0 && length === 0) return START_LOCATION;
   return extracted.sourceLocationAt(start, start + length);
 }
 
@@ -429,9 +429,9 @@ function docLocationAtTextSpan(
   };
 }
 
-function extract({ filename, code, info, parsed }: DocInfo) {
+function extract({ filename, code, project, parsed }: MarkoFile) {
   return extractScripts(code, filename!, parsed, (tagName) => {
-    const def = info.lookup.getTag(tagName);
+    const def = project.lookup.getTag(tagName);
     if (def) {
       return {
         html: def.html,
@@ -446,7 +446,7 @@ function extract({ filename, code, info, parsed }: DocInfo) {
   });
 }
 
-function getTSProject(docFsPath: string): ProjectInfo {
+function getTSProject(docFsPath: string): TSProject {
   let configPath: string | undefined;
   let virtualExt = ts.Extension.Js;
   let scriptKind = ScriptKind.JS;
@@ -471,11 +471,11 @@ function getTSProject(docFsPath: string): ProjectInfo {
   }
 
   const basePath = (configPath && path.dirname(configPath)) || process.cwd();
-  const compilerInfo = getCompilerInfo(configPath && basePath);
-  let projectCache = compilerInfo.cache.get(projectsCacheKey) as
-    | Map<string, ProjectInfo>
+  const markoProject = getMarkoProject(configPath && basePath);
+  let projectCache = markoProject.cache.get(kTSProject) as
+    | Map<string, TSProject>
     | undefined;
-  let cached: ProjectInfo | undefined;
+  let cached: TSProject | undefined;
 
   // The typescript project and it's language service is
   // cached with the Marko compiler cache.
@@ -487,7 +487,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
     // Within the compiler cache we store a map
     // of project paths to project info.
     projectCache = new Map();
-    compilerInfo.cache.set(projectsCacheKey, projectCache);
+    markoProject.cache.set(kTSProject, projectCache);
   }
 
   const { fileNames, options, projectReferences } =
@@ -531,7 +531,7 @@ function getTSProject(docFsPath: string): ProjectInfo {
     ts.getDefaultLibFileName(options)
   );
 
-  const project: ProjectInfo = {
+  const tsProject: TSProject = {
     basePath,
     configPath,
     fileNames,
@@ -688,8 +688,8 @@ function getTSProject(docFsPath: string): ProjectInfo {
     }),
   };
 
-  projectCache.set(basePath, project);
-  return project;
+  projectCache.set(basePath, tsProject);
+  return tsProject;
 
   function addVirtualExt(filename: string) {
     return filename + virtualExt;
@@ -787,7 +787,7 @@ function convertDiag(
 ): Diagnostic | undefined {
   const sourceRange =
     tsDiag.start === undefined
-      ? START_OF_FILE
+      ? START_LOCATION
       : sourceLocationAtTextSpan(extracted, tsDiag as ts.TextSpan);
 
   if (sourceRange) {

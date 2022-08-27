@@ -8,6 +8,7 @@ export default {
   stat,
   readDirectory,
 };
+
 async function stat(uri: string): Promise<FileStat> {
   let type = FileType.Unknown;
   let ctime = -1;

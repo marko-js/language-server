@@ -1,5 +1,5 @@
 import type { DocumentLink } from "vscode-languageserver";
-import { DocInfo, processDoc } from "../../utils/doc";
+import { MarkoFile, processDoc } from "../../utils/file";
 
 import { type Node, NodeType } from "../../utils/parser";
 import resolveUrl from "../../utils/resolve-url";
@@ -21,8 +21,8 @@ function extractDocumentLinks({
   scheme,
   parsed,
   code,
-  info: { lookup },
-}: DocInfo): DocumentLink[] {
+  project: { lookup },
+}: MarkoFile): DocumentLink[] {
   if (scheme !== "file") {
     return [];
   }

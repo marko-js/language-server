@@ -2,7 +2,7 @@ import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 
 import type { Plugin } from "../types";
 import { type Node, NodeType } from "../../utils/parser";
-import { DocInfo, processDoc } from "../../utils/doc";
+import { MarkoFile, processDoc } from "../../utils/file";
 
 export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (doc) =>
   processDoc(doc, extractDocumentSymbols);
@@ -14,8 +14,8 @@ function extractDocumentSymbols({
   uri,
   scheme,
   parsed,
-  info: { lookup },
-}: DocInfo): SymbolInformation[] {
+  project: { lookup },
+}: MarkoFile): SymbolInformation[] {
   if (scheme !== "file") {
     return [];
   }

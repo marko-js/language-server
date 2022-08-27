@@ -1,19 +1,19 @@
 import type { MarkupContent } from "vscode-languageserver";
 
 import type { Node } from "../../../utils/parser";
-import { getDocFile } from "../../../utils/doc";
 import getTagNameCompletion from "../util/get-tag-name-completion";
-import { START_OF_FILE } from "../../../utils/utils";
+import { START_LOCATION } from "../../../utils/constants";
 
 import type { HoverMeta, HoverResult } from ".";
 
 export function OpenTagName({
-  document,
-  lookup,
-  parsed,
   node,
+  file: {
+    parsed,
+    filename,
+    project: { lookup },
+  },
 }: HoverMeta<Node.OpenTagName>): HoverResult {
-  const importer = getDocFile(document);
   const tag = node.parent;
   const range = parsed.locationAt(node);
   const tagDef = tag.nameText && lookup.getTag(tag.nameText);
@@ -21,8 +21,8 @@ export function OpenTagName({
   if (tagDef) {
     const completion = getTagNameCompletion({
       tag: tagDef,
-      range: START_OF_FILE,
-      importer,
+      range: START_LOCATION,
+      importer: filename,
     });
     return {
       range,

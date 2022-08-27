@@ -1,18 +1,18 @@
 import type { CompletionItem } from "vscode-languageserver";
 
 import { type Node, NodeType } from "../../../utils/parser";
-import { getDocFile } from "../../../utils/doc";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 
 import type { CompletionMeta, CompletionResult } from ".";
 
 export function OpenTagName({
-  document,
-  lookup,
-  parsed,
   node,
+  file: {
+    parsed,
+    filename,
+    project: { lookup },
+  },
 }: CompletionMeta<Node.OpenTagName>): CompletionResult {
-  const importer = getDocFile(document);
   const tag = node.parent;
   const range = parsed.locationAt(node);
   const isAttrTag = tag.type === NodeType.AttrTag;
@@ -33,7 +33,7 @@ export function OpenTagName({
             getTagNameCompletion({
               tag,
               range,
-              importer,
+              importer: filename,
               showAutoComplete: true,
             })
           );
@@ -57,7 +57,7 @@ export function OpenTagName({
         const completion = getTagNameCompletion({
           tag,
           range,
-          importer,
+          importer: filename,
           showAutoComplete: true,
         });
         completion.sortText = `0${completion.label}`; // Ensure higher priority than typescript.

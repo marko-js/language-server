@@ -2,21 +2,23 @@ import fs from "fs";
 import { URI } from "vscode-uri";
 
 import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_OF_FILE } from "../../../utils/utils";
+import { START_LOCATION } from "../../../utils/constants";
 import { type Node, getLines, getLocation } from "../../../utils/parser";
 
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function AttrName({
-  lookup,
-  parsed,
   node,
+  file: {
+    parsed,
+    project: { lookup },
+  },
 }: DefinitionMeta<Node.AttrName>): DefinitionResult {
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);
   const tagDef = tagName && lookup.getTag(tagName);
   const attrDef = lookup.getAttribute(tagName || "", attrName);
-  let range = START_OF_FILE;
+  let range = START_LOCATION;
 
   if (!attrDef) {
     return;

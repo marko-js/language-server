@@ -13,12 +13,14 @@ const partialCloseTagReg = /<\/(?:[^><]*>)?/iy;
 /**
  * Provide completion for the closing tag.
  */
-export function Tag(event: CompletionMeta<Node.Tag>): CompletionResult {
-  const { node } = event;
+export function Tag({
+  node,
+  offset,
+  file: { parsed, code },
+}: CompletionMeta<Node.Tag>): CompletionResult {
   const isClosed = node.end !== UNFINISHED;
   if (isClosed || node.concise) return;
 
-  const { offset, parsed, code } = event;
   const closingTagStr = `</${node.nameText}>`;
 
   if (offset === node.open.end) {

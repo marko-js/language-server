@@ -5,7 +5,7 @@ import { URI } from "vscode-uri";
 import type { TagDefinition } from "@marko/babel-utils";
 
 import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_OF_FILE } from "../../../utils/utils";
+import { START_LOCATION } from "../../../utils/constants";
 import {
   type Node,
   NodeType,
@@ -16,13 +16,15 @@ import {
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function OpenTagName({
-  lookup,
-  parsed,
   node,
+  file: {
+    parsed,
+    project: { lookup },
+  },
 }: DefinitionMeta<Node.OpenTagName>): DefinitionResult {
   const tag = node.parent;
   let tagDef: TagDefinition | null | undefined;
-  let range = START_OF_FILE;
+  let range = START_LOCATION;
 
   if (tag.type === NodeType.AttrTag) {
     let parentTag = tag.owner;

@@ -1,5 +1,6 @@
 import path from "path";
 import { parse } from "../utils/parser";
+import { START_POSITION } from "../utils/constants";
 import type { Extracted } from "../utils/extractor";
 import { PartialTagDef, extractScripts } from "../service/script/extract";
 
@@ -11,11 +12,7 @@ const htmlTagNameReg =
 const configuredProjects = new WeakSet<
   import("typescript/lib/tsserverlibrary").server.Project
 >();
-const startLineCharacter = {
-  line: 0,
-  character: 0,
-};
-const getStartLineCharacter = () => startLineCharacter;
+const getStartLineCharacter = () => START_POSITION;
 // TODO: improve the import name for Marko components.
 
 interface ExtractedSnapshot extends Extracted {
