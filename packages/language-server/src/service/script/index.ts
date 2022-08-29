@@ -17,56 +17,62 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 import { getMarkoProject } from "../../utils/project";
-import { processDoc } from "../../utils/file";
+import { getFSPath, processDoc } from "../../utils/file";
 import type { Extracted } from "../../utils/extractor";
 import * as documents from "../../utils/text-documents";
+import * as workspace from "../../utils/workspace";
 import { START_LOCATION } from "../../utils/constants";
-import { getConfig } from "../../utils/workspace";
 import type { Plugin } from "../types";
 
-import { extractScripts } from "./extract";
+import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import { extractScripts } from "../../ts-plugin/extract";
 
 interface TSProject {
-  basePath: string;
-  scriptKind: ScriptKind;
-  configPath: string | undefined;
-  fileNames: string[];
-  options: ts.CompilerOptions;
+  markoScriptKind: ts.ScriptKind;
   service: ts.LanguageService;
-  getVirtualFileName(doc: TextDocument): string | undefined;
 }
 
 const kTSProject = Symbol("ts-project");
-const snapshotCache = new WeakMap<TextDocument, ts.IScriptSnapshot>();
-const snapshotVersions = new WeakMap<ts.IScriptSnapshot, number>();
+const extractCache = new Map<string, ExtractedSnapshot>();
+const snapshotCache = new Map<string, ts.IScriptSnapshot>();
 const markoFileReg = /\.marko$/;
-const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)/;
 const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
 const colorModifierReg = /\bcolor\b/;
-enum ScriptKind {
-  TS,
-  JS,
-}
 
 const ScriptService: Partial<Plugin> = {
+  async initialize() {
+    workspace.onConfigChange(() => {
+      snapshotCache.clear();
+    });
+
+    documents.onFileChange((doc) => {
+      if (doc) {
+        const filename = getFSPath(doc)!;
+        extractCache.delete(filename);
+        snapshotCache.delete(filename);
+      } else {
+        extractCache.clear();
+        snapshotCache.clear();
+      }
+    });
+  },
   async doComplete(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
     const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { fsPath, scheme } = URI.parse(doc.uri);
-    if (scheme !== "file") return;
-
-    const { service, scriptKind, getVirtualFileName } = getTSProject(fsPath);
-    const virtualFileName = getVirtualFileName(doc)!;
+    const { service, markoScriptKind } = getTSProject(fileName);
     const completions = service.getCompletionsAtPosition(
-      virtualFileName,
+      fileName,
       generatedOffset,
       {
-        ...(await getPreferences(scriptKind)),
+        ...(await getPreferences(markoScriptKind)),
         ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
       }
@@ -87,9 +93,9 @@ const ScriptService: Partial<Plugin> = {
 
       if (source && completion.hasAction) {
         if (source[0] === ".") {
-          source = path.resolve(fsPath, "..", source);
+          source = path.resolve(fileName, "..", source);
         }
-        detail = relativeImportPath(fsPath, source);
+        detail = relativeImportPath(fileName, source);
         // De-prioritize auto-imported completions.
         sortText = `\uffff${sortText}`;
       } else if (completion.sourceDisplay) {
@@ -149,7 +155,7 @@ const ScriptService: Partial<Plugin> = {
           originalName: completion.name,
           originalSource: source,
           generatedOffset,
-          virtualFileName,
+          fileName,
         },
       });
     }
@@ -162,19 +168,19 @@ const ScriptService: Partial<Plugin> = {
   async doCompletionResolve(item) {
     const { data } = item;
     if (!data) return;
-    const { virtualFileName } = data;
-    if (!virtualFileName) return;
-    const doc = documents.get(virtualFileToURI(virtualFileName));
+    const { fileName } = data;
+    if (!fileName) return;
+    const doc = documents.get(filenameToURI(fileName));
     if (!doc) return;
 
-    const { service, scriptKind } = getTSProject(virtualFileName);
+    const { service, markoScriptKind } = getTSProject(fileName);
     const detail = service.getCompletionEntryDetails(
-      virtualFileName,
+      fileName,
       data.generatedOffset,
       data.originalName,
       {},
       data.originalSource,
-      await getPreferences(scriptKind),
+      await getPreferences(markoScriptKind),
       data.originalData
     );
 
@@ -186,7 +192,7 @@ const ScriptService: Partial<Plugin> = {
 
     for (const action of detail.codeActions) {
       for (const change of action.changes) {
-        if (change.fileName !== virtualFileName) continue;
+        if (change.fileName !== fileName) continue;
         for (const { span, newText } of change.textChanges) {
           const sourceRange = /^\s*(?:import|export) /.test(newText)
             ? // Ensure import inserts are always in the program root.
@@ -207,18 +213,17 @@ const ScriptService: Partial<Plugin> = {
     return item;
   },
   findDefinition(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
     const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { fsPath, scheme } = URI.parse(doc.uri);
-    if (scheme !== "file") return;
-
-    const { service, getVirtualFileName } = getTSProject(fsPath);
-    const virtualFileName = getVirtualFileName(doc)!;
+    const { service } = getTSProject(fileName);
     const boundary = service.getDefinitionAndBoundSpan(
-      virtualFileName,
+      fileName,
       generatedOffset
     );
     if (!boundary?.definitions) return;
@@ -230,7 +235,7 @@ const ScriptService: Partial<Plugin> = {
     let result: DefinitionLink[] | DefinitionLink | undefined;
 
     for (const def of boundary.definitions) {
-      const targetUri = virtualFileToURI(def.fileName);
+      const targetUri = filenameToURI(def.fileName);
       const defDoc = documents.get(targetUri);
       if (!defDoc) continue;
 
@@ -277,19 +282,16 @@ const ScriptService: Partial<Plugin> = {
     return result;
   },
   doHover(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
     const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { fsPath, scheme } = URI.parse(doc.uri);
-    if (scheme !== "file") return;
-
-    const { service, getVirtualFileName } = getTSProject(fsPath);
-    const quickInfo = service.getQuickInfoAtPosition(
-      getVirtualFileName(doc)!,
-      generatedOffset
-    );
+    const { service } = getTSProject(fileName);
+    const quickInfo = service.getQuickInfoAtPosition(fileName, generatedOffset);
     if (!quickInfo) return;
 
     const sourceRange = sourceLocationAtTextSpan(extracted, quickInfo.textSpan);
@@ -316,18 +318,17 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doRename(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
     const extracted = processDoc(doc, extractScripts);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { fsPath, scheme } = URI.parse(doc.uri);
-    if (scheme !== "file") return;
-
-    const { service, getVirtualFileName } = getTSProject(fsPath);
-    const virtualFileName = getVirtualFileName(doc)!;
+    const { service } = getTSProject(fileName);
     const renameLocations = service.findRenameLocations(
-      virtualFileName,
+      fileName,
       generatedOffset,
       false,
       false,
@@ -339,7 +340,7 @@ const ScriptService: Partial<Plugin> = {
     const changes: { [uri: string]: TextEdit[] } = {};
 
     for (const rename of renameLocations) {
-      const renameURI = virtualFileToURI(rename.fileName);
+      const renameURI = filenameToURI(rename.fileName);
       const renameDoc = documents.get(renameURI);
       let edit: TextEdit | undefined;
       if (!renameDoc) continue;
@@ -376,23 +377,22 @@ const ScriptService: Partial<Plugin> = {
     };
   },
   doValidate(doc) {
-    const extracted = processDoc(doc, extractScripts);
-    const { fsPath, scheme } = URI.parse(doc.uri);
-    if (scheme !== "file") return;
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
 
-    const { service, getVirtualFileName } = getTSProject(fsPath);
-    const virtualFsPath = getVirtualFileName(doc)!;
+    const extracted = processDoc(doc, extractScripts);
+    const { service } = getTSProject(fileName);
 
     let results: Diagnostic[] | undefined;
-    for (const tsDiag of service.getSuggestionDiagnostics(virtualFsPath)) {
+    for (const tsDiag of service.getSuggestionDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
-    for (const tsDiag of service.getSyntacticDiagnostics(virtualFsPath)) {
+    for (const tsDiag of service.getSyntacticDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
-    for (const tsDiag of service.getSemanticDiagnostics(virtualFsPath)) {
+    for (const tsDiag of service.getSemanticDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
@@ -431,8 +431,7 @@ function docLocationAtTextSpan(
 
 function getTSProject(docFsPath: string): TSProject {
   let configPath: string | undefined;
-  let virtualExt = ts.Extension.Js;
-  let scriptKind = ScriptKind.JS;
+  let markoScriptKind = ts.ScriptKind.JS;
 
   if (docFsPath) {
     configPath = ts.findConfigFile(
@@ -442,8 +441,7 @@ function getTSProject(docFsPath: string): TSProject {
     );
 
     if (configPath) {
-      virtualExt = ts.Extension.Ts;
-      scriptKind = ScriptKind.TS;
+      markoScriptKind = ts.ScriptKind.TS;
     } else {
       configPath = ts.findConfigFile(
         docFsPath,
@@ -486,7 +484,7 @@ function getTSProject(docFsPath: string): TSProject {
       [
         {
           extension: ".marko",
-          isMixedContent: true,
+          isMixedContent: false,
           scriptKind: ts.ScriptKind.Deferred,
         },
       ]
@@ -515,187 +513,125 @@ function getTSProject(docFsPath: string): TSProject {
   );
 
   const tsProject: TSProject = {
-    basePath,
-    configPath,
-    fileNames,
-    options,
-    scriptKind,
-    getVirtualFileName(doc) {
-      const { scheme, fsPath } = URI.parse(doc.uri);
-      if (scheme === "file") return addVirtualExt(fsPath);
-    },
-    service: ts.createLanguageService({
-      getNewLine() {
-        return ts.sys.newLine;
-      },
+    markoScriptKind,
+    service: ts.createLanguageService(
+      patch(ts, markoScriptKind, extractCache, {
+        getNewLine() {
+          return ts.sys.newLine;
+        },
 
-      useCaseSensitiveFileNames() {
-        return ts.sys.useCaseSensitiveFileNames;
-      },
+        useCaseSensitiveFileNames() {
+          return ts.sys.useCaseSensitiveFileNames;
+        },
 
-      getCompilationSettings() {
-        return options;
-      },
+        getCompilationSettings() {
+          return options;
+        },
 
-      getCurrentDirectory() {
-        return basePath;
-      },
+        getCurrentDirectory() {
+          return basePath;
+        },
 
-      getProjectVersion() {
-        return documents.projectVersion.toString(32);
-      },
+        getProjectVersion() {
+          return documents.projectVersion.toString(32);
+        },
 
-      getDefaultLibFileName() {
-        return defaultLibFile;
-      },
+        getDefaultLibFileName() {
+          return defaultLibFile;
+        },
 
-      getProjectReferences() {
-        return projectReferences;
-      },
+        getProjectReferences() {
+          return projectReferences;
+        },
 
-      resolveModuleNames(moduleNames, containingFile) {
-        return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
-          if (markoFileReg.test(moduleName)) {
-            if (moduleName[0] === ".") {
-              return {
-                resolvedFileName: path.resolve(
-                  containingFile,
-                  "..",
-                  addVirtualExt(moduleName)
-                ),
-                extension: ts.Extension.Ts,
-                isExternalLibraryImport: true,
-              };
-            } else if (path.isAbsolute(moduleName)) {
-              return {
-                resolvedFileName: addVirtualExt(moduleName),
-                extension: ts.Extension.Ts,
-                isExternalLibraryImport: true,
-              };
-            } else {
-              const [, nodeModuleName, relativeModulePath] =
-                modulePartsReg.exec(moduleName)!;
-              const { resolvedModule } = ts.resolveModuleName(
-                `${nodeModuleName}/package.json`,
+        resolveModuleNames(moduleNames, containingFile) {
+          return moduleNames.map<ts.ResolvedModule | undefined>(
+            (moduleName) => {
+              return ts.resolveModuleName(
+                moduleName,
                 containingFile,
                 options,
                 ts.sys
-              );
-
-              if (resolvedModule) {
-                return {
-                  resolvedFileName: path.join(
-                    resolvedModule.resolvedFileName,
-                    "..",
-                    addVirtualExt(relativeModulePath)
-                  ),
-                  extension: ts.Extension.Ts,
-                  isExternalLibraryImport: true,
-                };
-              }
-
-              return;
+              ).resolvedModule;
             }
+          );
+        },
+
+        readDirectory: ts.sys.readDirectory,
+
+        readFile: (filename) =>
+          documents.get(filenameToURI(filename))?.getText(),
+
+        fileExists: (filename) => documents.exists(filenameToURI(filename)),
+
+        getScriptFileNames() {
+          const result = new Set<string>(fileNames);
+          for (const doc of documents.getAllOpen()) {
+            const { scheme, fsPath } = URI.parse(doc.uri);
+            if (scheme === "file") result.add(fsPath);
           }
 
-          return ts.resolveModuleName(
-            moduleName,
-            containingFile,
-            options,
-            ts.sys
-          ).resolvedModule;
-        });
-      },
+          for (const fileName of fileNames) {
+            result.add(fileName);
+          }
 
-      readDirectory: (path, extensions, exclude, include, depth) => {
-        return ts.sys.readDirectory(
-          path,
-          extensions ? extensions.concat(".marko") : [".marko"],
-          exclude,
-          include,
-          depth
-        );
-      },
+          return [...result];
+        },
 
-      readFile: (filename) => {
-        const doc = documents.get(virtualFileToURI(filename));
-        if (doc) {
-          return markoFileReg.test(filename)
-            ? processDoc(doc, extractScripts).generated
-            : doc.getText();
-        }
-      },
+        getScriptVersion(filename) {
+          return `${documents.get(filenameToURI(filename))?.version ?? -1}`;
+        },
 
-      fileExists: (filename) => {
-        return documents.exists(virtualFileToURI(filename));
-      },
+        getScriptKind(filename) {
+          switch (path.extname(filename)) {
+            case ts.Extension.Js:
+              return ts.ScriptKind.JS;
+            case ts.Extension.Jsx:
+              return ts.ScriptKind.JSX;
+            case ts.Extension.Ts:
+              return ts.ScriptKind.TS;
+            case ts.Extension.Tsx:
+              return ts.ScriptKind.TSX;
+            case ts.Extension.Json:
+              return ts.ScriptKind.JSON;
+            default:
+              return ts.ScriptKind.Unknown;
+          }
+        },
 
-      getScriptFileNames() {
-        const result = new Set<string>(fileNames);
-        for (const doc of documents.getAllOpen()) {
-          const { scheme, fsPath } = URI.parse(doc.uri);
-          if (scheme === "file") result.add(fsPath);
-        }
+        getScriptSnapshot(filename) {
+          let snapshot = snapshotCache.get(filename);
+          if (!snapshot) {
+            const doc = documents.get(filenameToURI(filename));
+            if (!doc) return;
+            snapshot = ts.ScriptSnapshot.fromString(doc.getText());
+            snapshotCache.set(filename, snapshot);
+          }
 
-        for (const fileName of fileNames) {
-          result.add(fileName);
-        }
-
-        return Array.from(result, (fileName) =>
-          markoFileReg.test(fileName) ? addVirtualExt(fileName) : fileName
-        );
-      },
-
-      getScriptVersion(filename) {
-        return `${documents.get(virtualFileToURI(filename))?.version ?? -1}`;
-      },
-
-      getScriptSnapshot(filename) {
-        const doc = documents.get(virtualFileToURI(filename));
-        if (!doc) return;
-
-        let snapshot = snapshotCache.get(doc);
-        if (!snapshot || snapshotVersions.get(snapshot) !== doc.version) {
-          snapshot = ts.ScriptSnapshot.fromString(
-            markoFileReg.test(doc.uri)
-              ? processDoc(doc, extractScripts).generated
-              : doc.getText()
-          );
-
-          snapshotVersions.set(snapshot, doc.version);
-          snapshotCache.set(doc, snapshot);
-        }
-
-        return snapshot;
-      },
-    }),
+          return snapshot;
+        },
+      })
+    ),
   };
 
   projectCache.set(basePath, tsProject);
   return tsProject;
-
-  function addVirtualExt(filename: string) {
-    return filename + virtualExt;
-  }
 }
 
-function removeVirtualFileExt(filename: string) {
-  return filename.replace(/\.marko\.[jt]s$/, ".marko");
-}
-
-function virtualFileToURI(filename: string) {
-  return URI.file(removeVirtualFileExt(filename)).toString();
+function filenameToURI(filename: string) {
+  return URI.file(filename).toString();
 }
 
 async function getPreferences(
-  scriptKind: ScriptKind
+  scriptKind: ts.ScriptKind
 ): Promise<ts.UserPreferences> {
-  const configName = scriptKind === ScriptKind.JS ? "javascript" : "typescript";
+  const configName =
+    scriptKind === ts.ScriptKind.JS ? "javascript" : "typescript";
   const [preferencesConfig, suggestConfig, inlayHintsConfig] =
     await Promise.all([
-      getConfig(`${configName}.preferences`),
-      getConfig(`${configName}.suggest`),
-      getConfig(`${configName}.inlayHints`),
+      workspace.getConfig(`${configName}.preferences`),
+      workspace.getConfig(`${configName}.suggest`),
+      workspace.getConfig(`${configName}.inlayHints`),
     ]);
 
   return {

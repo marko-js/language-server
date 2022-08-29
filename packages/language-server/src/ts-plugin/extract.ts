@@ -1,15 +1,10 @@
 import { relativeImportPath } from "relative-import-path";
 
 import type { TagDefinition } from "@marko/babel-utils";
-import {
-  type Node,
-  NodeType,
-  type Range,
-  type Ranges,
-} from "../../utils/parser";
-import type { MarkoFile } from "../../utils/file";
-import { createExtractor } from "../../utils/extractor";
-import { isValidIdentifier } from "../../utils/is-valid-identifier";
+import { type Node, NodeType, type Range, type Ranges } from "../utils/parser";
+import type { MarkoFile } from "../utils/file";
+import { createExtractor } from "../utils/extractor";
+import { isValidIdentifier } from "../utils/is-valid-identifier";
 
 const blockReg = /(?<=\s*){/y;
 
