@@ -12,6 +12,7 @@ const blockReg = /(?<=\s*){/y;
 // TODO: attr tags
 // TODO: tag var assignments (should call changeHandlers?...)
 // TODO: automatically hoist tag vars as high as possible.
+// TODO: special case arg attrs (e.g. `onClick("handleClick")`).
 
 /**
  * Iterate over the Marko CST and extract all the script content.
