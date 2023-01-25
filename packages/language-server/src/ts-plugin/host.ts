@@ -100,7 +100,7 @@ export function patch(
       sourceFile
     );
 
-    for (let i = resolveModuleNames.length; i--; ) {
+    for (let i = resolvedModules.length; i--; ) {
       const moduleName = moduleNames[i];
       if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
         if (moduleName[0] === ".") {
@@ -117,7 +117,7 @@ export function patch(
               isExternalLibraryImport: false,
             };
           }
-        } else {
+        } else if (moduleName[0] !== "*") {
           // For other paths we treat it as a node_module and try resolving
           // that modules `marko.json`. If the `marko.json` exists then we'll
           // try resolving the `.marko` file relative to that.
