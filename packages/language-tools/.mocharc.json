@@ -1,0 +1,5 @@
+{
+  "enable-source-maps": true,
+  "watchFiles": ["src/**/*.@(ts|marko)", "!**/__snapshots__/**"],
+  "require": ["tsx", "mocha-snap"]
+}
