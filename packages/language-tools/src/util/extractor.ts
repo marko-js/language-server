@@ -180,7 +180,7 @@ abstract class TokenView {
 
     const token = this.#tokens[min];
     const index = offset - this.inStart(token);
-    if (index >= 0 && index < token.length) {
+    if (index >= 0 && index <= token.length) {
       return this.outStart(token) + index;
     }
   }
