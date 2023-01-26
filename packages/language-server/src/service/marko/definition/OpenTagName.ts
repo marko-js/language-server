@@ -3,15 +3,15 @@ import path from "path";
 
 import { URI } from "vscode-uri";
 import type { TagDefinition } from "@marko/babel-utils";
-
-import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_LOCATION } from "../../../utils/constants";
 import {
   type Node,
   NodeType,
   getLines,
   getLocation,
-} from "../../../utils/parser";
+} from "@marko/language-tools";
+
+import RegExpBuilder from "../../../utils/regexp-builder";
+import { START_LOCATION } from "../../../utils/constants";
 
 import type { DefinitionMeta, DefinitionResult } from ".";
 

@@ -1,12 +1,11 @@
 import path from "path";
-import { parse } from "../utils/parser";
-import type { Extracted } from "../utils/extractor";
+import { type Extracted, extractScript, parse } from "@marko/language-tools";
 import { getMarkoProject } from "../utils/project";
-import { extractScripts } from "./extract";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
 const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)$/;
+const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -41,14 +40,13 @@ export function patch(
       if (!cached) {
         const code = host.readFile(filename, "utf-8") || "";
         const markoProject = getMarkoProject(path.dirname(filename));
-        cached = extractScripts({
-          code,
-          filename,
-          parsed: parse(code),
-          project: markoProject,
+        cached = extractScript({
+          parsed: parse(code, filename),
+          lookup: markoProject.lookup,
+          componentClassImport: undefined, // TODO!
         }) as ExtractedSnapshot;
 
-        cached.snapshot = ts.ScriptSnapshot.fromString(cached.generated);
+        cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
         cache.set(filename, cached);
       }
 
@@ -103,8 +101,8 @@ export function patch(
     for (let i = resolvedModules.length; i--; ) {
       const moduleName = moduleNames[i];
       if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
-        if (moduleName[0] === ".") {
-          // For relative paths just see if it exists on disk.
+        if (fsPathReg.test(moduleName)) {
+          // For fs paths just see if it exists on disk.
           const resolvedFileName = path.resolve(
             containingFile,
             "..",

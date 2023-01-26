@@ -1,9 +1,9 @@
 import path from "path";
 
 import type { TextDocument } from "vscode-languageserver-textdocument";
+import { type Parsed, parse } from "@marko/language-tools";
 import { URI } from "vscode-uri";
 import { MarkoProject, getMarkoProject } from "./project";
-import { type Parsed, parse } from "./parser";
 
 const processorCaches = new WeakMap<Parsed, Map<unknown, unknown>>();
 
@@ -37,7 +37,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
   if (!file) {
     const { version } = doc;
     const code = doc.getText();
-    const parsed = parse(code);
+    const parsed = parse(code, filename);
     cache.set(
       doc,
       (file = {

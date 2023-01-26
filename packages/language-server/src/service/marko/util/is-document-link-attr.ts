@@ -1,4 +1,4 @@
-import { type Node, NodeType } from "../../../utils/parser";
+import { type Node, NodeType } from "@marko/language-tools";
 
 const linkedAttrs: Map<string, Set<string>> = new Map([
   [

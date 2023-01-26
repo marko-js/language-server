@@ -6,7 +6,7 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 
-import type { Node } from "../../../utils/parser";
+import type { Node } from "@marko/language-tools";
 import isDocumentLinkAttr from "../util/is-document-link-attr";
 import fileSystem, { FileType } from "../../../utils/file-system";
 import resolveUrl from "../../../utils/resolve-url";

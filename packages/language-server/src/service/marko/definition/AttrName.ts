@@ -1,9 +1,9 @@
 import fs from "fs";
 import { URI } from "vscode-uri";
+import { type Node, getLines, getLocation } from "@marko/language-tools";
 
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
-import { type Node, getLines, getLocation } from "../../../utils/parser";
 
 import type { DefinitionMeta, DefinitionResult } from ".";
 

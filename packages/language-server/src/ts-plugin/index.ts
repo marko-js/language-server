@@ -1,6 +1,6 @@
 import type ts from "typescript/lib/tsserverlibrary";
+import type { Extracted } from "@marko/language-tools";
 import { START_POSITION } from "../utils/constants";
-import type { Extracted } from "../utils/extractor";
 import { ExtractedSnapshot, patch } from "./host";
 
 const markoExt = ".marko";

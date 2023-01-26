@@ -1,14 +1,14 @@
 {
   "extends": "../../tsconfig.json",
   "include": ["src/**/*"],
+  "exclude": ["**/__tests__", "dist/**/*"],
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
   "references": [
-    {
-      "path": "../language-server"
-    }
+    { "path": "../language-server" },
+    { "path": "../language-tools" }
   ]
 }

@@ -1,6 +1,6 @@
 import type { CompletionItem } from "vscode-languageserver";
+import { type Node, NodeType } from "@marko/language-tools";
 
-import { type Node, NodeType } from "../../../utils/parser";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 
 import type { CompletionMeta, CompletionResult } from ".";

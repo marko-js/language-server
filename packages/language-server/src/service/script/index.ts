@@ -16,16 +16,15 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
+import { type Extracted, extractScript } from "@marko/language-tools";
 import { getMarkoProject } from "../../utils/project";
 import { getFSPath, processDoc } from "../../utils/file";
-import type { Extracted } from "../../utils/extractor";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
 import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
-import { extractScripts } from "../../ts-plugin/extract";
 
 interface TSProject {
   markoScriptKind: ts.ScriptKind;
@@ -62,7 +61,7 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -186,7 +185,7 @@ const ScriptService: Partial<Plugin> = {
 
     if (!detail?.codeActions) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const textEdits: CompletionItem["additionalTextEdits"] =
       (item.additionalTextEdits = item.additionalTextEdits || []);
 
@@ -216,7 +215,7 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -242,7 +241,7 @@ const ScriptService: Partial<Plugin> = {
       let link: DefinitionLink | undefined;
 
       if (markoFileReg.test(targetUri)) {
-        const extracted = processDoc(defDoc, extractScripts);
+        const extracted = processScript(defDoc);
         const targetSelectionRange =
           sourceLocationAtTextSpan(extracted, def.textSpan) || START_LOCATION;
         const targetRange =
@@ -285,7 +284,7 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -321,7 +320,7 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
@@ -345,7 +344,7 @@ const ScriptService: Partial<Plugin> = {
       let edit: TextEdit | undefined;
       if (!renameDoc) continue;
       if (markoFileReg.test(renameURI)) {
-        const extracted = processDoc(renameDoc, extractScripts);
+        const extracted = processScript(renameDoc);
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
           rename.textSpan
@@ -380,7 +379,7 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processDoc(doc, extractScripts);
+    const extracted = processScript(doc);
     const { service } = getTSProject(fileName);
 
     let results: Diagnostic[] | undefined;
@@ -410,6 +409,16 @@ const ScriptService: Partial<Plugin> = {
     }
   },
 };
+
+function processScript(doc: TextDocument) {
+  return processDoc(doc, (file) => {
+    return extractScript({
+      parsed: file.parsed,
+      lookup: file.project.lookup,
+      componentClassImport: undefined, // TODO!
+    });
+  });
+}
 
 function sourceLocationAtTextSpan(
   extracted: Extracted,

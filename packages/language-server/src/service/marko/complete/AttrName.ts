@@ -7,7 +7,7 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 
-import type { Node } from "../../../utils/parser";
+import type { Node } from "@marko/language-tools";
 
 import type { CompletionMeta, CompletionResult } from ".";
 

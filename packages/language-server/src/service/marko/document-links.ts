@@ -1,7 +1,7 @@
 import type { DocumentLink } from "vscode-languageserver";
+import { type Node, NodeType } from "@marko/language-tools";
 import { MarkoFile, processDoc } from "../../utils/file";
 
-import { type Node, NodeType } from "../../utils/parser";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
 
