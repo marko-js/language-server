@@ -13,15 +13,17 @@ function ˍ<T>(input: Input<T>) {
   return;
 }
 class ட<T> extends Marko.Component<Input<T>> {}
-declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/tag-type-args/components/test-tag.marko";
-  const template: Marko.Template<typeof id>;
-}
-export default 1 as unknown as typeof ˍ.template;
+
+declare namespace ˍ {}
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tag-type-args/components/test-tag.marko">;
 declare global {
   namespace Marko {
     interface CustomTags1<A> {
-      [ˍ.id]: CustomTag<Input<A>, ReturnType<typeof ˍ<A>>, ட<A>>;
+      "@language-tools/src/__tests__/fixtures/tag-type-args/components/test-tag.marko": CustomTag<
+        Input<A>,
+        ReturnType<typeof ˍ<A>>,
+        ட<A>
+      >;
     }
   }
 }

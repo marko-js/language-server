@@ -43,9 +43,8 @@ function ˍ<T extends string>(input: Input<T>) {
   return;
 }
 class ட<T extends string> extends Marko.Component<Input<T>> {}
+
 declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/basic/index.marko";
-  const template: Marko.Template<typeof id>;
   const tags: {
     div: Marko.ட.NativeTagRenderer<"div">;
     let: Marko.ட.CustomTagRenderer<
@@ -53,12 +52,15 @@ declare namespace ˍ {
     >;
   };
 }
-export default 1 as unknown as typeof ˍ.template;
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/basic/index.marko">;
 type ᜭ<T, ᜭ extends T extends string ? T : never> = any & ᜭ;
 declare global {
   namespace Marko {
     interface CustomTags1<A> {
-      [ˍ.id]: 1 extends ᜭ<A, infer A>
+      "@language-tools/src/__tests__/fixtures/basic/index.marko": 1 extends ᜭ<
+        A,
+        infer A
+      >
         ? CustomTag<Input<A>, ReturnType<typeof ˍ<A>>, ட<A>>
         : never;
     }

@@ -144,9 +144,8 @@ function ˍ(input: Input) {
   return ᜭ.return;
 }
 class ட extends Marko.Component<Input> {}
+
 declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/tags-api-basic/index.marko";
-  const template: Marko.Template<typeof id>;
   const tags: {
     const: Marko.ட.CustomTagRenderer<
       typeof import("../../components/const/index.marko").default
@@ -157,11 +156,15 @@ declare namespace ˍ {
     code: Marko.ட.NativeTagRenderer<"code">;
   };
 }
-export default 1 as unknown as typeof ˍ.template;
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tags-api-basic/index.marko">;
 declare global {
   namespace Marko {
     interface CustomTags {
-      [ˍ.id]: CustomTag<Input, ReturnType<typeof ˍ>, ட>;
+      "@language-tools/src/__tests__/fixtures/tags-api-basic/index.marko": CustomTag<
+        Input,
+        ReturnType<typeof ˍ>,
+        ட
+      >;
     }
   }
 }

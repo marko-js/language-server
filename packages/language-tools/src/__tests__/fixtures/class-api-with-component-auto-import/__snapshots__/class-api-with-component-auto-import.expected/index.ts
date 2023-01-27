@@ -16,18 +16,21 @@ function ˍ(input: Input) {
   return;
 }
 import ட from "./component";
+
 declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/class-api-with-component-auto-import/index.marko";
-  const template: Marko.Template<typeof id>;
   const tags: {
     div: Marko.ட.NativeTagRenderer<"div">;
   };
 }
-export default 1 as unknown as typeof ˍ.template;
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/class-api-with-component-auto-import/index.marko">;
 declare global {
   namespace Marko {
     interface CustomTags {
-      [ˍ.id]: CustomTag<Input, ReturnType<typeof ˍ>, ட>;
+      "@language-tools/src/__tests__/fixtures/class-api-with-component-auto-import/index.marko": CustomTag<
+        Input,
+        ReturnType<typeof ˍ>,
+        ட
+      >;
     }
   }
 }

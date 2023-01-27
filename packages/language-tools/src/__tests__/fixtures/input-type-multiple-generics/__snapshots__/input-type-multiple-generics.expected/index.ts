@@ -26,11 +26,9 @@ class ட<
   LastName extends string,
   Extra
 > extends Marko.Component<Input<FirstName, LastName, Extra>> {}
-declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko";
-  const template: Marko.Template<typeof id>;
-}
-export default 1 as unknown as typeof ˍ.template;
+
+declare namespace ˍ {}
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko">;
 type ᜭ<
   FirstName,
   LastName,
@@ -42,7 +40,14 @@ type ᜭ<
 declare global {
   namespace Marko {
     interface CustomTags3<A, B, C> {
-      [ˍ.id]: 1 extends ᜭ<A, B, C, infer A, infer B, infer C>
+      "@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko": 1 extends ᜭ<
+        A,
+        B,
+        C,
+        infer A,
+        infer B,
+        infer C
+      >
         ? CustomTag<Input<A, B, C>, ReturnType<typeof ˍ<A, B, C>>, ட<A, B, C>>
         : never;
     }

@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import type * as t from "@babel/types";
 import { relativeImportPath } from "relative-import-path";
 
@@ -97,14 +98,13 @@ class ScriptExtractor {
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
-    this.#templateId =
+    this.#templateId = JSON.stringify(
       opts.rootDir &&
-      this.#filename.startsWith(opts.rootDir) &&
-      /[/\\]/.test(this.#filename[opts.rootDir.length])
-        ? JSON.stringify(`@${this.#filename.slice(opts.rootDir.length + 1)}`)
-        : this.#isTS
-        ? "unique symbol"
-        : JSON.stringify(btoa(this.#code));
+        this.#filename.startsWith(opts.rootDir) &&
+        /[/\\]/.test(this.#filename[opts.rootDir.length])
+        ? `@${this.#filename.slice(opts.rootDir.length + 1)}`
+        : createHash("MD5").update(this.#code).digest("base64").slice(0, 8)
+    );
     this.#writeProgram(parsed.program, opts.componentClassImport);
   }
 
@@ -296,11 +296,7 @@ ${VAR_INTERNAL}.noop({ input, out, component, state });
 
     // TODO: need to figure out what to do with the namespace here.
     // I _think_ it can be turned into a type.
-    this.#extractor.write(`\
-declare namespace ${VAR_TEMPLATE} {
-const id: ${this.#templateId};
-const template: Marko.Template<typeof id>;
-`);
+    this.#extractor.write(`\ndeclare namespace ${VAR_TEMPLATE} {`);
 
     if (this.#referencedTags.size) {
       this.#extractor.write("const tags: {\n");
@@ -331,7 +327,7 @@ const template: Marko.Template<typeof id>;
 
     // TODO: this needs to be changed for js mode.
     this.#extractor.write(
-      `export default 1 as unknown as typeof ${VAR_TEMPLATE}.template;\n`
+      `export default 1 as unknown as Marko.Template<${this.#templateId}>;\n`
     );
 
     // TODO: this needs to be changed for js mode.
@@ -373,7 +369,7 @@ const template: Marko.Template<typeof id>;
 declare global {
 namespace Marko {
 interface ${registryInterfaceStr} {
-[${VAR_TEMPLATE}.id]:`);
+${this.#templateId}:`);
 
     if (hasComplexTypeParameters) {
       let interfaceGenerics = "";

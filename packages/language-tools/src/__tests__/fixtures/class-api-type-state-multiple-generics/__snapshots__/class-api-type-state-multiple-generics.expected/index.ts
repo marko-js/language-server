@@ -30,11 +30,9 @@ class ட<
     this.state.name;
   }
 }
-declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/class-api-type-state-multiple-generics/index.marko";
-  const template: Marko.Template<typeof id>;
-}
-export default 1 as unknown as typeof ˍ.template;
+
+declare namespace ˍ {}
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/class-api-type-state-multiple-generics/index.marko">;
 type ᜭ<
   FirstName,
   LastName,
@@ -44,7 +42,12 @@ type ᜭ<
 declare global {
   namespace Marko {
     interface CustomTags2<A, B> {
-      [ˍ.id]: 1 extends ᜭ<A, B, infer A, infer B>
+      "@language-tools/src/__tests__/fixtures/class-api-type-state-multiple-generics/index.marko": 1 extends ᜭ<
+        A,
+        B,
+        infer A,
+        infer B
+      >
         ? CustomTag<Input<A, B>, ReturnType<typeof ˍ<A, B>>, ட<A, B>>
         : never;
     }

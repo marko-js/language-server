@@ -146,8 +146,8 @@
 > 21 | }
      | ^ Declaration or statement expected.
   22 | class ட extends Marko.Component<Input>{};
-  23 | declare namespace ˍ {
-  24 | const id: "@language-tools/src/__tests__/fixtures/attr-syntax-error/index.marko";
+  23 |
+  24 | declare namespace ˍ {const tags: {
 ```
 
 ### Ln 22, Col 1
@@ -156,8 +156,8 @@
   21 | }
 > 22 | class ட extends Marko.Component<Input>{};
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unreachable code detected.
-  23 | declare namespace ˍ {
-  24 | const id: "@language-tools/src/__tests__/fixtures/attr-syntax-error/index.marko";
-  25 | const template: Marko.Template<typeof id>;
+  23 |
+  24 | declare namespace ˍ {const tags: {
+  25 | "div": Marko.ட.NativeTagRenderer<"div">;
 ```
 

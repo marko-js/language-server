@@ -18,15 +18,13 @@ return;
 
 }
 class ட extends Marko.Component<Input>{};
-declare namespace ˍ {
-const id: "@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko";
-const template: Marko.Template<typeof id>;
-}
-export default 1 as unknown as typeof ˍ.template;
+
+declare namespace ˍ {}
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko">;
 declare global {
 namespace Marko {
 interface CustomTags {
-[ˍ.id]:CustomTag<Input, ReturnType<typeof ˍ>, ட>
+"@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko":CustomTag<Input, ReturnType<typeof ˍ>, ட>
 }
 }
 }

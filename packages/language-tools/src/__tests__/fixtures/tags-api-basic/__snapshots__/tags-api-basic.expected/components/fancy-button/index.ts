@@ -22,18 +22,21 @@ function ˍ(input: Input) {
   return;
 }
 class ட extends Marko.Component<Input> {}
+
 declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/tags-api-basic/components/fancy-button/index.marko";
-  const template: Marko.Template<typeof id>;
   const tags: {
     div: Marko.ட.NativeTagRenderer<"div">;
   };
 }
-export default 1 as unknown as typeof ˍ.template;
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tags-api-basic/components/fancy-button/index.marko">;
 declare global {
   namespace Marko {
     interface CustomTags {
-      [ˍ.id]: CustomTag<Input, ReturnType<typeof ˍ>, ட>;
+      "@language-tools/src/__tests__/fixtures/tags-api-basic/components/fancy-button/index.marko": CustomTag<
+        Input,
+        ReturnType<typeof ˍ>,
+        ட
+      >;
     }
   }
 }

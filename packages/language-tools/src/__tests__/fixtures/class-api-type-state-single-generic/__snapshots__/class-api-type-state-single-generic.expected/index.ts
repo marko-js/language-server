@@ -24,16 +24,17 @@ class ட<T extends string> extends Marko.Component<Input<T>> {
     this.state.name;
   }
 }
-declare namespace ˍ {
-  const id: "@language-tools/src/__tests__/fixtures/class-api-type-state-single-generic/index.marko";
-  const template: Marko.Template<typeof id>;
-}
-export default 1 as unknown as typeof ˍ.template;
+
+declare namespace ˍ {}
+export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/class-api-type-state-single-generic/index.marko">;
 type ᜭ<T, ᜭ extends T extends string ? T : never> = any & ᜭ;
 declare global {
   namespace Marko {
     interface CustomTags1<A> {
-      [ˍ.id]: 1 extends ᜭ<A, infer A>
+      "@language-tools/src/__tests__/fixtures/class-api-type-state-single-generic/index.marko": 1 extends ᜭ<
+        A,
+        infer A
+      >
         ? CustomTag<Input<A>, ReturnType<typeof ˍ<A>>, ட<A>>
         : never;
     }
