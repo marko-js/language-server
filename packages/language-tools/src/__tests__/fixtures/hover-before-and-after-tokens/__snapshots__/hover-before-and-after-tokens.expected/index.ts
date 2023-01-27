@@ -14,7 +14,7 @@ function ˍ(input: Input) {
 }
 class ட extends Marko.Component<Input> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/hover-before-and-after-tokens/index.marko";
   const template: Marko.Template<typeof id>;
 }
 export default 1 as unknown as typeof ˍ.template;

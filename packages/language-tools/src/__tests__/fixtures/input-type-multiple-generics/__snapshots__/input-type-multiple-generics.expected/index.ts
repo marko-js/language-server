@@ -27,7 +27,7 @@ class ட<
   Extra
 > extends Marko.Component<Input<FirstName, LastName, Extra>> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko";
   const template: Marko.Template<typeof id>;
 }
 export default 1 as unknown as typeof ˍ.template;

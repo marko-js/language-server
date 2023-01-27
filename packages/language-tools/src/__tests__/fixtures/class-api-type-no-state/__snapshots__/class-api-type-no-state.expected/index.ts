@@ -15,7 +15,7 @@ class ட extends Marko.Component<Input> {
   onMount() {}
 }
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/class-api-type-no-state/index.marko";
   const template: Marko.Template<typeof id>;
 }
 export default 1 as unknown as typeof ˍ.template;

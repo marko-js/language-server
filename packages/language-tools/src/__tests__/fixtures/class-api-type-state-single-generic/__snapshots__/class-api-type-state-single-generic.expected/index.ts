@@ -25,7 +25,7 @@ class ட<T extends string> extends Marko.Component<Input<T>> {
   }
 }
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/class-api-type-state-single-generic/index.marko";
   const template: Marko.Template<typeof id>;
 }
 export default 1 as unknown as typeof ˍ.template;

@@ -123,7 +123,7 @@
      | ^ Declaration or statement expected.
   20 | class ட extends Marko.Component<Input>{};
   21 | declare namespace ˍ {
-  22 | const id: unique symbol;
+  22 | const id: "@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko";
 ```
 
 ### Ln 20, Col 1
@@ -133,7 +133,7 @@
 > 20 | class ட extends Marko.Component<Input>{};
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unreachable code detected.
   21 | declare namespace ˍ {
-  22 | const id: unique symbol;
+  22 | const id: "@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko";
   23 | const template: Marko.Template<typeof id>;
 ```
 

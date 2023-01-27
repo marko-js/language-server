@@ -44,7 +44,7 @@ function ˍ<T extends string>(input: Input<T>) {
 }
 class ட<T extends string> extends Marko.Component<Input<T>> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/basic/index.marko";
   const template: Marko.Template<typeof id>;
   const tags: {
     div: Marko.ட.NativeTagRenderer<"div">;

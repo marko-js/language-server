@@ -13,6 +13,7 @@ import { createLanguageService, loadDir } from "./util/language-service";
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
 const FIXTURES = path.join(__dirname, "fixtures");
+const ROOT = path.join(__dirname, "../../..");
 
 for (const entry of fs.readdirSync(FIXTURES)) {
   it(entry, async () => {
@@ -43,6 +44,8 @@ for (const entry of fs.readdirSync(FIXTURES)) {
           const extractOptions: Parameters<typeof extractScript>[0] = {
             parsed,
             lookup,
+            rootDir: ROOT,
+            scriptKind: "ts",
             componentClassImport: fs.existsSync(potentialComponentPath)
               ? "./component"
               : undefined,

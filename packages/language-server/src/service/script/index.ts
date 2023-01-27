@@ -27,8 +27,9 @@ import type { Plugin } from "../types";
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
 
 interface TSProject {
-  markoScriptKind: ts.ScriptKind;
+  rootDir: string;
   service: ts.LanguageService;
+  markoScriptKind: ts.ScriptKind;
 }
 
 const kTSProject = Symbol("ts-project");
@@ -61,17 +62,17 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processScript(doc);
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { service, markoScriptKind } = getTSProject(fileName);
-    const completions = service.getCompletionsAtPosition(
+    const completions = project.service.getCompletionsAtPosition(
       fileName,
       generatedOffset,
       {
-        ...(await getPreferences(markoScriptKind)),
+        ...(await getPreferences(project.markoScriptKind)),
         ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
       }
@@ -172,20 +173,20 @@ const ScriptService: Partial<Plugin> = {
     const doc = documents.get(filenameToURI(fileName));
     if (!doc) return;
 
-    const { service, markoScriptKind } = getTSProject(fileName);
-    const detail = service.getCompletionEntryDetails(
+    const project = getTSProject(fileName);
+    const detail = project.service.getCompletionEntryDetails(
       fileName,
       data.generatedOffset,
       data.originalName,
       {},
       data.originalSource,
-      await getPreferences(markoScriptKind),
+      await getPreferences(project.markoScriptKind),
       data.originalData
     );
 
     if (!detail?.codeActions) return;
 
-    const extracted = processScript(doc);
+    const extracted = processScript(doc, project);
     const textEdits: CompletionItem["additionalTextEdits"] =
       (item.additionalTextEdits = item.additionalTextEdits || []);
 
@@ -215,13 +216,13 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processScript(doc);
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { service } = getTSProject(fileName);
-    const boundary = service.getDefinitionAndBoundSpan(
+    const boundary = project.service.getDefinitionAndBoundSpan(
       fileName,
       generatedOffset
     );
@@ -241,7 +242,7 @@ const ScriptService: Partial<Plugin> = {
       let link: DefinitionLink | undefined;
 
       if (markoFileReg.test(targetUri)) {
-        const extracted = processScript(defDoc);
+        const extracted = processScript(defDoc, project);
         const targetSelectionRange =
           sourceLocationAtTextSpan(extracted, def.textSpan) || START_LOCATION;
         const targetRange =
@@ -284,13 +285,16 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processScript(doc);
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { service } = getTSProject(fileName);
-    const quickInfo = service.getQuickInfoAtPosition(fileName, generatedOffset);
+    const quickInfo = project.service.getQuickInfoAtPosition(
+      fileName,
+      generatedOffset
+    );
     if (!quickInfo) return;
 
     const sourceRange = sourceLocationAtTextSpan(extracted, quickInfo.textSpan);
@@ -320,13 +324,13 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processScript(doc);
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
-    const { service } = getTSProject(fileName);
-    const renameLocations = service.findRenameLocations(
+    const renameLocations = project.service.findRenameLocations(
       fileName,
       generatedOffset,
       false,
@@ -344,7 +348,7 @@ const ScriptService: Partial<Plugin> = {
       let edit: TextEdit | undefined;
       if (!renameDoc) continue;
       if (markoFileReg.test(renameURI)) {
-        const extracted = processScript(renameDoc);
+        const extracted = processScript(renameDoc, project);
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
           rename.textSpan
@@ -379,19 +383,19 @@ const ScriptService: Partial<Plugin> = {
     const fileName = getFSPath(doc);
     if (!fileName) return;
 
-    const extracted = processScript(doc);
-    const { service } = getTSProject(fileName);
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
 
     let results: Diagnostic[] | undefined;
-    for (const tsDiag of service.getSuggestionDiagnostics(fileName)) {
+    for (const tsDiag of project.service.getSuggestionDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
-    for (const tsDiag of service.getSyntacticDiagnostics(fileName)) {
+    for (const tsDiag of project.service.getSyntacticDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
-    for (const tsDiag of service.getSemanticDiagnostics(fileName)) {
+    for (const tsDiag of project.service.getSemanticDiagnostics(fileName)) {
       addDiag(tsDiag);
     }
 
@@ -410,11 +414,13 @@ const ScriptService: Partial<Plugin> = {
   },
 };
 
-function processScript(doc: TextDocument) {
+function processScript(doc: TextDocument, project: TSProject) {
   return processDoc(doc, (file) => {
     return extractScript({
       parsed: file.parsed,
       lookup: file.project.lookup,
+      rootDir: project.rootDir,
+      scriptKind: project.markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
       componentClassImport: undefined, // TODO!
     });
   });
@@ -460,8 +466,8 @@ function getTSProject(docFsPath: string): TSProject {
     }
   }
 
-  const basePath = (configPath && path.dirname(configPath)) || process.cwd();
-  const markoProject = getMarkoProject(configPath && basePath);
+  const rootDir = (configPath && path.dirname(configPath)) || process.cwd();
+  const markoProject = getMarkoProject(configPath && rootDir);
   let projectCache = markoProject.cache.get(kTSProject) as
     | Map<string, TSProject>
     | undefined;
@@ -471,7 +477,7 @@ function getTSProject(docFsPath: string): TSProject {
   // cached with the Marko compiler cache.
   // This causes the cache to be properly cleared when files change.
   if (projectCache) {
-    cached = projectCache.get(basePath);
+    cached = projectCache.get(rootDir);
     if (cached) return cached;
   } else {
     // Within the compiler cache we store a map
@@ -486,7 +492,7 @@ function getTSProject(docFsPath: string): TSProject {
         compilerOptions: { lib: ["dom", "node", "esnext"] },
       },
       ts.sys,
-      basePath,
+      rootDir,
       undefined,
       configPath,
       undefined,
@@ -499,7 +505,7 @@ function getTSProject(docFsPath: string): TSProject {
       ]
     );
 
-  options.rootDir ??= basePath;
+  options.rootDir ??= rootDir;
   options.module = ts.ModuleKind.ESNext;
   options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
   options.noEmit =
@@ -522,6 +528,7 @@ function getTSProject(docFsPath: string): TSProject {
   );
 
   const tsProject: TSProject = {
+    rootDir: options.rootDir!,
     markoScriptKind,
     service: ts.createLanguageService(
       patch(ts, markoScriptKind, extractCache, {
@@ -538,7 +545,7 @@ function getTSProject(docFsPath: string): TSProject {
         },
 
         getCurrentDirectory() {
-          return basePath;
+          return options.rootDir!;
         },
 
         getProjectVersion() {
@@ -623,7 +630,7 @@ function getTSProject(docFsPath: string): TSProject {
     ),
   };
 
-  projectCache.set(basePath, tsProject);
+  projectCache.set(rootDir, tsProject);
   return tsProject;
 }
 

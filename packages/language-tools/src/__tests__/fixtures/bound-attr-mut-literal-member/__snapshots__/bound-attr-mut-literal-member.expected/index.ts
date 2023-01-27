@@ -31,7 +31,7 @@ function ˍ(input: Input) {
 }
 class ட extends Marko.Component<Input> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/bound-attr-mut-literal-member/index.marko";
   const template: Marko.Template<typeof id>;
   const tags: {
     let: Marko.ட.CustomTagRenderer<

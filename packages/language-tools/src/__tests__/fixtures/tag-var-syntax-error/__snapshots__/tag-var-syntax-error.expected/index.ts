@@ -18,7 +18,7 @@ return;
 }
 class ட extends Marko.Component<Input>{};
 declare namespace ˍ {
-const id: unique symbol;
+const id: "@language-tools/src/__tests__/fixtures/tag-var-syntax-error/index.marko";
 const template: Marko.Template<typeof id>;
 const tags: {
 "let": Marko.ட.CustomTagRenderer<typeof import("../../components/let/index.marko").default>;

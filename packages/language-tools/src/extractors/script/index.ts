@@ -64,6 +64,8 @@ type IfTagAlternates = Repeatable<IfTagAlternate>;
 export interface ExtractScriptOptions {
   parsed: Parsed;
   lookup: TaglibLookup;
+  scriptKind: "js" | "ts";
+  rootDir?: string;
   componentClassImport?: string | undefined;
 }
 export function extractScript(opts: ExtractScriptOptions) {
@@ -79,6 +81,8 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #renderIds = new Map<Node.ParentTag, number>();
+  #isTS: boolean;
+  #templateId: string;
   #mutationOffsets: Repeatable<number>;
   #referencedTags = new Set<TagDefinition>();
   #renderId = 1;
@@ -88,10 +92,19 @@ class ScriptExtractor {
     this.#code = parsed.code;
     this.#parsed = parsed;
     this.#lookup = lookup;
+    this.#isTS = opts.scriptKind === "ts";
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
+    this.#templateId =
+      opts.rootDir &&
+      this.#filename.startsWith(opts.rootDir) &&
+      /[/\\]/.test(this.#filename[opts.rootDir.length])
+        ? JSON.stringify(`@${this.#filename.slice(opts.rootDir.length + 1)}`)
+        : this.#isTS
+        ? "unique symbol"
+        : JSON.stringify(btoa(this.#code));
     this.#writeProgram(parsed.program, opts.componentClassImport);
   }
 
@@ -107,6 +120,8 @@ class ScriptExtractor {
     let typeParameters: (t.TSTypeParameterDeclaration & Range) | void | null;
     let hasInput = false;
 
+    // TODO: in JS mode should scan for `Input` type comment.
+
     for (const node of program.static) {
       switch (node.type) {
         case NodeType.Class:
@@ -120,6 +135,7 @@ class ScriptExtractor {
           const start = node.start + "export ".length;
           this.#writeComments(node);
 
+          // TODO: should only scan for `Input` type if in ts mode.
           if (!hasInput && this.#testAtIndex(REG_INPUT_TYPE, start)) {
             const [inputType] = this.#scriptParser.statementAt<
               t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
@@ -190,6 +206,7 @@ class ScriptExtractor {
     let registryInterfaceStr = "CustomTags";
     let hasComplexTypeParameters = false;
 
+    // TODO: this whole section needs to be redone for js mode.
     if (hasInput) {
       if (typeParameters) {
         let sep = SEP_EMPTY;
@@ -222,6 +239,7 @@ class ScriptExtractor {
       this.#extractor.write(this.#read(typeParameters));
     }
 
+    // TODO: will need changed for js mode.
     this.#extractor.write(`\
 (input: Input${userGenericsStr}) {
 const out = 1 as unknown as Marko.Out;
@@ -266,15 +284,21 @@ ${VAR_INTERNAL}.noop({ input, out, component, state });
         this.#extractor.write(this.#read(typeParameters));
       }
 
+      // TODO: in js mode this should use a comment like
+      // extends /* @type {typeof Marko.Component<Input<${userGenericsStr}>>} */ (Marko.Component)
+
+      // or https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
       this.#extractor
         .write(` extends Marko.Component<Input${userGenericsStr}>`)
         .copy(componentClassBody || "{}")
         .write(";\n");
     }
 
+    // TODO: need to figure out what to do with the namespace here.
+    // I _think_ it can be turned into a type.
     this.#extractor.write(`\
 declare namespace ${VAR_TEMPLATE} {
-const id: unique symbol;
+const id: ${this.#templateId};
 const template: Marko.Template<typeof id>;
 `);
 
@@ -305,10 +329,12 @@ const template: Marko.Template<typeof id>;
 
     this.#extractor.write(`}\n`);
 
+    // TODO: this needs to be changed for js mode.
     this.#extractor.write(
       `export default 1 as unknown as typeof ${VAR_TEMPLATE}.template;\n`
     );
 
+    // TODO: this needs to be changed for js mode.
     if (hasComplexTypeParameters) {
       this.#extractor.write(
         `type ${VAR_GENERICS + userGenericsStr.slice(0, -1)}`
@@ -342,6 +368,7 @@ const template: Marko.Template<typeof id>;
       this.#extractor.write(`> = any${referenceInternalVar}\n`);
     }
 
+    // TODO: this needs to be changed for js mode.
     this.#extractor.write(`\
 declare global {
 namespace Marko {
@@ -595,7 +622,7 @@ interface ${registryInterfaceStr} {
           );
           sep = SEP_COMMA_NEW_LINE;
         }
-        this.#extractor.write(`\n] as const)`);
+        this.#extractor.write(`\n] as const)`); // TODO: need to figure out as const in js mode
       }
 
       this.#extractor.write("\n};\n");
@@ -650,6 +677,7 @@ interface ${registryInterfaceStr} {
       if (!isHtml && isValidIdentifier(tagName)) {
         this.#extractor.write(`${VAR_INTERNAL}.render(`);
         if (def) {
+          // TODO: must change for js mode.
           this.#extractor
             .write(
               `\
@@ -669,6 +697,7 @@ interface ${registryInterfaceStr} {
       } else if (tagId) {
         this.#extractor.write(tagId).copy(tag.typeArgs).write("(");
       } else {
+        // TODO: must change for js mode. Maybe `Marko.internal.unknown?
         this.#extractor.write(`${VAR_INTERNAL}.render(1 as unknown)(`);
       }
     } else {

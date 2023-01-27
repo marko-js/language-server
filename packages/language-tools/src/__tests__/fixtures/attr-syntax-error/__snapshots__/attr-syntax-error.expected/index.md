@@ -147,7 +147,7 @@
      | ^ Declaration or statement expected.
   22 | class ட extends Marko.Component<Input>{};
   23 | declare namespace ˍ {
-  24 | const id: unique symbol;
+  24 | const id: "@language-tools/src/__tests__/fixtures/attr-syntax-error/index.marko";
 ```
 
 ### Ln 22, Col 1
@@ -157,7 +157,7 @@
 > 22 | class ட extends Marko.Component<Input>{};
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unreachable code detected.
   23 | declare namespace ˍ {
-  24 | const id: unique symbol;
+  24 | const id: "@language-tools/src/__tests__/fixtures/attr-syntax-error/index.marko";
   25 | const template: Marko.Template<typeof id>;
 ```
 

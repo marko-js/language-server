@@ -48,7 +48,7 @@
      | ^ Declaration or statement expected.
   19 | class ட extends Marko.Component<Input>{};
   20 | declare namespace ˍ {
-  21 | const id: unique symbol;
+  21 | const id: "@language-tools/src/__tests__/fixtures/tag-var-syntax-error/index.marko";
 ```
 
 ### Ln 19, Col 1
@@ -58,7 +58,7 @@
 > 19 | class ட extends Marko.Component<Input>{};
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unreachable code detected.
   20 | declare namespace ˍ {
-  21 | const id: unique symbol;
+  21 | const id: "@language-tools/src/__tests__/fixtures/tag-var-syntax-error/index.marko";
   22 | const template: Marko.Template<typeof id>;
 ```
 

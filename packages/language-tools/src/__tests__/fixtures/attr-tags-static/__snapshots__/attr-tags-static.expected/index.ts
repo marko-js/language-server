@@ -58,7 +58,7 @@ function ˍ(input: Input) {
 }
 class ட extends Marko.Component<Input> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/attr-tags-static/index.marko";
   const template: Marko.Template<typeof id>;
   const tags: {
     const: Marko.ட.CustomTagRenderer<

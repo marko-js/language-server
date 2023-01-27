@@ -21,7 +21,7 @@ return;
 }
 class ட extends Marko.Component<Input>{};
 declare namespace ˍ {
-const id: unique symbol;
+const id: "@language-tools/src/__tests__/fixtures/attr-syntax-error/index.marko";
 const template: Marko.Template<typeof id>;
 const tags: {
 "div": Marko.ட.NativeTagRenderer<"div">;

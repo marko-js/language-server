@@ -17,7 +17,7 @@ function ˍ<T = string>(input: Input<T>) {
 }
 class ட<T = string> extends Marko.Component<Input<T>> {}
 declare namespace ˍ {
-  const id: unique symbol;
+  const id: "@language-tools/src/__tests__/fixtures/input-type-default-generic/index.marko";
   const template: Marko.Template<typeof id>;
 }
 export default 1 as unknown as typeof ˍ.template;
