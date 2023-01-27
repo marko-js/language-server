@@ -32,15 +32,15 @@ declare global {
       }): Out;
       /** Marks the current stream as complete (async streams may still be executing). */
       end(val?: string | void): this;
-      emit(eventName: string | symbol, ...args: any[]): boolean;
-      on(eventName: string | symbol, listener: (...args: any[]) => any): this;
-      once(eventName: string | symbol, listener: (...args: any[]) => any): this;
+      emit(eventName: PropertyKey, ...args: any[]): boolean;
+      on(eventName: PropertyKey, listener: (...args: any[]) => any): this;
+      once(eventName: PropertyKey, listener: (...args: any[]) => any): this;
       prependListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
       removeListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
       /** Register a callback executed when the last async out has completed. */
@@ -89,35 +89,48 @@ declare global {
 
     export abstract class Component<Input = unknown> implements Emitter {
       /** A unique id for this instance. */
-      public id: string;
-      /** The attributes passed to this instance. */
-      public input: Input;
+      public readonly id: string;
       /** The top level element rendered by this instance. */
-      public el: Element | void;
-      /** @deprecated */
-      public els: Element[];
+      public readonly el: Element | void;
+      /** The attributes passed to this instance. */
+      public readonly input: Input;
+      /** Mutable state that when changed causes a rerender. */
       public state: unknown;
+      /** @deprecated */
+      public readonly els: Element[];
       /**
        * Note: a Marko.Component class should never have a constructor and cannot be called with "new".
        * @deprecated
        * */
       constructor(_: never);
-      listenerCount(eventName: string | symbol): number;
+
+      /** Returns the amount of event handlers listening to a specific event. */
+      listenerCount(eventName: PropertyKey): number;
+      /**
+       * Used to wrap an existing event emitted and ensure that all events are
+       * cleaned up once this component is destroyed
+       * */
       subscribeTo(
         emitter: unknown
       ): Omit<Emitter, "listenerCount" | "prependListener" | "emit">;
-      emit(eventName: string | symbol, ...args: any[]): boolean;
-      on(eventName: string | symbol, listener: (...args: any[]) => any): this;
-      once(eventName: string | symbol, listener: (...args: any[]) => any): this;
+      /** Emits an event on the component instance. */
+      emit(eventName: PropertyKey, ...args: any[]): boolean;
+      /** Listen to an event on the component instance. */
+      on(eventName: PropertyKey, listener: (...args: any[]) => any): this;
+      /** Listen to an event on the component instance once. */
+      once(eventName: PropertyKey, listener: (...args: any[]) => any): this;
+      /** Listen to an event on the component instance before all other listeners. */
       prependListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
+      /** Remove a listener from the component instance. */
       removeListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
-      removeAllListeners(eventName?: string | symbol): this;
+      /** Remove all listeners from the component instance. */
+      removeAllListeners(eventName?: PropertyKey): this;
       /** Removes the component instance from the DOM and cleans up all active event handlers including all children. */
       destroy(): void;
       /** Schedule an update (similar to if a state had been changed). */
@@ -234,19 +247,19 @@ declare global {
     }
 
     export interface Emitter {
-      listenerCount(eventName: string | symbol): number;
-      emit(eventName: string | symbol, ...args: any[]): boolean;
-      on(eventName: string | symbol, listener: (...args: any[]) => any): this;
-      once(eventName: string | symbol, listener: (...args: any[]) => any): this;
+      listenerCount(eventName: PropertyKey): number;
+      emit(eventName: PropertyKey, ...args: any[]): boolean;
+      on(eventName: PropertyKey, listener: (...args: any[]) => any): this;
+      once(eventName: PropertyKey, listener: (...args: any[]) => any): this;
       prependListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
       removeListener(
-        eventName: string | symbol,
+        eventName: PropertyKey,
         listener: (...args: any[]) => any
       ): this;
-      removeAllListeners(eventName?: string | symbol): this;
+      removeAllListeners(eventName?: PropertyKey): this;
     }
 
     export type Repeated<T> = [T, T, ...T[]];
