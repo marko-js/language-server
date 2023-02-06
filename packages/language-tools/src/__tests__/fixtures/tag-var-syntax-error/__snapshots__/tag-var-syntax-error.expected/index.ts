@@ -1,10 +1,24 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component }
+export default Marko.ᜭ.instance(class extends Marko.Template {
+/**
+ * @internal
+ * Do not use or you will be fired.
+ */
+public ᜭ<
+  ᜭ = unknown
+>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+  return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+}
+#ᜭ() {
+const input = 1 as unknown as Input;
+const component = Marko.ᜭ.instance(Component);
 const out = 1 as unknown as Marko.Out;
-const component = 1 as unknown as ட;
-const state = 1 as unknown as typeof component extends { state: infer State extends object } ? State : never;
-Marko.ட.noop({ input, out, component, state });
-Marko.ட.assertRendered(Marko.ட.rendered, 1, ˍ.tags["let"](/* Should be resistant to syntax errors.*/{
+const state = Marko.ᜭ.state(component);
+Marko.ᜭ.noop({ input, out, component, state });
+return (function (this: void) {
+Marko.ᜭ.assertRendered(Marko.ᜭ.rendered, 1, (1 as any as Marko.ᜭ.CustomTagRenderer<typeof import("../../components/let/index.marko").default>)(/* Should be resistant to syntax errors.*/{
 /*let*/
 "value": (
 1
@@ -12,21 +26,8 @@ Marko.ட.assertRendered(Marko.ட.rendered, 1, ˍ.tags["let"](/* Should be resi
 }));
 const { value:
 { %x }
-} = Marko.ட.rendered.returns[1];
+} = Marko.ᜭ.rendered.returns[1];
 return;
 
-}
-class ட extends Marko.Component<Input>{};
-
-declare namespace ˍ {const tags: {
-"let": Marko.ட.CustomTagRenderer<typeof import("../../components/let/index.marko").default>;
-};
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tag-var-syntax-error/index.marko">;
-declare global {
-namespace Marko {
-interface CustomTags {
-"@language-tools/src/__tests__/fixtures/tag-var-syntax-error/index.marko":CustomTag<Input, ReturnType<typeof ˍ>, ட>
-}
-}
-}
+})();
+}});

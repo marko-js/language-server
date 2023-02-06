@@ -1,231 +1,230 @@
 const x = 1;
 const y = 2;
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {}),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x ? {} : {}),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {
-          a: {
-            /*@a*/
-          },
-        }),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : y
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : !y
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {
-          a: {
-            /*@a*/
-          },
-        }),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : undefined
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {}),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(x
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {}),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...(undefined
-      ? {
-          a: {
-            /*@a*/
-          },
-        }
-      : {}),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    x: 1,
-    ...Marko.ட.mergeAttrTags(
-      x
-        ? {
-            a: {
-              /*@a*/
-            },
-          }
-        : {},
-      y
-        ? {
-            b: {
-              /*@b*/
-            },
-          }
-        : {}
-    ),
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    1,
-    Marko.ட.render(custom)({
-      /*custom*/
-      x: 1,
-      ...Marko.ட.mergeAttrTags(
-        {
-          a: /* hi*/ {
-            /*@a*/
-            b: 1,
-            /*@a*/
-            ["renderBody"]: Marko.ட.inlineBody(
-              (() => {
-                Marko.ட.assertRendered(
-                  Marko.ட.rendered,
-                  2,
-                  ˍ.tags["const"]({
-                    /*const*/
-                    value: 1 as const,
-                  })
-                );
-                const { value: hoistedFromStaticMember } =
-                  Marko.ட.rendered.returns[2];
-                return {
-                  scope: { hoistedFromStaticMember },
-                };
-              })()
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+    }
+    #ᜭ() {
+      const input = 1 as unknown as Input;
+      const component = Marko.ᜭ.instance(Component);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {}),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x ? {} : {}),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {
+                a: {
+                  /*@a*/
+                },
+              }),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : y
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : !y
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {
+                a: {
+                  /*@a*/
+                },
+              }),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : undefined
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {}),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(x
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {}),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...(undefined
+            ? {
+                a: {
+                  /*@a*/
+                },
+              }
+            : {}),
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          x: 1,
+          ...Marko.ᜭ.mergeAttrTags(
+            x
+              ? {
+                  a: {
+                    /*@a*/
+                  },
+                }
+              : {},
+            y
+              ? {
+                  b: {
+                    /*@b*/
+                  },
+                }
+              : {}
+          ),
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          1,
+          Marko.ᜭ.render(custom)({
+            /*custom*/
+            x: 1,
+            ...Marko.ᜭ.mergeAttrTags(
+              {
+                a: /* hi*/ {
+                  /*@a*/
+                  b: 1,
+                  /*@a*/
+                  ["renderBody"]: Marko.ᜭ.inlineBody(
+                    (() => {
+                      Marko.ᜭ.assertRendered(
+                        Marko.ᜭ.rendered,
+                        2,
+                        (
+                          1 as any as Marko.ᜭ.CustomTagRenderer<
+                            typeof import("../../components/const/index.marko").default
+                          >
+                        )({
+                          /*const*/
+                          value: 1 as const,
+                        })
+                      );
+                      const { value: hoistedFromStaticMember } =
+                        Marko.ᜭ.rendered.returns[2];
+                      return {
+                        scope: { hoistedFromStaticMember },
+                      };
+                    })()
+                  ),
+                },
+                b: {
+                  /*@b*/
+                },
+              },
+              x
+                ? {
+                    b: {
+                      /*@b*/
+                      /*@b*/
+                      ["renderBody"]: Marko.ᜭ.inlineBody(
+                        (() => {
+                          Marko.ᜭ.assertRendered(
+                            Marko.ᜭ.rendered,
+                            3,
+                            (
+                              1 as any as Marko.ᜭ.CustomTagRenderer<
+                                typeof import("../../components/const/index.marko").default
+                              >
+                            )({
+                              /*const*/
+                              value: 2 as const,
+                            })
+                          );
+                          const { value: hoistedFromDynamicMember } =
+                            Marko.ᜭ.rendered.returns[3];
+                          return {
+                            scope: { hoistedFromDynamicMember },
+                          };
+                        })()
+                      ),
+                    },
+                  }
+                : {},
+              y
+                ? {
+                    a: {
+                      /*@a*/
+                    },
+                  }
+                : {}
             ),
+          })
+        );
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            hoistedFromStaticMember;
+            hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
           },
-          b: {
-            /*@b*/
-          },
-        },
-        x
-          ? {
-              b: {
-                /*@b*/
-                /*@b*/
-                ["renderBody"]: Marko.ட.inlineBody(
-                  (() => {
-                    Marko.ட.assertRendered(
-                      Marko.ட.rendered,
-                      3,
-                      ˍ.tags["const"]({
-                        /*const*/
-                        value: 2 as const,
-                      })
-                    );
-                    const { value: hoistedFromDynamicMember } =
-                      Marko.ட.rendered.returns[3];
-                    return {
-                      scope: { hoistedFromDynamicMember },
-                    };
-                  })()
-                ),
-              },
-            }
-          : {},
-        y
-          ? {
-              a: {
-                /*@a*/
-              },
-            }
-          : {}
-      ),
-    })
-  );
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      hoistedFromStaticMember;
-      hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
-    },
-  });
-  const { hoistedFromStaticMember, hoistedFromDynamicMember } =
-    Marko.ட.readScopes(Marko.ட.rendered);
-  Marko.ட.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
-  return;
-}
-class ட extends Marko.Component<Input> {}
-
-declare namespace ˍ {
-  const tags: {
-    const: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/const/index.marko").default
-    >;
-  };
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/attr-tags-dynamic-if/index.marko">;
-declare global {
-  namespace Marko {
-    interface CustomTags {
-      "@language-tools/src/__tests__/fixtures/attr-tags-dynamic-if/index.marko": CustomTag<
-        Input,
-        ReturnType<typeof ˍ>,
-        ட
-      >;
+        });
+        const { hoistedFromStaticMember, hoistedFromDynamicMember } =
+          Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
+        Marko.ᜭ.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
+        return;
+      })();
     }
   }
-}
+);

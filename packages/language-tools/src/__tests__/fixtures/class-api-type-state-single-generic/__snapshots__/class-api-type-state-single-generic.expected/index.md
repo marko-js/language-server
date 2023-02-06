@@ -4,7 +4,7 @@
    5 | class {
    6 |   declare state: {
 >  7 |     name: T;
-     |           ^ (type parameter) T in ட<T extends string>
+     |           ^ (type parameter) T in Component<T extends string>
    8 |   }
    9 |   onCreate(input: Input<T>) {
   10 |     this.state = { name: input.name };

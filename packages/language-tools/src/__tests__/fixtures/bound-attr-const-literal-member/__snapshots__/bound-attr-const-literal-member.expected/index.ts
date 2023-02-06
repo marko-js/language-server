@@ -1,52 +1,51 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    1,
-    ˍ.tags["let"]({
-      /*let*/
-      value: { b: 1 },
-    })
-  );
-  const { value: a } = Marko.ட.rendered.returns[1];
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    2,
-    ˍ.tags["let"]({
-      /*let*/
-      valueChange: a.bChange,
-      value: a.b,
-    })
-  );
-  const { value: b } = Marko.ட.rendered.returns[2];
-  return;
-}
-class ட extends Marko.Component<Input> {}
-
-declare namespace ˍ {
-  const tags: {
-    let: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/let/index.marko").default
-    >;
-  };
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/bound-attr-const-literal-member/index.marko">;
-declare global {
-  namespace Marko {
-    interface CustomTags {
-      "@language-tools/src/__tests__/fixtures/bound-attr-const-literal-member/index.marko": CustomTag<
-        Input,
-        ReturnType<typeof ˍ>,
-        ட
-      >;
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+    }
+    #ᜭ() {
+      const input = 1 as unknown as Input;
+      const component = Marko.ᜭ.instance(Component);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          1,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            value: { b: 1 },
+          })
+        );
+        const { value: a } = Marko.ᜭ.rendered.returns[1];
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          2,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            valueChange: a.bChange,
+            value: a.b,
+          })
+        );
+        const { value: b } = Marko.ᜭ.rendered.returns[2];
+        return;
+      })();
     }
   }
-}
+);

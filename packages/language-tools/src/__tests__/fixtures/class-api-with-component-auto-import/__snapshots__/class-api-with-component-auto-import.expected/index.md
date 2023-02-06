@@ -3,17 +3,17 @@
 ```marko
   1 | <div onClick("handleClickMissing")/>
 > 2 | $ console.log(component);
-    |               ^ const component: ட
+    |               ^ const component: Component
 ```
 
 ## Source Diagnostics
 ### Ln 1, Col 6
 ```marko
 > 1 | <div onClick("handleClickMissing")/>
-    |      ^^^^^^^ Type '((...args: any) => any) | ((eventName: string | symbol, ...args: any[]) => boolean) | (() => void) | ((name: string, value: unknown) => void) | ((name: string, value?: unknown) => void) | (() => void)' is not assignable to type '((event: MouseEvent, element: HTMLDivElement) => void) | undefined'.
-  Type '(eventName: string | symbol, ...args: any[]) => boolean' is not assignable to type '(event: MouseEvent, element: HTMLDivElement) => void'.
+    |      ^^^^^^^ Type '((...args: any) => any) | ((eventName: PropertyKey, ...args: any[]) => boolean) | (() => void) | { <Key extends PropertyKey>(name: never, value: Record<PropertyKey, unknown>[Key]): void; (value: Partial<...>): void; } | (<Key extends PropertyKey>(name: never, value?: Record<...>[Key] | undefined) => void) | (() => v...' is not assignable to type '((event: MouseEvent, element: HTMLDivElement) => void) | undefined'.
+  Type '(eventName: PropertyKey, ...args: any[]) => boolean' is not assignable to type '(event: MouseEvent, element: HTMLDivElement) => void'.
     Types of parameters 'eventName' and 'event' are incompatible.
-      Type 'MouseEvent' is not assignable to type 'string | symbol'.
+      Type 'MouseEvent' is not assignable to type 'PropertyKey'.
   2 | $ console.log(component);
 ```
 

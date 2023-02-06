@@ -1,88 +1,81 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    1,
-    ˍ.tags["div"]({
-      /*div*/
-      /*div*/
-      ["renderBody"]: Marko.ட.inlineBody(
-        (() => {
-          Marko.ட.assertRendered(
-            Marko.ட.rendered,
-            2,
-            ˍ.tags["let"]({
-              /*let*/
-              value: 1,
-            })
-          );
-          const { value: x } = Marko.ட.rendered.returns[2];
-          x;
-          Marko.ட.assertRendered(
-            Marko.ட.rendered,
-            3,
-            ˍ.tags["button"]({
-              /*button*/
-              onClick() {
-                ᜭ.mutate.x = 2;
-                ᜭ.mutate.x++;
-                ++ᜭ.mutate.x;
-              },
-            })
-          );
-          const { value: el } = Marko.ட.rendered.returns[3];
-          const ᜭ = {
-            mutate: Marko.ட.mutable([
-              ["x", "value", Marko.ட.rendered.returns[2]],
-            ] as const),
-          };
-          Marko.ட.noop({ x });
-          return {
-            scope: { x, el },
-          };
-        })()
-      ),
-    })
-  );
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      console.log(el());
-    },
-  });
-  x;
-  const { x, el } = Marko.ட.readScopes(Marko.ட.rendered);
-  Marko.ட.noop({ x, el });
-  return;
-}
-class ட extends Marko.Component<Input> {}
-
-declare namespace ˍ {
-  const tags: {
-    div: Marko.ட.NativeTagRenderer<"div">;
-    let: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/let/index.marko").default
-    >;
-    button: Marko.ட.NativeTagRenderer<"button">;
-  };
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/simple-hoist/index.marko">;
-declare global {
-  namespace Marko {
-    interface CustomTags {
-      "@language-tools/src/__tests__/fixtures/simple-hoist/index.marko": CustomTag<
-        Input,
-        ReturnType<typeof ˍ>,
-        ட
-      >;
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+    }
+    #ᜭ() {
+      const input = 1 as unknown as Input;
+      const component = Marko.ᜭ.instance(Component);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          1,
+          (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+            /*div*/
+            /*div*/
+            ["renderBody"]: Marko.ᜭ.inlineBody(
+              (() => {
+                Marko.ᜭ.assertRendered(
+                  Marko.ᜭ.rendered,
+                  2,
+                  (
+                    1 as any as Marko.ᜭ.CustomTagRenderer<
+                      typeof import("../../components/let/index.marko").default
+                    >
+                  )({
+                    /*let*/
+                    value: 1,
+                  })
+                );
+                const { value: x } = Marko.ᜭ.rendered.returns[2];
+                x;
+                Marko.ᜭ.assertRendered(
+                  Marko.ᜭ.rendered,
+                  3,
+                  (1 as any as Marko.ᜭ.NativeTagRenderer<"button">)({
+                    /*button*/
+                    onClick() {
+                      ᜭ.mutate.x = 2;
+                      ᜭ.mutate.x++;
+                      ++ᜭ.mutate.x;
+                    },
+                  })
+                );
+                const { value: el } = Marko.ᜭ.rendered.returns[3];
+                const ᜭ = {
+                  mutate: Marko.ᜭ.mutable([
+                    ["x", "value", Marko.ᜭ.rendered.returns[2]],
+                  ] as const),
+                };
+                Marko.ᜭ.noop({ x });
+                return {
+                  scope: { x, el },
+                };
+              })()
+            ),
+          })
+        );
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            console.log(el());
+          },
+        });
+        x;
+        const { x, el } = Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
+        Marko.ᜭ.noop({ x, el });
+        return;
+      })();
     }
   }
-}
+);

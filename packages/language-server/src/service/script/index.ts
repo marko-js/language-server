@@ -419,7 +419,6 @@ function processScript(doc: TextDocument, project: TSProject) {
     return extractScript({
       parsed: file.parsed,
       lookup: file.project.lookup,
-      rootDir: project.rootDir,
       scriptKind: project.markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
       componentClassImport: undefined, // TODO!
     });

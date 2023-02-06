@@ -7,49 +7,39 @@ export interface Input<
   lastName: LastName;
   fullName: `${FirstName} ${LastName}`;
 }
-function ˍ<FirstName extends string, LastName extends string, Extra>(
-  input: Input<FirstName, LastName, Extra>
-) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட<FirstName, LastName, Extra>;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  input.fullName;
-  return;
-}
-class ட<
+class Component<
   FirstName extends string,
   LastName extends string,
   Extra
 > extends Marko.Component<Input<FirstName, LastName, Extra>> {}
-
-declare namespace ˍ {}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko">;
-type ᜭ<
-  FirstName,
-  LastName,
-  Extra,
-  ᜭ extends FirstName extends string ? FirstName : never,
-  ᜭᜭ extends LastName extends string ? LastName : never,
-  ᜭᜭᜭ extends Extra
-> = any & ᜭ & ᜭᜭ & ᜭᜭᜭ;
-declare global {
-  namespace Marko {
-    interface CustomTags3<A, B, C> {
-      "@language-tools/src/__tests__/fixtures/input-type-multiple-generics/index.marko": 1 extends ᜭ<
-        A,
-        B,
-        C,
-        infer A,
-        infer B,
-        infer C
-      >
-        ? CustomTag<Input<A, B, C>, ReturnType<typeof ˍ<A, B, C>>, ட<A, B, C>>
-        : never;
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<
+      FirstName extends string,
+      LastName extends string,
+      Extra,
+      ᜭ = unknown
+    >(input: Marko.ᜭ.Relate<Input<FirstName, LastName, Extra>, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(
+        input as any as ᜭ,
+        this.#ᜭ<FirstName, LastName, Extra>()
+      );
+    }
+    #ᜭ<FirstName extends string, LastName extends string, Extra>() {
+      const input = 1 as unknown as Input<FirstName, LastName, Extra>;
+      const component = Marko.ᜭ.instance(Component<FirstName, LastName, Extra>);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        input.fullName;
+        return;
+      })();
     }
   }
-}
+);

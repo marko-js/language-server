@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import type * as t from "@babel/types";
 import { relativeImportPath } from "relative-import-path";
 
@@ -29,16 +28,12 @@ const SEP_EMPTY = "";
 const SEP_SPACE = " ";
 const SEP_COMMA_SPACE = ", ";
 const SEP_COMMA_NEW_LINE = ",\n";
-const VAR_CLASS = "ட";
-const VAR_TEMPLATE = "ˍ";
-const VAR_GENERICS = "ᜭ";
-const VAR_INTERNAL = "Marko.ட";
-const VAR_DYNAMIC_PREFIX = "ᜭ";
+const VAR_DYNAMIC = "ᜭ";
+const VAR_INTERNAL = `Marko.${VAR_DYNAMIC}`;
 const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
-const UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 
 type ProcessedBody = {
@@ -66,7 +61,6 @@ export interface ExtractScriptOptions {
   parsed: Parsed;
   lookup: TaglibLookup;
   scriptKind: "js" | "ts";
-  rootDir?: string;
   componentClassImport?: string | undefined;
 }
 export function extractScript(opts: ExtractScriptOptions) {
@@ -82,8 +76,7 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #renderIds = new Map<Node.ParentTag, number>();
-  #isTS: boolean;
-  #templateId: string;
+  // #isTS: boolean;
   #mutationOffsets: Repeatable<number>;
   #referencedTags = new Set<TagDefinition>();
   #renderId = 1;
@@ -93,18 +86,11 @@ class ScriptExtractor {
     this.#code = parsed.code;
     this.#parsed = parsed;
     this.#lookup = lookup;
-    this.#isTS = opts.scriptKind === "ts";
+    // this.#isTS = opts.scriptKind === "ts";
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
-    this.#templateId = JSON.stringify(
-      opts.rootDir &&
-        this.#filename.startsWith(opts.rootDir) &&
-        /[/\\]/.test(this.#filename[opts.rootDir.length])
-        ? `@${this.#filename.slice(opts.rootDir.length + 1)}`
-        : createHash("MD5").update(this.#code).digest("base64").slice(0, 8)
-    );
     this.#writeProgram(parsed.program, opts.componentClassImport);
   }
 
@@ -201,53 +187,67 @@ class ScriptExtractor {
       }
     }
 
-    let userGenericsStr = "";
-    let registryGenericsStr = "";
-    let registryInterfaceStr = "CustomTags";
-    let hasComplexTypeParameters = false;
+    let genericsStr = "";
+    let applyGenericsStr = "";
 
     // TODO: this whole section needs to be redone for js mode.
     if (hasInput) {
       if (typeParameters) {
         let sep = SEP_EMPTY;
-        userGenericsStr = registryGenericsStr = "<";
-        registryInterfaceStr += `${typeParameters.params.length}<`;
-        for (let i = 0; i < typeParameters.params.length; i++) {
-          const generic = typeParameters.params[i];
-          const registryGenericName = UPPER_CASE_LETTERS[i];
-          userGenericsStr += sep + generic.name;
-          registryGenericsStr += sep + registryGenericName;
-          registryInterfaceStr += sep + registryGenericName;
-          sep = SEP_COMMA_SPACE;
+        applyGenericsStr = "<";
+        genericsStr = this.#read(typeParameters);
 
-          if (generic.constraint || generic.default) {
-            hasComplexTypeParameters = true;
-          }
+        for (const generic of typeParameters.params) {
+          applyGenericsStr += sep + generic.name;
+          sep = SEP_COMMA_SPACE;
         }
 
-        userGenericsStr += ">";
-        registryGenericsStr += ">";
-        registryInterfaceStr += ">";
+        applyGenericsStr += ">";
       }
     } else {
-      this.#extractor.write("export type Input = Record<string, never>;\n");
+      this.#extractor.write("export interface Input {}\n");
     }
 
-    this.#extractor.write(`function ${VAR_TEMPLATE}`);
-
-    if (typeParameters) {
-      this.#extractor.write(this.#read(typeParameters));
+    if (!componentClassBody && componentClassImport) {
+      this.#extractor.write(
+        `import Component from "${componentClassImport}";\n`
+      );
+    } else {
+      // TODO: in js mode this should use a comment like
+      // extends /* @type {typeof Marko.Component<Input<${userGenericsStr}>>} */ (Marko.Component)
+      // or https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
+      this.#extractor
+        .write(
+          `class Component${genericsStr} extends Marko.Component<Input${applyGenericsStr}>`
+        )
+        .copy(componentClassBody || " {}")
+        .write("\n");
     }
 
-    // TODO: will need changed for js mode.
-    this.#extractor.write(`\
-(input: Input${userGenericsStr}) {
+    this.#extractor.write("export { type Component }\n");
+
+    this.#extractor.write(
+      `export default ${VAR_INTERNAL}.instance(class extends Marko.Template {
+/**
+ * @internal
+ * Do not use or you will be fired.
+ */
+public ${VAR_DYNAMIC}<
+  ${genericsStr ? `${genericsStr.slice(1, -1)}, ` : ""}${VAR_DYNAMIC} = unknown
+>(input: ${VAR_INTERNAL}.Relate<Input${applyGenericsStr}, ${VAR_DYNAMIC}>) {
+  return ${VAR_INTERNAL}.returnWithScope(input as any as ${VAR_DYNAMIC}, this.#${VAR_DYNAMIC}${applyGenericsStr}());
+}
+`
+    );
+
+    this.#extractor.write(`#${VAR_DYNAMIC}${genericsStr}() {
+const input = 1 as unknown as Input${applyGenericsStr};
+const component = ${VAR_INTERNAL}.instance(Component${applyGenericsStr});
 const out = 1 as unknown as Marko.Out;
-const component = 1 as unknown as ${VAR_CLASS + userGenericsStr};
-const state = 1 as unknown as typeof component extends { state: infer State extends object } ? State : never;
+const state = ${VAR_INTERNAL}.state(component);
 ${VAR_INTERNAL}.noop({ input, out, component, state });
+return (function (this: void) {
 `);
-    // The final console log above is to prevent unused variable errors.
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
     const didReturn =
@@ -266,139 +266,15 @@ ${VAR_INTERNAL}.noop({ input, out, component, state });
     }
 
     if (didReturn) {
-      this.#extractor.write(`return ${VAR_DYNAMIC_PREFIX}.return;\n`);
+      this.#extractor.write(`return ${VAR_DYNAMIC}.return;\n`);
     } else {
       this.#extractor.write("return;\n");
     }
 
-    this.#extractor.write("\n}\n");
+    this.#extractor.write("\n})();\n}");
 
-    if (!componentClassBody && componentClassImport) {
-      this.#extractor.write(
-        `import ${VAR_CLASS} from "${componentClassImport}";\n`
-      );
-    } else {
-      this.#extractor.write(`class ${VAR_CLASS}`);
+    this.#extractor.write("});\n");
 
-      if (typeParameters) {
-        this.#extractor.write(this.#read(typeParameters));
-      }
-
-      // TODO: in js mode this should use a comment like
-      // extends /* @type {typeof Marko.Component<Input<${userGenericsStr}>>} */ (Marko.Component)
-
-      // or https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
-      this.#extractor
-        .write(` extends Marko.Component<Input${userGenericsStr}>`)
-        .copy(componentClassBody || "{}")
-        .write(";\n");
-    }
-
-    // TODO: need to figure out what to do with the namespace here.
-    // I _think_ it can be turned into a type.
-    this.#extractor.write(`\ndeclare namespace ${VAR_TEMPLATE} {`);
-
-    if (this.#referencedTags.size) {
-      this.#extractor.write("const tags: {\n");
-
-      for (const tag of this.#referencedTags) {
-        this.#extractor.write(`"${tag.name}": ${VAR_INTERNAL}.`);
-
-        if (tag.html) {
-          this.#extractor.write(`NativeTagRenderer<"${tag.name}">`);
-        } else {
-          const importPath = resolveTagImport(this.#filename, tag);
-          if (importPath) {
-            this.#extractor.write(
-              `CustomTagRenderer<typeof import("${importPath}").default>`
-            );
-          } else {
-            this.#extractor.write("DefaultRenderer");
-          }
-        }
-
-        this.#extractor.write(`;\n`);
-      }
-
-      this.#extractor.write(`};\n`);
-    }
-
-    this.#extractor.write(`}\n`);
-
-    // TODO: this needs to be changed for js mode.
-    this.#extractor.write(
-      `export default 1 as unknown as Marko.Template<${this.#templateId}>;\n`
-    );
-
-    // TODO: this needs to be changed for js mode.
-    if (hasComplexTypeParameters) {
-      this.#extractor.write(
-        `type ${VAR_GENERICS + userGenericsStr.slice(0, -1)}`
-      );
-      let curInternalVar = VAR_GENERICS;
-      let referenceInternalVar = "";
-      for (const param of typeParameters!.params) {
-        this.#extractor.write(`, ${curInternalVar} extends ${param.name} `);
-        referenceInternalVar += ` & ${curInternalVar}`;
-        curInternalVar += VAR_GENERICS;
-
-        if (param.constraint) {
-          this.#extractor.write(
-            `extends ${this.#read(param.constraint as Range)} ? ${
-              param.name
-            } : `
-          );
-        }
-
-        if (param.default) {
-          this.#extractor.write(
-            `extends unknown ? ${this.#read(param.default as Range)} : `
-          );
-        }
-
-        if (param.constraint || param.default) {
-          this.#extractor.write("never");
-        }
-      }
-
-      this.#extractor.write(`> = any${referenceInternalVar}\n`);
-    }
-
-    // TODO: this needs to be changed for js mode.
-    this.#extractor.write(`\
-declare global {
-namespace Marko {
-interface ${registryInterfaceStr} {
-${this.#templateId}:`);
-
-    if (hasComplexTypeParameters) {
-      let interfaceGenerics = "";
-      let inferredGenerics = "";
-      let sep = SEP_EMPTY;
-
-      for (let i = 0; i < typeParameters!.params.length; i++) {
-        const interfaceGeneric = UPPER_CASE_LETTERS[i];
-        inferredGenerics += `${sep}infer ${interfaceGeneric}`;
-        interfaceGenerics += sep + interfaceGeneric;
-        sep = SEP_COMMA_SPACE;
-      }
-
-      this.#extractor.write(
-        `1 extends ${VAR_GENERICS}<${interfaceGenerics},${inferredGenerics}> ? `
-      );
-    }
-
-    this.#extractor.write(
-      `CustomTag<Input${registryGenericsStr}, ReturnType<typeof ${
-        VAR_TEMPLATE + registryGenericsStr
-      }>, ${VAR_CLASS + registryGenericsStr}>`
-    );
-
-    if (hasComplexTypeParameters) {
-      this.#extractor.write(" : never");
-    }
-
-    this.#extractor.write("\n}\n}\n}\n");
     this.#writeComments(program);
   }
 
@@ -591,7 +467,8 @@ ${this.#templateId}:`);
     const mutatedVars = getMutatedVars(parent);
 
     if (returnTag || mutatedVars) {
-      this.#extractor.write(`const ${VAR_DYNAMIC_PREFIX} = {\n`);
+      this.#extractor.write(`const ${VAR_DYNAMIC} = {\n`);
+
       if (returnTag) {
         this.#extractor.write(`return: ${VAR_INTERNAL}.returnTag(`);
         this.#writeTagInputObject(returnTag);
@@ -666,22 +543,30 @@ ${this.#templateId}:`);
 
       if (def) {
         this.#referencedTags.add(def);
-        tagId = internalTagVar(def.name);
-        isHtml = def.html;
+        if (def.html) {
+          isHtml = true;
+          tagId = `${VAR_INTERNAL}.NativeTagRenderer<"${def.name}">`;
+        } else {
+          const importPath = resolveTagImport(this.#filename, def);
+          if (importPath) {
+            tagId = `${VAR_INTERNAL}.CustomTagRenderer<typeof import("${importPath}").default>`;
+          } else {
+            tagId = `${VAR_INTERNAL}.DefaultRenderer`;
+          }
+        }
       }
 
       if (!isHtml && isValidIdentifier(tagName)) {
         this.#extractor.write(`${VAR_INTERNAL}.render(`);
-        if (def) {
+        if (tagId) {
           // TODO: must change for js mode.
           this.#extractor
             .write(
-              `\
-// @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
+              `// @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
 (1 as unknown as MARKO_NOT_DECLARED extends any ? 0 extends 1 & typeof `
             )
             .copy(tag.name)
-            .write(` ? typeof ${tagId!} : typeof `)
+            .write(` ? ${tagId} : typeof `)
             .copy(tag.name)
             .copy(tag.typeArgs)
             .write(" : never)");
@@ -691,7 +576,10 @@ ${this.#templateId}:`);
 
         this.#extractor.write(")(");
       } else if (tagId) {
-        this.#extractor.write(tagId).copy(tag.typeArgs).write("(");
+        this.#extractor
+          .write(`(1 as any as ${tagId})`)
+          .copy(tag.typeArgs)
+          .write("(");
       } else {
         // TODO: must change for js mode. Maybe `Marko.internal.unknown?
         this.#extractor.write(`${VAR_INTERNAL}.render(1 as unknown)(`);
@@ -808,15 +696,19 @@ ${this.#templateId}:`);
                       // Should have bound to an identifier, so we inline a function to assign to it.
 
                       this.#extractor
+                        .write("(_")
+                        .copy(value.value)
                         .write(
-                          `(${VAR_TEMPLATE}) {\n${
+                          `) {\n${
                             isMutatedVar(tag.parent, this.#read(value.value))
-                              ? `${VAR_DYNAMIC_PREFIX}.mutate.`
+                              ? `${VAR_DYNAMIC}.mutate.`
                               : ""
                           }`
                         )
                         .copy(value.value)
-                        .write(`= ${VAR_TEMPLATE};\n}${SEP_COMMA_NEW_LINE}"`)
+                        .write("= ")
+                        .copy(value.value)
+                        .write(`;\n}${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
                         .write('": (\n')
@@ -1137,7 +1029,7 @@ ${this.#templateId}:`);
           }
 
           if (didReturn) {
-            this.#extractor.write(`return ${VAR_DYNAMIC_PREFIX}.return;\n`);
+            this.#extractor.write(`return ${VAR_DYNAMIC}.return;\n`);
           } else {
             this.#extractor.write("return;\n");
           }
@@ -1153,7 +1045,7 @@ ${this.#templateId}:`);
             }
 
             if (didReturn) {
-              this.#extractor.write(`return: ${VAR_DYNAMIC_PREFIX}.return`);
+              this.#extractor.write(`return: ${VAR_DYNAMIC}.return`);
             }
 
             this.#extractor.write("\n};");
@@ -1234,7 +1126,7 @@ ${this.#templateId}:`);
       // Copy the content before the mutation.
       this.#extractor.copy({ start: curOffset, end: nextOffset });
       // splice in mutation prefix.
-      this.#extractor.write(`${VAR_DYNAMIC_PREFIX}.mutate.`);
+      this.#extractor.write(`${VAR_DYNAMIC}.mutate.`);
 
       curOffset = nextOffset;
       minIndex = maxIndex + 1;
@@ -1455,10 +1347,6 @@ function resolveTagImport(from: string, def: TagDefinition | undefined) {
 
 function resolveTagFile(def: TagDefinition | undefined): string | undefined {
   return def && ((def as any).types || def.template || def.renderer);
-}
-
-function internalTagVar(name: string) {
-  return `${VAR_TEMPLATE}.tags["${name}"]`;
 }
 
 function isWhitespaceCode(code: number) {

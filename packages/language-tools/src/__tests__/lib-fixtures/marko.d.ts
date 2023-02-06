@@ -1,5 +1,9 @@
-import "./marko-internal";
 import "./marko-core";
+
+declare module "*.marko" {
+  const template: Marko.Template;
+  export default template;
+}
 
 declare global {
   namespace Marko {
@@ -8,8 +12,8 @@ declare global {
       [x: PropertyKey]: unknown;
     }
 
-    export interface Out<C extends Component = Component<any>>
-      extends PromiseLike<RenderResult<C>> {
+    export interface Out<Component extends Marko.Component = Marko.Component>
+      extends PromiseLike<RenderResult<Component>> {
       /** The underlying ReadableStream Marko is writing into. */
       stream: unknown;
       /** A mutable global object for the current render. */
@@ -69,7 +73,7 @@ declare global {
     /** Valid data types which can be passed in as a <${dynamic}/> tag name. */
     export type DynamicTagName =
       | {
-          renderBody?: Body<any, any> | Template<any> | string | void | false;
+          renderBody?: Body<any, any> | Template | string | void | false;
         }
       | Body<any, any>
       | Template
@@ -78,12 +82,12 @@ declare global {
       | false;
 
     /** Extract the return tag type from a renderBody. */
-    export type BodyReturnType<B> = B extends Body<any, infer Return, any>
+    export type BodyReturnType<B> = B extends Body<any, infer Return>
       ? Return
       : never;
 
     /** Extract the tag parameter types received by a renderBody. */
-    export type BodyParamaters<B> = B extends Body<infer Params, any, any>
+    export type BodyParamaters<B> = B extends Body<infer Params, any>
       ? Params
       : never;
 
@@ -98,11 +102,6 @@ declare global {
       public state: unknown;
       /** @deprecated */
       public readonly els: Element[];
-      /**
-       * Note: a Marko.Component class should never have a constructor and cannot be called with "new".
-       * @deprecated
-       * */
-      constructor(_: never);
 
       /** Returns the amount of event handlers listening to a specific event. */
       listenerCount(eventName: PropertyKey): number;
@@ -157,14 +156,22 @@ declare global {
       /** True if this instance is scheduled to rerender. */
       isDestroyed(): boolean;
       /** Replace the entire state object with a new one, removing old properties. */
-      replaceState(state: Record<string, any>): void;
+      replaceState(state: this["state"]): void;
       /**
        * Update a property on this.state (should prefer mutating this.state directly).
        * When passed an object as the first argument, it will be merged into the state.
        */
-      setState(name: string, value: unknown): void;
+      setState<Key extends PropertyKey>(
+        name: Key & keyof this["state"],
+        value: (this["state"] & Record<PropertyKey, unknown>)[Key]
+      ): void;
+      setState(value: Partial<this["state"]>): void;
+
       /** Schedules an update related to a specific state property and optionally updates the value. */
-      setStateDirty(name: string, value?: unknown): void;
+      setStateDirty<Key extends PropertyKey>(
+        name: Key & keyof this["state"],
+        value?: (this["state"] & Record<PropertyKey, unknown>)[Key]
+      ): void;
       /** Synchronously flush any scheduled updates. */
       update(): void;
       /** Appends the dom for the current instance to a parent DOM element. */
@@ -179,40 +186,77 @@ declare global {
       replace(target: ChildNode): this;
       /** Replaces the children of an existing DOM element with the dom for the current instance. */
       replaceChildrenOf(target: ParentNode): this;
+      /** Called when the component is firsted created. */
+      onCreate?(input: this["input"], out: Marko.Out): void;
+      /** Called every time the component receives input from it's parent. */
+      onInput?(input: this["input"], out: Marko.Out): void | this["input"];
+      /** Called after a component has successfully rendered, but before it's update has been applied to the dom. */
+      onRender?(out: Marko.Out): void;
+      /** Called after the first time the component renders and is attached to the dom. */
+      onMount?(): void;
+      /** Called when a components render has been applied to the DOM (excluding when it is initially mounted). */
+      onUpdate?(): void;
+      /** Called when a component is destroyed and removed from the dom. */
+      onDestroy?(): void;
     }
 
     /** The top level api for a Marko Template. */
-    export interface Template<Id extends keyof CustomTags2<any, any> = any> {
+    export abstract class Template {
       /** Creates a Marko compatible output stream. */
       createOut(): Out;
-      // /** Render a template in sync mode. */
-      renderSync<A, B>(
-        input: CustomTags2<A, B>[Id]["input"] & { $global?: Global }
-      ): RenderResult<CustomTags2<A, B>[Id]["component"]>;
-      /** Render a template in sync mode. */
-      renderToString<A, B>(
-        input: CustomTags2<A, B>[Id]["input"] & { $global?: Global }
-      ): string;
-      /** Render a template and return a Marko output stream */
-      render<A, B>(
-        input: CustomTags2<A, B>[Id]["input"] & { $global?: Global }
-      ): Out<CustomTags2<A, B>[Id]["component"]>;
-      /** Render a template and stream it into an existing streamable api */
-      render<A, B>(
-        input: CustomTags2<A, B>[Id]["input"] & { $global?: Global },
-        stream: {
-          write: (chunk: string) => void;
-          end: (chunk?: string) => void;
-        }
-      ): Out<CustomTags2<A, B>[Id]["component"]>;
+
+      /** @marko: override-start */
+      /** Asynchronously render the template. */
+      declare render: {
+        /* @marko: generics */ (
+          input: /* @marko: input-start */ any /* @marko: input-end */ & {
+            $global?: Marko.Global;
+          },
+
+          stream?: {
+            write: (chunk: string) => void;
+            end: (chunk?: string) => void;
+          }
+        ): Marko.Out</* @marko: component-start */ Marko.Component /* @marko: component-end */>;
+      };
+      /** @marko: override-end */
+
+      /** @marko: override-start */
+      /** Synchronously render the template. */
+      declare renderSync: {
+        /* @marko: generics */ (
+          input: /* @marko: input-start */ any /* @marko: input-end */ & {
+            $global?: Marko.Global;
+          }
+        ): Marko.RenderResult</* @marko: component-start */ Marko.Component /* @marko: component-end */>;
+      };
+      /** @marko: override-end */
+
+      /** @marko: override-start */
+      /** Synchronously render a template to a string. */
+      declare renderToString: {
+        /* @marko: generics */ (
+          input: /* @marko: input-start */ any /* @marko: input-end */ & {
+            $global?: Marko.Global;
+          }
+        ): string;
+      };
+      /** @marko: override-end */
+
+      /** @marko: override-start */
       /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
-      stream<A, B>(
-        input: CustomTags2<A, B>[Id]["input"] & { $global?: Global }
-      ): ReadableStream<string> & import("stream").Readable;
+      declare stream: {
+        /* @marko: generics */ (
+          input: /* @marko: input-start */ any /* @marko: input-end */ & {
+            $global?: Marko.Global;
+          }
+        ): ReadableStream<string> & import("stream").Readable;
+      };
+      /** @marko: override-end */
     }
 
     export interface RenderResult<
-      out Component extends Marko.Component = Marko.Component<any>
+      out Component extends Marko.Component = Marko.Component
     > {
       /** Returns the component created as a result of rendering the template. */
       getComponent(): Component;
@@ -275,30 +319,8 @@ declare global {
     }
 
     interface NativeTags {
-      [x: PropertyKey]: NativeTag;
+      [x: string]: NativeTag;
     }
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-    interface NativeTags1<A> extends NativeTags {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-    interface NativeTags2<A, B> extends NativeTags1<A> {}
-
-    interface CustomTag<
-      Input = unknown,
-      Return = unknown,
-      Component = Marko.Component
-    > {
-      input: Input;
-      return: Return;
-      component: Component;
-    }
-
-    interface CustomTags {
-      [x: PropertyKey]: CustomTag;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-    interface CustomTags1<A> extends CustomTags {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-    interface CustomTags2<A, B> extends CustomTags1<A> {}
   }
 }
 

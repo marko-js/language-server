@@ -1,353 +1,363 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-      },
-      () => ({
-        a: {
-          /*@a*/
-        },
-      })
-    ),
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    1,
-    ˍ.tags["let"]({
-      /*let*/
-      value: [
-        {
-          value: 1,
-        },
-        {
-          value: 2,
-        },
-        {
-          value: 3,
-        },
-      ] as const,
-    })
-  );
-  const { value: list } = Marko.ட.rendered.returns[1];
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        of: list,
-      },
-      () => ({
-        a: {
-          /*@a*/
-        },
-      })
-    ),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        of: list,
-      },
-      (item, index, all) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              item;
-              index;
-              all;
-            })()
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+    }
+    #ᜭ() {
+      const input = 1 as unknown as Input;
+      const component = Marko.ᜭ.instance(Component);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+            },
+            () => ({
+              a: {
+                /*@a*/
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        of: list,
-      },
-      (item, index) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              item;
-            })()
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          1,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            value: [
+              {
+                value: 1,
+              },
+              {
+                value: 2,
+              },
+              {
+                value: 3,
+              },
+            ] as const,
+          })
+        );
+        const { value: list } = Marko.ᜭ.rendered.returns[1];
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              of: list,
+            },
+            () => ({
+              a: {
+                /*@a*/
+              },
+            })
           ),
-        },
-        b: {
-          /*@b*/
-          /*@b*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              index;
-            })()
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              of: list,
+            },
+            (item, index, all) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    item;
+                    index;
+                    all;
+                  })()
+                ),
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    2,
-    Marko.ட.render(custom)({
-      /*custom*/
-      ...Marko.ட.forAttrTag(
-        {
-          /*for*/
-          of: list,
-        },
-        (item) => ({
-          a: {
-            /*@a*/
-            /*@a*/
-            ["renderBody"]: Marko.ட.inlineBody(
-              (() => {
-                Marko.ட.assertRendered(
-                  Marko.ட.rendered,
-                  3,
-                  ˍ.tags["const"]({
-                    /*const*/
-                    value: item,
-                  })
-                );
-                const {
-                  value: { value: hoistedFromForOf },
-                } = Marko.ட.rendered.returns[3];
-                return {
-                  scope: { hoistedFromForOf },
-                };
-              })()
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              of: list,
+            },
+            (item, index) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    item;
+                  })()
+                ),
+              },
+              b: {
+                /*@b*/
+                /*@b*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    index;
+                  })()
+                ),
+              },
+            })
+          ),
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          2,
+          Marko.ᜭ.render(custom)({
+            /*custom*/
+            ...Marko.ᜭ.forAttrTag(
+              {
+                /*for*/
+                of: list,
+              },
+              (item) => ({
+                a: {
+                  /*@a*/
+                  /*@a*/
+                  ["renderBody"]: Marko.ᜭ.inlineBody(
+                    (() => {
+                      Marko.ᜭ.assertRendered(
+                        Marko.ᜭ.rendered,
+                        3,
+                        (
+                          1 as any as Marko.ᜭ.CustomTagRenderer<
+                            typeof import("../../components/const/index.marko").default
+                          >
+                        )({
+                          /*const*/
+                          value: item,
+                        })
+                      );
+                      const {
+                        value: { value: hoistedFromForOf },
+                      } = Marko.ᜭ.rendered.returns[3];
+                      return {
+                        scope: { hoistedFromForOf },
+                      };
+                    })()
+                  ),
+                },
+              })
             ),
+          })
+        );
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            hoistedFromForOf;
           },
-        })
-      ),
-    })
-  );
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      hoistedFromForOf;
-    },
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    4,
-    ˍ.tags["let"]({
-      /*let*/
-      value: { a: 1, b: 2 } as const,
-    })
-  );
-  const { value: record } = Marko.ட.rendered.returns[4];
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        in: record,
-      },
-      (key, value) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              key;
-              value;
-            })()
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          4,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            value: { a: 1, b: 2 } as const,
+          })
+        );
+        const { value: record } = Marko.ᜭ.rendered.returns[4];
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              in: record,
+            },
+            (key, value) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    key;
+                    value;
+                  })()
+                ),
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    5,
-    Marko.ட.render(custom)({
-      /*custom*/
-      ...Marko.ட.forAttrTag(
-        {
-          /*for*/
-          in: record,
-        },
-        (key) => ({
-          a: {
-            /*@a*/
-            /*@a*/
-            ["renderBody"]: Marko.ட.inlineBody(
-              (() => {
-                Marko.ட.assertRendered(
-                  Marko.ட.rendered,
-                  6,
-                  ˍ.tags["const"]({
-                    /*const*/
-                    value: key,
-                  })
-                );
-                const { value: hoistedFromForIn } = Marko.ட.rendered.returns[6];
-                return {
-                  scope: { hoistedFromForIn },
-                };
-              })()
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          5,
+          Marko.ᜭ.render(custom)({
+            /*custom*/
+            ...Marko.ᜭ.forAttrTag(
+              {
+                /*for*/
+                in: record,
+              },
+              (key) => ({
+                a: {
+                  /*@a*/
+                  /*@a*/
+                  ["renderBody"]: Marko.ᜭ.inlineBody(
+                    (() => {
+                      Marko.ᜭ.assertRendered(
+                        Marko.ᜭ.rendered,
+                        6,
+                        (
+                          1 as any as Marko.ᜭ.CustomTagRenderer<
+                            typeof import("../../components/const/index.marko").default
+                          >
+                        )({
+                          /*const*/
+                          value: key,
+                        })
+                      );
+                      const { value: hoistedFromForIn } =
+                        Marko.ᜭ.rendered.returns[6];
+                      return {
+                        scope: { hoistedFromForIn },
+                      };
+                    })()
+                  ),
+                },
+              })
             ),
+          })
+        );
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            hoistedFromForIn;
           },
-        })
-      ),
-    })
-  );
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      hoistedFromForIn;
-    },
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        to: 10,
-      },
-      (index) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              index;
-            })()
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              to: 10,
+            },
+            (index) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    index;
+                  })()
+                ),
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        from: 1,
-        to: 10,
-      },
-      (index) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              index;
-            })()
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              from: 1,
+              to: 10,
+            },
+            (index) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    index;
+                  })()
+                ),
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.render(custom)({
-    /*custom*/
-    ...Marko.ட.forAttrTag(
-      {
-        /*for*/
-        to: 10,
-        step: 2,
-      },
-      (index) => ({
-        a: {
-          /*@a*/
-          /*@a*/
-          ["renderBody"]: Marko.ட.inlineBody(
-            (() => {
-              index;
-            })()
+        });
+        Marko.ᜭ.render(custom)({
+          /*custom*/
+          ...Marko.ᜭ.forAttrTag(
+            {
+              /*for*/
+              to: 10,
+              step: 2,
+            },
+            (index) => ({
+              a: {
+                /*@a*/
+                /*@a*/
+                ["renderBody"]: Marko.ᜭ.inlineBody(
+                  (() => {
+                    index;
+                  })()
+                ),
+              },
+            })
           ),
-        },
-      })
-    ),
-  });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    7,
-    Marko.ட.render(custom)({
-      /*custom*/
-      ...Marko.ட.forAttrTag(
-        {
-          /*for*/
-          to: 10,
-        },
-        (index) => ({
-          a: {
-            /*@a*/
-            /*@a*/
-            ["renderBody"]: Marko.ட.inlineBody(
-              (() => {
-                Marko.ட.assertRendered(
-                  Marko.ட.rendered,
-                  8,
-                  ˍ.tags["const"]({
-                    /*const*/
-                    value: index,
-                  })
-                );
-                const { value: hoistedFromForTo } = Marko.ட.rendered.returns[8];
-                return {
-                  scope: { hoistedFromForTo },
-                };
-              })()
+        });
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          7,
+          Marko.ᜭ.render(custom)({
+            /*custom*/
+            ...Marko.ᜭ.forAttrTag(
+              {
+                /*for*/
+                to: 10,
+              },
+              (index) => ({
+                a: {
+                  /*@a*/
+                  /*@a*/
+                  ["renderBody"]: Marko.ᜭ.inlineBody(
+                    (() => {
+                      Marko.ᜭ.assertRendered(
+                        Marko.ᜭ.rendered,
+                        8,
+                        (
+                          1 as any as Marko.ᜭ.CustomTagRenderer<
+                            typeof import("../../components/const/index.marko").default
+                          >
+                        )({
+                          /*const*/
+                          value: index,
+                        })
+                      );
+                      const { value: hoistedFromForTo } =
+                        Marko.ᜭ.rendered.returns[8];
+                      return {
+                        scope: { hoistedFromForTo },
+                      };
+                    })()
+                  ),
+                },
+              })
             ),
+          })
+        );
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            hoistedFromForTo;
           },
-        })
-      ),
-    })
-  );
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      hoistedFromForTo;
-    },
-  });
-  const { hoistedFromForOf, hoistedFromForIn, hoistedFromForTo } =
-    Marko.ட.readScopes(Marko.ட.rendered);
-  Marko.ட.noop({ hoistedFromForOf, hoistedFromForIn, hoistedFromForTo });
-  return;
-}
-class ட extends Marko.Component<Input> {}
-
-declare namespace ˍ {
-  const tags: {
-    let: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/let/index.marko").default
-    >;
-    const: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/const/index.marko").default
-    >;
-  };
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/attr-tags-dynamic-for/index.marko">;
-declare global {
-  namespace Marko {
-    interface CustomTags {
-      "@language-tools/src/__tests__/fixtures/attr-tags-dynamic-for/index.marko": CustomTag<
-        Input,
-        ReturnType<typeof ˍ>,
-        ட
-      >;
+        });
+        const { hoistedFromForOf, hoistedFromForIn, hoistedFromForTo } =
+          Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
+        Marko.ᜭ.noop({ hoistedFromForOf, hoistedFromForIn, hoistedFromForTo });
+        return;
+      })();
     }
   }
-}
+);

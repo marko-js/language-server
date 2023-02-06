@@ -1,13 +1,27 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component }
+export default Marko.ᜭ.instance(class extends Marko.Template {
+/**
+ * @internal
+ * Do not use or you will be fired.
+ */
+public ᜭ<
+  ᜭ = unknown
+>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+  return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+}
+#ᜭ() {
+const input = 1 as unknown as Input;
+const component = Marko.ᜭ.instance(Component);
 const out = 1 as unknown as Marko.Out;
-const component = 1 as unknown as ட;
-const state = 1 as unknown as typeof component extends { state: infer State extends object } ? State : never;
-Marko.ட.noop({ input, out, component, state });
-Marko.ட.render(custom)({
+const state = Marko.ᜭ.state(component);
+Marko.ᜭ.noop({ input, out, component, state });
+return (function (this: void) {
+Marko.ᜭ.render(custom)({
 /*custom*/
 [/*custom*/
-"renderBody"]: Marko.ட.body(function *(
+"renderBody"]: Marko.ᜭ.body(function *(
 a, %b
 ) {
 return;
@@ -16,15 +30,5 @@ return;
 });
 return;
 
-}
-class ட extends Marko.Component<Input>{};
-
-declare namespace ˍ {}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko">;
-declare global {
-namespace Marko {
-interface CustomTags {
-"@language-tools/src/__tests__/fixtures/tag-params-syntax-error/index.marko":CustomTag<Input, ReturnType<typeof ˍ>, ட>
-}
-}
-}
+})();
+}});

@@ -1,4 +1,17 @@
 ## Source Diagnostics
+### Ln 3, Col 2
+```marko
+  1 | <div data-x=#2/>
+  2 |
+> 3 | <div onClick(a, %b) {
+    |  ^^^^^^^^^^^^^^^^^^^^
+> 4 |   console.log(#hello!);
+    | ^^^^^^^^^^^^^^^^^^^^^^^
+> 5 | }/>
+    | ^^ Unreachable code detected.
+  6 |
+```
+
 ### Ln 1, Col 13
 ```marko
 > 1 | <div data-x=#2/>
@@ -95,69 +108,92 @@
 ```
 
 ## Generated Diagnostics
-### Ln 11, Col 1
+### Ln 25, Col 1
 ```ts
-   9 | "data-x": (
-  10 | #2
-> 11 | )
+  23 | "data-x": (
+  24 | #2
+> 25 | )
      | ^ ':' expected.
-  12 | });
-  13 | ˍ.tags["div"]({
-  14 | /*div*/
+  26 | });
+  27 | (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+  28 | /*div*/
 ```
 
-### Ln 12, Col 2
+### Ln 32, Col 2
 ```ts
-  10 | #2
-  11 | )
-> 12 | });
-     |  ^ Declaration or statement expected.
-  13 | ˍ.tags["div"]({
-  14 | /*div*/
-  15 | "onClick"(a, %b){
+  30 |   console.log(#hello!);
+  31 | }
+> 32 | });
+     |  ^ Unexpected token. A constructor, method, accessor, or property was expected.
+  33 | return;
+  34 |
+  35 | })();
 ```
 
-### Ln 18, Col 1
+### Ln 35, Col 1
 ```ts
-  16 |   console.log(#hello!);
-  17 | }
-> 18 | });
+  33 | return;
+  34 |
+> 35 | })();
      | ^ Declaration or statement expected.
-  19 | return;
-  20 |
-  21 | }
+  36 | }});
+  37 |
 ```
 
-### Ln 18, Col 2
+### Ln 35, Col 2
 ```ts
-  16 |   console.log(#hello!);
-  17 | }
-> 18 | });
+  33 | return;
+  34 |
+> 35 | })();
      |  ^ Declaration or statement expected.
-  19 | return;
-  20 |
-  21 | }
+  36 | }});
+  37 |
 ```
 
-### Ln 21, Col 1
+### Ln 35, Col 3
 ```ts
-  19 | return;
-  20 |
-> 21 | }
+  33 | return;
+  34 |
+> 35 | })();
+     |   ^^^ Unreachable code detected.
+  36 | }});
+  37 |
+```
+
+### Ln 35, Col 4
+```ts
+  33 | return;
+  34 |
+> 35 | })();
+     |    ^ Expression expected.
+  36 | }});
+  37 |
+```
+
+### Ln 36, Col 1
+```ts
+  34 |
+  35 | })();
+> 36 | }});
      | ^ Declaration or statement expected.
-  22 | class ட extends Marko.Component<Input>{};
-  23 |
-  24 | declare namespace ˍ {const tags: {
+  37 |
 ```
 
-### Ln 22, Col 1
+### Ln 36, Col 2
 ```ts
-  20 |
-  21 | }
-> 22 | class ட extends Marko.Component<Input>{};
-     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unreachable code detected.
-  23 |
-  24 | declare namespace ˍ {const tags: {
-  25 | "div": Marko.ட.NativeTagRenderer<"div">;
+  34 |
+  35 | })();
+> 36 | }});
+     |  ^ Declaration or statement expected.
+  37 |
+```
+
+### Ln 36, Col 3
+```ts
+  34 |
+  35 | })();
+> 36 | }});
+     |   ^ Declaration or statement expected.
+  37 |
 ```
 

@@ -1,28 +1,20 @@
-declare module "*.marko" {
-  const template: Marko.Template;
-  export default template;
-}
-
-declare const kRenderer: unique symbol;
+import "./marko";
 
 declare global {
   namespace Marko {
-    export interface Template<Id extends keyof CustomTags2<any, any> = any> {
-      // Adds a hidden renderer to each template that is used to render with scope information.
-      [kRenderer]<A = unknown, B = unknown, Input = unknown>(
-        input: Relate<CustomTags2<A, B>[Id]["input"], Input>
-      ): InternalResult<Scopes<Input>, CustomTags2<A, B>[Id]["return"]>;
-    }
-
     export interface Body<
       in Params extends readonly any[] = [],
       out Return = void,
-      _Scope = unknown
+      out _Scope = unknown
     > {
       (...params: Params): Generator<_Scope, Return, never>;
     }
 
-    namespace ட {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    namespace ᜭ {
       export const rendered: {
         scopes: Record<number, never>;
         returns: Record<number, never>;
@@ -30,8 +22,27 @@ declare global {
 
       export function noop(value: any): void;
 
+      export function state<Component>(
+        component: Component
+      ): Component extends {
+        state: infer State extends object;
+      }
+        ? State
+        : never;
+
+      export function returnWithScope<Input, Return>(
+        input: Input,
+        returned: Return
+      ): ReturnWithScope<Scopes<Input>, Return>;
+
+      export function instance<Constructor>(
+        constructor: Constructor
+      ): Constructor extends new (...args: any) => infer Instance
+        ? Instance
+        : never;
+
       export function inlineBody<Return = void, Scope = never>(
-        result: InternalResult<Scope, Return> | void
+        result: ReturnWithScope<Scope, Return> | void
       ): Marko.Body<any, Return, Scope>;
 
       export function body<Params extends readonly any[], Return, Scope>(
@@ -39,10 +50,11 @@ declare global {
       ): Marko.Body<Params, Return, Scope>;
 
       export function readScopes<Rendered>(
-        results: Rendered
+        rendered: Rendered
       ): MergeScopes<
         Rendered extends { scopes: Record<any, infer Scope> } ? Scope : never
-      >;
+      > &
+        Record<any, never>;
 
       export function assertRendered<Index extends number, Rendered, Result>(
         rendered: Rendered,
@@ -52,10 +64,10 @@ declare global {
         scopes: Record<
           Index,
           MergeOptionalScopes<
-            Result extends InternalResult<infer Scope, any> ? Scope : undefined
+            Result extends ReturnWithScope<infer Scope, any> ? Scope : undefined
           >
         >;
-        returns: Result extends InternalResult<any, infer Return>
+        returns: Result extends ReturnWithScope<any, infer Return>
           ? Record<Index, Return>
           : Record<Index, never>;
       };
@@ -91,11 +103,17 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
+      export function renderTemplate<Name extends Template>(
+        tag: Name
+      ): CustomTagRenderer<Name>;
+      export function renderTag<Name extends string>(
+        tag: Name
+      ): NativeTagRenderer<Name>;
       export function render<Name>(
         tag: Name
       ): 0 extends 1 & Name
         ? DefaultRenderer
-        : Name extends Marko.Template<any>
+        : Name extends Marko.Template
         ? CustomTagRenderer<Name>
         : Name extends string
         ? NativeTagRenderer<Name>
@@ -128,7 +146,7 @@ declare global {
           void,
           Scope
         >;
-      }): InternalResult<Scope, void>;
+      }): ReturnWithScope<Scope, void>;
 
       export function forTag<Value, Scope>(input: {
         in: Value;
@@ -137,7 +155,7 @@ declare global {
           void,
           Scope
         >;
-      }): InternalResult<Scope, void>;
+      }): ReturnWithScope<Scope, void>;
 
       export function forTag<
         From extends void | number,
@@ -149,7 +167,7 @@ declare global {
         to: To;
         step?: Step;
         renderBody: Marko.Body<[index: number], void, Scope>;
-      }): InternalResult<Scope, void>;
+      }): ReturnWithScope<Scope, void>;
 
       export function forTag<Scope>(
         input: (
@@ -165,7 +183,7 @@ declare global {
               of: readonly unknown[] | Iterable<unknown>;
             }
         ) & { renderBody?: Marko.Body<any, any, Scope> }
-      ): InternalResult<Scope, void>;
+      ): ReturnWithScope<Scope, void>;
 
       export function forAttrTag<
         Value extends Iterable<any> | readonly any[],
@@ -255,43 +273,45 @@ declare global {
       ): MergeAttrTags<Attrs>;
 
       export type CustomTagRenderer<Template> = Template extends {
-        [kRenderer]: infer Renderer;
+        ᜭ: infer Renderer;
       }
         ? Renderer
         : DefaultRenderer;
 
       export interface NativeTagRenderer<Name extends string> {
-        <Input, A, B>(
-          input: Relate<NativeTags2<A, B>[Name]["input"], Input>
-        ): InternalResult<Scopes<Input>, NativeTags2<A, B>[Name]["return"]>;
+        <Input extends Marko.NativeTags[Name]["input"]>(
+          input: Input
+        ): ReturnWithScope<Scopes<Input>, Marko.NativeTags[Name]["return"]>;
       }
 
       export interface BodyRenderer<Body extends AnyMarkoBody> {
         <Args extends Marko.BodyParamaters<Body>>(
           input: RenderBodyInput<Args>
-        ): InternalResult<Scopes<Args>, Marko.BodyReturnType<Body>>;
+        ): ReturnWithScope<Scopes<Args>, Marko.BodyReturnType<Body>>;
       }
 
       export interface InputRenderer<Input extends Record<any, unknown>> {
-        (input: Input): InternalResult<Scopes<Input>, void>;
+        (input: Input): ReturnWithScope<Scopes<Input>, void>;
       }
 
       export interface DefaultRenderer {
-        <Input = Record<any, unknown>>(input: Input): InternalResult<
+        <Input = Record<any, unknown>>(input: Input): ReturnWithScope<
           Scopes<Input>,
           void
         >;
       }
+
+      export type Relate<T, I> = T extends I ? T : T;
     }
   }
 }
 
 type AnyMarkoBody = Marko.Body<any, any, any>;
 
-interface InternalResult<Scope, Return> {
+type ReturnWithScope<Scope, Return> = {
   return?: Return;
   scope?: Scope;
-}
+};
 
 type RenderBodyInput<Args extends readonly unknown[]> = Args extends {
   length: infer Length;
@@ -305,7 +325,7 @@ type RenderBodyInput<Args extends readonly unknown[]> = Args extends {
 
 type Scopes<Input> = 0 extends 1 & Input
   ? never
-  : Input extends Record<string, unknown>
+  : Input extends Record<any, unknown>
   ? MergeScopes<FlatScopes<Input>>
   : never;
 
@@ -328,8 +348,10 @@ type ComponentEventHandlers<C extends Marko.Component> = {
 };
 
 type FlatScopes<Input extends object> = Input[keyof Input] extends infer Prop
-  ? Prop extends Marko.Body<any, any, infer Scope extends object>
-    ? Scope
+  ? Prop extends Marko.Body<any, any, infer Scope>
+    ? unknown extends Scope
+      ? never
+      : Scope
     : 0 extends 1 & Prop
     ? never
     : Prop extends object
@@ -443,7 +465,5 @@ type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
 ) => any
   ? U
   : never;
-
-type Relate<T, I> = T extends I ? T : T;
 
 export {};

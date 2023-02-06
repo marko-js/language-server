@@ -1,235 +1,262 @@
-export type Input = Record<string, never>;
-function ˍ(input: Input) {
-  const out = 1 as unknown as Marko.Out;
-  const component = 1 as unknown as ட;
-  const state = 1 as unknown as typeof component extends {
-    state: infer State extends object;
-  }
-    ? State
-    : never;
-  Marko.ட.noop({ input, out, component, state });
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    1,
-    ˍ.tags["let"]({
-      /*let*/
-      value: true,
-    })
-  );
-  const { value: show } = Marko.ட.rendered.returns[1];
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    2,
-    ˍ.tags["let"]({
-      /*let*/
-      value: false,
-    })
-  );
-  const { value: showAlt } = Marko.ட.rendered.returns[2];
-  if (undefined) {
-  }
-  if (show) {
-  }
-  if (show) {
-  }
-  ˍ.tags["div"]({
-    /*div*/
-    /*div*/
-    ["renderBody"]: Marko.ட.inlineBody(
-      (() => {
+export interface Input {}
+class Component extends Marko.Component<Input> {}
+export { type Component };
+export default Marko.ᜭ.instance(
+  class extends Marko.Template {
+    /**
+     * @internal
+     * Do not use or you will be fired.
+     */
+    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
+      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+    }
+    #ᜭ() {
+      const input = 1 as unknown as Input;
+      const component = Marko.ᜭ.instance(Component);
+      const out = 1 as unknown as Marko.Out;
+      const state = Marko.ᜭ.state(component);
+      Marko.ᜭ.noop({ input, out, component, state });
+      return (function (this: void) {
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          1,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            value: true,
+          })
+        );
+        const { value: show } = Marko.ᜭ.rendered.returns[1];
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          2,
+          (
+            1 as any as Marko.ᜭ.CustomTagRenderer<
+              typeof import("../../components/let/index.marko").default
+            >
+          )({
+            /*let*/
+            value: false,
+          })
+        );
+        const { value: showAlt } = Marko.ᜭ.rendered.returns[2];
         if (undefined) {
         }
-      })()
-    ),
-  });
-  if (show) {
-  } else {
-  }
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    3,
-    (() => {
-      if (show) {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          4,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 0 as const,
-          })
+        if (show) {
+        }
+        if (show) {
+        }
+        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+          /*div*/
+          /*div*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              if (undefined) {
+              }
+            })()
+          ),
+        });
+        if (show) {
+        } else {
+        }
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          3,
+          (() => {
+            if (show) {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                4,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 0 as const,
+                })
+              );
+              const { value: a } = Marko.ᜭ.rendered.returns[4];
+              return {
+                scope: { a },
+              };
+            } else {
+              return undefined;
+            }
+          })()
         );
-        const { value: a } = Marko.ட.rendered.returns[4];
-        return {
-          scope: { a },
-        };
-      } else {
-        return undefined;
-      }
-    })()
-  );
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    5,
-    (() => {
-      if (show) {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          6,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 1 as const,
-          })
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          5,
+          (() => {
+            if (show) {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                6,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 1 as const,
+                })
+              );
+              const { value: b } = Marko.ᜭ.rendered.returns[6];
+              return {
+                scope: { b },
+              };
+            } else if (showAlt) {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                7,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 2 as const,
+                })
+              );
+              const { value: c } = Marko.ᜭ.rendered.returns[7];
+              return {
+                scope: { c },
+              };
+            } else {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                8,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 3 as const,
+                })
+              );
+              const { value: d } = Marko.ᜭ.rendered.returns[8];
+              return {
+                scope: { d },
+              };
+            }
+          })()
         );
-        const { value: b } = Marko.ட.rendered.returns[6];
-        return {
-          scope: { b },
-        };
-      } else if (showAlt) {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          7,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 2 as const,
-          })
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          9,
+          (() => {
+            if (show) {
+            } else {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                10,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 4 as const,
+                })
+              );
+              const { value: e } = Marko.ᜭ.rendered.returns[10];
+              return {
+                scope: { e },
+              };
+            }
+          })()
         );
-        const { value: c } = Marko.ட.rendered.returns[7];
-        return {
-          scope: { c },
-        };
-      } else {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          8,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 3 as const,
-          })
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          11,
+          (() => {
+            if (show) {
+            } else if (showAlt) {
+            } else {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                12,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 4 as const,
+                })
+              );
+              const { value: f } = Marko.ᜭ.rendered.returns[12];
+              return {
+                scope: { f },
+              };
+            }
+          })()
         );
-        const { value: d } = Marko.ட.rendered.returns[8];
-        return {
-          scope: { d },
-        };
-      }
-    })()
-  );
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    9,
-    (() => {
-      if (show) {
-      } else {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          10,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 4 as const,
-          })
+        Marko.ᜭ.assertRendered(
+          Marko.ᜭ.rendered,
+          13,
+          (() => {
+            if (show) {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                14,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 5 as const,
+                })
+              );
+              const { value: g } = Marko.ᜭ.rendered.returns[14];
+              return {
+                scope: { g },
+              };
+            } else {
+              Marko.ᜭ.assertRendered(
+                Marko.ᜭ.rendered,
+                15,
+                (
+                  1 as any as Marko.ᜭ.CustomTagRenderer<
+                    typeof import("../../components/const/index.marko").default
+                  >
+                )({
+                  /*const*/
+                  value: 6 as const,
+                })
+              );
+              const { value: g } = Marko.ᜭ.rendered.returns[15];
+              return {
+                scope: { g },
+              };
+            }
+          })()
         );
-        const { value: e } = Marko.ட.rendered.returns[10];
-        return {
-          scope: { e },
-        };
-      }
-    })()
-  );
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    11,
-    (() => {
-      if (show) {
-      } else if (showAlt) {
-      } else {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          12,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 4 as const,
-          })
-        );
-        const { value: f } = Marko.ட.rendered.returns[12];
-        return {
-          scope: { f },
-        };
-      }
-    })()
-  );
-  Marko.ட.assertRendered(
-    Marko.ட.rendered,
-    13,
-    (() => {
-      if (show) {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          14,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 5 as const,
-          })
-        );
-        const { value: g } = Marko.ட.rendered.returns[14];
-        return {
-          scope: { g },
-        };
-      } else {
-        Marko.ட.assertRendered(
-          Marko.ட.rendered,
-          15,
-          ˍ.tags["const"]({
-            /*const*/
-            value: 6 as const,
-          })
-        );
-        const { value: g } = Marko.ட.rendered.returns[15];
-        return {
-          scope: { g },
-        };
-      }
-    })()
-  );
-  if (show) {
-  } else if (undefined) {
-  }
-  Marko.ட.render(effect)({
-    /*effect*/
-    value() {
-      a;
-      b;
-      c;
-      d;
-      e;
-      f;
-      g;
-    },
-  });
-  const { a, b, c, d, e, f, g } = Marko.ட.readScopes(Marko.ட.rendered);
-  Marko.ட.noop({ a, b, c, d, e, f, g });
-  return;
-}
-class ட extends Marko.Component<Input> {}
-
-declare namespace ˍ {
-  const tags: {
-    let: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/let/index.marko").default
-    >;
-    div: Marko.ட.NativeTagRenderer<"div">;
-    const: Marko.ட.CustomTagRenderer<
-      typeof import("../../components/const/index.marko").default
-    >;
-  };
-}
-export default 1 as unknown as Marko.Template<"@language-tools/src/__tests__/fixtures/if-tag/index.marko">;
-declare global {
-  namespace Marko {
-    interface CustomTags {
-      "@language-tools/src/__tests__/fixtures/if-tag/index.marko": CustomTag<
-        Input,
-        ReturnType<typeof ˍ>,
-        ட
-      >;
+        if (show) {
+        } else if (undefined) {
+        }
+        Marko.ᜭ.render(effect)({
+          /*effect*/
+          value() {
+            a;
+            b;
+            c;
+            d;
+            e;
+            f;
+            g;
+          },
+        });
+        const { a, b, c, d, e, f, g } = Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
+        Marko.ᜭ.noop({ a, b, c, d, e, f, g });
+        return;
+      })();
     }
   }
-}
+);

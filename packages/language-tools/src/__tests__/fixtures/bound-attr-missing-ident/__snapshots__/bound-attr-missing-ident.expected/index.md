@@ -35,3 +35,10 @@
   2 |
 ```
 
+### Ln 1, Col 11
+```marko
+> 1 | <let/b := a/>
+    |           ^ Cannot find name 'a'.
+  2 |
+```
+

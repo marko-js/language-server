@@ -43,6 +43,7 @@ export function patch(
         cached = extractScript({
           parsed: parse(code, filename),
           lookup: markoProject.lookup,
+          scriptKind: markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
           componentClassImport: undefined, // TODO!
         }) as ExtractedSnapshot;
 
