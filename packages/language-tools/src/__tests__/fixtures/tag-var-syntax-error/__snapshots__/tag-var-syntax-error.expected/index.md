@@ -122,7 +122,7 @@
   53 | const { value:
   54 | { %x }
 > 55 | } = Marko.ᜭ.rendered.returns[1];
-     |           ^ Subsequent property declarations must have the same type.  Property 'ᜭ' must be of type '<ᜭ = unknown>(input: Relate<Input, ᜭ>) => ReturnWithScope<Scopes<ᜭ>, (this: void) => void>', but here has type 'any'.
+     |           ^ Subsequent property declarations must have the same type.  Property 'ᜭ' must be of type '<ᜭ = unknown>(input: Relate<Input, ᜭ>) => ReturnAndScope<Scopes<ᜭ>, (this: void) => void>', but here has type 'any'.
   56 | return;
   57 |
   58 | })();

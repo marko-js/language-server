@@ -37,7 +37,7 @@ declare global {
       export function returnWithScope<Input, Return>(
         input: Input,
         returned: Return
-      ): ReturnWithScope<Scopes<Input>, Return>;
+      ): ReturnAndScope<Scopes<Input>, Return>;
 
       export function instance<Constructor>(
         constructor: Constructor
@@ -46,7 +46,7 @@ declare global {
         : never;
 
       export function inlineBody<Return = void, Scope = never>(
-        result: ReturnWithScope<Scope, Return> | void
+        result: ReturnAndScope<Scope, Return> | void
       ): Marko.Body<any, Return, Scope>;
 
       export function body<Params extends readonly any[], Return, Scope>(
@@ -68,10 +68,10 @@ declare global {
         scopes: Record<
           Index,
           MergeOptionalScopes<
-            Result extends ReturnWithScope<infer Scope, any> ? Scope : undefined
+            Result extends ReturnAndScope<infer Scope, any> ? Scope : undefined
           >
         >;
-        returns: Result extends ReturnWithScope<any, infer Return>
+        returns: Result extends ReturnAndScope<any, infer Return>
           ? Record<Index, Return>
           : Record<Index, never>;
       };
@@ -137,7 +137,7 @@ declare global {
           void,
           Scope
         >;
-      }): ReturnWithScope<Scope, void>;
+      }): ReturnAndScope<Scope, void>;
 
       export function forTag<Value, Scope>(input: {
         in: Value;
@@ -146,7 +146,7 @@ declare global {
           void,
           Scope
         >;
-      }): ReturnWithScope<Scope, void>;
+      }): ReturnAndScope<Scope, void>;
 
       export function forTag<
         From extends void | number,
@@ -158,7 +158,7 @@ declare global {
         to: To;
         step?: Step;
         renderBody: Marko.Body<[index: number], void, Scope>;
-      }): ReturnWithScope<Scope, void>;
+      }): ReturnAndScope<Scope, void>;
 
       export function forTag<Scope>(
         input: (
@@ -174,7 +174,7 @@ declare global {
               of: readonly unknown[] | Iterable<unknown>;
             }
         ) & { renderBody?: Marko.Body<any, any, Scope> }
-      ): ReturnWithScope<Scope, void>;
+      ): ReturnAndScope<Scope, void>;
 
       export function forAttrTag<
         Value extends Iterable<any> | readonly any[],
@@ -288,21 +288,21 @@ declare global {
       export interface NativeTagRenderer<Name extends string> {
         <Input extends Marko.NativeTags[Name]["input"]>(
           input: Input
-        ): ReturnWithScope<Scopes<Input>, Marko.NativeTags[Name]["return"]>;
+        ): ReturnAndScope<Scopes<Input>, Marko.NativeTags[Name]["return"]>;
       }
 
       export interface BodyRenderer<Body extends AnyMarkoBody> {
         <Args extends BodyParamaters<Body>>(
           input: RenderBodyInput<Args>
-        ): ReturnWithScope<Scopes<Args>, BodyReturnType<Body>>;
+        ): ReturnAndScope<Scopes<Args>, BodyReturnType<Body>>;
       }
 
       export interface InputRenderer<Input extends Record<any, unknown>> {
-        (input: Input): ReturnWithScope<Scopes<Input>, void>;
+        (input: Input): ReturnAndScope<Scopes<Input>, void>;
       }
 
       export interface DefaultRenderer {
-        <Input = Record<any, unknown>>(input: Input): ReturnWithScope<
+        <Input = Record<any, unknown>>(input: Input): ReturnAndScope<
           Scopes<Input>,
           void
         >;
@@ -315,7 +315,7 @@ declare global {
 
 type AnyMarkoBody = Marko.Body<any, any, any>;
 
-type ReturnWithScope<Scope, Return> = {
+type ReturnAndScope<Scope, Return> = {
   return?: Return;
   scope?: Scope;
 };
