@@ -32,7 +32,7 @@ export function get(uri: string) {
         uri,
         getLanguageId(uri),
         0,
-        fs.readFileSync(fsPath, "utf8")
+        fs.readFileSync(fsPath, "utf-8")
       );
 
       docs.set(uri, newDoc);
@@ -71,6 +71,7 @@ export function setup(connection: Connection) {
   connection.onDidOpenTextDocument((params) => {
     const ref = params.textDocument;
     const existingDoc = docs.get(ref.uri);
+    projectVersion++;
 
     if (existingDoc) {
       if (existingDoc.version === ref.version) {
@@ -108,6 +109,7 @@ export function setup(connection: Connection) {
     const ref = params.textDocument;
     const doc = docs.get(ref.uri);
     if (doc) {
+      projectVersion++;
       openDocs.delete(doc);
 
       if (URI.parse(ref.uri).scheme !== "file") {

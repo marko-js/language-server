@@ -23,7 +23,7 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
-        "/Users/dpiercey/dev/tmp/demo"
+        "${workspaceRoot}/packages/language-tools/src/__tests__/fixtures"
       ],
       "outFiles": [
         "${workspaceRoot}/**/dist/*.js",

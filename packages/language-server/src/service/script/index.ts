@@ -565,12 +565,8 @@ function getTSProject(docFsPath: string): TSProject {
 
       resolveModuleNames(moduleNames, containingFile) {
         return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
-          return ts.resolveModuleName(
-            moduleName,
-            containingFile,
-            options,
-            ts.sys
-          ).resolvedModule;
+          return ts.resolveModuleName(moduleName, containingFile, options, host)
+            .resolvedModule;
         });
       },
 
