@@ -117,26 +117,8 @@ declare global {
       export function renderPreferLocal<Name, Fallback>(
         name: Name,
         fallback: Fallback
-      ): 0 extends 1 & Name
-        ? Fallback
-        : ReturnType<typeof renderDynamicTag<Name>>;
-      export function renderDynamicTag<Name>(
-        tag: Name
-      ): 0 extends 1 & Name
-        ? DefaultRenderer
-        : Name extends Marko.Template
-        ? CustomTagRenderer<Name>
-        : Name extends string
-        ? NativeTagRenderer<Name>
-        : Name extends AnyMarkoBody
-        ? BodyRenderer<Name>
-        : Name extends { renderBody?: AnyMarkoBody }
-        ? Name["renderBody"] extends AnyMarkoBody
-          ? BodyRenderer<Name["renderBody"]>
-          : InputRenderer<
-              RenderBodyInput<BodyParamaters<Exclude<Name["renderBody"], void>>>
-            >
-        : DefaultRenderer;
+      ): 0 extends 1 & Name ? Fallback : DynamicRenderer<Name>;
+      export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
         Input extends { value: unknown; valueChange?: (value: any) => void }
@@ -280,6 +262,22 @@ declare global {
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
+
+      export type DynamicRenderer<Name> = 0 extends 1 & Name
+        ? DefaultRenderer
+        : Name extends Marko.Template
+        ? CustomTagRenderer<Name>
+        : Name extends string
+        ? NativeTagRenderer<Name>
+        : Name extends AnyMarkoBody
+        ? BodyRenderer<Name>
+        : Name extends { renderBody?: AnyMarkoBody }
+        ? Name["renderBody"] extends AnyMarkoBody
+          ? BodyRenderer<Name["renderBody"]>
+          : InputRenderer<
+              RenderBodyInput<BodyParamaters<Exclude<Name["renderBody"], void>>>
+            >
+        : DefaultRenderer;
 
       export type CustomTagRenderer<Template> = Template extends {
         ᜭ: infer Renderer;
