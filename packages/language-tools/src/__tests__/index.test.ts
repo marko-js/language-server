@@ -13,7 +13,11 @@ import { createLanguageService, loadDir } from "./util/language-service";
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
 const FIXTURES = path.join(__dirname, "fixtures");
-const ROOT = path.join(__dirname, "../../..");
+const RUNTIME_TYPES = (() => {
+  const filename = path.join(__dirname, "lib-fixtures/marko.d.ts");
+  const code = fs.readFileSync(filename, "utf-8");
+  return { filename, code };
+})();
 
 for (const entry of fs.readdirSync(FIXTURES)) {
   it(entry, async () => {
@@ -44,8 +48,8 @@ for (const entry of fs.readdirSync(FIXTURES)) {
           const extractOptions: Parameters<typeof extractScript>[0] = {
             parsed,
             lookup,
-            rootDir: ROOT,
             scriptKind: "ts",
+            runtimeTypes: RUNTIME_TYPES,
             componentClassImport: fs.existsSync(potentialComponentPath)
               ? "./component"
               : undefined,

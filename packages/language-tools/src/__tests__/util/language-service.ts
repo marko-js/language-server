@@ -5,7 +5,7 @@ import {
   createFSBackedSystem,
   createVirtualLanguageServiceHost,
 } from "@typescript/vfs";
-import { Extracted } from "../../util/extractor";
+import type { Extracted } from "../../util/extractor";
 
 const rootDir = process.cwd();
 const libFixtureDir = path.join(__dirname, "../lib-fixtures");

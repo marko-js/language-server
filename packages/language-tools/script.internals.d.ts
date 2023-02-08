@@ -1,13 +1,13 @@
-import "./marko";
-
+// This is a typescript file which defines utilities used in the output of the typescript extractor.
 declare global {
   namespace Marko {
+    // Extend the Body type to keep track of what is yielded (used for scope hoisted types).
     export interface Body<
       in Params extends readonly any[] = [],
       out Return = void,
-      out _Scope = unknown
+      out ᜭ = unknown
     > {
-      (...params: Params): Generator<_Scope, Return, never>;
+      (...params: Params): Generator<ᜭ, Return, never>;
     }
 
     /**
@@ -19,6 +19,10 @@ declare global {
         scopes: Record<number, never>;
         returns: Record<number, never>;
       };
+
+      export function Template<B>(): abstract new () => {
+        [K in Exclude<keyof Marko.Template, keyof B>]: Marko.Template[K];
+      } & B;
 
       export function noop(value: any): void;
 
@@ -37,7 +41,7 @@ declare global {
 
       export function instance<Constructor>(
         constructor: Constructor
-      ): Constructor extends new (...args: any) => infer Instance
+      ): Constructor extends abstract new (...args: any) => infer Instance
         ? Instance
         : never;
 
@@ -103,7 +107,7 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
-      export function renderTemplate<Name extends Template>(
+      export function renderTemplate<Name extends Marko.Template>(
         tag: Name
       ): CustomTagRenderer<Name>;
       export function renderTag<Name extends string>(
@@ -123,9 +127,7 @@ declare global {
         ? Name["renderBody"] extends AnyMarkoBody
           ? BodyRenderer<Name["renderBody"]>
           : InputRenderer<
-              RenderBodyInput<
-                Marko.BodyParamaters<Exclude<Name["renderBody"], void>>
-              >
+              RenderBodyInput<BodyParamaters<Exclude<Name["renderBody"], void>>>
             >
         : DefaultRenderer;
 
@@ -237,12 +239,12 @@ declare global {
           | readonly (infer Item)[]
           | infer Item
           ? number extends From | To | Step
-            ? Marko.MaybeRepeatable<Item>
+            ? MaybeRepeatable<Item>
             : Step extends 0
             ? never
             : [To] extends [From extends void ? 0 : From]
             ? undefined
-            : Marko.Repeatable<Item>
+            : Repeatable<Item>
           : never;
       };
 
@@ -264,7 +266,7 @@ declare global {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
           | infer Item
-          ? Marko.MaybeRepeatable<Item>
+          ? MaybeRepeatable<Item>
           : never;
       };
 
@@ -285,9 +287,9 @@ declare global {
       }
 
       export interface BodyRenderer<Body extends AnyMarkoBody> {
-        <Args extends Marko.BodyParamaters<Body>>(
+        <Args extends BodyParamaters<Body>>(
           input: RenderBodyInput<Args>
-        ): ReturnWithScope<Scopes<Args>, Marko.BodyReturnType<Body>>;
+        ): ReturnWithScope<Scopes<Args>, BodyReturnType<Body>>;
       }
 
       export interface InputRenderer<Input extends Record<any, unknown>> {
@@ -329,22 +331,14 @@ type Scopes<Input> = 0 extends 1 & Input
   ? MergeScopes<FlatScopes<Input>>
   : never;
 
-type ComponentEventHandlers<C extends Marko.Component> = {
-  [K in
-    | Exclude<
-        keyof C,
-        | "onCreate"
-        | "onInput"
-        | "onRender"
-        | "onMount"
-        | "onUpdate"
-        | "onDestroy"
-        | keyof Marko.Component
-      >
-    | "emit"
-    | "setState"
-    | "setStateDirty"
-    | "forceUpdate"]: C[K] extends (...args: any) => any ? C[K] : never;
+type ComponentEventHandlers<Component extends Marko.Component> = {
+  [K in Exclude<
+    keyof Component,
+    Exclude<
+      keyof Marko.Component,
+      "emit" | "setState" | "setStateDirty" | "forceUpdate"
+    >
+  >]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
 type FlatScopes<Input extends object> = Input[keyof Input] extends infer Prop
@@ -409,14 +403,14 @@ type AttrTagByListSize<T, Item> = T extends
   | readonly [any, any, ...any[]]
   | readonly [...any[], any, any]
   | readonly [any, ...any[], any]
-  ? Marko.Repeated<Item>
+  ? Repeated<Item>
   : T extends readonly [any]
   ? Item
   : T extends readonly [any, ...any[]] | readonly [...any[], any]
-  ? Marko.Repeatable<Item>
+  ? Repeatable<Item>
   : T extends readonly []
   ? undefined
-  : Marko.MaybeRepeatable<Item>;
+  : MaybeRepeatable<Item>;
 
 type AttrTagByObjectSize<
   Value,
@@ -428,9 +422,9 @@ type AttrTagByObjectSize<
   undefined,
   CheckUnionSize<
     KnownKeys,
-    [Keys] extends [KnownKeys] ? Item : Marko.Repeatable<Item>,
-    Marko.Repeated<Item>,
-    Marko.MaybeRepeatable<Item>
+    [Keys] extends [KnownKeys] ? Item : Repeatable<Item>,
+    Repeated<Item>,
+    MaybeRepeatable<Item>
   >
 >;
 
@@ -465,5 +459,9 @@ type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
 ) => any
   ? U
   : never;
+
+type Repeated<T> = [T, T, ...T[]];
+type Repeatable<T> = T | Repeated<T>;
+type MaybeRepeatable<T> = undefined | Repeatable<T>;
 
 export {};

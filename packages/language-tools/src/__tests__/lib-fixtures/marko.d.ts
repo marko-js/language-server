@@ -6,11 +6,21 @@ declare module "*.marko" {
 }
 
 declare global {
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface ReadableStream {}
+  }
+
   namespace Marko {
     /** A mutable global object for the current render. */
     export interface Global {
-      [x: PropertyKey]: unknown;
+      serializedGlobals?: Record<string, boolean>;
+      [attr: PropertyKey]: unknown;
     }
+
+    export type TemplateInput<Input = { [attr: PropertyKey]: any }> = Input & {
+      $global?: Global;
+    };
 
     export interface Out<Component extends Marko.Component = Marko.Component>
       extends PromiseLike<RenderResult<Component>> {
@@ -91,17 +101,20 @@ declare global {
       ? Params
       : never;
 
-    export abstract class Component<Input = unknown> implements Emitter {
+    export abstract class Component<
+      Input extends Record<PropertyKey, any> = Record<PropertyKey, any>
+    > implements Emitter
+    {
       /** A unique id for this instance. */
       public readonly id: string;
       /** The top level element rendered by this instance. */
       public readonly el: Element | void;
       /** The attributes passed to this instance. */
       public readonly input: Input;
-      /** Mutable state that when changed causes a rerender. */
-      public state: unknown;
       /** @deprecated */
       public readonly els: Element[];
+      /** Mutable state that when changed causes a rerender. */
+      abstract state: undefined | null | Record<PropertyKey, any>;
 
       /** Returns the amount of event handlers listening to a specific event. */
       listenerCount(eventName: PropertyKey): number;
@@ -187,17 +200,20 @@ declare global {
       /** Replaces the children of an existing DOM element with the dom for the current instance. */
       replaceChildrenOf(target: ParentNode): this;
       /** Called when the component is firsted created. */
-      onCreate?(input: this["input"], out: Marko.Out): void;
+      abstract onCreate?(input: this["input"], out: Marko.Out): void;
       /** Called every time the component receives input from it's parent. */
-      onInput?(input: this["input"], out: Marko.Out): void | this["input"];
+      abstract onInput?(
+        input: this["input"],
+        out: Marko.Out
+      ): void | this["input"];
       /** Called after a component has successfully rendered, but before it's update has been applied to the dom. */
-      onRender?(out: Marko.Out): void;
+      abstract onRender?(out: Marko.Out): void;
       /** Called after the first time the component renders and is attached to the dom. */
-      onMount?(): void;
+      abstract onMount?(): void;
       /** Called when a components render has been applied to the DOM (excluding when it is initially mounted). */
-      onUpdate?(): void;
+      abstract onUpdate?(): void;
       /** Called when a component is destroyed and removed from the dom. */
-      onDestroy?(): void;
+      abstract onDestroy?(): void;
     }
 
     /** The top level api for a Marko Template. */
@@ -205,54 +221,39 @@ declare global {
       /** Creates a Marko compatible output stream. */
       createOut(): Out;
 
-      /** @marko: override-start */
+      /**
+       * The folowing types are processed up by the @marko/language-tools
+       * and inlined into the compiled template.
+       *
+       * This is done to support generics on each of these methods
+       * until TypeScript supports higher kinded types.
+       *
+       * https://github.com/microsoft/TypeScript/issues/1213
+       */
+
+      /** @marko-overload-start */
       /** Asynchronously render the template. */
-      declare render: {
-        /* @marko: generics */ (
-          input: /* @marko: input-start */ any /* @marko: input-end */ & {
-            $global?: Marko.Global;
-          },
+      abstract render(
+        input: Marko.TemplateInput,
+        stream?: {
+          write: (chunk: string) => void;
+          end: (chunk?: string) => void;
+        }
+      ): Marko.Out<Marko.Component>;
 
-          stream?: {
-            write: (chunk: string) => void;
-            end: (chunk?: string) => void;
-          }
-        ): Marko.Out</* @marko: component-start */ Marko.Component /* @marko: component-end */>;
-      };
-      /** @marko: override-end */
-
-      /** @marko: override-start */
       /** Synchronously render the template. */
-      declare renderSync: {
-        /* @marko: generics */ (
-          input: /* @marko: input-start */ any /* @marko: input-end */ & {
-            $global?: Marko.Global;
-          }
-        ): Marko.RenderResult</* @marko: component-start */ Marko.Component /* @marko: component-end */>;
-      };
-      /** @marko: override-end */
+      abstract renderSync(
+        input: Marko.TemplateInput
+      ): Marko.RenderResult<Marko.Component>;
 
-      /** @marko: override-start */
       /** Synchronously render a template to a string. */
-      declare renderToString: {
-        /* @marko: generics */ (
-          input: /* @marko: input-start */ any /* @marko: input-end */ & {
-            $global?: Marko.Global;
-          }
-        ): string;
-      };
-      /** @marko: override-end */
+      abstract renderToString(input: Marko.TemplateInput): string;
 
-      /** @marko: override-start */
       /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
-      declare stream: {
-        /* @marko: generics */ (
-          input: /* @marko: input-start */ any /* @marko: input-end */ & {
-            $global?: Marko.Global;
-          }
-        ): ReadableStream<string> & import("stream").Readable;
-      };
-      /** @marko: override-end */
+      abstract stream(
+        input: Marko.TemplateInput
+      ): ReadableStream<string> & NodeJS.ReadableStream;
+      /** @marko-overload-end */
     }
 
     export interface RenderResult<
@@ -310,16 +311,17 @@ declare global {
     export type Repeatable<T> = T | Repeated<T>;
     export type MaybeRepeatable<T> = undefined | Repeatable<T>;
 
-    interface NativeTag<
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    export interface NativeTags {
+      [name: string]: NativeTag;
+    }
+
+    export interface NativeTag<
       Return extends Element = Element,
       Input = Record<string, unknown>
     > {
       input: Input;
       return: { value(): Return };
-    }
-
-    interface NativeTags {
-      [x: string]: NativeTag;
     }
   }
 }

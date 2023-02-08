@@ -64,101 +64,101 @@
 ```
 
 ## Generated Diagnostics
-### Ln 24, Col 29
+### Ln 50, Col 29
 ```ts
-  22 | /*custom*/
-  23 | [/*custom*/
-> 24 | "renderBody"]: Marko.ᜭ.body(function *(
+  48 | /*custom*/
+  49 | [/*custom*/
+> 50 | "renderBody"]: Marko.ᜭ.body(function *(
      |                             ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
-  25 | a, %b
-  26 | ) {
-  27 | return;
+  51 | a, %b
+  52 | ) {
+  53 | return;
 ```
 
-### Ln 26, Col 3
+### Ln 52, Col 3
 ```ts
-  24 | "renderBody"]: Marko.ᜭ.body(function *(
-  25 | a, %b
-> 26 | ) {
+  50 | "renderBody"]: Marko.ᜭ.body(function *(
+  51 | a, %b
+> 52 | ) {
      |   ^ ',' expected.
-  27 | return;
-  28 |
-  29 | })
+  53 | return;
+  54 |
+  55 | })
 ```
 
-### Ln 26, Col 3
+### Ln 52, Col 3
 ```ts
-  24 | "renderBody"]: Marko.ᜭ.body(function *(
-  25 | a, %b
-> 26 | ) {
+  50 | "renderBody"]: Marko.ᜭ.body(function *(
+  51 | a, %b
+> 52 | ) {
      |   ^
-> 27 | return;
+> 53 | return;
      | ^^^^^^^
-> 28 |
+> 54 |
      | ^^^^^^^
-> 29 | })
+> 55 | })
      | ^^ Expected 1 arguments, but got 2.
-  30 | });
-  31 | return;
-  32 |
+  56 | });
+  57 | return;
+  58 |
 ```
 
-### Ln 27, Col 7
+### Ln 53, Col 7
 ```ts
-  25 | a, %b
-  26 | ) {
-> 27 | return;
+  51 | a, %b
+  52 | ) {
+> 53 | return;
      |       ^ ':' expected.
-  28 |
-  29 | })
-  30 | });
+  54 |
+  55 | })
+  56 | });
 ```
 
-### Ln 31, Col 1
+### Ln 57, Col 1
 ```ts
-  29 | })
-  30 | });
-> 31 | return;
+  55 | })
+  56 | });
+> 57 | return;
      | ^^^^^^^ Unreachable code detected.
-  32 |
-  33 | })();
-  34 | }});
+  58 |
+  59 | })();
+  60 | }});
 ```
 
-### Ln 33, Col 2
+### Ln 59, Col 2
 ```ts
-  31 | return;
-  32 |
-> 33 | })();
+  57 | return;
+  58 |
+> 59 | })();
      |  ^ Unexpected token. A constructor, method, accessor, or property was expected.
-  34 | }});
-  35 |
+  60 | }});
+  61 |
 ```
 
-### Ln 34, Col 1
+### Ln 60, Col 1
 ```ts
-  32 |
-  33 | })();
-> 34 | }});
+  58 |
+  59 | })();
+> 60 | }});
      | ^ Declaration or statement expected.
-  35 |
+  61 |
 ```
 
-### Ln 34, Col 2
+### Ln 60, Col 2
 ```ts
-  32 |
-  33 | })();
-> 34 | }});
+  58 |
+  59 | })();
+> 60 | }});
      |  ^ Declaration or statement expected.
-  35 |
+  61 |
 ```
 
-### Ln 34, Col 3
+### Ln 60, Col 3
 ```ts
-  32 |
-  33 | })();
-> 34 | }});
+  58 |
+  59 | })();
+> 60 | }});
      |   ^ Declaration or statement expected.
-  35 |
+  61 |
 ```
 

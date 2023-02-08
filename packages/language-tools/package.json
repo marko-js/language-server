@@ -21,12 +21,14 @@
     ".": {
       "import": "./dist/index.mjs",
       "default": "./dist/index.js"
-    }
+    },
+    "./script.internals.d.ts": "./script.internals.d.ts"
   },
   "files": [
     "dist",
     "!**/__tests__",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "script.internals.d.ts"
   ],
   "homepage": "https://github.com/marko-js/language-server/tree/main/packages/language-tools/README.md",
   "keywords": [

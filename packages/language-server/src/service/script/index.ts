@@ -17,7 +17,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 import { type Extracted, extractScript } from "@marko/language-tools";
-import { getMarkoProject } from "../../utils/project";
+import { type MarkoProject, getMarkoProject } from "../../utils/project";
 import { getFSPath, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
@@ -25,11 +25,14 @@ import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import getRuntimeTypes from "../../utils/get-runtime-types";
 
 interface TSProject {
   rootDir: string;
+  host: ts.LanguageServiceHost;
   service: ts.LanguageService;
   markoScriptKind: ts.ScriptKind;
+  markoProject: MarkoProject;
 }
 
 const kTSProject = Symbol("ts-project");
@@ -419,6 +422,7 @@ function processScript(doc: TextDocument, project: TSProject) {
     return extractScript({
       parsed: file.parsed,
       lookup: file.project.lookup,
+      runtimeTypes: getRuntimeTypes(file.project, ts, project.host),
       scriptKind: project.markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
       componentClassImport: undefined, // TODO!
     });
@@ -526,107 +530,111 @@ function getTSProject(docFsPath: string): TSProject {
     ts.getDefaultLibFileName(options)
   );
 
+  const host: ts.LanguageServiceHost = patch(
+    ts,
+    markoScriptKind,
+    extractCache,
+    {
+      getNewLine() {
+        return ts.sys.newLine;
+      },
+
+      useCaseSensitiveFileNames() {
+        return ts.sys.useCaseSensitiveFileNames;
+      },
+
+      getCompilationSettings() {
+        return options;
+      },
+
+      getCurrentDirectory() {
+        return options.rootDir!;
+      },
+
+      getProjectVersion() {
+        return documents.projectVersion.toString(32);
+      },
+
+      getDefaultLibFileName() {
+        return defaultLibFile;
+      },
+
+      getProjectReferences() {
+        return projectReferences;
+      },
+
+      resolveModuleNames(moduleNames, containingFile) {
+        return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
+          return ts.resolveModuleName(
+            moduleName,
+            containingFile,
+            options,
+            ts.sys
+          ).resolvedModule;
+        });
+      },
+
+      readDirectory: ts.sys.readDirectory,
+
+      readFile: (filename) => documents.get(filenameToURI(filename))?.getText(),
+
+      fileExists: (filename) => documents.exists(filenameToURI(filename)),
+
+      getScriptFileNames() {
+        const result = new Set<string>(fileNames);
+        for (const doc of documents.getAllOpen()) {
+          const { scheme, fsPath } = URI.parse(doc.uri);
+          if (scheme === "file") result.add(fsPath);
+        }
+
+        for (const fileName of fileNames) {
+          result.add(fileName);
+        }
+
+        return [...result];
+      },
+
+      getScriptVersion(filename) {
+        return `${documents.get(filenameToURI(filename))?.version ?? -1}`;
+      },
+
+      getScriptKind(filename) {
+        switch (path.extname(filename)) {
+          case ts.Extension.Js:
+            return ts.ScriptKind.JS;
+          case ts.Extension.Jsx:
+            return ts.ScriptKind.JSX;
+          case ts.Extension.Ts:
+            return ts.ScriptKind.TS;
+          case ts.Extension.Tsx:
+            return ts.ScriptKind.TSX;
+          case ts.Extension.Json:
+            return ts.ScriptKind.JSON;
+          default:
+            return ts.ScriptKind.Unknown;
+        }
+      },
+
+      getScriptSnapshot(filename) {
+        let snapshot = snapshotCache.get(filename);
+        if (!snapshot) {
+          const doc = documents.get(filenameToURI(filename));
+          if (!doc) return;
+          snapshot = ts.ScriptSnapshot.fromString(doc.getText());
+          snapshotCache.set(filename, snapshot);
+        }
+
+        return snapshot;
+      },
+    }
+  );
+
   const tsProject: TSProject = {
     rootDir: options.rootDir!,
+    markoProject,
     markoScriptKind,
-    service: ts.createLanguageService(
-      patch(ts, markoScriptKind, extractCache, {
-        getNewLine() {
-          return ts.sys.newLine;
-        },
-
-        useCaseSensitiveFileNames() {
-          return ts.sys.useCaseSensitiveFileNames;
-        },
-
-        getCompilationSettings() {
-          return options;
-        },
-
-        getCurrentDirectory() {
-          return options.rootDir!;
-        },
-
-        getProjectVersion() {
-          return documents.projectVersion.toString(32);
-        },
-
-        getDefaultLibFileName() {
-          return defaultLibFile;
-        },
-
-        getProjectReferences() {
-          return projectReferences;
-        },
-
-        resolveModuleNames(moduleNames, containingFile) {
-          return moduleNames.map<ts.ResolvedModule | undefined>(
-            (moduleName) => {
-              return ts.resolveModuleName(
-                moduleName,
-                containingFile,
-                options,
-                ts.sys
-              ).resolvedModule;
-            }
-          );
-        },
-
-        readDirectory: ts.sys.readDirectory,
-
-        readFile: (filename) =>
-          documents.get(filenameToURI(filename))?.getText(),
-
-        fileExists: (filename) => documents.exists(filenameToURI(filename)),
-
-        getScriptFileNames() {
-          const result = new Set<string>(fileNames);
-          for (const doc of documents.getAllOpen()) {
-            const { scheme, fsPath } = URI.parse(doc.uri);
-            if (scheme === "file") result.add(fsPath);
-          }
-
-          for (const fileName of fileNames) {
-            result.add(fileName);
-          }
-
-          return [...result];
-        },
-
-        getScriptVersion(filename) {
-          return `${documents.get(filenameToURI(filename))?.version ?? -1}`;
-        },
-
-        getScriptKind(filename) {
-          switch (path.extname(filename)) {
-            case ts.Extension.Js:
-              return ts.ScriptKind.JS;
-            case ts.Extension.Jsx:
-              return ts.ScriptKind.JSX;
-            case ts.Extension.Ts:
-              return ts.ScriptKind.TS;
-            case ts.Extension.Tsx:
-              return ts.ScriptKind.TSX;
-            case ts.Extension.Json:
-              return ts.ScriptKind.JSON;
-            default:
-              return ts.ScriptKind.Unknown;
-          }
-        },
-
-        getScriptSnapshot(filename) {
-          let snapshot = snapshotCache.get(filename);
-          if (!snapshot) {
-            const doc = documents.get(filenameToURI(filename));
-            if (!doc) return;
-            snapshot = ts.ScriptSnapshot.fromString(doc.getText());
-            snapshotCache.set(filename, snapshot);
-          }
-
-          return snapshot;
-        },
-      })
-    ),
+    host,
+    service: ts.createLanguageService(host),
   };
 
   projectCache.set(rootDir, tsProject);

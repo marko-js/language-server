@@ -108,92 +108,92 @@
 ```
 
 ## Generated Diagnostics
-### Ln 25, Col 1
+### Ln 51, Col 1
 ```ts
-  23 | "data-x": (
-  24 | #2
-> 25 | )
+  49 | "data-x": (
+  50 | #2
+> 51 | )
      | ^ ':' expected.
-  26 | });
-  27 | (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
-  28 | /*div*/
+  52 | });
+  53 | (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+  54 | /*div*/
 ```
 
-### Ln 32, Col 2
+### Ln 58, Col 2
 ```ts
-  30 |   console.log(#hello!);
-  31 | }
-> 32 | });
+  56 |   console.log(#hello!);
+  57 | }
+> 58 | });
      |  ^ Unexpected token. A constructor, method, accessor, or property was expected.
-  33 | return;
-  34 |
-  35 | })();
+  59 | return;
+  60 |
+  61 | })();
 ```
 
-### Ln 35, Col 1
+### Ln 61, Col 1
 ```ts
-  33 | return;
-  34 |
-> 35 | })();
+  59 | return;
+  60 |
+> 61 | })();
      | ^ Declaration or statement expected.
-  36 | }});
-  37 |
+  62 | }});
+  63 |
 ```
 
-### Ln 35, Col 2
+### Ln 61, Col 2
 ```ts
-  33 | return;
-  34 |
-> 35 | })();
+  59 | return;
+  60 |
+> 61 | })();
      |  ^ Declaration or statement expected.
-  36 | }});
-  37 |
+  62 | }});
+  63 |
 ```
 
-### Ln 35, Col 3
+### Ln 61, Col 3
 ```ts
-  33 | return;
-  34 |
-> 35 | })();
+  59 | return;
+  60 |
+> 61 | })();
      |   ^^^ Unreachable code detected.
-  36 | }});
-  37 |
+  62 | }});
+  63 |
 ```
 
-### Ln 35, Col 4
+### Ln 61, Col 4
 ```ts
-  33 | return;
-  34 |
-> 35 | })();
+  59 | return;
+  60 |
+> 61 | })();
      |    ^ Expression expected.
-  36 | }});
-  37 |
+  62 | }});
+  63 |
 ```
 
-### Ln 36, Col 1
+### Ln 62, Col 1
 ```ts
-  34 |
-  35 | })();
-> 36 | }});
+  60 |
+  61 | })();
+> 62 | }});
      | ^ Declaration or statement expected.
-  37 |
+  63 |
 ```
 
-### Ln 36, Col 2
+### Ln 62, Col 2
 ```ts
-  34 |
-  35 | })();
-> 36 | }});
+  60 |
+  61 | })();
+> 62 | }});
      |  ^ Declaration or statement expected.
-  37 |
+  63 |
 ```
 
-### Ln 36, Col 3
+### Ln 62, Col 3
 ```ts
-  34 |
-  35 | })();
-> 36 | }});
+  60 |
+  61 | })();
+> 62 | }});
      |   ^ Declaration or statement expected.
-  37 |
+  63 |
 ```
 

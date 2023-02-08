@@ -1,3 +1,5 @@
+import "@marko/language-tools/script.internals";
+import "../../lib-fixtures/marko.d.ts";
 export interface Input<
   FirstName extends string,
   LastName extends string,
@@ -7,14 +9,38 @@ export interface Input<
   lastName: LastName;
   fullName: `${FirstName} ${LastName}`;
 }
-class Component<
+abstract class Component<
   FirstName extends string,
   LastName extends string,
   Extra
 > extends Marko.Component<Input<FirstName, LastName, Extra>> {}
 export { type Component };
 export default Marko.ᜭ.instance(
-  class extends Marko.Template {
+  class extends Marko.ᜭ.Template<{
+    /** Asynchronously render the template. */
+    render<FirstName extends string, LastName extends string, Extra>(
+      input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>,
+      stream?: {
+        write: (chunk: string) => void;
+        end: (chunk?: string) => void;
+      }
+    ): Marko.Out<Component<FirstName, LastName, Extra>>;
+
+    /** Synchronously render the template. */
+    renderSync<FirstName extends string, LastName extends string, Extra>(
+      input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>
+    ): Marko.RenderResult<Component<FirstName, LastName, Extra>>;
+
+    /** Synchronously render a template to a string. */
+    renderToString<FirstName extends string, LastName extends string, Extra>(
+      input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>
+    ): string;
+
+    /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
+    stream<FirstName extends string, LastName extends string, Extra>(
+      input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>
+    ): ReadableStream<string> & NodeJS.ReadableStream;
+  }>() {
     /**
      * @internal
      * Do not use or you will be fired.

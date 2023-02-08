@@ -1,6 +1,7 @@
 import path from "path";
 import { type Extracted, extractScript, parse } from "@marko/language-tools";
 import { getMarkoProject } from "../utils/project";
+import getRuntimeTypes from "../utils/get-runtime-types";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
@@ -43,6 +44,7 @@ export function patch(
         cached = extractScript({
           parsed: parse(code, filename),
           lookup: markoProject.lookup,
+          runtimeTypes: getRuntimeTypes(markoProject, ts, host),
           scriptKind: markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
           componentClassImport: undefined, // TODO!
         }) as ExtractedSnapshot;

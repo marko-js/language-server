@@ -23,6 +23,7 @@ import {
   hasHoists,
   isMutatedVar,
 } from "./util/attach-scopes";
+import { getRuntimeOverrides } from "./util/runtime-overrides";
 
 const SEP_EMPTY = "";
 const SEP_SPACE = " ";
@@ -62,6 +63,10 @@ export interface ExtractScriptOptions {
   lookup: TaglibLookup;
   scriptKind: "js" | "ts";
   componentClassImport?: string | undefined;
+  runtimeTypes?: {
+    filename: string;
+    code: string;
+  };
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -77,6 +82,7 @@ class ScriptExtractor {
   #lookup: TaglibLookup;
   #renderIds = new Map<Node.ParentTag, number>();
   // #isTS: boolean;
+  #runtimeTypes: ExtractScriptOptions["runtimeTypes"];
   #mutationOffsets: Repeatable<number>;
   #referencedTags = new Set<TagDefinition>();
   #renderId = 1;
@@ -87,6 +93,7 @@ class ScriptExtractor {
     this.#parsed = parsed;
     this.#lookup = lookup;
     // this.#isTS = opts.scriptKind === "ts";
+    this.#runtimeTypes = opts.runtimeTypes;
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
@@ -105,6 +112,15 @@ class ScriptExtractor {
     let componentClassBody: Range | void;
     let typeParameters: (t.TSTypeParameterDeclaration & Range) | void | null;
     let hasInput = false;
+
+    if (this.#runtimeTypes) {
+      this.#extractor.write(
+        `import "@marko/language-tools/script.internals";\nimport "${relativeImportPath(
+          this.#filename,
+          this.#runtimeTypes.filename
+        )}";\n`
+      );
+    }
 
     // TODO: in JS mode should scan for `Input` type comment.
 
@@ -218,7 +234,7 @@ class ScriptExtractor {
       // or https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
       this.#extractor
         .write(
-          `class Component${genericsStr} extends Marko.Component<Input${applyGenericsStr}>`
+          `abstract class Component${genericsStr} extends Marko.Component<Input${applyGenericsStr}>`
         )
         .copy(componentClassBody || " {}")
         .write("\n");
@@ -227,7 +243,15 @@ class ScriptExtractor {
     this.#extractor.write("export { type Component }\n");
 
     this.#extractor.write(
-      `export default ${VAR_INTERNAL}.instance(class extends Marko.Template {
+      `export default ${VAR_INTERNAL}.instance(class extends ${
+        this.#runtimeTypes
+          ? `${VAR_INTERNAL}.Template<{\n${getRuntimeOverrides(
+              this.#runtimeTypes.code,
+              genericsStr,
+              applyGenericsStr
+            )}\n}>()`
+          : "Marko.Template"
+      } {
 /**
  * @internal
  * Do not use or you will be fired.
