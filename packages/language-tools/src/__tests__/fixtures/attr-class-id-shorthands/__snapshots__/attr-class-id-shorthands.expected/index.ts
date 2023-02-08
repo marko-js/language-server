@@ -44,121 +44,81 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/const/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: "hi",
           })
         );
         const { value: value } = Marko.ᜭ.rendered.returns[1];
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           id: `test`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           id: `test-${value || ""}`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           id: `${value || ""}-test`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           id: `${value || ""}-test-${value || ""}`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: `test`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: `hello world`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: `test-${value || ""}`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: `${value || ""}-test`,
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: `${value || ""}-test-${value || ""}`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           id: `test`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           id: `test-${value || ""}`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           id: `${value || ""}-test`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           id: `${value || ""}-test-${value || ""}`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           class: `test`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           class: `hello world`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           class: `test-${value || ""}`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           class: `${value || ""}-test`,
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           class: `${value || ""}-test-${value || ""}`,
         });

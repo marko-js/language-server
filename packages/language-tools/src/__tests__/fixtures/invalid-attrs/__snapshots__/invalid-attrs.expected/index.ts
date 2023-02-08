@@ -41,14 +41,12 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/fancy-button/index.marko").default
-          >
-        )({
-          /*fancy-button*/
-          something: true,
-        });
+        Marko.ᜭ.renderTemplate(import("./components/fancy-button/index.marko"))(
+          {
+            /*fancy-button*/
+            something: true,
+          }
+        );
         return;
       })();
     }

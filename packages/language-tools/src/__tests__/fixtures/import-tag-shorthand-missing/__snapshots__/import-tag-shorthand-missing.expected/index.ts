@@ -42,7 +42,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        Marko.ᜭ.render(Template)({
+        Marko.ᜭ.renderDynamicTag(Template)({
           /*Template*/
         });
         return;

@@ -41,11 +41,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           /*test-tag*/
           ["renderBody"]: Marko.ᜭ.body(function* (a) {
@@ -53,11 +49,7 @@ export default Marko.ᜭ.instance(
             return;
           }),
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           /*test-tag*/
           ["renderBody"]: Marko.ᜭ.body(function* (a) {
@@ -70,11 +62,7 @@ export default Marko.ᜭ.instance(
             return ᜭ.return;
           }),
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           /*test-tag*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -91,11 +79,7 @@ export default Marko.ᜭ.instance(
             })()
           ),
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
           /*test-tag*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -115,11 +99,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("./components/test-tag.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
             /*test-tag*/
             /*test-tag*/
             ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -127,10 +107,8 @@ export default Marko.ᜭ.instance(
                 Marko.ᜭ.assertRendered(
                   Marko.ᜭ.rendered,
                   2,
-                  (
-                    1 as any as Marko.ᜭ.CustomTagRenderer<
-                      typeof import("../../components/let/index.marko").default
-                    >
+                  Marko.ᜭ.renderTemplate(
+                    import("../../components/let/index.marko")
                   )({
                     /*let*/
                     value: 1 as const,

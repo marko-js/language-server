@@ -44,27 +44,23 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             value: 1,
           })
         );
         const { value: size } = Marko.ᜭ.rendered.returns[1];
-        Marko.ᜭ.render(`h${size || ""}`)({
+        Marko.ᜭ.renderDynamicTag(`h${size || ""}`)({
           /*`h${size || ""}`*/
           /*`h${size || ""}`*/
           ["renderBody"]: Marko.ᜭ.inlineBody((() => {})()),
         });
-        Marko.ᜭ.render("hello")({
+        Marko.ᜭ.renderDynamicTag("hello")({
           /*"hello"*/
           /*"hello"*/
           ["renderBody"]: Marko.ᜭ.inlineBody((() => {})()),
         });
-        Marko.ᜭ.render(`${"hello" || ""}-world`)({
+        Marko.ᜭ.renderDynamicTag(`${"hello" || ""}-world`)({
           /*`${"hello" || ""}-world`*/
         });
         return;

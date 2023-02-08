@@ -41,11 +41,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )<string>({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))<string>({
           /*test-tag*/
           a: 1,
         });

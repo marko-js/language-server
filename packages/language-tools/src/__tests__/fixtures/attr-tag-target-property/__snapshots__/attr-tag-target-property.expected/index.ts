@@ -41,11 +41,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag/index.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag/index.marko"))({
           /*test-tag*/
           items: [
             {
@@ -54,11 +50,7 @@ export default Marko.ᜭ.instance(
             },
           ],
         });
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag/index.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag/index.marko"))({
           /*test-tag*/
           items: [
             {

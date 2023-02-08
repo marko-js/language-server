@@ -43,7 +43,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x
@@ -54,12 +54,12 @@ export default Marko.ᜭ.instance(
               }
             : {}),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x ? {} : {}),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x
@@ -74,7 +74,7 @@ export default Marko.ᜭ.instance(
                 },
               }),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x
@@ -101,7 +101,7 @@ export default Marko.ᜭ.instance(
                 },
               }),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x
@@ -118,7 +118,7 @@ export default Marko.ᜭ.instance(
               }
             : {}),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(x
@@ -129,7 +129,7 @@ export default Marko.ᜭ.instance(
               }
             : {}),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...(undefined
@@ -140,7 +140,7 @@ export default Marko.ᜭ.instance(
               }
             : {}),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           x: 1,
           ...Marko.ᜭ.mergeAttrTags(
@@ -163,7 +163,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          Marko.ᜭ.render(custom)({
+          Marko.ᜭ.renderDynamicTag(custom)({
             /*custom*/
             x: 1,
             ...Marko.ᜭ.mergeAttrTags(
@@ -177,10 +177,8 @@ export default Marko.ᜭ.instance(
                       Marko.ᜭ.assertRendered(
                         Marko.ᜭ.rendered,
                         2,
-                        (
-                          1 as any as Marko.ᜭ.CustomTagRenderer<
-                            typeof import("../../components/const/index.marko").default
-                          >
+                        Marko.ᜭ.renderTemplate(
+                          import("../../components/const/index.marko")
                         )({
                           /*const*/
                           value: 1 as const,
@@ -208,10 +206,8 @@ export default Marko.ᜭ.instance(
                           Marko.ᜭ.assertRendered(
                             Marko.ᜭ.rendered,
                             3,
-                            (
-                              1 as any as Marko.ᜭ.CustomTagRenderer<
-                                typeof import("../../components/const/index.marko").default
-                              >
+                            Marko.ᜭ.renderTemplate(
+                              import("../../components/const/index.marko")
                             )({
                               /*const*/
                               value: 2 as const,
@@ -237,7 +233,7 @@ export default Marko.ᜭ.instance(
             ),
           })
         );
-        Marko.ᜭ.render(effect)({
+        Marko.ᜭ.renderDynamicTag(effect)({
           /*effect*/
           value() {
             hoistedFromStaticMember;

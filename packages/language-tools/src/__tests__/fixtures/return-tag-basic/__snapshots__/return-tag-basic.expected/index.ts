@@ -44,17 +44,13 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             value: 1,
           })
         );
         const { value: value } = Marko.ᜭ.rendered.returns[1];
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"button">)({
+        Marko.ᜭ.renderNativeTag("button")({
           /*button*/
           onClick() {
             ᜭ.mutate.value++;

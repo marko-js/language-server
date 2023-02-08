@@ -42,11 +42,7 @@ export default Marko.ᜭ.instance(
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
         (() => {})("hello!");
-        (
-          1 as any as Marko.ᜭ.CustomTagRenderer<
-            typeof import("./components/test-tag.marko").default
-          >
-        )({
+        Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
           /*test-tag*/
         });
         return;

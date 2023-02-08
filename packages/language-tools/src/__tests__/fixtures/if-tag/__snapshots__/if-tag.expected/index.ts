@@ -44,11 +44,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             value: true,
           })
@@ -57,11 +53,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           2,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             value: false,
           })
@@ -73,7 +65,7 @@ export default Marko.ᜭ.instance(
         }
         if (show) {
         }
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           /*div*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -94,10 +86,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 4,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 0 as const,
@@ -120,10 +110,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 6,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 1 as const,
@@ -137,10 +125,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 7,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 2 as const,
@@ -154,10 +140,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 8,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 3 as const,
@@ -179,10 +163,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 10,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 4 as const,
@@ -205,10 +187,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 12,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 4 as const,
@@ -229,10 +209,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 14,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 5 as const,
@@ -246,10 +224,8 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 15,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: 6 as const,
@@ -265,7 +241,7 @@ export default Marko.ᜭ.instance(
         if (show) {
         } else if (undefined) {
         }
-        Marko.ᜭ.render(effect)({
+        Marko.ᜭ.renderDynamicTag(effect)({
           /*effect*/
           value() {
             a;

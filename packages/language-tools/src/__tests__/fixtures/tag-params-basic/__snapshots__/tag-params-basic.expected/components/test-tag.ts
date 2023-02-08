@@ -43,15 +43,15 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        Marko.ᜭ.render(input.renderBody)({
+        Marko.ᜭ.renderDynamicTag(input.renderBody)({
           /*input.renderBody*/
           value: ["a", "b"],
         });
-        Marko.ᜭ.render(input.renderBody)({
+        Marko.ᜭ.renderDynamicTag(input.renderBody)({
           /*input.renderBody*/
           value: ["a", "c"],
         });
-        Marko.ᜭ.render(input.renderBody)({
+        Marko.ᜭ.renderDynamicTag(input.renderBody)({
           /*input.renderBody*/
           value: ["a", "b", "c"],
         });

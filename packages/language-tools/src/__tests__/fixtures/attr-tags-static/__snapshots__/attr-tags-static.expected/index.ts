@@ -44,7 +44,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          Marko.ᜭ.render(custom)({
+          Marko.ᜭ.renderDynamicTag(custom)({
             /*custom*/
             b: [
               {
@@ -64,10 +64,8 @@ export default Marko.ᜭ.instance(
                   Marko.ᜭ.assertRendered(
                     Marko.ᜭ.rendered,
                     2,
-                    (
-                      1 as any as Marko.ᜭ.CustomTagRenderer<
-                        typeof import("../../components/const/index.marko").default
-                      >
+                    Marko.ᜭ.renderTemplate(
+                      import("../../components/const/index.marko")
                     )({
                       /*const*/
                       value: 1 as const,
@@ -83,7 +81,7 @@ export default Marko.ᜭ.instance(
             },
           })
         );
-        Marko.ᜭ.render(effect)({
+        Marko.ᜭ.renderDynamicTag(effect)({
           /*effect*/
           value() {
             hoistedFromStaticMember;

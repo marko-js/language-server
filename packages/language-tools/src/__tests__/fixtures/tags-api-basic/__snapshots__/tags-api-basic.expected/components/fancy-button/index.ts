@@ -43,7 +43,7 @@ export default Marko.ᜭ.instance(
       const state = Marko.ᜭ.state(component);
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           /*div*/
           ["renderBody"]: Marko.ᜭ.inlineBody(

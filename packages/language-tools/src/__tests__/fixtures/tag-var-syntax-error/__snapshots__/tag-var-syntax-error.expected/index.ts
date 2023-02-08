@@ -44,7 +44,7 @@ const out = 1 as unknown as Marko.Out;
 const state = Marko.ᜭ.state(component);
 Marko.ᜭ.noop({ input, out, component, state });
 return (function (this: void) {
-Marko.ᜭ.assertRendered(Marko.ᜭ.rendered, 1, (1 as any as Marko.ᜭ.CustomTagRenderer<typeof import("../../components/let/index.marko").default>)(/* Should be resistant to syntax errors.*/{
+Marko.ᜭ.assertRendered(Marko.ᜭ.rendered, 1, Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))(/* Should be resistant to syntax errors.*/{
 /*let*/
 "value": (
 1

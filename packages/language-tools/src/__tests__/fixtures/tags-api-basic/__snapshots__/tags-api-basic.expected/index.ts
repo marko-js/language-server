@@ -58,11 +58,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/const/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: input,
           })
@@ -70,13 +66,13 @@ export default Marko.ᜭ.instance(
         const {
           value: { year, isSmartOnly, type, mobileList, renderBody },
         } = Marko.ᜭ.rendered.returns[1];
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           class: "mobiles__list",
           /*div*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
             (() => {
-              (1 as any as Marko.ᜭ.NativeTagRenderer<"p">)({
+              Marko.ᜭ.renderNativeTag("p")({
                 /*p*/
                 id: "p",
                 /*p*/
@@ -87,7 +83,7 @@ export default Marko.ᜭ.instance(
                 ),
               });
               if (isSmartOnly) {
-                (1 as any as Marko.ᜭ.NativeTagRenderer<"span">)({
+                Marko.ᜭ.renderNativeTag("span")({
                   /*span*/
                   class: "subnote",
                   /*span*/
@@ -98,7 +94,7 @@ export default Marko.ᜭ.instance(
                   ),
                 });
               }
-              (1 as any as Marko.ᜭ.NativeTagRenderer<"span">)({
+              Marko.ᜭ.renderNativeTag("span")({
                 /*span*/
                 class: "subnote",
                 /*span*/
@@ -115,7 +111,7 @@ export default Marko.ᜭ.instance(
                   i,
                   all
                 ) {
-                  (1 as any as Marko.ᜭ.NativeTagRenderer<"span">)({
+                  Marko.ᜭ.renderNativeTag("span")({
                     /*span*/
                     id: i,
                     /*span*/
@@ -129,19 +125,19 @@ export default Marko.ᜭ.instance(
                   });
                 }),
               });
-              (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+              Marko.ᜭ.renderNativeTag("div")({
                 /*div*/
                 class: `container`,
                 /*div*/
                 ["renderBody"]: Marko.ᜭ.inlineBody(
                   (() => {
-                    Marko.ᜭ.render(renderBody)({
+                    Marko.ᜭ.renderDynamicTag(renderBody)({
                       /*renderBody*/
                     });
                   })()
                 ),
               });
-              Marko.ᜭ.render(fancyButton)({
+              Marko.ᜭ.renderDynamicTag(fancyButton)({
                 /*fancyButton*/
                 something: true,
                 /*fancyButton*/
@@ -151,7 +147,7 @@ export default Marko.ᜭ.instance(
                   })()
                 ),
               });
-              (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+              Marko.ᜭ.renderNativeTag("div")({
                 /*div*/
                 /*div*/
                 ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -160,12 +156,12 @@ export default Marko.ᜭ.instance(
                   })()
                 ),
               });
-              (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+              Marko.ᜭ.renderNativeTag("div")({
                 /*div*/
                 /*div*/
                 ["renderBody"]: Marko.ᜭ.inlineBody(
                   (() => {
-                    (1 as any as Marko.ᜭ.NativeTagRenderer<"code">)({
+                    Marko.ᜭ.renderNativeTag("code")({
                       /*code*/
                       /*code*/
                       ["renderBody"]: Marko.ᜭ.inlineBody((() => {})()),

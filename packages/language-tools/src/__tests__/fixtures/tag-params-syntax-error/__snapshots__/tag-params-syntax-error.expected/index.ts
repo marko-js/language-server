@@ -44,7 +44,7 @@ const out = 1 as unknown as Marko.Out;
 const state = Marko.ᜭ.state(component);
 Marko.ᜭ.noop({ input, out, component, state });
 return (function (this: void) {
-Marko.ᜭ.render(custom)({
+Marko.ᜭ.renderDynamicTag(custom)({
 /*custom*/
 [/*custom*/
 "renderBody"]: Marko.ᜭ.body(function *(

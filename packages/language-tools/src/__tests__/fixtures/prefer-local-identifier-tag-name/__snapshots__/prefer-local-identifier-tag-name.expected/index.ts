@@ -46,43 +46,29 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/const/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: CustomTagA,
           })
         );
         const { value: TestTagA } = Marko.ᜭ.rendered.returns[1];
-        Marko.ᜭ.render(
+        Marko.ᜭ.renderPreferLocal(
           // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-          1 as unknown as MARKO_NOT_DECLARED extends any
-            ? 0 extends 1 & typeof TestTagA
-              ? Marko.ᜭ.CustomTagRenderer<
-                  typeof import("./components/TestTagA.marko").default
-                >
-              : typeof TestTagA
-            : never
+          (Marko.ᜭ.error, TestTagA),
+          Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
         )({
           /*TestTagA*/
           a: "hello",
         });
-        Marko.ᜭ.render(
+        Marko.ᜭ.renderPreferLocal(
           // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-          1 as unknown as MARKO_NOT_DECLARED extends any
-            ? 0 extends 1 & typeof TestTagB
-              ? Marko.ᜭ.CustomTagRenderer<
-                  typeof import("./components/TestTagB.marko").default
-                >
-              : typeof TestTagB
-            : never
+          (Marko.ᜭ.error, TestTagB),
+          Marko.ᜭ.renderTemplate(import("./components/TestTagB.marko"))
         )({
           /*TestTagB*/
           b: "hello",
         });
-        (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+        Marko.ᜭ.renderNativeTag("div")({
           /*div*/
           /*div*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -90,25 +76,18 @@ export default Marko.ᜭ.instance(
               Marko.ᜭ.assertRendered(
                 Marko.ᜭ.rendered,
                 2,
-                (
-                  1 as any as Marko.ᜭ.CustomTagRenderer<
-                    typeof import("../../components/const/index.marko").default
-                  >
+                Marko.ᜭ.renderTemplate(
+                  import("../../components/const/index.marko")
                 )({
                   /*const*/
                   value: CustomTagB,
                 })
               );
               const { value: TestTagA } = Marko.ᜭ.rendered.returns[2];
-              Marko.ᜭ.render(
+              Marko.ᜭ.renderPreferLocal(
                 // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-                1 as unknown as MARKO_NOT_DECLARED extends any
-                  ? 0 extends 1 & typeof TestTagA
-                    ? Marko.ᜭ.CustomTagRenderer<
-                        typeof import("./components/TestTagA.marko").default
-                      >
-                    : typeof TestTagA
-                  : never
+                (Marko.ᜭ.error, TestTagA),
+                Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
               )({
                 /*TestTagA*/
                 a: "hello",
@@ -116,15 +95,10 @@ export default Marko.ᜭ.instance(
             })()
           ),
         });
-        Marko.ᜭ.render(
+        Marko.ᜭ.renderPreferLocal(
           // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-          1 as unknown as MARKO_NOT_DECLARED extends any
-            ? 0 extends 1 & typeof TestTagA
-              ? Marko.ᜭ.CustomTagRenderer<
-                  typeof import("./components/TestTagA.marko").default
-                >
-              : typeof TestTagA
-            : never
+          (Marko.ᜭ.error, TestTagA),
+          Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
         )({
           /*TestTagA*/
           a: "hello",

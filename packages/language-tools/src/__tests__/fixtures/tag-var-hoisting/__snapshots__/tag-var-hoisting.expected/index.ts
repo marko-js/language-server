@@ -44,7 +44,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+          Marko.ᜭ.renderNativeTag("div")({
             /*div*/
             /*div*/
             ["renderBody"]: Marko.ᜭ.inlineBody(
@@ -52,10 +52,8 @@ export default Marko.ᜭ.instance(
                 Marko.ᜭ.assertRendered(
                   Marko.ᜭ.rendered,
                   2,
-                  (
-                    1 as any as Marko.ᜭ.CustomTagRenderer<
-                      typeof import("../../components/let/index.marko").default
-                    >
+                  Marko.ᜭ.renderTemplate(
+                    import("../../components/let/index.marko")
                   )({
                     /*let*/
                     value: {
@@ -86,10 +84,8 @@ export default Marko.ᜭ.instance(
                 Marko.ᜭ.assertRendered(
                   Marko.ᜭ.rendered,
                   3,
-                  (
-                    1 as any as Marko.ᜭ.CustomTagRenderer<
-                      typeof import("../../components/let/index.marko").default
-                    >
+                  Marko.ᜭ.renderTemplate(
+                    import("../../components/let/index.marko")
                   )({
                     /*let*/
                     value: [1, 2, 3, 4, 5] as const,

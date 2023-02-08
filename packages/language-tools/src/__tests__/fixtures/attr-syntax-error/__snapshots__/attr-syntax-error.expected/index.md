@@ -115,7 +115,7 @@
 > 51 | )
      | ^ ':' expected.
   52 | });
-  53 | (1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+  53 | Marko.ᜭ.renderNativeTag("div")({
   54 | /*div*/
 ```
 

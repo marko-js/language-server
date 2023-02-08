@@ -42,7 +42,7 @@ export default Marko.ᜭ.instance(
       Marko.ᜭ.noop({ input, out, component, state });
       return (function (this: void) {
         let i = 0;
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           ...Marko.ᜭ.mergeAttrTags(
             ++i < 10
@@ -64,7 +64,7 @@ export default Marko.ᜭ.instance(
         });
         let done = false;
         i = 0;
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           ...Marko.ᜭ.mergeAttrTags(
             !done
@@ -87,7 +87,7 @@ export default Marko.ᜭ.instance(
               : []
           ),
         });
-        Marko.ᜭ.render(custom)({
+        Marko.ᜭ.renderDynamicTag(custom)({
           /*custom*/
           ...Marko.ᜭ.mergeAttrTags(
             undefined

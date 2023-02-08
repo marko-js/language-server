@@ -84,7 +84,6 @@ class ScriptExtractor {
   // #isTS: boolean;
   #runtimeTypes: ExtractScriptOptions["runtimeTypes"];
   #mutationOffsets: Repeatable<number>;
-  #referencedTags = new Set<TagDefinition>();
   #renderId = 1;
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup } = opts;
@@ -562,57 +561,46 @@ return (function (this: void) {
 
     if (tagName) {
       const def = this.#lookup.getTag(tagName);
-      let isHtml = false;
-      let tagId: string | undefined;
 
       if (def) {
-        this.#referencedTags.add(def);
         if (def.html) {
-          isHtml = true;
-          tagId = `${VAR_INTERNAL}.NativeTagRenderer<"${def.name}">`;
+          this.#extractor.write(
+            `${VAR_INTERNAL}.renderNativeTag("${def.name}")`
+          );
         } else {
           const importPath = resolveTagImport(this.#filename, def);
-          if (importPath) {
-            tagId = `${VAR_INTERNAL}.CustomTagRenderer<typeof import("${importPath}").default>`;
+          const renderer = importPath
+            ? `renderTemplate(import("${importPath}"))`
+            : "missingTag";
+
+          if (isValidIdentifier(tagName)) {
+            this.#extractor
+              .write(
+                `${VAR_INTERNAL}.renderPreferLocal(
+// @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
+(${VAR_INTERNAL}.error, `
+              )
+              .copy(tag.name)
+              .write(`),\n${VAR_INTERNAL}.${renderer})`);
           } else {
-            tagId = `${VAR_INTERNAL}.DefaultRenderer`;
+            this.#extractor.write(`${VAR_INTERNAL}.${renderer}`);
           }
         }
-      }
-
-      if (!isHtml && isValidIdentifier(tagName)) {
-        this.#extractor.write(`${VAR_INTERNAL}.render(`);
-        if (tagId) {
-          // TODO: must change for js mode.
-          this.#extractor
-            .write(
-              `// @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-(1 as unknown as MARKO_NOT_DECLARED extends any ? 0 extends 1 & typeof `
-            )
-            .copy(tag.name)
-            .write(` ? ${tagId} : typeof `)
-            .copy(tag.name)
-            .copy(tag.typeArgs)
-            .write(" : never)");
-        } else {
-          this.#extractor.copy(tag.name).copy(tag.typeArgs);
-        }
-
-        this.#extractor.write(")(");
-      } else if (tagId) {
+      } else if (isValidIdentifier(tagName)) {
         this.#extractor
-          .write(`(1 as any as ${tagId})`)
-          .copy(tag.typeArgs)
-          .write("(");
+          .write(`${VAR_INTERNAL}.renderDynamicTag(\n`)
+          .copy(tag.name)
+          .write("\n)");
       } else {
-        // TODO: must change for js mode. Maybe `Marko.internal.unknown?
-        this.#extractor.write(`${VAR_INTERNAL}.render(1 as unknown)(`);
+        this.#extractor.write(`${VAR_INTERNAL}.missingTag`);
       }
     } else {
-      this.#extractor.write(`${VAR_INTERNAL}.render(`);
+      this.#extractor.write(`${VAR_INTERNAL}.renderDynamicTag(`);
       this.#writeDynamicTagName(tag);
-      this.#extractor.write(")(");
+      this.#extractor.write(")");
     }
+
+    this.#extractor.copy(tag.typeArgs).write("(");
 
     this.#writeTagInputObject(tag);
 

@@ -44,11 +44,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("./components/test-tag.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
             /*test-tag*/
             data: 1 as const,
             /*test-tag*/

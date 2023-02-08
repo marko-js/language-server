@@ -44,13 +44,13 @@ const out = 1 as unknown as Marko.Out;
 const state = Marko.ᜭ.state(component);
 Marko.ᜭ.noop({ input, out, component, state });
 return (function (this: void) {
-(1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+Marko.ᜭ.renderNativeTag("div")({
 /*div*/
 "data-x": (
 #2
 )
 });
-(1 as any as Marko.ᜭ.NativeTagRenderer<"div">)({
+Marko.ᜭ.renderNativeTag("div")({
 /*div*/
 "onClick"(a, %b){
   console.log(#hello!);

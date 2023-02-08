@@ -108,12 +108,19 @@ declare global {
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
       export function renderTemplate<Name extends Marko.Template>(
-        tag: Name
+        imported: Promise<{ default: Name }>
       ): CustomTagRenderer<Name>;
-      export function renderTag<Name extends string>(
+      export function renderNativeTag<Name extends string>(
         tag: Name
       ): NativeTagRenderer<Name>;
-      export function render<Name>(
+      export const missingTag: DefaultRenderer;
+      export function renderPreferLocal<Name, Fallback>(
+        name: Name,
+        fallback: Fallback
+      ): 0 extends 1 & Name
+        ? Fallback
+        : ReturnType<typeof renderDynamicTag<Name>>;
+      export function renderDynamicTag<Name>(
         tag: Name
       ): 0 extends 1 & Name
         ? DefaultRenderer

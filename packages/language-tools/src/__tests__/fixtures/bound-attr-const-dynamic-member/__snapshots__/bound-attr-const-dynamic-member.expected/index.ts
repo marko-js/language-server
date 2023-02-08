@@ -44,11 +44,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           1,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             value: { b: 1 },
           })
@@ -57,11 +53,7 @@ export default Marko.ᜭ.instance(
         Marko.ᜭ.assertRendered(
           Marko.ᜭ.rendered,
           2,
-          (
-            1 as any as Marko.ᜭ.CustomTagRenderer<
-              typeof import("../../components/let/index.marko").default
-            >
-          )({
+          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
             /*let*/
             valueChange: a[`${"b"}Change`],
             value: a["b"],
