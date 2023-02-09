@@ -1,17 +1,4 @@
 ## Source Diagnostics
-### Ln 3, Col 2
-```marko
-  1 | <div data-x=#2/>
-  2 |
-> 3 | <div onClick(a, %b) {
-    |  ^^^^^^^^^^^^^^^^^^^^
-> 4 |   console.log(#hello!);
-    | ^^^^^^^^^^^^^^^^^^^^^^^
-> 5 | }/>
-    | ^^ Unreachable code detected.
-  6 |
-```
-
 ### Ln 1, Col 13
 ```marko
 > 1 | <div data-x=#2/>
@@ -108,92 +95,58 @@
 ```
 
 ## Generated Diagnostics
-### Ln 51, Col 1
+### Ln 16, Col 1
 ```ts
-  49 | "data-x": (
-  50 | #2
-> 51 | )
+  14 | "data-x": (
+  15 | #2
+> 16 | )
      | ^ ':' expected.
-  52 | });
-  53 | Marko.ᜭ.renderNativeTag("div")({
-  54 | /*div*/
+  17 | });
+  18 | Marko.ᜭ.renderNativeTag("div")({
+  19 | /*div*/
 ```
 
-### Ln 58, Col 2
+### Ln 17, Col 2
 ```ts
-  56 |   console.log(#hello!);
-  57 | }
-> 58 | });
-     |  ^ Unexpected token. A constructor, method, accessor, or property was expected.
-  59 | return;
-  60 |
-  61 | })();
-```
-
-### Ln 61, Col 1
-```ts
-  59 | return;
-  60 |
-> 61 | })();
-     | ^ Declaration or statement expected.
-  62 | }});
-  63 |
-```
-
-### Ln 61, Col 2
-```ts
-  59 | return;
-  60 |
-> 61 | })();
+  15 | #2
+  16 | )
+> 17 | });
      |  ^ Declaration or statement expected.
-  62 | }});
-  63 |
+  18 | Marko.ᜭ.renderNativeTag("div")({
+  19 | /*div*/
+  20 | "onClick"(a, %b){
 ```
 
-### Ln 61, Col 3
+### Ln 23, Col 1
 ```ts
-  59 | return;
-  60 |
-> 61 | })();
-     |   ^^^ Unreachable code detected.
-  62 | }});
-  63 |
-```
-
-### Ln 61, Col 4
-```ts
-  59 | return;
-  60 |
-> 61 | })();
-     |    ^ Expression expected.
-  62 | }});
-  63 |
-```
-
-### Ln 62, Col 1
-```ts
-  60 |
-  61 | })();
-> 62 | }});
+  21 |   console.log(#hello!);
+  22 | }
+> 23 | });
      | ^ Declaration or statement expected.
-  63 |
+  24 | return;
+  25 |
+  26 | }
 ```
 
-### Ln 62, Col 2
+### Ln 23, Col 2
 ```ts
-  60 |
-  61 | })();
-> 62 | }});
+  21 |   console.log(#hello!);
+  22 | }
+> 23 | });
      |  ^ Declaration or statement expected.
-  63 |
+  24 | return;
+  25 |
+  26 | }
 ```
 
-### Ln 62, Col 3
+### Ln 26, Col 1
 ```ts
-  60 |
-  61 | })();
-> 62 | }});
-     |   ^ Declaration or statement expected.
-  63 |
+  24 | return;
+  25 |
+> 26 | }
+     | ^ Declaration or statement expected.
+  27 | export default new (
+  28 |   class Template extends Marko.ᜭ.Template<{
+  29 |       /** Asynchronously render the template. */
 ```
 

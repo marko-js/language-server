@@ -42,6 +42,7 @@ export function patch(
         const code = host.readFile(filename, "utf-8") || "";
         const markoProject = getMarkoProject(path.dirname(filename));
         cached = extractScript({
+          ts,
           parsed: parse(code, filename),
           lookup: markoProject.lookup,
           runtimeTypes: getRuntimeTypes(markoProject, ts, host),

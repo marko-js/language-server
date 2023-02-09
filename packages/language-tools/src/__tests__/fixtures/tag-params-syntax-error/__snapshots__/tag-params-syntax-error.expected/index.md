@@ -1,8 +1,26 @@
 ## Source Diagnostics
+### Ln 1, Col 4
+```marko
+> 1 | <${custom}|a, %b|>
+    |    ^^^^^^ Cannot find name 'custom'.
+  2 |   Hi
+  3 | </>
+  4 |
+```
+
 ### Ln 1, Col 12
 ```marko
 > 1 | <${custom}|a, %b|>
     |            ^ 'a' is declared but its value is never read.
+  2 |   Hi
+  3 | </>
+  4 |
+```
+
+### Ln 1, Col 12
+```marko
+> 1 | <${custom}|a, %b|>
+    |            ^ Parameter 'a' implicitly has an 'any' type.
   2 |   Hi
   3 | </>
   4 |
@@ -17,38 +35,10 @@
   4 |
 ```
 
-### Ln 1, Col 4
-```marko
-> 1 | <${custom}|a, %b|>
-    |    ^^^^^^^^^^^^^ This expression is not callable.
-  Type '(Anonymous class)' has no call signatures.
-  2 |   Hi
-  3 | </>
-  4 |
-```
-
-### Ln 1, Col 4
-```marko
-> 1 | <${custom}|a, %b|>
-    |    ^^^^^^ Cannot find name 'custom'.
-  2 |   Hi
-  3 | </>
-  4 |
-```
-
 ### Ln 1, Col 12
 ```marko
 > 1 | <${custom}|a, %b|>
     |            ^^^^^ Argument of type 'number' is not assignable to parameter of type 'Body<readonly any[], unknown, unknown>'.
-  2 |   Hi
-  3 | </>
-  4 |
-```
-
-### Ln 1, Col 12
-```marko
-> 1 | <${custom}|a, %b|>
-    |            ^ Parameter 'a' implicitly has an 'any' type.
   2 |   Hi
   3 | </>
   4 |
@@ -64,101 +54,75 @@
 ```
 
 ## Generated Diagnostics
-### Ln 50, Col 29
+### Ln 15, Col 29
 ```ts
-  48 | /*custom*/
-  49 | [/*custom*/
-> 50 | "renderBody"]: Marko.ᜭ.body(function *(
+  13 | /*custom*/
+  14 | [/*custom*/
+> 15 | "renderBody"]: Marko.ᜭ.body(function *(
      |                             ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
-  51 | a, %b
-  52 | ) {
-  53 | return;
+  16 | a, %b
+  17 | ) {
+  18 | return;
 ```
 
-### Ln 52, Col 3
+### Ln 17, Col 3
 ```ts
-  50 | "renderBody"]: Marko.ᜭ.body(function *(
-  51 | a, %b
-> 52 | ) {
+  15 | "renderBody"]: Marko.ᜭ.body(function *(
+  16 | a, %b
+> 17 | ) {
      |   ^ ',' expected.
-  53 | return;
-  54 |
-  55 | })
+  18 | return;
+  19 |
+  20 | })
 ```
 
-### Ln 52, Col 3
+### Ln 17, Col 3
 ```ts
-  50 | "renderBody"]: Marko.ᜭ.body(function *(
-  51 | a, %b
-> 52 | ) {
+  15 | "renderBody"]: Marko.ᜭ.body(function *(
+  16 | a, %b
+> 17 | ) {
      |   ^
-> 53 | return;
+> 18 | return;
      | ^^^^^^^
-> 54 |
+> 19 |
      | ^^^^^^^
-> 55 | })
+> 20 | })
      | ^^ Expected 1 arguments, but got 2.
-  56 | });
-  57 | return;
-  58 |
+  21 | });
+  22 | return;
+  23 |
 ```
 
-### Ln 53, Col 7
+### Ln 18, Col 7
 ```ts
-  51 | a, %b
-  52 | ) {
-> 53 | return;
+  16 | a, %b
+  17 | ) {
+> 18 | return;
      |       ^ ':' expected.
-  54 |
-  55 | })
-  56 | });
+  19 |
+  20 | })
+  21 | });
 ```
 
-### Ln 57, Col 1
+### Ln 21, Col 2
 ```ts
-  55 | })
-  56 | });
-> 57 | return;
-     | ^^^^^^^ Unreachable code detected.
-  58 |
-  59 | })();
-  60 | }});
-```
-
-### Ln 59, Col 2
-```ts
-  57 | return;
-  58 |
-> 59 | })();
-     |  ^ Unexpected token. A constructor, method, accessor, or property was expected.
-  60 | }});
-  61 |
-```
-
-### Ln 60, Col 1
-```ts
-  58 |
-  59 | })();
-> 60 | }});
-     | ^ Declaration or statement expected.
-  61 |
-```
-
-### Ln 60, Col 2
-```ts
-  58 |
-  59 | })();
-> 60 | }});
+  19 |
+  20 | })
+> 21 | });
      |  ^ Declaration or statement expected.
-  61 |
+  22 | return;
+  23 |
+  24 | }
 ```
 
-### Ln 60, Col 3
+### Ln 24, Col 1
 ```ts
-  58 |
-  59 | })();
-> 60 | }});
-     |   ^ Declaration or statement expected.
-  61 |
+  22 | return;
+  23 |
+> 24 | }
+     | ^ Declaration or statement expected.
+  25 | export default new (
+  26 |   class Template extends Marko.ᜭ.Template<{
+  27 |       /** Asynchronously render the template. */
 ```
 

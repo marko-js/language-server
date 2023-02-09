@@ -46,6 +46,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
           );
 
           const extractOptions: Parameters<typeof extractScript>[0] = {
+            ts,
             parsed,
             lookup,
             scriptKind: "ts",

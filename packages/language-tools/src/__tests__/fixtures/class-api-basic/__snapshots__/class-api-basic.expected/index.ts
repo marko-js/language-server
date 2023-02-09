@@ -30,178 +30,168 @@ abstract class Component extends Marko.Component<Input> {
   }
 }
 export { type Component };
-export default Marko.ᜭ.instance(
-  class extends Marko.ᜭ.Template<{
-    /** Asynchronously render the template. */
-    render(
-      input: Marko.TemplateInput<Input>,
-      stream?: {
-        write: (chunk: string) => void;
-        end: (chunk?: string) => void;
-      }
-    ): Marko.Out<Component>;
+function ᜭ() {
+  const input = 1 as any as Input;
+  const component = 1 as any as Component;
+  const out = Marko.ᜭ.out;
+  const state = Marko.ᜭ.state(component);
+  Marko.ᜭ.noop({ input, out, component, state });
+  const person = {
+    name: "Frank",
+    age: 32,
+  };
 
-    /** Synchronously render the template. */
-    renderSync(
-      input: Marko.TemplateInput<Input>
-    ): Marko.RenderResult<Component>;
+  const year: number = input.year;
+  const isSmartOnly: boolean = input.isSmartOnly;
+  const type: string = component.input.type;
 
-    /** Synchronously render a template to a string. */
-    renderToString(input: Marko.TemplateInput<Input>): string;
+  const mobiles: Array<Mobile> = component.input.mobileList;
 
-    /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
-    stream(
-      input: Marko.TemplateInput<Input>
-    ): ReadableStream<string> & NodeJS.ReadableStream;
-  }>() {
-    /**
-     * @internal
-     * Do not use or you will be fired.
-     */
-    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
-      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
-    }
-    #ᜭ() {
-      const input = 1 as unknown as Input;
-      const component = Marko.ᜭ.instance(Component);
-      const out = 1 as unknown as Marko.Out;
-      const state = Marko.ᜭ.state(component);
-      Marko.ᜭ.noop({ input, out, component, state });
-      return (function (this: void) {
-        const person = {
-          name: "Frank",
-          age: 32,
-        };
-
-        const year: number = input.year;
-        const isSmartOnly: boolean = input.isSmartOnly;
-        const type: string = component.input.type;
+  mobiles.forEach((mobile: Mobile) => {
+    console.log(mobile.brandName);
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    class: "mobiles__list",
+    onClick: Marko.ᜭ.bind(component, "handleClick"),
+    /*div*/
+    ["renderBody"]: Marko.ᜭ.inlineBody(
+      (() => {
+        Marko.ᜭ.renderNativeTag("p")({
+          /*p*/
+          id: "p",
+          /*p*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              year;
+            })()
+          ),
+        });
+        if (isSmartOnly) {
+          Marko.ᜭ.renderNativeTag("span")({
+            /*span*/
+            class: "subnote",
+            /*span*/
+            ["renderBody"]: Marko.ᜭ.inlineBody(
+              (() => {
+                isSmartOnly;
+              })()
+            ),
+          });
+        }
+        Marko.ᜭ.renderNativeTag("span")({
+          /*span*/
+          class: "subnote",
+          /*span*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              type;
+            })()
+          ),
+        });
 
         const mobiles: Array<Mobile> = component.input.mobileList;
-
         mobiles.forEach((mobile: Mobile) => {
           console.log(mobile.brandName);
         });
+        Marko.ᜭ.forTag({
+          of: mobiles,
+          [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (mobile, i, all) {
+            Marko.ᜭ.renderNativeTag("span")({
+              /*span*/
+              id: i,
+              /*span*/
+              ["renderBody"]: Marko.ᜭ.inlineBody(
+                (() => {
+                  mobile;
+                  i;
+                  all.length;
+                })()
+              ),
+            });
+          }),
+        });
         Marko.ᜭ.renderNativeTag("div")({
           /*div*/
-          class: "mobiles__list",
-          onClick: Marko.ᜭ.bind(component, "handleClick"),
+          class: `container`,
           /*div*/
           ["renderBody"]: Marko.ᜭ.inlineBody(
             (() => {
-              Marko.ᜭ.renderNativeTag("p")({
-                /*p*/
-                id: "p",
-                /*p*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    year;
-                  })()
-                ),
-              });
-              if (isSmartOnly) {
-                Marko.ᜭ.renderNativeTag("span")({
-                  /*span*/
-                  class: "subnote",
-                  /*span*/
-                  ["renderBody"]: Marko.ᜭ.inlineBody(
-                    (() => {
-                      isSmartOnly;
-                    })()
-                  ),
-                });
-              }
-              Marko.ᜭ.renderNativeTag("span")({
-                /*span*/
-                class: "subnote",
-                /*span*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    type;
-                  })()
-                ),
-              });
-
-              const mobiles: Array<Mobile> = component.input.mobileList;
-              mobiles.forEach((mobile: Mobile) => {
-                console.log(mobile.brandName);
-              });
-              Marko.ᜭ.forTag({
-                of: mobiles,
-                [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (
-                  mobile,
-                  i,
-                  all
-                ) {
-                  Marko.ᜭ.renderNativeTag("span")({
-                    /*span*/
-                    id: i,
-                    /*span*/
-                    ["renderBody"]: Marko.ᜭ.inlineBody(
-                      (() => {
-                        mobile;
-                        i;
-                        all.length;
-                      })()
-                    ),
-                  });
-                }),
-              });
-              Marko.ᜭ.renderNativeTag("div")({
-                /*div*/
-                class: `container`,
-                /*div*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    Marko.ᜭ.renderDynamicTag(input.renderBody)({
-                      /*input.renderBody*/
-                    });
-                  })()
-                ),
-              });
-              Marko.ᜭ.renderDynamicTag(fancyButton)({
-                /*fancyButton*/
-                something: true,
-                /*fancyButton*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    type;
-                  })()
-                ),
-              });
-              Marko.ᜭ.renderNativeTag("div")({
-                /*div*/
-                /*div*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    ("<b>World</b>");
-                  })()
-                ),
-              });
-              Marko.ᜭ.renderNativeTag("div")({
-                /*div*/
-                /*div*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
-                  (() => {
-                    Marko.ᜭ.renderNativeTag("code")({
-                      /*code*/
-                      /*code*/
-                      ["renderBody"]: Marko.ᜭ.inlineBody((() => {})()),
-                    });
-                  })()
-                ),
-              });
-              Marko.ᜭ.renderDynamicTag(missing)({
-                /*missing*/
-              });
-              Marko.ᜭ.missingTag({
-                /*complex-missing*/
+              Marko.ᜭ.renderDynamicTag(input.renderBody)({
+                /*input.renderBody*/
               });
             })()
           ),
         });
-        return;
-      })();
+        Marko.ᜭ.renderDynamicTag(fancyButton)({
+          /*fancyButton*/
+          something: true,
+          /*fancyButton*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              type;
+            })()
+          ),
+        });
+        Marko.ᜭ.renderNativeTag("div")({
+          /*div*/
+          /*div*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              ("<b>World</b>");
+            })()
+          ),
+        });
+        Marko.ᜭ.renderNativeTag("div")({
+          /*div*/
+          /*div*/
+          ["renderBody"]: Marko.ᜭ.inlineBody(
+            (() => {
+              Marko.ᜭ.renderNativeTag("code")({
+                /*code*/
+                /*code*/
+                ["renderBody"]: Marko.ᜭ.inlineBody((() => {})()),
+              });
+            })()
+          ),
+        });
+        Marko.ᜭ.renderDynamicTag(missing)({
+          /*missing*/
+        });
+        Marko.ᜭ.missingTag({
+          /*complex-missing*/
+        });
+      })()
+    ),
+  });
+  return;
+}
+export default new (class Template extends Marko.ᜭ.Template<{
+  /** Asynchronously render the template. */
+  render(
+    input: Marko.TemplateInput<Input>,
+    stream?: {
+      write: (chunk: string) => void;
+      end: (chunk?: string) => void;
     }
-  }
-);
+  ): Marko.Out<Component>;
+
+  /** Synchronously render the template. */
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
+
+  /** Synchronously render a template to a string. */
+  renderToString(input: Marko.TemplateInput<Input>): string;
+
+  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
+  stream(
+    input: Marko.TemplateInput<Input>
+  ): ReadableStream<string> & NodeJS.ReadableStream;
+
+  /**
+   * @internal
+   * Do not use or you will be fired.
+   */
+  ᜭ<ᜭInput = unknown>(
+    input: Marko.ᜭ.Relate<Input, ᜭInput>
+  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+}> {})();

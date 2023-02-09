@@ -1,3 +1,4 @@
+import type TS from "typescript";
 import type * as t from "@babel/types";
 import { relativeImportPath } from "relative-import-path";
 
@@ -24,12 +25,16 @@ import {
   isMutatedVar,
 } from "./util/attach-scopes";
 import { getRuntimeOverrides } from "./util/runtime-overrides";
+import getJSDocInputType from "./util/jsdoc-input-type";
 
 const SEP_EMPTY = "";
 const SEP_SPACE = " ";
 const SEP_COMMA_SPACE = ", ";
 const SEP_COMMA_NEW_LINE = ",\n";
 const VAR_DYNAMIC = "ᜭ";
+const VAR_TEMPLATE = VAR_DYNAMIC;
+const VAR_INTERNAL_INPUT = `${VAR_DYNAMIC}Input`;
+const VAR_RETURN = VAR_DYNAMIC + VAR_DYNAMIC;
 const VAR_INTERNAL = `Marko.${VAR_DYNAMIC}`;
 const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
@@ -51,7 +56,6 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: js mode
 // TODO: css modules
 
 /**
@@ -62,6 +66,7 @@ export interface ExtractScriptOptions {
   parsed: Parsed;
   lookup: TaglibLookup;
   scriptKind: "js" | "ts";
+  ts?: typeof TS;
   componentClassImport?: string | undefined;
   runtimeTypes?: {
     filename: string;
@@ -81,7 +86,8 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #renderIds = new Map<Node.ParentTag, number>();
-  // #isTS: boolean;
+  #isTS: boolean;
+  #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypes"];
   #mutationOffsets: Repeatable<number>;
   #renderId = 1;
@@ -91,7 +97,8 @@ class ScriptExtractor {
     this.#code = parsed.code;
     this.#parsed = parsed;
     this.#lookup = lookup;
-    // this.#isTS = opts.scriptKind === "ts";
+    this.#isTS = opts.scriptKind === "ts";
+    this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypes;
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
@@ -108,9 +115,8 @@ class ScriptExtractor {
     program: Node.Program,
     componentClassImport: ExtractScriptOptions["componentClassImport"]
   ) {
+    const inputType = this.#getInputType(program);
     let componentClassBody: Range | void;
-    let typeParameters: (t.TSTypeParameterDeclaration & Range) | void | null;
-    let hasInput = false;
 
     if (this.#runtimeTypes) {
       this.#extractor.write(
@@ -120,8 +126,6 @@ class ScriptExtractor {
         )}";\n`
       );
     }
-
-    // TODO: in JS mode should scan for `Input` type comment.
 
     for (const node of program.static) {
       switch (node.type) {
@@ -133,23 +137,7 @@ class ScriptExtractor {
           };
           break;
         case NodeType.Export: {
-          const start = node.start + "export ".length;
           this.#writeComments(node);
-
-          // TODO: should only scan for `Input` type if in ts mode.
-          if (!hasInput && this.#testAtIndex(REG_INPUT_TYPE, start)) {
-            const [inputType] = this.#scriptParser.statementAt<
-              t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
-            >(start, this.#read({ start, end: node.end }));
-            hasInput = true;
-
-            if (inputType) {
-              typeParameters =
-                inputType.typeParameters as t.TSTypeParameterDeclaration &
-                  Range;
-            }
-          }
-
           this.#extractor.copy(node).write("\n");
           break;
         }
@@ -202,25 +190,44 @@ class ScriptExtractor {
       }
     }
 
-    let genericsStr = "";
-    let applyGenericsStr = "";
+    let typeParamsStr = "";
+    let typeArgsStr = "";
+    let jsDocTemplateTagsStr = "";
 
-    // TODO: this whole section needs to be redone for js mode.
-    if (hasInput) {
-      if (typeParameters) {
+    if (inputType) {
+      if (inputType.typeParameters) {
         let sep = SEP_EMPTY;
-        applyGenericsStr = "<";
-        genericsStr = this.#read(typeParameters);
+        typeParamsStr = typeArgsStr = "<";
 
-        for (const generic of typeParameters.params) {
-          applyGenericsStr += sep + generic.name;
+        for (const param of inputType.typeParameters) {
+          typeParamsStr +=
+            sep +
+            param.name +
+            (param.constraint ? ` extends ${param.constraint}` : "") +
+            (param.default ? ` = ${param.default}` : "");
+          typeArgsStr += sep + param.name;
           sep = SEP_COMMA_SPACE;
         }
 
-        applyGenericsStr += ">";
+        typeParamsStr += ">";
+        typeArgsStr += ">";
+
+        if (!this.#isTS) {
+          for (const param of inputType.typeParameters) {
+            jsDocTemplateTagsStr += `\n* @template ${
+              param.constraint ? `{${param.constraint}} ` : ""
+            }${
+              param.default ? `[${param.name} = ${param.default}]` : param.name
+            }`;
+          }
+        }
       }
-    } else {
+    } else if (this.#isTS) {
       this.#extractor.write("export interface Input {}\n");
+    } else {
+      this.#extractor.write(
+        "/** @typedef {Record<string, unknown>} Input */\n"
+      );
     }
 
     if (!componentClassBody && componentClassImport) {
@@ -228,49 +235,42 @@ class ScriptExtractor {
         `import Component from "${componentClassImport}";\n`
       );
     } else {
-      // TODO: in js mode this should use a comment like
-      // extends /* @type {typeof Marko.Component<Input<${userGenericsStr}>>} */ (Marko.Component)
-      // or https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
-      this.#extractor
-        .write(
-          `abstract class Component${genericsStr} extends Marko.Component<Input${applyGenericsStr}>`
-        )
-        .copy(componentClassBody || " {}")
-        .write("\n");
+      const body = componentClassBody || "{}";
+
+      if (this.#isTS) {
+        this.#extractor
+          .write(
+            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`
+          )
+          .copy(body)
+          .write("\nexport { type Component }\n");
+      } else {
+        this.#extractor.write(`/**${jsDocTemplateTagsStr}
+  * @extends {Marko.Component<Input${typeArgsStr}>}
+  */\n`);
+        this.#extractor
+          .write(`export class Component extends Marko.Component`)
+          .copy(body)
+          .write("\n");
+      }
     }
 
-    this.#extractor.write("export { type Component }\n");
+    if (this.#isTS) {
+      this.#extractor.write(`function ${VAR_TEMPLATE + typeParamsStr}() {
+  const input = 1 as any as Input${typeArgsStr};
+  const component = 1 as any as Component${typeArgsStr};\n`);
+    } else {
+      this.#extractor.write(`${
+        jsDocTemplateTagsStr ? `/**${jsDocTemplateTagsStr}*/\n` : ""
+      }function ${VAR_TEMPLATE}() {
+  const input = /** @type {Input${typeArgsStr}} */(1);
+  const component = /** @type {Component${typeArgsStr}} */(1);\n`);
+    }
 
-    this.#extractor.write(
-      `export default ${VAR_INTERNAL}.instance(class extends ${
-        this.#runtimeTypes
-          ? `${VAR_INTERNAL}.Template<{\n${getRuntimeOverrides(
-              this.#runtimeTypes.code,
-              genericsStr,
-              applyGenericsStr
-            )}\n}>()`
-          : "Marko.Template"
-      } {
-/**
- * @internal
- * Do not use or you will be fired.
- */
-public ${VAR_DYNAMIC}<
-  ${genericsStr ? `${genericsStr.slice(1, -1)}, ` : ""}${VAR_DYNAMIC} = unknown
->(input: ${VAR_INTERNAL}.Relate<Input${applyGenericsStr}, ${VAR_DYNAMIC}>) {
-  return ${VAR_INTERNAL}.returnWithScope(input as any as ${VAR_DYNAMIC}, this.#${VAR_DYNAMIC}${applyGenericsStr}());
-}
-`
-    );
-
-    this.#extractor.write(`#${VAR_DYNAMIC}${genericsStr}() {
-const input = 1 as unknown as Input${applyGenericsStr};
-const component = ${VAR_INTERNAL}.instance(Component${applyGenericsStr});
-const out = 1 as unknown as Marko.Out;
-const state = ${VAR_INTERNAL}.state(component);
-${VAR_INTERNAL}.noop({ input, out, component, state });
-return (function (this: void) {
-`);
+    this.#extractor.write(`\
+  const out = ${VAR_INTERNAL}.out;
+  const state = ${VAR_INTERNAL}.state(component);
+  ${VAR_INTERNAL}.noop({ input, out, component, state });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
     const didReturn =
@@ -289,14 +289,48 @@ return (function (this: void) {
     }
 
     if (didReturn) {
-      this.#extractor.write(`return ${VAR_DYNAMIC}.return;\n`);
+      this.#extractor.write(`return ${VAR_RETURN}.return;\n`);
     } else {
       this.#extractor.write("return;\n");
     }
 
-    this.#extractor.write("\n})();\n}");
+    this.#extractor.write("\n}\n");
 
-    this.#extractor.write("});\n");
+    const templateBaseClass = `${VAR_INTERNAL}.Template`;
+    const templateOverrideClass = `${templateBaseClass}<{${
+      this.#runtimeTypes
+        ? getRuntimeOverrides(
+            this.#runtimeTypes.code,
+            typeParamsStr,
+            typeArgsStr
+          )
+        : ""
+    }
+  /**
+   * @internal
+   * Do not use or you will be fired.
+   */
+  ${VAR_DYNAMIC}<
+    ${
+      typeParamsStr ? `${typeParamsStr.slice(1, -1)}, ` : ""
+    }${VAR_INTERNAL_INPUT} = unknown
+  >(input: ${VAR_INTERNAL}.Relate<Input${typeArgsStr}, ${VAR_INTERNAL_INPUT}>): (
+    ${VAR_INTERNAL}.ReturnWithScope<${VAR_INTERNAL_INPUT}, ReturnType<typeof ${
+      VAR_TEMPLATE + typeArgsStr
+    }>>
+  );
+}>`;
+
+    if (this.#isTS) {
+      this.#extractor.write(`export default new (
+  class Template extends ${templateOverrideClass} {}
+);\n`);
+    } else {
+      this.#extractor.write(`export default new (
+  /** @extends {${templateOverrideClass}} */
+  class Template extends ${templateBaseClass} {}
+);\n`);
+    }
 
     this.#writeComments(program);
   }
@@ -490,7 +524,7 @@ return (function (this: void) {
     const mutatedVars = getMutatedVars(parent);
 
     if (returnTag || mutatedVars) {
-      this.#extractor.write(`const ${VAR_DYNAMIC} = {\n`);
+      this.#extractor.write(`const ${VAR_RETURN} = {\n`);
 
       if (returnTag) {
         this.#extractor.write(`return: ${VAR_INTERNAL}.returnTag(`);
@@ -507,7 +541,7 @@ return (function (this: void) {
         this.#extractor.write(`mutate: ${VAR_INTERNAL}.mutable([\n`);
         for (const binding of mutatedVars) {
           this.#extractor.write(
-            `${sep}[${
+            `${sep + (!this.#isTS ? "/** @type {const} */" : "")}[${
               JSON.stringify(binding.name) +
               (binding.sourceName && binding.sourceName !== binding.name
                 ? `, ${JSON.stringify(binding.sourceName)}`
@@ -518,7 +552,7 @@ return (function (this: void) {
           );
           sep = SEP_COMMA_NEW_LINE;
         }
-        this.#extractor.write(`\n] as const)`); // TODO: need to figure out as const in js mode
+        this.#extractor.write(`\n]${this.#isTS ? " as const" : ""})`);
       }
 
       this.#extractor.write("\n};\n");
@@ -713,7 +747,7 @@ return (function (this: void) {
                         .write(
                           `) {\n${
                             isMutatedVar(tag.parent, this.#read(value.value))
-                              ? `${VAR_DYNAMIC}.mutate.`
+                              ? `${VAR_RETURN}.mutate.`
                               : ""
                           }`
                         )
@@ -1041,7 +1075,7 @@ return (function (this: void) {
           }
 
           if (didReturn) {
-            this.#extractor.write(`return ${VAR_DYNAMIC}.return;\n`);
+            this.#extractor.write(`return ${VAR_RETURN}.return;\n`);
           } else {
             this.#extractor.write("return;\n");
           }
@@ -1057,7 +1091,7 @@ return (function (this: void) {
             }
 
             if (didReturn) {
-              this.#extractor.write(`return: ${VAR_DYNAMIC}.return`);
+              this.#extractor.write(`return: ${VAR_RETURN}.return`);
             }
 
             this.#extractor.write("\n};");
@@ -1138,7 +1172,7 @@ return (function (this: void) {
       // Copy the content before the mutation.
       this.#extractor.copy({ start: curOffset, end: nextOffset });
       // splice in mutation prefix.
-      this.#extractor.write(`${VAR_DYNAMIC}.mutate.`);
+      this.#extractor.write(`${VAR_RETURN}.mutate.`);
 
       curOffset = nextOffset;
       minIndex = maxIndex + 1;
@@ -1319,6 +1353,65 @@ return (function (this: void) {
     }
 
     return true;
+  }
+
+  #getInputType(program: Node.Program) {
+    return this.#isTS
+      ? this.#getTSInputType(program)
+      : this.#ts && this.#getJSDocInputType(program);
+  }
+
+  #getTSInputType(program: Node.Program) {
+    for (const node of program.static) {
+      if (node.type === NodeType.Export) {
+        const start = node.start + "export ".length;
+        if (this.#testAtIndex(REG_INPUT_TYPE, start)) {
+          const [inputType] = this.#scriptParser.statementAt<
+            t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
+          >(start, this.#read({ start, end: node.end }));
+
+          return {
+            typeParameters: inputType?.typeParameters?.params.map((param) => {
+              return {
+                name: param.name,
+                constraint: param.constraint
+                  ? this.#read(param.constraint as Range)
+                  : undefined,
+                default: param.default
+                  ? this.#read(param.default as Range)
+                  : undefined,
+              };
+            }),
+          };
+        }
+      }
+    }
+  }
+
+  #getJSDocInputType(program: Node.Program) {
+    return (
+      this.#getJSDocInputTypeFromNodes(program.static) ||
+      this.#getJSDocInputTypeFromNodes(program.body) ||
+      this.#getJSDocInputTypeFromNode(program)
+    );
+  }
+
+  #getJSDocInputTypeFromNodes(nodes: Node.AnyNode[]) {
+    for (const node of nodes) {
+      const info = this.#getJSDocInputTypeFromNode(node);
+      if (info) return info;
+    }
+  }
+
+  #getJSDocInputTypeFromNode(node: Node.AnyNode) {
+    const comments = (node as Node.Commentable).comments;
+    if (comments) {
+      for (const comment of comments) {
+        const text = this.#read(comment);
+        const type = getJSDocInputType(text, this.#ts!);
+        if (type) return type;
+      }
+    }
   }
 
   #getRenderId(tag: Node.ParentTag) {

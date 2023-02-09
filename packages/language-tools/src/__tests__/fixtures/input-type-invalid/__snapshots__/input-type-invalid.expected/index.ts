@@ -3,10 +3,19 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {
   %: string;
 }
-abstract class Component extends Marko.Component<Input> {}
+abstract class Component extends Marko.Component<Input>{}
 export { type Component }
-export default Marko.ᜭ.instance(class extends Marko.ᜭ.Template<{
+function ᜭ() {
+  const input = 1 as any as Input;
+  const component = 1 as any as Component;
+  const out = Marko.ᜭ.out;
+  const state = Marko.ᜭ.state(component);
+  Marko.ᜭ.noop({ input, out, component, state });
+return;
 
+}
+export default new (
+  class Template extends Marko.ᜭ.Template<{
       /** Asynchronously render the template. */
       render(
         input: Marko.TemplateInput<Input>,
@@ -29,24 +38,14 @@ export default Marko.ᜭ.instance(class extends Marko.ᜭ.Template<{
         input: Marko.TemplateInput<Input>
       ): ReadableStream<string> & NodeJS.ReadableStream;
       
-}>() {
-/**
- * @internal
- * Do not use or you will be fired.
- */
-public ᜭ<
-  ᜭ = unknown
->(input: Marko.ᜭ.Relate<Input, ᜭ>) {
-  return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
-}
-#ᜭ() {
-const input = 1 as unknown as Input;
-const component = Marko.ᜭ.instance(Component);
-const out = 1 as unknown as Marko.Out;
-const state = Marko.ᜭ.state(component);
-Marko.ᜭ.noop({ input, out, component, state });
-return (function (this: void) {
-return;
-
-})();
-}});
+  /**
+   * @internal
+   * Do not use or you will be fired.
+   */
+  ᜭ<
+    ᜭInput = unknown
+  >(input: Marko.ᜭ.Relate<Input, ᜭInput>): (
+    Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>
+  );
+}> {}
+);

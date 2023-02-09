@@ -19,54 +19,45 @@ abstract class Component<
   }
 }
 export { type Component };
-export default Marko.ᜭ.instance(
-  class extends Marko.ᜭ.Template<{
-    /** Asynchronously render the template. */
-    render<FirstName extends string, LastName extends string>(
-      input: Marko.TemplateInput<Input<FirstName, LastName>>,
-      stream?: {
-        write: (chunk: string) => void;
-        end: (chunk?: string) => void;
-      }
-    ): Marko.Out<Component<FirstName, LastName>>;
-
-    /** Synchronously render the template. */
-    renderSync<FirstName extends string, LastName extends string>(
-      input: Marko.TemplateInput<Input<FirstName, LastName>>
-    ): Marko.RenderResult<Component<FirstName, LastName>>;
-
-    /** Synchronously render a template to a string. */
-    renderToString<FirstName extends string, LastName extends string>(
-      input: Marko.TemplateInput<Input<FirstName, LastName>>
-    ): string;
-
-    /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
-    stream<FirstName extends string, LastName extends string>(
-      input: Marko.TemplateInput<Input<FirstName, LastName>>
-    ): ReadableStream<string> & NodeJS.ReadableStream;
-  }>() {
-    /**
-     * @internal
-     * Do not use or you will be fired.
-     */
-    public ᜭ<FirstName extends string, LastName extends string, ᜭ = unknown>(
-      input: Marko.ᜭ.Relate<Input<FirstName, LastName>, ᜭ>
-    ) {
-      return Marko.ᜭ.returnWithScope(
-        input as any as ᜭ,
-        this.#ᜭ<FirstName, LastName>()
-      );
+function ᜭ<FirstName extends string, LastName extends string>() {
+  const input = 1 as any as Input<FirstName, LastName>;
+  const component = 1 as any as Component<FirstName, LastName>;
+  const out = Marko.ᜭ.out;
+  const state = Marko.ᜭ.state(component);
+  Marko.ᜭ.noop({ input, out, component, state });
+  state.name;
+  return;
+}
+export default new (class Template extends Marko.ᜭ.Template<{
+  /** Asynchronously render the template. */
+  render<FirstName extends string, LastName extends string>(
+    input: Marko.TemplateInput<Input<FirstName, LastName>>,
+    stream?: {
+      write: (chunk: string) => void;
+      end: (chunk?: string) => void;
     }
-    #ᜭ<FirstName extends string, LastName extends string>() {
-      const input = 1 as unknown as Input<FirstName, LastName>;
-      const component = Marko.ᜭ.instance(Component<FirstName, LastName>);
-      const out = 1 as unknown as Marko.Out;
-      const state = Marko.ᜭ.state(component);
-      Marko.ᜭ.noop({ input, out, component, state });
-      return (function (this: void) {
-        state.name;
-        return;
-      })();
-    }
-  }
-);
+  ): Marko.Out<Component<FirstName, LastName>>;
+
+  /** Synchronously render the template. */
+  renderSync<FirstName extends string, LastName extends string>(
+    input: Marko.TemplateInput<Input<FirstName, LastName>>
+  ): Marko.RenderResult<Component<FirstName, LastName>>;
+
+  /** Synchronously render a template to a string. */
+  renderToString<FirstName extends string, LastName extends string>(
+    input: Marko.TemplateInput<Input<FirstName, LastName>>
+  ): string;
+
+  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
+  stream<FirstName extends string, LastName extends string>(
+    input: Marko.TemplateInput<Input<FirstName, LastName>>
+  ): ReadableStream<string> & NodeJS.ReadableStream;
+
+  /**
+   * @internal
+   * Do not use or you will be fired.
+   */
+  ᜭ<FirstName extends string, LastName extends string, ᜭInput = unknown>(
+    input: Marko.ᜭ.Relate<Input<FirstName, LastName>, ᜭInput>
+  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<FirstName, LastName>>>;
+}> {})();

@@ -3,132 +3,126 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-export default Marko.ᜭ.instance(
-  class extends Marko.ᜭ.Template<{
-    /** Asynchronously render the template. */
-    render(
-      input: Marko.TemplateInput<Input>,
-      stream?: {
-        write: (chunk: string) => void;
-        end: (chunk?: string) => void;
+function ᜭ() {
+  const input = 1 as any as Input;
+  const component = 1 as any as Component;
+  const out = Marko.ᜭ.out;
+  const state = Marko.ᜭ.state(component);
+  Marko.ᜭ.noop({ input, out, component, state });
+  Marko.ᜭ.assertRendered(
+    Marko.ᜭ.rendered,
+    1,
+    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+      /*let*/
+      value: 1,
+    })
+  );
+  const { value: x } = Marko.ᜭ.rendered.returns[1];
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function"() {
+      ᜭᜭ.mutate.x++;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function"(y = ᜭᜭ.mutate.x++) {
+      y;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function": () => {
+      ᜭᜭ.mutate.x++;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function": (y = ᜭᜭ.mutate.x++) => {
+      y;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function": function () {
+      ᜭᜭ.mutate.x++;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function": function (y = ᜭᜭ.mutate.x++) {
+      y;
+    },
+  });
+  Marko.ᜭ.renderNativeTag("div")({
+    /*div*/
+    "data-function"() {
+      function testA() {
+        ᜭᜭ.mutate.x++;
       }
-    ): Marko.Out<Component>;
 
-    /** Synchronously render the template. */
-    renderSync(
-      input: Marko.TemplateInput<Input>
-    ): Marko.RenderResult<Component>;
+      function testB(y = ᜭᜭ.mutate.x++) {
+        y;
+      }
 
-    /** Synchronously render a template to a string. */
-    renderToString(input: Marko.TemplateInput<Input>): string;
+      class TestC {
+        constructor() {
+          this.#privateMethodA;
+          this.#privateMethodB;
+        }
+        methodA() {
+          ᜭᜭ.mutate.x++;
+        }
+        methodB(y = ᜭᜭ.mutate.x++) {
+          y;
+        }
+        #privateMethodA() {
+          ᜭᜭ.mutate.x++;
+        }
+        #privateMethodB(y = ᜭᜭ.mutate.x++) {
+          y;
+        }
+      }
 
-    /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
-    stream(
-      input: Marko.TemplateInput<Input>
-    ): ReadableStream<string> & NodeJS.ReadableStream;
-  }>() {
-    /**
-     * @internal
-     * Do not use or you will be fired.
-     */
-    public ᜭ<ᜭ = unknown>(input: Marko.ᜭ.Relate<Input, ᜭ>) {
-      return Marko.ᜭ.returnWithScope(input as any as ᜭ, this.#ᜭ());
+      testA;
+      testB;
+      TestC;
+    },
+  });
+  const ᜭᜭ = {
+    mutate: Marko.ᜭ.mutable([
+      ["x", "value", Marko.ᜭ.rendered.returns[1]],
+    ] as const),
+  };
+  Marko.ᜭ.noop({ x });
+  return;
+}
+export default new (class Template extends Marko.ᜭ.Template<{
+  /** Asynchronously render the template. */
+  render(
+    input: Marko.TemplateInput<Input>,
+    stream?: {
+      write: (chunk: string) => void;
+      end: (chunk?: string) => void;
     }
-    #ᜭ() {
-      const input = 1 as unknown as Input;
-      const component = Marko.ᜭ.instance(Component);
-      const out = 1 as unknown as Marko.Out;
-      const state = Marko.ᜭ.state(component);
-      Marko.ᜭ.noop({ input, out, component, state });
-      return (function (this: void) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
-          1,
-          Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
-            /*let*/
-            value: 1,
-          })
-        );
-        const { value: x } = Marko.ᜭ.rendered.returns[1];
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function"() {
-            ᜭ.mutate.x++;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function"(y = ᜭ.mutate.x++) {
-            y;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function": () => {
-            ᜭ.mutate.x++;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function": (y = ᜭ.mutate.x++) => {
-            y;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function": function () {
-            ᜭ.mutate.x++;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function": function (y = ᜭ.mutate.x++) {
-            y;
-          },
-        });
-        Marko.ᜭ.renderNativeTag("div")({
-          /*div*/
-          "data-function"() {
-            function testA() {
-              ᜭ.mutate.x++;
-            }
+  ): Marko.Out<Component>;
 
-            function testB(y = ᜭ.mutate.x++) {
-              y;
-            }
+  /** Synchronously render the template. */
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-            class TestC {
-              constructor() {
-                this.#privateMethodA;
-                this.#privateMethodB;
-              }
-              methodA() {
-                ᜭ.mutate.x++;
-              }
-              methodB(y = ᜭ.mutate.x++) {
-                y;
-              }
-              #privateMethodA() {
-                ᜭ.mutate.x++;
-              }
-              #privateMethodB(y = ᜭ.mutate.x++) {
-                y;
-              }
-            }
+  /** Synchronously render a template to a string. */
+  renderToString(input: Marko.TemplateInput<Input>): string;
 
-            testA;
-            testB;
-            TestC;
-          },
-        });
-        const ᜭ = {
-          mutate: Marko.ᜭ.mutable([
-            ["x", "value", Marko.ᜭ.rendered.returns[1]],
-          ] as const),
-        };
-        Marko.ᜭ.noop({ x });
-        return;
-      })();
-    }
-  }
-);
+  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
+  stream(
+    input: Marko.TemplateInput<Input>
+  ): ReadableStream<string> & NodeJS.ReadableStream;
+
+  /**
+   * @internal
+   * Do not use or you will be fired.
+   */
+  ᜭ<ᜭInput = unknown>(
+    input: Marko.ᜭ.Relate<Input, ᜭInput>
+  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+}> {})();

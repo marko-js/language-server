@@ -15,14 +15,18 @@ declare global {
      * Do not use or you will be fired.
      */
     namespace ᜭ {
+      export const out: Marko.Out;
       export const rendered: {
         scopes: Record<number, never>;
         returns: Record<number, never>;
       };
 
-      export function Template<B>(): abstract new () => {
-        [K in Exclude<keyof Marko.Template, keyof B>]: Marko.Template[K];
-      } & B;
+      export const Template: new <Overrides = unknown>() => {
+        [K in Exclude<
+          keyof Marko.Template,
+          keyof Overrides
+        >]: Marko.Template[K];
+      } & Overrides;
 
       export function noop(value: any): void;
 
@@ -34,10 +38,10 @@ declare global {
         ? State
         : never;
 
-      export function returnWithScope<Input, Return>(
-        input: Input,
-        returned: Return
-      ): ReturnAndScope<Scopes<Input>, Return>;
+      export type ReturnWithScope<Input, Return> = ReturnAndScope<
+        Scopes<Input>,
+        Return
+      >;
 
       export function instance<Constructor>(
         constructor: Constructor

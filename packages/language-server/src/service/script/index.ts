@@ -420,6 +420,7 @@ const ScriptService: Partial<Plugin> = {
 function processScript(doc: TextDocument, project: TSProject) {
   return processDoc(doc, (file) => {
     return extractScript({
+      ts,
       parsed: file.parsed,
       lookup: file.project.lookup,
       runtimeTypes: getRuntimeTypes(file.project, ts, project.host),
