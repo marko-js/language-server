@@ -6,22 +6,21 @@ export interface Input<T, U> {
 }
 abstract class Component<T, U> extends Marko.Component<Input<T, U>> {}
 export { type Component };
-function ᜭ<T, U>() {
+function __marko_internal_template<T, U>(this: void) {
   const input = 1 as any as Input<T, U>;
   const component = 1 as any as Component<T, U>;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  const ᜭᜭ = {
-    return: Marko.ᜭ.returnTag({
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  const __marko_internal_return = {
+    return: Marko._.returnTag({
       /*return*/
       value: 1 as unknown as U,
     }),
   };
-  return ᜭᜭ.return;
+  return __marko_internal_return.return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render<T, U>(
     input: Marko.TemplateInput<Input<T, U>>,
     stream?: {
@@ -30,24 +29,20 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component<T, U>>;
 
-  /** Synchronously render the template. */
   renderSync<T, U>(
     input: Marko.TemplateInput<Input<T, U>>
   ): Marko.RenderResult<Component<T, U>>;
 
-  /** Synchronously render a template to a string. */
   renderToString<T, U>(input: Marko.TemplateInput<Input<T, U>>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream<T, U>(
     input: Marko.TemplateInput<Input<T, U>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<T, U, ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input<T, U>, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<T, U>>>;
+  _<T, U, __marko_internal_input = unknown>(
+    input: Marko._.Relate<Input<T, U>, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template<T, U>>
+  >;
 }> {})();

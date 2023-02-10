@@ -3,40 +3,40 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       value: true,
     })
   );
-  const { value: show } = Marko.ᜭ.rendered.returns[1];
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const { value: show } = Marko._.rendered.returns[1];
+  Marko._.assertRendered(
+    Marko._.rendered,
     2,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       value: false,
     })
   );
-  const { value: showAlt } = Marko.ᜭ.rendered.returns[2];
+  const { value: showAlt } = Marko._.rendered.returns[2];
   if (undefined) {
   }
   if (show) {
   }
   if (show) {
   }
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     /*div*/
-    ["renderBody"]: Marko.ᜭ.inlineBody(
+    ["renderBody"]: Marko._.inlineBody(
       (() => {
         if (undefined) {
         }
@@ -46,20 +46,20 @@ function ᜭ() {
   if (show) {
   } else {
   }
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     3,
     (() => {
       if (show) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           4,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 0 as const,
           })
         );
-        const { value: a } = Marko.ᜭ.rendered.returns[4];
+        const { value: a } = Marko._.rendered.returns[4];
         return {
           scope: { a },
         };
@@ -68,122 +68,122 @@ function ᜭ() {
       }
     })()
   );
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     5,
     (() => {
       if (show) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           6,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 1 as const,
           })
         );
-        const { value: b } = Marko.ᜭ.rendered.returns[6];
+        const { value: b } = Marko._.rendered.returns[6];
         return {
           scope: { b },
         };
       } else if (showAlt) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           7,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 2 as const,
           })
         );
-        const { value: c } = Marko.ᜭ.rendered.returns[7];
+        const { value: c } = Marko._.rendered.returns[7];
         return {
           scope: { c },
         };
       } else {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           8,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 3 as const,
           })
         );
-        const { value: d } = Marko.ᜭ.rendered.returns[8];
+        const { value: d } = Marko._.rendered.returns[8];
         return {
           scope: { d },
         };
       }
     })()
   );
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     9,
     (() => {
       if (show) {
       } else {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           10,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 4 as const,
           })
         );
-        const { value: e } = Marko.ᜭ.rendered.returns[10];
+        const { value: e } = Marko._.rendered.returns[10];
         return {
           scope: { e },
         };
       }
     })()
   );
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     11,
     (() => {
       if (show) {
       } else if (showAlt) {
       } else {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           12,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 4 as const,
           })
         );
-        const { value: f } = Marko.ᜭ.rendered.returns[12];
+        const { value: f } = Marko._.rendered.returns[12];
         return {
           scope: { f },
         };
       }
     })()
   );
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     13,
     (() => {
       if (show) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           14,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 5 as const,
           })
         );
-        const { value: g } = Marko.ᜭ.rendered.returns[14];
+        const { value: g } = Marko._.rendered.returns[14];
         return {
           scope: { g },
         };
       } else {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           15,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: 6 as const,
           })
         );
-        const { value: g } = Marko.ᜭ.rendered.returns[15];
+        const { value: g } = Marko._.rendered.returns[15];
         return {
           scope: { g },
         };
@@ -193,7 +193,7 @@ function ᜭ() {
   if (show) {
   } else if (undefined) {
   }
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       a;
@@ -205,12 +205,11 @@ function ᜭ() {
       g;
     },
   });
-  const { a, b, c, d, e, f, g } = Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
-  Marko.ᜭ.noop({ a, b, c, d, e, f, g });
+  const { a, b, c, d, e, f, g } = Marko._.readScopes(Marko._.rendered);
+  Marko._.noop({ a, b, c, d, e, f, g });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -219,22 +218,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

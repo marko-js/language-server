@@ -31,16 +31,17 @@ const SEP_EMPTY = "";
 const SEP_SPACE = " ";
 const SEP_COMMA_SPACE = ", ";
 const SEP_COMMA_NEW_LINE = ",\n";
-const VAR_DYNAMIC = "ᜭ";
-const VAR_TEMPLATE = VAR_DYNAMIC;
-const VAR_INTERNAL_INPUT = `${VAR_DYNAMIC}Input`;
-const VAR_RETURN = VAR_DYNAMIC + VAR_DYNAMIC;
-const VAR_INTERNAL = `Marko.${VAR_DYNAMIC}`;
+const VAR_LOCAL_PREFIX = "__marko_internal_";
+const VAR_SHARED_PREFIX = `Marko._.`;
 const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
+const REG_NEW_LINE = /^|(\r?\n)/g;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
+// Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
+const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
+const WROTE_COMMENT = new WeakSet<Node.Comment>();
 
 type ProcessedBody = {
   renderBody: Repeatable<Node.ChildNode>;
@@ -115,6 +116,8 @@ class ScriptExtractor {
     program: Node.Program,
     componentClassImport: ExtractScriptOptions["componentClassImport"]
   ) {
+    this.#writeCommentPragmas(program);
+
     const inputType = this.#getInputType(program);
     let componentClassBody: Range | void;
 
@@ -235,7 +238,7 @@ class ScriptExtractor {
         `import Component from "${componentClassImport}";\n`
       );
     } else {
-      const body = componentClassBody || "{}";
+      const body = componentClassBody || " {}";
 
       if (this.#isTS) {
         this.#extractor
@@ -256,21 +259,24 @@ class ScriptExtractor {
     }
 
     if (this.#isTS) {
-      this.#extractor.write(`function ${VAR_TEMPLATE + typeParamsStr}() {
+      this.#extractor.write(`function ${varLocal(
+        "template"
+      )}${typeParamsStr}(this: void) {
   const input = 1 as any as Input${typeArgsStr};
   const component = 1 as any as Component${typeArgsStr};\n`);
     } else {
-      this.#extractor.write(`${
-        jsDocTemplateTagsStr ? `/**${jsDocTemplateTagsStr}*/\n` : ""
-      }function ${VAR_TEMPLATE}() {
+      this.#extractor.write(`/**${jsDocTemplateTagsStr}
+* @this {void}
+*/
+function ${varLocal("template")}() {
   const input = /** @type {Input${typeArgsStr}} */(1);
   const component = /** @type {Component${typeArgsStr}} */(1);\n`);
     }
 
     this.#extractor.write(`\
-  const out = ${VAR_INTERNAL}.out;
-  const state = ${VAR_INTERNAL}.state(component);
-  ${VAR_INTERNAL}.noop({ input, out, component, state });\n`);
+  const out = ${varShared("out")};
+  const state = ${varShared("state")}(component);
+  ${varShared("noop")}({ input, out, component, state });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
     const didReturn =
@@ -281,22 +287,22 @@ class ScriptExtractor {
       this.#extractor.write("const ");
       this.#writeObjectKeys(hoists);
       this.#extractor.write(
-        ` = ${VAR_INTERNAL}.readScopes(${VAR_INTERNAL}.rendered);\n`
+        ` = ${varShared("readScopes")}(${varShared("rendered")});\n`
       );
-      this.#extractor.write(`${VAR_INTERNAL}.noop(`);
+      this.#extractor.write(`${varShared("noop")}(`);
       this.#writeObjectKeys(hoists);
       this.#extractor.write(");\n");
     }
 
     if (didReturn) {
-      this.#extractor.write(`return ${VAR_RETURN}.return;\n`);
+      this.#extractor.write(`return ${varLocal("return")}.return;\n`);
     } else {
       this.#extractor.write("return;\n");
     }
 
     this.#extractor.write("\n}\n");
 
-    const templateBaseClass = `${VAR_INTERNAL}.Template`;
+    const templateBaseClass = varShared("Template");
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(
@@ -306,17 +312,13 @@ class ScriptExtractor {
           )
         : ""
     }
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ${VAR_DYNAMIC}<
-    ${
-      typeParamsStr ? `${typeParamsStr.slice(1, -1)}, ` : ""
-    }${VAR_INTERNAL_INPUT} = unknown
-  >(input: ${VAR_INTERNAL}.Relate<Input${typeArgsStr}, ${VAR_INTERNAL_INPUT}>): (
-    ${VAR_INTERNAL}.ReturnWithScope<${VAR_INTERNAL_INPUT}, ReturnType<typeof ${
-      VAR_TEMPLATE + typeArgsStr
+  _<
+    ${typeParamsStr ? `${typeParamsStr.slice(1, -1)}, ` : ""}${varLocal(
+      "input"
+    )} = unknown
+  >(input: ${varShared("Relate")}<Input${typeArgsStr}, ${varLocal("input")}>): (
+    ${varShared("ReturnWithScope")}<${varLocal("input")}, ReturnType<typeof ${
+      varLocal("template") + typeArgsStr
     }>>
   );
 }>`;
@@ -327,7 +329,11 @@ class ScriptExtractor {
 );\n`);
     } else {
       this.#extractor.write(`export default new (
-  /** @extends {${templateOverrideClass}} */
+  /**
+   * @extends {
+${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
+   * }
+   */
   class Template extends ${templateBaseClass} {}
 );\n`);
     }
@@ -335,10 +341,33 @@ class ScriptExtractor {
     this.#writeComments(program);
   }
 
+  #writeCommentPragmas(program: Node.Program) {
+    const firstComments = program.static.length
+      ? program.static[0].comments
+      : program.body.length
+      ? (program.body[0] as Node.Commentable).comments
+      : program.comments;
+
+    if (firstComments) {
+      for (const comment of firstComments) {
+        if (this.#testAtIndex(REG_COMMENT_PRAGMA, comment.start)) {
+          WROTE_COMMENT.add(comment);
+          this.#extractor.copy(comment).write("\n");
+        }
+      }
+    }
+  }
+
   #writeComments(node: Node.Commentable) {
     if (node.comments) {
       for (const comment of node.comments) {
-        this.#extractor.write("/*").copy(comment.value).write("*/");
+        if (!WROTE_COMMENT.has(comment)) {
+          if (this.#code.charAt(comment.start + 1) === "/") {
+            this.#extractor.write("//").copy(comment.value).write("\n");
+          } else {
+            this.#extractor.write("/*").copy(comment.value).write("*/");
+          }
+        }
       }
     }
   }
@@ -370,7 +399,9 @@ class ScriptExtractor {
 
               if (renderId) {
                 this.#extractor.write(
-                  `${VAR_INTERNAL}.assertRendered(${VAR_INTERNAL}.rendered, ${renderId}, (() => {\n`
+                  `${varShared("assertRendered")}(${varShared(
+                    "rendered"
+                  )}, ${renderId}, (() => {\n`
                 );
               }
 
@@ -442,11 +473,13 @@ class ScriptExtractor {
 
               if (renderId) {
                 this.#extractor.write(
-                  `${VAR_INTERNAL}.assertRendered(${VAR_INTERNAL}.rendered, ${renderId}, `
+                  `${varShared("assertRendered")}(${varShared(
+                    "rendered"
+                  )}, ${renderId}, `
                 );
               }
 
-              this.#extractor.write(`${VAR_INTERNAL}.forTag({\n`);
+              this.#extractor.write(`${varShared("forTag")}({\n`);
               const sep = this.#writeAttrs(SEP_EMPTY, child);
               const body = this.#processBody(child);
 
@@ -459,7 +492,7 @@ class ScriptExtractor {
                 this.#extractor
                   .write(`${sep}[/*`)
                   .copy(child.name)
-                  .write(`*/"renderBody"]: ${VAR_INTERNAL}.body(function*`)
+                  .write(`*/"renderBody"]: ${varShared("body")}(function*`)
                   .copy(child.typeParams)
                   .write("(\n");
 
@@ -524,10 +557,10 @@ class ScriptExtractor {
     const mutatedVars = getMutatedVars(parent);
 
     if (returnTag || mutatedVars) {
-      this.#extractor.write(`const ${VAR_RETURN} = {\n`);
+      this.#extractor.write(`const ${varLocal("return")} = {\n`);
 
       if (returnTag) {
-        this.#extractor.write(`return: ${VAR_INTERNAL}.returnTag(`);
+        this.#extractor.write(`return: ${varShared("returnTag")}(`);
         this.#writeTagInputObject(returnTag);
         this.#extractor.write(")");
 
@@ -538,7 +571,7 @@ class ScriptExtractor {
 
       if (mutatedVars) {
         let sep = SEP_EMPTY;
-        this.#extractor.write(`mutate: ${VAR_INTERNAL}.mutable([\n`);
+        this.#extractor.write(`mutate: ${varShared("mutable")}([\n`);
         for (const binding of mutatedVars) {
           this.#extractor.write(
             `${sep + (!this.#isTS ? "/** @type {const} */" : "")}[${
@@ -546,7 +579,7 @@ class ScriptExtractor {
               (binding.sourceName && binding.sourceName !== binding.name
                 ? `, ${JSON.stringify(binding.sourceName)}`
                 : "")
-            }, ${VAR_INTERNAL}.rendered.returns[${this.#getRenderId(
+            }, ${varShared("rendered")}.returns[${this.#getRenderId(
               binding.node as Node.ParentTag
             )}]${binding.objectPath || ""}]`
           );
@@ -561,7 +594,7 @@ class ScriptExtractor {
         // Write out a read of all mutated vars to avoid them being seen
         // as unread if there are only writes.
         let sep = SEP_EMPTY;
-        this.#extractor.write(`${VAR_INTERNAL}.noop({`);
+        this.#extractor.write(`${varShared("noop")}({`);
         for (const binding of mutatedVars) {
           this.#extractor.write(`${sep}${binding.name}`);
           sep = SEP_COMMA_SPACE;
@@ -589,7 +622,7 @@ class ScriptExtractor {
 
     if (renderId) {
       this.#extractor.write(
-        `${VAR_INTERNAL}.assertRendered(${VAR_INTERNAL}.rendered, ${renderId}, `
+        `${varShared("assertRendered")}(${varShared("rendered")}, ${renderId}, `
       );
     }
 
@@ -599,7 +632,7 @@ class ScriptExtractor {
       if (def) {
         if (def.html) {
           this.#extractor.write(
-            `${VAR_INTERNAL}.renderNativeTag("${def.name}")`
+            `${varShared("renderNativeTag")}("${def.name}")`
           );
         } else {
           const importPath = resolveTagImport(this.#filename, def);
@@ -610,26 +643,26 @@ class ScriptExtractor {
           if (isValidIdentifier(tagName)) {
             this.#extractor
               .write(
-                `${VAR_INTERNAL}.renderPreferLocal(
+                `${varShared("renderPreferLocal")}(
 // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-(${VAR_INTERNAL}.error, `
+(${varShared("error")}, `
               )
               .copy(tag.name)
-              .write(`),\n${VAR_INTERNAL}.${renderer})`);
+              .write(`),\n${varShared(renderer)})`);
           } else {
-            this.#extractor.write(`${VAR_INTERNAL}.${renderer}`);
+            this.#extractor.write(varShared(renderer));
           }
         }
       } else if (isValidIdentifier(tagName)) {
         this.#extractor
-          .write(`${VAR_INTERNAL}.renderDynamicTag(\n`)
+          .write(`${varShared("renderDynamicTag")}(\n`)
           .copy(tag.name)
           .write("\n)");
       } else {
-        this.#extractor.write(`${VAR_INTERNAL}.missingTag`);
+        this.#extractor.write(`${varShared("missingTag")}`);
       }
     } else {
-      this.#extractor.write(`${VAR_INTERNAL}.renderDynamicTag(`);
+      this.#extractor.write(`${varShared("renderDynamicTag")}(`);
       this.#writeDynamicTagName(tag);
       this.#extractor.write(")");
     }
@@ -648,7 +681,7 @@ class ScriptExtractor {
       this.#extractor.write(`const { ${ATTR_UNAMED}:\n`);
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
-        `\n} = ${VAR_INTERNAL}.rendered.returns[${renderId}];\n`
+        `\n} = ${varShared("rendered")}.returns[${renderId}];\n`
       );
     }
   }
@@ -747,7 +780,7 @@ class ScriptExtractor {
                         .write(
                           `) {\n${
                             isMutatedVar(tag.parent, this.#read(value.value))
-                              ? `${VAR_RETURN}.mutate.`
+                              ? `${varLocal("return")}.mutate.`
                               : ""
                           }`
                         )
@@ -819,7 +852,7 @@ class ScriptExtractor {
                 .write(`${sep}"`)
                 .copy(defaultMapPosition)
                 .copy(name)
-                .write(`": ${VAR_INTERNAL}.bind(component, (\n`)
+                .write(`": ${varShared("bind")}(component, (\n`)
                 .copy(attr.args.value)
                 .write("\n))");
             } else {
@@ -849,10 +882,10 @@ class ScriptExtractor {
 
     if (dynamicAttrTagParents) {
       if (staticAttrTags) {
-        this.#extractor.write(`${sep}...${VAR_INTERNAL}.mergeAttrTags({\n`);
+        this.#extractor.write(`${sep}...${varShared("mergeAttrTags")}({\n`);
         wasMerge = true;
       } else if (dynamicAttrTagParents.length > 1) {
-        this.#extractor.write(`${sep}...${VAR_INTERNAL}.mergeAttrTags(\n`);
+        this.#extractor.write(`${sep}...${varShared("mergeAttrTags")}(\n`);
         wasMerge = true;
       } else {
         this.#extractor.write(`${sep}...`);
@@ -965,7 +998,7 @@ class ScriptExtractor {
           break;
         }
         case "for": {
-          this.#extractor.write(`${sep}${VAR_INTERNAL}.forAttrTag({\n`);
+          this.#extractor.write(`${sep}${varShared("forAttrTag")}({\n`);
           sep = SEP_COMMA_NEW_LINE;
 
           // Adds a comment containing the tag name inside the attrs
@@ -995,7 +1028,7 @@ class ScriptExtractor {
         case "while": {
           this.#writeComments(tag);
           this.#extractor
-            .write(`${sep + VAR_INTERNAL}.mergeAttrTags((\n`)
+            .write(`${sep + VAR_SHARED_PREFIX}.mergeAttrTags((\n`)
             .copy(tag.args?.value || "undefined")
             .write("\n) ? [{\n");
           sep = SEP_COMMA_NEW_LINE;
@@ -1050,18 +1083,18 @@ class ScriptExtractor {
 
         this.#extractor.write("*/\n");
 
-        this.#extractor.write(`"renderBody"]: ${VAR_INTERNAL}.`);
+        this.#extractor.write(`"renderBody"]: `);
 
         if (tag.params) {
           this.#writeComments(tag);
           this.#extractor
-            .write("body(function *")
+            .write(`${varShared("body")}(function *`)
             .copy(tag.typeParams)
             .write("(\n");
           this.#copyWithMutationsReplaced(tag.params.value);
           this.#extractor.write("\n) {\n");
         } else {
-          this.#extractor.write(`inlineBody((() => {\n`);
+          this.#extractor.write(`${varShared("inlineBody")}((() => {\n`);
         }
 
         const localBindings = getHoistSources(tag);
@@ -1075,7 +1108,7 @@ class ScriptExtractor {
           }
 
           if (didReturn) {
-            this.#extractor.write(`return ${VAR_RETURN}.return;\n`);
+            this.#extractor.write(`return ${varLocal("return")}.return;\n`);
           } else {
             this.#extractor.write("return;\n");
           }
@@ -1091,7 +1124,7 @@ class ScriptExtractor {
             }
 
             if (didReturn) {
-              this.#extractor.write(`return: ${VAR_RETURN}.return`);
+              this.#extractor.write(`return: ${varLocal("return")}.return`);
             }
 
             this.#extractor.write("\n};");
@@ -1172,7 +1205,7 @@ class ScriptExtractor {
       // Copy the content before the mutation.
       this.#extractor.copy({ start: curOffset, end: nextOffset });
       // splice in mutation prefix.
-      this.#extractor.write(`${VAR_RETURN}.mutate.`);
+      this.#extractor.write(`${varLocal("return")}.mutate.`);
 
       curOffset = nextOffset;
       minIndex = maxIndex + 1;
@@ -1407,9 +1440,14 @@ class ScriptExtractor {
     const comments = (node as Node.Commentable).comments;
     if (comments) {
       for (const comment of comments) {
-        const text = this.#read(comment);
-        const type = getJSDocInputType(text, this.#ts!);
-        if (type) return type;
+        if (this.#code.charAt(comment.start + 1) === "*") {
+          const type = getJSDocInputType(this.#read(comment), this.#ts!);
+          if (type) {
+            WROTE_COMMENT.add(comment);
+            this.#extractor.write("/*").copy(comment.value).write("*/");
+            return type;
+          }
+        }
       }
     }
   }
@@ -1433,6 +1471,14 @@ class ScriptExtractor {
     reg.lastIndex = index;
     return reg.exec(this.#code);
   }
+}
+
+function varLocal(name: string) {
+  return VAR_LOCAL_PREFIX + name;
+}
+
+function varShared(name: string) {
+  return VAR_SHARED_PREFIX + name;
 }
 
 function isValueAttribute(

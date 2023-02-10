@@ -19,17 +19,19 @@ abstract class Component<
   }
 }
 export { type Component };
-function ᜭ<FirstName extends string, LastName extends string>() {
+function __marko_internal_template<
+  FirstName extends string,
+  LastName extends string
+>(this: void) {
   const input = 1 as any as Input<FirstName, LastName>;
   const component = 1 as any as Component<FirstName, LastName>;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
   state.name;
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>,
     stream?: {
@@ -38,26 +40,26 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component<FirstName, LastName>>;
 
-  /** Synchronously render the template. */
   renderSync<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>
   ): Marko.RenderResult<Component<FirstName, LastName>>;
 
-  /** Synchronously render a template to a string. */
   renderToString<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>
   ): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<FirstName extends string, LastName extends string, ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input<FirstName, LastName>, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<FirstName, LastName>>>;
+  _<
+    FirstName extends string,
+    LastName extends string,
+    __marko_internal_input = unknown
+  >(
+    input: Marko._.Relate<Input<FirstName, LastName>, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template<FirstName, LastName>>
+  >;
 }> {})();

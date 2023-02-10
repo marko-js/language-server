@@ -8,18 +8,17 @@ abstract class Component<T extends { name: string }> extends Marko.Component<
   Input<T>
 > {}
 export { type Component };
-function ᜭ<T extends { name: string }>() {
+function __marko_internal_template<T extends { name: string }>(this: void) {
   const input = 1 as any as Input<T>;
   const component = 1 as any as Component<T>;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
   input.options;
   input.onChange;
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render<T extends { name: string }>(
     input: Marko.TemplateInput<Input<T>>,
     stream?: {
@@ -28,26 +27,22 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component<T>>;
 
-  /** Synchronously render the template. */
   renderSync<T extends { name: string }>(
     input: Marko.TemplateInput<Input<T>>
   ): Marko.RenderResult<Component<T>>;
 
-  /** Synchronously render a template to a string. */
   renderToString<T extends { name: string }>(
     input: Marko.TemplateInput<Input<T>>
   ): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream<T extends { name: string }>(
     input: Marko.TemplateInput<Input<T>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<T extends { name: string }, ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input<T>, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<T>>>;
+  _<T extends { name: string }, __marko_internal_input = unknown>(
+    input: Marko._.Relate<Input<T>, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template<T>>
+  >;
 }> {})();

@@ -18,36 +18,36 @@
 ```
 
 ## Generated Diagnostics
-### Ln 20, Col 1
+### Ln 21, Col 1
 ```ts
-  18 | const { value:
-  19 | { %x }
-> 20 | } = Marko.ᜭ.rendered.returns[1];
+  19 | const { value:
+  20 | { %x }
+> 21 | } = Marko._.rendered.returns[1];
      | ^ Declaration or statement expected.
-  21 | return;
-  22 |
-  23 | }
+  22 | return;
+  23 |
+  24 | }
 ```
 
-### Ln 20, Col 3
+### Ln 21, Col 3
 ```ts
-  18 | const { value:
-  19 | { %x }
-> 20 | } = Marko.ᜭ.rendered.returns[1];
+  19 | const { value:
+  20 | { %x }
+> 21 | } = Marko._.rendered.returns[1];
      |   ^ Declaration or statement expected.
-  21 | return;
-  22 |
-  23 | }
+  22 | return;
+  23 |
+  24 | }
 ```
 
-### Ln 23, Col 1
+### Ln 24, Col 1
 ```ts
-  21 | return;
-  22 |
-> 23 | }
+  22 | return;
+  23 |
+> 24 | }
      | ^ Declaration or statement expected.
-  24 | export default new (
-  25 |   class Template extends Marko.ᜭ.Template<{
-  26 |       /** Asynchronously render the template. */
+  25 | export default new (
+  26 |   class Template extends Marko._.Template<{
+  27 |       
 ```
 

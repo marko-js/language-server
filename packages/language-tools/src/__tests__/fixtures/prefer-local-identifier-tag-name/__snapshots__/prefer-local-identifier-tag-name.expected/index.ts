@@ -5,55 +5,55 @@ import CustomTagB from "./components/TestTagB.marko";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+    Marko._.renderTemplate(import("../../components/const/index.marko"))({
       /*const*/
       value: CustomTagA,
     })
   );
-  const { value: TestTagA } = Marko.ᜭ.rendered.returns[1];
-  Marko.ᜭ.renderPreferLocal(
+  const { value: TestTagA } = Marko._.rendered.returns[1];
+  Marko._.renderPreferLocal(
     // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-    (Marko.ᜭ.error, TestTagA),
-    Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
+    (Marko._.error, TestTagA),
+    Marko._.renderTemplate(import("./components/TestTagA.marko"))
   )({
     /*TestTagA*/
     a: "hello",
   });
-  Marko.ᜭ.renderPreferLocal(
+  Marko._.renderPreferLocal(
     // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-    (Marko.ᜭ.error, TestTagB),
-    Marko.ᜭ.renderTemplate(import("./components/TestTagB.marko"))
+    (Marko._.error, TestTagB),
+    Marko._.renderTemplate(import("./components/TestTagB.marko"))
   )({
     /*TestTagB*/
     b: "hello",
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     /*div*/
-    ["renderBody"]: Marko.ᜭ.inlineBody(
+    ["renderBody"]: Marko._.inlineBody(
       (() => {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+        Marko._.assertRendered(
+          Marko._.rendered,
           2,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: CustomTagB,
           })
         );
-        const { value: TestTagA } = Marko.ᜭ.rendered.returns[2];
-        Marko.ᜭ.renderPreferLocal(
+        const { value: TestTagA } = Marko._.rendered.returns[2];
+        Marko._.renderPreferLocal(
           // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-          (Marko.ᜭ.error, TestTagA),
-          Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
+          (Marko._.error, TestTagA),
+          Marko._.renderTemplate(import("./components/TestTagA.marko"))
         )({
           /*TestTagA*/
           a: "hello",
@@ -61,18 +61,17 @@ function ᜭ() {
       })()
     ),
   });
-  Marko.ᜭ.renderPreferLocal(
+  Marko._.renderPreferLocal(
     // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-    (Marko.ᜭ.error, TestTagA),
-    Marko.ᜭ.renderTemplate(import("./components/TestTagA.marko"))
+    (Marko._.error, TestTagA),
+    Marko._.renderTemplate(import("./components/TestTagA.marko"))
   )({
     /*TestTagA*/
     a: "hello",
   });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -81,22 +80,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

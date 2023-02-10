@@ -102,7 +102,7 @@
 > 16 | )
      | ^ ':' expected.
   17 | });
-  18 | Marko.ᜭ.renderNativeTag("div")({
+  18 | Marko._.renderNativeTag("div")({
   19 | /*div*/
 ```
 
@@ -112,7 +112,7 @@
   16 | )
 > 17 | });
      |  ^ Declaration or statement expected.
-  18 | Marko.ᜭ.renderNativeTag("div")({
+  18 | Marko._.renderNativeTag("div")({
   19 | /*div*/
   20 | "onClick"(a, %b){
 ```
@@ -146,7 +146,7 @@
 > 26 | }
      | ^ Declaration or statement expected.
   27 | export default new (
-  28 |   class Template extends Marko.ᜭ.Template<{
-  29 |       /** Asynchronously render the template. */
+  28 |   class Template extends Marko._.Template<{
+  29 |       
 ```
 

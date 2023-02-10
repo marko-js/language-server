@@ -5,29 +5,29 @@ export interface Input<T extends string> {
 }
 abstract class Component<T extends string> extends Marko.Component<Input<T>> {}
 export { type Component };
-function ᜭ<T extends string>() {
+function __marko_internal_template<T extends string>(this: void) {
   const input = 1 as any as Input<T>;
   const component = 1 as any as Component<T>;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderNativeTag("div")({
+    Marko._.renderNativeTag("div")({
       /*div*/
       /*div*/
-      ["renderBody"]: Marko.ᜭ.inlineBody(
+      ["renderBody"]: Marko._.inlineBody(
         (() => {
-          Marko.ᜭ.assertRendered(
-            Marko.ᜭ.rendered,
+          Marko._.assertRendered(
+            Marko._.rendered,
             2,
-            Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+            Marko._.renderTemplate(import("../../components/let/index.marko"))({
               /*let*/
               value: 1,
             })
           );
-          const { value: x } = Marko.ᜭ.rendered.returns[2];
+          const { value: x } = Marko._.rendered.returns[2];
           new Thing();
           x;
           input.name;
@@ -39,12 +39,11 @@ function ᜭ<T extends string>() {
     })
   );
   x;
-  const { x } = Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
-  Marko.ᜭ.noop({ x });
+  const { x } = Marko._.readScopes(Marko._.rendered);
+  Marko._.noop({ x });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render<T extends string>(
     input: Marko.TemplateInput<Input<T>>,
     stream?: {
@@ -53,26 +52,22 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component<T>>;
 
-  /** Synchronously render the template. */
   renderSync<T extends string>(
     input: Marko.TemplateInput<Input<T>>
   ): Marko.RenderResult<Component<T>>;
 
-  /** Synchronously render a template to a string. */
   renderToString<T extends string>(
     input: Marko.TemplateInput<Input<T>>
   ): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream<T extends string>(
     input: Marko.TemplateInput<Input<T>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<T extends string, ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input<T>, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<T>>>;
+  _<T extends string, __marko_internal_input = unknown>(
+    input: Marko._.Relate<Input<T>, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template<T>>
+  >;
 }> {})();

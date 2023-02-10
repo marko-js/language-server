@@ -6,18 +6,17 @@ export interface Input<T = string> {
 }
 abstract class Component<T = string> extends Marko.Component<Input<T>> {}
 export { type Component };
-function ᜭ<T = string>() {
+function __marko_internal_template<T = string>(this: void) {
   const input = 1 as any as Input<T>;
   const component = 1 as any as Component<T>;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
   input.options;
   input.onChange;
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render<T = string>(
     input: Marko.TemplateInput<Input<T>>,
     stream?: {
@@ -26,24 +25,20 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component<T>>;
 
-  /** Synchronously render the template. */
   renderSync<T = string>(
     input: Marko.TemplateInput<Input<T>>
   ): Marko.RenderResult<Component<T>>;
 
-  /** Synchronously render a template to a string. */
   renderToString<T = string>(input: Marko.TemplateInput<Input<T>>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream<T = string>(
     input: Marko.TemplateInput<Input<T>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<T = string, ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input<T>, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ<T>>>;
+  _<T = string, __marko_internal_input = unknown>(
+    input: Marko._.Relate<Input<T>, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template<T>>
+  >;
 }> {})();

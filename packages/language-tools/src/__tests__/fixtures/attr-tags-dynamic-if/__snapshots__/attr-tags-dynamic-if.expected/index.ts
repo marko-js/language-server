@@ -5,13 +5,13 @@ const y = 2;
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x
@@ -22,12 +22,12 @@ function ᜭ() {
         }
       : {}),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x ? {} : {}),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x
@@ -42,7 +42,7 @@ function ᜭ() {
           },
         }),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x
@@ -69,7 +69,7 @@ function ᜭ() {
           },
         }),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x
@@ -86,7 +86,7 @@ function ᜭ() {
         }
       : {}),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(x
@@ -97,7 +97,7 @@ function ᜭ() {
         }
       : {}),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
     ...(undefined
@@ -108,10 +108,10 @@ function ᜭ() {
         }
       : {}),
   });
-  Marko.ᜭ.renderDynamicTag(custom)({
+  Marko._.renderDynamicTag(custom)({
     /*custom*/
     x: 1,
-    ...Marko.ᜭ.mergeAttrTags(
+    ...Marko._.mergeAttrTags(
       x
         ? {
             a: {
@@ -128,24 +128,25 @@ function ᜭ() {
         : {}
     ),
   });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderDynamicTag(custom)({
+    Marko._.renderDynamicTag(custom)({
       /*custom*/
       x: 1,
-      ...Marko.ᜭ.mergeAttrTags(
+      ...Marko._.mergeAttrTags(
         {
-          a: /* hi*/ {
+          // hi
+          a: {
             /*@a*/
             b: 1,
             /*@a*/
-            ["renderBody"]: Marko.ᜭ.inlineBody(
+            ["renderBody"]: Marko._.inlineBody(
               (() => {
-                Marko.ᜭ.assertRendered(
-                  Marko.ᜭ.rendered,
+                Marko._.assertRendered(
+                  Marko._.rendered,
                   2,
-                  Marko.ᜭ.renderTemplate(
+                  Marko._.renderTemplate(
                     import("../../components/const/index.marko")
                   )({
                     /*const*/
@@ -153,7 +154,7 @@ function ᜭ() {
                   })
                 );
                 const { value: hoistedFromStaticMember } =
-                  Marko.ᜭ.rendered.returns[2];
+                  Marko._.rendered.returns[2];
                 return {
                   scope: { hoistedFromStaticMember },
                 };
@@ -169,12 +170,12 @@ function ᜭ() {
               b: {
                 /*@b*/
                 /*@b*/
-                ["renderBody"]: Marko.ᜭ.inlineBody(
+                ["renderBody"]: Marko._.inlineBody(
                   (() => {
-                    Marko.ᜭ.assertRendered(
-                      Marko.ᜭ.rendered,
+                    Marko._.assertRendered(
+                      Marko._.rendered,
                       3,
-                      Marko.ᜭ.renderTemplate(
+                      Marko._.renderTemplate(
                         import("../../components/const/index.marko")
                       )({
                         /*const*/
@@ -182,7 +183,7 @@ function ᜭ() {
                       })
                     );
                     const { value: hoistedFromDynamicMember } =
-                      Marko.ᜭ.rendered.returns[3];
+                      Marko._.rendered.returns[3];
                     return {
                       scope: { hoistedFromDynamicMember },
                     };
@@ -201,7 +202,7 @@ function ᜭ() {
       ),
     })
   );
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       hoistedFromStaticMember;
@@ -209,12 +210,11 @@ function ᜭ() {
     },
   });
   const { hoistedFromStaticMember, hoistedFromDynamicMember } =
-    Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
-  Marko.ᜭ.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
+    Marko._.readScopes(Marko._.rendered);
+  Marko._.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -223,22 +223,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

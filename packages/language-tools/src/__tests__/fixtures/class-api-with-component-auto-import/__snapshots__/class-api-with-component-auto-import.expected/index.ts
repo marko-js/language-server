@@ -2,21 +2,20 @@ import "@marko/language-tools/script.internals";
 import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 import Component from "./component";
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.renderNativeTag("div")({
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.renderNativeTag("div")({
     /*div*/
-    onClick: Marko.ᜭ.bind(component, "handleClickMissing"),
+    onClick: Marko._.bind(component, "handleClickMissing"),
   });
   console.log(component);
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -25,22 +24,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

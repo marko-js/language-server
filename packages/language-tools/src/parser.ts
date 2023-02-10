@@ -461,7 +461,8 @@ class Builder {
             this.#comments = undefined;
             return TagType.statement;
           } else {
-            return TagType.text;
+            bodyType = TagType.text;
+            break;
           }
         }
         case "class":
@@ -779,13 +780,10 @@ class Builder {
       const tag = this.#parentNode as Node.ParentTag;
       tag.open.end = range.end;
 
-      if (range.selfClosed) {
+      if (range.selfClosed || tag.bodyType === TagType.void) {
         this.#parentNode = tag.parent;
         tag.end = range.end;
         tag.selfClosed = range.selfClosed;
-      } else if (tag.bodyType === TagType.void) {
-        this.#parentNode = tag.parent;
-        tag.end = range.end;
       }
     }
   }

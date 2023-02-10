@@ -5,16 +5,15 @@ declare global {
     export interface Body<
       in Params extends readonly any[] = [],
       out Return = void,
-      out ᜭ = unknown
+      out _ = unknown
     > {
-      (...params: Params): Generator<ᜭ, Return, never>;
+      (...params: Params): Generator<_, Return, never>;
     }
 
     /**
-     * @internal
      * Do not use or you will be fired.
      */
-    namespace ᜭ {
+    namespace _ {
       export const out: Marko.Out;
       export const rendered: {
         scopes: Record<number, never>;
@@ -284,7 +283,7 @@ declare global {
         : DefaultRenderer;
 
       export type CustomTagRenderer<Template> = Template extends {
-        ᜭ: infer Renderer;
+        _: infer Renderer;
       }
         ? Renderer
         : DefaultRenderer;

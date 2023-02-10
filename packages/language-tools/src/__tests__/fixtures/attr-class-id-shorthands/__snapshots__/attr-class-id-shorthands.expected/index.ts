@@ -3,97 +3,96 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+    Marko._.renderTemplate(import("../../components/const/index.marko"))({
       /*const*/
       value: "hi",
     })
   );
-  const { value: value } = Marko.ᜭ.rendered.returns[1];
-  Marko.ᜭ.renderNativeTag("div")({
+  const { value: value } = Marko._.rendered.returns[1];
+  Marko._.renderNativeTag("div")({
     /*div*/
     id: `test`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     id: `test-${value || ""}`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     id: `${value || ""}-test`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     id: `${value || ""}-test-${value || ""}`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     class: `test`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     class: `hello world`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     class: `test-${value || ""}`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     class: `${value || ""}-test`,
   });
-  Marko.ᜭ.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({
     /*div*/
     class: `${value || ""}-test-${value || ""}`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     id: `test`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     id: `test-${value || ""}`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     id: `${value || ""}-test`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     id: `${value || ""}-test-${value || ""}`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     class: `test`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     class: `hello world`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     class: `test-${value || ""}`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     class: `${value || ""}-test`,
   });
-  Marko.ᜭ.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))({
     /*test-tag*/
     class: `${value || ""}-test-${value || ""}`,
   });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -102,22 +101,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

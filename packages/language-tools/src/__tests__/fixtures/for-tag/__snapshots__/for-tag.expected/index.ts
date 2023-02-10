@@ -3,16 +3,16 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       value: [
         {
@@ -27,145 +27,144 @@ function ᜭ() {
       ] as const,
     })
   );
-  const { value: list } = Marko.ᜭ.rendered.returns[1];
-  Marko.ᜭ.forTag({
+  const { value: list } = Marko._.rendered.returns[1];
+  Marko._.forTag({
     of: list,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* () {}),
+    [/*for*/ "renderBody"]: Marko._.body(function* () {}),
   });
-  Marko.ᜭ.forTag({
+  Marko._.forTag({
     of: list,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (item, index, all) {
+    [/*for*/ "renderBody"]: Marko._.body(function* (item, index, all) {
       item;
       index;
       all;
     }),
   });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     2,
-    Marko.ᜭ.forTag({
+    Marko._.forTag({
       of: list,
-      [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (item) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+      [/*for*/ "renderBody"]: Marko._.body(function* (item) {
+        Marko._.assertRendered(
+          Marko._.rendered,
           3,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: item,
           })
         );
         const {
           value: { value: hoistedFromForOf },
-        } = Marko.ᜭ.rendered.returns[3];
+        } = Marko._.rendered.returns[3];
         yield { hoistedFromForOf };
       }),
     })
   );
-  Marko.ᜭ.forTag({
+  Marko._.forTag({
     of: list,
   });
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       hoistedFromForOf;
     },
   });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     4,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       value: { a: 1, b: 2 } as const,
     })
   );
-  const { value: record } = Marko.ᜭ.rendered.returns[4];
-  Marko.ᜭ.forTag({
+  const { value: record } = Marko._.rendered.returns[4];
+  Marko._.forTag({
     in: record,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (key, value) {
+    [/*for*/ "renderBody"]: Marko._.body(function* (key, value) {
       key;
       value;
     }),
   });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     5,
-    Marko.ᜭ.forTag({
+    Marko._.forTag({
       in: record,
-      [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (key) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+      [/*for*/ "renderBody"]: Marko._.body(function* (key) {
+        Marko._.assertRendered(
+          Marko._.rendered,
           6,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: key,
           })
         );
-        const { value: hoistedFromForIn } = Marko.ᜭ.rendered.returns[6];
+        const { value: hoistedFromForIn } = Marko._.rendered.returns[6];
         yield { hoistedFromForIn };
       }),
     })
   );
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       hoistedFromForIn;
     },
   });
-  Marko.ᜭ.forTag({
+  Marko._.forTag({
     to: 10,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (index) {
+    [/*for*/ "renderBody"]: Marko._.body(function* (index) {
       index;
     }),
   });
-  Marko.ᜭ.forTag({
+  Marko._.forTag({
     from: 1,
     to: 10,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (index) {
+    [/*for*/ "renderBody"]: Marko._.body(function* (index) {
       index;
     }),
   });
-  Marko.ᜭ.forTag({
+  Marko._.forTag({
     to: 10,
     step: 2,
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (index) {
+    [/*for*/ "renderBody"]: Marko._.body(function* (index) {
       index;
     }),
   });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  Marko._.assertRendered(
+    Marko._.rendered,
     7,
-    Marko.ᜭ.forTag({
+    Marko._.forTag({
       to: 10,
-      [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (index) {
-        Marko.ᜭ.assertRendered(
-          Marko.ᜭ.rendered,
+      [/*for*/ "renderBody"]: Marko._.body(function* (index) {
+        Marko._.assertRendered(
+          Marko._.rendered,
           8,
-          Marko.ᜭ.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(import("../../components/const/index.marko"))({
             /*const*/
             value: index,
           })
         );
-        const { value: hoistedFromForTo } = Marko.ᜭ.rendered.returns[8];
+        const { value: hoistedFromForTo } = Marko._.rendered.returns[8];
         yield { hoistedFromForTo };
       }),
     })
   );
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       hoistedFromForTo;
     },
   });
-  Marko.ᜭ.forTag({
-    [/*for*/ "renderBody"]: Marko.ᜭ.body(function* (index) {}),
+  Marko._.forTag({
+    [/*for*/ "renderBody"]: Marko._.body(function* (index) {}),
   });
   const { hoistedFromForOf, hoistedFromForIn, hoistedFromForTo } =
-    Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
-  Marko.ᜭ.noop({ hoistedFromForOf, hoistedFromForIn, hoistedFromForTo });
+    Marko._.readScopes(Marko._.rendered);
+  Marko._.noop({ hoistedFromForOf, hoistedFromForIn, hoistedFromForTo });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -174,22 +173,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

@@ -1,6 +1,8 @@
 const RuntimeOverloads = new Map<string, (string | Replacement)[]>();
-const replaceReg = /\babstract\s+(\w+)|Marko\.(TemplateInput|Component)/gm;
-const commentRegex =
+const commentsReg = /\/\*(?:[^*]+|\*[^/])*\*\//gm;
+const replaceTokensReg =
+  /\babstract\s+(\w+)|Marko\.(TemplateInput|Component)/gm;
+const overrideBlockReg =
   /\/\*[*\s]*@marko-overload-start[*\s]*\*\/([\s\S]+)\/\*[*\s]*@marko-overload-end[*\s]*\*\//g;
 
 enum Replacement {
@@ -17,18 +19,19 @@ export function getRuntimeOverrides(
   let overloads = RuntimeOverloads.get(runtimeTypes);
 
   if (!overloads) {
-    const match = commentRegex.exec(runtimeTypes);
+    const match = overrideBlockReg.exec(runtimeTypes);
     RuntimeOverloads.set(runtimeTypes, (overloads = []));
 
     if (match) {
-      const [, content] = match;
+      let [, content] = match;
       let replaceMatch: RegExpExecArray | null;
       let lastIndex = 0;
+      content = content.replace(commentsReg, ""); // remove all comments within the overloads.
 
-      while ((replaceMatch = replaceReg.exec(content))) {
+      while ((replaceMatch = replaceTokensReg.exec(content))) {
         const [, methodName, propertyName] = replaceMatch;
         const curText = content.slice(lastIndex, replaceMatch.index);
-        lastIndex = replaceReg.lastIndex;
+        lastIndex = replaceTokensReg.lastIndex;
 
         if (methodName) {
           overloads.push(curText + methodName, Replacement.Generics);

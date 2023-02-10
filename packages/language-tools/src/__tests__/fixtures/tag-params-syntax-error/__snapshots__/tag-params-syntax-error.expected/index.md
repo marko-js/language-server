@@ -58,7 +58,7 @@
 ```ts
   13 | /*custom*/
   14 | [/*custom*/
-> 15 | "renderBody"]: Marko.ᜭ.body(function *(
+> 15 | "renderBody"]: Marko._.body(function *(
      |                             ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
   16 | a, %b
   17 | ) {
@@ -67,7 +67,7 @@
 
 ### Ln 17, Col 3
 ```ts
-  15 | "renderBody"]: Marko.ᜭ.body(function *(
+  15 | "renderBody"]: Marko._.body(function *(
   16 | a, %b
 > 17 | ) {
      |   ^ ',' expected.
@@ -78,7 +78,7 @@
 
 ### Ln 17, Col 3
 ```ts
-  15 | "renderBody"]: Marko.ᜭ.body(function *(
+  15 | "renderBody"]: Marko._.body(function *(
   16 | a, %b
 > 17 | ) {
      |   ^
@@ -122,7 +122,7 @@
 > 24 | }
      | ^ Declaration or statement expected.
   25 | export default new (
-  26 |   class Template extends Marko.ᜭ.Template<{
-  27 |       /** Asynchronously render the template. */
+  26 |   class Template extends Marko._.Template<{
+  27 |       
 ```
 

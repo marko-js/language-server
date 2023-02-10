@@ -3,35 +3,34 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       value: { b: 1, bChange(value: number) {} },
     })
   );
-  const { value: a } = Marko.ᜭ.rendered.returns[1];
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const { value: a } = Marko._.rendered.returns[1];
+  Marko._.assertRendered(
+    Marko._.rendered,
     2,
-    Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))({
       /*let*/
       valueChange: a[`${"b"}Change`],
       value: a["b"],
     })
   );
-  const { value: b } = Marko.ᜭ.rendered.returns[2];
+  const { value: b } = Marko._.rendered.returns[2];
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -40,22 +39,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();

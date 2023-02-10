@@ -43,6 +43,7 @@ const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
 const colorModifierReg = /\bcolor\b/;
+const localInternalsPrefix = "__marko_internal_";
 
 const ScriptService: Partial<Plugin> = {
   async initialize() {
@@ -85,8 +86,10 @@ const ScriptService: Partial<Plugin> = {
     const result: CompletionItem[] = [];
 
     for (const completion of completions.entries) {
-      const { replacementSpan } = completion;
       let { name: label, insertText, sortText } = completion;
+      if (label.startsWith(localInternalsPrefix)) continue;
+
+      const { replacementSpan } = completion;
       let textEdit: CompletionItem["textEdit"];
       let detail: CompletionItem["detail"];
       let kind: CompletionItem["kind"];

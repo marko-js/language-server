@@ -3,49 +3,49 @@ import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function ᜭ() {
+function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
-  const out = Marko.ᜭ.out;
-  const state = Marko.ᜭ.state(component);
-  Marko.ᜭ.noop({ input, out, component, state });
-  Marko.ᜭ.assertRendered(
-    Marko.ᜭ.rendered,
+  const out = Marko._.out;
+  const state = Marko._.state(component);
+  Marko._.noop({ input, out, component, state });
+  Marko._.assertRendered(
+    Marko._.rendered,
     1,
-    Marko.ᜭ.renderNativeTag("div")({
+    Marko._.renderNativeTag("div")({
       /*div*/
       /*div*/
-      ["renderBody"]: Marko.ᜭ.inlineBody(
+      ["renderBody"]: Marko._.inlineBody(
         (() => {
-          Marko.ᜭ.assertRendered(
-            Marko.ᜭ.rendered,
+          Marko._.assertRendered(
+            Marko._.rendered,
             2,
-            Marko.ᜭ.renderTemplate(import("../../components/let/index.marko"))({
+            Marko._.renderTemplate(import("../../components/let/index.marko"))({
               /*let*/
               value: 1,
             })
           );
-          const { value: x } = Marko.ᜭ.rendered.returns[2];
+          const { value: x } = Marko._.rendered.returns[2];
           x;
-          Marko.ᜭ.assertRendered(
-            Marko.ᜭ.rendered,
+          Marko._.assertRendered(
+            Marko._.rendered,
             3,
-            Marko.ᜭ.renderNativeTag("button")({
+            Marko._.renderNativeTag("button")({
               /*button*/
               onClick() {
-                ᜭᜭ.mutate.x = 2;
-                ᜭᜭ.mutate.x++;
-                ++ᜭᜭ.mutate.x;
+                __marko_internal_return.mutate.x = 2;
+                __marko_internal_return.mutate.x++;
+                ++__marko_internal_return.mutate.x;
               },
             })
           );
-          const { value: el } = Marko.ᜭ.rendered.returns[3];
-          const ᜭᜭ = {
-            mutate: Marko.ᜭ.mutable([
-              ["x", "value", Marko.ᜭ.rendered.returns[2]],
+          const { value: el } = Marko._.rendered.returns[3];
+          const __marko_internal_return = {
+            mutate: Marko._.mutable([
+              ["x", "value", Marko._.rendered.returns[2]],
             ] as const),
           };
-          Marko.ᜭ.noop({ x });
+          Marko._.noop({ x });
           return {
             scope: { x, el },
           };
@@ -53,19 +53,18 @@ function ᜭ() {
       ),
     })
   );
-  Marko.ᜭ.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)({
     /*effect*/
     value() {
       console.log(el());
     },
   });
   x;
-  const { x, el } = Marko.ᜭ.readScopes(Marko.ᜭ.rendered);
-  Marko.ᜭ.noop({ x, el });
+  const { x, el } = Marko._.readScopes(Marko._.rendered);
+  Marko._.noop({ x, el });
   return;
 }
-export default new (class Template extends Marko.ᜭ.Template<{
-  /** Asynchronously render the template. */
+export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -74,22 +73,18 @@ export default new (class Template extends Marko.ᜭ.Template<{
     }
   ): Marko.Out<Component>;
 
-  /** Synchronously render the template. */
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
-  /** Synchronously render a template to a string. */
   renderToString(input: Marko.TemplateInput<Input>): string;
 
-  /** Render a template and return a stream.Readable in nodejs or a ReadableStream in a web worker environment. */
   stream(
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  /**
-   * @internal
-   * Do not use or you will be fired.
-   */
-  ᜭ<ᜭInput = unknown>(
-    input: Marko.ᜭ.Relate<Input, ᜭInput>
-  ): Marko.ᜭ.ReturnWithScope<ᜭInput, ReturnType<typeof ᜭ>>;
+  _<__marko_internal_input = unknown>(
+    input: Marko._.Relate<Input, __marko_internal_input>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input,
+    ReturnType<typeof __marko_internal_template>
+  >;
 }> {})();
