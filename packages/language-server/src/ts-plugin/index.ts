@@ -5,7 +5,6 @@ import { ExtractedSnapshot, patch } from "./host";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
-const enabledMarkoExt = new WeakSet<ts.server.Project>();
 const getStartLineCharacter = () => START_POSITION;
 // TODO: improve the import name for Marko components.
 
@@ -26,31 +25,28 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         languageService: ls,
         languageServiceHost: lsh,
       } = info;
-
-      if (!isConfiguredProject(tsProject)) return ls;
-
       const { projectService: ps } = tsProject;
+      const extraExtensions =
+        (ps as any).hostConfiguration?.extraFileExtensions || [];
 
-      if (!enabledMarkoExt.has(tsProject)) {
+      if (
+        !extraExtensions.some(
+          (it: { extension: string }) => it.extension === markoExt
+        )
+      ) {
         // The first time we install the plugin we update the config to allow `.marko` extensions.
         // This will cause the plugin to be called again, so we check that the extension is not already added.
-        enabledMarkoExt.add(tsProject);
         ps.setHostConfiguration({
-          extraFileExtensions: (
-            (ps as any).hostConfiguration?.extraFileExtensions || []
-          ).concat({
+          extraFileExtensions: extraExtensions.concat({
             extension: markoExt,
             isMixedContent: false,
             scriptKind: ts.ScriptKind.Deferred,
           }),
         });
-
-        // This will invalidate the plugin so we early return.
-        return ls;
       }
 
       const markoScriptKind = /[/\\]tsconfig.json$/.test(
-        tsProject.canonicalConfigFilePath
+        getConfigFilePath(tsProject) || ""
       )
         ? // If we have a `tsconfig.json` then Marko files will be processed as ts, otherwise js.
           ts.ScriptKind.TS
@@ -157,10 +153,8 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
     },
   };
 
-  function isConfiguredProject(
-    project: ts.server.Project
-  ): project is ts.server.ConfiguredProject {
-    return project.projectKind === ts.server.ProjectKind.Configured;
+  function getConfigFilePath(project: ts.server.Project): string | undefined {
+    return (project as ts.server.ConfiguredProject).canonicalConfigFilePath;
   }
 }
 
