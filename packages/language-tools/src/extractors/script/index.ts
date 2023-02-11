@@ -57,13 +57,22 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: finish external component.* files
+// TODO: double check that the old event binding syntax is working.
 // TODO: check concise style with tag var (probably htmljs-parser upgrade)
 // TODO: service wrapper should ignore errors when calling plugins
 // TODO: should avoid displaying errors from actions by default
 // TODO: should not display syntax errors from typescript plugin (handled by compiler)
+// TODO: improve the import name for Marko components.
+// TODO: handle top level attribute tags.
+// TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
+// TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
+// TODO: bring in native tag types to Marko
+// TODO: write types for tags api preview
 
+// Later todos:
 // TODO: css modules
+// TODO: should support member expression tag vars.
+// TODO: support #style directive with custom extension, eg `#style.less=""`.
 
 /**
  * Iterate over the Marko CST and extract all the script content.
@@ -79,8 +88,8 @@ export interface ExtractScriptOptions {
   parsed: Parsed;
   lookup: TaglibLookup;
   scriptLang: ScriptLang;
-  runtimeTypes?: string;
-  componentImport?: string | undefined;
+  runtimeTypesCode?: string;
+  componentFilename?: string | undefined;
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -97,7 +106,7 @@ class ScriptExtractor {
   #renderIds = new Map<Node.ParentTag, number>();
   #scriptLang: ScriptLang;
   #ts: ExtractScriptOptions["ts"];
-  #runtimeTypes: ExtractScriptOptions["runtimeTypes"];
+  #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
   #mutationOffsets: Repeatable<number>;
   #renderId = 1;
   constructor(opts: ExtractScriptOptions) {
@@ -108,12 +117,12 @@ class ScriptExtractor {
     this.#parsed = parsed;
     this.#lookup = lookup;
     this.#ts = opts.ts;
-    this.#runtimeTypes = opts.runtimeTypes;
+    this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
-    this.#writeProgram(parsed.program, opts.componentImport);
+    this.#writeProgram(parsed.program, opts.componentFilename);
   }
 
   end() {
@@ -122,7 +131,7 @@ class ScriptExtractor {
 
   #writeProgram(
     program: Node.Program,
-    componentClassImport: ExtractScriptOptions["componentImport"]
+    componentClassImport: ExtractScriptOptions["componentFilename"]
   ) {
     this.#writeCommentPragmas(program);
 

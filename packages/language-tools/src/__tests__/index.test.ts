@@ -55,8 +55,8 @@ for (const entry of fs.readdirSync(FIXTURES)) {
             parsed,
             lookup,
             scriptLang: ScriptLang.ts,
-            runtimeTypes: RUNTIME_LIB_CODE,
-            componentImport: fs.existsSync(potentialComponentPath)
+            runtimeTypesCode: RUNTIME_LIB_CODE,
+            componentFilename: fs.existsSync(potentialComponentPath)
               ? "./component"
               : undefined,
           };

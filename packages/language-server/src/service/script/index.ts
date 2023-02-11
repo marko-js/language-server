@@ -29,6 +29,7 @@ import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import getComponentFilename from "../../utils/get-component-filename";
 import getProjectTypeLibs from "../../utils/get-runtime-types";
 import getScriptLang from "../../utils/get-script-lang";
 
@@ -425,21 +426,18 @@ const ScriptService: Partial<Plugin> = {
   },
 };
 
-function processScript(doc: TextDocument, project: TSProject) {
-  return processDoc(doc, (file) => {
+function processScript(doc: TextDocument, tsProject: TSProject) {
+  return processDoc(doc, ({ parsed, filename, project: markoProject }) => {
+    const { lookup } = markoProject;
+    const { host, markoScriptLang } = tsProject;
     return extractScript({
       ts,
-      parsed: file.parsed,
-      lookup: file.project.lookup,
-      componentImport: undefined, // TODO!
-      runtimeTypes: getProjectTypeLibs(file.project, ts, project.host)
+      parsed,
+      lookup,
+      scriptLang: getScriptLang(filename, ts, host, markoScriptLang),
+      runtimeTypesCode: getProjectTypeLibs(markoProject, ts, host)
         ?.markoTypesCode,
-      scriptLang: getScriptLang(
-        file.parsed.filename,
-        ts,
-        project.host,
-        project.markoScriptLang
-      ),
+      componentFilename: getComponentFilename(filename, host),
     });
   });
 }

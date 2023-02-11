@@ -8,6 +8,7 @@ import {
 import { getMarkoProject } from "../utils/project";
 import getProjectTypeLibs from "../utils/get-runtime-types";
 import getScriptLang from "../utils/get-script-lang";
+import getComponentFilename from "../utils/get-component-filename";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
@@ -69,9 +70,9 @@ export function patch(
           ts,
           parsed: parse(code, filename),
           lookup: markoProject.lookup,
-          runtimeTypes: projectTypeLibs.markoTypesCode,
           scriptLang: getScriptLang(filename, ts, host, scriptLang),
-          componentImport: undefined, // TODO!
+          runtimeTypesCode: projectTypeLibs.markoTypesCode,
+          componentFilename: getComponentFilename(filename, host),
         }) as ExtractedSnapshot;
 
         cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
