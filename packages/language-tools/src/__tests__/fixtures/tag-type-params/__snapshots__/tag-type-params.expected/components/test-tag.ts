@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../../lib-fixtures/marko.d.ts";
 export interface Input<T, U> {
   data: T;
   renderBody: Marko.Body<[T], U>;

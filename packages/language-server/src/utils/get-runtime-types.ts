@@ -1,32 +1,40 @@
+import path from "path";
 import type { LanguageServiceHost } from "typescript";
 import type TS from "typescript";
 import type { MarkoProject } from "./project";
 
-export default function getRuntimeTypes(
+const internalTypesFile = path.join(__dirname, "marko.internal.d.ts");
+const defaultMarkoTypesFile = path.join(__dirname, "marko.runtime.d.ts");
+
+export default function getProjectTypeLibs(
   project: MarkoProject,
   ts: typeof TS,
   host: LanguageServiceHost
 ) {
-  let cached = project.cache.get(getRuntimeTypes) as
-    | false
-    | { filename: string; code: string };
+  let cached = project.cache.get(getProjectTypeLibs) as {
+    internalTypesFile: string;
+    markoTypesFile: string;
+    markoTypesCode: string;
+  };
 
   if (cached === undefined) {
-    const { resolvedModule } = ts.resolveModuleName(
+    const { resolvedTypeReferenceDirective } = ts.resolveTypeReferenceDirective(
       (project.translator.runtimeTypes as string | undefined) || "marko",
-      project.rootDir,
+      path.join(project.rootDir, "_.ts"),
       host.getCompilationSettings(),
       host
     );
 
-    cached = resolvedModule
-      ? {
-          filename: resolvedModule.resolvedFileName,
-          code: host.readFile(resolvedModule.resolvedFileName, "utf-8") || "",
-        }
-      : false;
+    const markoTypesFile =
+      resolvedTypeReferenceDirective?.resolvedFileName || defaultMarkoTypesFile;
 
-    project.cache.set(getRuntimeTypes, cached);
+    cached = {
+      internalTypesFile,
+      markoTypesFile,
+      markoTypesCode: host.readFile(markoTypesFile, "utf-8") || "",
+    };
+
+    project.cache.set(getProjectTypeLibs, cached);
   }
 
   return cached || undefined;

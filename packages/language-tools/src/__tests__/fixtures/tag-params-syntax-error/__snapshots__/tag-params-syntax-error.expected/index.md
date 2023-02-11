@@ -54,75 +54,75 @@
 ```
 
 ## Generated Diagnostics
-### Ln 15, Col 29
+### Ln 13, Col 29
 ```ts
-  13 | /*custom*/
-  14 | [/*custom*/
-> 15 | "renderBody"]: Marko._.body(function *(
+  11 | /*custom*/
+  12 | [/*custom*/
+> 13 | "renderBody"]: Marko._.body(function *(
      |                             ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
-  16 | a, %b
-  17 | ) {
-  18 | return;
+  14 | a, %b
+  15 | ) {
+  16 | return;
 ```
 
-### Ln 17, Col 3
+### Ln 15, Col 3
 ```ts
-  15 | "renderBody"]: Marko._.body(function *(
-  16 | a, %b
-> 17 | ) {
+  13 | "renderBody"]: Marko._.body(function *(
+  14 | a, %b
+> 15 | ) {
      |   ^ ',' expected.
-  18 | return;
-  19 |
-  20 | })
+  16 | return;
+  17 |
+  18 | })
 ```
 
-### Ln 17, Col 3
+### Ln 15, Col 3
 ```ts
-  15 | "renderBody"]: Marko._.body(function *(
-  16 | a, %b
-> 17 | ) {
+  13 | "renderBody"]: Marko._.body(function *(
+  14 | a, %b
+> 15 | ) {
      |   ^
-> 18 | return;
+> 16 | return;
      | ^^^^^^^
-> 19 |
+> 17 |
      | ^^^^^^^
-> 20 | })
+> 18 | })
      | ^^ Expected 1 arguments, but got 2.
-  21 | });
-  22 | return;
-  23 |
+  19 | });
+  20 | return;
+  21 |
 ```
 
-### Ln 18, Col 7
+### Ln 16, Col 7
 ```ts
-  16 | a, %b
-  17 | ) {
-> 18 | return;
+  14 | a, %b
+  15 | ) {
+> 16 | return;
      |       ^ ':' expected.
-  19 |
-  20 | })
-  21 | });
+  17 |
+  18 | })
+  19 | });
 ```
 
-### Ln 21, Col 2
+### Ln 19, Col 2
 ```ts
-  19 |
-  20 | })
-> 21 | });
+  17 |
+  18 | })
+> 19 | });
      |  ^ Declaration or statement expected.
-  22 | return;
-  23 |
-  24 | }
+  20 | return;
+  21 |
+  22 | }
 ```
 
-### Ln 24, Col 1
+### Ln 22, Col 1
 ```ts
-  22 | return;
-  23 |
-> 24 | }
+  20 | return;
+  21 |
+> 22 | }
      | ^ Declaration or statement expected.
-  25 | export default new (
-  26 |   class Template extends Marko._.Template<{
-  27 |       
+  23 | export default new (
+  24 |   class Template extends Marko._.Template<{
+  25 |     
 ```
 

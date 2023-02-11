@@ -16,7 +16,11 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { type Extracted, extractScript } from "@marko/language-tools";
+import {
+  type Extracted,
+  ScriptLang,
+  extractScript,
+} from "@marko/language-tools";
 import { type MarkoProject, getMarkoProject } from "../../utils/project";
 import { getFSPath, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
@@ -25,17 +29,18 @@ import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
-import getRuntimeTypes from "../../utils/get-runtime-types";
+import getProjectTypeLibs from "../../utils/get-runtime-types";
+import getScriptLang from "../../utils/get-script-lang";
 
 interface TSProject {
   rootDir: string;
   host: ts.LanguageServiceHost;
   service: ts.LanguageService;
-  markoScriptKind: ts.ScriptKind;
   markoProject: MarkoProject;
+  markoScriptLang: ScriptLang;
+  markoProjectTypeLibs: ReturnType<typeof getProjectTypeLibs>;
 }
 
-const kTSProject = Symbol("ts-project");
 const extractCache = new Map<string, ExtractedSnapshot>();
 const snapshotCache = new Map<string, ts.IScriptSnapshot>();
 const markoFileReg = /\.marko$/;
@@ -76,7 +81,7 @@ const ScriptService: Partial<Plugin> = {
       fileName,
       generatedOffset,
       {
-        ...(await getPreferences(project.markoScriptKind)),
+        ...(await getPreferences(project.markoScriptLang)),
         ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
       }
@@ -186,7 +191,7 @@ const ScriptService: Partial<Plugin> = {
       data.originalName,
       {},
       data.originalSource,
-      await getPreferences(project.markoScriptKind),
+      await getPreferences(project.markoScriptLang),
       data.originalData
     );
 
@@ -426,9 +431,15 @@ function processScript(doc: TextDocument, project: TSProject) {
       ts,
       parsed: file.parsed,
       lookup: file.project.lookup,
-      runtimeTypes: getRuntimeTypes(file.project, ts, project.host),
-      scriptKind: project.markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
-      componentClassImport: undefined, // TODO!
+      componentImport: undefined, // TODO!
+      runtimeTypes: getProjectTypeLibs(file.project, ts, project.host)
+        ?.markoTypesCode,
+      scriptLang: getScriptLang(
+        file.parsed.filename,
+        ts,
+        project.host,
+        project.markoScriptLang
+      ),
     });
   });
 }
@@ -453,7 +464,7 @@ function docLocationAtTextSpan(
 
 function getTSProject(docFsPath: string): TSProject {
   let configPath: string | undefined;
-  let markoScriptKind = ts.ScriptKind.JS;
+  let markoScriptLang = ScriptLang.js;
 
   if (docFsPath) {
     configPath = ts.findConfigFile(
@@ -463,7 +474,7 @@ function getTSProject(docFsPath: string): TSProject {
     );
 
     if (configPath) {
-      markoScriptKind = ts.ScriptKind.TS;
+      markoScriptLang = ScriptLang.ts;
     } else {
       configPath = ts.findConfigFile(
         docFsPath,
@@ -475,7 +486,7 @@ function getTSProject(docFsPath: string): TSProject {
 
   const rootDir = (configPath && path.dirname(configPath)) || process.cwd();
   const markoProject = getMarkoProject(configPath && rootDir);
-  let projectCache = markoProject.cache.get(kTSProject) as
+  let projectCache = markoProject.cache.get(getTSProject) as
     | Map<string, TSProject>
     | undefined;
   let cached: TSProject | undefined;
@@ -490,7 +501,7 @@ function getTSProject(docFsPath: string): TSProject {
     // Within the compiler cache we store a map
     // of project paths to project info.
     projectCache = new Map();
-    markoProject.cache.set(kTSProject, projectCache);
+    markoProject.cache.set(getTSProject, projectCache);
   }
 
   const { fileNames, options, projectReferences } =
@@ -536,7 +547,7 @@ function getTSProject(docFsPath: string): TSProject {
 
   const host: ts.LanguageServiceHost = patch(
     ts,
-    markoScriptKind,
+    markoScriptLang,
     extractCache,
     {
       getNewLine() {
@@ -630,11 +641,12 @@ function getTSProject(docFsPath: string): TSProject {
   );
 
   const tsProject: TSProject = {
-    rootDir: options.rootDir!,
-    markoProject,
-    markoScriptKind,
     host,
+    rootDir: options.rootDir!,
     service: ts.createLanguageService(host),
+    markoProject,
+    markoScriptLang,
+    markoProjectTypeLibs: getProjectTypeLibs(markoProject, ts, host),
   };
 
   projectCache.set(rootDir, tsProject);
@@ -646,10 +658,9 @@ function filenameToURI(filename: string) {
 }
 
 async function getPreferences(
-  scriptKind: ts.ScriptKind
+  scriptLang: ScriptLang
 ): Promise<ts.UserPreferences> {
-  const configName =
-    scriptKind === ts.ScriptKind.JS ? "javascript" : "typescript";
+  const configName = scriptLang === ScriptLang.js ? "javascript" : "typescript";
   const [preferencesConfig, suggestConfig, inlayHintsConfig] =
     await Promise.all([
       workspace.getConfig(`${configName}.preferences`),

@@ -8,8 +8,6 @@ import {
 import type { Extracted } from "../../util/extractor";
 
 const rootDir = process.cwd();
-const libFixtureDir = path.join(__dirname, "../lib-fixtures");
-const libRuntimeFsMap = loadDir(libFixtureDir, new Map());
 const startPosition: ts.LineAndCharacter = {
   line: 0,
   character: 0,
@@ -42,12 +40,8 @@ export function createLanguageService(
     target: ts.ScriptTarget.ESNext,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
   };
-  const rootFiles = [...libRuntimeFsMap.keys(), ...fsMap.keys()];
-  const sys = createFSBackedSystem(
-    new Map([...libRuntimeFsMap.entries(), ...fsMap.entries()]),
-    rootDir,
-    ts
-  );
+  const rootFiles = [...fsMap.keys()];
+  const sys = createFSBackedSystem(fsMap, rootDir, ts);
 
   const { languageServiceHost: lsh } = createVirtualLanguageServiceHost(
     sys,

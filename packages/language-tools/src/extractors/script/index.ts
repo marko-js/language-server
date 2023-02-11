@@ -57,22 +57,30 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
+// TODO: finish external component.* files
+// TODO: check concise style with tag var (probably htmljs-parser upgrade)
+// TODO: service wrapper should ignore errors when calling plugins
+// TODO: should avoid displaying errors from actions by default
+// TODO: should not display syntax errors from typescript plugin (handled by compiler)
+
 // TODO: css modules
 
 /**
  * Iterate over the Marko CST and extract all the script content.
  */
 
+export enum ScriptLang {
+  js = "js",
+  ts = "ts",
+}
+
 export interface ExtractScriptOptions {
+  ts?: typeof TS;
   parsed: Parsed;
   lookup: TaglibLookup;
-  scriptKind: "js" | "ts";
-  ts?: typeof TS;
-  componentClassImport?: string | undefined;
-  runtimeTypes?: {
-    filename: string;
-    code: string;
-  };
+  scriptLang: ScriptLang;
+  runtimeTypes?: string;
+  componentImport?: string | undefined;
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -87,25 +95,25 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #renderIds = new Map<Node.ParentTag, number>();
-  #isTS: boolean;
+  #scriptLang: ScriptLang;
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypes"];
   #mutationOffsets: Repeatable<number>;
   #renderId = 1;
   constructor(opts: ExtractScriptOptions) {
-    const { parsed, lookup } = opts;
+    const { parsed, lookup, scriptLang } = opts;
     this.#filename = parsed.filename;
     this.#code = parsed.code;
+    this.#scriptLang = scriptLang;
     this.#parsed = parsed;
     this.#lookup = lookup;
-    this.#isTS = opts.scriptKind === "ts";
     this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypes;
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
-    this.#writeProgram(parsed.program, opts.componentClassImport);
+    this.#writeProgram(parsed.program, opts.componentImport);
   }
 
   end() {
@@ -114,21 +122,12 @@ class ScriptExtractor {
 
   #writeProgram(
     program: Node.Program,
-    componentClassImport: ExtractScriptOptions["componentClassImport"]
+    componentClassImport: ExtractScriptOptions["componentImport"]
   ) {
     this.#writeCommentPragmas(program);
 
     const inputType = this.#getInputType(program);
     let componentClassBody: Range | void;
-
-    if (this.#runtimeTypes) {
-      this.#extractor.write(
-        `import "@marko/language-tools/script.internals";\nimport "${relativeImportPath(
-          this.#filename,
-          this.#runtimeTypes.filename
-        )}";\n`
-      );
-    }
 
     for (const node of program.static) {
       switch (node.type) {
@@ -215,7 +214,7 @@ class ScriptExtractor {
         typeParamsStr += ">";
         typeArgsStr += ">";
 
-        if (!this.#isTS) {
+        if (this.#scriptLang === ScriptLang.js) {
           for (const param of inputType.typeParameters) {
             jsDocTemplateTagsStr += `\n* @template ${
               param.constraint ? `{${param.constraint}} ` : ""
@@ -225,7 +224,7 @@ class ScriptExtractor {
           }
         }
       }
-    } else if (this.#isTS) {
+    } else if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write("export interface Input {}\n");
     } else {
       this.#extractor.write(
@@ -240,7 +239,7 @@ class ScriptExtractor {
     } else {
       const body = componentClassBody || " {}";
 
-      if (this.#isTS) {
+      if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor
           .write(
             `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`
@@ -258,7 +257,7 @@ class ScriptExtractor {
       }
     }
 
-    if (this.#isTS) {
+    if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write(`function ${varLocal(
         "template"
       )}${typeParamsStr}(this: void) {
@@ -305,11 +304,7 @@ function ${varLocal("template")}() {
     const templateBaseClass = varShared("Template");
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
-        ? getRuntimeOverrides(
-            this.#runtimeTypes.code,
-            typeParamsStr,
-            typeArgsStr
-          )
+        ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
         : ""
     }
   _<
@@ -323,7 +318,7 @@ function ${varLocal("template")}() {
   );
 }>`;
 
-    if (this.#isTS) {
+    if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write(`export default new (
   class Template extends ${templateOverrideClass} {}
 );\n`);
@@ -574,7 +569,10 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
         this.#extractor.write(`mutate: ${varShared("mutable")}([\n`);
         for (const binding of mutatedVars) {
           this.#extractor.write(
-            `${sep + (!this.#isTS ? "/** @type {const} */" : "")}[${
+            `${
+              sep +
+              (this.#scriptLang === ScriptLang.js ? "/** @type {const} */" : "")
+            }[${
               JSON.stringify(binding.name) +
               (binding.sourceName && binding.sourceName !== binding.name
                 ? `, ${JSON.stringify(binding.sourceName)}`
@@ -585,7 +583,9 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
           );
           sep = SEP_COMMA_NEW_LINE;
         }
-        this.#extractor.write(`\n]${this.#isTS ? " as const" : ""})`);
+        this.#extractor.write(
+          `\n]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`
+        );
       }
 
       this.#extractor.write("\n};\n");
@@ -630,28 +630,23 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
       const def = this.#lookup.getTag(tagName);
 
       if (def) {
-        if (def.html) {
-          this.#extractor.write(
-            `${varShared("renderNativeTag")}("${def.name}")`
-          );
-        } else {
-          const importPath = resolveTagImport(this.#filename, def);
-          const renderer = importPath
-            ? `renderTemplate(import("${importPath}"))`
-            : "missingTag";
-
-          if (isValidIdentifier(tagName)) {
-            this.#extractor
-              .write(
-                `${varShared("renderPreferLocal")}(
+        const importPath = resolveTagImport(this.#filename, def);
+        const renderer = importPath?.endsWith(".marko")
+          ? `renderTemplate(import("${importPath}"))`
+          : def.html
+          ? `renderNativeTag("${def.name}")`
+          : "missingTag";
+        if (!def.html && isValidIdentifier(tagName)) {
+          this.#extractor
+            .write(
+              `${varShared("renderPreferLocal")}(
 // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
 (${varShared("error")}, `
-              )
-              .copy(tag.name)
-              .write(`),\n${varShared(renderer)})`);
-          } else {
-            this.#extractor.write(varShared(renderer));
-          }
+            )
+            .copy(tag.name)
+            .write(`),\n${varShared(renderer)})`);
+        } else {
+          this.#extractor.write(varShared(renderer));
         }
       } else if (isValidIdentifier(tagName)) {
         this.#extractor
@@ -678,10 +673,10 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
     this.#extractor.write(");\n");
 
     if (renderId && tag.var) {
-      this.#extractor.write(`const { ${ATTR_UNAMED}:\n`);
+      this.#extractor.write(`const `);
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
-        `\n} = ${varShared("rendered")}.returns[${renderId}];\n`
+        ` = ${varShared("rendered")}.returns[${renderId}].${ATTR_UNAMED};\n`
       );
     }
   }
@@ -1389,7 +1384,7 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
   }
 
   #getInputType(program: Node.Program) {
-    return this.#isTS
+    return this.#scriptLang === ScriptLang.ts
       ? this.#getTSInputType(program)
       : this.#ts && this.#getJSDocInputType(program);
   }
@@ -1497,7 +1492,7 @@ function resolveTagImport(from: string, def: TagDefinition | undefined) {
 }
 
 function resolveTagFile(def: TagDefinition | undefined): string | undefined {
-  return def && ((def as any).types || def.template || def.renderer);
+  return def && (def.types || def.template || def.renderer);
 }
 
 function isWhitespaceCode(code: number) {

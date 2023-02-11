@@ -1,7 +1,13 @@
 import path from "path";
-import { type Extracted, extractScript, parse } from "@marko/language-tools";
+import {
+  type Extracted,
+  ScriptLang,
+  extractScript,
+  parse,
+} from "@marko/language-tools";
 import { getMarkoProject } from "../utils/project";
-import getRuntimeTypes from "../utils/get-runtime-types";
+import getProjectTypeLibs from "../utils/get-runtime-types";
+import getScriptLang from "../utils/get-script-lang";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
@@ -16,18 +22,36 @@ export function patch(
   ts:
     | typeof import("typescript/lib/tsserverlibrary")
     | typeof import("typescript"),
-  markoScriptKind: ts.ScriptKind,
+  scriptLang: ScriptLang,
   cache: Map<string, ExtractedSnapshot>,
   host: ts.LanguageServiceHost
 ) {
+  const scriptKind =
+    scriptLang === ScriptLang.ts ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+  const projectTypeLibs = getProjectTypeLibs(
+    getMarkoProject(host.getCurrentDirectory()),
+    ts,
+    host
+  );
+
+  /**
+   * Ensure the Marko runtime definitions are always loaded.
+   */
+  const getScriptFileNames = host.getScriptFileNames!.bind(host);
+  host.getScriptFileNames = () => [
+    ...new Set([
+      ...getScriptFileNames(),
+      projectTypeLibs.internalTypesFile,
+      projectTypeLibs.markoTypesFile,
+    ]),
+  ];
+
   /**
    * Trick TypeScript into thinking Marko files are TS/JS files.
    */
   const getScriptKind = host.getScriptKind!.bind(host);
   host.getScriptKind = (fileName: string) => {
-    return markoExtReg.test(fileName)
-      ? markoScriptKind
-      : getScriptKind(fileName);
+    return markoExtReg.test(fileName) ? scriptKind : getScriptKind(fileName);
   };
 
   /**
@@ -45,9 +69,9 @@ export function patch(
           ts,
           parsed: parse(code, filename),
           lookup: markoProject.lookup,
-          runtimeTypes: getRuntimeTypes(markoProject, ts, host),
-          scriptKind: markoScriptKind === ts.ScriptKind.TS ? "ts" : "js",
-          componentClassImport: undefined, // TODO!
+          runtimeTypes: projectTypeLibs.markoTypesCode,
+          scriptLang: getScriptLang(filename, ts, host, scriptLang),
+          componentImport: undefined, // TODO!
         }) as ExtractedSnapshot;
 
         cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());

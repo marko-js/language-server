@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -39,8 +37,7 @@ function __marko_internal_template(this: void) {
                 value: 1 as const,
               })
             );
-            const { value: hoistedFromStaticMember } =
-              Marko._.rendered.returns[2];
+            const hoistedFromStaticMember = Marko._.rendered.returns[2].value;
             return {
               scope: { hoistedFromStaticMember },
             };

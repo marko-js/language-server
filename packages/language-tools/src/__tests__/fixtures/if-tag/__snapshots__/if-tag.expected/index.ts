@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -17,7 +15,7 @@ function __marko_internal_template(this: void) {
       value: true,
     })
   );
-  const { value: show } = Marko._.rendered.returns[1];
+  const show = Marko._.rendered.returns[1].value;
   Marko._.assertRendered(
     Marko._.rendered,
     2,
@@ -26,7 +24,7 @@ function __marko_internal_template(this: void) {
       value: false,
     })
   );
-  const { value: showAlt } = Marko._.rendered.returns[2];
+  const showAlt = Marko._.rendered.returns[2].value;
   if (undefined) {
   }
   if (show) {
@@ -59,7 +57,7 @@ function __marko_internal_template(this: void) {
             value: 0 as const,
           })
         );
-        const { value: a } = Marko._.rendered.returns[4];
+        const a = Marko._.rendered.returns[4].value;
         return {
           scope: { a },
         };
@@ -81,7 +79,7 @@ function __marko_internal_template(this: void) {
             value: 1 as const,
           })
         );
-        const { value: b } = Marko._.rendered.returns[6];
+        const b = Marko._.rendered.returns[6].value;
         return {
           scope: { b },
         };
@@ -94,7 +92,7 @@ function __marko_internal_template(this: void) {
             value: 2 as const,
           })
         );
-        const { value: c } = Marko._.rendered.returns[7];
+        const c = Marko._.rendered.returns[7].value;
         return {
           scope: { c },
         };
@@ -107,7 +105,7 @@ function __marko_internal_template(this: void) {
             value: 3 as const,
           })
         );
-        const { value: d } = Marko._.rendered.returns[8];
+        const d = Marko._.rendered.returns[8].value;
         return {
           scope: { d },
         };
@@ -128,7 +126,7 @@ function __marko_internal_template(this: void) {
             value: 4 as const,
           })
         );
-        const { value: e } = Marko._.rendered.returns[10];
+        const e = Marko._.rendered.returns[10].value;
         return {
           scope: { e },
         };
@@ -150,7 +148,7 @@ function __marko_internal_template(this: void) {
             value: 4 as const,
           })
         );
-        const { value: f } = Marko._.rendered.returns[12];
+        const f = Marko._.rendered.returns[12].value;
         return {
           scope: { f },
         };
@@ -170,7 +168,7 @@ function __marko_internal_template(this: void) {
             value: 5 as const,
           })
         );
-        const { value: g } = Marko._.rendered.returns[14];
+        const g = Marko._.rendered.returns[14].value;
         return {
           scope: { g },
         };
@@ -183,7 +181,7 @@ function __marko_internal_template(this: void) {
             value: 6 as const,
           })
         );
-        const { value: g } = Marko._.rendered.returns[15];
+        const g = Marko._.rendered.returns[15].value;
         return {
           scope: { g },
         };

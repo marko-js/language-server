@@ -6,23 +6,28 @@ import { format } from "prettier";
 // import { bench, run } from "mitata";
 import { taglib } from "@marko/compiler";
 import type { Extracted } from "../util/extractor";
-import { Parsed, extractScript, parse } from "..";
+import { Parsed, ScriptLang, extractScript, parse } from "..";
 import { codeFrame } from "./util/code-frame";
 import { createLanguageService, loadDir } from "./util/language-service";
 
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
+const INTERNAL_LIB_FILE = path.join(__dirname, "../../marko.internal.d.ts");
+const INTERNAL_LIB_CODE = fs.readFileSync(INTERNAL_LIB_FILE, "utf-8");
+const RUNTIME_LIB_FILE = require.resolve("marko/index.d.ts");
+const RUNTIME_LIB_CODE = fs.readFileSync(RUNTIME_LIB_FILE, "utf-8");
 const FIXTURES = path.join(__dirname, "fixtures");
-const RUNTIME_TYPES = (() => {
-  const filename = path.join(__dirname, "lib-fixtures/marko.d.ts");
-  const code = fs.readFileSync(filename, "utf-8");
-  return { filename, code };
-})();
 
 for (const entry of fs.readdirSync(FIXTURES)) {
   it(entry, async () => {
     const fixtureDir = path.join(FIXTURES, entry);
-    const fixtureFiles = loadDir(fixtureDir, new Map());
+    const fixtureFiles = loadDir(
+      fixtureDir,
+      new Map([
+        [INTERNAL_LIB_FILE, INTERNAL_LIB_CODE],
+        [RUNTIME_LIB_FILE, RUNTIME_LIB_CODE],
+      ])
+    );
     const fileMeta = new Map<
       string,
       {
@@ -49,9 +54,9 @@ for (const entry of fs.readdirSync(FIXTURES)) {
             ts,
             parsed,
             lookup,
-            scriptKind: "ts",
-            runtimeTypes: RUNTIME_TYPES,
-            componentClassImport: fs.existsSync(potentialComponentPath)
+            scriptLang: ScriptLang.ts,
+            runtimeTypes: RUNTIME_LIB_CODE,
+            componentImport: fs.existsSync(potentialComponentPath)
               ? "./component"
               : undefined,
           };

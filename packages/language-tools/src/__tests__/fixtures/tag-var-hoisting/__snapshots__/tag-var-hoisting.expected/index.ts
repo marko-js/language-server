@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -37,16 +35,14 @@ function __marko_internal_template(this: void) {
             })
           );
           const {
-            value: {
-              a,
-              b,
-              c = "default" as const,
-              nested: { d },
-              "some-alias": e,
-              ["computed"]: f,
-              ...g
-            },
-          } = Marko._.rendered.returns[2];
+            a,
+            b,
+            c = "default" as const,
+            nested: { d },
+            "some-alias": e,
+            ["computed"]: f,
+            ...g
+          } = Marko._.rendered.returns[2].value;
           Marko._.assertRendered(
             Marko._.rendered,
             3,
@@ -55,9 +51,7 @@ function __marko_internal_template(this: void) {
               value: [1, 2, 3, 4, 5] as const,
             })
           );
-          const {
-            value: [h, i, , ...j],
-          } = Marko._.rendered.returns[3];
+          const [h, i, , ...j] = Marko._.rendered.returns[3].value;
           return {
             scope: { a, b, c, d, e, f, g, h, i, j },
           };

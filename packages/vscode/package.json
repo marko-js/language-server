@@ -3,7 +3,8 @@
   "description": "Marko Tooling for VSCode",
   "version": "0.17.34",
   "activationEvents": [
-    "onLanguage:marko"
+    "onLanguage:marko",
+    "workspaceContains:**/*.marko"
   ],
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "categories": [
@@ -73,16 +74,16 @@
   "devDependencies": {
     "@marko/language-server": "^0.12.17",
     "@types/babel__helper-validator-identifier": "^7.15.0",
-    "@types/vscode": "^1.68.0",
-    "@vscode/test-electron": "^2.1.5",
-    "ovsx": "^0.5.1",
-    "tsx": "^3.8.2",
+    "@types/vscode": "^1.74.2",
+    "@vscode/test-electron": "^2.2.3",
+    "ovsx": "^0.8.0",
+    "tsx": "^3.12.3",
     "vsce": "^2.10.2",
     "vscode-languageclient": "^8.0.2"
   },
   "displayName": "Marko VSCode",
   "engines": {
-    "vscode": "^1.68.0"
+    "vscode": "^1.74.2"
   },
   "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
   "icon": "img/marko.png",

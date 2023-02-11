@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 import Component from "./component";
 function __marko_internal_template(this: void) {

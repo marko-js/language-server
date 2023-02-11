@@ -4,7 +4,7 @@
   12 |
   13 | <effect() {
 > 14 |   console.log(el())
-     |               ^ const el: () => Element
+     |               ^ const el: any
   15 | }/>
   16 |
   17 | -- ${x}
@@ -45,7 +45,19 @@
   15 | }/>
   16 |
 > 17 | -- ${x}
-     |      ^ Block-scoped variable 'x' used before its declaration.
+     |      ^ Variable 'x' is used before being assigned.
   18 |
+```
+
+## Generated Diagnostics
+### Ln 30, Col 12
+```ts
+  28 |   }
+  29 | }));
+> 30 | const el = Marko._.rendered.returns[3].value;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
+  31 | const __marko_internal_return = {
+  32 | mutate: Marko._.mutable([
+  33 | ["x", "value", Marko._.rendered.returns[2]]
 ```
 

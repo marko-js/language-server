@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 import Template from "<missing-tag>";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}

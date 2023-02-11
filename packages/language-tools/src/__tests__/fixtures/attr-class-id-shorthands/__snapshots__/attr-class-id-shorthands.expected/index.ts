@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -17,7 +15,7 @@ function __marko_internal_template(this: void) {
       value: "hi",
     })
   );
-  const { value: value } = Marko._.rendered.returns[1];
+  const value = Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("div")({
     /*div*/
     id: `test`,

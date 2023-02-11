@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -27,7 +25,7 @@ function __marko_internal_template(this: void) {
       ] as const,
     })
   );
-  const { value: list } = Marko._.rendered.returns[1];
+  const list = Marko._.rendered.returns[1].value;
   Marko._.forTag({
     of: list,
     [/*for*/ "renderBody"]: Marko._.body(function* () {}),
@@ -54,9 +52,7 @@ function __marko_internal_template(this: void) {
             value: item,
           })
         );
-        const {
-          value: { value: hoistedFromForOf },
-        } = Marko._.rendered.returns[3];
+        const { value: hoistedFromForOf } = Marko._.rendered.returns[3].value;
         yield { hoistedFromForOf };
       }),
     })
@@ -78,7 +74,7 @@ function __marko_internal_template(this: void) {
       value: { a: 1, b: 2 } as const,
     })
   );
-  const { value: record } = Marko._.rendered.returns[4];
+  const record = Marko._.rendered.returns[4].value;
   Marko._.forTag({
     in: record,
     [/*for*/ "renderBody"]: Marko._.body(function* (key, value) {
@@ -100,7 +96,7 @@ function __marko_internal_template(this: void) {
             value: key,
           })
         );
-        const { value: hoistedFromForIn } = Marko._.rendered.returns[6];
+        const hoistedFromForIn = Marko._.rendered.returns[6].value;
         yield { hoistedFromForIn };
       }),
     })
@@ -145,7 +141,7 @@ function __marko_internal_template(this: void) {
             value: index,
           })
         );
-        const { value: hoistedFromForTo } = Marko._.rendered.returns[8];
+        const hoistedFromForTo = Marko._.rendered.returns[8].value;
         yield { hoistedFromForTo };
       }),
     })

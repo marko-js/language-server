@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -25,7 +23,7 @@ function __marko_internal_template(this: void) {
               value: 1,
             })
           );
-          const { value: x } = Marko._.rendered.returns[2];
+          const x = Marko._.rendered.returns[2].value;
           x;
           Marko._.assertRendered(
             Marko._.rendered,
@@ -39,7 +37,7 @@ function __marko_internal_template(this: void) {
               },
             })
           );
-          const { value: el } = Marko._.rendered.returns[3];
+          const el = Marko._.rendered.returns[3].value;
           const __marko_internal_return = {
             mutate: Marko._.mutable([
               ["x", "value", Marko._.rendered.returns[2]],

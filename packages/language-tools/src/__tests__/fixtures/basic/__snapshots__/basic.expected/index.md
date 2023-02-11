@@ -65,6 +65,6 @@
   10 | </div>
   11 |
 > 12 | -- ${x}
-     |      ^ Block-scoped variable 'x' used before its declaration.
+     |      ^ Variable 'x' is used before being assigned.
 ```
 

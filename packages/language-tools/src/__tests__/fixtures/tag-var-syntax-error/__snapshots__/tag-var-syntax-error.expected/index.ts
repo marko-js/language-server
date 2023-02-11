@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component }
@@ -16,36 +14,34 @@ Marko._.assertRendered(Marko._.rendered, 1, Marko._.renderTemplate(import("../..
 1
 )
 }));
-const { value:
-{ %x }
-} = Marko._.rendered.returns[1];
+const { %x } = Marko._.rendered.returns[1].value;
 return;
 
 }
 export default new (
   class Template extends Marko._.Template<{
-      
-      render(
-        input: Marko.TemplateInput<Input>,
-        stream?: {
-          write: (chunk: string) => void;
-          end: (chunk?: string) => void;
-        }
-      ): Marko.Out<Component>;
+    
+    render(
+      input: Marko.TemplateInput<Input>,
+      stream?: {
+        write: (chunk: string) => void;
+        end: (chunk?: string) => void;
+      }
+    ): Marko.Out<Component>;
 
-      
-      renderSync(
-        input: Marko.TemplateInput<Input>
-      ): Marko.RenderResult<Component>;
+    
+    renderSync(
+      input: Marko.TemplateInput<Input>
+    ): Marko.RenderResult<Component>;
 
-      
-      renderToString(input: Marko.TemplateInput<Input>): string;
+    
+    renderToString(input: Marko.TemplateInput<Input>): string;
 
-      
-      stream(
-        input: Marko.TemplateInput<Input>
-      ): ReadableStream<string> & NodeJS.ReadableStream;
-      
+    
+    stream(
+      input: Marko.TemplateInput<Input>
+    ): ReadableStream<string> & NodeJS.ReadableStream;
+    
   _<
     __marko_internal_input = unknown
   >(input: Marko._.Relate<Input, __marko_internal_input>): (

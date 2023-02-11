@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 import CustomTagA from "./components/TestTagA.marko";
 import CustomTagB from "./components/TestTagB.marko";
 export interface Input {}
@@ -19,7 +17,7 @@ function __marko_internal_template(this: void) {
       value: CustomTagA,
     })
   );
-  const { value: TestTagA } = Marko._.rendered.returns[1];
+  const TestTagA = Marko._.rendered.returns[1].value;
   Marko._.renderPreferLocal(
     // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
     (Marko._.error, TestTagA),
@@ -49,7 +47,7 @@ function __marko_internal_template(this: void) {
             value: CustomTagB,
           })
         );
-        const { value: TestTagA } = Marko._.rendered.returns[2];
+        const TestTagA = Marko._.rendered.returns[2].value;
         Marko._.renderPreferLocal(
           // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
           (Marko._.error, TestTagA),

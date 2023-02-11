@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
@@ -40,7 +38,7 @@ function __marko_internal_template(this: void) {
       ] as const,
     })
   );
-  const { value: list } = Marko._.rendered.returns[1];
+  const list = Marko._.rendered.returns[1].value;
   Marko._.renderDynamicTag(custom)({
     /*custom*/
     ...Marko._.forAttrTag(
@@ -132,9 +130,8 @@ function __marko_internal_template(this: void) {
                     value: item,
                   })
                 );
-                const {
-                  value: { value: hoistedFromForOf },
-                } = Marko._.rendered.returns[3];
+                const { value: hoistedFromForOf } =
+                  Marko._.rendered.returns[3].value;
                 return {
                   scope: { hoistedFromForOf },
                 };
@@ -159,7 +156,7 @@ function __marko_internal_template(this: void) {
       value: { a: 1, b: 2 } as const,
     })
   );
-  const { value: record } = Marko._.rendered.returns[4];
+  const record = Marko._.rendered.returns[4].value;
   Marko._.renderDynamicTag(custom)({
     /*custom*/
     ...Marko._.forAttrTag(
@@ -207,7 +204,7 @@ function __marko_internal_template(this: void) {
                     value: key,
                   })
                 );
-                const { value: hoistedFromForIn } = Marko._.rendered.returns[6];
+                const hoistedFromForIn = Marko._.rendered.returns[6].value;
                 return {
                   scope: { hoistedFromForIn },
                 };
@@ -312,7 +309,7 @@ function __marko_internal_template(this: void) {
                     value: index,
                   })
                 );
-                const { value: hoistedFromForTo } = Marko._.rendered.returns[8];
+                const hoistedFromForTo = Marko._.rendered.returns[8].value;
                 return {
                   scope: { hoistedFromForTo },
                 };

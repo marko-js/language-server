@@ -1,5 +1,5 @@
 import type ts from "typescript/lib/tsserverlibrary";
-import type { Extracted } from "@marko/language-tools";
+import { Extracted, ScriptLang } from "@marko/language-tools";
 import { START_POSITION } from "../utils/constants";
 import { ExtractedSnapshot, patch } from "./host";
 
@@ -45,19 +45,19 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         });
       }
 
-      const markoScriptKind = /[/\\]tsconfig.json$/.test(
+      const markoScriptLang = /[/\\]tsconfig.json$/.test(
         getConfigFilePath(tsProject) || ""
       )
         ? // If we have a `tsconfig.json` then Marko files will be processed as ts, otherwise js.
-          ts.ScriptKind.TS
-        : ts.ScriptKind.JS;
+          ScriptLang.ts
+        : ScriptLang.js;
       const extractCache = new Map<string, ExtractedSnapshot>();
-      patch(ts, markoScriptKind, extractCache, lsh);
+      patch(ts, markoScriptLang, extractCache, lsh);
 
       /**
        * Here we invalidate our snapshot cache when TypeScript invalidates the file.
        */
-      const onSourceFileChanged = (ps as any).onSourceFileChanged;
+      const onSourceFileChanged = (ps as any).onSourceFileChanged.bind(ps);
       (ps as any).onSourceFileChanged = (
         info: ts.server.ScriptInfo,
         eventKind: ts.FileWatcherEventKind
@@ -70,7 +70,9 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
        * Whenever TypeScript requests line/character info we return with the source
        * file line/character if it exists.
        */
-      const { toLineColumnOffset = getStartLineCharacter } = ls;
+      const toLineColumnOffset = (
+        ls.toLineColumnOffset || getStartLineCharacter
+      ).bind(ls);
       ls.toLineColumnOffset = (fileName, pos) => {
         if (pos === 0) return START_POSITION;
 
@@ -82,7 +84,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         return toLineColumnOffset(fileName, pos);
       };
 
-      const { findReferences } = ls;
+      const findReferences = ls.findReferences.bind(ls);
       ls.findReferences = (fileName, position) => {
         const symbols = findReferences(fileName, position);
         if (!symbols) return;
@@ -118,7 +120,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         return result;
       };
 
-      const { findRenameLocations } = ls;
+      const findRenameLocations = ls.findRenameLocations.bind(ls);
       ls.findRenameLocations = (
         fileName,
         position,

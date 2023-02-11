@@ -18,36 +18,36 @@
 ```
 
 ## Generated Diagnostics
-### Ln 21, Col 1
+### Ln 17, Col 14
 ```ts
-  19 | const { value:
-  20 | { %x }
-> 21 | } = Marko._.rendered.returns[1];
-     | ^ Declaration or statement expected.
-  22 | return;
-  23 |
-  24 | }
+  15 | )
+  16 | }));
+> 17 | const { %x } = Marko._.rendered.returns[1].value;
+     |              ^ Declaration or statement expected. This '=' follows a block of statements, so if you intended to write a destructuring assignment, you might need to wrap the the whole assignment in parentheses.
+  18 | return;
+  19 |
+  20 | }
 ```
 
-### Ln 21, Col 3
+### Ln 17, Col 44
 ```ts
-  19 | const { value:
-  20 | { %x }
-> 21 | } = Marko._.rendered.returns[1];
-     |   ^ Declaration or statement expected.
-  22 | return;
-  23 |
-  24 | }
+  15 | )
+  16 | }));
+> 17 | const { %x } = Marko._.rendered.returns[1].value;
+     |                                            ^^^^^ Property 'value' does not exist on type 'never'.
+  18 | return;
+  19 |
+  20 | }
 ```
 
-### Ln 24, Col 1
+### Ln 20, Col 1
 ```ts
-  22 | return;
-  23 |
-> 24 | }
+  18 | return;
+  19 |
+> 20 | }
      | ^ Declaration or statement expected.
-  25 | export default new (
-  26 |   class Template extends Marko._.Template<{
-  27 |       
+  21 | export default new (
+  22 |   class Template extends Marko._.Template<{
+  23 |     
 ```
 

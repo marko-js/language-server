@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 export interface Input<T extends string> {
   name: T;
 }
@@ -27,7 +25,7 @@ function __marko_internal_template<T extends string>(this: void) {
               value: 1,
             })
           );
-          const { value: x } = Marko._.rendered.returns[2];
+          const x = Marko._.rendered.returns[2].value;
           new Thing();
           x;
           input.name;

@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 const x = 1;
 const y = 2;
 export interface Input {}
@@ -153,8 +151,8 @@ function __marko_internal_template(this: void) {
                     value: 1 as const,
                   })
                 );
-                const { value: hoistedFromStaticMember } =
-                  Marko._.rendered.returns[2];
+                const hoistedFromStaticMember =
+                  Marko._.rendered.returns[2].value;
                 return {
                   scope: { hoistedFromStaticMember },
                 };
@@ -182,8 +180,8 @@ function __marko_internal_template(this: void) {
                         value: 2 as const,
                       })
                     );
-                    const { value: hoistedFromDynamicMember } =
-                      Marko._.rendered.returns[3];
+                    const hoistedFromDynamicMember =
+                      Marko._.rendered.returns[3].value;
                     return {
                       scope: { hoistedFromDynamicMember },
                     };

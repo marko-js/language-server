@@ -28,6 +28,14 @@ await Promise.all([
       }
     }
   })(),
+  fs.copyFile(
+    path.join(thisDir, "../language-tools/marko.internal.d.ts"),
+    path.join(distDir, "marko.internal.d.ts")
+  ),
+  fs.copyFile(
+    path.join(require.resolve("marko/package.json"), "../index.d.ts"),
+    path.join(distDir, "marko.runtime.d.ts")
+  ),
   build({
     bundle: true,
     minify: true,

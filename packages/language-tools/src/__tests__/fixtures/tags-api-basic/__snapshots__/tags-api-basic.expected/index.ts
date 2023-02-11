@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 import fancyButton from "./components/fancy-button/index.marko";
 import { get } from "@ebay/retriever";
 /** Hi */ export interface Input {
@@ -31,9 +29,8 @@ function __marko_internal_template(this: void) {
       value: input,
     })
   );
-  const {
-    value: { year, isSmartOnly, type, mobileList, renderBody },
-  } = Marko._.rendered.returns[1];
+  const { year, isSmartOnly, type, mobileList, renderBody } =
+    Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("div")({
     /*div*/
     class: "mobiles__list",

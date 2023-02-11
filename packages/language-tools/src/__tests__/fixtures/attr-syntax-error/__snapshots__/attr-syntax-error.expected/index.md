@@ -77,7 +77,7 @@
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |  ^^^^^^^^^^^ Argument of type 'number' is not assignable to parameter of type '{ [x: string]: unknown; onClick?(event: MouseEvent, element: HTMLDivElement): void; }'.
+    |  ^^^^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Record<string, unknown>'.
   4 |   console.log(#hello!);
   5 | }/>
   6 |
@@ -95,58 +95,58 @@
 ```
 
 ## Generated Diagnostics
-### Ln 16, Col 1
+### Ln 14, Col 1
 ```ts
-  14 | "data-x": (
-  15 | #2
-> 16 | )
+  12 | "data-x": (
+  13 | #2
+> 14 | )
      | ^ ':' expected.
-  17 | });
-  18 | Marko._.renderNativeTag("div")({
-  19 | /*div*/
+  15 | });
+  16 | Marko._.renderNativeTag("div")({
+  17 | /*div*/
 ```
 
-### Ln 17, Col 2
+### Ln 15, Col 2
 ```ts
-  15 | #2
-  16 | )
-> 17 | });
+  13 | #2
+  14 | )
+> 15 | });
      |  ^ Declaration or statement expected.
-  18 | Marko._.renderNativeTag("div")({
-  19 | /*div*/
-  20 | "onClick"(a, %b){
+  16 | Marko._.renderNativeTag("div")({
+  17 | /*div*/
+  18 | "onClick"(a, %b){
 ```
 
-### Ln 23, Col 1
+### Ln 21, Col 1
 ```ts
-  21 |   console.log(#hello!);
-  22 | }
-> 23 | });
+  19 |   console.log(#hello!);
+  20 | }
+> 21 | });
      | ^ Declaration or statement expected.
-  24 | return;
-  25 |
-  26 | }
+  22 | return;
+  23 |
+  24 | }
 ```
 
-### Ln 23, Col 2
+### Ln 21, Col 2
 ```ts
-  21 |   console.log(#hello!);
-  22 | }
-> 23 | });
+  19 |   console.log(#hello!);
+  20 | }
+> 21 | });
      |  ^ Declaration or statement expected.
-  24 | return;
-  25 |
-  26 | }
+  22 | return;
+  23 |
+  24 | }
 ```
 
-### Ln 26, Col 1
+### Ln 24, Col 1
 ```ts
-  24 | return;
-  25 |
-> 26 | }
+  22 | return;
+  23 |
+> 24 | }
      | ^ Declaration or statement expected.
-  27 | export default new (
-  28 |   class Template extends Marko._.Template<{
-  29 |       
+  25 | export default new (
+  26 |   class Template extends Marko._.Template<{
+  27 |     
 ```
 

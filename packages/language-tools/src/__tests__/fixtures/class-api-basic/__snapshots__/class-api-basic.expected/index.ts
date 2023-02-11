@@ -1,5 +1,3 @@
-import "@marko/language-tools/script.internals";
-import "../../lib-fixtures/marko.d.ts";
 import fancyButton from "./components/fancy-button/index.marko";
 import { get } from "@ebay/retriever";
 /** Hi */ export interface Input {

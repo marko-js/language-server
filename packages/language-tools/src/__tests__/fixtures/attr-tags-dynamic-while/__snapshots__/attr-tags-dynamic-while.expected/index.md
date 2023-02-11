@@ -78,36 +78,36 @@
 ```
 
 ## Generated Diagnostics
-### Ln 15, Col 12
+### Ln 13, Col 12
 ```ts
-  13 | Marko._.renderDynamicTag(custom)({
-  14 | /*custom*/
-> 15 | ...Marko._..mergeAttrTags((
+  11 | Marko._.renderDynamicTag(custom)({
+  12 | /*custom*/
+> 13 | ...Marko._..mergeAttrTags((
      |            ^ Identifier expected.
-  16 | ++i < 10
-  17 | ) ? [{
-  18 | "a": {
+  14 | ++i < 10
+  15 | ) ? [{
+  16 | "a": {
 ```
 
-### Ln 33, Col 12
+### Ln 31, Col 12
 ```ts
-  31 | Marko._.renderDynamicTag(custom)({
-  32 | /*custom*/
-> 33 | ...Marko._..mergeAttrTags((
+  29 | Marko._.renderDynamicTag(custom)({
+  30 | /*custom*/
+> 31 | ...Marko._..mergeAttrTags((
      |            ^ Identifier expected.
-  34 | !done
-  35 | ) ? [{
-  36 | "a": {
+  32 | !done
+  33 | ) ? [{
+  34 | "a": {
 ```
 
-### Ln 53, Col 12
+### Ln 51, Col 12
 ```ts
-  51 | Marko._.renderDynamicTag(custom)({
-  52 | /*custom*/
-> 53 | ...Marko._..mergeAttrTags((
+  49 | Marko._.renderDynamicTag(custom)({
+  50 | /*custom*/
+> 51 | ...Marko._..mergeAttrTags((
      |            ^ Identifier expected.
-  54 | undefined
-  55 | ) ? [{
-  56 | "a": {
+  52 | undefined
+  53 | ) ? [{
+  54 | "a": {
 ```
 
