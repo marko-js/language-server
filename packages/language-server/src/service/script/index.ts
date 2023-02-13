@@ -33,6 +33,9 @@ import getComponentFilename from "../../utils/get-component-filename";
 import getProjectTypeLibs from "../../utils/get-runtime-types";
 import getScriptLang from "../../utils/get-script-lang";
 
+// Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
+const IGNORE_DIAG_REG = /^(?:Expression|Identifier|['"][^\w]['"]) expected.$/;
+
 interface TSProject {
   rootDir: string;
   host: ts.LanguageServiceHost;
@@ -415,7 +418,7 @@ const ScriptService: Partial<Plugin> = {
 
     function addDiag(tsDiag: ts.Diagnostic) {
       const diag = convertDiag(extracted, tsDiag);
-      if (diag) {
+      if (diag && !IGNORE_DIAG_REG.test(diag.message)) {
         if (results) {
           results.push(diag);
         } else {

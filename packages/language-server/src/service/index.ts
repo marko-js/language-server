@@ -13,8 +13,6 @@ import type {
   WorkspaceEdit,
 } from "vscode-languageserver";
 
-import { displayError } from "../utils/messages";
-
 import type { Plugin } from "./types";
 import MarkoPlugin from "./marko";
 import ScriptPlugin from "./script";
@@ -26,7 +24,9 @@ const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin];
  */
 const service: Plugin = {
   async initialize(params) {
-    await Promise.all(plugins.map((plugin) => plugin.initialize?.(params)));
+    await Promise.allSettled(
+      plugins.map((plugin) => plugin.initialize?.(params))
+    );
   },
   async doComplete(doc, params, cancel) {
     let isIncomplete = false;
@@ -36,11 +36,9 @@ const service: Plugin = {
     // Used to filter out duplicate labels (highest sortText wins).
     const itemsByLabel = new Map<string, CompletionItem>();
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.doComplete?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.doComplete?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
         if (cur) {
           let curItems!: CompletionItem[];
@@ -63,155 +61,133 @@ const service: Plugin = {
             }
           }
         }
-      }
-    } catch (err) {
-      isIncomplete = true;
-      displayError(err);
-    }
+      })
+    );
+
+    if (cancel.isCancellationRequested) return;
 
     if (itemsByLabel.size) {
       return { items: [...itemsByLabel.values()], isIncomplete };
     }
   },
   async doCompletionResolve(item, cancel) {
-    try {
-      for (const plugin of plugins) {
+    for (const plugin of plugins) {
+      try {
         const result = await plugin.doCompletionResolve?.(item, cancel);
         if (cancel.isCancellationRequested) return;
         if (result) return result;
+      } catch {
+        // ignore
       }
-    } catch (err) {
-      displayError(err);
     }
   },
   async findDefinition(doc, params, cancel) {
     let result: (Location | DefinitionLink)[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findDefinition?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findDefinition?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
         if (cur) result = (result || []).concat(cur);
-      }
-    } catch (err) {
-      displayError(err);
-    }
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async findReferences(doc, params, cancel) {
     let result: Location[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findReferences?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findReferences?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async findDocumentSymbols(doc, params, cancel) {
     let result: SymbolInformation[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findDocumentSymbols?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findDocumentSymbols?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async findDocumentLinks(doc, params, cancel) {
     let result: DocumentLink[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findDocumentLinks?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findDocumentLinks?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async findDocumentHighlights(doc, params, cancel) {
     let result: DocumentHighlight[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findDocumentHighlights?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findDocumentHighlights?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async findDocumentColors(doc, params, cancel) {
     let result: ColorInformation[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.findDocumentColors?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.findDocumentColors?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async getColorPresentations(doc, params, cancel) {
     let result: ColorPresentation[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.getColorPresentations?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.getColorPresentations?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async doHover(doc, params, cancel) {
-    try {
-      for (const plugin of plugins) {
+    for (const plugin of plugins) {
+      try {
         const result = await plugin.doHover?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
         if (result) return result;
+      } catch {
+        // ignore
       }
-    } catch (err) {
-      displayError(err);
     }
   },
   async doRename(doc, params, cancel) {
@@ -219,11 +195,9 @@ const service: Plugin = {
     let changeAnnotations: WorkspaceEdit["changeAnnotations"];
     let documentChanges: WorkspaceEdit["documentChanges"];
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.doRename?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.doRename?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
 
         if (cur) {
@@ -256,11 +230,10 @@ const service: Plugin = {
               : cur.documentChanges;
           }
         }
-      }
-    } catch (err) {
-      displayError(err);
-    }
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     if (changes || changeAnnotations || documentChanges) {
       return {
         changes,
@@ -272,30 +245,26 @@ const service: Plugin = {
   async doCodeActions(doc, params, cancel) {
     let result: (Command | CodeAction)[] | undefined;
 
-    try {
-      for (const pending of plugins.map((plugin) =>
-        plugin.doCodeActions?.(doc, params, cancel)
-      )) {
-        const cur = await pending;
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.doCodeActions?.(doc, params, cancel);
         if (cancel.isCancellationRequested) return;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
+    if (cancel.isCancellationRequested) return;
     return result;
   },
   async doValidate(doc) {
     let result: Diagnostic[] | undefined;
-    try {
-      for (const pending of plugins.map((plugin) => plugin.doValidate?.(doc))) {
-        const cur = await pending;
-        if (cur) result = result ? result.concat(cur) : cur;
-      }
-    } catch (err) {
-      displayError(err);
-    }
+
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.doValidate?.(doc);
+        if (cur) result = (result || []).concat(cur);
+      })
+    );
 
     return result;
   },

@@ -59,10 +59,6 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: check concise style with tag var (probably htmljs-parser upgrade)
-// TODO: service wrapper should ignore errors when calling plugins
-// TODO: should avoid displaying errors from actions by default
-// TODO: should not display syntax errors from typescript plugin (handled by compiler)
 // TODO: improve the import name for Marko components.
 // TODO: handle top level attribute tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
@@ -258,6 +254,7 @@ class ScriptExtractor {
       } else {
         this.#extractor.write(`/**${jsDocTemplateTagsStr}
   * @extends {Marko.Component<Input${typeArgsStr}>}
+  * @abstract
   */\n`);
         this.#extractor
           .write(`export class Component extends Marko.Component`)
