@@ -5,7 +5,7 @@ import getTagNameCompletion from "../util/get-tag-name-completion";
 
 import type { CompletionMeta, CompletionResult } from ".";
 
-const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
+const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/;
 
 export function Import({
   node,
@@ -16,14 +16,14 @@ export function Import({
   },
 }: CompletionMeta<Node.Import>): CompletionResult {
   // check for import statement
-  importTagReg.lastIndex = 0;
   const value = parsed.read(node);
   const match = importTagReg.exec(value);
   if (match) {
     const [{ length }] = match;
+    const fromStart = node.start + match.index;
     const range = parsed.locationAt({
-      start: node.start + match.index + 1,
-      end: node.start + match.index + length - 1,
+      start: fromStart + 1,
+      end: fromStart + length - 1,
     });
 
     const result: CompletionItem[] = [];

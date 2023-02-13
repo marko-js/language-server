@@ -36,7 +36,7 @@ const VAR_SHARED_PREFIX = `Marko._.`;
 const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
-const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/g;
+const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
@@ -153,28 +153,27 @@ class ScriptExtractor {
           break;
         }
         case NodeType.Import: {
-          const tagImportMatch = this.#execAtIndex(
-            REG_TAG_IMPORT,
-            node.start + "import ".length
-          );
+          const tagImportMatch = REG_TAG_IMPORT.exec(this.#read(node));
           this.#writeComments(node);
 
           if (tagImportMatch) {
             // Here we're looking for Marko's shorthand imports for tags and pre-resolving them so typescript knows what we're loading.
-            const [{ length }, , tagName] = tagImportMatch;
+            const [, , tagName] = tagImportMatch;
             const templatePath = resolveTagImport(
               this.#filename,
               this.#lookup.getTag(tagName)
             );
             if (templatePath) {
+              const [{ length }] = tagImportMatch;
+              const fromStart = node.start + tagImportMatch.index;
               this.#extractor
                 .copy({
                   start: node.start,
-                  end: tagImportMatch.index,
+                  end: fromStart,
                 })
                 .write(templatePath)
                 .copy({
-                  start: tagImportMatch.index + length,
+                  start: fromStart + length,
                   end: node.end,
                 })
                 .write("\n");
