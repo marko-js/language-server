@@ -9,3 +9,6 @@ CHANGELOG.md
 **/tsconfig.json
 **/.tsbuildinfo
 **/__tests__
+
+!dist/lib.*.d.ts
+!dist/marko.*.d.ts

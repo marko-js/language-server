@@ -59,7 +59,6 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: improve the import name for Marko components.
 // TODO: handle top level attribute tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
