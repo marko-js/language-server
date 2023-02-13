@@ -59,7 +59,6 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: double check that the old event binding syntax is working.
 // TODO: check concise style with tag var (probably htmljs-parser upgrade)
 // TODO: service wrapper should ignore errors when calling plugins
 // TODO: should avoid displaying errors from actions by default
@@ -486,27 +485,28 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
 
               this.#extractor.write(`${varShared("forTag")}({\n`);
               const sep = this.#writeAttrs(SEP_EMPTY, child);
+
+              this.#writeComments(child);
+
+              // Adds a comment containing the tag name inside the renderBody key
+              // this causes any errors which are just for the renderBody
+              // to show on the tag.
+              this.#extractor
+                .write(`${sep}[/*`)
+                .copy(child.name)
+                .write(`*/"renderBody"]: ${varShared("body")}(function*`)
+                .copy(child.typeParams)
+                .write("(\n");
+
+              if (child.params) {
+                this.#copyWithMutationsReplaced(child.params.value);
+              }
+
+              this.#extractor.write("\n) {\n");
+
               const body = this.#processBody(child);
 
               if (body?.renderBody) {
-                this.#writeComments(child);
-
-                // Adds a comment containing the tag name inside the renderBody key
-                // this causes any errors which are just for the renderBody
-                // to show on the tag.
-                this.#extractor
-                  .write(`${sep}[/*`)
-                  .copy(child.name)
-                  .write(`*/"renderBody"]: ${varShared("body")}(function*`)
-                  .copy(child.typeParams)
-                  .write("(\n");
-
-                if (child.params) {
-                  this.#copyWithMutationsReplaced(child.params.value);
-                }
-
-                this.#extractor.write("\n) {\n");
-
                 const localBindings = getHoistSources(child);
                 this.#writeChildren(child, body.renderBody);
 
@@ -515,9 +515,9 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
                   this.#writeObjectKeys(localBindings);
                   this.#extractor.write(";\n");
                 }
-
-                this.#extractor.write("\n})");
               }
+
+              this.#extractor.write("\n})");
 
               if (renderId) {
                 this.#extractor.write("\n}));\n");
@@ -1093,75 +1093,77 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
 
     const body = this.#processBody(tag);
     let sep = this.#writeAttrs(SEP_EMPTY, tag);
-
+    let hasRenderBody = false;
     if (body) {
       sep = this.#writeAttrTags(sep, body);
+      hasRenderBody = body.renderBody !== undefined;
+    }
 
-      if (body.renderBody) {
-        this.#extractor.write(`${sep}[`);
+    if (tag.params || hasRenderBody) {
+      this.#extractor.write(`${sep}[`);
 
-        // Adds a comment containing the tag name inside the renderBody key
-        // this causes any errors which are just for the renderBody
-        // to show on the tag.
-        this.#extractor.write("/*");
+      // Adds a comment containing the tag name inside the renderBody key
+      // this causes any errors which are just for the renderBody
+      // to show on the tag.
+      this.#extractor.write("/*");
 
-        if (tag.nameText) {
-          this.#extractor.copy(tag.name);
-        } else {
-          this.#writeDynamicTagName(tag);
+      if (tag.nameText) {
+        this.#extractor.copy(tag.name);
+      } else {
+        this.#writeDynamicTagName(tag);
+      }
+
+      this.#extractor.write("*/\n");
+
+      this.#extractor.write(`"renderBody"]: `);
+
+      if (tag.params) {
+        this.#writeComments(tag);
+        this.#extractor
+          .write(`${varShared("body")}(function *`)
+          .copy(tag.typeParams)
+          .write("(\n");
+        this.#copyWithMutationsReplaced(tag.params.value);
+        this.#extractor.write("\n) {\n");
+      } else {
+        this.#extractor.write(`${varShared("inlineBody")}((() => {\n`);
+      }
+
+      const localBindings = getHoistSources(tag);
+      const didReturn =
+        hasRenderBody && this.#writeChildren(tag, body!.renderBody!);
+
+      if (tag.params) {
+        if (localBindings) {
+          this.#extractor.write(`yield `);
+          this.#writeObjectKeys(localBindings);
+          this.#extractor.write(`;\n`);
         }
 
-        this.#extractor.write("*/\n");
-
-        this.#extractor.write(`"renderBody"]: `);
-
-        if (tag.params) {
-          this.#writeComments(tag);
-          this.#extractor
-            .write(`${varShared("body")}(function *`)
-            .copy(tag.typeParams)
-            .write("(\n");
-          this.#copyWithMutationsReplaced(tag.params.value);
-          this.#extractor.write("\n) {\n");
+        if (didReturn) {
+          this.#extractor.write(`return ${varLocal("return")}.return;\n`);
         } else {
-          this.#extractor.write(`${varShared("inlineBody")}((() => {\n`);
+          this.#extractor.write("return;\n");
         }
+        this.#extractor.write("\n})");
+      } else {
+        if (didReturn || localBindings) {
+          this.#extractor.write("return {\n");
 
-        const localBindings = getHoistSources(tag);
-        const didReturn = this.#writeChildren(tag, body.renderBody);
-
-        if (tag.params) {
           if (localBindings) {
-            this.#extractor.write(`yield `);
+            this.#extractor.write(`scope: `);
             this.#writeObjectKeys(localBindings);
-            this.#extractor.write(`;\n`);
+            this.#extractor.write(didReturn ? ",\n" : "\n");
           }
 
           if (didReturn) {
-            this.#extractor.write(`return ${varLocal("return")}.return;\n`);
-          } else {
-            this.#extractor.write("return;\n");
-          }
-          this.#extractor.write("\n})");
-        } else {
-          if (didReturn || localBindings) {
-            this.#extractor.write("return {\n");
-
-            if (localBindings) {
-              this.#extractor.write(`scope: `);
-              this.#writeObjectKeys(localBindings);
-              this.#extractor.write(didReturn ? ",\n" : "\n");
-            }
-
-            if (didReturn) {
-              this.#extractor.write(`return: ${varLocal("return")}.return`);
-            }
-
-            this.#extractor.write("\n};");
+            this.#extractor.write(`return: ${varLocal("return")}.return`);
           }
 
-          this.#extractor.write("\n})())");
+          this.#extractor.write("\n};");
         }
+
+        this.#extractor.write("\n})())");
       }
     }
 
@@ -1491,6 +1493,23 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
 
     return renderId;
   }
+
+  // #getForTagKind(tag: Node.Tag): "in" | "of" | "to" | "" {
+  //   if (tag.attrs) {
+  //     for (const attr of tag.attrs) {
+  //       if (attr.type !== NodeType.AttrNamed) return "";
+  //       const name = this.#read(attr.name);
+  //       switch (name) {
+  //         case "in":
+  //         case "of":
+  //         case "to":
+  //           return name;
+  //       }
+  //     }
+  //   }
+
+  //   return "";
+  // }
 
   #testAtIndex(reg: RegExp, index: number) {
     reg.lastIndex = index;

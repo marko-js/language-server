@@ -51,7 +51,7 @@ function __marko_internal_template(this: void) {
   Marko._.renderNativeTag("div")({
     /*div*/
     class: "mobiles__list",
-    onClick: Marko._.bind(component, "handleClick"),
+    onClick: component["handleClick"],
     /*div*/
     ["renderBody"]: Marko._.inlineBody(
       (() => {

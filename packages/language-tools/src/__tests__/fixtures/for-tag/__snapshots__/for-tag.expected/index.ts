@@ -59,6 +59,7 @@ function __marko_internal_template(this: void) {
   );
   Marko._.forTag({
     of: list,
+    [/*for*/ "renderBody"]: Marko._.body(function* (item) {}),
   });
   Marko._.renderDynamicTag(effect)({
     /*effect*/

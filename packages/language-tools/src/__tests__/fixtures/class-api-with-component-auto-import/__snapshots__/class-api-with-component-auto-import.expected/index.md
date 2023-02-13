@@ -10,7 +10,8 @@
 ### Ln 1, Col 14
 ```marko
 > 1 | <div onClick("handleClickMissing")/>
-    |              ^^^^^^^^^^^^^^^^^^^^ Argument of type '"handleClickMissing"' is not assignable to parameter of type '((...args: any) => any) | "emit" | "forceUpdate" | "setState" | "setStateDirty" | "handleClick"'.
+    |              ^^^^^^^^^^^^^^^^^^^^ Element implicitly has an 'any' type because expression of type '"handleClickMissing"' can't be used to index type 'default'.
+  Property 'handleClickMissing' does not exist on type 'default'.
   2 | $ console.log(component);
 ```
 

@@ -133,6 +133,17 @@
 ```
 
 ## Source Diagnostics
+### Ln 21, Col 6
+```marko
+  19 | </for>
+  20 |
+> 21 | <for|item| of=list></for>
+     |      ^^^^ 'item' is declared but its value is never read.
+  22 |
+  23 | <effect() {
+  24 |   hoistedFromForOf;
+```
+
 ### Ln 23, Col 2
 ```marko
   21 | <for|item| of=list></for>

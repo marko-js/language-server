@@ -8,7 +8,7 @@ function __marko_internal_template(this: void) {
   Marko._.noop({ input, out, component, state });
   Marko._.renderNativeTag("div")({
     /*div*/
-    onClick: Marko._.bind(component, "handleClickMissing"),
+    onClick: component["handleClickMissing"],
   });
   console.log(component);
   return;
