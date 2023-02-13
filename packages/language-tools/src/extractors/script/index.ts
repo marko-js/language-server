@@ -36,6 +36,8 @@ const VAR_SHARED_PREFIX = `Marko._.`;
 const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
+const REG_ATTR_ARG_LITERAL =
+  /\s*(?:"(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')\s*([,)])/my;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
@@ -851,13 +853,38 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
                   break;
               }
             } else if (attr.args) {
-              this.#extractor
-                .write(`${sep}"`)
-                .copy(defaultMapPosition)
-                .copy(name)
-                .write(`": ${varShared("bind")}(component, (\n`)
-                .copy(attr.args.value)
-                .write("\n))");
+              const stringLiteralFirstArgMatch = this.#execAtIndex(
+                REG_ATTR_ARG_LITERAL,
+                attr.args.value.start
+              );
+              this.#extractor.write(`${sep}"`).copy(name).write('": ');
+
+              if (stringLiteralFirstArgMatch) {
+                const hasPartialArgs = stringLiteralFirstArgMatch[1] === ",";
+                const valueStart = attr.args.value.start;
+                const valueEnd =
+                  valueStart + stringLiteralFirstArgMatch[0].length;
+
+                this.#extractor
+                  .write(`component[`)
+                  .copy({
+                    start: valueStart,
+                    end: valueEnd - 1,
+                  })
+                  .write("]");
+
+                if (hasPartialArgs) {
+                  this.#extractor.write(`.bind(component, `).copy({
+                    start: valueEnd,
+                    end: attr.args.end,
+                  });
+                }
+              } else {
+                this.#extractor
+                  .write(`${varShared("bind")}(component, (\n`)
+                  .copy(attr.args.value)
+                  .write("\n))");
+              }
             } else {
               this.#extractor
                 .write(`${sep}"`)
