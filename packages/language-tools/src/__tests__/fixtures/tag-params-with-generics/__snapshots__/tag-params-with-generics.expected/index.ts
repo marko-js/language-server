@@ -1,6 +1,4 @@
-export interface Input {
-  message: string;
-}
+export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
 function __marko_internal_template(this: void) {
@@ -9,15 +7,44 @@ function __marko_internal_template(this: void) {
   const out = Marko._.out;
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
-  Marko._.renderNativeTag("div")()()({
-    /*div*/
-    /*div*/
-    ["renderBody"]: (() => {
-      input.message;
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+  Marko._.renderPreferLocal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
+    (Marko._.error, loader),
+    Marko._.renderTemplate(import("./components/loader.marko"))
+  )()()({
+    /*loader*/
+    value() {
+      return 1;
+    },
+    /*loader*/
+    ["renderBody"]: (data) => {
+      return Marko._.voidReturn;
+    },
+  });
+  Marko._.renderPreferLocal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
+    (Marko._.error, loader),
+    Marko._.renderTemplate(import("./components/loader.marko"))
+  )()()({
+    /*loader*/
+    value() {
+      return "hi" as const;
+    },
+    /*loader*/
+    ["renderBody"]: (data) => {
+      return Marko._.voidReturn;
+    },
+  });
+  Marko._.renderPreferLocal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
+    (Marko._.error, loader),
+    Marko._.renderTemplate(import("./components/loader.marko"))
+  )()()({
+    /*loader*/
+    /*loader*/
+    ["renderBody"]: (data) => {
+      return Marko._.voidReturn;
+    },
   });
   return;
 }

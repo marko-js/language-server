@@ -8,7 +8,7 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   (() => {})("hello!");
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
   });
   return;
@@ -30,10 +30,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

@@ -10,81 +10,81 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("../../components/const/index.marko"))({
+    Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
       /*const*/
       value: "hi",
     })
   );
   const value = Marko._.rendered.returns[1].value;
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     id: `test`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     id: `test-${value || ""}`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     id: `${value || ""}-test`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     id: `${value || ""}-test-${value || ""}`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: `test`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: `hello world`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: `test-${value || ""}`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: `${value || ""}-test`,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: `${value || ""}-test-${value || ""}`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     id: `test`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     id: `test-${value || ""}`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     id: `${value || ""}-test`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     id: `${value || ""}-test-${value || ""}`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     class: `test`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     class: `hello world`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     class: `test-${value || ""}`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     class: `${value || ""}-test`,
   });
-  Marko._.renderTemplate(import("./components/test-tag.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
     /*test-tag*/
     class: `${value || ""}-test-${value || ""}`,
   });
@@ -107,10 +107,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

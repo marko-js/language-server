@@ -12,28 +12,32 @@ function __marko_internal_template<T extends string>(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderNativeTag("div")({
+    Marko._.renderNativeTag("div")()()({
       /*div*/
       /*div*/
-      ["renderBody"]: Marko._.inlineBody(
-        (() => {
-          Marko._.assertRendered(
-            Marko._.rendered,
-            2,
-            Marko._.renderTemplate(import("../../components/let/index.marko"))({
-              /*let*/
-              value: 1,
-            })
-          );
-          const x = Marko._.rendered.returns[2].value;
-          new Thing();
-          x;
-          input.name;
-          return {
-            scope: { x },
-          };
-        })()
-      ),
+      ["renderBody"]: (() => {
+        Marko._.assertRendered(
+          Marko._.rendered,
+          2,
+          Marko._.renderTemplate(
+            import("../../components/let/index.marko")
+          )()()({
+            /*let*/
+            value: 1,
+          })
+        );
+        const x = Marko._.rendered.returns[2].value;
+        new Thing();
+        x;
+        input.name;
+        return () => {
+          return new (class MarkoReturn<Return = void> {
+            [Marko._.scope] = { x };
+            declare return: Return;
+            constructor(_?: Return) {}
+          })();
+        };
+      })(),
     })
   );
   x;
@@ -62,10 +66,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input<T>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<T extends string, __marko_internal_input = unknown>(
-    input: Marko._.Relate<Input<T>, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template<T>>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? <T extends string>() => <__marko_internal_input>(
+        input: Marko._.Matches<Input<T>, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template<T>>
+      >
+    : () => <__marko_internal_input, T extends string>(
+        input: Marko._.Matches<Input<T>, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template<T>>
+      >;
 }> {})();

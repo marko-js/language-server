@@ -10,7 +10,7 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
       /*let*/
       value: true,
     })
@@ -19,7 +19,7 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     2,
-    Marko._.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
       /*let*/
       value: false,
     })
@@ -31,15 +31,16 @@ function __marko_internal_template(this: void) {
   }
   if (show) {
   }
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     /*div*/
-    ["renderBody"]: Marko._.inlineBody(
-      (() => {
-        if (undefined) {
-        }
-      })()
-    ),
+    ["renderBody"]: (() => {
+      if (undefined) {
+      }
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
   });
   if (show) {
   } else {
@@ -52,7 +53,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           4,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 0 as const,
           })
@@ -74,7 +77,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           6,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 1 as const,
           })
@@ -87,7 +92,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           7,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 2 as const,
           })
@@ -100,7 +107,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           8,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 3 as const,
           })
@@ -121,7 +130,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           10,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 4 as const,
           })
@@ -143,7 +154,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           12,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 4 as const,
           })
@@ -163,7 +176,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           14,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 5 as const,
           })
@@ -176,7 +191,9 @@ function __marko_internal_template(this: void) {
         Marko._.assertRendered(
           Marko._.rendered,
           15,
-          Marko._.renderTemplate(import("../../components/const/index.marko"))({
+          Marko._.renderTemplate(
+            import("../../components/const/index.marko")
+          )()()({
             /*const*/
             value: 6 as const,
           })
@@ -191,7 +208,7 @@ function __marko_internal_template(this: void) {
   if (show) {
   } else if (undefined) {
   }
-  Marko._.renderDynamicTag(effect)({
+  Marko._.renderDynamicTag(effect)()()({
     /*effect*/
     value() {
       a;
@@ -224,10 +241,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

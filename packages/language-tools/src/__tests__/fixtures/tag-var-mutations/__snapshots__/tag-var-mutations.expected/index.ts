@@ -10,49 +10,49 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
       /*let*/
       value: 1,
     })
   );
   const x = Marko._.rendered.returns[1].value;
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function"() {
       __marko_internal_return.mutate.x++;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function"(y = __marko_internal_return.mutate.x++) {
       y;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function": () => {
       __marko_internal_return.mutate.x++;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function": (y = __marko_internal_return.mutate.x++) => {
       y;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function": function () {
       __marko_internal_return.mutate.x++;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function": function (y = __marko_internal_return.mutate.x++) {
       y;
     },
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     "data-function"() {
       function testA() {
@@ -112,10 +112,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

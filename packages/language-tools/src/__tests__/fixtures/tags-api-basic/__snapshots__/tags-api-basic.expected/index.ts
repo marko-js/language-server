@@ -24,114 +24,128 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("../../components/const/index.marko"))({
+    Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
       /*const*/
       value: input,
     })
   );
   const { year, isSmartOnly, type, mobileList, renderBody } =
     Marko._.rendered.returns[1].value;
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")()()({
     /*div*/
     class: "mobiles__list",
     /*div*/
-    ["renderBody"]: Marko._.inlineBody(
-      (() => {
-        Marko._.renderNativeTag("p")({
-          /*p*/
-          id: "p",
-          /*p*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              year;
-            })()
-          ),
-        });
-        if (isSmartOnly) {
-          Marko._.renderNativeTag("span")({
-            /*span*/
-            class: "subnote",
-            /*span*/
-            ["renderBody"]: Marko._.inlineBody(
-              (() => {
-                isSmartOnly;
-              })()
-            ),
-          });
-        }
-        Marko._.renderNativeTag("span")({
+    ["renderBody"]: (() => {
+      Marko._.renderNativeTag("p")()()({
+        /*p*/
+        id: "p",
+        /*p*/
+        ["renderBody"]: (() => {
+          year;
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      if (isSmartOnly) {
+        Marko._.renderNativeTag("span")()()({
           /*span*/
           class: "subnote",
           /*span*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              type;
-            })()
-          ),
+          ["renderBody"]: (() => {
+            isSmartOnly;
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
         });
-        Marko._.forTag({
-          of: mobileList,
-          [/*for*/ "renderBody"]: Marko._.body(function* (mobile, i, all) {
-            Marko._.renderNativeTag("span")({
-              /*span*/
-              id: i,
-              /*span*/
-              ["renderBody"]: Marko._.inlineBody(
-                (() => {
-                  mobile;
-                  i;
-                  all.length;
-                })()
-              ),
-            });
-          }),
-        });
-        Marko._.renderNativeTag("div")({
-          /*div*/
-          class: `container`,
-          /*div*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              Marko._.renderDynamicTag(renderBody)({
-                /*renderBody*/
-              });
-            })()
-          ),
-        });
-        Marko._.renderDynamicTag(fancyButton)({
-          /*fancyButton*/
-          something: true,
-          /*fancyButton*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              type;
-            })()
-          ),
-        });
-        Marko._.renderNativeTag("div")({
-          /*div*/
-          /*div*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              ("<b>World</b>");
-            })()
-          ),
-        });
-        Marko._.renderNativeTag("div")({
-          /*div*/
-          /*div*/
-          ["renderBody"]: Marko._.inlineBody(
-            (() => {
-              Marko._.renderNativeTag("code")({
-                /*code*/
-                /*code*/
-                ["renderBody"]: Marko._.inlineBody((() => {})()),
-              });
-            })()
-          ),
-        });
-      })()
-    ),
+      }
+      Marko._.renderNativeTag("span")()()({
+        /*span*/
+        class: "subnote",
+        /*span*/
+        ["renderBody"]: (() => {
+          type;
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      Marko._.forTag({
+        of: mobileList,
+        [/*for*/ "renderBody"]: (mobile, i, all) => {
+          Marko._.renderNativeTag("span")()()({
+            /*span*/
+            id: i,
+            /*span*/
+            ["renderBody"]: (() => {
+              mobile;
+              i;
+              all.length;
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          return Marko._.voidReturn;
+        },
+      });
+      Marko._.renderNativeTag("div")()()({
+        /*div*/
+        class: `container`,
+        /*div*/
+        ["renderBody"]: (() => {
+          Marko._.renderDynamicTag(renderBody)()()({
+            /*renderBody*/
+          });
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      Marko._.renderDynamicTag(fancyButton)()()({
+        /*fancyButton*/
+        something: true,
+        /*fancyButton*/
+        ["renderBody"]: (() => {
+          type;
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      Marko._.renderNativeTag("div")()()({
+        /*div*/
+        /*div*/
+        ["renderBody"]: (() => {
+          ("<b>World</b>");
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      Marko._.renderNativeTag("div")()()({
+        /*div*/
+        /*div*/
+        ["renderBody"]: (() => {
+          Marko._.renderNativeTag("code")()()({
+            /*code*/
+            /*code*/
+            ["renderBody"]: (() => {
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
   });
   const __marko_internal_return = {
     return: Marko._.returnTag({
@@ -158,10 +172,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

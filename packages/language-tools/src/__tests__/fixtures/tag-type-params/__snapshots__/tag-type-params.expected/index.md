@@ -2,11 +2,11 @@
 ### Ln 1, Col 28
 ```marko
 > 1 | <test-tag/result <A>|data: A| data=1 as const>
-    |                            ^ (type parameter) A in <A>(data: A): Generator<never, {
+    |                            ^ (type parameter) A in <A>(data: A): MarkoReturn<{
     value: {
         result: A;
     };
-}, never>
+}>
   2 |   <return={ result: data }/>
   3 | </>
   4 |

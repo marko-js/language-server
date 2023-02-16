@@ -10,23 +10,31 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("../../components/let/index.marko"))({
+    Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
       /*let*/
       value: 1,
     })
   );
   const size = Marko._.rendered.returns[1].value;
-  Marko._.renderDynamicTag(`h${size || ""}`)({
+  Marko._.renderDynamicTag(`h${size || ""}`)()()({
     /*`h${size || ""}`*/
     /*`h${size || ""}`*/
-    ["renderBody"]: Marko._.inlineBody((() => {})()),
+    ["renderBody"]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
   });
-  Marko._.renderDynamicTag("hello")({
+  Marko._.renderDynamicTag("hello")()()({
     /*"hello"*/
     /*"hello"*/
-    ["renderBody"]: Marko._.inlineBody((() => {})()),
+    ["renderBody"]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
   });
-  Marko._.renderDynamicTag(`${"hello" || ""}-world`)({
+  Marko._.renderDynamicTag(`${"hello" || ""}-world`)()()({
     /*`${"hello" || ""}-world`*/
   });
   return;
@@ -48,10 +56,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

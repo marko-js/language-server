@@ -7,7 +7,7 @@ function __marko_internal_template(this: void) {
   const out = Marko._.out;
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
-  Marko._.renderTemplate(import("./components/test-tag/index.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
     /*test-tag*/
     items: [
       {
@@ -16,18 +16,27 @@ function __marko_internal_template(this: void) {
       },
     ],
   });
-  Marko._.renderTemplate(import("./components/test-tag/index.marko"))({
+  Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
     /*test-tag*/
     items: [
       {
         /*@item*/
         x: 1,
-        /*@item*/ ["renderBody"]: Marko._.inlineBody((() => {})()),
+        /*@item*/
+        ["renderBody"]: (() => {
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
       },
       {
         /*@item*/
         /*@item*/
-        ["renderBody"]: Marko._.inlineBody((() => {})()),
+        ["renderBody"]: (() => {
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
       },
     ],
   });
@@ -50,10 +59,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

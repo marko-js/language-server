@@ -59,6 +59,10 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
+// TODO: fix apply for dynamic/custom tags.
+// TODO: fix dynamic tag args & await args.
+// TODO: check if we can avoid an object for returned renderbody data and instead use a branded type.
+
 // TODO: handle top level attribute tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
@@ -307,20 +311,24 @@ function ${varLocal("template")}() {
     this.#extractor.write("\n}\n");
 
     const templateBaseClass = varShared("Template");
+    const internalInput = varLocal("input");
+    const internalApply = varLocal("apply");
+    const renderParams = `(input: ${varShared(
+      "Matches"
+    )}<Input${typeArgsStr}, ${internalInput}>)`;
+    const renderReturn = `(${varShared(
+      "ReturnWithScope"
+    )}<${internalInput}, ReturnType<typeof ${
+      varLocal("template") + typeArgsStr
+    }>>)`;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
         : ""
     }
-  _<
-    ${typeParamsStr ? `${typeParamsStr.slice(1, -1)}, ` : ""}${varLocal(
-      "input"
-    )} = unknown
-  >(input: ${varShared("Relate")}<Input${typeArgsStr}, ${varLocal("input")}>): (
-    ${varShared("ReturnWithScope")}<${varLocal("input")}, ReturnType<typeof ${
-      varLocal("template") + typeArgsStr
-    }>>
-  );
+  _<${internalApply}>(): ${internalApply} extends 0 ? ${typeParamsStr}() => <${internalInput}>${renderParams} => ${renderReturn} : () => <${
+      internalInput + (typeParamsStr ? `, ${typeParamsStr.slice(1, -1)}` : "")
+    }>${renderParams} => ${renderReturn};
 }>`;
 
     if (this.#scriptLang === ScriptLang.ts) {
@@ -370,6 +378,31 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
         }
       }
     }
+  }
+
+  #writeReturn(
+    returned: Range | string | undefined,
+    localBindings: Repeatable<string>
+  ) {
+    if (!returned && !localBindings) {
+      this.#extractor.write(`return ${varShared("voidReturn")};\n`);
+      return;
+    }
+
+    this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
+
+    if (localBindings) {
+      this.#extractor.write(`[Marko._.scope] = `);
+      this.#writeObjectKeys(localBindings);
+      this.#extractor.write(`;\n`);
+    }
+
+    this.#extractor.write(`declare return: Return;
+constructor(_?: Return) {}
+})(\n`);
+
+    this.#extractor.copy(returned);
+    this.#extractor.write(");\n");
   }
 
   #writeChildren(parent: Node.ParentNode, children: Node.ChildNode[]) {
@@ -490,7 +523,7 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
               this.#extractor
                 .write(`${sep}[/*`)
                 .copy(child.name)
-                .write(`*/"renderBody"]: ${varShared("body")}(function*`)
+                .write(`*/"renderBody"]: (`)
                 .copy(child.typeParams)
                 .write("(\n");
 
@@ -498,20 +531,18 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
                 this.#copyWithMutationsReplaced(child.params.value);
               }
 
-              this.#extractor.write("\n) {\n");
+              this.#extractor.write("\n) => {\n");
 
               const body = this.#processBody(child);
 
               if (body?.renderBody) {
-                const localBindings = getHoistSources(child);
                 this.#writeChildren(child, body.renderBody);
-
-                if (localBindings) {
-                  this.#extractor.write("yield ");
-                  this.#writeObjectKeys(localBindings);
-                  this.#extractor.write(";\n");
-                }
               }
+
+              this.#writeReturn(
+                undefined,
+                body?.renderBody ? getHoistSources(child) : undefined
+              );
 
               this.#extractor.write("\n})");
 
@@ -668,7 +699,11 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
       this.#extractor.write(")");
     }
 
-    this.#extractor.copy(tag.typeArgs).write("(");
+    if (tag.typeArgs) {
+      this.#extractor.write(`<0>()`).copy(tag.typeArgs).write("()(");
+    } else {
+      this.#extractor.write("()()(");
+    }
 
     this.#writeTagInputObject(tag);
 
@@ -1054,7 +1089,7 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
         case "while": {
           this.#writeComments(tag);
           this.#extractor
-            .write(`${sep + VAR_SHARED_PREFIX}.mergeAttrTags((\n`)
+            .write(`${sep + varShared("mergeAttrTags")}((\n`)
             .copy(tag.args?.value || "undefined")
             .write("\n) ? [{\n");
           sep = SEP_COMMA_NEW_LINE;
@@ -1115,51 +1150,30 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
 
       if (tag.params) {
         this.#writeComments(tag);
-        this.#extractor
-          .write(`${varShared("body")}(function *`)
-          .copy(tag.typeParams)
-          .write("(\n");
+        this.#extractor.write("(").copy(tag.typeParams).write("(\n");
         this.#copyWithMutationsReplaced(tag.params.value);
-        this.#extractor.write("\n) {\n");
+        this.#extractor.write("\n) => {\n");
       } else {
-        this.#extractor.write(`${varShared("inlineBody")}((() => {\n`);
+        this.#extractor.write(`(() => {\n`);
       }
 
       const localBindings = getHoistSources(tag);
       const didReturn =
         hasRenderBody && this.#writeChildren(tag, body!.renderBody!);
 
-      if (tag.params) {
-        if (localBindings) {
-          this.#extractor.write(`yield `);
-          this.#writeObjectKeys(localBindings);
-          this.#extractor.write(`;\n`);
-        }
+      if (!tag.params) {
+        this.#extractor.write(`return () => {\n`);
+      }
 
-        if (didReturn) {
-          this.#extractor.write(`return ${varLocal("return")}.return;\n`);
-        } else {
-          this.#extractor.write("return;\n");
-        }
+      this.#writeReturn(
+        didReturn ? `${varLocal("return")}.return` : undefined,
+        localBindings
+      );
+
+      if (tag.params) {
         this.#extractor.write("\n})");
       } else {
-        if (didReturn || localBindings) {
-          this.#extractor.write("return {\n");
-
-          if (localBindings) {
-            this.#extractor.write(`scope: `);
-            this.#writeObjectKeys(localBindings);
-            this.#extractor.write(didReturn ? ",\n" : "\n");
-          }
-
-          if (didReturn) {
-            this.#extractor.write(`return: ${varLocal("return")}.return`);
-          }
-
-          this.#extractor.write("\n};");
-        }
-
-        this.#extractor.write("\n})())");
+        this.#extractor.write("\n}\n})()");
       }
     }
 
@@ -1489,23 +1503,6 @@ ${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
 
     return renderId;
   }
-
-  // #getForTagKind(tag: Node.Tag): "in" | "of" | "to" | "" {
-  //   if (tag.attrs) {
-  //     for (const attr of tag.attrs) {
-  //       if (attr.type !== NodeType.AttrNamed) return "";
-  //       const name = this.#read(attr.name);
-  //       switch (name) {
-  //         case "in":
-  //         case "of":
-  //         case "to":
-  //           return name;
-  //       }
-  //     }
-  //   }
-
-  //   return "";
-  // }
 
   #testAtIndex(reg: RegExp, index: number) {
     reg.lastIndex = index;

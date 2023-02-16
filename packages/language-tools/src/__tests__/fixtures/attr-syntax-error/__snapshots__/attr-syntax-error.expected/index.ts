@@ -7,13 +7,13 @@ function __marko_internal_template(this: void) {
   const out = Marko._.out;
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
-Marko._.renderNativeTag("div")({
+Marko._.renderNativeTag("div")()()({
 /*div*/
 "data-x": (
 #2
 )
 });
-Marko._.renderNativeTag("div")({
+Marko._.renderNativeTag("div")()()({
 /*div*/
 "onClick"(a, %b){
   console.log(#hello!);
@@ -46,10 +46,6 @@ export default new (
       input: Marko.TemplateInput<Input>
     ): ReadableStream<string> & NodeJS.ReadableStream;
     
-  _<
-    __marko_internal_input = unknown
-  >(input: Marko._.Relate<Input, __marko_internal_input>): (
-    Marko._.ReturnWithScope<__marko_internal_input, ReturnType<typeof __marko_internal_template>>
-  );
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0 ? () => <__marko_internal_input>(input: Marko._.Matches<Input, __marko_internal_input>) => (Marko._.ReturnWithScope<__marko_internal_input, ReturnType<typeof __marko_internal_template>>) : () => <__marko_internal_input>(input: Marko._.Matches<Input, __marko_internal_input>) => (Marko._.ReturnWithScope<__marko_internal_input, ReturnType<typeof __marko_internal_template>>);
 }> {}
 );

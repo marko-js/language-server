@@ -102,7 +102,7 @@
 > 14 | )
      | ^ ':' expected.
   15 | });
-  16 | Marko._.renderNativeTag("div")({
+  16 | Marko._.renderNativeTag("div")()()({
   17 | /*div*/
 ```
 
@@ -112,7 +112,7 @@
   14 | )
 > 15 | });
      |  ^ Declaration or statement expected.
-  16 | Marko._.renderNativeTag("div")({
+  16 | Marko._.renderNativeTag("div")()()({
   17 | /*div*/
   18 | "onClick"(a, %b){
 ```

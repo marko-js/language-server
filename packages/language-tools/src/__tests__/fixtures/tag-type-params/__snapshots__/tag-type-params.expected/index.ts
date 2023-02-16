@@ -10,19 +10,22 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderTemplate(import("./components/test-tag.marko"))({
+    Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
       /*test-tag*/
       data: 1 as const,
       /*test-tag*/
-      ["renderBody"]: Marko._.body(function* <A>(data: A) {
+      ["renderBody"]: <A>(data: A) => {
         const __marko_internal_return = {
           return: Marko._.returnTag({
             /*return*/
             value: { result: data },
           }),
         };
-        return __marko_internal_return.return;
-      }),
+        return new (class MarkoReturn<Return = void> {
+          declare return: Return;
+          constructor(_?: Return) {}
+        })(__marko_internal_return.return);
+      },
     })
   );
   const result = Marko._.rendered.returns[1].value;
@@ -46,10 +49,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();

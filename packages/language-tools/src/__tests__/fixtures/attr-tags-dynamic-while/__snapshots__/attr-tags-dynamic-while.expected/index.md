@@ -77,37 +77,3 @@
   28 |       No Condition.
 ```
 
-## Generated Diagnostics
-### Ln 13, Col 12
-```ts
-  11 | Marko._.renderDynamicTag(custom)({
-  12 | /*custom*/
-> 13 | ...Marko._..mergeAttrTags((
-     |            ^ Identifier expected.
-  14 | ++i < 10
-  15 | ) ? [{
-  16 | "a": {
-```
-
-### Ln 31, Col 12
-```ts
-  29 | Marko._.renderDynamicTag(custom)({
-  30 | /*custom*/
-> 31 | ...Marko._..mergeAttrTags((
-     |            ^ Identifier expected.
-  32 | !done
-  33 | ) ? [{
-  34 | "a": {
-```
-
-### Ln 51, Col 12
-```ts
-  49 | Marko._.renderDynamicTag(custom)({
-  50 | /*custom*/
-> 51 | ...Marko._..mergeAttrTags((
-     |            ^ Identifier expected.
-  52 | undefined
-  53 | ) ? [{
-  54 | "a": {
-```
-

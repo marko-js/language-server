@@ -11,7 +11,7 @@
 ### Ln 1, Col 12
 ```marko
 > 1 | <${custom}|a, %b|>
-    |            ^ 'a' is declared but its value is never read.
+    |            ^ Cannot find name 'a'.
   2 |   Hi
   3 | </>
   4 |
@@ -20,7 +20,7 @@
 ### Ln 1, Col 12
 ```marko
 > 1 | <${custom}|a, %b|>
-    |            ^ Parameter 'a' implicitly has an 'any' type.
+    |            ^ Left side of comma operator is unused and has no side effects.
   2 |   Hi
   3 | </>
   4 |
@@ -29,16 +29,7 @@
 ### Ln 1, Col 15
 ```marko
 > 1 | <${custom}|a, %b|>
-    |               ^ Parameter declaration expected.
-  2 |   Hi
-  3 | </>
-  4 |
-```
-
-### Ln 1, Col 12
-```marko
-> 1 | <${custom}|a, %b|>
-    |            ^^^^^ Argument of type 'number' is not assignable to parameter of type 'Body<readonly any[], unknown, unknown>'.
+    |               ^ Expression expected.
   2 |   Hi
   3 | </>
   4 |
@@ -54,38 +45,38 @@
 ```
 
 ## Generated Diagnostics
-### Ln 13, Col 29
-```ts
-  11 | /*custom*/
-  12 | [/*custom*/
-> 13 | "renderBody"]: Marko._.body(function *(
-     |                             ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
-  14 | a, %b
-  15 | ) {
-  16 | return;
-```
-
 ### Ln 15, Col 3
 ```ts
-  13 | "renderBody"]: Marko._.body(function *(
+  13 | "renderBody"]: ((
   14 | a, %b
-> 15 | ) {
-     |   ^ ',' expected.
-  16 | return;
+> 15 | ) => {
+     |   ^^ ')' expected.
+  16 | return Marko._.voidReturn;
   17 |
   18 | })
 ```
 
-### Ln 15, Col 3
+### Ln 15, Col 6
 ```ts
-  13 | "renderBody"]: Marko._.body(function *(
+  13 | "renderBody"]: ((
   14 | a, %b
-> 15 | ) {
-     |   ^
-> 16 | return;
-     | ^^^^^^^
+> 15 | ) => {
+     |      ^ Property assignment expected.
+  16 | return Marko._.voidReturn;
+  17 |
+  18 | })
+```
+
+### Ln 15, Col 6
+```ts
+  13 | "renderBody"]: ((
+  14 | a, %b
+> 15 | ) => {
+     |      ^
+> 16 | return Marko._.voidReturn;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 17 |
-     | ^^^^^^^
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 18 | })
      | ^^ Expected 1 arguments, but got 2.
   19 | });
@@ -93,12 +84,23 @@
   21 |
 ```
 
-### Ln 16, Col 7
+### Ln 16, Col 8
 ```ts
   14 | a, %b
-  15 | ) {
-> 16 | return;
-     |       ^ ':' expected.
+  15 | ) => {
+> 16 | return Marko._.voidReturn;
+     |        ^^^^^ ':' expected.
+  17 |
+  18 | })
+  19 | });
+```
+
+### Ln 16, Col 26
+```ts
+  14 | a, %b
+  15 | ) => {
+> 16 | return Marko._.voidReturn;
+     |                          ^ ',' expected.
   17 |
   18 | })
   19 | });

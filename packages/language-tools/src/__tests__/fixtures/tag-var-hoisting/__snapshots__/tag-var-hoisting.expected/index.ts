@@ -10,53 +10,59 @@ function __marko_internal_template(this: void) {
   Marko._.assertRendered(
     Marko._.rendered,
     1,
-    Marko._.renderNativeTag("div")({
+    Marko._.renderNativeTag("div")()()({
       /*div*/
       /*div*/
-      ["renderBody"]: Marko._.inlineBody(
-        (() => {
-          Marko._.assertRendered(
-            Marko._.rendered,
-            2,
-            Marko._.renderTemplate(import("../../components/let/index.marko"))({
-              /*let*/
-              value: {
-                a: 1,
-                b: "hello!",
-                c: undefined,
-                nested: {
-                  d: 2,
-                  dChange(v: number) {},
-                },
-                "some-alias": 3,
-                computed: 4,
-                other: true,
-              } as const,
-            })
-          );
-          const {
-            a,
-            b,
-            c = "default" as const,
-            nested: { d },
-            "some-alias": e,
-            ["computed"]: f,
-            ...g
-          } = Marko._.rendered.returns[2].value;
-          Marko._.assertRendered(
-            Marko._.rendered,
-            3,
-            Marko._.renderTemplate(import("../../components/let/index.marko"))({
-              /*let*/
-              value: [1, 2, 3, 4, 5] as const,
-            })
-          );
-          const [h, i, , ...j] = Marko._.rendered.returns[3].value;
-          return {
-            scope: { a, b, c, d, e, f, g, h, i, j },
-          };
-        })()
-      ),
+      ["renderBody"]: (() => {
+        Marko._.assertRendered(
+          Marko._.rendered,
+          2,
+          Marko._.renderTemplate(
+            import("../../components/let/index.marko")
+          )()()({
+            /*let*/
+            value: {
+              a: 1,
+              b: "hello!",
+              c: undefined,
+              nested: {
+                d: 2,
+                dChange(v: number) {},
+              },
+              "some-alias": 3,
+              computed: 4,
+              other: true,
+            } as const,
+          })
+        );
+        const {
+          a,
+          b,
+          c = "default" as const,
+          nested: { d },
+          "some-alias": e,
+          ["computed"]: f,
+          ...g
+        } = Marko._.rendered.returns[2].value;
+        Marko._.assertRendered(
+          Marko._.rendered,
+          3,
+          Marko._.renderTemplate(
+            import("../../components/let/index.marko")
+          )()()({
+            /*let*/
+            value: [1, 2, 3, 4, 5] as const,
+          })
+        );
+        const [h, i, , ...j] = Marko._.rendered.returns[3].value;
+        return () => {
+          return new (class MarkoReturn<Return = void> {
+            [Marko._.scope] = { a, b, c, d, e, f, g, h, i, j };
+            declare return: Return;
+            constructor(_?: Return) {}
+          })();
+        };
+      })(),
     })
   );
   () => {
@@ -92,10 +98,17 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_input = unknown>(
-    input: Marko._.Relate<Input, __marko_internal_input>
-  ): Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+    ? () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >
+    : () => <__marko_internal_input>(
+        input: Marko._.Matches<Input, __marko_internal_input>
+      ) => Marko._.ReturnWithScope<
+        __marko_internal_input,
+        ReturnType<typeof __marko_internal_template>
+      >;
 }> {})();
