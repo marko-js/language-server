@@ -17,6 +17,8 @@ describe("hover", () => {
         ),
       `Sets the color of an element's text
 
+(Edge 12, Firefox 1, Safari 1, Chrome 1, IE 3, Opera 3)
+
 Syntax: &lt;color&gt;
 
 [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/color)`
