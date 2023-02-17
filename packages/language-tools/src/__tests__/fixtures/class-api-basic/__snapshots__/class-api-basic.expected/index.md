@@ -68,18 +68,8 @@
   73 |         <${input.renderBody}/>
   74 |     </div>
 > 75 |     <fancyButton something=true>${type}</fancyButton>
-     |                  ^^^^^^^^^ Type 'boolean' is not assignable to type 'never'.
-  76 |     <div>Hello $!{"<b>World</b>"}</div>
-  77 |     <div>Placeholder example: <code>\${someValue}</code></div>
-  78 |
-```
-
-### Ln 75, Col 6
-```marko
-  73 |         <${input.renderBody}/>
-  74 |     </div>
-> 75 |     <fancyButton something=true>${type}</fancyButton>
-     |      ^^^^^^^^^^^ Type '() => MarkoReturn<void>' is not assignable to type 'never'.
+     |                  ^^^^^^^^^^^^^^ Argument of type '{ something: boolean; renderBody: () => MarkoReturn<void>; }' is not assignable to parameter of type 'Input'.
+  Object literal may only specify known properties, and '"something"' does not exist in type 'Input'.
   76 |     <div>Hello $!{"<b>World</b>"}</div>
   77 |     <div>Placeholder example: <code>\${someValue}</code></div>
   78 |

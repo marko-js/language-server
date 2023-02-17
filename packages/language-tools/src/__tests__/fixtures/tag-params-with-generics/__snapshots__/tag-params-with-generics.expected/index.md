@@ -11,7 +11,7 @@
 ### Ln 1, Col 15
 ```marko
 > 1 | <loader|data| value() {
-    |               ^ (property) Input<TData = string>.value: ((() => number) & {}) | undefined
+    |               ^ (property) Input<number>.value?: (() => number) | undefined
   2 |   return 1;
   3 | }>
   4 |   
@@ -33,7 +33,7 @@
    5 | </loader>
    6 |
 >  7 | <loader|data| value() {
-     |               ^ (property) Input<TData = string>.value: ((() => "hi") & {}) | undefined
+     |               ^ (property) Input<"hi">.value?: (() => "hi") | undefined
    8 |   return "hi" as const;
    9 | }>
   10 |

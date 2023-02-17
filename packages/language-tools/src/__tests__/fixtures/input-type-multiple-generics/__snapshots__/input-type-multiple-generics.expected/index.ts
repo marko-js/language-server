@@ -51,10 +51,11 @@ export default new (class Template extends Marko._.Template<{
     ? <FirstName extends string, LastName extends string, Extra>() => <
         __marko_internal_input
       >(
-        input: Marko._.Matches<
-          Input<FirstName, LastName, Extra>,
-          __marko_internal_input
-        >
+        input: Input<FirstName, LastName, Extra> &
+          Marko._.Relate<
+            __marko_internal_input,
+            Input<FirstName, LastName, Extra>
+          >
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         ReturnType<typeof __marko_internal_template<FirstName, LastName, Extra>>
@@ -65,10 +66,11 @@ export default new (class Template extends Marko._.Template<{
         LastName extends string,
         Extra
       >(
-        input: Marko._.Matches<
-          Input<FirstName, LastName, Extra>,
-          __marko_internal_input
-        >
+        input: Input<FirstName, LastName, Extra> &
+          Marko._.Relate<
+            __marko_internal_input,
+            Input<FirstName, LastName, Extra>
+          >
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         ReturnType<typeof __marko_internal_template<FirstName, LastName, Extra>>

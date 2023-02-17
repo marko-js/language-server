@@ -307,13 +307,7 @@ declare global {
         ) => ReturnAndScope<Scopes<Input>, void>;
       }
 
-      export type Matches<A, B> = A extends object
-        ? A & {
-            [K in keyof B]: K extends keyof A ? Matches<A[K], B[K]> : never;
-          }
-        : A extends B
-        ? B
-        : A;
+      export type Relate<A, B> = B extends A ? A : B;
     }
   }
 }

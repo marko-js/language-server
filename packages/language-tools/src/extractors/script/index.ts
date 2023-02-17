@@ -63,6 +63,8 @@ type IfTagAlternates = Repeatable<IfTagAlternate>;
 // TODO: fix dynamic tag args & await args.
 // TODO: check if we can avoid an object for returned renderbody data and instead use a branded type.
 
+// TODO: special types for macro and tag tags.
+
 // TODO: handle top level attribute tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
@@ -313,10 +315,9 @@ function ${varLocal("template")}() {
     const templateBaseClass = varShared("Template");
     const internalInput = varLocal("input");
     const internalApply = varLocal("apply");
-    const renderParams = `(input: ${varShared(
-      "Matches"
-    )}<Input${typeArgsStr}, ${internalInput}>)`;
-    const renderReturn = `(${varShared(
+    const renderAndReturn = `(input: Input${typeArgsStr} & ${varShared(
+      "Relate"
+    )}<${internalInput}, Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope"
     )}<${internalInput}, ReturnType<typeof ${
       varLocal("template") + typeArgsStr
@@ -326,9 +327,14 @@ function ${varLocal("template")}() {
         ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
         : ""
     }
-  _<${internalApply}>(): ${internalApply} extends 0 ? ${typeParamsStr}() => <${internalInput}>${renderParams} => ${renderReturn} : () => <${
-      internalInput + (typeParamsStr ? `, ${typeParamsStr.slice(1, -1)}` : "")
-    }>${renderParams} => ${renderReturn};
+  _${
+    typeParamsStr
+      ? `<${internalApply}>(): ${internalApply} extends 0 ? ${typeParamsStr}() => <${internalInput}>${renderAndReturn} : () => <${internalInput}, ${typeParamsStr.slice(
+          1,
+          -1
+        )}>${renderAndReturn};`
+      : `(): () => <${internalInput}>${renderAndReturn};`
+  }
 }>`;
 
     if (this.#scriptLang === ScriptLang.ts) {
@@ -645,16 +651,6 @@ constructor(_?: Return) {}
 
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
-
-    if (tag.args) {
-      // Arguments are no longer supported, the code below passes them
-      // to an empty iife which will give an error saying that arguments
-      // are not supported.
-      this.#extractor.write("(() => {})(\n");
-      this.#extractor.copy(tag.args.value);
-      this.#extractor.write("\n);\n");
-    }
-
     const renderId = this.#getRenderId(tag);
 
     if (renderId) {
@@ -1121,6 +1117,10 @@ constructor(_?: Return) {}
     }
 
     this.#extractor.write("*/\n");
+
+    if (tag.args) {
+      this.#extractor.write(`value: [`).copy(tag.args.value).write("],\n");
+    }
 
     const body = this.#processBody(tag);
     let sep = this.#writeAttrs(SEP_EMPTY, tag);

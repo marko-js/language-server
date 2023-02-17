@@ -68,13 +68,13 @@ export default new (class Template extends Marko._.Template<{
 
   _<__marko_internal_apply>(): __marko_internal_apply extends 0
     ? <T extends string>() => <__marko_internal_input>(
-        input: Marko._.Matches<Input<T>, __marko_internal_input>
+        input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         ReturnType<typeof __marko_internal_template<T>>
       >
     : () => <__marko_internal_input, T extends string>(
-        input: Marko._.Matches<Input<T>, __marko_internal_input>
+        input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         ReturnType<typeof __marko_internal_template<T>>
