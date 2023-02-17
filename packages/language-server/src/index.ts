@@ -219,6 +219,10 @@ connection.onDocumentFormatting(async (params, cancel) => {
   );
 });
 
+for (const command in service.commands) {
+  connection.onRequest(command, service.commands[command]);
+}
+
 function validateDocs() {
   queueDiagnostic();
 

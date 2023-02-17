@@ -55,6 +55,26 @@ const colorModifierReg = /\bcolor\b/;
 const localInternalsPrefix = "__marko_internal_";
 
 const ScriptService: Partial<Plugin> = {
+  commands: {
+    "$/showScriptOutput": async (uri: string) => {
+      const doc = documents.get(uri);
+      if (doc?.languageId !== "marko") return;
+      const filename = getFSPath(doc);
+      if (!filename) return;
+      const project = getTSProject(filename);
+      const extracted = processScript(doc, project);
+      const lang = getScriptLang(
+        filename,
+        ts,
+        project.host,
+        project.markoScriptLang
+      );
+      return {
+        language: lang === ScriptLang.ts ? "typescript" : "javascript",
+        content: extracted.toString(),
+      };
+    },
+  },
   async initialize() {
     workspace.onConfigChange(() => {
       snapshotCache.clear();

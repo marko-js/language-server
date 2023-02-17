@@ -1,7 +1,7 @@
 import type TS from "typescript";
 import type { Repeatable } from "../../../parser";
 
-const MaybeInputTypedefReg = /@typedef\b.*\bInput\b/;
+const MaybeInputTypedefReg = /@typedef\b[\s\S]*\bInput\b/;
 
 export default function getJSDocInputType(comment: string, ts: typeof TS) {
   if (!MaybeInputTypedefReg.test(comment)) return;

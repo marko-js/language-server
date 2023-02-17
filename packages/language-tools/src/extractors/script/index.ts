@@ -59,12 +59,9 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: fix apply for dynamic/custom tags.
-// TODO: fix dynamic tag args & await args.
-// TODO: check if we can avoid an object for returned renderbody data and instead use a branded type.
-
 // TODO: special types for macro and tag tags.
 
+// TODO: check if we can avoid an object for returned renderbody data and instead use a branded type.
 // TODO: handle top level attribute tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
@@ -227,9 +224,11 @@ class ScriptExtractor {
         if (this.#scriptLang === ScriptLang.js) {
           for (const param of inputType.typeParameters) {
             jsDocTemplateTagsStr += `\n* @template ${
-              param.constraint ? `{${param.constraint}} ` : ""
+              param.constraint ? `{${removeNewLines(param.constraint)}} ` : ""
             }${
-              param.default ? `[${param.name} = ${param.default}]` : param.name
+              param.default
+                ? `[${param.name} = ${removeNewLines(param.default)}]`
+                : param.name
             }`;
           }
         }
@@ -279,8 +278,10 @@ class ScriptExtractor {
 * @this {void}
 */
 function ${varLocal("template")}() {
-  const input = /** @type {Input${typeArgsStr}} */(1);
-  const component = /** @type {Component${typeArgsStr}} */(1);\n`);
+  const input = /** @type {Input${typeArgsStr}} */(${varShared("any")});
+  const component = /** @type {Component${typeArgsStr}} */(${varShared(
+        "any"
+      )});\n`);
     }
 
     this.#extractor.write(`\
@@ -344,9 +345,7 @@ function ${varLocal("template")}() {
     } else {
       this.#extractor.write(`export default new (
   /**
-   * @extends {
-${templateOverrideClass.replace(REG_NEW_LINE, "$1   *   ")}
-   * }
+   * @extends {${removeNewLines(templateOverrideClass)}}
    */
   class Template extends ${templateBaseClass} {}
 );\n`);
@@ -974,7 +973,7 @@ constructor(_?: Return) {}
       const isRepeated = attrTag.length > 1 ? true : attrTagDef?.isRepeated;
       const name =
         attrTagDef?.targetProperty ||
-        nameText.slice(-nameText.lastIndexOf(":"));
+        nameText.slice(nameText.lastIndexOf(":") + 1);
 
       this.#extractor.write(`${sep}"${name}": `);
       sep = SEP_EMPTY;
@@ -1473,6 +1472,8 @@ constructor(_?: Return) {}
 
   #getJSDocInputTypeFromNodes(nodes: Node.AnyNode[]) {
     for (const node of nodes) {
+      const code = this.#read(node);
+      code;
       const info = this.#getJSDocInputTypeFromNode(node);
       if (info) return info;
     }
@@ -1547,6 +1548,10 @@ function isWhitespaceCode(code: number) {
   // control characters below it are whitespace.
   // This is also what the htmljs-parser considers a whitespace.
   return code <= 32;
+}
+
+function removeNewLines(str: string) {
+  return str.replace(REG_NEW_LINE, " ");
 }
 
 function isEmptyRange(range: Range) {

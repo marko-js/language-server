@@ -16,6 +16,7 @@ declare global {
       export const voidReturn: MarkoReturn<void>;
       export const scope: unique symbol;
       export const out: Marko.Out;
+      export const any: any;
       export const rendered: {
         scopes: Record<number, never>;
         returns: Record<number, never>;
@@ -263,16 +264,18 @@ declare global {
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
 
+      // TODO: this could be improved.
+      // currently falls back to DefaultRenderer too eagerly.
       export type DynamicRenderer<Name> = 0 extends 1 & Name
         ? DefaultRenderer
-        : Name extends Marko.Template
+        : [Name] extends [Marko.Template]
         ? CustomTagRenderer<Name>
-        : Name extends string
+        : [Name] extends [string]
         ? NativeTagRenderer<Name>
-        : Name extends AnyMarkoBody
+        : [Name] extends [AnyMarkoBody]
         ? BodyRenderer<Name>
-        : Name extends { renderBody?: AnyMarkoBody }
-        ? Name["renderBody"] extends AnyMarkoBody
+        : [Name] extends [{ renderBody?: AnyMarkoBody }]
+        ? [Name["renderBody"]] extends [AnyMarkoBody]
           ? BodyRenderer<Name["renderBody"]>
           : InputRenderer<
               RenderBodyInput<BodyParamaters<Exclude<Name["renderBody"], void>>>

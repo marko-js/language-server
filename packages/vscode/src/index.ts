@@ -1,4 +1,10 @@
-import { type ExtensionContext, commands, window, workspace } from "vscode";
+import {
+  type ExtensionContext,
+  ViewColumn,
+  commands,
+  window,
+  workspace,
+} from "vscode";
 
 import {
   LanguageClient,
@@ -47,6 +53,33 @@ export async function activate(ctx: ExtensionContext) {
   client.onNotification("showWarning", window.showWarningMessage);
   client.onNotification("showInformation", window.showInformationMessage);
   client.onNotification("executeCommand", commands.executeCommand);
+
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.showScriptOutput", async () => {
+      if (!window.activeTextEditor) {
+        window.showErrorMessage(
+          "You must have an open Marko file to view the script output for."
+        );
+        return;
+      }
+
+      const result = await client.sendRequest<
+        { language: string; content: string } | undefined
+      >("$/showScriptOutput", window.activeTextEditor.document.uri.toString());
+
+      if (result) {
+        await window.showTextDocument(
+          await workspace.openTextDocument(result),
+          {
+            preview: true,
+            viewColumn: ViewColumn.Beside,
+          }
+        );
+      } else {
+        window.showErrorMessage("Unable to extract script for Marko document.");
+      }
+    })
+  );
   // Start the client. This will also launch the server
   await client.start();
 }

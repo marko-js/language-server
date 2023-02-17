@@ -24,6 +24,10 @@
         "configuration": "./marko.configuration.json"
       }
     ],
+    "commands": [{
+      "command": "marko.showScriptOutput",
+      "title": "Marko: Debug: Show Extracted Script Output"
+    }],
     "typescriptServerPlugins": [
       {
         "name": "marko-ts-plugin",

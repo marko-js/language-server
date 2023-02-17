@@ -18,6 +18,7 @@ import type {
   DocumentLink,
   DocumentLinkParams,
   DocumentSymbolParams,
+  GenericRequestHandler,
   Hover,
   HoverParams,
   InitializeParams,
@@ -39,6 +40,7 @@ type Handler<P, R> = (
 ) => Result<R>;
 
 export type Plugin = {
+  commands: Record<string, GenericRequestHandler<any, any>>;
   initialize: (params: InitializeParams) => Promise<void> | void;
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
   doCompletionResolve: (

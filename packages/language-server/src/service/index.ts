@@ -23,6 +23,7 @@ const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin];
  * Facade to all embedded plugins, eg css, typescript and our own.
  */
 const service: Plugin = {
+  commands: Object.assign({}, ...plugins.map(({ commands }) => commands)),
   async initialize(params) {
     await Promise.allSettled(
       plugins.map((plugin) => plugin.initialize?.(params))
