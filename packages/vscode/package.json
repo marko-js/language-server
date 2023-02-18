@@ -3,7 +3,6 @@
   "description": "Marko Tooling for VSCode",
   "version": "0.17.34",
   "activationEvents": [
-    "onLanguage:marko",
     "workspaceContains:**/*.marko"
   ],
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
@@ -83,7 +82,7 @@
     "ovsx": "^0.8.0",
     "tsx": "^3.12.3",
     "vsce": "^2.10.2",
-    "vscode-languageclient": "^8.0.2"
+    "vscode-languageclient": "^8.1.0"
   },
   "displayName": "Marko VSCode",
   "engines": {

@@ -130,7 +130,7 @@ class ScriptExtractor {
 
   #writeProgram(
     program: Node.Program,
-    componentClassImport: ExtractScriptOptions["componentFilename"]
+    componentFileName: ExtractScriptOptions["componentFilename"]
   ) {
     this.#writeCommentPragmas(program);
 
@@ -241,9 +241,12 @@ class ScriptExtractor {
       );
     }
 
-    if (!componentClassBody && componentClassImport) {
+    if (!componentClassBody && componentFileName) {
       this.#extractor.write(
-        `import Component from "${componentClassImport}";\n`
+        `import Component from "${relativeImportPath(
+          this.#filename,
+          componentFileName
+        )}";\n`
       );
     } else {
       const body = componentClassBody || " {}";
