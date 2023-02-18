@@ -278,7 +278,7 @@ declare global {
         ? [Name["renderBody"]] extends [AnyMarkoBody]
           ? BodyRenderer<Name["renderBody"]>
           : InputRenderer<
-              RenderBodyInput<BodyParamaters<Exclude<Name["renderBody"], void>>>
+              RenderBodyInput<BodyParameters<Exclude<Name["renderBody"], void>>>
             >
         : DefaultRenderer;
 
@@ -295,7 +295,7 @@ declare global {
       }
 
       export interface BodyRenderer<Body extends AnyMarkoBody> {
-        (): () => <Args extends BodyParamaters<Body>>(
+        (): () => <Args extends BodyParameters<Body>>(
           input: RenderBodyInput<Args>
         ) => ReturnAndScope<Scopes<Args>, BodyReturnType<Body>>;
       }
