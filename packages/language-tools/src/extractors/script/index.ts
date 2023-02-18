@@ -37,9 +37,10 @@ const ATTR_UNAMED = "value";
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
 const REG_ATTR_ARG_LITERAL =
-  /\s*(?:"(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')\s*([,)])/my;
+  /(?<=\s*)(["'])((?:[^"'\\]+|\\.|(?!\1))*)\1\s*([,)])/my;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
+const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
@@ -889,30 +890,45 @@ constructor(_?: Return) {}
               this.#extractor.write(`${sep}"`).copy(name).write('": ');
 
               if (stringLiteralFirstArgMatch) {
-                const hasPartialArgs = stringLiteralFirstArgMatch[1] === ",";
-                const valueStart = attr.args.value.start;
-                const valueEnd =
-                  valueStart + stringLiteralFirstArgMatch[0].length;
+                const hasPartialArgs = stringLiteralFirstArgMatch[3] === ",";
+                const stringLiteralValue = stringLiteralFirstArgMatch[2];
+                const stringLiteralStart = stringLiteralFirstArgMatch.index;
+                const isValidProperty = REG_OBJECT_PROPERTY.test(
+                  stringLiteralFirstArgMatch[2]
+                );
 
-                this.#extractor
-                  .write(`component[`)
-                  .copy({
-                    start: valueStart,
-                    end: valueEnd - 1,
-                  })
-                  .write("]");
+                if (isValidProperty) {
+                  const propertNameStart = stringLiteralStart + 1;
+                  this.#extractor.write("component.").copy({
+                    start: propertNameStart,
+                    end: propertNameStart + stringLiteralValue.length,
+                  });
+                } else {
+                  this.#extractor
+                    .write(`component[`)
+                    .copy({
+                      start: stringLiteralStart,
+                      end: stringLiteralStart + stringLiteralValue.length + 2,
+                    })
+                    .write("]");
+                }
 
                 if (hasPartialArgs) {
-                  this.#extractor.write(`.bind(component, `).copy({
-                    start: valueEnd,
-                    end: attr.args.end,
-                  });
+                  this.#extractor
+                    .write(`.bind(component, `)
+                    .copy({
+                      start:
+                        stringLiteralStart +
+                        stringLiteralFirstArgMatch[0].length,
+                      end: attr.args.value.end,
+                    })
+                    .write(")");
                 }
               } else {
                 this.#extractor
-                  .write(`${varShared("bind")}(component, (\n`)
+                  .write(`${varShared("bind")}(component, \n`)
                   .copy(attr.args.value)
-                  .write("\n))");
+                  .write("\n)");
               }
             } else {
               this.#extractor

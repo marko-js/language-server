@@ -16,11 +16,11 @@ function __marko_internal_template(this: void) {
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/fancy-button/index.marko"))()()({
     /*fancy-button*/
-    onClick: component["handleClick"],
+    onClick: component.handleClick,
   });
   Marko._.renderTemplate(import("./components/fancy-button/index.marko"))()()({
     /*fancy-button*/
-    onClick: component["specialClick"].bind(component, 1),
+    onClick: component.specialClick.bind(component, 1),
   });
   Marko._.renderTemplate(import("./components/fancy-button/index.marko"))()()({
     /*fancy-button*/
