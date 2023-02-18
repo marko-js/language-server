@@ -21,7 +21,7 @@ export function Tag({
   const isClosed = node.end !== UNFINISHED;
   if (isClosed || node.concise) return;
 
-  const closingTagStr = `</${node.nameText}>`;
+  const closingTagStr = `</${node.nameText || ""}>`;
 
   if (offset === node.open.end) {
     // We're at the end of the open tag and the closing tag was not found.
