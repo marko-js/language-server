@@ -16,7 +16,7 @@ export function AttrName({
 }: DefinitionMeta<Node.AttrName>): DefinitionResult {
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);
-  const tagDef = tagName && lookup.getTag(tagName);
+  const tagDef = tagName ? lookup.getTag(tagName) : undefined;
   const attrDef = lookup.getAttribute(tagName || "", attrName);
   let range = START_LOCATION;
 
@@ -24,13 +24,12 @@ export function AttrName({
     return;
   }
 
-  const attrEntryFile = attrDef.filePath || (tagDef && tagDef.filePath);
-
+  const attrEntryFile = attrDef.filePath || tagDef?.filePath;
   if (!attrEntryFile) {
     return;
   }
 
-  if (/\/marko(?:-tag)?\.json$/.test(attrEntryFile)) {
+  if (/\.json$/.test(attrEntryFile)) {
     const tagDefSource = fs.readFileSync(attrEntryFile, "utf-8");
     const match = RegExpBuilder`/"@${attrName}"\s*:\s*[^\r\n,]+/g`.exec(
       tagDefSource
@@ -43,14 +42,14 @@ export function AttrName({
         match.index + match[0].length
       );
     }
-  }
 
-  return [
-    {
-      targetUri: URI.file(attrEntryFile).toString(),
-      targetRange: range,
-      targetSelectionRange: range,
-      originSelectionRange: parsed.locationAt(node),
-    },
-  ];
+    return [
+      {
+        targetUri: URI.file(attrEntryFile).toString(),
+        targetRange: range,
+        targetSelectionRange: range,
+        originSelectionRange: parsed.locationAt(node),
+      },
+    ];
+  }
 }
