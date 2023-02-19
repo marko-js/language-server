@@ -11,31 +11,26 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: 1,
     })
   );
   const size = Marko._.rendered.returns[1].value;
-  Marko._.renderDynamicTag(`h${size || ""}`)()()({
-    /*`h${size || ""}`*/
-    /*`h${size || ""}`*/
-    ["renderBody"]: (() => {
+  Marko._.renderDynamicTag(Marko._.interpolated`h${size}`)()()({
+    ["renderBody" /*h${size}*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
   });
   Marko._.renderDynamicTag("hello")()()({
-    /*"hello"*/
-    /*"hello"*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*{"hello"}*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
   });
-  Marko._.renderDynamicTag(`${"hello" || ""}-world`)()()({
-    /*`${"hello" || ""}-world`*/
+  Marko._.renderDynamicTag(Marko._.interpolated`${"hello"}-world`)()()({
+    /*${"hello"}-world*/
   });
   return;
 }

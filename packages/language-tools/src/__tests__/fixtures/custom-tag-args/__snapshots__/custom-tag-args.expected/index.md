@@ -1,13 +1,11 @@
-## Generated Diagnostics
-### Ln 22, Col 1
-```ts
-  20 | Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-  21 | /*test-tag*/
-> 22 | value: ["hello!", 1, 2],
-     | ^^^^^ Type '[string, number, number]' is not assignable to type '[string, (number | undefined)?]'.
+## Source Diagnostics
+### Ln 3, Col 10
+```marko
+  1 | <test-tag("hello!")/>
+  2 | <test-tag("hello!", 1)/>
+> 3 | <test-tag("hello!", 1, 2)/>
+    |          ^^^^^^^^^^^^^^^^ Type of computed property's value is '[string, number, number]', which is not assignable to type '[string, (number | undefined)?]'.
   Source has 3 element(s) but target allows only 2.
-  23 |
-  24 | });
-  25 | return;
+  4 |
 ```
 

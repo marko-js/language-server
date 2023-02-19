@@ -8,19 +8,18 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
 Marko._.renderNativeTag("div")()()({
-/*div*/
-"data-x": (
+ "data-x": (
 #2
-)
+),
+
 });
 Marko._.renderNativeTag("div")()()({
-/*div*/
-"onClick"(a, %b){
+ "onClick"(a, %b){
   console.log(#hello!);
-}
+},
+
 });
 return;
-
 }
 export default new (
   class Template extends Marko._.Template<{

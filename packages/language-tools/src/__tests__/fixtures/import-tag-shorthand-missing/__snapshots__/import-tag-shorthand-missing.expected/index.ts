@@ -9,7 +9,7 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderDynamicTag(Template)()()({
-    /*Template*/
+    /*{Template}*/
   });
   return;
 }

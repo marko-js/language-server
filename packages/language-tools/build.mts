@@ -4,7 +4,7 @@ const opts: BuildOptions = {
   bundle: true,
   outdir: "dist",
   platform: "node",
-  target: ["node14"],
+  target: ["node16"],
   entryPoints: ["src/index.ts"],
   plugins: [
     {

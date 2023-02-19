@@ -13,16 +13,13 @@ function __marko_internal_template<T extends string>(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderNativeTag("div")()()({
-      /*div*/
-      /*div*/
-      ["renderBody"]: (() => {
+      ["renderBody" /*div*/]: (() => {
         Marko._.assertRendered(
           Marko._.rendered,
           2,
           Marko._.renderTemplate(
             import("../../components/let/index.marko")
           )()()({
-            /*let*/
             value: 1,
           })
         );

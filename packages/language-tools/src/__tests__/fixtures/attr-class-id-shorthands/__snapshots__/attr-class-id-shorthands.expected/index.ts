@@ -11,82 +11,63 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
-      /*const*/
       value: "hi",
     })
   );
   const value = Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    id: `test`,
+    id: Marko._.interpolated`test`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    id: `test-${value || ""}`,
+    id: Marko._.interpolated`test-${value}`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    id: `${value || ""}-test`,
+    id: Marko._.interpolated`${value}-test`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    id: `${value || ""}-test-${value || ""}`,
+    id: Marko._.interpolated`${value}-test-${value}`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    class: `test`,
+    class: Marko._.interpolated`test`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    class: `hello world`,
+    class: Marko._.interpolated`hello world`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    class: `test-${value || ""}`,
+    class: Marko._.interpolated`test-${value}`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    class: `${value || ""}-test`,
+    class: Marko._.interpolated`${value}-test`,
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    class: `${value || ""}-test-${value || ""}`,
+    class: Marko._.interpolated`${value}-test-${value}`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    id: `test`,
+    id: Marko._.interpolated`test`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    id: `test-${value || ""}`,
+    id: Marko._.interpolated`test-${value}`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    id: `${value || ""}-test`,
+    id: Marko._.interpolated`${value}-test`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    id: `${value || ""}-test-${value || ""}`,
+    id: Marko._.interpolated`${value}-test-${value}`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    class: `test`,
+    class: Marko._.interpolated`test`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    class: `hello world`,
+    class: Marko._.interpolated`hello world`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    class: `test-${value || ""}`,
+    class: Marko._.interpolated`test-${value}`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    class: `${value || ""}-test`,
+    class: Marko._.interpolated`${value}-test`,
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    class: `${value || ""}-test-${value || ""}`,
+    class: Marko._.interpolated`${value}-test-${value}`,
   });
   return;
 }

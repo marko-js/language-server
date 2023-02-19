@@ -10,9 +10,7 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    /*div*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*div*/]: (() => {
       input.message;
       return () => {
         return Marko._.voidReturn;

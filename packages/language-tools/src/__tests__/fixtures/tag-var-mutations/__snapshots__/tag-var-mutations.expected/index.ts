@@ -11,49 +11,41 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: 1,
     })
   );
   const x = Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function"() {
       __marko_internal_return.mutate.x++;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function"(y = __marko_internal_return.mutate.x++) {
       y;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function": () => {
       __marko_internal_return.mutate.x++;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function": (y = __marko_internal_return.mutate.x++) => {
       y;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function": function () {
       __marko_internal_return.mutate.x++;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function": function (y = __marko_internal_return.mutate.x++) {
       y;
     },
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     "data-function"() {
       function testA() {
         __marko_internal_return.mutate.x++;
@@ -92,7 +84,9 @@ function __marko_internal_template(this: void) {
       ["x", "value", Marko._.rendered.returns[1]],
     ] as const),
   };
-  Marko._.noop({ x });
+  Marko._.noop({
+    x,
+  });
   return;
 }
 export default new (class Template extends Marko._.Template<{

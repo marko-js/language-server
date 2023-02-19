@@ -11,28 +11,23 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderDynamicTag(custom)()()({
-      /*custom*/
       b: [
         {
-          /*@b*/
+          /*b*/
         },
         {
-          /*@b*/
           c: 2,
         },
       ],
       a: {
-        /*@a*/
         b: 1,
-        /*@a*/
-        ["renderBody"]: (() => {
+        ["renderBody" /*a*/]: (() => {
           Marko._.assertRendered(
             Marko._.rendered,
             2,
             Marko._.renderTemplate(
               import("../../components/const/index.marko")
             )()()({
-              /*const*/
               value: 1 as const,
             })
           );
@@ -49,7 +44,6 @@ function __marko_internal_template(this: void) {
     })
   );
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       hoistedFromStaticMember;
     },

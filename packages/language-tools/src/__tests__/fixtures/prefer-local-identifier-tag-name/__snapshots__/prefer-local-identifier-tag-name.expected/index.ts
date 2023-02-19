@@ -13,7 +13,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
-      /*const*/
       value: CustomTagA,
     })
   );
@@ -23,7 +22,6 @@ function __marko_internal_template(this: void) {
     (Marko._.error, TestTagA),
     Marko._.renderTemplate(import("./components/TestTagA.marko"))
   )()()({
-    /*TestTagA*/
     a: "hello",
   });
   Marko._.renderPreferLocal(
@@ -31,20 +29,16 @@ function __marko_internal_template(this: void) {
     (Marko._.error, TestTagB),
     Marko._.renderTemplate(import("./components/TestTagB.marko"))
   )()()({
-    /*TestTagB*/
     b: "hello",
   });
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    /*div*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*div*/]: (() => {
       Marko._.assertRendered(
         Marko._.rendered,
         2,
         Marko._.renderTemplate(
           import("../../components/const/index.marko")
         )()()({
-          /*const*/
           value: CustomTagB,
         })
       );
@@ -54,7 +48,6 @@ function __marko_internal_template(this: void) {
         (Marko._.error, TestTagA),
         Marko._.renderTemplate(import("./components/TestTagA.marko"))
       )()()({
-        /*TestTagA*/
         a: "hello",
       });
       return () => {
@@ -67,7 +60,6 @@ function __marko_internal_template(this: void) {
     (Marko._.error, TestTagA),
     Marko._.renderTemplate(import("./components/TestTagA.marko"))
   )()()({
-    /*TestTagA*/
     a: "hello",
   });
   return;

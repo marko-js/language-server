@@ -31,6 +31,13 @@ declare global {
 
       export function noop(value: any): void;
 
+      export function tuple<T extends readonly any[]>(...v: T): T;
+
+      export function interpolated(
+        strs: TemplateStringsArray,
+        ...exprs: (string | number | void | null | false)[]
+      ): string;
+
       export function state<Component>(
         component: Component
       ): Component extends {
@@ -92,7 +99,11 @@ declare global {
       export function bind<
         Owner extends Marko.Component,
         OwnerHandlers extends ComponentEventHandlers<Owner>,
-        Handler extends keyof OwnerHandlers | ((...args: any) => any),
+        Handler extends
+          | keyof OwnerHandlers
+          | ((...args: any) => any)
+          | false
+          | void,
         Args extends readonly any[]
       >(
         owner: Owner,

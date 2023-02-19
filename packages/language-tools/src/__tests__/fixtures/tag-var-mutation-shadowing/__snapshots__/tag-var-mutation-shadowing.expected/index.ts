@@ -11,13 +11,11 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
-      /*const*/
       value: "",
     })
   );
   const x = Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("div")()()({
-    /*div*/
     onClick() {
       __marko_internal_return.mutate.x = "Hello!";
 
@@ -179,7 +177,9 @@ function __marko_internal_template(this: void) {
       ["x", "value", Marko._.rendered.returns[1]],
     ] as const),
   };
-  Marko._.noop({ x });
+  Marko._.noop({
+    x,
+  });
   return;
 }
 export default new (class Template extends Marko._.Template<{

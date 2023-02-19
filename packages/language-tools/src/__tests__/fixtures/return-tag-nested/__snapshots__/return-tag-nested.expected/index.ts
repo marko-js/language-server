@@ -8,20 +8,15 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    /*test-tag*/
-    ["renderBody"]: (a) => {
+    ["renderBody" /*test-tag*/]: (a) => {
       a;
       return Marko._.voidReturn;
     },
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    /*test-tag*/
-    ["renderBody"]: (a) => {
+    ["renderBody" /*test-tag*/]: (a) => {
       const __marko_internal_return = {
         return: Marko._.returnTag({
-          /*return*/
           value: a,
         }),
       };
@@ -32,12 +27,9 @@ function __marko_internal_template(this: void) {
     },
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    /*test-tag*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*test-tag*/]: (() => {
       const __marko_internal_return = {
         return: Marko._.returnTag({
-          /*return*/
           value: "b" as const,
         }),
       };
@@ -50,12 +42,9 @@ function __marko_internal_template(this: void) {
     })(),
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    /*test-tag*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*test-tag*/]: (() => {
       const __marko_internal_return = {
         return: Marko._.returnTag({
-          /*return*/
           value: "c" as const,
         }),
       };
@@ -71,23 +60,19 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-      /*test-tag*/
-      /*test-tag*/
-      ["renderBody"]: (() => {
+      ["renderBody" /*test-tag*/]: (() => {
         Marko._.assertRendered(
           Marko._.rendered,
           2,
           Marko._.renderTemplate(
             import("../../components/let/index.marko")
           )()()({
-            /*let*/
             value: 1 as const,
           })
         );
         const hoisted = Marko._.rendered.returns[2].value;
         const __marko_internal_return = {
           return: Marko._.returnTag({
-            /*return*/
             value: "b" as const,
           }),
         };

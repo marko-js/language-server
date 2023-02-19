@@ -8,7 +8,6 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/fancy-button/index.marko"))()()({
-    /*fancy-button*/
     something: true,
   });
   return;

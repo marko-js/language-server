@@ -9,15 +9,12 @@ function __marko_internal_template(this: void) {
   Marko._.noop({ input, out, component, state });
   let i = 0;
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     ...Marko._.mergeAttrTags(
       ++i < 10
         ? [
             {
               a: {
-                /*@a*/
-                /*@a*/
-                ["renderBody"]: (() => {
+                ["renderBody" /*a*/]: (() => {
                   i;
                   return () => {
                     return Marko._.voidReturn;
@@ -32,15 +29,12 @@ function __marko_internal_template(this: void) {
   let done = false;
   i = 0;
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     ...Marko._.mergeAttrTags(
       !done
         ? [
             {
               a: {
-                /*@a*/
-                /*@a*/
-                ["renderBody"]: (() => {
+                ["renderBody" /*a*/]: (() => {
                   done;
                   if (++i === 5) {
                     done = true;
@@ -56,15 +50,12 @@ function __marko_internal_template(this: void) {
     ),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     ...Marko._.mergeAttrTags(
       undefined
         ? [
             {
               a: {
-                /*@a*/
-                /*@a*/
-                ["renderBody"]: (() => {
+                ["renderBody" /*a*/]: (() => {
                   return () => {
                     return Marko._.voidReturn;
                   };

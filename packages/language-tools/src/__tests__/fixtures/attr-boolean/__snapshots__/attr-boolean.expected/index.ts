@@ -8,7 +8,6 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderNativeTag("input")()()({
-    /*input*/
     type: "checkbox",
     disabled: true,
     checked: true,

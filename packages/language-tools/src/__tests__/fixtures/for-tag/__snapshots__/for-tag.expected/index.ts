@@ -11,7 +11,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: [
         {
           value: 1,
@@ -28,13 +27,13 @@ function __marko_internal_template(this: void) {
   const list = Marko._.rendered.returns[1].value;
   Marko._.forTag({
     of: list,
-    [/*for*/ "renderBody"]: () => {
+    ["renderBody" /*for*/]: () => {
       return Marko._.voidReturn;
     },
   });
   Marko._.forTag({
     of: list,
-    [/*for*/ "renderBody"]: (item, index, all) => {
+    ["renderBody" /*for*/]: (item, index, all) => {
       item;
       index;
       all;
@@ -46,14 +45,13 @@ function __marko_internal_template(this: void) {
     2,
     Marko._.forTag({
       of: list,
-      [/*for*/ "renderBody"]: (item) => {
+      ["renderBody" /*for*/]: (item) => {
         Marko._.assertRendered(
           Marko._.rendered,
           3,
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: item,
           })
         );
@@ -68,12 +66,11 @@ function __marko_internal_template(this: void) {
   );
   Marko._.forTag({
     of: list,
-    [/*for*/ "renderBody"]: (item) => {
+    ["renderBody" /*for*/]: (item) => {
       return Marko._.voidReturn;
     },
   });
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       hoistedFromForOf;
     },
@@ -82,14 +79,13 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     4,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: { a: 1, b: 2 } as const,
     })
   );
   const record = Marko._.rendered.returns[4].value;
   Marko._.forTag({
     in: record,
-    [/*for*/ "renderBody"]: (key, value) => {
+    ["renderBody" /*for*/]: (key, value) => {
       key;
       value;
       return Marko._.voidReturn;
@@ -100,14 +96,13 @@ function __marko_internal_template(this: void) {
     5,
     Marko._.forTag({
       in: record,
-      [/*for*/ "renderBody"]: (key) => {
+      ["renderBody" /*for*/]: (key) => {
         Marko._.assertRendered(
           Marko._.rendered,
           6,
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: key,
           })
         );
@@ -121,14 +116,13 @@ function __marko_internal_template(this: void) {
     })
   );
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       hoistedFromForIn;
     },
   });
   Marko._.forTag({
     to: 10,
-    [/*for*/ "renderBody"]: (index) => {
+    ["renderBody" /*for*/]: (index) => {
       index;
       return Marko._.voidReturn;
     },
@@ -136,7 +130,7 @@ function __marko_internal_template(this: void) {
   Marko._.forTag({
     from: 1,
     to: 10,
-    [/*for*/ "renderBody"]: (index) => {
+    ["renderBody" /*for*/]: (index) => {
       index;
       return Marko._.voidReturn;
     },
@@ -144,7 +138,7 @@ function __marko_internal_template(this: void) {
   Marko._.forTag({
     to: 10,
     step: 2,
-    [/*for*/ "renderBody"]: (index) => {
+    ["renderBody" /*for*/]: (index) => {
       index;
       return Marko._.voidReturn;
     },
@@ -154,14 +148,13 @@ function __marko_internal_template(this: void) {
     7,
     Marko._.forTag({
       to: 10,
-      [/*for*/ "renderBody"]: (index) => {
+      ["renderBody" /*for*/]: (index) => {
         Marko._.assertRendered(
           Marko._.rendered,
           8,
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: index,
           })
         );
@@ -175,13 +168,12 @@ function __marko_internal_template(this: void) {
     })
   );
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       hoistedFromForTo;
     },
   });
   Marko._.forTag({
-    [/*for*/ "renderBody"]: (index) => {
+    ["renderBody" /*for*/]: (index) => {
       return Marko._.voidReturn;
     },
   });

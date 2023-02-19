@@ -61,23 +61,32 @@
   6 |
 ```
 
-### Ln 3, Col 2
+### Ln 5, Col 2
+```marko
+  3 | <div onClick(a, %b) {
+  4 |   console.log(#hello!);
+> 5 | }/>
+    |  ^ Declaration or statement expected.
+  6 |
+```
+
+### Ln 3, Col 5
 ```marko
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |  ^^^^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+    |     ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
   4 |   console.log(#hello!);
   5 | }/>
   6 |
 ```
 
-### Ln 3, Col 2
+### Ln 3, Col 5
 ```marko
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |  ^^^^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Record<string, unknown>'.
+    |     ^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Record<string, unknown>'.
   4 |   console.log(#hello!);
   5 | }/>
   6 |
@@ -95,58 +104,69 @@
 ```
 
 ## Generated Diagnostics
-### Ln 14, Col 1
+### Ln 13, Col 1
 ```ts
-  12 | "data-x": (
-  13 | #2
-> 14 | )
+  11 |  "data-x": (
+  12 | #2
+> 13 | ),
      | ^ ':' expected.
+  14 |
   15 | });
   16 | Marko._.renderNativeTag("div")()()({
-  17 | /*div*/
+```
+
+### Ln 15, Col 1
+```ts
+  13 | ),
+  14 |
+> 15 | });
+     | ^ Expression expected.
+  16 | Marko._.renderNativeTag("div")()()({
+  17 |  "onClick"(a, %b){
+  18 |   console.log(#hello!);
 ```
 
 ### Ln 15, Col 2
 ```ts
-  13 | #2
-  14 | )
+  13 | ),
+  14 |
 > 15 | });
      |  ^ Declaration or statement expected.
   16 | Marko._.renderNativeTag("div")()()({
-  17 | /*div*/
-  18 | "onClick"(a, %b){
+  17 |  "onClick"(a, %b){
+  18 |   console.log(#hello!);
 ```
 
 ### Ln 21, Col 1
 ```ts
-  19 |   console.log(#hello!);
-  20 | }
+  19 | },
+  20 |
 > 21 | });
      | ^ Declaration or statement expected.
   22 | return;
-  23 |
-  24 | }
+  23 | }
+  24 | export default new (
 ```
 
 ### Ln 21, Col 2
 ```ts
-  19 |   console.log(#hello!);
-  20 | }
+  19 | },
+  20 |
 > 21 | });
      |  ^ Declaration or statement expected.
   22 | return;
-  23 |
-  24 | }
+  23 | }
+  24 | export default new (
 ```
 
-### Ln 24, Col 1
+### Ln 23, Col 1
 ```ts
+  21 | });
   22 | return;
-  23 |
-> 24 | }
+> 23 | }
      | ^ Declaration or statement expected.
-  25 | export default new (
-  26 |   class Template extends Marko._.Template<{
-  27 |     
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
 ```
 

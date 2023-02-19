@@ -50,14 +50,14 @@
 ```
 
 ## Generated Diagnostics
-### Ln 30, Col 12
+### Ln 28, Col 12
 ```ts
-  28 |   }
-  29 | }));
-> 30 | const el = Marko._.rendered.returns[3].value;
+  26 |
+  27 | }));
+> 28 | const el = Marko._.rendered.returns[3].value;
      |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
-  31 | const __marko_internal_return = {
-  32 | mutate: Marko._.mutable([
-  33 | ["x", "value", Marko._.rendered.returns[2]]
+  29 | const __marko_internal_return = {
+  30 | mutate: Marko._.mutable([
+  31 | ["x", "value", Marko._.rendered.returns[2]],
 ```
 

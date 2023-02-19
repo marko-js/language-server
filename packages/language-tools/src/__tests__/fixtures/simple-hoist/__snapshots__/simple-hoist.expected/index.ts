@@ -11,16 +11,13 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderNativeTag("div")()()({
-      /*div*/
-      /*div*/
-      ["renderBody"]: (() => {
+      ["renderBody" /*div*/]: (() => {
         Marko._.assertRendered(
           Marko._.rendered,
           2,
           Marko._.renderTemplate(
             import("../../components/let/index.marko")
           )()()({
-            /*let*/
             value: 1,
           })
         );
@@ -30,7 +27,6 @@ function __marko_internal_template(this: void) {
           Marko._.rendered,
           3,
           Marko._.renderNativeTag("button")()()({
-            /*button*/
             onClick() {
               __marko_internal_return.mutate.x = 2;
               __marko_internal_return.mutate.x++;
@@ -44,7 +40,9 @@ function __marko_internal_template(this: void) {
             ["x", "value", Marko._.rendered.returns[2]],
           ] as const),
         };
-        Marko._.noop({ x });
+        Marko._.noop({
+          x,
+        });
         return () => {
           return new (class MarkoReturn<Return = void> {
             [Marko._.scope] = { x, el };
@@ -56,7 +54,6 @@ function __marko_internal_template(this: void) {
     })
   );
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       console.log(el());
     },

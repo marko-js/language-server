@@ -11,25 +11,24 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: 1,
     })
   );
   const value = Marko._.rendered.returns[1].value;
   Marko._.renderNativeTag("button")()()({
-    /*button*/
     onClick() {
       __marko_internal_return.mutate.value++;
     },
   });
   const __marko_internal_return = {
     return: Marko._.returnTag({
-      /*return*/
       value: value,
     }),
     mutate: Marko._.mutable([["value", Marko._.rendered.returns[1]]] as const),
   };
-  Marko._.noop({ value });
+  Marko._.noop({
+    value,
+  });
   return __marko_internal_return.return;
 }
 export default new (class Template extends Marko._.Template<{

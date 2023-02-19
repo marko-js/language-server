@@ -11,7 +11,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: { b: 1, bChange(value: number) {} },
     })
   );
@@ -20,7 +19,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     2,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       valueChange: a[`${"b"}Change`],
       value: a["b"],
     })

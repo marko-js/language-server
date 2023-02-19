@@ -10,16 +10,13 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderDynamicTag(input.renderBody)()()({
-    /*input.renderBody*/
     value: ["hi"],
   });
   Marko._.renderDynamicTag(input.renderBody)()()({
-    /*input.renderBody*/
     value: ["hi"],
   });
   Marko._.renderDynamicTag(input.renderBody)()()({
-    /*input.renderBody*/
-    value: ["hi"],
+    ["value"]: Marko._.tuple("hi"),
   });
   return;
 }

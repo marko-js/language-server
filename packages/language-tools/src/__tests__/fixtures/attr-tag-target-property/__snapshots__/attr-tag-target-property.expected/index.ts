@@ -8,31 +8,24 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
-    /*test-tag*/
     items: [
       {
-        /*@item*/
         x: 1,
       },
     ],
   });
   Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
-    /*test-tag*/
     items: [
       {
-        /*@item*/
         x: 1,
-        /*@item*/
-        ["renderBody"]: (() => {
+        ["renderBody" /*item*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };
         })(),
       },
       {
-        /*@item*/
-        /*@item*/
-        ["renderBody"]: (() => {
+        ["renderBody" /*item*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };

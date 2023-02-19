@@ -10,117 +10,109 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {}),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x ? {} : {}),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {
           a: {
-            /*@a*/
+            /*a*/
           },
         }),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : y
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : !y
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {
           a: {
-            /*@a*/
+            /*a*/
           },
         }),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : undefined
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {}),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(x
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {}),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...(undefined
       ? {
           a: {
-            /*@a*/
+            /*a*/
           },
         }
       : {}),
   });
   Marko._.renderDynamicTag(custom)()()({
-    /*custom*/
     x: 1,
     ...Marko._.mergeAttrTags(
       x
         ? {
             a: {
-              /*@a*/
+              /*a*/
             },
           }
         : {},
       y
         ? {
             b: {
-              /*@b*/
+              /*b*/
             },
           }
         : {}
@@ -130,23 +122,19 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderDynamicTag(custom)()()({
-      /*custom*/
       x: 1,
       ...Marko._.mergeAttrTags(
         {
           // hi
           a: {
-            /*@a*/
             b: 1,
-            /*@a*/
-            ["renderBody"]: (() => {
+            ["renderBody" /*a*/]: (() => {
               Marko._.assertRendered(
                 Marko._.rendered,
                 2,
                 Marko._.renderTemplate(
                   import("../../components/const/index.marko")
                 )()()({
-                  /*const*/
                   value: 1 as const,
                 })
               );
@@ -161,22 +149,19 @@ function __marko_internal_template(this: void) {
             })(),
           },
           b: {
-            /*@b*/
+            /*b*/
           },
         },
         x
           ? {
               b: {
-                /*@b*/
-                /*@b*/
-                ["renderBody"]: (() => {
+                ["renderBody" /*b*/]: (() => {
                   Marko._.assertRendered(
                     Marko._.rendered,
                     3,
                     Marko._.renderTemplate(
                       import("../../components/const/index.marko")
                     )()()({
-                      /*const*/
                       value: 2 as const,
                     })
                   );
@@ -196,7 +181,7 @@ function __marko_internal_template(this: void) {
         y
           ? {
               a: {
-                /*@a*/
+                /*a*/
               },
             }
           : {}
@@ -204,7 +189,6 @@ function __marko_internal_template(this: void) {
     })
   );
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       hoistedFromStaticMember;
       hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value

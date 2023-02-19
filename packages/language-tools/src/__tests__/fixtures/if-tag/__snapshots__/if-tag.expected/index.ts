@@ -11,7 +11,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: true,
     })
   );
@@ -20,7 +19,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     2,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       value: false,
     })
   );
@@ -32,9 +30,7 @@ function __marko_internal_template(this: void) {
   if (show) {
   }
   Marko._.renderNativeTag("div")()()({
-    /*div*/
-    /*div*/
-    ["renderBody"]: (() => {
+    ["renderBody" /*div*/]: (() => {
       if (undefined) {
       }
       return () => {
@@ -56,7 +52,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 0 as const,
           })
         );
@@ -80,7 +75,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 1 as const,
           })
         );
@@ -95,7 +89,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 2 as const,
           })
         );
@@ -110,7 +103,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 3 as const,
           })
         );
@@ -133,7 +125,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 4 as const,
           })
         );
@@ -157,7 +148,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 4 as const,
           })
         );
@@ -179,7 +169,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 5 as const,
           })
         );
@@ -194,7 +183,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/const/index.marko")
           )()()({
-            /*const*/
             value: 6 as const,
           })
         );
@@ -209,7 +197,6 @@ function __marko_internal_template(this: void) {
   } else if (undefined) {
   }
   Marko._.renderDynamicTag(effect)()()({
-    /*effect*/
     value() {
       a;
       b;

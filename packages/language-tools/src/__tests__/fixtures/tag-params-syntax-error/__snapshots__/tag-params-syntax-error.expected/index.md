@@ -45,86 +45,84 @@
 ```
 
 ## Generated Diagnostics
-### Ln 15, Col 3
+### Ln 13, Col 3
 ```ts
-  13 | "renderBody"]: ((
-  14 | a, %b
-> 15 | ) => {
+  11 | ["renderBody"/*{custom}*/]: ((
+  12 | a, %b
+> 13 | ) => {
      |   ^^ ')' expected.
-  16 | return Marko._.voidReturn;
-  17 |
-  18 | })
+  14 | return Marko._.voidReturn;
+  15 | })
+  16 | });
 ```
 
-### Ln 15, Col 6
+### Ln 13, Col 6
 ```ts
-  13 | "renderBody"]: ((
-  14 | a, %b
-> 15 | ) => {
+  11 | ["renderBody"/*{custom}*/]: ((
+  12 | a, %b
+> 13 | ) => {
      |      ^ Property assignment expected.
-  16 | return Marko._.voidReturn;
-  17 |
-  18 | })
+  14 | return Marko._.voidReturn;
+  15 | })
+  16 | });
 ```
 
-### Ln 15, Col 6
+### Ln 13, Col 6
 ```ts
-  13 | "renderBody"]: ((
-  14 | a, %b
-> 15 | ) => {
+  11 | ["renderBody"/*{custom}*/]: ((
+  12 | a, %b
+> 13 | ) => {
      |      ^
-> 16 | return Marko._.voidReturn;
+> 14 | return Marko._.voidReturn;
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 17 |
-     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 18 | })
+> 15 | })
      | ^^ Expected 1 arguments, but got 2.
-  19 | });
-  20 | return;
-  21 |
+  16 | });
+  17 | return;
+  18 | }
 ```
 
-### Ln 16, Col 8
+### Ln 14, Col 8
 ```ts
-  14 | a, %b
-  15 | ) => {
-> 16 | return Marko._.voidReturn;
+  12 | a, %b
+  13 | ) => {
+> 14 | return Marko._.voidReturn;
      |        ^^^^^ ':' expected.
-  17 |
-  18 | })
-  19 | });
+  15 | })
+  16 | });
+  17 | return;
 ```
 
-### Ln 16, Col 26
+### Ln 14, Col 26
 ```ts
-  14 | a, %b
-  15 | ) => {
-> 16 | return Marko._.voidReturn;
+  12 | a, %b
+  13 | ) => {
+> 14 | return Marko._.voidReturn;
      |                          ^ ',' expected.
-  17 |
-  18 | })
-  19 | });
+  15 | })
+  16 | });
+  17 | return;
 ```
 
-### Ln 19, Col 2
+### Ln 16, Col 2
 ```ts
-  17 |
-  18 | })
-> 19 | });
+  14 | return Marko._.voidReturn;
+  15 | })
+> 16 | });
      |  ^ Declaration or statement expected.
-  20 | return;
-  21 |
-  22 | }
+  17 | return;
+  18 | }
+  19 | export default new (
 ```
 
-### Ln 22, Col 1
+### Ln 18, Col 1
 ```ts
-  20 | return;
-  21 |
-> 22 | }
+  16 | });
+  17 | return;
+> 18 | }
      | ^ Declaration or statement expected.
-  23 | export default new (
-  24 |   class Template extends Marko._.Template<{
-  25 |     
+  19 | export default new (
+  20 |   class Template extends Marko._.Template<{
+  21 |     
 ```
 

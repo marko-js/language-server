@@ -12,12 +12,10 @@ function __marko_internal_template(this: void) {
     (Marko._.error, loader),
     Marko._.renderTemplate(import("./components/loader.marko"))
   )()()({
-    /*loader*/
     value() {
       return 1;
     },
-    /*loader*/
-    ["renderBody"]: (data) => {
+    ["renderBody" /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
   });
@@ -26,12 +24,10 @@ function __marko_internal_template(this: void) {
     (Marko._.error, loader),
     Marko._.renderTemplate(import("./components/loader.marko"))
   )()()({
-    /*loader*/
     value() {
       return "hi" as const;
     },
-    /*loader*/
-    ["renderBody"]: (data) => {
+    ["renderBody" /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
   });
@@ -40,9 +36,7 @@ function __marko_internal_template(this: void) {
     (Marko._.error, loader),
     Marko._.renderTemplate(import("./components/loader.marko"))
   )()()({
-    /*loader*/
-    /*loader*/
-    ["renderBody"]: (data) => {
+    ["renderBody" /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
   });

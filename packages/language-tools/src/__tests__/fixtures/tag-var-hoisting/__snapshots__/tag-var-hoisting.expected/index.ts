@@ -11,16 +11,13 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderNativeTag("div")()()({
-      /*div*/
-      /*div*/
-      ["renderBody"]: (() => {
+      ["renderBody" /*div*/]: (() => {
         Marko._.assertRendered(
           Marko._.rendered,
           2,
           Marko._.renderTemplate(
             import("../../components/let/index.marko")
           )()()({
-            /*let*/
             value: {
               a: 1,
               b: "hello!",
@@ -50,7 +47,6 @@ function __marko_internal_template(this: void) {
           Marko._.renderTemplate(
             import("../../components/let/index.marko")
           )()()({
-            /*let*/
             value: [1, 2, 3, 4, 5] as const,
           })
         );

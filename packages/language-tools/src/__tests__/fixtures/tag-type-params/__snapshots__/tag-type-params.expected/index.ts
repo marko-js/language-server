@@ -11,13 +11,10 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-      /*test-tag*/
       data: 1 as const,
-      /*test-tag*/
-      ["renderBody"]: <A>(data: A) => {
+      ["renderBody" /*test-tag*/]: <A>(data: A) => {
         const __marko_internal_return = {
           return: Marko._.returnTag({
-            /*return*/
             value: { result: data },
           }),
         };

@@ -12,7 +12,6 @@ function __marko_internal_template<T, U>(this: void) {
   Marko._.noop({ input, out, component, state });
   const __marko_internal_return = {
     return: Marko._.returnTag({
-      /*return*/
       value: 1 as unknown as U,
     }),
   };

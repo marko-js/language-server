@@ -8,16 +8,13 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    value: ["hello!"],
+    ["value"]: Marko._.tuple("hello!"),
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    value: ["hello!", 1],
+    ["value"]: Marko._.tuple("hello!", 1),
   });
   Marko._.renderTemplate(import("./components/test-tag.marko"))()()({
-    /*test-tag*/
-    value: ["hello!", 1, 2],
+    ["value"]: Marko._.tuple("hello!", 1, 2),
   });
   return;
 }

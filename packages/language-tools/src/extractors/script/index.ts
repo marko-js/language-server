@@ -8,7 +8,6 @@ import {
   NodeType,
   type Parsed,
   type Range,
-  type Ranges,
   type Repeatable,
   type Repeated,
 } from "../../parser";
@@ -41,6 +40,7 @@ const REG_ATTR_ARG_LITERAL =
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
+const REG_WHITE_SPACE = /\s+/my;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
@@ -60,16 +60,18 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: special types for macro and tag tags.
+// TODO: consume trailing whitespace for open tags and put in attrs.
+// TODO: check why `<div.${new Date}` does not error.
 
-// TODO: check if we can avoid an object for returned renderbody data and instead use a branded type.
-// TODO: handle top level attribute tags.
+// TODO: special types for macro and tag tags.
 // TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
+
+// TODO: handle top level attribute tags.
 // TODO: bring in native tag types to Marko
-// TODO: write types for tags api preview
 
 // Later todos:
+// TODO: write types for tags api preview
 // TODO: css modules
 // TODO: should support member expression tag vars.
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
@@ -315,7 +317,7 @@ function ${varLocal("template")}() {
       this.#extractor.write("return;\n");
     }
 
-    this.#extractor.write("\n}\n");
+    this.#extractor.write("}\n");
 
     const templateBaseClass = varShared("Template");
     const internalInput = varLocal("input");
@@ -522,17 +524,16 @@ constructor(_?: Return) {}
               }
 
               this.#extractor.write(`${varShared("forTag")}({\n`);
-              const sep = this.#writeAttrs(SEP_EMPTY, child);
-
+              this.#writeAttrs(child);
               this.#writeComments(child);
 
               // Adds a comment containing the tag name inside the renderBody key
               // this causes any errors which are just for the renderBody
               // to show on the tag.
               this.#extractor
-                .write(`${sep}[/*`)
+                .write(`["renderBody"/*`)
                 .copy(child.name)
-                .write(`*/"renderBody"]: (`)
+                .write(`*/]: (`)
                 .copy(child.typeParams)
                 .write("(\n");
 
@@ -553,7 +554,7 @@ constructor(_?: Return) {}
                 body?.renderBody ? getHoistSources(child) : undefined
               );
 
-              this.#extractor.write("\n})");
+              this.#extractor.write("})");
 
               if (renderId) {
                 this.#extractor.write("\n}));\n");
@@ -611,13 +612,12 @@ constructor(_?: Return) {}
       }
 
       if (mutatedVars) {
-        let sep = SEP_EMPTY;
         this.#extractor.write(`mutate: ${varShared("mutable")}([\n`);
         for (const binding of mutatedVars) {
           this.#extractor.write(
             `${
-              sep +
-              (this.#scriptLang === ScriptLang.js ? "/** @type {const} */" : "")
+              // TODO use a different format to avoid const annotation.
+              this.#scriptLang === ScriptLang.js ? "/** @type {const} */" : ""
             }[${
               JSON.stringify(binding.name) +
               (binding.sourceName && binding.sourceName !== binding.name
@@ -625,12 +625,11 @@ constructor(_?: Return) {}
                 : "")
             }, ${varShared("rendered")}.returns[${this.#getRenderId(
               binding.node as Node.ParentTag
-            )}]${binding.objectPath || ""}]`
+            )}]${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`
           );
-          sep = SEP_COMMA_NEW_LINE;
         }
         this.#extractor.write(
-          `\n]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`
+          `]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`
         );
       }
 
@@ -639,11 +638,9 @@ constructor(_?: Return) {}
       if (mutatedVars) {
         // Write out a read of all mutated vars to avoid them being seen
         // as unread if there are only writes.
-        let sep = SEP_EMPTY;
-        this.#extractor.write(`${varShared("noop")}({`);
+        this.#extractor.write(`${varShared("noop")}({\n`);
         for (const binding of mutatedVars) {
-          this.#extractor.write(`${sep}${binding.name}`);
-          sep = SEP_COMMA_SPACE;
+          this.#extractor.write(binding.name + SEP_COMMA_NEW_LINE);
         }
         this.#extractor.write("});\n");
       }
@@ -722,15 +719,26 @@ constructor(_?: Return) {}
   }
 
   #writeDynamicTagName(tag: Node.ParentTag) {
-    if (
-      tag.name.expressions.length === 1 &&
-      isEmptyRange(tag.name.quasis[0]) &&
-      isEmptyRange(tag.name.quasis[1])
-    ) {
-      this.#extractor.copy(tag.name.expressions[0].value);
+    const dynamicTagNameExpression = this.#getDynamicTagExpression(tag);
+    if (dynamicTagNameExpression) {
+      this.#extractor.copy(dynamicTagNameExpression);
     } else {
-      this.#writeTemplateLiteral(tag.name);
+      this.#extractor
+        .write(`${varShared("interpolated")}\``)
+        .copy(tag.name)
+        .write("`");
     }
+  }
+
+  #writeTagNameComment(tag: Node.ParentTag) {
+    this.#extractor
+      .write("/*")
+      .copy(
+        this.#getDynamicTagExpression(tag) || tag.type === NodeType.AttrTag
+          ? { start: tag.name.start + 1, end: tag.name.end }
+          : tag.name
+      )
+      .write("*/");
   }
 
   #writePlaceholder(placeholder: Node.Placeholder) {
@@ -743,37 +751,59 @@ constructor(_?: Return) {}
     this.#extractor.copy(scriptlet.value).write(";\n");
   }
 
-  #writeAttrs(initialSep: string, tag: Node.ParentTag) {
-    let sep = initialSep;
-
+  #writeAttrs(tag: Node.ParentTag) {
+    let hasAttrs = false;
     if (tag.shorthandId) {
-      this.#extractor.write("id:");
-      this.#writeTemplateLiteral(tag.shorthandId);
-      sep = SEP_COMMA_NEW_LINE;
+      hasAttrs = true;
+      this.#extractor
+        .write(`id: ${varShared("interpolated")}\``)
+        .copy({
+          start: tag.shorthandId.start + 1,
+          end: tag.shorthandId.end,
+        })
+        .write("`" + SEP_COMMA_NEW_LINE);
     }
 
     if (tag.shorthandClassNames) {
-      this.#extractor.write(`${sep}class: \``);
-      sep = SEP_EMPTY;
+      let sep = SEP_EMPTY;
+      hasAttrs = true;
+      this.#extractor.write(`class: ${varShared("interpolated")}\``);
 
       for (const shorthandClassName of tag.shorthandClassNames) {
-        this.#extractor.write(sep);
-        this.#writeTemplateLiteralContent(shorthandClassName);
+        this.#extractor.write(sep).copy({
+          start: shorthandClassName.start + 1,
+          end: shorthandClassName.end,
+        });
         sep = SEP_SPACE;
       }
 
-      this.#extractor.write("`");
-      sep = SEP_COMMA_NEW_LINE;
+      this.#extractor.write("`" + SEP_COMMA_NEW_LINE);
     }
 
     if (tag.attrs) {
+      const [firstAttr] = tag.attrs;
+      let attrWhitespaceStart =
+        firstAttr.type === NodeType.AttrNamed && !isEmptyRange(firstAttr.name)
+          ? firstAttr.name.start - 1
+          : -1;
+
+      hasAttrs = true;
+
       for (const attr of tag.attrs) {
+        if (attrWhitespaceStart !== -1) {
+          this.#extractor.copy({
+            start: attrWhitespaceStart,
+            end: attr.start,
+          });
+        }
+
+        attrWhitespaceStart = attr.end;
+
         switch (attr.type) {
           case NodeType.AttrSpread:
-            this.#extractor.write(`${sep}...(\n`);
+            this.#extractor.write(`...(\n`);
             this.#copyWithMutationsReplaced(attr.value);
-            this.#extractor.write("\n)");
-            sep = SEP_COMMA_NEW_LINE;
+            this.#extractor.write(`\n)`);
             break;
           case NodeType.AttrNamed: {
             const isDefault = isEmptyRange(attr.name);
@@ -788,8 +818,8 @@ constructor(_?: Return) {}
               switch (value.type) {
                 case NodeType.AttrMethod:
                   this.#extractor
-                    .write(`${sep}"`)
-                    .copy(defaultMapPosition)
+                    .write('"')
+                    .copy(defaultMapPosition) // TODO: see if this is working
                     .copy(name)
                     .write('"')
                     .copy(value.typeParams);
@@ -801,7 +831,7 @@ constructor(_?: Return) {}
                     const memberExpressionStart =
                       getBoundAttrMemberExpressionStartOffset(value);
                     this.#extractor
-                      .write(`${sep}"`)
+                      .write('"')
                       .copy(defaultMapPosition)
                       .copy(name)
                       .write('Change"');
@@ -872,7 +902,7 @@ constructor(_?: Return) {}
                     }
                   } else {
                     this.#extractor
-                      .write(`${sep}"`)
+                      .write('"')
                       .copy(defaultMapPosition)
                       .copy(name)
                       .write('": (\n');
@@ -887,7 +917,7 @@ constructor(_?: Return) {}
                 REG_ATTR_ARG_LITERAL,
                 attr.args.value.start
               );
-              this.#extractor.write(`${sep}"`).copy(name).write('": ');
+              this.#extractor.write('"').copy(name).write('": ');
 
               if (stringLiteralFirstArgMatch) {
                 const hasPartialArgs = stringLiteralFirstArgMatch[3] === ",";
@@ -932,60 +962,66 @@ constructor(_?: Return) {}
               }
             } else {
               this.#extractor
-                .write(`${sep}"`)
+                .write('"')
                 .copy(defaultMapPosition)
                 .copy(name)
                 .write('": true');
             }
-
-            sep = SEP_COMMA_NEW_LINE;
             break;
           }
         }
+
+        this.#extractor.write(SEP_COMMA_NEW_LINE);
       }
+
+      const whitespaceAfterAttrsMatch = this.#execAtIndex(
+        REG_WHITE_SPACE,
+        attrWhitespaceStart
+      );
+
+      if (whitespaceAfterAttrsMatch) {
+        this.#extractor.copy({
+          start: attrWhitespaceStart,
+          end: attrWhitespaceStart + whitespaceAfterAttrsMatch[0].length,
+        });
+      }
+    } else {
+      // write any trailing whitespace in the open tag.
     }
 
-    return sep;
+    return hasAttrs;
   }
 
-  #writeAttrTags(
-    initialSep: string,
-    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody
-  ) {
-    let sep = initialSep;
+  #writeAttrTags({ staticAttrTags, dynamicAttrTagParents }: ProcessedBody) {
     let wasMerge = false;
 
     if (dynamicAttrTagParents) {
       if (staticAttrTags) {
-        this.#extractor.write(`${sep}...${varShared("mergeAttrTags")}({\n`);
+        this.#extractor.write(`...${varShared("mergeAttrTags")}({\n`);
         wasMerge = true;
       } else if (dynamicAttrTagParents.length > 1) {
-        this.#extractor.write(`${sep}...${varShared("mergeAttrTags")}(\n`);
+        this.#extractor.write(`...${varShared("mergeAttrTags")}(\n`);
         wasMerge = true;
       } else {
-        this.#extractor.write(`${sep}...`);
+        this.#extractor.write(`...`);
       }
-      sep = SEP_EMPTY;
     }
 
     if (staticAttrTags) {
-      sep = this.#writeStaticAttrTags(sep, staticAttrTags);
-      if (dynamicAttrTagParents) this.#extractor.write("\n}");
+      this.#writeStaticAttrTags(staticAttrTags);
+      if (dynamicAttrTagParents)
+        this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     }
 
     if (dynamicAttrTagParents) {
-      sep = this.#writeDynamicAttrTagParents(sep, dynamicAttrTagParents);
-      if (wasMerge) this.#extractor.write("\n)");
+      this.#writeDynamicAttrTagParents(dynamicAttrTagParents);
+      if (wasMerge) this.#extractor.write(")");
     }
-
-    return sep;
   }
 
   #writeStaticAttrTags(
-    initialSep: string,
     staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>
   ) {
-    let sep = initialSep;
     for (const nameText in staticAttrTags) {
       const attrTag = staticAttrTags[nameText];
       const attrTagDef = this.#lookup.getTag(nameText);
@@ -994,35 +1030,29 @@ constructor(_?: Return) {}
         attrTagDef?.targetProperty ||
         nameText.slice(nameText.lastIndexOf(":") + 1);
 
-      this.#extractor.write(`${sep}"${name}": `);
-      sep = SEP_EMPTY;
+      this.#extractor.write(`"${name}": `);
 
       if (isRepeated) {
         this.#extractor.write("[\n");
       }
 
       for (const childNode of attrTag) {
-        this.#extractor.write(sep);
         this.#writeTagInputObject(childNode);
-        sep = SEP_COMMA_NEW_LINE;
+        this.#extractor.write(SEP_COMMA_NEW_LINE);
       }
 
       if (isRepeated) {
-        this.#extractor.write("\n]");
+        this.#extractor.write(`]${SEP_COMMA_NEW_LINE}`);
       }
     }
-
-    return sep;
   }
 
   #writeDynamicAttrTagParents(
-    initialSep: string,
     dynamicAttrTagParents: Exclude<
       ProcessedBody["dynamicAttrTagParents"],
       undefined
     >
   ) {
-    let sep = initialSep;
     for (const tag of dynamicAttrTagParents) {
       switch (tag.nameText) {
         case "if": {
@@ -1031,18 +1061,17 @@ constructor(_?: Return) {}
           const alternates = IF_TAG_ALTERNATES.get(tag);
           this.#writeComments(tag);
           this.#extractor
-            .write(`${sep}((\n`)
+            .write("((\n")
             .copy(
               tag.args?.value ||
                 this.#getAttrValue(tag, ATTR_UNAMED) ||
                 "undefined"
             )
             .write("\n) ? ");
-          sep = SEP_COMMA_NEW_LINE;
 
           this.#extractor.write("{\n");
           const body = this.#processBody(tag);
-          if (body) this.#writeAttrTags(SEP_EMPTY, body);
+          if (body) this.#writeAttrTags(body);
           this.#extractor.write("\n} ");
 
           let needsAlternate = true;
@@ -1058,10 +1087,14 @@ constructor(_?: Return) {}
                 this.#extractor.write(": undefined ? ");
               }
 
-              this.#extractor.write("{\n");
               const body = this.#processBody(tag);
-              if (body) this.#writeAttrTags(SEP_EMPTY, body);
-              this.#extractor.write("\n}");
+              if (body) {
+                this.#extractor.write("{\n");
+                this.#writeAttrTags(body);
+                this.#extractor.write("}");
+              } else {
+                this.#extractor.write("{}");
+              }
             }
           }
 
@@ -1069,19 +1102,13 @@ constructor(_?: Return) {}
             this.#extractor.write(" : {}");
           }
 
-          this.#extractor.write(")\n");
+          this.#extractor.write(")");
           break;
         }
         case "for": {
-          this.#extractor.write(`${sep}${varShared("forAttrTag")}({\n`);
-          sep = SEP_COMMA_NEW_LINE;
-
-          // Adds a comment containing the tag name inside the attrs
-          // this causes any errors which span all of the attributes
-          // to show on the tag.
-          this.#extractor.write("/*").copy(tag.name).write("*/\n");
-          this.#writeAttrs(SEP_EMPTY, tag);
-          this.#extractor.write("\n}, \n");
+          this.#extractor.write(`${varShared("forAttrTag")}({\n`);
+          if (!this.#writeAttrs(tag)) this.#writeTagNameComment(tag);
+          this.#extractor.write("}, \n");
           this.#writeComments(tag);
           this.#extractor
             .copy(tag.typeParams)
@@ -1096,75 +1123,71 @@ constructor(_?: Return) {}
           // the alternates (`<else>` and `<elseif>`) have attribute tags.
           // We keep the check here just incase this changes in the future to eg allow an `<else>`
           // tag to be used with the `<for>` tag.
-          if (body) this.#writeAttrTags(SEP_EMPTY, body);
-          this.#extractor.write("\n}))\n");
+          if (body) this.#writeAttrTags(body);
+          this.#extractor.write("}))");
           break;
         }
         case "while": {
           this.#writeComments(tag);
           this.#extractor
-            .write(`${sep + varShared("mergeAttrTags")}((\n`)
+            .write(`${varShared("mergeAttrTags")}((\n`)
             .copy(tag.args?.value || "undefined")
             .write("\n) ? [{\n");
-          sep = SEP_COMMA_NEW_LINE;
           const body = this.#processBody(tag);
-          this.#writeAttrTags(SEP_EMPTY, body!);
-          this.#extractor.write("\n}] : [])\n");
+          this.#writeAttrTags(body!);
+          this.#extractor.write("}] : [])");
           break;
         }
       }
-    }
 
-    return sep;
+      this.#extractor.write(SEP_COMMA_NEW_LINE);
+    }
   }
 
   #writeTagInputObject(tag: Node.ParentTag) {
     if (!tag.params) this.#writeComments(tag);
 
+    let hasInput = false;
     this.#extractor.write("{\n");
 
-    // Adds a comment containing the tag name inside the attrs
-    // this causes any errors which span all of the attributes
-    // to show on the tag.
-    this.#extractor.write("/*");
-
-    if (tag.nameText) {
-      this.#extractor.copy(tag.name);
-    } else {
-      this.#writeDynamicTagName(tag);
+    if (tag.args) {
+      hasInput = true;
+      this.#extractor
+        .write("[")
+        .copy({
+          start: tag.args.start,
+          end: tag.args.start + 1,
+        })
+        .write('"value"')
+        .copy({
+          start: tag.args.end - 1,
+          end: tag.args.end,
+        })
+        .write(`]: ${varShared("tuple")}(`)
+        .copy(tag.args.value)
+        .write(")")
+        .write(",\n");
     }
 
-    this.#extractor.write("*/\n");
-
-    if (tag.args) {
-      this.#extractor.write(`value: [`).copy(tag.args.value).write("],\n");
+    if (this.#writeAttrs(tag)) {
+      hasInput = true;
     }
 
     const body = this.#processBody(tag);
-    let sep = this.#writeAttrs(SEP_EMPTY, tag);
     let hasRenderBody = false;
     if (body) {
-      sep = this.#writeAttrTags(sep, body);
+      hasInput = true;
+      this.#writeAttrTags(body);
       hasRenderBody = body.renderBody !== undefined;
     }
 
     if (tag.params || hasRenderBody) {
-      this.#extractor.write(`${sep}[`);
-
       // Adds a comment containing the tag name inside the renderBody key
       // this causes any errors which are just for the renderBody
       // to show on the tag.
-      this.#extractor.write("/*");
-
-      if (tag.nameText) {
-        this.#extractor.copy(tag.name);
-      } else {
-        this.#writeDynamicTagName(tag);
-      }
-
-      this.#extractor.write("*/\n");
-
-      this.#extractor.write(`"renderBody"]: `);
+      this.#extractor.write('["renderBody"');
+      this.#writeTagNameComment(tag);
+      this.#extractor.write("]: ");
 
       if (tag.params) {
         this.#writeComments(tag);
@@ -1189,40 +1212,24 @@ constructor(_?: Return) {}
       );
 
       if (tag.params) {
-        this.#extractor.write("\n})");
+        this.#extractor.write("})");
       } else {
-        this.#extractor.write("\n}\n})()");
+        this.#extractor.write("}\n})()");
       }
+    }
+
+    if (!hasInput) {
+      this.#writeTagNameComment(tag);
     }
 
     this.#extractor.write("\n}");
   }
 
-  #writeTemplateLiteral(template: Ranges.Template) {
-    this.#extractor.write("`");
-    this.#writeTemplateLiteralContent(template);
-    this.#extractor.write("`");
-  }
-
-  #writeTemplateLiteralContent({ expressions, quasis }: Ranges.Template) {
-    this.#extractor.copy(quasis[0]);
-
-    for (let i = 0; i < expressions.length; i++) {
-      this.#extractor
-        .write("${")
-        .copy(expressions[i].value)
-        .write(' || ""}')
-        .copy(quasis[i + 1]);
-    }
-  }
-
   #writeObjectKeys(keys: Iterable<string>) {
-    let sep = SEP_EMPTY;
     this.#extractor.write("{");
 
     for (const key of keys) {
-      this.#extractor.write(sep + key);
-      sep = SEP_COMMA_SPACE;
+      this.#extractor.write(key + SEP_COMMA_SPACE);
     }
 
     this.#extractor.write("}");
@@ -1511,6 +1518,16 @@ constructor(_?: Return) {}
           }
         }
       }
+    }
+  }
+
+  #getDynamicTagExpression(tag: Node.ParentTag) {
+    if (
+      tag.name.expressions.length === 1 &&
+      isEmptyRange(tag.name.quasis[0]) &&
+      isEmptyRange(tag.name.quasis[1])
+    ) {
+      return tag.name.expressions[0].value;
     }
   }
 

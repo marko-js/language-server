@@ -11,7 +11,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderTemplate(import("../../components/const/index.marko"))()()({
-      /*const*/
       value: 1,
     })
   );
@@ -20,7 +19,6 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     2,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      /*let*/
       valueChange(_a) {
         __marko_internal_return.mutate.a = a;
       },
@@ -33,7 +31,9 @@ function __marko_internal_template(this: void) {
       ["a", "value", Marko._.rendered.returns[1]],
     ] as const),
   };
-  Marko._.noop({ a });
+  Marko._.noop({
+    a,
+  });
   return;
 }
 export default new (class Template extends Marko._.Template<{
