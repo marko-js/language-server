@@ -31,7 +31,7 @@ export function get(uri: string) {
       const newDoc = TextDocument.create(
         uri,
         getLanguageId(uri),
-        0,
+        projectVersion,
         fs.readFileSync(fsPath, "utf-8")
       );
 
