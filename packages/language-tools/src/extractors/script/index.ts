@@ -40,7 +40,6 @@ const REG_ATTR_ARG_LITERAL =
 const REG_TAG_IMPORT = /(?<=(['"]))<([^\1>]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
-const REG_WHITE_SPACE = /\s+/my;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
@@ -780,23 +779,20 @@ constructor(_?: Return) {}
       this.#extractor.write("`" + SEP_COMMA_NEW_LINE);
     }
 
-    if (tag.attrs) {
-      const [firstAttr] = tag.attrs;
-      let attrWhitespaceStart =
-        firstAttr.type === NodeType.AttrNamed && !isEmptyRange(firstAttr.name)
-          ? firstAttr.name.start - 1
-          : -1;
+    let attrWhitespaceStart = Math.max(
+      tag.name.end,
+      tag.shorthandId?.end ?? -1,
+      tag.shorthandClassNames?.[tag.shorthandClassNames.length - 1]?.end ?? -1,
+      tag.var?.end ?? -1,
+      tag.args?.start ?? -1,
+      tag.params?.end ?? -1
+    );
 
+    if (tag.attrs) {
       hasAttrs = true;
 
       for (const attr of tag.attrs) {
-        if (attrWhitespaceStart !== -1) {
-          this.#extractor.copy({
-            start: attrWhitespaceStart,
-            end: attr.start,
-          });
-        }
-
+        this.#copyWhitespaceWithin(attrWhitespaceStart, attr.start);
         attrWhitespaceStart = attr.end;
 
         switch (attr.type) {
@@ -973,21 +969,19 @@ constructor(_?: Return) {}
 
         this.#extractor.write(SEP_COMMA_NEW_LINE);
       }
-
-      const whitespaceAfterAttrsMatch = this.#execAtIndex(
-        REG_WHITE_SPACE,
-        attrWhitespaceStart
-      );
-
-      if (whitespaceAfterAttrsMatch) {
-        this.#extractor.copy({
-          start: attrWhitespaceStart,
-          end: attrWhitespaceStart + whitespaceAfterAttrsMatch[0].length,
-        });
-      }
-    } else {
-      // write any trailing whitespace in the open tag.
     }
+
+    this.#copyWhitespaceWithin(
+      attrWhitespaceStart,
+      tag.open.end -
+        (tag.concise
+          ? this.#code[tag.open.end] === ";"
+            ? 1
+            : 0
+          : tag.selfClosed
+          ? 2
+          : 1)
+    );
 
     return hasAttrs;
   }
@@ -1278,6 +1272,27 @@ constructor(_?: Return) {}
       minIndex = maxIndex + 1;
       // eslint-disable-next-line no-constant-condition
     } while (true);
+  }
+
+  #copyWhitespaceWithin(start: number, end: number) {
+    const code = this.#code;
+    let lastPos = start;
+    let pos = start;
+
+    while (pos < end) {
+      if (!isWhitespaceCode(code.charCodeAt(pos))) {
+        lastPos = pos + 1;
+        if (pos > lastPos) {
+          this.#extractor.copy({ start: lastPos, end: pos });
+        }
+      }
+
+      pos++;
+    }
+
+    if (pos > lastPos) {
+      this.#extractor.copy({ start: lastPos, end: pos });
+    }
   }
 
   #processBody(parent: Node.ParentNode): ProcessedBody | undefined {

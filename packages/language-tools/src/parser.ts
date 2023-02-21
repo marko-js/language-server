@@ -730,6 +730,7 @@ class Builder {
       start: range.start,
       end: range.end,
     };
+    parent.end = range.end;
   }
   onAttrValue(range: Ranges.AttrValue) {
     const parent = this.#attrNode!;
