@@ -59,7 +59,6 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: consume trailing whitespace for open tags and put in attrs.
 // TODO: check why `<div.${new Date}` does not error.
 
 // TODO: special types for macro and tag tags.
@@ -235,12 +234,21 @@ class ScriptExtractor {
           }
         }
       }
-    } else if (this.#scriptLang === ScriptLang.ts) {
-      this.#extractor.write("export interface Input {}\n");
     } else {
-      this.#extractor.write(
-        "/** @typedef {Record<string, unknown>} Input */\n"
-      );
+      const hasComponent = componentClassBody || componentFileName;
+      if (this.#scriptLang === ScriptLang.ts) {
+        this.#extractor.write(
+          hasComponent
+            ? 'export type Input = Component["input"]'
+            : `export interface Input {}\n`
+        );
+      } else {
+        this.#extractor.write(
+          `/** @typedef {${
+            hasComponent ? 'Component["input"]' : "Record<string, unknown>"
+          }} Input */\n`
+        );
+      }
     }
 
     if (!componentClassBody && componentFileName) {
