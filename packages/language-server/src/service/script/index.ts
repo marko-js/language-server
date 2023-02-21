@@ -767,7 +767,7 @@ function convertDiag(
   if (sourceRange) {
     return {
       range: sourceRange,
-      source: "ts",
+      source: "script",
       code: tsDiag.code,
       tags: convertDiagTags(tsDiag),
       severity: convertDiagSeverity(tsDiag),

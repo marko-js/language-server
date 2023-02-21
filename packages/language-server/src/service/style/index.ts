@@ -362,6 +362,7 @@ const StyleSheetService: Partial<Plugin> = {
       )) {
         const sourceRange = getSourceRange(extracted, diag.range);
         if (sourceRange) {
+          diag.source = "style";
           diag.range = sourceRange;
           result.push(diag);
         }
