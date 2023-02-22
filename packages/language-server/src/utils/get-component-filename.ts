@@ -7,13 +7,24 @@ export default function getComponentFilename(
 ) {
   const dir = path.dirname(from);
   const nameNoExt = path.basename(from, ".marko");
-  const matchFull = path.join(dir, `${nameNoExt}.component.`);
-  const matchPartial = nameNoExt === "index" && path.join(dir, "component.");
+  const isEntry = nameNoExt === "index";
+  const componentFull = path.join(dir, `${nameNoExt}.component.`);
+  const componentBrowserFull = path.join(
+    dir,
+    `${nameNoExt}.component-browser.`
+  );
+  const componentPartial = isEntry ? path.join(dir, "component.") : undefined;
+  const componentBrowserPartial = isEntry
+    ? path.join(dir, "component-browser.")
+    : undefined;
   for (const entry of host.readDirectory!(dir)) {
+    // Prefers `component-browser` over `component`.
     if (
-      entry !== from &&
-      (entry.startsWith(matchFull) ||
-        (matchPartial && entry.startsWith(matchPartial)))
+      (entry !== from &&
+        ((isEntry && entry.startsWith(componentBrowserPartial!)) ||
+          entry.startsWith(componentPartial!))) ||
+      entry.startsWith(componentBrowserFull) ||
+      entry.startsWith(componentFull)
     ) {
       return entry;
     }
