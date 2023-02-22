@@ -47,7 +47,7 @@ export class Extractor {
         this.#tokens.push({
           generatedStart: this.#generated.length,
           sourceStart: range.start,
-          length: range.end - range.start,
+          length: Math.min(this.#parsed.code.length, range.end) - range.start,
         });
         this.#generated += this.#parsed.read(range);
       }

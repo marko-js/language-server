@@ -1,4 +1,4 @@
-export interface Input {}
+export type Input = Component["input"];
 abstract class Component extends Marko.Component<Input> {
   handleClick(ev: MouseEvent) {
     console.log(ev);

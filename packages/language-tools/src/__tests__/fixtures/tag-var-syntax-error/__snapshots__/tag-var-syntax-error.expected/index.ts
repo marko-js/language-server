@@ -9,7 +9,7 @@ function __marko_internal_template(this: void) {
   Marko._.noop({ input, out, component, state });
 Marko._.assertRendered(Marko._.rendered, 1, Marko._.renderTemplate(import("../../components/let/index.marko"))()()(// Should be resistant to syntax errors.
 {
-"value": (
+ "value": (
 1
 ),
 

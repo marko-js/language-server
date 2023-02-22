@@ -20,15 +20,11 @@ export interface ExtractedSnapshot extends Extracted {
 }
 
 export function patch(
-  ts:
-    | typeof import("typescript/lib/tsserverlibrary")
-    | typeof import("typescript"),
+  ts: typeof import("typescript/lib/tsserverlibrary"),
   scriptLang: ScriptLang,
   cache: Map<string, ExtractedSnapshot>,
   host: ts.LanguageServiceHost
 ) {
-  const scriptKind =
-    scriptLang === ScriptLang.ts ? ts.ScriptKind.TS : ts.ScriptKind.JS;
   const projectTypeLibs = getProjectTypeLibs(
     getMarkoProject(host.getCurrentDirectory()),
     ts,
@@ -38,7 +34,7 @@ export function patch(
   /**
    * Ensure the Marko runtime definitions are always loaded.
    */
-  const getScriptFileNames = host.getScriptFileNames!.bind(host);
+  const getScriptFileNames = host.getScriptFileNames.bind(host);
   host.getScriptFileNames = () => [
     ...new Set([
       ...getScriptFileNames(),
@@ -50,16 +46,22 @@ export function patch(
   /**
    * Trick TypeScript into thinking Marko files are TS/JS files.
    */
-  const getScriptKind = host.getScriptKind!.bind(host);
-  host.getScriptKind = (fileName: string) => {
-    return markoExtReg.test(fileName) ? scriptKind : getScriptKind(fileName);
-  };
+  const getScriptKind = host.getScriptKind?.bind(host);
+  if (getScriptKind) {
+    host.getScriptKind = (fileName: string) => {
+      return markoExtReg.test(fileName)
+        ? getScriptLang(fileName, ts, host, scriptLang) === ScriptLang.ts
+          ? ts.ScriptKind.TS
+          : ts.ScriptKind.JS
+        : getScriptKind(fileName);
+    };
+  }
 
   /**
    * A script snapshot is an immutable string of text representing the contents of a file.
    * We patch it so that Marko files instead return their extracted ts code.
    */
-  const getScriptSnapshot = host.getScriptSnapshot!.bind(host);
+  const getScriptSnapshot = host.getScriptSnapshot.bind(host);
   host.getScriptSnapshot = (filename: string) => {
     if (markoExtReg.test(filename)) {
       let cached = cache.get(filename);
@@ -89,96 +91,98 @@ export function patch(
    * This ensures that any directory reads with specific file extensions also include Marko.
    * It is used for example when completing the `from` property of the `import` statement.
    */
-  const readDirectory = host.readDirectory!.bind(host);
-  host.readDirectory = (path, extensions, exclude, include, depth) => {
-    return readDirectory(
-      path,
-      extensions?.concat(markoExt),
-      exclude,
-      include,
-      depth
-    );
-  };
+  const readDirectory = host.readDirectory?.bind(host);
+  if (readDirectory) {
+    host.readDirectory = (path, extensions, exclude, include, depth) => {
+      return readDirectory(
+        path,
+        extensions?.concat(markoExt),
+        exclude,
+        include,
+        depth
+      );
+    };
+  }
 
   /**
    * TypeScript doesn't know how to resolve `.marko` files.
    * Below we first try to use TypeScripts normal resolution, and then fallback
    * to seeing if a `.marko` file exists at the same location.
    */
-  const resolveModuleNames = host.resolveModuleNames!.bind(host);
-  host.resolveModuleNames = (
-    moduleNames,
-    containingFile,
-    reusedNames,
-    redirectedReference,
-    options,
-    sourceFile
-  ) => {
-    const resolvedModules: (
-      | ts.ResolvedModuleFull
-      | ts.ResolvedModule
-      | undefined
-    )[] = resolveModuleNames!(
+  const resolveModuleNames = host.resolveModuleNames?.bind(host);
+
+  if (resolveModuleNames) {
+    host.resolveModuleNames = (
       moduleNames,
       containingFile,
       reusedNames,
       redirectedReference,
       options,
       sourceFile
-    );
+    ) => {
+      const resolvedModules: (
+        | ts.ResolvedModuleFull
+        | ts.ResolvedModule
+        | undefined
+      )[] = resolveModuleNames(
+        moduleNames,
+        containingFile,
+        reusedNames,
+        redirectedReference,
+        options,
+        sourceFile
+      );
 
-    for (let i = resolvedModules.length; i--; ) {
-      const moduleName = moduleNames[i];
-      if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
-        if (fsPathReg.test(moduleName)) {
-          // For fs paths just see if it exists on disk.
-          const resolvedFileName = path.resolve(
-            containingFile,
-            "..",
-            moduleName
-          );
-          if (host.fileExists(resolvedFileName)) {
-            resolvedModules[i] = {
-              resolvedFileName,
-              extension: ts.Extension.Ts,
-              isExternalLibraryImport: false,
-            };
-          }
-        } else if (moduleName[0] !== "*") {
-          // For other paths we treat it as a node_module and try resolving
-          // that modules `marko.json`. If the `marko.json` exists then we'll
-          // try resolving the `.marko` file relative to that.
-          const [, nodeModuleName, relativeModulePath] =
-            modulePartsReg.exec(moduleName)!;
-          const [resolvedModule] = resolveModuleNames(
-            [`${nodeModuleName}/marko.json`],
-            containingFile,
-            reusedNames,
-            redirectedReference,
-            options,
-            sourceFile
-          );
-
-          if (resolvedModule) {
-            const resolvedFileName = path.join(
-              resolvedModule.resolvedFileName,
+      for (let i = resolvedModules.length; i--; ) {
+        const moduleName = moduleNames[i];
+        if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
+          if (fsPathReg.test(moduleName)) {
+            // For fs paths just see if it exists on disk.
+            const resolvedFileName = path.resolve(
+              containingFile,
               "..",
-              relativeModulePath
+              moduleName
             );
             if (host.fileExists(resolvedFileName)) {
               resolvedModules[i] = {
                 resolvedFileName,
                 extension: ts.Extension.Ts,
-                isExternalLibraryImport: true,
+                isExternalLibraryImport: false,
               };
+            }
+          } else if (moduleName[0] !== "*") {
+            // For other paths we treat it as a node_module and try resolving
+            // that modules `marko.json`. If the `marko.json` exists then we'll
+            // try resolving the `.marko` file relative to that.
+            const [, nodeModuleName, relativeModulePath] =
+              modulePartsReg.exec(moduleName)!;
+            const { resolvedModule } = ts.resolveModuleName(
+              `${nodeModuleName}/marko.json`,
+              containingFile,
+              options,
+              host
+            );
+
+            if (resolvedModule) {
+              const resolvedFileName = path.join(
+                resolvedModule.resolvedFileName,
+                "..",
+                relativeModulePath
+              );
+              if (host.fileExists(resolvedFileName)) {
+                resolvedModules[i] = {
+                  resolvedFileName,
+                  isExternalLibraryImport: true,
+                };
+              }
             }
           }
         }
       }
-    }
 
-    return resolvedModules;
-  };
+      return resolvedModules;
+    };
+  }
 
   return host;
 }

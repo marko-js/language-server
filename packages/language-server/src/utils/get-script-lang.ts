@@ -1,6 +1,6 @@
 import { ScriptLang } from "@marko/language-tools";
-import type { LanguageServiceHost } from "typescript";
-import type TS from "typescript";
+import type { LanguageServiceHost } from "typescript/lib/tsserverlibrary";
+import type TS from "typescript/lib/tsserverlibrary";
 
 export default function getScriptLang(
   filename: string,

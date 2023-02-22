@@ -1,5 +1,6 @@
-export type Input = Component["input"];
-import Component from "./component";
+export interface Input {}
+abstract class Component extends Marko.Component<Input> {}
+export { type Component };
 function __marko_internal_template(this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
@@ -7,12 +8,8 @@ function __marko_internal_template(this: void) {
   const state = Marko._.state(component);
   Marko._.noop({ input, out, component, state });
   Marko._.renderNativeTag("div")()()({
-    onClick: component.handleClickMissing,
+    hi: true,
   });
-  Marko._.renderNativeTag("div")()()({
-    onClick: component["strange-handler"],
-  });
-  console.log(component);
   return;
 }
 export default new (class Template extends Marko._.Template<{

@@ -1,5 +1,5 @@
 import path from "path";
-import type { LanguageServiceHost } from "typescript";
+import type { LanguageServiceHost } from "typescript/lib/tsserverlibrary";
 
 export default function getComponentFilename(
   from: string,

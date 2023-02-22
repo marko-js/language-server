@@ -1,4 +1,4 @@
-import type TS from "typescript";
+import type TS from "typescript/lib/tsserverlibrary";
 import type * as t from "@babel/types";
 import { relativeImportPath } from "relative-import-path";
 
@@ -33,6 +33,7 @@ const SEP_COMMA_NEW_LINE = ",\n";
 const VAR_LOCAL_PREFIX = "__marko_internal_";
 const VAR_SHARED_PREFIX = `Marko._.`;
 const ATTR_UNAMED = "value";
+const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
 const REG_ATTR_ARG_LITERAL =
@@ -59,10 +60,7 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: check why `<div.${new Date}` does not error.
-
 // TODO: special types for macro and tag tags.
-// TODO: dynamic tag names cause substring tokens that breaks the lookup. Either need to change that, or fix the extractor to support nested/multi tokens...
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
 
 // TODO: handle top level attribute tags.
@@ -239,7 +237,7 @@ class ScriptExtractor {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
           hasComponent
-            ? 'export type Input = Component["input"]'
+            ? 'export type Input = Component["input"];\n'
             : `export interface Input {}\n`
         );
       } else {
@@ -253,9 +251,8 @@ class ScriptExtractor {
 
     if (!componentClassBody && componentFileName) {
       this.#extractor.write(
-        `import Component from "${relativeImportPath(
-          this.#filename,
-          componentFileName
+        `import Component from "${stripExt(
+          relativeImportPath(this.#filename, componentFileName)
         )}";\n`
       );
     } else {
@@ -1284,15 +1281,17 @@ constructor(_?: Return) {}
 
   #copyWhitespaceWithin(start: number, end: number) {
     const code = this.#code;
+    const max = Math.min(end, code.length);
     let lastPos = start;
     let pos = start;
 
-    while (pos < end) {
+    while (pos < max) {
       if (!isWhitespaceCode(code.charCodeAt(pos))) {
         lastPos = pos + 1;
         if (pos > lastPos) {
           this.#extractor.copy({ start: lastPos, end: pos });
         }
+        return;
       }
 
       pos++;
@@ -1607,6 +1606,10 @@ function isWhitespaceCode(code: number) {
   // control characters below it are whitespace.
   // This is also what the htmljs-parser considers a whitespace.
   return code <= 32;
+}
+
+function stripExt(filename: string) {
+  return filename.replace(REG_EXT, "");
 }
 
 function removeNewLines(str: string) {

@@ -1,6 +1,6 @@
 import path from "path";
-import type { LanguageServiceHost } from "typescript";
-import type TS from "typescript";
+import type { LanguageServiceHost } from "typescript/lib/tsserverlibrary";
+import type TS from "typescript/lib/tsserverlibrary";
 import type { MarkoProject } from "./project";
 
 const internalTypesFile = path.join(__dirname, "marko.internal.d.ts");
@@ -11,16 +11,18 @@ export default function getProjectTypeLibs(
   ts: typeof TS,
   host: LanguageServiceHost
 ) {
-  let cached = project.cache.get(getProjectTypeLibs) as {
-    internalTypesFile: string;
-    markoTypesFile: string;
-    markoTypesCode: string;
-  };
+  let cached = project.cache.get(getProjectTypeLibs) as
+    | {
+        internalTypesFile: string;
+        markoTypesFile: string;
+        markoTypesCode: string;
+      }
+    | undefined;
 
   if (cached === undefined) {
     const { resolvedTypeReferenceDirective } = ts.resolveTypeReferenceDirective(
       (project.translator.runtimeTypes as string | undefined) || "marko",
-      path.join(project.rootDir, "_.ts"),
+      path.join(project.rootDir, "_.d.ts"),
       host.getCompilationSettings(),
       host
     );
@@ -37,5 +39,5 @@ export default function getProjectTypeLibs(
     project.cache.set(getProjectTypeLibs, cached);
   }
 
-  return cached || undefined;
+  return cached;
 }

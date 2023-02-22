@@ -1,7 +1,7 @@
 import path from "path";
 
 import { relativeImportPath } from "relative-import-path";
-import ts from "typescript";
+import ts from "typescript/lib/tsserverlibrary";
 import {
   CompletionItem,
   CompletionItemKind,
@@ -15,6 +15,7 @@ import {
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+import * as prettier from "prettier";
 
 import {
   type Extracted,
@@ -69,9 +70,19 @@ const ScriptService: Partial<Plugin> = {
         project.host,
         project.markoScriptLang
       );
+      const generated = extracted.toString();
+      const content = (() => {
+        try {
+          return prettier.format(generated, {
+            parser: lang === ScriptLang.ts ? "typescript" : "babel",
+          });
+        } catch {
+          return generated;
+        }
+      })();
       return {
         language: lang === ScriptLang.ts ? "typescript" : "javascript",
-        content: extracted.toString(),
+        content,
       };
     },
   },
@@ -544,6 +555,11 @@ function getTSProject(docFsPath: string): TSProject {
       ]
     );
 
+  // Only ts like files can inject globals into the project, so we filter out everything else.
+  const potentialGlobalFiles = new Set<string>(
+    fileNames.filter((file) => /\.[cm]?ts$/.test(file))
+  );
+
   options.rootDir ??= rootDir;
   options.module = ts.ModuleKind.ESNext;
   options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
@@ -613,14 +629,10 @@ function getTSProject(docFsPath: string): TSProject {
       fileExists: (filename) => documents.exists(filenameToURI(filename)),
 
       getScriptFileNames() {
-        const result = new Set<string>(fileNames);
+        const result = new Set(potentialGlobalFiles);
         for (const doc of documents.getAllOpen()) {
           const { scheme, fsPath } = URI.parse(doc.uri);
           if (scheme === "file") result.add(fsPath);
-        }
-
-        for (const fileName of fileNames) {
-          result.add(fileName);
         }
 
         return [...result];

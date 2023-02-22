@@ -791,7 +791,7 @@ class Builder {
   onCloseTagStart(range: Range) {
     (this.#parentNode as Node.ParentTag).close = {
       start: range.start,
-      end: Number.MAX_SAFE_INTEGER,
+      end: UNFINISHED,
     };
   }
   onCloseTagEnd(range: Range) {

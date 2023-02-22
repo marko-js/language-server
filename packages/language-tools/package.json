@@ -5,7 +5,7 @@
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.19.1",
-    "@babel/parser": "^7.20.15",
+    "@babel/parser": "^7.21.1",
     "htmljs-parser": "^5.2.4",
     "relative-import-path": "^1.0.0"
   },

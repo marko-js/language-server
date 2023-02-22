@@ -26,10 +26,11 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         languageServiceHost: lsh,
       } = info;
       const { projectService: ps } = tsProject;
-      const extraExtensions =
-        (ps as any).hostConfiguration?.extraFileExtensions || [];
+      const extraExtensions = (ps as any)?.hostConfiguration
+        ?.extraFileExtensions;
 
       if (
+        extraExtensions &&
         !extraExtensions.some(
           (it: { extension: string }) => it.extension === markoExt
         )

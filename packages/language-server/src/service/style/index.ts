@@ -390,7 +390,7 @@ function processStyle(doc: TextDocument) {
         const virtualDoc = TextDocument.create(
           uri,
           "css",
-          version as number,
+          version,
           extracted.toString()
         );
         result.push({

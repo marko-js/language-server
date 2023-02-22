@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import { build } from "esbuild";
+import { analyzeMetafile, build } from "esbuild";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
@@ -41,6 +41,7 @@ await Promise.all([
     minify: true,
     sourcesContent: false,
     absWorkingDir: thisDir,
+    metafile: true,
     format: "cjs",
     outdir: "dist",
     outbase: "src",
@@ -80,5 +81,7 @@ await Promise.all([
         },
       },
     ],
+  }).then(async (result) => {
+    console.log(await analyzeMetafile(result.metafile));
   }),
 ]);

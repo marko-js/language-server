@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import ts from "typescript";
+import ts from "typescript/lib/tsserverlibrary";
 import snapshot from "mocha-snap";
 import { format } from "prettier";
 // import { bench, run } from "mitata";
