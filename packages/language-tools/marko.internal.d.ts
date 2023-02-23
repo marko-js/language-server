@@ -311,12 +311,14 @@ declare global {
         ) => ReturnAndScope<Scopes<Args>, BodyReturnType<Body>>;
       }
 
-      export interface InputRenderer<Input extends Record<any, unknown>> {
+      export interface InputRenderer<
+        Input extends Record<PropertyKey, unknown>
+      > {
         (): () => (input: Input) => ReturnAndScope<Scopes<Input>, void>;
       }
 
       export interface DefaultRenderer {
-        (): () => <Input extends Record<any, unknown>>(
+        (): () => <Input extends Record<PropertyKey, unknown>>(
           input: Input
         ) => ReturnAndScope<Scopes<Input>, void>;
       }

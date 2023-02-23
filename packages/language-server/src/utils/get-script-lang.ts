@@ -6,7 +6,7 @@ export default function getScriptLang(
   filename: string,
   ts: typeof TS,
   host: LanguageServiceHost,
-  defaultLang: ScriptLang
+  projectScriptLang: ScriptLang
 ) {
   const configPath = ts.findConfigFile(
     filename,
@@ -19,15 +19,17 @@ export default function getScriptLang(
       const markoConfig = JSON.parse(
         host.readFile(configPath, "utf-8") || "{}"
       );
-      if (
-        (markoConfig["script-lang"] || markoConfig.scriptLang) === ScriptLang.ts
-      ) {
-        return ScriptLang.ts;
+
+      const scriptLang = markoConfig["script-lang"] || markoConfig.scriptLang;
+      if (scriptLang !== undefined) {
+        return scriptLang === ScriptLang.ts ? ScriptLang.ts : ScriptLang.js;
       }
     } catch {
       // ignore
     }
   }
 
-  return defaultLang;
+  return /[/\\]node_modules[/\\]/.test(filename)
+    ? ScriptLang.js
+    : projectScriptLang;
 }

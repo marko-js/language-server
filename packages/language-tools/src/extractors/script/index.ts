@@ -325,6 +325,7 @@ function ${varLocal("template")}() {
 
     const templateBaseClass = varShared("Template");
     const internalInput = varLocal("input");
+    const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
     const renderAndReturn = `(input: Input${typeArgsStr} & ${varShared(
       "Relate"
@@ -340,11 +341,13 @@ function ${varLocal("template")}() {
     }
   _${
     typeParamsStr
-      ? `<${internalApply}>(): ${internalApply} extends 0 ? ${typeParamsStr}() => <${internalInput}>${renderAndReturn} : () => <${internalInput}, ${typeParamsStr.slice(
+      ? `<${internalApply} = 1>(): ${internalApply} extends 0
+    ? ${typeParamsStr}() => <${internalInputWithExtends}>${renderAndReturn}
+    : () => <${internalInputWithExtends}, ${typeParamsStr.slice(
           1,
           -1
         )}>${renderAndReturn};`
-      : `(): () => <${internalInput}>${renderAndReturn};`
+      : `(): () => <${internalInputWithExtends}>${renderAndReturn};`
   }
 }>`;
 
@@ -529,7 +532,6 @@ constructor(_?: Return) {}
 
               this.#extractor.write(`${varShared("forTag")}({\n`);
               this.#writeAttrs(child);
-              this.#writeComments(child);
 
               // Adds a comment containing the tag name inside the renderBody key
               // this causes any errors which are just for the renderBody
@@ -537,9 +539,9 @@ constructor(_?: Return) {}
               this.#extractor
                 .write(`["renderBody"/*`)
                 .copy(child.name)
-                .write(`*/]: (`)
-                .copy(child.typeParams)
-                .write("(\n");
+                .write(`*/]: (`);
+              this.#writeComments(child);
+              this.#extractor.copy(child.typeParams).write("(\n");
 
               if (child.params) {
                 this.#copyWithMutationsReplaced(child.params.value);
@@ -1189,8 +1191,9 @@ constructor(_?: Return) {}
       this.#extractor.write("]: ");
 
       if (tag.params) {
+        this.#extractor.write("(");
         this.#writeComments(tag);
-        this.#extractor.write("(").copy(tag.typeParams).write("(\n");
+        this.#extractor.copy(tag.typeParams).write("(\n");
         this.#copyWithMutationsReplaced(tag.params.value);
         this.#extractor.write("\n) => {\n");
       } else {

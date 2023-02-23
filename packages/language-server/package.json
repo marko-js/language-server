@@ -14,7 +14,7 @@
     "@marko/translator-default": "^5.22.5",
     "htmljs-parser": "^5.2.4",
     "lasso-package-root": "^1.0.1",
-    "marko": "^5.22.5",
+    "marko": "^5.22.6",
     "prettier": "^2.8.4",
     "prettier-plugin-marko": "^1.2.3",
     "relative-import-path": "^1.0.0",

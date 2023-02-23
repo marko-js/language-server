@@ -12,7 +12,7 @@ import getComponentFilename from "../utils/get-component-filename";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
-const modulePartsReg = /^((?:@([^/]+).)?(?:[^/]+))(.*)$/;
+const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 
 export interface ExtractedSnapshot extends Extracted {
@@ -30,6 +30,9 @@ export function patch(
     ts,
     host
   );
+
+  const isMarkoTSFile = (fileName: string) =>
+    getScriptLang(fileName, ts, host, scriptLang) === ScriptLang.ts;
 
   /**
    * Ensure the Marko runtime definitions are always loaded.
@@ -50,7 +53,7 @@ export function patch(
   if (getScriptKind) {
     host.getScriptKind = (fileName: string) => {
       return markoExtReg.test(fileName)
-        ? getScriptLang(fileName, ts, host, scriptLang) === ScriptLang.ts
+        ? isMarkoTSFile(fileName)
           ? ts.ScriptKind.TS
           : ts.ScriptKind.JS
         : getScriptKind(fileName);
@@ -146,7 +149,9 @@ export function patch(
             if (host.fileExists(resolvedFileName)) {
               resolvedModules[i] = {
                 resolvedFileName,
-                extension: ts.Extension.Ts,
+                extension: isMarkoTSFile(resolvedFileName)
+                  ? ts.Extension.Ts
+                  : ts.Extension.Js,
                 isExternalLibraryImport: false,
               };
             }
@@ -157,7 +162,7 @@ export function patch(
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
             const { resolvedModule } = ts.resolveModuleName(
-              `${nodeModuleName}/marko.json`,
+              `${nodeModuleName}/package.json`,
               containingFile,
               options,
               host
@@ -170,9 +175,11 @@ export function patch(
                 relativeModulePath
               );
               if (host.fileExists(resolvedFileName)) {
+                const isTS = isMarkoTSFile(resolvedFileName);
                 resolvedModules[i] = {
                   resolvedFileName,
-                  isExternalLibraryImport: true,
+                  extension: isTS ? ts.Extension.Ts : ts.Extension.Js,
+                  isExternalLibraryImport: isTS,
                 };
               }
             }

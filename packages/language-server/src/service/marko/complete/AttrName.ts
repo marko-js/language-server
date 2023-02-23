@@ -55,7 +55,6 @@ export function AttrName({
   const tagName = node.parent.parent.nameText || "";
   const tagDef = tagName && lookup.getTag(tagName);
   const nestedTagAttrs: { [x: string]: boolean } = {};
-  const neverAttrs: Set<string> = new Set();
 
   if (tagDef && tagDef.nestedTags) {
     for (const key in tagDef.nestedTags) {
@@ -64,20 +63,14 @@ export function AttrName({
     }
   }
 
-  lookup.forEachAttribute(tagName, (attr) => {
-    if (attr.type === "never") {
-      neverAttrs.add(attr.name);
-    }
-  });
-
   lookup.forEachAttribute(tagName, (attr, parent) => {
     if (
       attr.deprecated ||
       nestedTagAttrs[attr.name] ||
       attr.name === "*" ||
-      neverAttrs.has(attr.name) ||
+      attr.type === "never" ||
       (attr.name[0] === "_" &&
-        /\/node_modules\//.test(attr.filePath || parent.filePath))
+        isExternalModule(attr.filePath || parent.filePath))
     ) {
       return;
     }
@@ -138,4 +131,10 @@ export function AttrName({
   });
 
   return completions;
+}
+
+function isExternalModule(file: string) {
+  return (
+    /[/\\]node_modules[/\\]/.test(file) || !/^(?:[A-Za-z]:\\|[./\\])/.test(file)
+  );
 }

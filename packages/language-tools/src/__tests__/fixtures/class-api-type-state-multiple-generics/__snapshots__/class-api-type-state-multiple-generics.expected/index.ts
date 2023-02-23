@@ -50,9 +50,9 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input<FirstName, LastName>>
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
-  _<__marko_internal_apply>(): __marko_internal_apply extends 0
+  _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <FirstName extends string, LastName extends string>() => <
-        __marko_internal_input
+        __marko_internal_input extends unknown
       >(
         input: Input<FirstName, LastName> &
           Marko._.Relate<__marko_internal_input, Input<FirstName, LastName>>
@@ -61,7 +61,7 @@ export default new (class Template extends Marko._.Template<{
         ReturnType<typeof __marko_internal_template<FirstName, LastName>>
       >
     : () => <
-        __marko_internal_input,
+        __marko_internal_input extends unknown,
         FirstName extends string,
         LastName extends string
       >(

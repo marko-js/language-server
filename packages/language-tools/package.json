@@ -15,7 +15,7 @@
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@typescript/vfs": "^1.4.0",
-    "marko": "^5.22.5",
+    "marko": "^5.22.6",
     "mitata": "^0.1.6",
     "tsx": "^3.12.3"
   },

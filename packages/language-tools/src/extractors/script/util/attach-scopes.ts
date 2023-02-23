@@ -335,14 +335,17 @@ export function getHoists(node: Node.Program) {
 
 export function getHoistSources(node: Node.ParentNode) {
   let result: Repeatable<string>;
-  const { bindings } = Scopes.get(node.body!)!;
 
-  for (const key in bindings) {
-    if (bindings[key].hoisted) {
-      if (result) {
-        result.push(key);
-      } else {
-        result = [key];
+  if (node.body) {
+    const { bindings } = Scopes.get(node.body)!;
+
+    for (const key in bindings) {
+      if (bindings[key].hoisted) {
+        if (result) {
+          result.push(key);
+        } else {
+          result = [key];
+        }
       }
     }
   }
