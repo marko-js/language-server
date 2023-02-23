@@ -60,13 +60,15 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
+// TODO: Why is it not showing completions in an empty await
+// TODO: Why is attribute tags not showing ts completions
+// TODO: Dedupe taglib completions with TS completions.
 // TODO: special types for macro and tag tags.
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
 
+// Later todos:
 // TODO: handle top level attribute tags.
 // TODO: bring in native tag types to Marko
-
-// Later todos:
 // TODO: write types for tags api preview
 // TODO: css modules
 // TODO: should support member expression tag vars.

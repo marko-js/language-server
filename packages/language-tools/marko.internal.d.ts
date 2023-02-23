@@ -371,7 +371,10 @@ type ComponentEventHandlers<Component extends Marko.Component> = {
   >]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
-type FlatScopes<Input extends object> = Input[keyof Input] extends infer Prop
+type FlatScopes<
+  Input extends object,
+  Objects = Input
+> = Input[keyof Input] extends infer Prop
   ? Prop extends (...args: any) => { [Marko._.scope]: infer Scope }
     ? unknown extends Scope
       ? never
@@ -379,7 +382,9 @@ type FlatScopes<Input extends object> = Input[keyof Input] extends infer Prop
     : 0 extends 1 & Prop
     ? never
     : Prop extends object
-    ? FlatScopes<Prop>
+    ? Prop extends Extract<Objects, Prop>
+      ? never
+      : FlatScopes<Prop, Objects | Prop>
     : never
   : never;
 
