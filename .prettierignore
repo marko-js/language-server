@@ -3,7 +3,7 @@
 package.json
 package-lock.json
 CHANGELOG.md
-node_modules
+**/node_modules
 coverage
 dist
 __snapshots__
