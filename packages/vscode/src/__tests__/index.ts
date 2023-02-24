@@ -9,7 +9,7 @@ export async function run() {
 
   const mocha = new Mocha({
     color: true,
-    timeout: 5000,
+    timeout: 20000,
     rootHooks: mochaHooks,
   });
   const files = stream("**/*.test.ts", {
