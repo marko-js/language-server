@@ -79,7 +79,7 @@
      | ^^ Expected 1 arguments, but got 2.
   16 | });
   17 | return;
-  18 | }
+  18 | })();
 ```
 
 ### Ln 14, Col 8
@@ -104,23 +104,45 @@
   17 | return;
 ```
 
-### Ln 16, Col 2
-```ts
-  14 | return Marko._.voidReturn;
-  15 | })
-> 16 | });
-     |  ^ Declaration or statement expected.
-  17 | return;
-  18 | }
-  19 | export default new (
-```
-
 ### Ln 18, Col 1
 ```ts
   16 | });
   17 | return;
-> 18 | }
+> 18 | })();
      | ^ Declaration or statement expected.
+  19 | export default new (
+  20 |   class Template extends Marko._.Template<{
+  21 |     
+```
+
+### Ln 18, Col 2
+```ts
+  16 | });
+  17 | return;
+> 18 | })();
+     |  ^ Declaration or statement expected.
+  19 | export default new (
+  20 |   class Template extends Marko._.Template<{
+  21 |     
+```
+
+### Ln 18, Col 3
+```ts
+  16 | });
+  17 | return;
+> 18 | })();
+     |   ^^^ Unreachable code detected.
+  19 | export default new (
+  20 |   class Template extends Marko._.Template<{
+  21 |     
+```
+
+### Ln 18, Col 4
+```ts
+  16 | });
+  17 | return;
+> 18 | })();
+     |    ^ Expression expected.
   19 | export default new (
   20 |   class Template extends Marko._.Template<{
   21 |     

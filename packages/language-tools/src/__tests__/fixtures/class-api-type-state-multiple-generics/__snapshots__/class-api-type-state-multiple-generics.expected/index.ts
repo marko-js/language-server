@@ -17,10 +17,7 @@ abstract class Component<
   }
 }
 export { type Component };
-function __marko_internal_template<
-  FirstName extends string,
-  LastName extends string
->(this: void) {
+(function <FirstName extends string, LastName extends string>(this: void) {
   const input = 1 as any as Input<FirstName, LastName>;
   const component = 1 as any as Component<FirstName, LastName>;
   const out = Marko._.out;
@@ -28,7 +25,7 @@ function __marko_internal_template<
   Marko._.noop({ input, out, component, state });
   state.name;
   return;
-}
+})();
 export default new (class Template extends Marko._.Template<{
   render<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>,
@@ -56,10 +53,7 @@ export default new (class Template extends Marko._.Template<{
       >(
         input: Input<FirstName, LastName> &
           Marko._.Relate<__marko_internal_input, Input<FirstName, LastName>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<FirstName, LastName>>
-      >
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>
     : () => <
         __marko_internal_input extends unknown,
         FirstName extends string,
@@ -67,8 +61,5 @@ export default new (class Template extends Marko._.Template<{
       >(
         input: Input<FirstName, LastName> &
           Marko._.Relate<__marko_internal_input, Input<FirstName, LastName>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<FirstName, LastName>>
-      >;
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

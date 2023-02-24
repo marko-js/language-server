@@ -13,7 +13,7 @@ abstract class Component<T extends string> extends Marko.Component<Input<T>> {
   }
 }
 export { type Component };
-function __marko_internal_template<T extends string>(this: void) {
+(function <T extends string>(this: void) {
   const input = 1 as any as Input<T>;
   const component = 1 as any as Component<T>;
   const out = Marko._.out;
@@ -21,7 +21,7 @@ function __marko_internal_template<T extends string>(this: void) {
   Marko._.noop({ input, out, component, state });
   state.name;
   return;
-}
+})();
 export default new (class Template extends Marko._.Template<{
   render<T extends string>(
     input: Marko.TemplateInput<Input<T>>,
@@ -46,14 +46,8 @@ export default new (class Template extends Marko._.Template<{
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <T extends string>() => <__marko_internal_input extends unknown>(
         input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<T>>
-      >
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>
     : () => <__marko_internal_input extends unknown, T extends string>(
         input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<T>>
-      >;
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

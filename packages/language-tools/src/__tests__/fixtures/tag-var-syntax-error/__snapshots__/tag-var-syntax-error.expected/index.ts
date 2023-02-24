@@ -1,7 +1,7 @@
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component }
-function __marko_internal_template(this: void) {
+(function (this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
   const out = Marko._.out;
@@ -16,7 +16,7 @@ Marko._.assertRendered(Marko._.rendered, 1, Marko._.renderTemplate(import("../..
 }));
 const { %x } = Marko._.rendered.returns[1].value;
 return;
-}
+})();
 export default new (
   class Template extends Marko._.Template<{
     
@@ -41,6 +41,6 @@ export default new (
       input: Marko.TemplateInput<Input>
     ): ReadableStream<string> & NodeJS.ReadableStream;
     
-  _(): () => <__marko_internal_input extends unknown>(input: Input & Marko._.Relate<__marko_internal_input, Input>) => (Marko._.ReturnWithScope<__marko_internal_input, ReturnType<typeof __marko_internal_template>>);
+  _(): () => <__marko_internal_input extends unknown>(input: Input & Marko._.Relate<__marko_internal_input, Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>);
 }> {}
 );

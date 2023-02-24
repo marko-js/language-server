@@ -281,17 +281,23 @@ class ScriptExtractor {
       }
     }
 
+    const didReturn = !!getReturnTag(program);
+    const templateName = didReturn ? varLocal("template") : "";
+
+    if (!didReturn) {
+      this.#extractor.write("(");
+    }
+
     if (this.#scriptLang === ScriptLang.ts) {
-      this.#extractor.write(`function ${varLocal(
-        "template"
-      )}${typeParamsStr}(this: void) {
+      this.#extractor
+        .write(`function ${templateName}${typeParamsStr}(this: void) {
   const input = 1 as any as Input${typeArgsStr};
   const component = 1 as any as Component${typeArgsStr};\n`);
     } else {
       this.#extractor.write(`/**${jsDocTemplateTagsStr}
 * @this {void}
 */
-function ${varLocal("template")}() {
+function ${templateName}() {
   const input = /** @type {Input${typeArgsStr}} */(${varShared("any")});
   const component = /** @type {Component${typeArgsStr}} */(${varShared(
         "any"
@@ -304,8 +310,10 @@ function ${varLocal("template")}() {
   ${varShared("noop")}({ input, out, component, state });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
-    const didReturn =
-      body?.renderBody && this.#writeChildren(program, body.renderBody);
+
+    if (body?.renderBody) {
+      this.#writeChildren(program, body.renderBody);
+    }
     const hoists = getHoists(program);
 
     if (hoists) {
@@ -320,12 +328,10 @@ function ${varLocal("template")}() {
     }
 
     if (didReturn) {
-      this.#extractor.write(`return ${varLocal("return")}.return;\n`);
+      this.#extractor.write(`return ${varLocal("return")}.return;\n}\n`);
     } else {
-      this.#extractor.write("return;\n");
+      this.#extractor.write("return;\n})();\n");
     }
-
-    this.#extractor.write("}\n");
 
     const templateBaseClass = varShared("Template");
     const internalInput = varLocal("input");
@@ -335,9 +341,13 @@ function ${varLocal("template")}() {
       "Relate"
     )}<${internalInput}, Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope"
-    )}<${internalInput}, ReturnType<typeof ${
-      varLocal("template") + typeArgsStr
-    }>>)`;
+    )}<${internalInput}, ${
+      didReturn
+        ? `typeof ${
+            templateName + typeArgsStr
+          } extends () => infer Return ? Return : never`
+        : "void"
+    }>)`;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
@@ -1602,6 +1612,16 @@ function varLocal(name: string) {
 
 function varShared(name: string) {
   return VAR_SHARED_PREFIX + name;
+}
+
+function getReturnTag(parent: Node.ParentNode) {
+  if (parent.body) {
+    for (const child of parent.body) {
+      if (child.type === NodeType.Tag && child.nameText === "return") {
+        return child;
+      }
+    }
+  }
 }
 
 function isValueAttribute(

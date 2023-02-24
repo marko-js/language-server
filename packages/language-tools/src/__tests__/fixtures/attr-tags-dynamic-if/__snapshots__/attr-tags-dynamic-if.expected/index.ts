@@ -3,7 +3,7 @@ const y = 2;
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function __marko_internal_template(this: void) {
+(function (this: void) {
   const input = 1 as any as Input;
   const component = 1 as any as Component;
   const out = Marko._.out;
@@ -263,7 +263,7 @@ function __marko_internal_template(this: void) {
     Marko._.readScopes(Marko._.rendered);
   Marko._.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
   return;
-}
+})();
 export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
@@ -283,8 +283,5 @@ export default new (class Template extends Marko._.Template<{
 
   _(): () => <__marko_internal_input extends unknown>(
     input: Input & Marko._.Relate<__marko_internal_input, Input>
-  ) => Marko._.ReturnWithScope<
-    __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
-  >;
+  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

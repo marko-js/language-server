@@ -6,7 +6,7 @@ abstract class Component<T extends { name: string }> extends Marko.Component<
   Input<T>
 > {}
 export { type Component };
-function __marko_internal_template<T extends { name: string }>(this: void) {
+(function <T extends { name: string }>(this: void) {
   const input = 1 as any as Input<T>;
   const component = 1 as any as Component<T>;
   const out = Marko._.out;
@@ -15,7 +15,7 @@ function __marko_internal_template<T extends { name: string }>(this: void) {
   input.options;
   input.onChange;
   return;
-}
+})();
 export default new (class Template extends Marko._.Template<{
   render<T extends { name: string }>(
     input: Marko.TemplateInput<Input<T>>,
@@ -42,17 +42,11 @@ export default new (class Template extends Marko._.Template<{
         __marko_internal_input extends unknown
       >(
         input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<T>>
-      >
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>
     : () => <
         __marko_internal_input extends unknown,
         T extends { name: string }
       >(
         input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        ReturnType<typeof __marko_internal_template<T>>
-      >;
+      ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

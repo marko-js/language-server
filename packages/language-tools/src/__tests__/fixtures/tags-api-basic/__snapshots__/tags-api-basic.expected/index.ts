@@ -154,6 +154,6 @@ export default new (class Template extends Marko._.Template<{
     input: Input & Marko._.Relate<__marko_internal_input, Input>
   ) => Marko._.ReturnWithScope<
     __marko_internal_input,
-    ReturnType<typeof __marko_internal_template>
+    typeof __marko_internal_template extends () => infer Return ? Return : never
   >;
 }> {})();

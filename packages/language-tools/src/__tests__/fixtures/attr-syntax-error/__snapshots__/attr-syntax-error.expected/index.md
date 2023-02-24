@@ -126,17 +126,6 @@
   18 |   console.log(#hello!);
 ```
 
-### Ln 15, Col 2
-```ts
-  13 | ),
-  14 |
-> 15 | });
-     |  ^ Declaration or statement expected.
-  16 | Marko._.renderNativeTag("div")()()({
-  17 |  "onClick"(a, %b){
-  18 |   console.log(#hello!);
-```
-
 ### Ln 21, Col 1
 ```ts
   19 | },
@@ -144,7 +133,7 @@
 > 21 | });
      | ^ Declaration or statement expected.
   22 | return;
-  23 | }
+  23 | })();
   24 | export default new (
 ```
 
@@ -155,7 +144,7 @@
 > 21 | });
      |  ^ Declaration or statement expected.
   22 | return;
-  23 | }
+  23 | })();
   24 | export default new (
 ```
 
@@ -163,8 +152,41 @@
 ```ts
   21 | });
   22 | return;
-> 23 | }
+> 23 | })();
      | ^ Declaration or statement expected.
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
+```
+
+### Ln 23, Col 2
+```ts
+  21 | });
+  22 | return;
+> 23 | })();
+     |  ^ Declaration or statement expected.
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
+```
+
+### Ln 23, Col 3
+```ts
+  21 | });
+  22 | return;
+> 23 | })();
+     |   ^^^ Unreachable code detected.
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
+```
+
+### Ln 23, Col 4
+```ts
+  21 | });
+  22 | return;
+> 23 | })();
+     |    ^ Expression expected.
   24 | export default new (
   25 |   class Template extends Marko._.Template<{
   26 |     
