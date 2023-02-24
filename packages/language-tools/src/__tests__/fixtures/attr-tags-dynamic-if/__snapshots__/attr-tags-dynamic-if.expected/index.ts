@@ -13,8 +13,11 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(x
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {}),
@@ -27,13 +30,19 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(x
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }),
   });
@@ -41,25 +50,37 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(x
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : y
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : !y
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }),
   });
@@ -67,14 +88,20 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(x
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : undefined
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {}),
@@ -83,8 +110,11 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(x
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {}),
@@ -93,8 +123,11 @@ function __marko_internal_template(this: void) {
     x: 1,
     ...(undefined
       ? {
-          a: {
-            /*a*/
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a");
+          },
+          ["a" /*@a*/]: {
+            /*@a*/
           },
         }
       : {}),
@@ -104,15 +137,21 @@ function __marko_internal_template(this: void) {
     ...Marko._.mergeAttrTags(
       x
         ? {
-            a: {
-              /*a*/
+            [Marko._.never]() {
+              Marko._.attrTagNames(this, "@a");
+            },
+            ["a" /*@a*/]: {
+              /*@a*/
             },
           }
         : {},
       y
         ? {
-            b: {
-              /*b*/
+            [Marko._.never]() {
+              Marko._.attrTagNames(this, "@b");
+            },
+            ["b" /*@b*/]: {
+              /*@b*/
             },
           }
         : {}
@@ -125,15 +164,18 @@ function __marko_internal_template(this: void) {
       x: 1,
       ...Marko._.mergeAttrTags(
         {
+          [Marko._.never]() {
+            Marko._.attrTagNames(this, "@a", "@b");
+          },
           // hi
-          a: {
+          ["a" /*@a*/]: {
             b: 1,
-            ["renderBody" /*a*/]: (() => {
+            ["renderBody" /*@a*/]: (() => {
               Marko._.assertRendered(
                 Marko._.rendered,
                 2,
                 Marko._.renderTemplate(
-                  import("../../components/const/index.marko")
+                  import("./components/const/index.marko")
                 )()()({
                   value: 1 as const,
                 })
@@ -148,19 +190,22 @@ function __marko_internal_template(this: void) {
               };
             })(),
           },
-          b: {
-            /*b*/
+          ["b" /*@b*/]: {
+            /*@b*/
           },
         },
         x
           ? {
-              b: {
-                ["renderBody" /*b*/]: (() => {
+              [Marko._.never]() {
+                Marko._.attrTagNames(this, "@b");
+              },
+              ["b" /*@b*/]: {
+                ["renderBody" /*@b*/]: (() => {
                   Marko._.assertRendered(
                     Marko._.rendered,
                     3,
                     Marko._.renderTemplate(
-                      import("../../components/const/index.marko")
+                      import("./components/const/index.marko")
                     )()()({
                       value: 2 as const,
                     })
@@ -180,8 +225,11 @@ function __marko_internal_template(this: void) {
           : {},
         y
           ? {
-              a: {
-                /*a*/
+              [Marko._.never]() {
+                Marko._.attrTagNames(this, "@a");
+              },
+              ["a" /*@a*/]: {
+                /*@a*/
               },
             }
           : {}

@@ -15,17 +15,27 @@ function __marko_internal_template(this: void) {
       (Marko._.error, comments),
       Marko._.renderTemplate(import("./components/comments.marko"))
     )()()({
-      comment: [
+      ...{
+        [Marko._.never]() {
+          Marko._.attrTagNames(this, "@comment", "@comment");
+        },
+      },
+      ["comment" /*@comment*/]: [
         {
           id: Marko._.interpolated`a`,
-          comment: {
+          ...{
+            [Marko._.never]() {
+              Marko._.attrTagNames(this, "@comment");
+            },
+          },
+          ["comment" /*@comment*/]: {
             id: Marko._.interpolated`b`,
-            ["renderBody" /*comment*/]: (() => {
+            ["renderBody" /*@comment*/]: (() => {
               Marko._.assertRendered(
                 Marko._.rendered,
                 2,
                 Marko._.renderTemplate(
-                  import("../../components/let/index.marko")
+                  import("./components/let/index.marko")
                 )()()({
                   value: "b" as const,
                 })
@@ -40,12 +50,12 @@ function __marko_internal_template(this: void) {
               };
             })(),
           },
-          ["renderBody" /*comment*/]: (() => {
+          ["renderBody" /*@comment*/]: (() => {
             Marko._.assertRendered(
               Marko._.rendered,
               3,
               Marko._.renderTemplate(
-                import("../../components/let/index.marko")
+                import("./components/let/index.marko")
               )()()({
                 value: "a" as const,
               })
@@ -61,12 +71,12 @@ function __marko_internal_template(this: void) {
           })(),
         },
         {
-          ["renderBody" /*comment*/]: (() => {
+          ["renderBody" /*@comment*/]: (() => {
             Marko._.assertRendered(
               Marko._.rendered,
               4,
               Marko._.renderTemplate(
-                import("../../components/let/index.marko")
+                import("./components/let/index.marko")
               )()()({
                 value: "c" as const,
               })

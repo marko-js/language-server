@@ -13,8 +13,11 @@ function __marko_internal_template(this: void) {
       ++i < 10
         ? [
             {
-              a: {
-                ["renderBody" /*a*/]: (() => {
+              [Marko._.never]() {
+                Marko._.attrTagNames(this, "@a");
+              },
+              ["a" /*@a*/]: {
+                ["renderBody" /*@a*/]: (() => {
                   i;
                   return () => {
                     return Marko._.voidReturn;
@@ -33,8 +36,11 @@ function __marko_internal_template(this: void) {
       !done
         ? [
             {
-              a: {
-                ["renderBody" /*a*/]: (() => {
+              [Marko._.never]() {
+                Marko._.attrTagNames(this, "@a");
+              },
+              ["a" /*@a*/]: {
+                ["renderBody" /*@a*/]: (() => {
                   done;
                   if (++i === 5) {
                     done = true;
@@ -54,8 +60,11 @@ function __marko_internal_template(this: void) {
       undefined
         ? [
             {
-              a: {
-                ["renderBody" /*a*/]: (() => {
+              [Marko._.never]() {
+                Marko._.attrTagNames(this, "@a");
+              },
+              ["a" /*@a*/]: {
+                ["renderBody" /*@a*/]: (() => {
                   return () => {
                     return Marko._.voidReturn;
                   };

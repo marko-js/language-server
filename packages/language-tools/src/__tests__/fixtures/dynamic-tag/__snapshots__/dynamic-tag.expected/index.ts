@@ -23,7 +23,7 @@ function __marko_internal_template(this: void) {
     })(),
   });
   Marko._.renderDynamicTag("hello")()()({
-    ["renderBody" /*{"hello"}*/]: (() => {
+    ["renderBody" /*"hello"*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

@@ -11,17 +11,22 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     1,
     Marko._.renderDynamicTag(custom)()()({
-      b: [
+      ...{
+        [Marko._.never]() {
+          Marko._.attrTagNames(this, "@b", "@b", "@a");
+        },
+      },
+      ["b" /*@b*/]: [
         {
-          /*b*/
+          /*@b*/
         },
         {
           c: 2,
         },
       ],
-      a: {
+      ["a" /*@a*/]: {
         b: 1,
-        ["renderBody" /*a*/]: (() => {
+        ["renderBody" /*@a*/]: (() => {
           Marko._.assertRendered(
             Marko._.rendered,
             2,

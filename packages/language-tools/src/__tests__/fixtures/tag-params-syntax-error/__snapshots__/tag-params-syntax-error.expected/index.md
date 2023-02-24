@@ -47,7 +47,7 @@
 ## Generated Diagnostics
 ### Ln 13, Col 3
 ```ts
-  11 | ["renderBody"/*{custom}*/]: ((
+  11 | ["renderBody"/*custom*/]: ((
   12 | a, %b
 > 13 | ) => {
      |   ^^ ')' expected.
@@ -58,7 +58,7 @@
 
 ### Ln 13, Col 6
 ```ts
-  11 | ["renderBody"/*{custom}*/]: ((
+  11 | ["renderBody"/*custom*/]: ((
   12 | a, %b
 > 13 | ) => {
      |      ^ Property assignment expected.
@@ -69,7 +69,7 @@
 
 ### Ln 13, Col 6
 ```ts
-  11 | ["renderBody"/*{custom}*/]: ((
+  11 | ["renderBody"/*custom*/]: ((
   12 | a, %b
 > 13 | ) => {
      |      ^

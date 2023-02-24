@@ -60,19 +60,21 @@ type IfTagAlternate = {
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
 
-// TODO: Why is it not showing completions in an empty await
-// TODO: Why is attribute tags not showing ts completions
-// TODO: Dedupe taglib completions with TS completions.
+// TODO: Dedupe taglib completions with TS completions. (typescript project ignore taglib completions)
 // TODO: special types for macro and tag tags.
 // TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
 
 // Later todos:
+// TODO: completions within attr whitespace should not include quotes.
 // TODO: handle top level attribute tags.
 // TODO: bring in native tag types to Marko
 // TODO: write types for tags api preview
 // TODO: css modules
 // TODO: should support member expression tag vars.
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
+
+// SUPER LATER TODOS:
+// Have it self close tags by default if we detect it's input does not have a renderBody.
 
 /**
  * Iterate over the Marko CST and extract all the script content.
@@ -741,11 +743,7 @@ constructor(_?: Return) {}
   #writeTagNameComment(tag: Node.ParentTag) {
     this.#extractor
       .write("/*")
-      .copy(
-        this.#getDynamicTagExpression(tag) || tag.type === NodeType.AttrTag
-          ? { start: tag.name.start + 1, end: tag.name.end }
-          : tag.name
-      )
+      .copy(this.#getDynamicTagExpression(tag) || tag.name)
       .write("*/");
   }
 
@@ -793,7 +791,7 @@ constructor(_?: Return) {}
       tag.shorthandId?.end ?? -1,
       tag.shorthandClassNames?.[tag.shorthandClassNames.length - 1]?.end ?? -1,
       tag.var?.end ?? -1,
-      tag.args?.start ?? -1,
+      tag.args?.end ?? -1,
       tag.params?.end ?? -1
     );
 
@@ -832,37 +830,32 @@ constructor(_?: Return) {}
                   this.#copyWithMutationsReplaced(value.body);
                   break;
                 case NodeType.AttrValue:
+                  this.#extractor
+                    .write('"')
+                    .copy(defaultMapPosition)
+                    .copy(name)
+                    .write('": (\n');
                   if (value.bound) {
                     const memberExpressionStart =
                       getBoundAttrMemberExpressionStartOffset(value);
-                    this.#extractor
-                      .write('"')
-                      .copy(defaultMapPosition)
-                      .copy(name)
-                      .write('Change"');
 
                     if (memberExpressionStart === undefined) {
                       // Should have bound to an identifier, so we inline a function to assign to it.
-
+                      const valueLiteral = this.#read(value.value);
                       this.#extractor
-                        .write("(_")
                         .copy(value.value)
+                        .write(`\n)${SEP_COMMA_NEW_LINE}"`)
+                        .copy(defaultMapPosition)
+                        .copy(name)
                         .write(
-                          `) {\n${
-                            isMutatedVar(tag.parent, this.#read(value.value))
+                          `Change"(_${valueLiteral}) {\n${
+                            isMutatedVar(tag.parent, valueLiteral)
                               ? `${varLocal("return")}.mutate.`
                               : ""
                           }`
                         )
                         .copy(value.value)
-                        .write("= ")
-                        .copy(value.value)
-                        .write(`;\n}${SEP_COMMA_NEW_LINE}"`)
-                        .copy(defaultMapPosition)
-                        .copy(name)
-                        .write('": (\n')
-                        .copy(value.value)
-                        .write("\n)");
+                        .write(`= _${valueLiteral};\n}`);
                     } else if (this.#code[memberExpressionStart] === "[") {
                       // If we match a `[` was a computed member expression.
                       // we ensure the string "Change" is appended to the end of the expression.
@@ -879,38 +872,32 @@ constructor(_?: Return) {}
                         end: value.value.end,
                       };
                       this.#extractor
-                        .write(": (\n")
                         .copy(memberObjectRange)
-                        .write("`${")
                         .copy(memberPropertyRange)
-                        .write("}Change`")
                         .copy(memberPropertyCloseRange)
-                        .write(`)${SEP_COMMA_NEW_LINE}"`)
+                        .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
-                        .write('": (\n')
+                        .write('Change": (\n')
                         .copy(memberObjectRange)
+                        .write("\n`${\n")
                         .copy(memberPropertyRange)
+                        .write("\n}Change`\n")
                         .copy(memberPropertyCloseRange)
                         .write("\n)");
                     } else {
                       // If we match here then we bound to a static member expression.
                       this.#extractor
-                        .write(": ")
                         .copy(value.value)
-                        .write(`Change${SEP_COMMA_NEW_LINE}"`)
+                        .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
-                        .write('": (\n')
+                        .write('Change"')
+                        .write(": ")
                         .copy(value.value)
-                        .write("\n)");
+                        .write(`Change`);
                     }
                   } else {
-                    this.#extractor
-                      .write('"')
-                      .copy(defaultMapPosition)
-                      .copy(name)
-                      .write('": (\n');
                     this.#copyWithMutationsReplaced(value.value);
                     this.#extractor.write("\n)");
                   }
@@ -995,23 +982,26 @@ constructor(_?: Return) {}
     return hasAttrs;
   }
 
-  #writeAttrTags({ staticAttrTags, dynamicAttrTagParents }: ProcessedBody) {
+  #writeAttrTags(
+    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
+    inMerge: boolean
+  ) {
     let wasMerge = false;
 
     if (dynamicAttrTagParents) {
       if (staticAttrTags) {
         this.#extractor.write(`...${varShared("mergeAttrTags")}({\n`);
-        wasMerge = true;
+        inMerge = wasMerge = true;
       } else if (dynamicAttrTagParents.length > 1) {
         this.#extractor.write(`...${varShared("mergeAttrTags")}(\n`);
-        wasMerge = true;
+        inMerge = wasMerge = true;
       } else {
         this.#extractor.write(`...`);
       }
     }
 
     if (staticAttrTags) {
-      this.#writeStaticAttrTags(staticAttrTags);
+      this.#writeStaticAttrTags(staticAttrTags, inMerge);
       if (dynamicAttrTagParents)
         this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     }
@@ -1023,17 +1013,38 @@ constructor(_?: Return) {}
   }
 
   #writeStaticAttrTags(
-    staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>
+    staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
+    wasMerge: boolean
   ) {
+    if (!wasMerge) this.#extractor.write("...{");
+    this.#extractor.write(
+      `[${varShared("never")}](){${varShared("attrTagNames")}(this`
+    );
+
+    for (const nameText in staticAttrTags) {
+      for (const tag of staticAttrTags[nameText]) {
+        this.#extractor.write(`${SEP_COMMA_NEW_LINE}"`);
+        this.#extractor.copy(tag.name);
+        this.#extractor.write('"');
+      }
+    }
+
+    this.#extractor.write(");}");
+    if (!wasMerge) this.#extractor.write("}");
+    this.#extractor.write(SEP_COMMA_NEW_LINE);
+
     for (const nameText in staticAttrTags) {
       const attrTag = staticAttrTags[nameText];
       const attrTagDef = this.#lookup.getTag(nameText);
       const isRepeated = attrTag.length > 1 ? true : attrTagDef?.isRepeated;
+      const [firstAttrTag] = attrTag;
       const name =
         attrTagDef?.targetProperty ||
         nameText.slice(nameText.lastIndexOf(":") + 1);
 
-      this.#extractor.write(`"${name}": `);
+      this.#extractor.write(`["${name}"`);
+      this.#writeTagNameComment(firstAttrTag);
+      this.#extractor.write("]: ");
 
       if (isRepeated) {
         this.#extractor.write("[\n");
@@ -1074,7 +1085,7 @@ constructor(_?: Return) {}
 
           this.#extractor.write("{\n");
           const body = this.#processBody(tag);
-          if (body) this.#writeAttrTags(body);
+          if (body) this.#writeAttrTags(body, true);
           this.#extractor.write("\n} ");
 
           let needsAlternate = true;
@@ -1093,7 +1104,7 @@ constructor(_?: Return) {}
               const body = this.#processBody(tag);
               if (body) {
                 this.#extractor.write("{\n");
-                this.#writeAttrTags(body);
+                this.#writeAttrTags(body, true);
                 this.#extractor.write("}");
               } else {
                 this.#extractor.write("{}");
@@ -1126,7 +1137,7 @@ constructor(_?: Return) {}
           // the alternates (`<else>` and `<elseif>`) have attribute tags.
           // We keep the check here just incase this changes in the future to eg allow an `<else>`
           // tag to be used with the `<for>` tag.
-          if (body) this.#writeAttrTags(body);
+          if (body) this.#writeAttrTags(body, true);
           this.#extractor.write("}))");
           break;
         }
@@ -1137,7 +1148,7 @@ constructor(_?: Return) {}
             .copy(tag.args?.value || "undefined")
             .write("\n) ? [{\n");
           const body = this.#processBody(tag);
-          this.#writeAttrTags(body!);
+          this.#writeAttrTags(body!, true);
           this.#extractor.write("}] : [])");
           break;
         }
@@ -1180,8 +1191,10 @@ constructor(_?: Return) {}
     let hasRenderBody = false;
     if (body) {
       hasInput = true;
-      this.#writeAttrTags(body);
+      this.#writeAttrTags(body, false);
       hasRenderBody = body.renderBody !== undefined;
+    } else if (tag.close) {
+      hasRenderBody = true;
     }
 
     if (tag.params || hasRenderBody) {
@@ -1204,7 +1217,7 @@ constructor(_?: Return) {}
 
       const localBindings = getHoistSources(tag);
       const didReturn =
-        hasRenderBody && this.#writeChildren(tag, body!.renderBody!);
+        body?.renderBody && this.#writeChildren(tag, body.renderBody);
 
       if (!tag.params) {
         this.#extractor.write(`return () => {\n`);
@@ -1452,7 +1465,9 @@ constructor(_?: Return) {}
       }
     }
 
-    return { renderBody, staticAttrTags, dynamicAttrTagParents };
+    if (renderBody || staticAttrTags || dynamicAttrTagParents) {
+      return { renderBody, staticAttrTags, dynamicAttrTagParents };
+    }
   }
 
   #getAttrValue(tag: Node.ParentTag, name: string) {

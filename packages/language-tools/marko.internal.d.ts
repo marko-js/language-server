@@ -16,7 +16,25 @@ declare global {
       export const voidReturn: MarkoReturn<void>;
       export const scope: unique symbol;
       export const out: Marko.Out;
+      export const never: never;
       export const any: any;
+      function attrTagNames<Input>(
+        input: Input,
+        ...keys: 0 extends 1 & Input
+          ? string[]
+          : (
+              | `@${string &
+                  keyof {
+                    [K in keyof Input as Input[K] extends infer V
+                      ? V extends { renderBody?: any }
+                        ? K
+                        : never
+                      : never]: 1;
+                  }}`
+              // eslint-disable-next-line @typescript-eslint/ban-types
+              | (string & {})
+            )[]
+      ): void;
       export const rendered: {
         scopes: Record<number, never>;
         returns: Record<number, never>;

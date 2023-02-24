@@ -30,12 +30,12 @@
 ```
 
 ## Source Diagnostics
-### Ln 8, Col 5
+### Ln 8, Col 4
 ```marko
    6 |     <let/a = "a" as const/>
    7 |   </@comment>
 >  8 |   <@comment>
-     |     ^^^^^^^^
+     |    ^^^^^^^^^
 >  9 |     <let/c = "c" as const/>
      | ^^^^^^^^^^^ Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; }' but required in type 'Comment'.
   10 |   </@comment>

@@ -83,7 +83,7 @@ function __marko_internal_template(this: void) {
         class: Marko._.interpolated`container`,
         ["renderBody" /*div*/]: (() => {
           Marko._.renderDynamicTag(renderBody)()()({
-            /*{renderBody}*/
+            /*renderBody*/
           });
           return () => {
             return Marko._.voidReturn;

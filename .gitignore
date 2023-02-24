@@ -11,6 +11,9 @@
 
 # Build
 dist
+*.marko.js
+*.actual.*
+*.tsbuildinfo
 **/.vscode-test
 
 # Logging

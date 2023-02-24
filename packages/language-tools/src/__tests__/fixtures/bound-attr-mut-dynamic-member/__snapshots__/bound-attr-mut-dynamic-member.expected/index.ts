@@ -19,8 +19,8 @@ function __marko_internal_template(this: void) {
     Marko._.rendered,
     2,
     Marko._.renderTemplate(import("../../components/let/index.marko"))()()({
-      valueChange: a[`${"b"}Change`],
       value: a["b"],
+      valueChange: a[`${"b"}Change`],
     })
   );
   const b = Marko._.rendered.returns[2].value;

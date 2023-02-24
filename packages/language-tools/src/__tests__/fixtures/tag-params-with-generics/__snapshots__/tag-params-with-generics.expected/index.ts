@@ -38,7 +38,7 @@ function __marko_internal_template(this: void) {
   )()()({
     ["renderBody" /*loader*/]: (data) => {
       return Marko._.voidReturn;
-    },
+    } /*loader*/,
   });
   return;
 }

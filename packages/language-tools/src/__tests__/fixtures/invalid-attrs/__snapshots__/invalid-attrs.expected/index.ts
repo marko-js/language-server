@@ -9,6 +9,11 @@ function __marko_internal_template(this: void) {
   Marko._.noop({ input, out, component, state });
   Marko._.renderTemplate(import("./components/fancy-button/index.marko"))()()({
     something: true,
+    ["renderBody" /*fancy-button*/]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
   });
   return;
 }

@@ -23,6 +23,9 @@ const emptyView = {
   },
 };
 
+// TODO: really need to figure out how to handle multiple tokens
+// that map to the same source location, currently just prefers the first.
+
 /**
  * Utility to build up generate code from source ranges while maintaining a source mapping.
  */
@@ -76,7 +79,7 @@ export class Extracted {
     } else {
       this.#generatedToSource = new GeneratedToSourceView(tokens);
       this.#sourceToGenerated = new SourceToGeneratedView(
-        [...tokens].sort(sortBySourceAndLength)
+        [...tokens].sort(sortBySourceThenGenerated)
       );
     }
   }
@@ -252,7 +255,7 @@ class SourceToGeneratedView extends TokenView {
   }
 }
 
-function sortBySourceAndLength(a: Token, b: Token) {
+function sortBySourceThenGenerated(a: Token, b: Token) {
   const delta = a.sourceStart - b.sourceStart;
-  return delta === 0 ? a.length - b.length : delta;
+  return delta === 0 ? b.generatedStart - a.generatedStart : delta;
 }

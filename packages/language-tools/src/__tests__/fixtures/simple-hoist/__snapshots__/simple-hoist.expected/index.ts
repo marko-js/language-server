@@ -32,6 +32,11 @@ function __marko_internal_template(this: void) {
               __marko_internal_return.mutate.x++;
               ++__marko_internal_return.mutate.x;
             },
+            ["renderBody" /*button*/]: (() => {
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
           })
         );
         const el = Marko._.rendered.returns[3].value;

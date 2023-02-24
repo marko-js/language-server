@@ -123,6 +123,7 @@ export function patch(
       options,
       sourceFile
     ) => {
+      // TODO: try avoiding using the base resolveModuleNames for `.marko` files.
       const resolvedModules: (
         | ts.ResolvedModuleFull
         | ts.ResolvedModule
