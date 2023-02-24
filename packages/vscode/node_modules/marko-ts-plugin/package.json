@@ -1,4 +1,0 @@
-{
-  "description": "This is not a real module, it just re-uses our dist.",
-  "name": "marko-ts-plugin"
-}
