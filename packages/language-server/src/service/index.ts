@@ -8,15 +8,21 @@ import type {
   Diagnostic,
   DocumentHighlight,
   DocumentLink,
+  Hover,
   Location,
+  Range,
   SymbolInformation,
   WorkspaceEdit,
 } from "vscode-languageserver";
+
+import { MarkupContent, MarkupKind } from "vscode-languageserver";
 
 import type { Plugin } from "./types";
 import MarkoPlugin from "./marko";
 import ScriptPlugin from "./script";
 import StylePlugin from "./style";
+
+const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
 const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin];
 
 /**
@@ -181,6 +187,23 @@ const service: Plugin = {
     return result;
   },
   async doHover(doc, params, cancel) {
+    let result: Hover | undefined;
+
+    await Promise.allSettled(
+      plugins.map(async (plugin) => {
+        const cur = await plugin.doHover?.(doc, params, cancel);
+        if (cancel.isCancellationRequested) return;
+        if (cur) {
+          if (result) {
+            result.range = maxRange(result.range, cur.range);
+            result.contents = mergeHoverContents(result.contents, cur.contents);
+          } else {
+            result = cur;
+          }
+        }
+      })
+    );
+
     for (const plugin of plugins) {
       try {
         const result = await plugin.doHover?.(doc, params, cancel);
@@ -271,5 +294,47 @@ const service: Plugin = {
   },
   format: MarkoPlugin.format,
 };
+
+function maxRange(a: Range | undefined, b: Range | undefined) {
+  if (!a) return b;
+  if (!b) return a;
+  return {
+    start: {
+      line: Math.min(a.start.line, b.start.line),
+      character: Math.min(a.start.character, b.start.character),
+    },
+    end: {
+      line: Math.max(a.end.line, b.end.line),
+      character: Math.max(a.end.character, b.end.character),
+    },
+  };
+}
+
+function mergeHoverContents(a: Hover["contents"], b: Hover["contents"]) {
+  if (!MarkupContent.is(a)) return b;
+  if (!MarkupContent.is(b)) return a;
+
+  if (a.kind === b.kind) {
+    return {
+      kind: a.kind,
+      value: `${a.value}\n${b.value}`,
+    };
+  }
+
+  return {
+    kind: MarkupKind.Markdown,
+    value: `${markupContentToMarkdown(a)}\n${markupContentToMarkdown(b)}`,
+  };
+}
+
+function markupContentToMarkdown(content: MarkupContent): string {
+  return content.kind === MarkupKind.Markdown
+    ? content.value
+    : escapeMarkdown(content.value);
+}
+
+function escapeMarkdown(str: string) {
+  return str.replace(REG_MARKDOWN_CHARS, "$1");
+}
 
 export { service as default };
