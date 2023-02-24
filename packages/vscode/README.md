@@ -18,7 +18,7 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 
 - Go To Tags
 
-![goToTag](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToTag.gif)
+![goToTag](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToTag.gif)
 
 - Custom Attribute Names
 
