@@ -34,7 +34,8 @@ export default function getTagNameCompletion({
 
   const nodeModuleName = nodeModuleMatch && nodeModuleMatch[1];
   const isCoreTag =
-    /^@?marko[/-]/.test(tag.taglibId) || nodeModuleName === "marko";
+    /^@?marko[/-]/.test(tag.taglibId || tag.filePath) ||
+    nodeModuleName === "marko";
   const documentation = {
     kind: MarkupKind.Markdown,
     value: tag.html
