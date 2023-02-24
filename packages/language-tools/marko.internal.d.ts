@@ -129,7 +129,7 @@ declare global {
 
       export function renderTemplate<Name extends Marko.Template>(
         imported: Promise<{ default: Name }>
-      ): CustomTagRenderer<Name>;
+      ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
         tag: Name
       ): NativeTagRenderer<Name>;
@@ -292,7 +292,7 @@ declare global {
       export type DynamicRenderer<Name> = 0 extends 1 & Name
         ? DefaultRenderer
         : [Name] extends [Marko.Template]
-        ? CustomTagRenderer<Name>
+        ? TemplateRenderer<Name>
         : [Name] extends [string]
         ? NativeTagRenderer<Name>
         : [Name] extends [AnyMarkoBody]
@@ -300,16 +300,21 @@ declare global {
         : [Name] extends [{ renderBody?: AnyMarkoBody }]
         ? [Name["renderBody"]] extends [AnyMarkoBody]
           ? BodyRenderer<Name["renderBody"]>
-          : InputRenderer<
+          : BaseRenderer<
               RenderBodyInput<BodyParameters<Exclude<Name["renderBody"], void>>>
             >
         : DefaultRenderer;
 
-      export type CustomTagRenderer<Template> = Template extends {
+      export type TemplateRenderer<Template> = Template extends {
         _: infer Renderer;
       }
         ? Renderer
-        : DefaultRenderer;
+        : Template extends Marko.Template<
+            infer Input extends Record<string, unknown>,
+            infer Return
+          >
+        ? BaseRenderer<Input, Return>
+        : never;
 
       export interface NativeTagRenderer<Name extends string> {
         (): () => <Input extends Marko.NativeTags[Name]["input"]>(
@@ -323,10 +328,11 @@ declare global {
         ) => ReturnAndScope<Scopes<Args>, BodyReturnType<Body>>;
       }
 
-      export interface InputRenderer<
-        Input extends Record<PropertyKey, unknown>
+      export interface BaseRenderer<
+        Input extends Record<PropertyKey, unknown>,
+        Return = void
       > {
-        (): () => (input: Input) => ReturnAndScope<Scopes<Input>, void>;
+        (): () => (input: Input) => ReturnAndScope<Scopes<Input>, Return>;
       }
 
       export interface DefaultRenderer {

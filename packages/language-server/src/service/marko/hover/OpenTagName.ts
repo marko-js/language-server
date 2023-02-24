@@ -1,4 +1,3 @@
-import type { MarkupContent } from "vscode-languageserver";
 import type { Node } from "@marko/language-tools";
 
 import getTagNameCompletion from "../util/get-tag-name-completion";
@@ -24,9 +23,12 @@ export function OpenTagName({
       range: START_LOCATION,
       importer: filename,
     });
-    return {
-      range,
-      contents: completion.documentation as MarkupContent,
-    };
+
+    if (completion.documentation) {
+      return {
+        range,
+        contents: completion.documentation,
+      };
+    }
   }
 }

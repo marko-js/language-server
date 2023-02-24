@@ -1,7 +1,7 @@
 const RuntimeOverloads = new Map<string, (string | Replacement)[]>();
 const commentsReg = /\/\*(?:[^*]+|\*[^/])*\*\//gm;
 const replaceTokensReg =
-  /\babstract\s+(\w+)|Marko\.(TemplateInput|Component)/gm;
+  /\babstract\s+(\w+)|Marko\.(TemplateInput(?:<[^>]+>)?|Component)/gm;
 const overrideBlockReg =
   /\/\*[*\s]*@marko-overload-start[*\s]*\*\/([\s\S]+)\/\*[*\s]*@marko-overload-end[*\s]*\*\//g;
 
@@ -38,9 +38,9 @@ export function getRuntimeOverrides(
         } else {
           overloads.push(
             curText,
-            propertyName === "TemplateInput"
-              ? Replacement.Input
-              : Replacement.Component
+            propertyName === "Component"
+              ? Replacement.Component
+              : Replacement.Input
           );
         }
       }

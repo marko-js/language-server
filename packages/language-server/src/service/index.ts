@@ -10,6 +10,7 @@ import type {
   DocumentLink,
   Hover,
   Location,
+  MarkedString,
   Range,
   SymbolInformation,
   WorkspaceEdit,
@@ -204,15 +205,7 @@ const service: Plugin = {
       })
     );
 
-    for (const plugin of plugins) {
-      try {
-        const result = await plugin.doHover?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (result) return result;
-      } catch {
-        // ignore
-      }
-    }
+    return result;
   },
   async doRename(doc, params, cancel) {
     let changes: WorkspaceEdit["changes"];
@@ -311,8 +304,16 @@ function maxRange(a: Range | undefined, b: Range | undefined) {
 }
 
 function mergeHoverContents(a: Hover["contents"], b: Hover["contents"]) {
-  if (!MarkupContent.is(a)) return b;
-  if (!MarkupContent.is(b)) return a;
+  if (!a) return b;
+  if (!b) return a;
+
+  if (!MarkupContent.is(a)) {
+    a = markedStringToMarkupContent(a);
+  }
+
+  if (!MarkupContent.is(b)) {
+    b = markedStringToMarkupContent(b);
+  }
 
   if (a.kind === b.kind) {
     return {
@@ -325,6 +326,25 @@ function mergeHoverContents(a: Hover["contents"], b: Hover["contents"]) {
     kind: MarkupKind.Markdown,
     value: `${markupContentToMarkdown(a)}\n${markupContentToMarkdown(b)}`,
   };
+}
+
+function markedStringToMarkupContent(
+  markedString: MarkedString | MarkedString[]
+): MarkupContent {
+  return {
+    kind: MarkupKind.Markdown,
+    value: Array.isArray(markedString)
+      ? markedString.map((it) => markedStringToString(it)).join("\n")
+      : markedStringToString(markedString),
+  };
+}
+
+function markedStringToString(markedString: MarkedString) {
+  if (typeof markedString === "string") {
+    return markedString;
+  }
+
+  return `\`\`\`${markedString.language}\n${markedString.value}\n\`\`\``;
 }
 
 function markupContentToMarkdown(content: MarkupContent): string {
