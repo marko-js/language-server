@@ -27,7 +27,7 @@
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f visualstudio --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
-    "prepare": "husky install",
+    "prepare": "husky install & npm run -ws --if-present prepare",
     "release": "npm run build && changeset publish && npm run -ws --if-present release",
     "test": "npm run -ws --if-present test",
     "version": "changeset version && npm i --package-lock-only"

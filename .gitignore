@@ -6,8 +6,7 @@
 *.DS_Store
 
 # NPM
-**/node_modules/*
-!**/node_modules/marko-ts-plugin
+node_modules
 
 # Build
 dist

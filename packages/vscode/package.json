@@ -103,6 +103,7 @@
   "scripts": {
     "build": "tsc -b && tsx build.mts",
     "release": "tsx release.mts",
-    "test": "tsx test.mts"
+    "test": "tsx test.mts",
+    "prepare": "mkdir -p ./node_modules; cp -r ./modules/* ./node_modules/"
   }
 }
