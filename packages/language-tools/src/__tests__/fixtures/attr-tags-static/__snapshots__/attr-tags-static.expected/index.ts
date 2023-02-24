@@ -13,7 +13,10 @@ function __marko_internal_template(this: void) {
     Marko._.renderDynamicTag(custom)()()({
       ...{
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@b", "@b", "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@b"];
+          attrTags["@b"];
+          attrTags["@a"];
         },
       },
       ["b" /*@b*/]: [

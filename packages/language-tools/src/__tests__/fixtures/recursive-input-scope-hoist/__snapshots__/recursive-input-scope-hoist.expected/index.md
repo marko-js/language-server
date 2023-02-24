@@ -1,4 +1,15 @@
 ## Hovers
+### Ln 3, Col 7
+```marko
+  1 | <comments>
+  2 |   <@comment#a>
+> 3 |     <@comment#b>
+    |       ^ (property) "@comment"?: Marko.Repeatable<Comment> | undefined
+  4 |       <let/b = "b" as const/>
+  5 |     </@comment>
+  6 |     <let/a = "a" as const/>
+```
+
 ### Ln 14, Col 3
 ```marko
   12 |

@@ -14,7 +14,8 @@ function __marko_internal_template(this: void) {
       },
       () => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           /*@a*/
@@ -47,7 +48,8 @@ function __marko_internal_template(this: void) {
       },
       () => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           /*@a*/
@@ -62,7 +64,8 @@ function __marko_internal_template(this: void) {
       },
       (item, index, all) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -84,7 +87,9 @@ function __marko_internal_template(this: void) {
       },
       (item, index) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a", "@b");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
+          attrTags["@b"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -115,7 +120,8 @@ function __marko_internal_template(this: void) {
         },
         (item) => ({
           [Marko._.never]() {
-            Marko._.attrTagNames(this, "@a");
+            const attrTags = Marko._.attrTagNames(this);
+            attrTags["@a"];
           },
           ["a" /*@a*/]: {
             ["renderBody" /*@a*/]: (() => {
@@ -163,7 +169,8 @@ function __marko_internal_template(this: void) {
       },
       (key, value) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -187,7 +194,8 @@ function __marko_internal_template(this: void) {
         },
         (key) => ({
           [Marko._.never]() {
-            Marko._.attrTagNames(this, "@a");
+            const attrTags = Marko._.attrTagNames(this);
+            attrTags["@a"];
           },
           ["a" /*@a*/]: {
             ["renderBody" /*@a*/]: (() => {
@@ -226,7 +234,8 @@ function __marko_internal_template(this: void) {
       },
       (index) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -247,7 +256,8 @@ function __marko_internal_template(this: void) {
       },
       (index) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -268,7 +278,8 @@ function __marko_internal_template(this: void) {
       },
       (index) => ({
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@a");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@a"];
         },
         ["a" /*@a*/]: {
           ["renderBody" /*@a*/]: (() => {
@@ -291,7 +302,8 @@ function __marko_internal_template(this: void) {
         },
         (index) => ({
           [Marko._.never]() {
-            Marko._.attrTagNames(this, "@a");
+            const attrTags = Marko._.attrTagNames(this);
+            attrTags["@a"];
           },
           ["a" /*@a*/]: {
             ["renderBody" /*@a*/]: (() => {

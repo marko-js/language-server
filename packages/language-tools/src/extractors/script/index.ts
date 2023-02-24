@@ -1018,18 +1018,20 @@ constructor(_?: Return) {}
   ) {
     if (!wasMerge) this.#extractor.write("...{");
     this.#extractor.write(
-      `[${varShared("never")}](){${varShared("attrTagNames")}(this`
+      `[${varShared("never")}](){\nconst attrTags = ${varShared(
+        "attrTagNames"
+      )}(this);\n`
     );
 
     for (const nameText in staticAttrTags) {
       for (const tag of staticAttrTags[nameText]) {
-        this.#extractor.write(`${SEP_COMMA_NEW_LINE}"`);
+        this.#extractor.write(`attrTags["`);
         this.#extractor.copy(tag.name);
-        this.#extractor.write('"');
+        this.#extractor.write('"];\n');
       }
     }
 
-    this.#extractor.write(");}");
+    this.#extractor.write("\n}");
     if (!wasMerge) this.#extractor.write("}");
     this.#extractor.write(SEP_COMMA_NEW_LINE);
 

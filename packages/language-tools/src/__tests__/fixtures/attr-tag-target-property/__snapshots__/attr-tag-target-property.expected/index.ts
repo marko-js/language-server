@@ -10,7 +10,8 @@ function __marko_internal_template(this: void) {
   Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
     ...{
       [Marko._.never]() {
-        Marko._.attrTagNames(this, "@item");
+        const attrTags = Marko._.attrTagNames(this);
+        attrTags["@item"];
       },
     },
     ["items" /*@item*/]: [
@@ -22,7 +23,9 @@ function __marko_internal_template(this: void) {
   Marko._.renderTemplate(import("./components/test-tag/index.marko"))()()({
     ...{
       [Marko._.never]() {
-        Marko._.attrTagNames(this, "@item", "@item");
+        const attrTags = Marko._.attrTagNames(this);
+        attrTags["@item"];
+        attrTags["@item"];
       },
     },
     ["items" /*@item*/]: [

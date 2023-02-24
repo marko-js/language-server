@@ -18,23 +18,17 @@ declare global {
       export const out: Marko.Out;
       export const never: never;
       export const any: any;
-      function attrTagNames<Input>(
-        input: Input,
-        ...keys: 0 extends 1 & Input
-          ? string[]
-          : (
-              | `@${string &
-                  keyof {
-                    [K in keyof Input as Input[K] extends infer V
-                      ? V extends { renderBody?: any }
-                        ? K
-                        : never
-                      : never]: 1;
-                  }}`
-              // eslint-disable-next-line @typescript-eslint/ban-types
-              | (string & {})
-            )[]
-      ): void;
+
+      export function attrTagNames<Input, Keys extends keyof Input>(
+        input: Input
+      ): Record<string, never> & {
+        [Key in Keys as `@${Input[Key] extends infer Value
+          ? Value extends { renderBody?: any }
+            ? Key
+            : never
+          : never}`]: Input[Key];
+      };
+
       export const rendered: {
         scopes: Record<number, never>;
         returns: Record<number, never>;

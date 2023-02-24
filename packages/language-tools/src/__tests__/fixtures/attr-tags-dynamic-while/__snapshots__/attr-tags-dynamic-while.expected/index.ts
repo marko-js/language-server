@@ -14,7 +14,8 @@ function __marko_internal_template(this: void) {
         ? [
             {
               [Marko._.never]() {
-                Marko._.attrTagNames(this, "@a");
+                const attrTags = Marko._.attrTagNames(this);
+                attrTags["@a"];
               },
               ["a" /*@a*/]: {
                 ["renderBody" /*@a*/]: (() => {
@@ -37,7 +38,8 @@ function __marko_internal_template(this: void) {
         ? [
             {
               [Marko._.never]() {
-                Marko._.attrTagNames(this, "@a");
+                const attrTags = Marko._.attrTagNames(this);
+                attrTags["@a"];
               },
               ["a" /*@a*/]: {
                 ["renderBody" /*@a*/]: (() => {
@@ -61,7 +63,8 @@ function __marko_internal_template(this: void) {
         ? [
             {
               [Marko._.never]() {
-                Marko._.attrTagNames(this, "@a");
+                const attrTags = Marko._.attrTagNames(this);
+                attrTags["@a"];
               },
               ["a" /*@a*/]: {
                 ["renderBody" /*@a*/]: (() => {

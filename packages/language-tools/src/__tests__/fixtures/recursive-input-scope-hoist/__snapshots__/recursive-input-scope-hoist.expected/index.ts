@@ -17,7 +17,9 @@ function __marko_internal_template(this: void) {
     )()()({
       ...{
         [Marko._.never]() {
-          Marko._.attrTagNames(this, "@comment", "@comment");
+          const attrTags = Marko._.attrTagNames(this);
+          attrTags["@comment"];
+          attrTags["@comment"];
         },
       },
       ["comment" /*@comment*/]: [
@@ -25,7 +27,8 @@ function __marko_internal_template(this: void) {
           id: Marko._.interpolated`a`,
           ...{
             [Marko._.never]() {
-              Marko._.attrTagNames(this, "@comment");
+              const attrTags = Marko._.attrTagNames(this);
+              attrTags["@comment"];
             },
           },
           ["comment" /*@comment*/]: {
@@ -35,7 +38,7 @@ function __marko_internal_template(this: void) {
                 Marko._.rendered,
                 2,
                 Marko._.renderTemplate(
-                  import("./components/let/index.marko")
+                  import("../../components/let/index.marko")
                 )()()({
                   value: "b" as const,
                 })
@@ -55,7 +58,7 @@ function __marko_internal_template(this: void) {
               Marko._.rendered,
               3,
               Marko._.renderTemplate(
-                import("./components/let/index.marko")
+                import("../../components/let/index.marko")
               )()()({
                 value: "a" as const,
               })
@@ -76,7 +79,7 @@ function __marko_internal_template(this: void) {
               Marko._.rendered,
               4,
               Marko._.renderTemplate(
-                import("./components/let/index.marko")
+                import("../../components/let/index.marko")
               )()()({
                 value: "c" as const,
               })
