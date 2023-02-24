@@ -1,0 +1,10 @@
+static interface Comment {
+  id: string;
+  renderBody: Marko.Body;
+  comment?: Marko.Repeatable<Comment>;
+}
+export interface Input {
+  comment: Marko.Repeatable<Comment>;
+}
+
+// Empty

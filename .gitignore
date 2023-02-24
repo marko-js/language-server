@@ -6,10 +6,14 @@
 *.DS_Store
 
 # NPM
-node_modules
+**/node_modules/*
+!**/node_modules/marko-ts-plugin
 
 # Build
 dist
+*.marko.js
+*.actual.*
+*.tsbuildinfo
 **/.vscode-test
 
 # Logging

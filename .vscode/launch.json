@@ -5,13 +5,13 @@
       "name": "Develop",
       "stopAll": true,
       "preLaunchTask": "build",
-      "configurations": ["Launch Client", "Attach to Server"],
+      "configurations": ["Launch Client", "Attach to Server", "Attach to TypeScript Plugin"],
     },
     {
       "name": "Test",
       "stopAll": true,
       "preLaunchTask": "build",
-      "configurations": ["Launch Test Client", "Attach to Server"],
+      "configurations": ["Launch Test Client", "Attach to Server", "Attach to TypeScript Plugin"],
     }
   ],
   "configurations": [
@@ -22,13 +22,16 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "/Users/dpiercey/dev/tmp/vite-tags-api"
+        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
+        "${workspaceRoot}/packages/language-tools/src/__tests__/fixtures"
       ],
       "outFiles": [
         "${workspaceRoot}/**/dist/*.js",
         "!**/node_modules/**"
       ],
+      "env": {
+        "TSS_DEBUG_BRK": "5859"
+      },
       "presentation": {
         "hidden": true
       }
@@ -40,8 +43,8 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/clients/vscode",
-        "--extensionTestsPath=${workspaceRoot}/clients/vscode/dist/__tests__/index.js"
+        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
+        "--extensionTestsPath=${workspaceRoot}/packages/vscode/dist/__tests__/index.js"
       ],
       "outFiles": [
         "${workspaceRoot}/**/dist/*.js",
@@ -57,6 +60,20 @@
       "request": "attach",
       "restart": true,
       "port": 6009,
+      "timeout": 10e5,
+      "continueOnAttach": true,
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "name": "Attach to TypeScript Plugin",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 5859,
+      "timeout": 10e5,
+      "continueOnAttach": true,
       "presentation": {
         "hidden": true
       }
