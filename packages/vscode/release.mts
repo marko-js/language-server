@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 
 const exec = promisify(cp.exec);
 const dir = path.dirname(fileURLToPath(import.meta.url));
-const dist = path.join(dir, "dist");
+const dist = path.join(dir, "dist/marko.vsix");
 const workspacePkg = path.join(dir, "../../package.json");
 const workspacePkgTmp = `${workspacePkg}.tmp`;
 
