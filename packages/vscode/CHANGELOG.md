@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.1
+
+### Patch Changes
+
+- [`9385a57`](https://github.com/marko-js/language-server/commit/9385a572c69e7536006e63c7a5dcf6c652e40ed0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix readme image links
+
+- [`8dca900`](https://github.com/marko-js/language-server/commit/8dca900fb594365f0b8e950a82d61881eab2f216) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with ts-plugin not being registered.
+
 ## 1.0.0
 
 ### Major Changes
