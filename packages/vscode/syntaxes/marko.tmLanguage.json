@@ -1064,7 +1064,7 @@
                 },
                 {
                   "name": "support.function.marko",
-                  "match": "(macro|tag|async|let|const|set|get|id|html-comment)(?=\\b)(?![-:@])"
+                  "match": "(macro|tag|async|let|const|context|id|html-comment)(?=\\b)(?![-:@])"
                 },
                 {
                   "comment": "Attribute tag.",
