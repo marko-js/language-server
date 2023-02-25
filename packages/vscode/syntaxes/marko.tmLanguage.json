@@ -517,6 +517,7 @@
     "html-args-or-method": {
       "comment": "Matches parenthesis for arguments or continues into method shorthand if a { is found.",
       "patterns": [
+        { "include": "#tag-type-params" },
         {
           "comment": "Javascript style arguments",
           "name": "meta.embedded.ts",
@@ -730,6 +731,7 @@
       "patterns": [
         { "include": "#tag-name" },
         { "include": "#tag-shorthand-class-or-id" },
+        { "include": "#tag-type-args" },
         {
           "comment": "Variable for a tag",
           "name": "meta.embedded.ts",
@@ -845,6 +847,7 @@
           "comment": "HTML void elements",
           "begin": "\\s*(<)(?=(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\\b)",
           "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [{ "include": "#open-tag-content" }],
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
@@ -856,7 +859,8 @@
         {
           "comment": "Marko html-comment tag",
           "begin": "\\s*(<)(?=html-comment\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -884,7 +888,8 @@
         {
           "comment": "HTML style tag with less",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.less\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -913,12 +918,13 @@
         {
           "comment": "HTML style tag with scss",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.scss\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Style body content",
-              "contentName": "source.less",
+              "contentName": "source.scss",
               "begin": ">",
               "end": "\\s*(</)(style)?(>)",
               "patterns": [{ "include": "#content-embedded-style-scss" }],
@@ -942,7 +948,8 @@
         {
           "comment": "HTML style tag with js/ts",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.[tj]s\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -971,7 +978,8 @@
         {
           "comment": "HTML style tag",
           "begin": "\\s*(<)(?=style\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
           },
@@ -1000,7 +1008,8 @@
         {
           "comment": "HTML script tag",
           "begin": "\\s*(<)(?=script\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -1029,7 +1038,8 @@
         {
           "comment": "HTML normal tag",
           "begin": "\\s*(<)(?=[a-zA-Z0-9_$@.#])",
-          "end": "/>|(?<=\\>)",
+          "end": "/?>",
+          "applyEndPatternLast": 1,
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -1061,6 +1071,22 @@
           }
         }
       ]
+    },
+    "tag-type-args": {
+      "comment": "Type args after the tag name",
+      "name": "meta.embedded.ts",
+      "contentName": "source.ts",
+      "begin": "(?=<)",
+      "end": "(?<=>)",
+      "patterns": [{ "include": "source.ts#type-arguments" }]
+    },
+    "tag-type-params": {
+      "comment": "Type params before tag params or a default shorthand method",
+      "name": "meta.embedded.ts",
+      "contentName": "source.ts",
+      "begin": "\\s*(?=<)",
+      "end": "(?<=>)\\s*",
+      "patterns": [{ "include": "source.ts#type-parameters" }]
     },
     "tag-shorthand-class-or-id": {
       "comment": "Shorthand class or ID attribute",
