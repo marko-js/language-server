@@ -800,7 +800,37 @@
             "0": { "name": "punctuation.section.scope.end.marko" }
           },
           "patterns": [
-            { "include": "source.ts#function-parameters-body" },
+            {
+              "include": "source.ts#comment"
+            },
+            {
+              "include": "source.ts#string"
+            },
+            {
+              "include": "source.ts#decorator"
+            },
+            {
+              "include": "source.ts#destructuring-parameter"
+            },
+            {
+              "include": "source.ts#parameter-name"
+            },
+            {
+              "name": "meta.type.annotation.ts",
+              "begin": "(:)",
+              "beginCaptures": {
+                "1": { "name": "keyword.operator.type.annotation.ts" }
+              },
+              "end": "(?=[,|])|(?==[^>])",
+              "patterns": [{ "include": "source.ts#type" }]
+            },
+            {
+              "include": "source.ts#variable-initializer"
+            },
+            {
+              "name": "punctuation.separator.parameter.ts",
+              "match": ","
+            },
             { "include": "source.ts" }
           ]
         },
