@@ -1056,11 +1056,11 @@
               "patterns": [
                 {
                   "name": "support.type.builtin.marko",
-                  "match": "(attrs|style|effect|lifecycle)(?=\\b)"
+                  "match": "(attrs|style|effect|lifecycle)(?=\\b)(?![-:@])"
                 },
                 {
                   "name": "keyword.control.flow.marko",
-                  "match": "(for|if|while|else-if|else|try|await|return)(?=\\b)"
+                  "match": "(for|if|while|else-if|else|try|await|return)(?=\\b)(?![-:@])"
                 },
                 {
                   "name": "support.function.marko",
