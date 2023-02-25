@@ -524,7 +524,7 @@
           "contentName": "source.ts",
           "begin": "\\s*(?=\\()",
           "end": "(?<=\\))",
-          "patterns": [{ "include": "source.ts" }]
+          "patterns": [{ "include": "source.ts#paren-expression" }]
         },
         {
           "comment": "Attribute method shorthand following parens",
@@ -656,6 +656,7 @@
         { "include": "#javascript-comments" },
         {
           "comment": "We must match the some expressions ourselves since otherwise the js grammar can overstep.",
+          "contentName": "source.ts",
           "match": "(?:\\s*\\b(?:as|await|extends|in|instanceof|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
           "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         },
