@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.3
+
+### Patch Changes
+
+- [#138](https://github.com/marko-js/language-server/pull/138) [`5967d7b`](https://github.com/marko-js/language-server/commit/5967d7b201b18405d00820800baf4c0791adcda2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fixes some caching issues in the TS plugin.
+
 ## 1.0.2
 
 ### Patch Changes
