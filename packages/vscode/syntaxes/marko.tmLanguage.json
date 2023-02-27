@@ -107,17 +107,13 @@
           "begin": "(\\.\\.\\.)",
           "end": "(?=[,;\\]]|/>|(?<=[^=])>|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^\\+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
           "patterns": [{ "include": "#javascript-expression" }],
-          "beginCaptures": {
-            "1": { "name": "keyword.operator.spread.marko" }
-          }
+          "beginCaptures": { "1": { "name": "keyword.operator.spread.marko" } }
         },
         {
           "comment": "Consume any whitespace after a comma",
           "begin": "\\s*(,(?!,))",
           "end": "(?=\\S)",
-          "captures": {
-            "1": { "name": "punctuation.separator.comma.marko" }
-          }
+          "captures": { "1": { "name": "punctuation.separator.comma.marko" } }
         },
         { "include": "#invalid" }
       ]
@@ -129,9 +125,7 @@
       "begin": "\\s*(:?=)\\s*",
       "end": "(?=[,;\\]]|/>|(?<=[^=])>|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^\\+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|as|extends)\\s+[^:=/,;>])))",
       "patterns": [{ "include": "#javascript-expression" }],
-      "beginCaptures": {
-        "1": { "patterns": [{ "include": "source.ts" }] }
-      }
+      "beginCaptures": { "1": { "patterns": [{ "include": "source.ts" }] } }
     },
     "concise-html-block": {
       "comment": "--- HTML block within concise mode content. ---",
@@ -185,9 +179,7 @@
         { "include": "#html-comment" },
         { "include": "#invalid" }
       ],
-      "beginCaptures": {
-        "1": { "name": "punctuation.terminator.marko" }
-      }
+      "beginCaptures": { "1": { "name": "punctuation.terminator.marko" } }
     },
     "concise-attr-group": {
       "comment": "Matches a group of non newline sensitive attributes in square brackets.",
@@ -205,9 +197,7 @@
       "beginCaptures": {
         "1": { "name": "punctuation.section.scope.begin.marko" }
       },
-      "endCaptures": {
-        "0": { "name": "punctuation.section.scope.end.marko" }
-      }
+      "endCaptures": { "0": { "name": "punctuation.section.scope.end.marko" } }
     },
     "concise-open-tag-content": {
       "comment": "Handles everything from the start of the tag name until the body content begins.",
@@ -517,13 +507,14 @@
     "html-args-or-method": {
       "comment": "Matches parenthesis for arguments or continues into method shorthand if a { is found.",
       "patterns": [
+        { "include": "#tag-type-params" },
         {
           "comment": "Javascript style arguments",
           "name": "meta.embedded.ts",
           "contentName": "source.ts",
           "begin": "\\s*(?=\\()",
           "end": "(?<=\\))",
-          "patterns": [{ "include": "source.ts" }]
+          "patterns": [{ "include": "source.ts#paren-expression" }]
         },
         {
           "comment": "Attribute method shorthand following parens",
@@ -543,9 +534,7 @@
       "beginCaptures": {
         "1": { "name": "punctuation.definition.comment.marko" }
       },
-      "endCaptures": {
-        "0": { "name": "punctuation.definition.comment.marko" }
-      }
+      "endCaptures": { "0": { "name": "punctuation.definition.comment.marko" } }
     },
     "cdata": {
       "name": "meta.tag.metadata.cdata.marko",
@@ -555,9 +544,7 @@
       "beginCaptures": {
         "0": { "name": "punctuation.definition.tag.begin.marko" }
       },
-      "endCaptures": {
-        "0": { "name": "punctuation.definition.tag.end.marko" }
-      }
+      "endCaptures": { "0": { "name": "punctuation.definition.tag.end.marko" } }
     },
     "doctype": {
       "name": "meta.tag.metadata.doctype.marko",
@@ -581,9 +568,7 @@
       "beginCaptures": {
         "0": { "name": "punctuation.definition.tag.begin.marko" }
       },
-      "endCaptures": {
-        "0": { "name": "punctuation.definition.tag.end.marko" }
-      }
+      "endCaptures": { "0": { "name": "punctuation.definition.tag.end.marko" } }
     },
     "declaration": {
       "name": "meta.tag.metadata.processing.xml.marko",
@@ -624,9 +609,7 @@
           "comment": "JavaScript // single line comment",
           "contentName": "source.ts",
           "match": "\\s*//.*$",
-          "captures": {
-            "0": { "patterns": [{ "include": "source.ts" }] }
-          }
+          "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         }
       ]
     },
@@ -643,9 +626,7 @@
           "comment": "JavaScript // single line comment",
           "contentName": "source.ts",
           "match": "(?:^|\\s+)//.*$",
-          "captures": {
-            "0": { "patterns": [{ "include": "source.ts" }] }
-          }
+          "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         }
       ]
     },
@@ -655,6 +636,7 @@
         { "include": "#javascript-comments" },
         {
           "comment": "We must match the some expressions ourselves since otherwise the js grammar can overstep.",
+          "contentName": "source.ts",
           "match": "(?:\\s*\\b(?:as|await|extends|in|instanceof|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
           "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         },
@@ -721,9 +703,7 @@
       "begin": "^\\s*(\\$)\\s+",
       "end": "$",
       "patterns": [{ "include": "source.ts" }],
-      "beginCaptures": {
-        "1": { "name": "keyword.control.scriptlet.marko" }
-      }
+      "beginCaptures": { "1": { "name": "keyword.control.scriptlet.marko" } }
     },
     "tag-before-attrs": {
       "comment": "Everything in a tag before the attributes content",
@@ -735,7 +715,7 @@
           "name": "meta.embedded.ts",
           "contentName": "source.ts",
           "begin": "/(?![/*])",
-          "end": "(?=[,;(|/>]|:?=|\\s+[^:]|$)",
+          "end": "(?=[,;(|/><]|:?=|\\s+[^:]|$)",
           "beginCaptures": {
             "0": { "name": "punctuation.separator.tag-variable.marko" }
           },
@@ -791,7 +771,7 @@
         {
           "comment": "Parameters for a tag",
           "contentName": "source.ts",
-          "begin": "\\|",
+          "begin": "\\s*\\|",
           "end": "\\|",
           "beginCaptures": {
             "0": { "name": "punctuation.section.scope.begin.marko" }
@@ -800,7 +780,25 @@
             "0": { "name": "punctuation.section.scope.end.marko" }
           },
           "patterns": [
-            { "include": "source.ts#function-parameters-body" },
+            { "include": "source.ts#comment" },
+            { "include": "source.ts#string" },
+            { "include": "source.ts#decorator" },
+            { "include": "source.ts#destructuring-parameter" },
+            { "include": "source.ts#parameter-name" },
+            {
+              "name": "meta.type.annotation.ts",
+              "begin": "(:)",
+              "beginCaptures": {
+                "1": { "name": "keyword.operator.type.annotation.ts" }
+              },
+              "end": "(?=[,|])|(?==[^>])",
+              "patterns": [{ "include": "source.ts#type" }]
+            },
+            { "include": "source.ts#variable-initializer" },
+            {
+              "name": "punctuation.separator.parameter.ts",
+              "match": ","
+            },
             { "include": "source.ts" }
           ]
         },
@@ -826,7 +824,7 @@
         {
           "comment": "Marko html-comment tag",
           "begin": "\\s*(<)(?=html-comment\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:html-comment)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -854,7 +852,7 @@
         {
           "comment": "HTML style tag with less",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.less\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -883,12 +881,12 @@
         {
           "comment": "HTML style tag with scss",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.scss\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Style body content",
-              "contentName": "source.less",
+              "contentName": "source.scss",
               "begin": ">",
               "end": "\\s*(</)(style)?(>)",
               "patterns": [{ "include": "#content-embedded-style-scss" }],
@@ -912,7 +910,7 @@
         {
           "comment": "HTML style tag with js/ts",
           "begin": "\\s*(<)(?=style\\b[^\\s]*\\.[tj]s\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -941,7 +939,7 @@
         {
           "comment": "HTML style tag",
           "begin": "\\s*(<)(?=style\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:style)?>)",
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
           },
@@ -970,7 +968,7 @@
         {
           "comment": "HTML script tag",
           "begin": "\\s*(<)(?=script\\b)",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</(?:script)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -999,7 +997,7 @@
         {
           "comment": "HTML normal tag",
           "begin": "\\s*(<)(?=[a-zA-Z0-9_$@.#])",
-          "end": "/>|(?<=\\>)",
+          "end": "/>|(?<=</[a-zA-Z0-9_$:@.#-]*>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -1032,6 +1030,32 @@
         }
       ]
     },
+    "tag-type-args": {
+      "comment": "Type args after the tag name",
+      "name": "meta.embedded.ts",
+      "contentName": "source.ts",
+      "begin": "(?=<)",
+      "end": "(?<=>)",
+      "applyEndPatternLast": 1,
+      "patterns": [
+        {
+          "begin": "(?<=>)(?=[ \t]*<)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "patterns": [{ "include": "#tag-type-params" }]
+        },
+        { "include": "source.ts#type-arguments" }
+      ]
+    },
+    "tag-type-params": {
+      "comment": "Type params before tag params or a default shorthand method",
+      "name": "meta.embedded.ts",
+      "contentName": "source.ts",
+      "begin": "(?!^)[ \t]*(?=<)",
+      "end": "(?<=>)",
+      "applyEndPatternLast": 1,
+      "patterns": [{ "include": "source.ts#type-parameters" }]
+    },
     "tag-shorthand-class-or-id": {
       "comment": "Shorthand class or ID attribute",
       "begin": "(?=[#.])",
@@ -1048,23 +1072,26 @@
       "comment": "Matches the tag name.",
       "patterns": [
         {
-          "match": "\\G(style)\\b(\\.[a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
-          "captures": {
+          "begin": "\\G(style)\\b(\\.[a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "patterns": [{ "include": "#tag-type-args" }],
+          "beginCaptures": {
             "1": { "name": "support.type.builtin.marko" },
             "2": { "name": "storage.type.marko.css" },
             "3": {
               "patterns": [
                 {
                   "name": "support.type.builtin.marko",
-                  "match": "(attrs|style|effect|lifecycle)(?=\\b)"
+                  "match": "(attrs|style|effect|lifecycle)(?=\\b)(?![-:@])"
                 },
                 {
                   "name": "keyword.control.flow.marko",
-                  "match": "(for|if|while|else-if|else|try|await|return)(?=\\b)"
+                  "match": "(for|if|while|else-if|else|try|await|return)(?=\\b)(?![-:@])"
                 },
                 {
                   "name": "support.function.marko",
-                  "match": "(macro|tag|async|let|const|set|get|id|html-comment)(?=\\b)(?![-:@])"
+                  "match": "(macro|tag|async|let|const|context|id|html-comment)(?=\\b)(?![-:@])"
                 },
                 {
                   "comment": "Attribute tag.",
