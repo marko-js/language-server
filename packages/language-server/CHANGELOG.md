@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.1
+
+### Patch Changes
+
+- [#137](https://github.com/marko-js/language-server/pull/137) [`033394c`](https://github.com/marko-js/language-server/commit/033394c185af66077926a9c39a54f184a4b61e7c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve location where import/export insertions are added to the document.
+
 ## 1.0.0
 
 ### Major Changes
