@@ -1,10 +1,12 @@
 import type ts from "typescript/lib/tsserverlibrary";
 import { Extracted, ScriptLang } from "@marko/language-tools";
 import { START_POSITION } from "../utils/constants";
+import { getMarkoProjects } from "../utils/project";
 import { ExtractedSnapshot, patch } from "./host";
 
 const markoExt = ".marko";
 const markoExtReg = /\.marko$/;
+const markoTaglibFilesReg = /[\\/]marko(?:-tag)\.json$/;
 const getStartLineCharacter = () => START_POSITION;
 // TODO: improve the import name for Marko components.
 
@@ -63,6 +65,19 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         info: ts.server.ScriptInfo,
         eventKind: ts.FileWatcherEventKind
       ) => {
+        if (
+          eventKind === ts.FileWatcherEventKind.Changed
+            ? markoTaglibFilesReg.test(info.fileName)
+            : markoExtReg.test(info.fileName) ||
+              markoTaglibFilesReg.test(info.fileName)
+        ) {
+          if (markoTaglibFilesReg.test(info.fileName)) {
+            for (const project of getMarkoProjects()) {
+              project.cache.clear();
+            }
+          }
+        }
+
         extractCache.delete(info.fileName);
         return onSourceFileChanged(info, eventKind);
       };

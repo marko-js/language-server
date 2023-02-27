@@ -90,6 +90,16 @@ export function patch(
     return getScriptSnapshot(filename);
   };
 
+  if (host.getProjectVersion) {
+    const getScriptVersion = host.getScriptVersion.bind(host);
+    host.getScriptVersion = (filename: string) => {
+      if (markoExtReg.test(filename)) {
+        return host.getProjectVersion!();
+      }
+      return getScriptVersion(filename);
+    };
+  }
+
   /**
    * This ensures that any directory reads with specific file extensions also include Marko.
    * It is used for example when completing the `from` property of the `import` statement.
