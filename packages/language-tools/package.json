@@ -6,7 +6,7 @@
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.19.1",
     "@babel/parser": "^7.21.2",
-    "htmljs-parser": "^5.2.4",
+    "htmljs-parser": "^5.3.0",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
@@ -15,7 +15,7 @@
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@typescript/vfs": "^1.4.0",
-    "marko": "^5.22.7",
+    "marko": "^5.22.8",
     "mitata": "^0.1.6",
     "tsx": "^3.12.3"
   },
