@@ -11,6 +11,7 @@ import {
   DiagnosticSeverity,
   DiagnosticTag,
   InsertTextFormat,
+  type Range,
   TextEdit,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
@@ -19,11 +20,15 @@ import * as prettier from "prettier";
 
 import {
   type Extracted,
+  type Location,
+  Node,
+  NodeType,
+  type Parsed,
   ScriptLang,
   extractScript,
 } from "@marko/language-tools";
 import { type MarkoProject, getMarkoProject } from "../../utils/project";
-import { getFSPath, processDoc } from "../../utils/file";
+import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
 import { START_LOCATION } from "../../utils/constants";
@@ -48,6 +53,7 @@ interface TSProject {
 
 const extractCache = new Map<string, ExtractedSnapshot>();
 const snapshotCache = new Map<string, ts.IScriptSnapshot>();
+const insertModuleStatementLocCache = new WeakMap<Extracted, Location>();
 const markoFileReg = /\.marko$/;
 const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 const optionalModifierReg = /\boptional\b/;
@@ -239,18 +245,32 @@ const ScriptService: Partial<Plugin> = {
     for (const action of detail.codeActions) {
       for (const change of action.changes) {
         if (change.fileName !== fileName) continue;
-        for (const { span, newText } of change.textChanges) {
-          const sourceRange = /^\s*(?:import|export) /.test(newText)
-            ? // Ensure import inserts are always in the program root.
-              // TODO: this could probably be updated to more closely reflect
-              // where typescript wants to put the import/export.
-              START_LOCATION
-            : sourceLocationAtTextSpan(extracted, span);
-          if (sourceRange) {
-            textEdits.push({
-              newText,
-              range: sourceRange,
-            });
+        for (const { span, newText: rawText } of change.textChanges) {
+          let range: Range | undefined;
+          let newText = rawText;
+
+          if (span.length === 0 && /^\s*(?:import|export) /.test(newText)) {
+            const cached = insertModuleStatementLocCache.get(extracted);
+            newText = newText.replace(/\n\s*$/, "\n");
+
+            if (cached) {
+              range = cached;
+            } else {
+              const { parsed } = getMarkoFile(doc);
+              const offset = getInsertModuleStatementOffset(parsed);
+              const start = parsed.positionAt(offset);
+              range = {
+                start,
+                end: start,
+              };
+              insertModuleStatementLocCache.set(extracted, range);
+            }
+          } else {
+            range = sourceLocationAtTextSpan(extracted, span);
+          }
+
+          if (range) {
+            textEdits.push({ newText, range });
           }
         }
       }
@@ -474,6 +494,54 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
       componentFilename: getComponentFilename(filename, host),
     });
   });
+}
+
+function getInsertModuleStatementOffset(parsed: Parsed) {
+  const { program } = parsed;
+  let firstNode: Node.AnyNode | undefined;
+
+  if (program.static.length) {
+    // Prefer before the first export, or after the last import.
+    let lastImport: Node.Import | undefined;
+    for (const node of program.static) {
+      switch (node.type) {
+        case NodeType.Export:
+          return node.start;
+        case NodeType.Import:
+          lastImport = node;
+          break;
+      }
+    }
+
+    if (lastImport) {
+      return lastImport.end + 1;
+    }
+
+    firstNode = program.static[0];
+  }
+
+  if (program.body.length) {
+    if (!firstNode || firstNode.start > program.body[0].start) {
+      firstNode = program.body[0];
+    }
+  }
+
+  // Fall back to after the comments of the first node,
+  // or the start of the document.
+  if (firstNode) {
+    return getOffsetAfterComments(firstNode);
+  }
+
+  return 0;
+}
+
+function getOffsetAfterComments(node: Node.AnyNode) {
+  const { comments } = node as Node.Commentable;
+  if (comments) {
+    return comments.at(-1)!.end + 1;
+  }
+
+  return Math.max(0, node.start - 1);
 }
 
 function sourceLocationAtTextSpan(
