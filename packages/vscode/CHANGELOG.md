@@ -1,5 +1,19 @@
 # Change Log
 
+## 1.0.2
+
+### Patch Changes
+
+- [#135](https://github.com/marko-js/language-server/pull/135) [`7344fbc`](https://github.com/marko-js/language-server/commit/7344fbcc538f3464fb19eb963537b30a684e5313) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update special tags syntax highlighting to include `<context>` and remove `<get>` / `<set>`.
+
+- [#135](https://github.com/marko-js/language-server/pull/135) [`7344fbc`](https://github.com/marko-js/language-server/commit/7344fbcc538f3464fb19eb963537b30a684e5313) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add syntax highlighting for tag type params and tag type args.
+
+- [#135](https://github.com/marko-js/language-server/pull/135) [`7344fbc`](https://github.com/marko-js/language-server/commit/7344fbcc538f3464fb19eb963537b30a684e5313) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix syntax highlighting of tag parameters with types.
+
+- [#137](https://github.com/marko-js/language-server/pull/137) [`033394c`](https://github.com/marko-js/language-server/commit/033394c185af66077926a9c39a54f184a4b61e7c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve location where import/export insertions are added to the document.
+
+- [#135](https://github.com/marko-js/language-server/pull/135) [`7344fbc`](https://github.com/marko-js/language-server/commit/7344fbcc538f3464fb19eb963537b30a684e5313) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix syntax highlighting some tags where they begin with a special tag followed by a dash (eg "<if-test>")
+
 ## 1.0.1
 
 ### Patch Changes
