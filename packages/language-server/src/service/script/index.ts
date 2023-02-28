@@ -713,10 +713,14 @@ function getTSProject(docFsPath: string): TSProject {
       getScriptKind(filename) {
         switch (path.extname(filename)) {
           case ts.Extension.Js:
+          case ts.Extension.Cjs:
+          case ts.Extension.Mjs:
             return ts.ScriptKind.JS;
           case ts.Extension.Jsx:
             return ts.ScriptKind.JSX;
           case ts.Extension.Ts:
+          case ts.Extension.Cts:
+          case ts.Extension.Mts:
             return ts.ScriptKind.TS;
           case ts.Extension.Tsx:
             return ts.ScriptKind.TSX;
