@@ -22,7 +22,7 @@ export default function getProjectTypeLibs(
   if (cached === undefined) {
     const { resolvedTypeReferenceDirective } = ts.resolveTypeReferenceDirective(
       (project.translator.runtimeTypes as string | undefined) || "marko",
-      path.join(project.rootDir, "_.d.ts"),
+      path.join(host.getCurrentDirectory(), "_.d.ts"),
       host.getCompilationSettings(),
       host
     );

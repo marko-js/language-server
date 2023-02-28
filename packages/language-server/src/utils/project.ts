@@ -1,14 +1,14 @@
+import path from "path";
 import type { TaglibLookup } from "@marko/babel-utils";
 import * as defaultCompiler from "@marko/compiler";
 import * as defaultTranslator from "@marko/translator-default";
-import lassoPackageRoot from "lasso-package-root";
 import resolveFrom from "resolve-from";
 
 const cwd = process.cwd();
 const kTaglib = Symbol("taglib");
 const projectsByDir = new Map<string, MarkoProject>();
+const projectsByCompiler = new Map<string, MarkoProject>();
 const defaultProject: MarkoProject = {
-  rootDir: cwd,
   cache: new Map(),
   lookup: defaultCompiler.taglib.buildLookup(cwd, defaultTranslator),
   compiler: defaultCompiler,
@@ -17,7 +17,6 @@ const defaultProject: MarkoProject = {
 defaultCompiler.configure({ translator: defaultTranslator });
 
 export type MarkoProject = {
-  rootDir: string;
   cache: Map<unknown, unknown>;
   lookup: TaglibLookup;
   compiler: typeof import("@marko/compiler");
@@ -37,61 +36,57 @@ export function getMarkoProject(dir?: string): MarkoProject {
 }
 
 export function getMarkoProjects() {
-  return new Set(projectsByDir.values());
+  return projectsByCompiler.values();
+}
+
+export function clearMarkoProjectCaches() {
+  for (const project of getMarkoProjects()) {
+    project.cache.clear();
+    project.compiler.taglib.clearCaches();
+  }
 }
 
 function loadProject(dir: string): MarkoProject {
-  const rootDir = lassoPackageRoot.getRootDir(dir) || cwd;
-  const pkgPath = resolveFrom.silent(rootDir, "@marko/compiler/package.json");
-  const pkg = pkgPath && require(pkgPath);
-  const cache = new Map();
-  let translator = defaultTranslator;
-  let compiler = defaultCompiler;
+  try {
+    const compilerConfigPath = resolveFrom(dir, "@marko/compiler/config");
+    const cachedProject = projectsByCompiler.get(compilerConfigPath);
+    if (cachedProject) return cachedProject;
 
-  if (pkg && /^5\./.test(pkg.version)) {
-    try {
-      // Ensure translator is available in local package, or fallback to built in compiler.
-      let checkTranslator = ([] as string[])
-        .concat(
-          Object.keys(pkg.dependencies),
-          Object.keys(pkg.peerDependencies),
-          Object.keys(pkg.devDependencies)
-        )
-        .find((name) => /^marko$|^(@\/marko\/|marko-)translator-/.test(name));
+    const [compiler, translator] = [
+      require(path.join(compilerConfigPath, "..")),
+      require(resolveFrom(
+        dir,
+        interopDefault(require(compilerConfigPath)).translator
+      )),
+    ];
 
-      if (checkTranslator === "marko" || !checkTranslator) {
-        // Fallback to compiler default translator
-        checkTranslator = require(resolveFrom(dir, "@marko/compiler/config"))
-          .translator as string;
-      }
+    const project = {
+      cache: new Map(),
+      get lookup() {
+        let lookup: TaglibLookup = project.cache.get(kTaglib);
+        if (lookup === undefined) {
+          // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
+          try {
+            lookup = compiler.taglib.buildLookup(dir, translator);
+          } catch {
+            lookup = defaultProject.lookup;
+          }
 
-      [compiler, translator] = [
-        require(resolveFrom(dir, "@marko/compiler")),
-        require(resolveFrom(dir, checkTranslator)),
-      ];
-      // eslint-disable-next-line no-empty
-    } catch {}
-  }
-
-  return {
-    rootDir,
-    cache,
-    get lookup() {
-      let lookup: TaglibLookup = cache.get(kTaglib);
-      if (lookup === undefined) {
-        // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
-        try {
-          lookup = compiler.taglib.buildLookup(dir, translator);
-        } catch {
-          lookup = defaultProject.lookup;
+          project.cache.set(kTaglib, lookup);
         }
 
-        cache.set(kTaglib, lookup);
-      }
+        return lookup;
+      },
+      compiler,
+      translator,
+    };
+    projectsByCompiler.set(compilerConfigPath, project);
+    return project;
+  } catch {
+    return defaultProject;
+  }
+}
 
-      return lookup;
-    },
-    compiler,
-    translator,
-  };
+function interopDefault(mod: any) {
+  return mod.default || mod;
 }

@@ -56,6 +56,14 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
   return file;
 }
 
+export function clearMarkoCacheForFile(doc: TextDocument) {
+  const { fsPath: filename } = URI.parse(doc.uri);
+  const dirname = filename && path.dirname(filename);
+  const project = getMarkoProject(dirname);
+  const cache = project.cache as Map<TextDocument, MarkoFile>;
+  cache.delete(doc);
+}
+
 /**
  * Run some processing against a parsed document and cache the result.
  * Anytime the document changes, the cache is cleared.
