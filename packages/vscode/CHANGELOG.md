@@ -1,5 +1,21 @@
 # Change Log
 
+## 1.0.4
+
+### Patch Changes
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid using ts.sys.readDirectory for component file scanning (it was extremely slow).
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ignore errors when loading taglibs.
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor the resolver intercepting for Marko files to avoid first putting Marko file resolution through TypeScripts resolver.
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve compiler loading to hit cache more often
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where taglib lookups where not built against the correct directory.
+
+- [#140](https://github.com/marko-js/language-server/pull/140) [`b54f69a`](https://github.com/marko-js/language-server/commit/b54f69af07253c09cf004cf312e3cdb7a26710e5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with [cm][tj]s files not being loaded properly within Marko files.
+
 ## 1.0.3
 
 ### Patch Changes
