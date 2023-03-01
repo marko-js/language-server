@@ -70,14 +70,15 @@ export function patch(
       let cached = cache.get(filename);
       if (!cached) {
         const code = host.readFile(filename, "utf-8") || "";
-        const markoProject = getMarkoProject(path.dirname(filename));
+        const dir = path.dirname(filename);
+        const markoProject = getMarkoProject(dir);
         cached = extractScript({
           ts,
           parsed: parse(code, filename),
-          lookup: markoProject.lookup,
+          lookup: markoProject.getLookup(dir),
           scriptLang: getScriptLang(filename, ts, host, scriptLang),
           runtimeTypesCode: projectTypeLibs.markoTypesCode,
-          componentFilename: getComponentFilename(filename, host),
+          componentFilename: getComponentFilename(filename),
         }) as ExtractedSnapshot;
 
         cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());

@@ -13,7 +13,7 @@ function extractDocumentSymbols({
   uri,
   scheme,
   parsed,
-  project: { lookup },
+  lookup,
 }: MarkoFile): SymbolInformation[] {
   if (scheme !== "file") {
     return [];

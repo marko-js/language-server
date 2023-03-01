@@ -376,7 +376,7 @@ const StyleSheetService: Partial<Plugin> = {
 export { StyleSheetService as default };
 
 function processStyle(doc: TextDocument) {
-  return processDoc(doc, ({ uri, version, parsed, project: { lookup } }) => {
+  return processDoc(doc, ({ uri, version, parsed, lookup }) => {
     const result: ProcessedStyle[] = [];
     for (const [ext, extracted] of extractStyle({
       parsed,

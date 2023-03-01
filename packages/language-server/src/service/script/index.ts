@@ -481,19 +481,21 @@ const ScriptService: Partial<Plugin> = {
 };
 
 function processScript(doc: TextDocument, tsProject: TSProject) {
-  return processDoc(doc, ({ parsed, filename, project: markoProject }) => {
-    const { lookup } = markoProject;
-    const { host, markoScriptLang } = tsProject;
-    return extractScript({
-      ts,
-      parsed,
-      lookup,
-      scriptLang: getScriptLang(filename, ts, host, markoScriptLang),
-      runtimeTypesCode: getProjectTypeLibs(markoProject, ts, host)
-        ?.markoTypesCode,
-      componentFilename: getComponentFilename(filename, host),
-    });
-  });
+  return processDoc(
+    doc,
+    ({ filename, parsed, lookup, project: markoProject }) => {
+      const { host, markoScriptLang } = tsProject;
+      return extractScript({
+        ts,
+        parsed,
+        lookup,
+        scriptLang: getScriptLang(filename, ts, host, markoScriptLang),
+        runtimeTypesCode: getProjectTypeLibs(markoProject, ts, host)
+          ?.markoTypesCode,
+        componentFilename: getComponentFilename(filename),
+      });
+    }
+  );
 }
 
 function getInsertModuleStatementOffset(parsed: Parsed) {
@@ -608,6 +610,7 @@ function getTSProject(docFsPath: string): TSProject {
     ts.parseJsonConfigFileContent(
       (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) || {
         compilerOptions: { lib: ["dom", "node", "esnext"] },
+        include: [],
       },
       ts.sys,
       rootDir,
@@ -631,9 +634,9 @@ function getTSProject(docFsPath: string): TSProject {
   options.rootDir ??= rootDir;
   options.module = ts.ModuleKind.ESNext;
   options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
+  options.declaration = false;
   options.noEmit =
     options.allowJs =
-    options.declaration =
     options.skipLibCheck =
     options.isolatedModules =
     options.resolveJsonModule =

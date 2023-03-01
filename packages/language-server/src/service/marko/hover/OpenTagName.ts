@@ -7,11 +7,7 @@ import type { HoverMeta, HoverResult } from ".";
 
 export function OpenTagName({
   node,
-  file: {
-    parsed,
-    filename,
-    project: { lookup },
-  },
+  file: { parsed, filename, lookup },
 }: HoverMeta<Node.OpenTagName>): HoverResult {
   const tag = node.parent;
   const range = parsed.locationAt(node);

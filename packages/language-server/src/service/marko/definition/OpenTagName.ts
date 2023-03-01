@@ -17,10 +17,7 @@ import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function OpenTagName({
   node,
-  file: {
-    parsed,
-    project: { lookup },
-  },
+  file: { parsed, lookup },
 }: DefinitionMeta<Node.OpenTagName>): DefinitionResult {
   const tag = node.parent;
   let tagDef: TagDefinition | null | undefined;

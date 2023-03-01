@@ -5,19 +5,18 @@ import * as defaultTranslator from "@marko/translator-default";
 import resolveFrom from "resolve-from";
 
 const ignoreErrors = (_err: Error) => {};
-const cwd = process.cwd();
-const kTaglib = Symbol("taglib");
 const projectsByDir = new Map<string, MarkoProject>();
 const projectsByCompiler = new Map<string, MarkoProject>();
 const defaultProject: MarkoProject = {
   cache: new Map(),
-  get lookup() {
-    let lookup = defaultProject.cache.get(kTaglib) as TaglibLookup;
+  getLookup(dir: string) {
+    const key = `taglib:${dir}`;
+    let lookup = defaultProject.cache.get(key) as TaglibLookup;
     if (!lookup) {
       defaultProject.cache.set(
-        kTaglib,
+        key,
         (lookup = defaultCompiler.taglib.buildLookup(
-          cwd,
+          dir,
           defaultTranslator,
           ignoreErrors
         ))
@@ -32,7 +31,7 @@ defaultCompiler.configure({ translator: defaultTranslator });
 
 export type MarkoProject = {
   cache: Map<unknown, unknown>;
-  lookup: TaglibLookup;
+  getLookup(dir: string): TaglibLookup;
   compiler: typeof defaultCompiler;
   translator: any;
 };
@@ -76,17 +75,18 @@ function loadProject(dir: string): MarkoProject {
 
     const project = {
       cache: new Map(),
-      get lookup() {
-        let lookup: TaglibLookup = project.cache.get(kTaglib);
+      getLookup(dir: string) {
+        const key = `taglib:${dir}`;
+        let lookup: TaglibLookup = project.cache.get(key);
         if (lookup === undefined) {
           // Lazily build the lookup, and ensure it's re-created whenever the cache is cleared.
           try {
             lookup = compiler.taglib.buildLookup(dir, translator, ignoreErrors);
           } catch {
-            lookup = defaultProject.lookup;
+            lookup = defaultProject.getLookup(dir);
           }
 
-          project.cache.set(kTaglib, lookup);
+          project.cache.set(key, lookup);
         }
 
         return lookup;

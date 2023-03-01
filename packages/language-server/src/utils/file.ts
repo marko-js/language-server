@@ -1,6 +1,7 @@
 import path from "path";
 
 import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { TaglibLookup } from "@marko/babel-utils";
 import { type Parsed, parse } from "@marko/language-tools";
 import { URI } from "vscode-uri";
 import { MarkoProject, getMarkoProject } from "./project";
@@ -12,6 +13,7 @@ export interface MarkoFile {
   uri: string;
   scheme: string;
   version: number;
+  lookup: TaglibLookup;
   filename: string;
   dirname: string;
   parsed: Parsed;
@@ -38,6 +40,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
     const { version } = doc;
     const code = doc.getText();
     const parsed = parse(code, filename);
+    const lookup = project.getLookup(dirname);
     cache.set(
       doc,
       (file = {
@@ -45,6 +48,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
         uri,
         scheme,
         version,
+        lookup,
         filename,
         dirname,
         parsed,
