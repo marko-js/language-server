@@ -9,11 +9,7 @@ const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/;
 
 export function Import({
   node,
-  file: {
-    parsed,
-    filename,
-    project: { lookup },
-  },
+  file: { parsed, filename, lookup },
 }: CompletionMeta<Node.Import>): CompletionResult {
   // check for import statement
   const value = parsed.read(node);

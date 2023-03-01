@@ -14,10 +14,7 @@ import type { CompletionMeta, CompletionResult } from ".";
 export function AttrName({
   offset,
   node,
-  file: {
-    parsed,
-    project: { lookup },
-  },
+  file: { parsed, lookup },
 }: CompletionMeta<Node.AttrName>): CompletionResult {
   let name = parsed.read(node);
   const modifierIndex = name.indexOf(":");

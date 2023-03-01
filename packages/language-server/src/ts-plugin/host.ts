@@ -70,14 +70,15 @@ export function patch(
       let cached = cache.get(filename);
       if (!cached) {
         const code = host.readFile(filename, "utf-8") || "";
-        const markoProject = getMarkoProject(path.dirname(filename));
+        const dir = path.dirname(filename);
+        const markoProject = getMarkoProject(dir);
         cached = extractScript({
           ts,
           parsed: parse(code, filename),
-          lookup: markoProject.lookup,
+          lookup: markoProject.getLookup(dir),
           scriptLang: getScriptLang(filename, ts, host, scriptLang),
           runtimeTypesCode: projectTypeLibs.markoTypesCode,
-          componentFilename: getComponentFilename(filename, host),
+          componentFilename: getComponentFilename(filename),
         }) as ExtractedSnapshot;
 
         cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
@@ -133,42 +134,23 @@ export function patch(
       options,
       sourceFile
     ) => {
-      // TODO: try avoiding using the base resolveModuleNames for `.marko` files.
-      const resolvedModules: (
-        | ts.ResolvedModuleFull
-        | ts.ResolvedModule
+      let normalModuleNames = moduleNames;
+      let resolvedModules:
         | undefined
-      )[] = resolveModuleNames(
-        moduleNames,
-        containingFile,
-        reusedNames,
-        redirectedReference,
-        options,
-        sourceFile
-      );
+        | (ts.ResolvedModule | ts.ResolvedModuleFull | undefined | null)[];
 
-      for (let i = resolvedModules.length; i--; ) {
+      for (let i = 0; i < moduleNames.length; i++) {
         const moduleName = moduleNames[i];
-        if (!resolvedModules[i] && markoExtReg.test(moduleName)) {
+        const shouldProcess =
+          moduleName[0] !== "*" ? markoExtReg.test(moduleName) : undefined;
+        if (shouldProcess) {
+          let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
             // For fs paths just see if it exists on disk.
-            const resolvedFileName = path.resolve(
-              containingFile,
-              "..",
-              moduleName
-            );
-            if (host.fileExists(resolvedFileName)) {
-              resolvedModules[i] = {
-                resolvedFileName,
-                extension: isMarkoTSFile(resolvedFileName)
-                  ? ts.Extension.Ts
-                  : ts.Extension.Js,
-                isExternalLibraryImport: false,
-              };
-            }
-          } else if (moduleName[0] !== "*") {
+            resolvedFileName = path.resolve(containingFile, "..", moduleName);
+          } else {
             // For other paths we treat it as a node_module and try resolving
-            // that modules `marko.json`. If the `marko.json` exists then we'll
+            // that modules `package.json`. If the `package.json` exists then we'll
             // try resolving the `.marko` file relative to that.
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
@@ -180,25 +162,73 @@ export function patch(
             );
 
             if (resolvedModule) {
-              const resolvedFileName = path.join(
+              resolvedFileName = path.join(
                 resolvedModule.resolvedFileName,
                 "..",
                 relativeModulePath
               );
-              if (host.fileExists(resolvedFileName)) {
-                const isTS = isMarkoTSFile(resolvedFileName);
-                resolvedModules[i] = {
-                  resolvedFileName,
-                  extension: isTS ? ts.Extension.Ts : ts.Extension.Js,
-                  isExternalLibraryImport: isTS,
-                };
-              }
             }
           }
+
+          if (!resolvedModules) {
+            resolvedModules = [];
+            normalModuleNames = [];
+            for (let j = 0; j < i; j++) {
+              resolvedModules.push(undefined);
+              normalModuleNames.push(moduleNames[j]);
+            }
+          }
+
+          resolvedModules.push(
+            resolvedFileName && host.fileExists(resolvedFileName)
+              ? {
+                  resolvedFileName,
+                  extension: isMarkoTSFile(resolvedFileName)
+                    ? ts.Extension.Ts
+                    : ts.Extension.Js,
+                  isExternalLibraryImport: false,
+                }
+              : null
+          );
+        } else if (resolvedModules) {
+          resolvedModules.push(undefined);
         }
       }
 
-      return resolvedModules;
+      const normalResolvedModules = normalModuleNames.length
+        ? resolveModuleNames(
+            normalModuleNames,
+            containingFile,
+            reusedNames,
+            redirectedReference,
+            options,
+            sourceFile
+          )
+        : undefined;
+
+      if (resolvedModules) {
+        if (normalResolvedModules) {
+          for (let i = 0, j = 0; i < resolvedModules.length; i++) {
+            switch (resolvedModules[i]) {
+              case undefined:
+                resolvedModules[i] = normalResolvedModules[j++];
+                break;
+              case null:
+                resolvedModules[i] = undefined;
+                break;
+            }
+          }
+        } else {
+          for (let i = resolvedModules.length; i--; ) {
+            if (resolvedModules[i] === null) {
+              resolvedModules[i] = undefined;
+            }
+          }
+        }
+        return resolvedModules as (ts.ResolvedModule | undefined)[];
+      } else {
+        return normalResolvedModules!;
+      }
     };
   }
 

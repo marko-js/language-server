@@ -1,23 +1,15 @@
+import fs from "fs";
 import path from "path";
-import type { LanguageServiceHost } from "typescript/lib/tsserverlibrary";
 
-export default function getComponentFilename(
-  from: string,
-  host: LanguageServiceHost
-) {
+export default function getComponentFilename(from: string) {
   const dir = path.dirname(from);
   const nameNoExt = path.basename(from, ".marko");
   const isEntry = nameNoExt === "index";
-  const componentFull = path.join(dir, `${nameNoExt}.component.`);
-  const componentBrowserFull = path.join(
-    dir,
-    `${nameNoExt}.component-browser.`
-  );
-  const componentPartial = isEntry ? path.join(dir, "component.") : undefined;
-  const componentBrowserPartial = isEntry
-    ? path.join(dir, "component-browser.")
-    : undefined;
-  for (const entry of host.readDirectory!(dir)) {
+  const componentFull = `${nameNoExt}.component.`;
+  const componentBrowserFull = `${nameNoExt}.component-browser.`;
+  const componentPartial = isEntry ? "component." : undefined;
+  const componentBrowserPartial = isEntry ? "component-browser." : undefined;
+  for (const entry of fs.readdirSync(dir)) {
     // Prefers `component-browser` over `component`.
     if (
       (entry !== from &&
@@ -26,7 +18,7 @@ export default function getComponentFilename(
       entry.startsWith(componentBrowserFull) ||
       entry.startsWith(componentFull)
     ) {
-      return entry;
+      return path.join(dir, entry);
     }
   }
 }

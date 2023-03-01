@@ -9,11 +9,11 @@ import {
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import { getMarkoProject, getMarkoProjects } from "./utils/project";
+import { clearMarkoProjectCaches } from "./utils/project";
+import { clearMarkoCacheForFile } from "./utils/file";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";
 import setupMessages from "./utils/messages";
-import { getFSDir } from "./utils/file";
 import service from "./service";
 
 if (
@@ -89,7 +89,7 @@ documents.setup(connection);
 documents.onFileChange((changeDoc) => {
   if (changeDoc) {
     queueDiagnostic();
-    getMarkoProject(getFSDir(changeDoc)).cache.delete(changeDoc);
+    clearMarkoCacheForFile(changeDoc);
   } else {
     validateDocs();
   }
@@ -225,11 +225,7 @@ for (const command in service.commands) {
 
 function validateDocs() {
   queueDiagnostic();
-
-  for (const project of getMarkoProjects()) {
-    project.cache.clear();
-    project.compiler.taglib.clearCaches();
-  }
+  clearMarkoProjectCaches();
 }
 
 function queueDiagnostic() {

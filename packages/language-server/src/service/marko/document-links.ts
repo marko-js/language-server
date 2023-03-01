@@ -21,7 +21,7 @@ function extractDocumentLinks({
   scheme,
   parsed,
   code,
-  project: { lookup },
+  lookup,
 }: MarkoFile): DocumentLink[] {
   if (scheme !== "file") {
     return [];

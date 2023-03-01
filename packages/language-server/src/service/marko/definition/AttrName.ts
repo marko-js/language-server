@@ -9,10 +9,7 @@ import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function AttrName({
   node,
-  file: {
-    parsed,
-    project: { lookup },
-  },
+  file: { parsed, lookup },
 }: DefinitionMeta<Node.AttrName>): DefinitionResult {
   const tagName = node.parent.parent.nameText;
   const attrName = parsed.read(node);

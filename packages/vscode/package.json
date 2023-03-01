@@ -80,7 +80,7 @@
     "@marko/language-server": "^1.0.1",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@types/vscode": "^1.74.2",
-    "@vscode/test-electron": "^2.2.3",
+    "@vscode/test-electron": "^2.3.0",
     "ovsx": "^0.8.0",
     "tsx": "^3.12.3",
     "vsce": "^2.10.2",

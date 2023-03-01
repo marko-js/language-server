@@ -7,11 +7,7 @@ import type { CompletionMeta, CompletionResult } from ".";
 
 export function OpenTagName({
   node,
-  file: {
-    parsed,
-    filename,
-    project: { lookup },
-  },
+  file: { parsed, filename, lookup },
 }: CompletionMeta<Node.OpenTagName>): CompletionResult {
   const tag = node.parent;
   const range = parsed.locationAt(node);
