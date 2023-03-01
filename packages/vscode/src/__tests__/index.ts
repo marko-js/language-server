@@ -1,3 +1,4 @@
+import path from "path";
 import Mocha from "mocha";
 import { stream } from "fast-glob";
 import { mochaHooks } from "mocha-snap";
@@ -12,9 +13,12 @@ export async function run() {
     timeout: 20000,
     rootHooks: mochaHooks,
   });
-  const files = stream("**/*.test.ts", {
-    absolute: true,
-  }) as AsyncIterable<string>;
+  const files = stream(
+    path.resolve(__dirname, "../../src/__tests__/**/*.test.ts"),
+    {
+      absolute: true,
+    }
+  ) as AsyncIterable<string>;
 
   for await (const file of files) {
     mocha.addFile(file);
