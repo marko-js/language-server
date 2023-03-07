@@ -15,10 +15,10 @@ interface Token {
 }
 
 const emptyView = {
-  offsetAt(_offset: number) {
+  offsetAt(_offset: number): undefined {
     return;
   },
-  rangeAt(_start: number, _end: number) {
+  rangeAt(_start: number, _end: number): undefined {
     return;
   },
 };
@@ -42,7 +42,7 @@ export class Extractor {
     return this;
   }
 
-  copy(range: Range | string | false | void | null) {
+  copy(range: Range | string | false | void | undefined | null) {
     if (range) {
       if (typeof range === "string") {
         this.#generated += range;
@@ -91,11 +91,11 @@ export class Extracted {
     );
   }
 
-  sourceOffsetAt(generatedOffset: number): number | void {
+  sourceOffsetAt(generatedOffset: number): number | undefined {
     return this.#generatedToSource.offsetAt(generatedOffset);
   }
 
-  sourcePositionAt(generatedOffset: number): Position | void {
+  sourcePositionAt(generatedOffset: number): Position | undefined {
     const sourceOffset = this.sourceOffsetAt(generatedOffset);
     if (sourceOffset !== undefined)
       return this.#parsed.positionAt(sourceOffset);
@@ -114,11 +114,11 @@ export class Extracted {
     }
   }
 
-  generatedOffsetAt(sourceOffset: number): number | void {
+  generatedOffsetAt(sourceOffset: number): number | undefined {
     return this.#sourceToGenerated.offsetAt(sourceOffset);
   }
 
-  generatedPositionAt(sourceOffset: number): Position | void {
+  generatedPositionAt(sourceOffset: number): Position | undefined {
     const generatedOffset = this.generatedOffsetAt(sourceOffset);
     if (generatedOffset !== undefined) {
       return getPosition(this.#generatedLines, generatedOffset);
