@@ -77,10 +77,10 @@ const requiredTSCompilerOptions: ts.CompilerOptions = {
   emitDecoratorMetadata: false,
 };
 const defaultTSConfig = {
+  include: [],
   compilerOptions: {
     lib: ["dom", "node", "esnext"],
   } satisfies ts.CompilerOptions,
-  include: [],
 };
 const extraTSCompilerExtensions: readonly ts.FileExtensionInfo[] = [
   {

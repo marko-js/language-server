@@ -22,7 +22,7 @@ export interface ExtractedSnapshot extends Extracted {
 export function patch(
   ts: typeof import("typescript/lib/tsserverlibrary"),
   scriptLang: ScriptLang,
-  cache: Map<string, ExtractedSnapshot>,
+  cache: Map<string, ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }>,
   host: ts.LanguageServiceHost
 ) {
   const projectTypeLibs = getProjectTypeLibs(
@@ -71,17 +71,23 @@ export function patch(
       if (!cached) {
         const code = host.readFile(filename, "utf-8") || "";
         const dir = path.dirname(filename);
-        const markoProject = getMarkoProject(dir);
-        cached = extractScript({
-          ts,
-          parsed: parse(code, filename),
-          lookup: markoProject.getLookup(dir),
-          scriptLang: getScriptLang(filename, ts, host, scriptLang),
-          runtimeTypesCode: projectTypeLibs.markoTypesCode,
-          componentFilename: getComponentFilename(filename),
-        }) as ExtractedSnapshot;
 
-        cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
+        try {
+          const markoProject = getMarkoProject(dir);
+          cached = extractScript({
+            ts,
+            parsed: parse(code, filename),
+            lookup: markoProject.getLookup(dir),
+            scriptLang: getScriptLang(filename, ts, host, scriptLang),
+            runtimeTypesCode: projectTypeLibs.markoTypesCode,
+            componentFilename: getComponentFilename(filename),
+          }) as ExtractedSnapshot;
+
+          cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
+        } catch {
+          cached = { snapshot: ts.ScriptSnapshot.fromString("") };
+        }
+
         cache.set(filename, cached);
       }
 

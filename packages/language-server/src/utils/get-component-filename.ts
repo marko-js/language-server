@@ -9,7 +9,7 @@ export default function getComponentFilename(from: string) {
   const componentBrowserFull = `${nameNoExt}.component-browser.`;
   const componentPartial = isEntry ? "component." : undefined;
   const componentBrowserPartial = isEntry ? "component-browser." : undefined;
-  for (const entry of fs.readdirSync(dir)) {
+  for (const entry of tryReaddirSync(dir)) {
     // Prefers `component-browser` over `component`.
     if (
       (entry !== from &&
@@ -20,5 +20,13 @@ export default function getComponentFilename(from: string) {
     ) {
       return path.join(dir, entry);
     }
+  }
+}
+
+function tryReaddirSync(dir: string) {
+  try {
+    return fs.readdirSync(dir);
+  } catch {
+    return [];
   }
 }
