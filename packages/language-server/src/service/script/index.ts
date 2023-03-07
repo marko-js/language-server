@@ -40,7 +40,8 @@ import getProjectTypeLibs from "../../utils/get-runtime-types";
 import getScriptLang from "../../utils/get-script-lang";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
-const IGNORE_DIAG_REG = /^(?:Expression|Identifier|['"][^\w]['"]) expected.$/;
+const IGNORE_DIAG_REG =
+  /^(?:(?:Expression|Identifier|['"][^\w]['"]) expected|Invalid character)\b/i;
 
 interface TSProject {
   rootDir: string;
@@ -60,6 +61,34 @@ const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
 const colorModifierReg = /\bcolor\b/;
 const localInternalsPrefix = "__marko_internal_";
+const requiredTSCompilerOptions: ts.CompilerOptions = {
+  module: ts.ModuleKind.ESNext,
+  moduleResolution: ts.ModuleResolutionKind.NodeJs,
+  noEmit: true,
+  allowJs: true,
+  composite: false,
+  declaration: false,
+  skipLibCheck: true,
+  isolatedModules: true,
+  resolveJsonModule: true,
+  skipDefaultLibCheck: true,
+  emitDeclarationOnly: false,
+  allowNonTsExtensions: true,
+  emitDecoratorMetadata: false,
+};
+const defaultTSConfig = {
+  compilerOptions: {
+    lib: ["dom", "node", "esnext"],
+  } satisfies ts.CompilerOptions,
+  include: [],
+};
+const extraTSCompilerExtensions: readonly ts.FileExtensionInfo[] = [
+  {
+    extension: ".marko",
+    isMixedContent: false,
+    scriptKind: ts.ScriptKind.Deferred,
+  },
+];
 
 const ScriptService: Partial<Plugin> = {
   commands: {
@@ -608,41 +637,20 @@ function getTSProject(docFsPath: string): TSProject {
 
   const { fileNames, options, projectReferences } =
     ts.parseJsonConfigFileContent(
-      (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) || {
-        compilerOptions: { lib: ["dom", "node", "esnext"] },
-        include: [],
-      },
+      (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) ||
+        defaultTSConfig,
       ts.sys,
       rootDir,
-      undefined,
+      requiredTSCompilerOptions,
       configPath,
       undefined,
-      [
-        {
-          extension: ".marko",
-          isMixedContent: false,
-          scriptKind: ts.ScriptKind.Deferred,
-        },
-      ]
+      extraTSCompilerExtensions
     );
 
   // Only ts like files can inject globals into the project, so we filter out everything else.
   const potentialGlobalFiles = new Set<string>(
     fileNames.filter((file) => /\.[cm]?ts$/.test(file))
   );
-
-  options.rootDir ??= rootDir;
-  options.module = ts.ModuleKind.ESNext;
-  options.moduleResolution = ts.ModuleResolutionKind.NodeJs;
-  options.declaration = false;
-  options.noEmit =
-    options.allowJs =
-    options.skipLibCheck =
-    options.isolatedModules =
-    options.resolveJsonModule =
-    options.skipDefaultLibCheck =
-    options.allowNonTsExtensions =
-      true;
 
   const tsPkgFile =
     configPath &&
