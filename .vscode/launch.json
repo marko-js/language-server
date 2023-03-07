@@ -22,11 +22,11 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
-        "${workspaceRoot}/packages/language-tools/src/__tests__/fixtures"
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode",
+        "${workspaceFolder}/packages/language-tools/src/__tests__/fixtures"
       ],
       "outFiles": [
-        "${workspaceRoot}/**/dist/*.js",
+        "${workspaceFolder}/**/dist/*.js",
         "!**/node_modules/**"
       ],
       "env": {
@@ -43,11 +43,11 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}/packages/vscode",
-        "--extensionTestsPath=${workspaceRoot}/packages/vscode/dist/__tests__/index.js"
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode",
+        "--extensionTestsPath=${workspaceFolder}/packages/vscode/dist/__tests__/index.js"
       ],
       "outFiles": [
-        "${workspaceRoot}/**/dist/*.js",
+        "${workspaceFolder}/**/dist/*.js",
         "!**/node_modules/**"
       ],
       "presentation": {
