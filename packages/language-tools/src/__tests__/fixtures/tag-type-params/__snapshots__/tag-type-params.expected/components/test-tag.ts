@@ -5,11 +5,15 @@ export interface Input<T, U> {
 abstract class Component<T, U> extends Marko.Component<Input<T, U>> {}
 export { type Component };
 function __marko_internal_template<T, U>(this: void) {
-  const input = 1 as any as Input<T, U>;
-  const component = 1 as any as Component<T, U>;
-  const out = Marko._.out;
+  const input = Marko._.any as Input<T, U>;
+  const component = Marko._.any as Component<T, U>;
   const state = Marko._.state(component);
-  Marko._.noop({ input, out, component, state });
+  const $global = Marko._.getGlobal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
+    (Marko._.error, Marko._.any as MarkoRun.Context)
+  );
+  const out = Marko._.out;
+  Marko._.noop({ input, component, state, out, $global });
   const __marko_internal_return = {
     return: Marko._.returnTag({
       value: 1 as unknown as U,

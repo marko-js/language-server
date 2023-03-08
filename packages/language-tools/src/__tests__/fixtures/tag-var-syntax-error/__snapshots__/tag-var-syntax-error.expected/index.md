@@ -18,80 +18,80 @@
 ```
 
 ## Generated Diagnostics
-### Ln 17, Col 14
+### Ln 21, Col 14
 ```ts
-  15 |
-  16 | }));
-> 17 | const { %x } = Marko._.rendered.returns[1].value;
+  19 |
+  20 | }));
+> 21 | const { %x } = Marko._.rendered.returns[1].value;
      |              ^ Declaration or statement expected. This '=' follows a block of statements, so if you intended to write a destructuring assignment, you might need to wrap the the whole assignment in parentheses.
-  18 | return;
-  19 | })();
-  20 | export default new (
+  22 | return;
+  23 | })();
+  24 | export default new (
 ```
 
-### Ln 17, Col 16
+### Ln 21, Col 16
 ```ts
-  15 |
-  16 | }));
-> 17 | const { %x } = Marko._.rendered.returns[1].value;
+  19 |
+  20 | }));
+> 21 | const { %x } = Marko._.rendered.returns[1].value;
      |                ^^^^^ ')' expected.
-  18 | return;
-  19 | })();
-  20 | export default new (
+  22 | return;
+  23 | })();
+  24 | export default new (
 ```
 
-### Ln 17, Col 44
+### Ln 21, Col 44
 ```ts
-  15 |
-  16 | }));
-> 17 | const { %x } = Marko._.rendered.returns[1].value;
+  19 |
+  20 | }));
+> 21 | const { %x } = Marko._.rendered.returns[1].value;
      |                                            ^^^^^ Property 'value' does not exist on type 'never'.
-  18 | return;
-  19 | })();
-  20 | export default new (
+  22 | return;
+  23 | })();
+  24 | export default new (
 ```
 
-### Ln 19, Col 1
+### Ln 23, Col 1
 ```ts
-  17 | const { %x } = Marko._.rendered.returns[1].value;
-  18 | return;
-> 19 | })();
+  21 | const { %x } = Marko._.rendered.returns[1].value;
+  22 | return;
+> 23 | })();
      | ^ Declaration or statement expected.
-  20 | export default new (
-  21 |   class Template extends Marko._.Template<{
-  22 |     
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
 ```
 
-### Ln 19, Col 2
+### Ln 23, Col 2
 ```ts
-  17 | const { %x } = Marko._.rendered.returns[1].value;
-  18 | return;
-> 19 | })();
+  21 | const { %x } = Marko._.rendered.returns[1].value;
+  22 | return;
+> 23 | })();
      |  ^ Declaration or statement expected.
-  20 | export default new (
-  21 |   class Template extends Marko._.Template<{
-  22 |     
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
 ```
 
-### Ln 19, Col 3
+### Ln 23, Col 3
 ```ts
-  17 | const { %x } = Marko._.rendered.returns[1].value;
-  18 | return;
-> 19 | })();
+  21 | const { %x } = Marko._.rendered.returns[1].value;
+  22 | return;
+> 23 | })();
      |   ^^^ Unreachable code detected.
-  20 | export default new (
-  21 |   class Template extends Marko._.Template<{
-  22 |     
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
 ```
 
-### Ln 19, Col 4
+### Ln 23, Col 4
 ```ts
-  17 | const { %x } = Marko._.rendered.returns[1].value;
-  18 | return;
-> 19 | })();
+  21 | const { %x } = Marko._.rendered.returns[1].value;
+  22 | return;
+> 23 | })();
      |    ^ Expression expected.
-  20 | export default new (
-  21 |   class Template extends Marko._.Template<{
-  22 |     
+  24 | export default new (
+  25 |   class Template extends Marko._.Template<{
+  26 |     
 ```
 

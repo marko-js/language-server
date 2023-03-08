@@ -104,91 +104,91 @@
 ```
 
 ## Generated Diagnostics
-### Ln 13, Col 1
+### Ln 17, Col 1
 ```ts
-  11 |  "data-x": (
-  12 | #2
-> 13 | ),
+  15 |  "data-x": (
+  16 | #2
+> 17 | ),
      | ^ ':' expected.
-  14 |
-  15 | });
-  16 | Marko._.renderNativeTag("div")()()({
+  18 |
+  19 | });
+  20 | Marko._.renderNativeTag("div")()()({
 ```
 
-### Ln 15, Col 1
+### Ln 19, Col 1
 ```ts
-  13 | ),
-  14 |
-> 15 | });
+  17 | ),
+  18 |
+> 19 | });
      | ^ Expression expected.
-  16 | Marko._.renderNativeTag("div")()()({
-  17 |  "onClick"(a, %b){
-  18 |   console.log(#hello!);
+  20 | Marko._.renderNativeTag("div")()()({
+  21 |  "onClick"(a, %b){
+  22 |   console.log(#hello!);
 ```
 
-### Ln 21, Col 1
+### Ln 25, Col 1
 ```ts
-  19 | },
-  20 |
-> 21 | });
+  23 | },
+  24 |
+> 25 | });
      | ^ Declaration or statement expected.
-  22 | return;
-  23 | })();
-  24 | export default new (
+  26 | return;
+  27 | })();
+  28 | export default new (
 ```
 
-### Ln 21, Col 2
+### Ln 25, Col 2
 ```ts
-  19 | },
-  20 |
-> 21 | });
+  23 | },
+  24 |
+> 25 | });
      |  ^ Declaration or statement expected.
-  22 | return;
-  23 | })();
-  24 | export default new (
+  26 | return;
+  27 | })();
+  28 | export default new (
 ```
 
-### Ln 23, Col 1
+### Ln 27, Col 1
 ```ts
-  21 | });
-  22 | return;
-> 23 | })();
+  25 | });
+  26 | return;
+> 27 | })();
      | ^ Declaration or statement expected.
-  24 | export default new (
-  25 |   class Template extends Marko._.Template<{
-  26 |     
+  28 | export default new (
+  29 |   class Template extends Marko._.Template<{
+  30 |     
 ```
 
-### Ln 23, Col 2
+### Ln 27, Col 2
 ```ts
-  21 | });
-  22 | return;
-> 23 | })();
+  25 | });
+  26 | return;
+> 27 | })();
      |  ^ Declaration or statement expected.
-  24 | export default new (
-  25 |   class Template extends Marko._.Template<{
-  26 |     
+  28 | export default new (
+  29 |   class Template extends Marko._.Template<{
+  30 |     
 ```
 
-### Ln 23, Col 3
+### Ln 27, Col 3
 ```ts
-  21 | });
-  22 | return;
-> 23 | })();
+  25 | });
+  26 | return;
+> 27 | })();
      |   ^^^ Unreachable code detected.
-  24 | export default new (
-  25 |   class Template extends Marko._.Template<{
-  26 |     
+  28 | export default new (
+  29 |   class Template extends Marko._.Template<{
+  30 |     
 ```
 
-### Ln 23, Col 4
+### Ln 27, Col 4
 ```ts
-  21 | });
-  22 | return;
-> 23 | })();
+  25 | });
+  26 | return;
+> 27 | })();
      |    ^ Expression expected.
-  24 | export default new (
-  25 |   class Template extends Marko._.Template<{
-  26 |     
+  28 | export default new (
+  29 |   class Template extends Marko._.Template<{
+  30 |     
 ```
 

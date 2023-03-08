@@ -289,25 +289,26 @@ class ScriptExtractor {
     }
 
     if (this.#scriptLang === ScriptLang.ts) {
-      this.#extractor
-        .write(`function ${templateName}${typeParamsStr}(this: void) {
-  const input = 1 as any as Input${typeArgsStr};
-  const component = 1 as any as Component${typeArgsStr};\n`);
+      this.#extractor.write(
+        `function ${templateName}${typeParamsStr}(this: void) {\n`
+      );
     } else {
       this.#extractor.write(`/**${jsDocTemplateTagsStr}
 * @this {void}
 */
-function ${templateName}() {
-  const input = /** @type {Input${typeArgsStr}} */(${varShared("any")});
-  const component = /** @type {Component${typeArgsStr}} */(${varShared(
-        "any"
-      )});\n`);
+function ${templateName}() {\n`);
     }
 
     this.#extractor.write(`\
-  const out = ${varShared("out")};
+  const input = ${this.#getCastedType(`Input${typeArgsStr}`)};
+  const component = ${this.#getCastedType(`Component${typeArgsStr}`)};
   const state = ${varShared("state")}(component);
-  ${varShared("noop")}({ input, out, component, state });\n`);
+  const $global = ${varShared("getGlobal")}(
+    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
+    (${varShared("error")}, ${this.#getCastedType("MarkoRun.Context")})
+  );
+  const out = ${varShared("out")};
+  ${varShared("noop")}({ input, component, state, out, $global });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
 
@@ -1262,6 +1263,12 @@ constructor(_?: Return) {}
     }
 
     this.#extractor.write("}");
+  }
+
+  #getCastedType(type: string) {
+    return this.#scriptLang === ScriptLang.ts
+      ? `${varShared("any")} as ${type}`
+      : `/** @type {${type}} */(${varShared("any")})`;
   }
 
   #copyWithMutationsReplaced(range: Range) {

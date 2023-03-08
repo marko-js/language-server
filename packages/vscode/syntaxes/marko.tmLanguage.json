@@ -206,7 +206,7 @@
         { "include": "#concise-semi-eol" },
         {
           "comment": "Matches unenclosed concise mode attributes.",
-          "begin": "(?!^)[ \\t]",
+          "begin": "(?!^)[, \\t]",
           "end": "(?=--)|(?=\\n)",
           "patterns": [
             { "include": "#concise-semi-eol" },

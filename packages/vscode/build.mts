@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(thisDir, "dist");
 const require = createRequire(thisDir);
+const isProd = process.env.NODE_ENV === "production";
 
 await Promise.all([
   (async () => {
@@ -38,7 +39,7 @@ await Promise.all([
   ),
   build({
     bundle: true,
-    minify: true,
+    minify: isProd,
     sourcesContent: false,
     absWorkingDir: thisDir,
     metafile: true,
@@ -82,6 +83,8 @@ await Promise.all([
       },
     ],
   }).then(async (result) => {
-    console.log(await analyzeMetafile(result.metafile));
+    if (isProd) {
+      console.log(await analyzeMetafile(result.metafile));
+    }
   }),
 ]);

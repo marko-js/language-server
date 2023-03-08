@@ -519,8 +519,12 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
         parsed,
         lookup,
         scriptLang: getScriptLang(filename, ts, host, markoScriptLang),
-        runtimeTypesCode: getProjectTypeLibs(markoProject, ts, host)
-          ?.markoTypesCode,
+        runtimeTypesCode: getProjectTypeLibs(
+          tsProject.rootDir,
+          markoProject,
+          ts,
+          host
+        )?.markoTypesCode,
         componentFilename: getComponentFilename(filename),
       });
     }
@@ -647,6 +651,8 @@ function getTSProject(docFsPath: string): TSProject {
       extraTSCompilerExtensions
     );
 
+  options.rootDir ??= rootDir;
+
   // Only ts like files can inject globals into the project, so we filter out everything else.
   const potentialGlobalFiles = new Set<string>(
     fileNames.filter((file) => /\.[cm]?ts$/.test(file))
@@ -762,7 +768,12 @@ function getTSProject(docFsPath: string): TSProject {
     service: ts.createLanguageService(host),
     markoProject,
     markoScriptLang,
-    markoProjectTypeLibs: getProjectTypeLibs(markoProject, ts, host),
+    markoProjectTypeLibs: getProjectTypeLibs(
+      options.rootDir!,
+      markoProject,
+      ts,
+      host
+    ),
   };
 
   projectCache.set(rootDir, tsProject);
