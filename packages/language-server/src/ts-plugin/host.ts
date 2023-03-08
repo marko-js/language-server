@@ -25,11 +25,25 @@ export function patch(
   cache: Map<string, ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }>,
   host: ts.LanguageServiceHost
 ) {
+  const rootDir = host.getCurrentDirectory();
   const projectTypeLibs = getProjectTypeLibs(
-    getMarkoProject(host.getCurrentDirectory()),
+    rootDir,
+    getMarkoProject(rootDir),
     ts,
     host
   );
+  const projectTypeLibsFiles = [
+    projectTypeLibs.internalTypesFile,
+    projectTypeLibs.markoTypesFile,
+  ];
+
+  if (projectTypeLibs.markoRunTypesFile) {
+    projectTypeLibsFiles.push(projectTypeLibs.markoRunTypesFile);
+  }
+
+  if (projectTypeLibs.markoRunGeneratedTypesFile) {
+    projectTypeLibsFiles.push(projectTypeLibs.markoRunGeneratedTypesFile);
+  }
 
   const isMarkoTSFile = (fileName: string) =>
     getScriptLang(fileName, ts, host, scriptLang) === ScriptLang.ts;
@@ -39,11 +53,7 @@ export function patch(
    */
   const getScriptFileNames = host.getScriptFileNames.bind(host);
   host.getScriptFileNames = () => [
-    ...new Set([
-      ...getScriptFileNames(),
-      projectTypeLibs.internalTypesFile,
-      projectTypeLibs.markoTypesFile,
-    ]),
+    ...new Set(projectTypeLibsFiles.concat(getScriptFileNames())),
   ];
 
   /**

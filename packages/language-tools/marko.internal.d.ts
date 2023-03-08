@@ -19,6 +19,10 @@ declare global {
       export const never: never;
       export const any: any;
 
+      export function getGlobal<Override>(
+        override: Override
+      ): 1 extends Override & 0 ? Marko.Global : Override;
+
       export function attrTagNames<Input, Keys extends keyof Input>(
         input: Input
       ): Record<string, never> & {

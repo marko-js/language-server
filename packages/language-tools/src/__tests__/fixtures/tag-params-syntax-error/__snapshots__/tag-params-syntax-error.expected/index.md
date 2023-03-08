@@ -45,106 +45,106 @@
 ```
 
 ## Generated Diagnostics
-### Ln 13, Col 3
+### Ln 17, Col 3
 ```ts
-  11 | ["renderBody"/*custom*/]: ((
-  12 | a, %b
-> 13 | ) => {
+  15 | ["renderBody"/*custom*/]: ((
+  16 | a, %b
+> 17 | ) => {
      |   ^^ ')' expected.
-  14 | return Marko._.voidReturn;
-  15 | })
-  16 | });
+  18 | return Marko._.voidReturn;
+  19 | })
+  20 | });
 ```
 
-### Ln 13, Col 6
+### Ln 17, Col 6
 ```ts
-  11 | ["renderBody"/*custom*/]: ((
-  12 | a, %b
-> 13 | ) => {
+  15 | ["renderBody"/*custom*/]: ((
+  16 | a, %b
+> 17 | ) => {
      |      ^ Property assignment expected.
-  14 | return Marko._.voidReturn;
-  15 | })
-  16 | });
+  18 | return Marko._.voidReturn;
+  19 | })
+  20 | });
 ```
 
-### Ln 13, Col 6
+### Ln 17, Col 6
 ```ts
-  11 | ["renderBody"/*custom*/]: ((
-  12 | a, %b
-> 13 | ) => {
+  15 | ["renderBody"/*custom*/]: ((
+  16 | a, %b
+> 17 | ) => {
      |      ^
-> 14 | return Marko._.voidReturn;
+> 18 | return Marko._.voidReturn;
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 15 | })
+> 19 | })
      | ^^ Expected 1 arguments, but got 2.
-  16 | });
-  17 | return;
-  18 | })();
+  20 | });
+  21 | return;
+  22 | })();
 ```
 
-### Ln 14, Col 8
+### Ln 18, Col 8
 ```ts
-  12 | a, %b
-  13 | ) => {
-> 14 | return Marko._.voidReturn;
+  16 | a, %b
+  17 | ) => {
+> 18 | return Marko._.voidReturn;
      |        ^^^^^ ':' expected.
-  15 | })
-  16 | });
-  17 | return;
+  19 | })
+  20 | });
+  21 | return;
 ```
 
-### Ln 14, Col 26
+### Ln 18, Col 26
 ```ts
-  12 | a, %b
-  13 | ) => {
-> 14 | return Marko._.voidReturn;
+  16 | a, %b
+  17 | ) => {
+> 18 | return Marko._.voidReturn;
      |                          ^ ',' expected.
-  15 | })
-  16 | });
-  17 | return;
+  19 | })
+  20 | });
+  21 | return;
 ```
 
-### Ln 18, Col 1
+### Ln 22, Col 1
 ```ts
-  16 | });
-  17 | return;
-> 18 | })();
+  20 | });
+  21 | return;
+> 22 | })();
      | ^ Declaration or statement expected.
-  19 | export default new (
-  20 |   class Template extends Marko._.Template<{
-  21 |     
+  23 | export default new (
+  24 |   class Template extends Marko._.Template<{
+  25 |     
 ```
 
-### Ln 18, Col 2
+### Ln 22, Col 2
 ```ts
-  16 | });
-  17 | return;
-> 18 | })();
+  20 | });
+  21 | return;
+> 22 | })();
      |  ^ Declaration or statement expected.
-  19 | export default new (
-  20 |   class Template extends Marko._.Template<{
-  21 |     
+  23 | export default new (
+  24 |   class Template extends Marko._.Template<{
+  25 |     
 ```
 
-### Ln 18, Col 3
+### Ln 22, Col 3
 ```ts
-  16 | });
-  17 | return;
-> 18 | })();
+  20 | });
+  21 | return;
+> 22 | })();
      |   ^^^ Unreachable code detected.
-  19 | export default new (
-  20 |   class Template extends Marko._.Template<{
-  21 |     
+  23 | export default new (
+  24 |   class Template extends Marko._.Template<{
+  25 |     
 ```
 
-### Ln 18, Col 4
+### Ln 22, Col 4
 ```ts
-  16 | });
-  17 | return;
-> 18 | })();
+  20 | });
+  21 | return;
+> 22 | })();
      |    ^ Expression expected.
-  19 | export default new (
-  20 |   class Template extends Marko._.Template<{
-  21 |     
+  23 | export default new (
+  24 |   class Template extends Marko._.Template<{
+  25 |     
 ```
 

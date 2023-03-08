@@ -14,11 +14,15 @@ abstract class Component<T extends string> extends Marko.Component<Input<T>> {
 }
 export { type Component };
 (function <T extends string>(this: void) {
-  const input = 1 as any as Input<T>;
-  const component = 1 as any as Component<T>;
-  const out = Marko._.out;
+  const input = Marko._.any as Input<T>;
+  const component = Marko._.any as Component<T>;
   const state = Marko._.state(component);
-  Marko._.noop({ input, out, component, state });
+  const $global = Marko._.getGlobal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
+    (Marko._.error, Marko._.any as MarkoRun.Context)
+  );
+  const out = Marko._.out;
+  Marko._.noop({ input, component, state, out, $global });
   state.name;
   return;
 })();
