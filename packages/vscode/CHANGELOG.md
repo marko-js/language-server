@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.0.5
+
+### Patch Changes
+
+- [#142](https://github.com/marko-js/language-server/pull/142) [`0f14402`](https://github.com/marko-js/language-server/commit/0f14402328f86ab123cdbf098cf850620a0e76b7) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typing of @marko/run projects.
+
+- [#142](https://github.com/marko-js/language-server/pull/142) [`ec79775`](https://github.com/marko-js/language-server/commit/ec7977588385accdddc7375ae0f10d5740877c0c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid crashing ts plugin if there's an error in Marko's ts plugin. Better handle some script extraction errors.
+
+- [#142](https://github.com/marko-js/language-server/pull/142) [`fcf9553`](https://github.com/marko-js/language-server/commit/fcf9553e89f3e64b9dc03716cccdd437bbd1dc7a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve the ts language server default / required configs.
+
 ## 1.0.4
 
 ### Patch Changes

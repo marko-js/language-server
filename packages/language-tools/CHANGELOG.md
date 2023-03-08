@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 1.0.1
+
+### Patch Changes
+
+- [#142](https://github.com/marko-js/language-server/pull/142) [`0f14402`](https://github.com/marko-js/language-server/commit/0f14402328f86ab123cdbf098cf850620a0e76b7) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typing of @marko/run projects.
+
 ## 1.0.0
 
 ### Major Changes
