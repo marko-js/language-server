@@ -18,7 +18,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
   return {
     getExternalFiles(project) {
       return project
-        .getFileNames(true, true)
+        .getFileNames(false, true)
         .filter((it) => markoExtReg.test(it));
     },
     create(info) {
@@ -57,7 +57,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
             ScriptLang.ts
           : ScriptLang.js;
         const extractCache = new Map<string, ExtractedSnapshot>();
-        patch(ts, markoScriptLang, extractCache, lsh);
+        patch(ts, markoScriptLang, extractCache, lsh, ps);
 
         /**
          * Here we invalidate our snapshot cache when TypeScript invalidates the file.
