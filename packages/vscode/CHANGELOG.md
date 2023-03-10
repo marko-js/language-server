@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.6
+
+### Patch Changes
+
+- [#144](https://github.com/marko-js/language-server/pull/144) [`6c163f0`](https://github.com/marko-js/language-server/commit/6c163f09ab22a1cd06d736ff3a30ff533429201b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with ScriptInfo not properly being registered via ts-plugin.
+
 ## 1.0.5
 
 ### Patch Changes
