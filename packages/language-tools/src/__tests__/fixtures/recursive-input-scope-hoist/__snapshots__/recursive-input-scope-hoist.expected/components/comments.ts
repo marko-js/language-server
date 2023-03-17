@@ -1,10 +1,10 @@
 interface Comment {
   id: string;
   renderBody: Marko.Body;
-  comment?: Marko.Repeatable<Comment>;
+  comment?: Marko.RepeatableAttrTag<Comment>;
 }
 export interface Input {
-  comment: Marko.Repeatable<Comment>;
+  comment: Marko.RepeatableAttrTag<Comment>;
 }
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };

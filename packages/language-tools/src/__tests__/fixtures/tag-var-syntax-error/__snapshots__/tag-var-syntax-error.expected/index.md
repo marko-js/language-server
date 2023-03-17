@@ -23,7 +23,7 @@
   19 |
   20 | }));
 > 21 | const { %x } = Marko._.rendered.returns[1].value;
-     |              ^ Declaration or statement expected. This '=' follows a block of statements, so if you intended to write a destructuring assignment, you might need to wrap the the whole assignment in parentheses.
+     |              ^ Declaration or statement expected. This '=' follows a block of statements, so if you intended to write a destructuring assignment, you might need to wrap the whole assignment in parentheses.
   22 | return;
   23 | })();
   24 | export default new (

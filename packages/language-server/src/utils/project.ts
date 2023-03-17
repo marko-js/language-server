@@ -1,14 +1,16 @@
 import path from "path";
+import { createRequire } from "module";
 import type { TaglibLookup } from "@marko/babel-utils";
 import * as defaultCompiler from "@marko/compiler";
 import * as defaultTranslator from "@marko/translator-default";
-import resolveFrom from "resolve-from";
 
 const ignoreErrors = (_err: Error) => {};
 const projectsByDir = new Map<string, MarkoProject>();
 const projectsByCompiler = new Map<string, MarkoProject>();
 const defaultProject: MarkoProject = {
   cache: new Map(),
+  compiler: defaultCompiler,
+  translator: defaultTranslator,
   getLookup(dir: string) {
     const key = `taglib:${dir}`;
     let lookup = defaultProject.cache.get(key) as TaglibLookup;
@@ -24,16 +26,14 @@ const defaultProject: MarkoProject = {
     }
     return lookup;
   },
-  compiler: defaultCompiler,
-  translator: defaultTranslator,
 };
 defaultCompiler.configure({ translator: defaultTranslator });
 
 export type MarkoProject = {
   cache: Map<unknown, unknown>;
-  getLookup(dir: string): TaglibLookup;
   compiler: typeof defaultCompiler;
   translator: any;
+  getLookup(dir: string): TaglibLookup;
 };
 
 export function getMarkoProject(dir?: string): MarkoProject {
@@ -61,20 +61,18 @@ export function clearMarkoProjectCaches() {
 
 function loadProject(dir: string): MarkoProject {
   try {
-    const compilerConfigPath = resolveFrom(dir, "@marko/compiler/config");
+    const require = createRequire(dir);
+    const compilerConfigPath = require.resolve("@marko/compiler/config");
     const cachedProject = projectsByCompiler.get(compilerConfigPath);
     if (cachedProject) return cachedProject;
 
-    const [compiler, translator] = [
-      require(path.join(compilerConfigPath, "..")),
-      require(resolveFrom(
-        dir,
-        interopDefault(require(compilerConfigPath)).translator
-      )),
-    ];
-
+    const compiler = require(path.join(compilerConfigPath, ".."));
+    const translator = require(interopDefault(require(compilerConfigPath))
+      .translator);
     const project = {
       cache: new Map(),
+      compiler,
+      translator,
       getLookup(dir: string) {
         const key = `taglib:${dir}`;
         let lookup: TaglibLookup = project.cache.get(key);
@@ -91,8 +89,6 @@ function loadProject(dir: string): MarkoProject {
 
         return lookup;
       },
-      compiler,
-      translator,
     };
     projectsByCompiler.set(compilerConfigPath, project);
     return project;

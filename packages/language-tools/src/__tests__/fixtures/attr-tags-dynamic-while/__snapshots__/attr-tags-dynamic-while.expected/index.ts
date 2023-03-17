@@ -28,6 +28,7 @@ export { type Component };
                     return Marko._.voidReturn;
                   };
                 })(),
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ]
@@ -55,6 +56,7 @@ export { type Component };
                     return Marko._.voidReturn;
                   };
                 })(),
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ]
@@ -76,6 +78,7 @@ export { type Component };
                     return Marko._.voidReturn;
                   };
                 })(),
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ]

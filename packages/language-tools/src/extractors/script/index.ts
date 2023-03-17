@@ -205,6 +205,7 @@ class ScriptExtractor {
     let typeParamsStr = "";
     let typeArgsStr = "";
     let jsDocTemplateTagsStr = "";
+    const hasComponent = componentClassBody || componentFileName;
 
     if (inputType) {
       if (inputType.typeParameters) {
@@ -237,41 +238,52 @@ class ScriptExtractor {
         }
       }
     } else {
-      const hasComponent = componentClassBody || componentFileName;
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
           hasComponent
-            ? 'export type Input = Component["input"];\n'
+            ? "export type Input = Component['input'];\n"
             : `export interface Input {}\n`
         );
       } else {
         this.#extractor.write(
           `/** @typedef {${
-            hasComponent ? 'Component["input"]' : "Record<string, unknown>"
+            hasComponent ? "Component['input']" : "Record<string, unknown>"
           }} Input */\n`
         );
       }
     }
 
     if (!componentClassBody && componentFileName) {
-      this.#extractor.write(
-        `import Component from "${stripExt(
-          relativeImportPath(this.#filename, componentFileName)
-        )}";\n`
-      );
+      if (this.#scriptLang === ScriptLang.ts) {
+        this.#extractor.write(
+          `import type Component from "${stripExt(
+            relativeImportPath(this.#filename, componentFileName)
+          )}";\n`
+        );
+      } else {
+        this.#extractor.write(
+          `/** @typedef {import("${stripExt(
+            relativeImportPath(this.#filename, componentFileName)
+          )}").default} Component */\n`
+        );
+      }
     } else {
       const body = componentClassBody || " {}";
 
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor
           .write(
-            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`
+            `abstract class Component${typeParamsStr} extends Marko.Component<${
+              hasComponent && !inputType ? "{}" : `Input${typeArgsStr}`
+            }>`
           )
           .copy(body)
           .write("\nexport { type Component }\n");
       } else {
         this.#extractor.write(`/**${jsDocTemplateTagsStr}
-  * @extends {Marko.Component<Input${typeArgsStr}>}
+  * @extends {Marko.Component${
+    hasComponent && !inputType ? "" : `<Input${typeArgsStr}>`
+  }}
   * @abstract
   */\n`);
         this.#extractor
@@ -1246,6 +1258,14 @@ constructor(_?: Return) {}
       } else {
         this.#extractor.write("}\n})()");
       }
+
+      this.#extractor.write(SEP_COMMA_NEW_LINE);
+    }
+
+    if (tag.type === NodeType.AttrTag) {
+      this.#extractor.write(
+        `[Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`
+      );
     }
 
     if (!hasInput) {

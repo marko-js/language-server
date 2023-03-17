@@ -22,6 +22,7 @@ export { type Component };
           attrTags["@a"];
         },
         ["a" /*@a*/]: {
+          [Symbol.iterator]: Marko._.any,
           /*@a*/
         },
       })
@@ -56,6 +57,7 @@ export { type Component };
           attrTags["@a"];
         },
         ["a" /*@a*/]: {
+          [Symbol.iterator]: Marko._.any,
           /*@a*/
         },
       })
@@ -80,6 +82,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -102,6 +105,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
         ["b" /*@b*/]: {
           ["renderBody" /*@b*/]: (() => {
@@ -110,6 +114,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -148,6 +153,7 @@ export { type Component };
                 })();
               };
             })(),
+            [Symbol.iterator]: Marko._.any,
           },
         })
       ),
@@ -184,6 +190,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -221,6 +228,7 @@ export { type Component };
                 })();
               };
             })(),
+            [Symbol.iterator]: Marko._.any,
           },
         })
       ),
@@ -248,6 +256,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -270,6 +279,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -292,6 +302,7 @@ export { type Component };
               return Marko._.voidReturn;
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       })
     ),
@@ -329,6 +340,7 @@ export { type Component };
                 })();
               };
             })(),
+            [Symbol.iterator]: Marko._.any,
           },
         })
       ),

@@ -21,6 +21,7 @@ export { type Component };
     ["items" /*@item*/]: [
       {
         x: 1,
+        [Symbol.iterator]: Marko._.any,
       },
     ],
   });
@@ -40,6 +41,7 @@ export { type Component };
             return Marko._.voidReturn;
           };
         })(),
+        [Symbol.iterator]: Marko._.any,
       },
       {
         ["renderBody" /*@item*/]: (() => {
@@ -47,6 +49,7 @@ export { type Component };
             return Marko._.voidReturn;
           };
         })(),
+        [Symbol.iterator]: Marko._.any,
       },
     ],
   });

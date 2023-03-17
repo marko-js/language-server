@@ -42,7 +42,8 @@ export { type Component };
   )()()({
     ["renderBody" /*loader*/]: (data) => {
       return Marko._.voidReturn;
-    } /*loader*/,
+    },
+    /*loader*/
   });
   return;
 })();
