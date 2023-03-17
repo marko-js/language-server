@@ -22,6 +22,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -40,6 +41,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -49,6 +51,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }),
@@ -62,6 +65,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -72,6 +76,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -82,6 +87,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -91,6 +97,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }),
@@ -104,6 +111,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -114,6 +122,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -128,6 +137,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -142,6 +152,7 @@ export { type Component };
             attrTags["@a"];
           },
           ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@a*/
           },
         }
@@ -157,6 +168,7 @@ export { type Component };
               attrTags["@a"];
             },
             ["a" /*@a*/]: {
+              [Symbol.iterator]: Marko._.any,
               /*@a*/
             },
           }
@@ -168,6 +180,7 @@ export { type Component };
               attrTags["@b"];
             },
             ["b" /*@b*/]: {
+              [Symbol.iterator]: Marko._.any,
               /*@b*/
             },
           }
@@ -208,8 +221,10 @@ export { type Component };
                 })();
               };
             })(),
+            [Symbol.iterator]: Marko._.any,
           },
           ["b" /*@b*/]: {
+            [Symbol.iterator]: Marko._.any,
             /*@b*/
           },
         },
@@ -240,6 +255,7 @@ export { type Component };
                     })();
                   };
                 })(),
+                [Symbol.iterator]: Marko._.any,
               },
             }
           : {},
@@ -250,6 +266,7 @@ export { type Component };
                 attrTags["@a"];
               },
               ["a" /*@a*/]: {
+                [Symbol.iterator]: Marko._.any,
                 /*@a*/
               },
             }

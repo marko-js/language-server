@@ -1,4 +1,5 @@
 import path from "path";
+import type ts from "typescript";
 import {
   type Extracted,
   ScriptLang,
@@ -24,7 +25,7 @@ export function patch(
   scriptLang: ScriptLang,
   cache: Map<string, ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }>,
   host: ts.LanguageServiceHost,
-  ps?: ts.server.ProjectService
+  ps?: InstanceType<typeof ts.server.ProjectService>
 ) {
   const rootDir = host.getCurrentDirectory();
   const projectTypeLibs = getProjectTypeLibs(
@@ -102,6 +103,7 @@ export function patch(
         // Ensure the project service knows about the file.
         // Without this the project never registers a `ScriptInfo`.
         // TODO: maybe we should patch readFile instead of getScriptSnapshot?
+
         ps?.getOrCreateScriptInfoForNormalizedPath(
           filename as any,
           false,

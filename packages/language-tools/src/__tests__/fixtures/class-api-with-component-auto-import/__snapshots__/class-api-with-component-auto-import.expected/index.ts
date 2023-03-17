@@ -1,5 +1,5 @@
 export type Input = Component["input"];
-import Component from "./component";
+import type Component from "./component";
 (function (this: void) {
   const input = Marko._.any as Input;
   const component = Marko._.any as Component;

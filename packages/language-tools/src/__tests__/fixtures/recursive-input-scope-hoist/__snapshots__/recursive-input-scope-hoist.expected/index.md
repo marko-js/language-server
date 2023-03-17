@@ -4,7 +4,7 @@
   1 | <comments>
   2 |   <@comment#a>
 > 3 |     <@comment#b>
-    |       ^ (property) "@comment"?: Marko.Repeatable<Comment> | undefined
+    |       ^ (property) comment?: Marko.RepeatableAttrTag<Comment> | undefined
   4 |       <let/b = "b" as const/>
   5 |     </@comment>
   6 |     <let/a = "a" as const/>
@@ -48,7 +48,8 @@
 >  8 |   <@comment>
      |    ^^^^^^^^^
 >  9 |     <let/c = "c" as const/>
-     | ^^^^^^^^^^^ Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; }' but required in type 'Comment'.
+     | ^^^^^^^^^^^ Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
+  Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' but required in type 'Comment'.
   10 |   </@comment>
   11 | </comments>
   12 |

@@ -1,5 +1,5 @@
 export type Input = Component["input"];
-abstract class Component extends Marko.Component<Input> {
+abstract class Component extends Marko.Component<{}> {
   declare state: {
     name: string;
   };

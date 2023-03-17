@@ -56,6 +56,7 @@ export { type Component };
                 })();
               };
             })(),
+            [Symbol.iterator]: Marko._.any,
           },
           ["renderBody" /*@comment*/]: (() => {
             Marko._.assertRendered(
@@ -76,6 +77,7 @@ export { type Component };
               })();
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
         {
           ["renderBody" /*@comment*/]: (() => {
@@ -97,6 +99,7 @@ export { type Component };
               })();
             };
           })(),
+          [Symbol.iterator]: Marko._.any,
         },
       ],
     })

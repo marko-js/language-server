@@ -25,10 +25,12 @@ export { type Component };
       },
       ["b" /*@b*/]: [
         {
+          [Symbol.iterator]: Marko._.any,
           /*@b*/
         },
         {
           c: 2,
+          [Symbol.iterator]: Marko._.any,
         },
       ],
       ["a" /*@a*/]: {
@@ -52,6 +54,7 @@ export { type Component };
             })();
           };
         })(),
+        [Symbol.iterator]: Marko._.any,
       },
     })
   );

@@ -16,7 +16,8 @@ Marko._.renderDynamicTag(custom)()()({
 a, %b
 ) => {
 return Marko._.voidReturn;
-})
+}),
+
 });
 return;
 })();

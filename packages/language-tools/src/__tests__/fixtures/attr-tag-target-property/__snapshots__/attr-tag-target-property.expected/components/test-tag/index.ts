@@ -1,8 +1,8 @@
 export interface Input {
-  items: {
+  items: Marko.AttrTag<{
     x: number;
     renderBody?: Marko.Body;
-  }[];
+  }>[];
 }
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
