@@ -205,7 +205,8 @@ class ScriptExtractor {
     let typeParamsStr = "";
     let typeArgsStr = "";
     let jsDocTemplateTagsStr = "";
-    const hasComponent = componentClassBody || componentFileName;
+    const isExternalComponentFile =
+      !componentClassBody && componentFileName !== undefined;
 
     if (inputType) {
       if (inputType.typeParameters) {
@@ -240,20 +241,22 @@ class ScriptExtractor {
     } else {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
-          hasComponent
+          isExternalComponentFile
             ? "export type Input = Component['input'];\n"
             : `export interface Input {}\n`
         );
       } else {
         this.#extractor.write(
           `/** @typedef {${
-            hasComponent ? "Component['input']" : "Record<string, unknown>"
+            isExternalComponentFile
+              ? "Component['input']"
+              : "Record<string, unknown>"
           }} Input */\n`
         );
       }
     }
 
-    if (!componentClassBody && componentFileName) {
+    if (isExternalComponentFile) {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
           `import type Component from "${stripExt(
@@ -273,17 +276,13 @@ class ScriptExtractor {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor
           .write(
-            `abstract class Component${typeParamsStr} extends Marko.Component<${
-              hasComponent && !inputType ? "{}" : `Input${typeArgsStr}`
-            }>`
+            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`
           )
           .copy(body)
           .write("\nexport { type Component }\n");
       } else {
         this.#extractor.write(`/**${jsDocTemplateTagsStr}
-  * @extends {Marko.Component${
-    hasComponent && !inputType ? "" : `<Input${typeArgsStr}>`
-  }}
+  * @extends {Marko.Component<Input${typeArgsStr}>}
   * @abstract
   */\n`);
         this.#extractor

@@ -1,5 +1,5 @@
-export type Input = Component["input"];
-abstract class Component extends Marko.Component<{}> {
+export interface Input {}
+abstract class Component extends Marko.Component<Input> {
   declare state: {
     name: string;
   };
