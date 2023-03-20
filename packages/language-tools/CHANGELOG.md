@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 1.0.3
+
+### Patch Changes
+
+- [#148](https://github.com/marko-js/language-server/pull/148) [`e823df5`](https://github.com/marko-js/language-server/commit/e823df5d8c54aecc0dac7476848d89920896b628) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - No longer use a default `Input` type of `Component['input']` for inline class components.
+
 ## 1.0.2
 
 ### Patch Changes
