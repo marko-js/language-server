@@ -1,35 +1,62 @@
+import stripJSONComments from "strip-json-comments";
 import { ScriptLang } from "@marko/language-tools";
-import type { LanguageServiceHost } from "typescript/lib/tsserverlibrary";
 import type TS from "typescript/lib/tsserverlibrary";
+import type { MarkoProject } from "./project";
 
-export default function getScriptLang(
-  filename: string,
+export default function getMarkoScriptLang(
+  fileName: string,
+  dir: string,
+  defaultScriptLang: ScriptLang,
+  markoProject: MarkoProject,
   ts: typeof TS,
-  host: LanguageServiceHost,
-  projectScriptLang: ScriptLang
-) {
-  const configPath = ts.findConfigFile(
-    filename,
-    host.fileExists.bind(host),
-    "marko.json"
-  );
+  host: TS.ModuleResolutionHost
+): ScriptLang {
+  if (fileName.endsWith(".d.marko")) return ScriptLang.ts;
 
-  if (configPath) {
-    try {
-      const markoConfig = JSON.parse(
-        host.readFile(configPath, "utf-8") || "{}"
-      );
+  const key = `script-lang:${dir}`;
+  let scriptLang = markoProject.cache.get(key) as ScriptLang | undefined;
 
-      const scriptLang = markoConfig["script-lang"] || markoConfig.scriptLang;
-      if (scriptLang !== undefined) {
-        return scriptLang === ScriptLang.ts ? ScriptLang.ts : ScriptLang.js;
+  if (!scriptLang) {
+    const configPath = ts.findConfigFile(dir, host.fileExists, "marko.json");
+
+    if (configPath) {
+      try {
+        const configSource = host.readFile(configPath);
+        if (configSource) {
+          const config = tryParseJSONWithComments(configSource);
+
+          if (config) {
+            const definedScriptLang =
+              config["script-lang"] || config.scriptLang;
+            if (definedScriptLang !== undefined) {
+              scriptLang =
+                definedScriptLang === ScriptLang.ts
+                  ? ScriptLang.ts
+                  : ScriptLang.js;
+            }
+          }
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
+
+    if (scriptLang === undefined) {
+      scriptLang = /[/\\]node_modules[/\\]/.test(dir)
+        ? ScriptLang.js
+        : defaultScriptLang;
+    }
+
+    markoProject.cache.set(key, scriptLang);
   }
 
-  return /[/\\]node_modules[/\\]/.test(filename)
-    ? ScriptLang.js
-    : projectScriptLang;
+  return scriptLang;
+}
+
+function tryParseJSONWithComments(content: string) {
+  try {
+    return JSON.parse(stripJSONComments(content));
+  } catch {
+    return undefined;
+  }
 }

@@ -28,12 +28,8 @@ export function patch(
   ps?: InstanceType<typeof ts.server.ProjectService>
 ) {
   const rootDir = host.getCurrentDirectory();
-  const projectTypeLibs = getProjectTypeLibs(
-    rootDir,
-    getMarkoProject(rootDir),
-    ts,
-    host
-  );
+  const markoProject = getMarkoProject(rootDir);
+  const projectTypeLibs = getProjectTypeLibs(rootDir, markoProject, ts, host);
   const projectTypeLibsFiles = [
     projectTypeLibs.internalTypesFile,
     projectTypeLibs.markoTypesFile,
@@ -48,7 +44,14 @@ export function patch(
   }
 
   const isMarkoTSFile = (fileName: string) =>
-    getScriptLang(fileName, ts, host, scriptLang) === ScriptLang.ts;
+    getScriptLang(
+      fileName,
+      path.dirname(fileName),
+      scriptLang,
+      markoProject,
+      ts,
+      host
+    ) === ScriptLang.ts;
 
   /**
    * Ensure the Marko runtime definitions are always loaded.
@@ -90,7 +93,14 @@ export function patch(
             ts,
             parsed: parse(code, filename),
             lookup: markoProject.getLookup(dir),
-            scriptLang: getScriptLang(filename, ts, host, scriptLang),
+            scriptLang: getScriptLang(
+              filename,
+              dir,
+              scriptLang,
+              markoProject,
+              ts,
+              host
+            ),
             runtimeTypesCode: projectTypeLibs.markoTypesCode,
             componentFilename: getComponentFilename(filename),
           }) as ExtractedSnapshot;

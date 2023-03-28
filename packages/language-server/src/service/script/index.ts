@@ -97,13 +97,17 @@ const ScriptService: Partial<Plugin> = {
       if (doc?.languageId !== "marko") return;
       const filename = getFSPath(doc);
       if (!filename) return;
-      const project = getTSProject(filename);
-      const extracted = processScript(doc, project);
+      const dir = path.dirname(filename);
+      const tsProject = getTSProject(filename);
+      const markoProject = getMarkoProject(dir);
+      const extracted = processScript(doc, tsProject);
       const lang = getScriptLang(
         filename,
+        dir,
+        tsProject.markoScriptLang,
+        markoProject,
         ts,
-        project.host,
-        project.markoScriptLang
+        tsProject.host
       );
       const generated = extracted.toString();
       const content = (() => {
@@ -512,13 +516,20 @@ const ScriptService: Partial<Plugin> = {
 function processScript(doc: TextDocument, tsProject: TSProject) {
   return processDoc(
     doc,
-    ({ filename, parsed, lookup, project: markoProject }) => {
+    ({ filename, dirname, parsed, lookup, project: markoProject }) => {
       const { host, markoScriptLang } = tsProject;
       return extractScript({
         ts,
         parsed,
         lookup,
-        scriptLang: getScriptLang(filename, ts, host, markoScriptLang),
+        scriptLang: getScriptLang(
+          filename,
+          dirname,
+          markoScriptLang,
+          markoProject,
+          ts,
+          host
+        ),
         runtimeTypesCode: getProjectTypeLibs(
           tsProject.rootDir,
           markoProject,

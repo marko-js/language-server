@@ -17,6 +17,7 @@
     "prettier": "^2.8.4",
     "prettier-plugin-marko": "^1.4.1",
     "relative-import-path": "^1.0.0",
+    "strip-json-comments": "^5.0.0",
     "typescript": "^5.0.2",
     "vscode-css-languageservice": "^6.2.4",
     "vscode-languageserver": "^8.1.0",
