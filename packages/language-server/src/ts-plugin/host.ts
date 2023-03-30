@@ -4,15 +4,12 @@ import {
   type Extracted,
   ScriptLang,
   extractScript,
+  project as markoProject,
   parse,
 } from "@marko/language-tools";
-import { getMarkoProject } from "../utils/project";
-import getProjectTypeLibs from "../utils/get-runtime-types";
-import getScriptLang from "../utils/get-script-lang";
 import getComponentFilename from "../utils/get-component-filename";
 
 const markoExt = ".marko";
-const markoExtReg = /\.marko$/;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 
@@ -23,13 +20,16 @@ export interface ExtractedSnapshot extends Extracted {
 export function patch(
   ts: typeof import("typescript/lib/tsserverlibrary"),
   scriptLang: ScriptLang,
-  cache: Map<string, ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }>,
+  extractCache: Map<
+    string,
+    ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }
+  >,
+  resolutionCache: ts.ModuleResolutionCache | undefined,
   host: ts.LanguageServiceHost,
   ps?: InstanceType<typeof ts.server.ProjectService>
 ) {
   const rootDir = host.getCurrentDirectory();
-  const markoProject = getMarkoProject(rootDir);
-  const projectTypeLibs = getProjectTypeLibs(rootDir, markoProject, ts, host);
+  const projectTypeLibs = markoProject.getTypeLibs(rootDir, ts, host);
   const projectTypeLibsFiles = [
     projectTypeLibs.internalTypesFile,
     projectTypeLibs.markoTypesFile,
@@ -44,14 +44,8 @@ export function patch(
   }
 
   const isMarkoTSFile = (fileName: string) =>
-    getScriptLang(
-      fileName,
-      path.dirname(fileName),
-      scriptLang,
-      markoProject,
-      ts,
-      host
-    ) === ScriptLang.ts;
+    markoProject.getScriptLang(fileName, scriptLang, ts, host) ===
+    ScriptLang.ts;
 
   /**
    * Ensure the Marko runtime definitions are always loaded.
@@ -67,7 +61,7 @@ export function patch(
   const getScriptKind = host.getScriptKind?.bind(host);
   if (getScriptKind) {
     host.getScriptKind = (fileName: string) => {
-      return markoExtReg.test(fileName)
+      return getExt(fileName) === markoExt
         ? isMarkoTSFile(fileName)
           ? ts.ScriptKind.TS
           : ts.ScriptKind.JS
@@ -80,29 +74,26 @@ export function patch(
    * We patch it so that Marko files instead return their extracted ts code.
    */
   const getScriptSnapshot = host.getScriptSnapshot.bind(host);
-  host.getScriptSnapshot = (filename: string) => {
-    if (markoExtReg.test(filename)) {
-      let cached = cache.get(filename);
+  host.getScriptSnapshot = (fileName: string) => {
+    if (getExt(fileName) === markoExt) {
+      let cached = extractCache.get(fileName);
       if (!cached) {
-        const code = host.readFile(filename, "utf-8") || "";
-        const dir = path.dirname(filename);
+        const code = host.readFile(fileName, "utf-8") || "";
+        const dir = path.dirname(fileName);
 
         try {
-          const markoProject = getMarkoProject(dir);
           cached = extractScript({
             ts,
-            parsed: parse(code, filename),
-            lookup: markoProject.getLookup(dir),
-            scriptLang: getScriptLang(
-              filename,
-              dir,
+            parsed: parse(code, fileName),
+            lookup: markoProject.getTagLookup(dir),
+            scriptLang: markoProject.getScriptLang(
+              fileName,
               scriptLang,
-              markoProject,
               ts,
               host
             ),
             runtimeTypesCode: projectTypeLibs.markoTypesCode,
-            componentFilename: getComponentFilename(filename),
+            componentFilename: getComponentFilename(fileName),
           }) as ExtractedSnapshot;
 
           cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
@@ -115,7 +106,7 @@ export function patch(
         // TODO: maybe we should patch readFile instead of getScriptSnapshot?
 
         ps?.getOrCreateScriptInfoForNormalizedPath(
-          filename as any,
+          fileName as any,
           false,
           undefined,
           ts.ScriptKind.Deferred,
@@ -123,22 +114,22 @@ export function patch(
           host
         );
 
-        cache.set(filename, cached);
+        extractCache.set(fileName, cached);
       }
 
       return cached.snapshot;
     }
 
-    return getScriptSnapshot(filename);
+    return getScriptSnapshot(fileName);
   };
 
   if (host.getProjectVersion) {
     const getScriptVersion = host.getScriptVersion.bind(host);
-    host.getScriptVersion = (filename: string) => {
-      if (markoExtReg.test(filename)) {
+    host.getScriptVersion = (fileName: string) => {
+      if (getExt(fileName) === markoExt) {
         return host.getProjectVersion!();
       }
-      return getScriptVersion(filename);
+      return getScriptVersion(fileName);
     };
   }
 
@@ -164,26 +155,26 @@ export function patch(
    * Below we first try to use TypeScripts normal resolution, and then fallback
    * to seeing if a `.marko` file exists at the same location.
    */
-  const resolveModuleNames = host.resolveModuleNames?.bind(host);
+  const resolveModuleNameLiterals = host.resolveModuleNameLiterals?.bind(host);
 
-  if (resolveModuleNames) {
-    host.resolveModuleNames = (
-      moduleNames,
+  if (resolveModuleNameLiterals) {
+    host.resolveModuleNameLiterals = (
+      moduleLiterals,
       containingFile,
-      reusedNames,
       redirectedReference,
       options,
-      sourceFile
+      containingSourceFile,
+      reusedNames
     ) => {
-      let normalModuleNames = moduleNames;
+      let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
       let resolvedModules:
         | undefined
-        | (ts.ResolvedModule | ts.ResolvedModuleFull | undefined | null)[];
+        | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
 
-      for (let i = 0; i < moduleNames.length; i++) {
-        const moduleName = moduleNames[i];
+      for (let i = 0; i < moduleLiterals.length; i++) {
+        const moduleName = moduleLiterals[i].text;
         const shouldProcess =
-          moduleName[0] !== "*" ? markoExtReg.test(moduleName) : undefined;
+          moduleName[0] !== "*" ? getExt(moduleName) === markoExt : undefined;
         if (shouldProcess) {
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
@@ -195,11 +186,12 @@ export function patch(
             // try resolving the `.marko` file relative to that.
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
-            const { resolvedModule } = ts.resolveModuleName(
+            const { resolvedModule } = ts.bundlerModuleNameResolver(
               `${nodeModuleName}/package.json`,
               containingFile,
               options,
-              host
+              host,
+              resolutionCache
             );
 
             if (resolvedModule) {
@@ -213,15 +205,34 @@ export function patch(
 
           if (!resolvedModules) {
             resolvedModules = [];
-            normalModuleNames = [];
+            normalModuleLiterals = [];
             for (let j = 0; j < i; j++) {
               resolvedModules.push(undefined);
-              normalModuleNames.push(moduleNames[j]);
+              normalModuleLiterals.push(moduleLiterals[j]);
             }
           }
 
-          resolvedModules.push(
-            resolvedFileName && host.fileExists(resolvedFileName)
+          if (resolvedFileName) {
+            if (isDefinitionFile(resolvedFileName)) {
+              if (!host.fileExists(resolvedFileName)) {
+                resolvedFileName = undefined;
+              }
+            } else {
+              const ext = getExt(resolvedFileName)!;
+              const definitionFile = `${resolvedFileName.slice(
+                0,
+                -ext.length
+              )}.d${ext}`;
+              if (host.fileExists(definitionFile)) {
+                resolvedFileName = definitionFile;
+              } else if (!host.fileExists(resolvedFileName)) {
+                resolvedFileName = undefined;
+              }
+            }
+          }
+
+          resolvedModules.push({
+            resolvedModule: resolvedFileName
               ? {
                   resolvedFileName,
                   extension: isMarkoTSFile(resolvedFileName)
@@ -229,44 +240,33 @@ export function patch(
                     : ts.Extension.Js,
                   isExternalLibraryImport: false,
                 }
-              : null
-          );
+              : undefined,
+          });
         } else if (resolvedModules) {
           resolvedModules.push(undefined);
         }
       }
 
-      const normalResolvedModules = normalModuleNames.length
-        ? resolveModuleNames(
-            normalModuleNames,
+      const normalResolvedModules = normalModuleLiterals.length
+        ? resolveModuleNameLiterals(
+            normalModuleLiterals,
             containingFile,
-            reusedNames,
             redirectedReference,
             options,
-            sourceFile
+            containingSourceFile,
+            reusedNames
           )
         : undefined;
 
       if (resolvedModules) {
         if (normalResolvedModules) {
           for (let i = 0, j = 0; i < resolvedModules.length; i++) {
-            switch (resolvedModules[i]) {
-              case undefined:
-                resolvedModules[i] = normalResolvedModules[j++];
-                break;
-              case null:
-                resolvedModules[i] = undefined;
-                break;
-            }
-          }
-        } else {
-          for (let i = resolvedModules.length; i--; ) {
-            if (resolvedModules[i] === null) {
-              resolvedModules[i] = undefined;
+            if (!resolvedModules[i]) {
+              resolvedModules[i] = normalResolvedModules[j++];
             }
           }
         }
-        return resolvedModules as (ts.ResolvedModule | undefined)[];
+        return resolvedModules as readonly ts.ResolvedModuleWithFailedLookupLocations[];
       } else {
         return normalResolvedModules!;
       }
@@ -274,4 +274,13 @@ export function patch(
   }
 
   return host;
+}
+
+function getExt(fileName: string) {
+  const extIndex = fileName.lastIndexOf(".");
+  if (extIndex !== -1) return fileName.slice(extIndex) as `.${string}`;
+}
+
+function isDefinitionFile(fileName: string) {
+  return /\.d\.[^.]+$/.test(fileName);
 }

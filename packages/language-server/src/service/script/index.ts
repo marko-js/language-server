@@ -26,8 +26,8 @@ import {
   type Parsed,
   ScriptLang,
   extractScript,
+  project as markoProject,
 } from "@marko/language-tools";
-import { type MarkoProject, getMarkoProject } from "../../utils/project";
 import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
@@ -36,8 +36,6 @@ import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
 import getComponentFilename from "../../utils/get-component-filename";
-import getProjectTypeLibs from "../../utils/get-runtime-types";
-import getScriptLang from "../../utils/get-script-lang";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
 const IGNORE_DIAG_REG =
@@ -47,9 +45,7 @@ interface TSProject {
   rootDir: string;
   host: ts.LanguageServiceHost;
   service: ts.LanguageService;
-  markoProject: MarkoProject;
   markoScriptLang: ScriptLang;
-  markoProjectTypeLibs: ReturnType<typeof getProjectTypeLibs>;
 }
 
 const extractCache = new Map<string, ExtractedSnapshot>();
@@ -63,12 +59,13 @@ const colorModifierReg = /\bcolor\b/;
 const localInternalsPrefix = "__marko_internal_";
 const requiredTSCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
-  moduleResolution: ts.ModuleResolutionKind.NodeJs,
+  moduleResolution: ts.ModuleResolutionKind.Bundler,
   noEmit: true,
   allowJs: true,
   composite: false,
   declaration: false,
   skipLibCheck: true,
+  importHelpers: false,
   isolatedModules: true,
   resolveJsonModule: true,
   skipDefaultLibCheck: true,
@@ -97,15 +94,11 @@ const ScriptService: Partial<Plugin> = {
       if (doc?.languageId !== "marko") return;
       const filename = getFSPath(doc);
       if (!filename) return;
-      const dir = path.dirname(filename);
       const tsProject = getTSProject(filename);
-      const markoProject = getMarkoProject(dir);
       const extracted = processScript(doc, tsProject);
-      const lang = getScriptLang(
+      const lang = markoProject.getScriptLang(
         filename,
-        dir,
         tsProject.markoScriptLang,
-        markoProject,
         ts,
         tsProject.host
       );
@@ -514,32 +507,23 @@ const ScriptService: Partial<Plugin> = {
 };
 
 function processScript(doc: TextDocument, tsProject: TSProject) {
-  return processDoc(
-    doc,
-    ({ filename, dirname, parsed, lookup, project: markoProject }) => {
-      const { host, markoScriptLang } = tsProject;
-      return extractScript({
+  return processDoc(doc, ({ filename, parsed, lookup }) => {
+    const { host, markoScriptLang } = tsProject;
+    return extractScript({
+      ts,
+      parsed,
+      lookup,
+      scriptLang: markoProject.getScriptLang(
+        filename,
+        markoScriptLang,
         ts,
-        parsed,
-        lookup,
-        scriptLang: getScriptLang(
-          filename,
-          dirname,
-          markoScriptLang,
-          markoProject,
-          ts,
-          host
-        ),
-        runtimeTypesCode: getProjectTypeLibs(
-          tsProject.rootDir,
-          markoProject,
-          ts,
-          host
-        )?.markoTypesCode,
-        componentFilename: getComponentFilename(filename),
-      });
-    }
-  );
+        host
+      ),
+      runtimeTypesCode: markoProject.getTypeLibs(tsProject.rootDir, ts, host)
+        ?.markoTypesCode,
+      componentFilename: getComponentFilename(filename),
+    });
+  });
 }
 
 function getInsertModuleStatementOffset(parsed: Parsed) {
@@ -631,8 +615,8 @@ function getTSProject(docFsPath: string): TSProject {
   }
 
   const rootDir = (configPath && path.dirname(configPath)) || process.cwd();
-  const markoProject = getMarkoProject(configPath && rootDir);
-  let projectCache = markoProject.cache.get(getTSProject) as
+  const cache = markoProject.getCache(configPath && rootDir);
+  let projectCache = cache.get(getTSProject) as
     | Map<string, TSProject>
     | undefined;
   let cached: TSProject | undefined;
@@ -647,7 +631,7 @@ function getTSProject(docFsPath: string): TSProject {
     // Within the compiler cache we store a map
     // of project paths to project info.
     projectCache = new Map();
-    markoProject.cache.set(getTSProject, projectCache);
+    cache.set(getTSProject, projectCache);
   }
 
   const { fileNames, options, projectReferences } =
@@ -678,10 +662,17 @@ function getTSProject(docFsPath: string): TSProject {
     ts.getDefaultLibFileName(options)
   );
 
+  const resolutionCache = ts.createModuleResolutionCache(
+    rootDir,
+    getCanonicalFileName,
+    options
+  );
+
   const host: ts.LanguageServiceHost = patch(
     ts,
     markoScriptLang,
     extractCache,
+    resolutionCache,
     {
       getNewLine() {
         return ts.sys.newLine;
@@ -711,10 +702,23 @@ function getTSProject(docFsPath: string): TSProject {
         return projectReferences;
       },
 
-      resolveModuleNames(moduleNames, containingFile) {
-        return moduleNames.map<ts.ResolvedModule | undefined>((moduleName) => {
-          return ts.resolveModuleName(moduleName, containingFile, options, host)
-            .resolvedModule;
+      resolveModuleNameLiterals(
+        moduleLiterals,
+        containingFile,
+        redirectedReference,
+        options,
+        _containingSourceFile,
+        _reusedNames
+      ) {
+        return moduleLiterals.map((moduleLiteral) => {
+          return ts.bundlerModuleNameResolver(
+            moduleLiteral.text,
+            containingFile,
+            options,
+            host,
+            resolutionCache,
+            redirectedReference
+          );
         });
       },
 
@@ -777,14 +781,7 @@ function getTSProject(docFsPath: string): TSProject {
     host,
     rootDir: options.rootDir!,
     service: ts.createLanguageService(host),
-    markoProject,
     markoScriptLang,
-    markoProjectTypeLibs: getProjectTypeLibs(
-      options.rootDir!,
-      markoProject,
-      ts,
-      host
-    ),
   };
 
   projectCache.set(rootDir, tsProject);
@@ -1000,6 +997,10 @@ function convertCompletionItemKind(kind: ts.ScriptElementKind) {
 function getTSTriggerChar(char: string | undefined) {
   if (char && tsTriggerChars.has(char))
     return char as ts.CompletionsTriggerCharacter;
+}
+
+function getCanonicalFileName(fileName: string) {
+  return ts.sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
 }
 
 export { ScriptService as default };
