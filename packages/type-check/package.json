@@ -1,0 +1,42 @@
+{
+  "name": "@marko/type-check",
+  "description": "A CLI to type check Marko projects",
+  "version": "0.0.0",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
+  "dependencies": {
+    "@babel/code-frame": "^7.18.6",
+    "@marko/language-tools": "^1.0.3",
+    "arg": "^5.0.2",
+    "kleur": "^4.1.5",
+    "strip-json-comments": "^5.0.0",
+    "typescript": "5.0.2"
+  },
+  "devDependencies": {
+    "@types/babel__code-frame": "^7.0.3"
+  },
+  "files": [
+    "dist",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo"
+  ],
+  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/type-check/README.md",
+  "keywords": [
+    "type-check",
+    "marko",
+    "tsc",
+    "typescript",
+    "tools"
+  ],
+  "license": "MIT",
+  "bin": {
+    "marko-type-check": "dist/cli.js",
+    "mtc": "dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/language-server/tree/main/packages/type-check"
+  },
+  "scripts": {
+    "build": "tsc -b && tsx build.mts"
+  }
+}

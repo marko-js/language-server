@@ -1,6 +1,11 @@
 import path from "path";
 import type ts from "typescript/lib/tsserverlibrary";
-import { type Extracted, Processors } from "@marko/language-tools";
+import {
+  type Extracted,
+  Processors,
+  getExt,
+  isDefinitionFile,
+} from "@marko/language-tools";
 
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
@@ -180,12 +185,12 @@ export function patch(
           }
 
           if (resolvedFileName) {
-            if (Processors.isDefinitionFile(resolvedFileName)) {
+            if (isDefinitionFile(resolvedFileName)) {
               if (!host.fileExists(resolvedFileName)) {
                 resolvedFileName = undefined;
               }
             } else {
-              const ext = Processors.getExt(resolvedFileName)!;
+              const ext = getExt(resolvedFileName)!;
               const definitionFile = `${resolvedFileName.slice(
                 0,
                 -ext.length
@@ -241,7 +246,7 @@ export function patch(
   return host;
 
   function getProcessor(fileName: string) {
-    const ext = Processors.getExt(fileName);
+    const ext = getExt(fileName);
     return ext ? processors[ext] : undefined;
   }
 }
