@@ -1,5 +1,6 @@
 import type ts from "typescript/lib/tsserverlibrary";
 import { Extracted } from "../util/extractor";
+import { getExt } from "../util/get-ext";
 import marko from "./marko";
 
 export type ProcessorExtension = `.${string}`;
@@ -20,17 +21,18 @@ export interface Processor {
   getScriptExtension(fileName: string): ts.Extension;
   getScriptKind(fileName: string): ts.ScriptKind;
   extract(fileName: string, code: string): Extracted;
-  print(context: ReturnType<this["extract"]> & PrintContext): {
+  print(context: PrintContext): {
     code: string;
     map?: any;
   };
-  printTypes(context: ReturnType<this["extract"]> & PrintContext): {
+  printTypes(context: PrintContext): {
     code: string;
     map?: any;
   };
 }
 
 export interface PrintContext {
+  extracted: Extracted;
   printer: ts.Printer;
   sourceFile: ts.SourceFile;
   typeChecker: ts.TypeChecker;
@@ -48,13 +50,4 @@ export function create(options: Parameters<ProcessorConfig["create"]>[0]) {
 export function has(fileName: string) {
   const ext = getExt(fileName);
   return !!(ext && extensions.includes(ext));
-}
-
-export function getExt(fileName: string) {
-  const extIndex = fileName.lastIndexOf(".");
-  if (extIndex !== -1) return fileName.slice(extIndex) as `.${string}`;
-}
-
-export function isDefinitionFile(fileName: string) {
-  return /\.d\.[^.]+$/.test(fileName);
 }

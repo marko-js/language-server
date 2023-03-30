@@ -6,6 +6,7 @@ import {
   createVirtualLanguageServiceHost,
 } from "@typescript/vfs";
 import type { Extracted } from "../../util/extractor";
+import { getExt } from "../../util/get-ext";
 
 const rootDir = process.cwd();
 const startPosition: ts.LineAndCharacter = {
@@ -57,7 +58,7 @@ export function createLanguageService(
    * Trick TypeScript into thinking Marko files are TS/JS files.
    */
   lsh.getScriptKind = (filename: string) => {
-    const processor = processors[getExt(filename)];
+    const processor = processors[getExt(filename)!];
     return processor ? processor.kind : ts.ScriptKind.TS;
   };
 
@@ -67,7 +68,7 @@ export function createLanguageService(
    */
   const getScriptSnapshot = lsh.getScriptSnapshot!.bind(lsh);
   lsh.getScriptSnapshot = (filename: string) => {
-    const processor = processors[getExt(filename)];
+    const processor = processors[getExt(filename)!];
     if (processor) {
       let cached = snapshotCache.get(filename);
       if (!cached) {
@@ -125,7 +126,7 @@ export function createLanguageService(
     for (let i = resolvedModules.length; i--; ) {
       if (!resolvedModules[i]) {
         const moduleName = moduleNames[i];
-        const processor = processors[getExt(moduleName)];
+        const processor = processors[getExt(moduleName)!];
         if (processor && moduleName[0] === ".") {
           // For relative paths just see if it exists on disk.
           const resolvedFileName = path.resolve(
@@ -178,8 +179,4 @@ export function loadDir(dir: string, map: Map<string, string>) {
   }
 
   return map;
-}
-
-function getExt(fileName: string) {
-  return fileName.slice(fileName.lastIndexOf(".") + 1);
 }

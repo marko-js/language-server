@@ -62,7 +62,7 @@ export default {
           runtimeTypesCode: runtimeTypes.markoTypesCode,
         });
       },
-      print({ parsed }) {
+      print({ extracted: { parsed } }) {
         const { code, map } = Project.getCompiler(
           path.dirname(parsed.filename)
         ).compileSync(parsed.code, parsed.filename, {
