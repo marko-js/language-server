@@ -13,13 +13,13 @@
   },
   "devDependencies": {
     "@babel/code-frame": "^7.18.6",
-    "@marko/compiler": "^5.27.1",
+    "@marko/compiler": "^5.27.4",
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@typescript/vfs": "^1.4.0",
-    "marko": "^5.25.1",
+    "marko": "^5.25.4",
     "mitata": "^0.1.6",
-    "tsx": "^3.12.5"
+    "tsx": "^3.12.6"
   },
   "exports": {
     ".": {
