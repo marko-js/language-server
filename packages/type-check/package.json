@@ -1,11 +1,11 @@
 {
   "name": "@marko/type-check",
   "description": "A CLI to type check Marko projects",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@babel/code-frame": "^7.18.6",
-    "@marko/language-tools": "^1.0.3",
+    "@marko/language-tools": "^2.0.0",
     "arg": "^5.0.2",
     "kleur": "^4.1.5",
     "strip-json-comments": "^5.0.0",
