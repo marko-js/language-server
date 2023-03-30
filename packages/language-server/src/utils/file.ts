@@ -2,11 +2,7 @@ import path from "path";
 
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import type { TaglibLookup } from "@marko/babel-utils";
-import {
-  type Parsed,
-  project as markoProject,
-  parse,
-} from "@marko/language-tools";
+import { type Parsed, Project, parse } from "@marko/language-tools";
 import { URI } from "vscode-uri";
 
 const processorCaches = new WeakMap<Parsed, Map<unknown, unknown>>();
@@ -35,13 +31,13 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
   const { uri } = doc;
   const { fsPath: filename, scheme } = URI.parse(uri);
   const dirname = filename && path.dirname(filename);
-  const cache = markoProject.getCache(dirname) as Map<TextDocument, MarkoFile>;
+  const cache = Project.getCache(dirname) as Map<TextDocument, MarkoFile>;
   let file = cache.get(doc);
   if (!file) {
     const { version } = doc;
     const code = doc.getText();
     const parsed = parse(code, filename);
-    const lookup = markoProject.getTagLookup(dirname);
+    const lookup = Project.getTagLookup(dirname);
     cache.set(
       doc,
       (file = {
@@ -63,7 +59,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
 export function clearMarkoCacheForFile(doc: TextDocument) {
   const { fsPath: filename } = URI.parse(doc.uri);
   const dirname = filename && path.dirname(filename);
-  const cache = markoProject.getCache(dirname) as Map<TextDocument, MarkoFile>;
+  const cache = Project.getCache(dirname) as Map<TextDocument, MarkoFile>;
   cache.delete(doc);
 }
 

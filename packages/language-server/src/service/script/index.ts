@@ -24,9 +24,9 @@ import {
   Node,
   NodeType,
   type Parsed,
+  Project,
   ScriptLang,
   extractScript,
-  project as markoProject,
 } from "@marko/language-tools";
 import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
@@ -35,7 +35,6 @@ import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
-import getComponentFilename from "../../utils/get-component-filename";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
 const IGNORE_DIAG_REG =
@@ -96,7 +95,7 @@ const ScriptService: Partial<Plugin> = {
       if (!filename) return;
       const tsProject = getTSProject(filename);
       const extracted = processScript(doc, tsProject);
-      const lang = markoProject.getScriptLang(
+      const lang = Project.getScriptLang(
         filename,
         tsProject.markoScriptLang,
         ts,
@@ -513,15 +512,9 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
       ts,
       parsed,
       lookup,
-      scriptLang: markoProject.getScriptLang(
-        filename,
-        markoScriptLang,
-        ts,
-        host
-      ),
-      runtimeTypesCode: markoProject.getTypeLibs(tsProject.rootDir, ts, host)
+      scriptLang: Project.getScriptLang(filename, markoScriptLang, ts, host),
+      runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
         ?.markoTypesCode,
-      componentFilename: getComponentFilename(filename),
     });
   });
 }
@@ -593,20 +586,20 @@ function docLocationAtTextSpan(
 }
 
 function getTSProject(docFsPath: string): TSProject {
-  let configPath: string | undefined;
+  let configFile: string | undefined;
   let markoScriptLang = ScriptLang.js;
 
   if (docFsPath) {
-    configPath = ts.findConfigFile(
+    configFile = ts.findConfigFile(
       docFsPath,
       ts.sys.fileExists,
       "tsconfig.json"
     );
 
-    if (configPath) {
+    if (configFile) {
       markoScriptLang = ScriptLang.ts;
     } else {
-      configPath = ts.findConfigFile(
+      configFile = ts.findConfigFile(
         docFsPath,
         ts.sys.fileExists,
         "jsconfig.json"
@@ -614,8 +607,8 @@ function getTSProject(docFsPath: string): TSProject {
     }
   }
 
-  const rootDir = (configPath && path.dirname(configPath)) || process.cwd();
-  const cache = markoProject.getCache(configPath && rootDir);
+  const rootDir = (configFile && path.dirname(configFile)) || process.cwd();
+  const cache = Project.getCache(configFile && rootDir);
   let projectCache = cache.get(getTSProject) as
     | Map<string, TSProject>
     | undefined;
@@ -636,12 +629,12 @@ function getTSProject(docFsPath: string): TSProject {
 
   const { fileNames, options, projectReferences } =
     ts.parseJsonConfigFileContent(
-      (configPath && ts.readConfigFile(configPath, ts.sys.readFile).config) ||
+      (configFile && ts.readConfigFile(configFile, ts.sys.readFile).config) ||
         defaultTSConfig,
       ts.sys,
       rootDir,
       requiredTSCompilerOptions,
-      configPath,
+      configFile,
       undefined,
       extraTSCompilerExtensions
     );
@@ -654,8 +647,8 @@ function getTSProject(docFsPath: string): TSProject {
   );
 
   const tsPkgFile =
-    configPath &&
-    ts.resolveModuleName("typescript/package.json", configPath, options, ts.sys)
+    configFile &&
+    ts.resolveModuleName("typescript/package.json", configFile, options, ts.sys)
       .resolvedModule?.resolvedFileName;
   const defaultLibFile = path.join(
     tsPkgFile ? path.join(tsPkgFile, "../lib") : __dirname,
@@ -670,7 +663,7 @@ function getTSProject(docFsPath: string): TSProject {
 
   const host: ts.LanguageServiceHost = patch(
     ts,
-    markoScriptLang,
+    configFile,
     extractCache,
     resolutionCache,
     {

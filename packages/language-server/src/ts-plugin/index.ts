@@ -1,14 +1,8 @@
 import type ts from "typescript/lib/tsserverlibrary";
-import {
-  Extracted,
-  ScriptLang,
-  project as markoProject,
-} from "@marko/language-tools";
+import { Extracted, Processors, Project } from "@marko/language-tools";
 import { START_POSITION } from "../utils/constants";
 import { ExtractedSnapshot, patch } from "./host";
 
-const markoExt = ".marko";
-const markoExtReg = /\.marko$/;
 const markoTaglibFilesReg = /[\\/]marko(?:-tag)\.json$/;
 const getStartLineCharacter = () => START_POSITION;
 // TODO: improve the import name for Marko components.
@@ -22,7 +16,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
     getExternalFiles(project) {
       return project
         .getFileNames(false, true)
-        .filter((it) => markoExtReg.test(it));
+        .filter((it) => Processors.has(it));
     },
     create(info) {
       const {
@@ -36,33 +30,31 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         const extraExtensions = (ps as any)?.hostConfiguration
           ?.extraFileExtensions;
 
-        if (
-          extraExtensions &&
-          !extraExtensions.some(
-            (it: { extension: string }) => it.extension === markoExt
-          )
-        ) {
-          // The first time we install the plugin we update the config to allow `.marko` extensions.
-          // This will cause the plugin to be called again, so we check that the extension is not already added.
-          ps.setHostConfiguration({
-            extraFileExtensions: extraExtensions.concat({
-              extension: markoExt,
-              isMixedContent: false,
-              scriptKind: ts.ScriptKind.Deferred,
-            }),
-          });
+        if (extraExtensions) {
+          let processedExtCount = 0;
+          for (const { extension } of extraExtensions) {
+            if (Processors.extensions.includes(extension)) processedExtCount++;
+          }
+
+          if (processedExtCount !== Processors.extensions.length) {
+            // The first time we install the plugin we update the config to allow our processed extensions.
+            // This will cause the plugin to be called again, so we check that the extension is not already added.
+            ps.setHostConfiguration({
+              extraFileExtensions: extraExtensions.concat(
+                Processors.extensions.map((extension) => ({
+                  extension,
+                  isMixedContent: false,
+                  scriptKind: ts.ScriptKind.Deferred,
+                }))
+              ),
+            });
+          }
         }
 
-        const markoScriptLang = /[/\\]tsconfig.json$/.test(
-          getConfigFilePath(tsProject) || ""
-        )
-          ? // If we have a `tsconfig.json` then Marko files will be processed as ts, otherwise js.
-            ScriptLang.ts
-          : ScriptLang.js;
         const extractCache = new Map<string, ExtractedSnapshot>();
         patch(
           ts,
-          markoScriptLang,
+          (tsProject as ts.server.ConfiguredProject).canonicalConfigFilePath,
           extractCache,
           tsProject.getModuleResolutionCache(),
           lsh,
@@ -79,15 +71,8 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
             info: ts.server.ScriptInfo,
             eventKind: ts.FileWatcherEventKind
           ) => {
-            if (
-              eventKind === ts.FileWatcherEventKind.Changed
-                ? markoTaglibFilesReg.test(info.fileName)
-                : markoExtReg.test(info.fileName) ||
-                  markoTaglibFilesReg.test(info.fileName)
-            ) {
-              if (markoTaglibFilesReg.test(info.fileName)) {
-                markoProject.clearCaches();
-              }
+            if (markoTaglibFilesReg.test(info.fileName)) {
+              Project.clearCaches();
             }
 
             extractCache.delete(info.fileName);
@@ -186,10 +171,6 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
       return ls;
     },
   };
-
-  function getConfigFilePath(project: ts.server.Project): string | undefined {
-    return (project as ts.server.ConfiguredProject).canonicalConfigFilePath;
-  }
 }
 
 function mapTextSpans<

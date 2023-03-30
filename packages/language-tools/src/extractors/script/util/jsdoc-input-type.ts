@@ -1,4 +1,4 @@
-import type TS from "typescript";
+import type TS from "typescript/lib/tsserverlibrary";
 import type { Repeatable } from "../../../parser";
 
 const MaybeInputTypedefReg = /@typedef\b[\s\S]*\bInput\b/;
