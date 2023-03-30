@@ -8,8 +8,8 @@ import {
   createConnection,
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
+import { project as markoProject } from "@marko/language-tools";
 
-import { clearMarkoProjectCaches } from "./utils/project";
 import { clearMarkoCacheForFile } from "./utils/file";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";
@@ -225,7 +225,7 @@ for (const command in service.commands) {
 
 function validateDocs() {
   queueDiagnostic();
-  clearMarkoProjectCaches();
+  markoProject.clearCaches();
 }
 
 function queueDiagnostic() {

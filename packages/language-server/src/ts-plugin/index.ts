@@ -1,7 +1,10 @@
 import type ts from "typescript/lib/tsserverlibrary";
-import { Extracted, ScriptLang } from "@marko/language-tools";
+import {
+  Extracted,
+  ScriptLang,
+  project as markoProject,
+} from "@marko/language-tools";
 import { START_POSITION } from "../utils/constants";
-import { getMarkoProjects } from "../utils/project";
 import { ExtractedSnapshot, patch } from "./host";
 
 const markoExt = ".marko";
@@ -57,7 +60,14 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
             ScriptLang.ts
           : ScriptLang.js;
         const extractCache = new Map<string, ExtractedSnapshot>();
-        patch(ts, markoScriptLang, extractCache, lsh, ps);
+        patch(
+          ts,
+          markoScriptLang,
+          extractCache,
+          tsProject.getModuleResolutionCache(),
+          lsh,
+          ps
+        );
 
         /**
          * Here we invalidate our snapshot cache when TypeScript invalidates the file.
@@ -76,9 +86,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
                   markoTaglibFilesReg.test(info.fileName)
             ) {
               if (markoTaglibFilesReg.test(info.fileName)) {
-                for (const project of getMarkoProjects()) {
-                  project.cache.clear();
-                }
+                markoProject.clearCaches();
               }
             }
 

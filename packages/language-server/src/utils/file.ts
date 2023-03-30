@@ -2,14 +2,16 @@ import path from "path";
 
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import type { TaglibLookup } from "@marko/babel-utils";
-import { type Parsed, parse } from "@marko/language-tools";
+import {
+  type Parsed,
+  project as markoProject,
+  parse,
+} from "@marko/language-tools";
 import { URI } from "vscode-uri";
-import { MarkoProject, getMarkoProject } from "./project";
 
 const processorCaches = new WeakMap<Parsed, Map<unknown, unknown>>();
 
 export interface MarkoFile {
-  project: MarkoProject;
   uri: string;
   scheme: string;
   version: number;
@@ -33,18 +35,16 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
   const { uri } = doc;
   const { fsPath: filename, scheme } = URI.parse(uri);
   const dirname = filename && path.dirname(filename);
-  const project = getMarkoProject(dirname);
-  const cache = project.cache as Map<TextDocument, MarkoFile>;
+  const cache = markoProject.getCache(dirname) as Map<TextDocument, MarkoFile>;
   let file = cache.get(doc);
   if (!file) {
     const { version } = doc;
     const code = doc.getText();
     const parsed = parse(code, filename);
-    const lookup = project.getLookup(dirname);
+    const lookup = markoProject.getTagLookup(dirname);
     cache.set(
       doc,
       (file = {
-        project,
         uri,
         scheme,
         version,
@@ -63,8 +63,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
 export function clearMarkoCacheForFile(doc: TextDocument) {
   const { fsPath: filename } = URI.parse(doc.uri);
   const dirname = filename && path.dirname(filename);
-  const project = getMarkoProject(dirname);
-  const cache = project.cache as Map<TextDocument, MarkoFile>;
+  const cache = markoProject.getCache(dirname) as Map<TextDocument, MarkoFile>;
   cache.delete(doc);
 }
 
