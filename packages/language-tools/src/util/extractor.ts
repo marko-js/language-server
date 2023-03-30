@@ -65,13 +65,11 @@ export class Extractor {
 }
 
 export class Extracted {
-  #parsed: Parsed;
   #generated: string;
   #sourceToGenerated: SourceToGeneratedView | typeof emptyView;
   #generatedToSource: GeneratedToSourceView | typeof emptyView;
   #cachedGeneratedLines: number[] | undefined;
-  constructor(parsed: Parsed, generated: string, tokens: Token[]) {
-    this.#parsed = parsed;
+  constructor(public parsed: Parsed, generated: string, tokens: Token[]) {
     this.#generated = generated;
 
     if (tokens.length === 0) {
@@ -97,8 +95,7 @@ export class Extracted {
 
   sourcePositionAt(generatedOffset: number): Position | undefined {
     const sourceOffset = this.sourceOffsetAt(generatedOffset);
-    if (sourceOffset !== undefined)
-      return this.#parsed.positionAt(sourceOffset);
+    if (sourceOffset !== undefined) return this.parsed.positionAt(sourceOffset);
   }
 
   sourceLocationAt(
@@ -110,7 +107,7 @@ export class Extracted {
       generatedEnd
     );
     if (sourceRange) {
-      return this.#parsed.locationAt(sourceRange);
+      return this.parsed.locationAt(sourceRange);
     }
   }
 

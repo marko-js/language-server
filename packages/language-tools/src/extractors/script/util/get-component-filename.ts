@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export default function getComponentFilename(from: string) {
+export function getComponentFilename(from: string) {
   const dir = path.dirname(from);
   const nameNoExt = path.basename(from, ".marko");
   const isEntry = nameNoExt === "index";

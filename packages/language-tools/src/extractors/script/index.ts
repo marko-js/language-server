@@ -23,6 +23,7 @@ import {
   hasHoists,
   isMutatedVar,
 } from "./util/attach-scopes";
+import { getComponentFilename } from "./util/get-component-filename";
 import { getRuntimeOverrides } from "./util/runtime-overrides";
 import getJSDocInputType from "./util/jsdoc-input-type";
 
@@ -91,7 +92,6 @@ export interface ExtractScriptOptions {
   lookup: TaglibLookup;
   scriptLang: ScriptLang;
   runtimeTypesCode?: string;
-  componentFilename?: string | undefined;
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -124,19 +124,17 @@ class ScriptExtractor {
     this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
-    this.#writeProgram(parsed.program, opts.componentFilename);
+    this.#writeProgram(parsed.program);
   }
 
   end() {
     return this.#extractor.end();
   }
 
-  #writeProgram(
-    program: Node.Program,
-    componentFileName: ExtractScriptOptions["componentFilename"]
-  ) {
+  #writeProgram(program: Node.Program) {
     this.#writeCommentPragmas(program);
 
+    const componentFileName = getComponentFilename(this.#filename);
     const inputType = this.#getInputType(program);
     let componentClassBody: Range | void;
 

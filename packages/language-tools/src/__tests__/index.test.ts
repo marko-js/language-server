@@ -45,20 +45,12 @@ for (const entry of fs.readdirSync(FIXTURES)) {
           const [code, hovers] = extractHovers(src);
           const parsed = parse(code, filename);
           const lookup = taglib.buildLookup(path.dirname(filename));
-          const potentialComponentPath = path.resolve(
-            filename,
-            "../component.ts"
-          );
-
           const extractOptions: Parameters<typeof extractScript>[0] = {
             ts,
             parsed,
             lookup,
             scriptLang: ScriptLang.ts,
             runtimeTypesCode: RUNTIME_LIB_CODE,
-            componentFilename: fs.existsSync(potentialComponentPath)
-              ? "./component"
-              : undefined,
           };
 
           const extracted = extractScript(extractOptions);

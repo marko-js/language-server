@@ -1,17 +1,9 @@
 import path from "path";
-import type ts from "typescript";
-import {
-  type Extracted,
-  ScriptLang,
-  extractScript,
-  project as markoProject,
-  parse,
-} from "@marko/language-tools";
-import getComponentFilename from "../utils/get-component-filename";
+import type ts from "typescript/lib/tsserverlibrary";
+import { type Extracted, Processors } from "@marko/language-tools";
 
-const markoExt = ".marko";
-const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
+const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -19,7 +11,7 @@ export interface ExtractedSnapshot extends Extracted {
 
 export function patch(
   ts: typeof import("typescript/lib/tsserverlibrary"),
-  scriptLang: ScriptLang,
+  configFile: string | undefined,
   extractCache: Map<
     string,
     ExtractedSnapshot | { snapshot: ts.IScriptSnapshot }
@@ -28,31 +20,22 @@ export function patch(
   host: ts.LanguageServiceHost,
   ps?: InstanceType<typeof ts.server.ProjectService>
 ) {
-  const rootDir = host.getCurrentDirectory();
-  const projectTypeLibs = markoProject.getTypeLibs(rootDir, ts, host);
-  const projectTypeLibsFiles = [
-    projectTypeLibs.internalTypesFile,
-    projectTypeLibs.markoTypesFile,
-  ];
-
-  if (projectTypeLibs.markoRunTypesFile) {
-    projectTypeLibsFiles.push(projectTypeLibs.markoRunTypesFile);
-  }
-
-  if (projectTypeLibs.markoRunGeneratedTypesFile) {
-    projectTypeLibsFiles.push(projectTypeLibs.markoRunGeneratedTypesFile);
-  }
-
-  const isMarkoTSFile = (fileName: string) =>
-    markoProject.getScriptLang(fileName, scriptLang, ts, host) ===
-    ScriptLang.ts;
+  const processors = Processors.create({
+    ts,
+    host,
+    configFile,
+  });
+  const rootNames = Object.values(processors)
+    .map((processor) => processor.getRootNames?.())
+    .flat()
+    .filter(Boolean) as string[];
 
   /**
-   * Ensure the Marko runtime definitions are always loaded.
+   * Ensure the processor runtime definitions are always loaded.
    */
   const getScriptFileNames = host.getScriptFileNames.bind(host);
   host.getScriptFileNames = () => [
-    ...new Set(projectTypeLibsFiles.concat(getScriptFileNames())),
+    ...new Set(rootNames.concat(getScriptFileNames())),
   ];
 
   /**
@@ -61,11 +44,9 @@ export function patch(
   const getScriptKind = host.getScriptKind?.bind(host);
   if (getScriptKind) {
     host.getScriptKind = (fileName: string) => {
-      return getExt(fileName) === markoExt
-        ? isMarkoTSFile(fileName)
-          ? ts.ScriptKind.TS
-          : ts.ScriptKind.JS
-        : getScriptKind(fileName);
+      const processor = getProcessor(fileName);
+      if (processor) return processor.getScriptKind(fileName);
+      return getScriptKind(fileName);
     };
   }
 
@@ -75,27 +56,14 @@ export function patch(
    */
   const getScriptSnapshot = host.getScriptSnapshot.bind(host);
   host.getScriptSnapshot = (fileName: string) => {
-    if (getExt(fileName) === markoExt) {
+    const processor = getProcessor(fileName);
+    if (processor) {
       let cached = extractCache.get(fileName);
       if (!cached) {
         const code = host.readFile(fileName, "utf-8") || "";
-        const dir = path.dirname(fileName);
 
         try {
-          cached = extractScript({
-            ts,
-            parsed: parse(code, fileName),
-            lookup: markoProject.getTagLookup(dir),
-            scriptLang: markoProject.getScriptLang(
-              fileName,
-              scriptLang,
-              ts,
-              host
-            ),
-            runtimeTypesCode: projectTypeLibs.markoTypesCode,
-            componentFilename: getComponentFilename(fileName),
-          }) as ExtractedSnapshot;
-
+          cached = processor.extract(fileName, code) as ExtractedSnapshot;
           cached.snapshot = ts.ScriptSnapshot.fromString(cached.toString());
         } catch {
           cached = { snapshot: ts.ScriptSnapshot.fromString("") };
@@ -126,9 +94,8 @@ export function patch(
   if (host.getProjectVersion) {
     const getScriptVersion = host.getScriptVersion.bind(host);
     host.getScriptVersion = (fileName: string) => {
-      if (getExt(fileName) === markoExt) {
-        return host.getProjectVersion!();
-      }
+      const processor = getProcessor(fileName);
+      if (processor) return host.getProjectVersion!();
       return getScriptVersion(fileName);
     };
   }
@@ -142,7 +109,7 @@ export function patch(
     host.readDirectory = (path, extensions, exclude, include, depth) => {
       return readDirectory(
         path,
-        extensions?.concat(markoExt),
+        extensions?.concat(Processors.extensions),
         exclude,
         include,
         depth
@@ -173,9 +140,9 @@ export function patch(
 
       for (let i = 0; i < moduleLiterals.length; i++) {
         const moduleName = moduleLiterals[i].text;
-        const shouldProcess =
-          moduleName[0] !== "*" ? getExt(moduleName) === markoExt : undefined;
-        if (shouldProcess) {
+        const processor =
+          moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
+        if (processor) {
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
             // For fs paths just see if it exists on disk.
@@ -213,12 +180,12 @@ export function patch(
           }
 
           if (resolvedFileName) {
-            if (isDefinitionFile(resolvedFileName)) {
+            if (Processors.isDefinitionFile(resolvedFileName)) {
               if (!host.fileExists(resolvedFileName)) {
                 resolvedFileName = undefined;
               }
             } else {
-              const ext = getExt(resolvedFileName)!;
+              const ext = Processors.getExt(resolvedFileName)!;
               const definitionFile = `${resolvedFileName.slice(
                 0,
                 -ext.length
@@ -235,9 +202,7 @@ export function patch(
             resolvedModule: resolvedFileName
               ? {
                   resolvedFileName,
-                  extension: isMarkoTSFile(resolvedFileName)
-                    ? ts.Extension.Ts
-                    : ts.Extension.Js,
+                  extension: processor.getScriptExtension(resolvedFileName),
                   isExternalLibraryImport: false,
                 }
               : undefined,
@@ -274,13 +239,9 @@ export function patch(
   }
 
   return host;
-}
 
-function getExt(fileName: string) {
-  const extIndex = fileName.lastIndexOf(".");
-  if (extIndex !== -1) return fileName.slice(extIndex) as `.${string}`;
-}
-
-function isDefinitionFile(fileName: string) {
-  return /\.d\.[^.]+$/.test(fileName);
+  function getProcessor(fileName: string) {
+    const ext = Processors.getExt(fileName);
+    return ext ? processors[ext] : undefined;
+  }
 }
