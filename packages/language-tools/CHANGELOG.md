@@ -1,5 +1,15 @@
 # @marko/language-tools
 
+## 2.0.0
+
+### Major Changes
+
+- [#151](https://github.com/marko-js/language-server/pull/151) [`25e4131`](https://github.com/marko-js/language-server/commit/25e41314e9d93f89c92ae015bbdc8a9381f66610) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor script extractor and expose Processor helpers (shared between CLI and language server)
+
+### Patch Changes
+
+- [#151](https://github.com/marko-js/language-server/pull/151) [`25e4131`](https://github.com/marko-js/language-server/commit/25e41314e9d93f89c92ae015bbdc8a9381f66610) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade internal dependencies
+
 ## 1.0.3
 
 ### Patch Changes
