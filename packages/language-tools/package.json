@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-tools",
   "description": "Marko Language Tools",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.19.1",
