@@ -55,7 +55,14 @@ await Promise.all([
       "src/ts-plugin.ts",
       "src/__tests__/index.ts",
     ],
-    external: ["vscode", "mocha", "mocha-snap", "fast-glob", "tsx"],
+    external: [
+      "vscode",
+      "mocha",
+      "mocha-snap",
+      "fast-glob",
+      "tsx",
+      "@babel/preset-typescript",
+    ],
     plugins: [
       {
         name: "vscode-css-languageservice-fix",

@@ -3,12 +3,17 @@ import type ts from "typescript/lib/tsserverlibrary";
 import {
   type Extracted,
   Processors,
+  Project,
   getExt,
   isDefinitionFile,
 } from "@marko/language-tools";
 
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
+Project.setDefaultTypePaths({
+  internalTypesFile: path.join(__dirname, "marko.internal.d.ts"),
+  markoTypesFile: path.join(__dirname, "marko.runtime.d.ts"),
+});
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -80,7 +85,7 @@ export function patch(
 
         ps?.getOrCreateScriptInfoForNormalizedPath(
           fileName as any,
-          false,
+          true,
           undefined,
           ts.ScriptKind.Deferred,
           false,

@@ -19,6 +19,15 @@ export interface Meta {
   };
 }
 
+interface TypeLibs {
+  internalTypesFile: string | undefined;
+  markoRunTypesFile: string | undefined;
+  markoRunGeneratedTypesFile: string | undefined;
+  markoTypesFile: string | undefined;
+  markoTypesCode: string | undefined;
+}
+
+const defaultTypeLibs: Partial<TypeLibs> = {};
 const ignoreErrors = (_err: Error) => {};
 const metaByDir = new Map<string, Meta>();
 const metaByCompiler = new Map<string, Meta>();
@@ -97,8 +106,11 @@ export function getTypeLibs(
       host
     );
 
-  const internalTypesFile = resolvedInternalTypes?.resolvedFileName;
-  const markoTypesFile = resolvedMarkoTypes?.resolvedFileName;
+  const internalTypesFile =
+    resolvedInternalTypes?.resolvedFileName ||
+    defaultTypeLibs.internalTypesFile;
+  const markoTypesFile =
+    resolvedMarkoTypes?.resolvedFileName || defaultTypeLibs.markoTypesFile;
   const markoRunTypesFile = resolvedMarkoRunTypes?.resolvedFileName;
 
   if (!internalTypesFile || !markoTypesFile) {
@@ -137,7 +149,11 @@ export function getScriptLang(
   let scriptLang = cache?.get(dir);
 
   if (!scriptLang) {
-    const configPath = ts.findConfigFile(dir, host.fileExists, "marko.json");
+    const configPath = ts.findConfigFile(
+      dir,
+      host.fileExists.bind(host),
+      "marko.json"
+    );
 
     if (configPath) {
       try {
@@ -182,6 +198,10 @@ export function clearCaches() {
   for (const project of metaByCompiler.values()) {
     clearCacheForMeta(project);
   }
+}
+
+export function setDefaultTypePaths(defaults: typeof defaultTypeLibs) {
+  Object.assign(defaultTypeLibs, defaults);
 }
 
 function getMeta(dir?: string): Meta {
