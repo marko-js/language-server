@@ -27,6 +27,10 @@
       {
         "command": "marko.showScriptOutput",
         "title": "Marko: Debug: Show Extracted Script Output"
+      },
+      {
+        "command": "marko.showHtmlOutput",
+        "title": "Marko: Debug: Show Extracted Static HTML Output"
       }
     ],
     "typescriptServerPlugins": [

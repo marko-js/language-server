@@ -80,6 +80,36 @@ export async function activate(ctx: ExtensionContext) {
       }
     })
   );
+
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.showHtmlOutput", async () => {
+      if (!window.activeTextEditor) {
+        window.showErrorMessage(
+          "You must have an open Marko file to view the static HTML output for."
+        );
+        return;
+      }
+
+      const result = await client.sendRequest<
+        { language: string; content: string } | undefined
+      >("$/showHtmlOutput", window.activeTextEditor.document.uri.toString());
+
+      if (result) {
+        await window.showTextDocument(
+          await workspace.openTextDocument(result),
+          {
+            preview: true,
+            viewColumn: ViewColumn.Beside,
+          }
+        );
+      } else {
+        window.showErrorMessage(
+          "Unable to extract static HTML for Marko document."
+        );
+      }
+    })
+  );
+
   // Start the client. This will also launch the server
   await client.start();
 }
