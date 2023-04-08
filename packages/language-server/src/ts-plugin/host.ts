@@ -40,6 +40,23 @@ export function patch(
     .flat()
     .filter(Boolean) as string[];
 
+  const trackFile = ps
+    ? (fileName: string) => {
+        // Ensure the project service knows about the file.
+        // Without this the project never registers a `ScriptInfo`.
+        // TODO: maybe we should patch readFile instead of getScriptSnapshot?
+
+        ps.getOrCreateScriptInfoForNormalizedPath(
+          fileName as any,
+          true,
+          undefined,
+          ts.ScriptKind.Deferred,
+          false,
+          host
+        );
+      }
+    : () => {};
+
   /**
    * Ensure the processor runtime definitions are always loaded.
    */
@@ -69,6 +86,7 @@ export function patch(
     const processor = getProcessor(fileName);
     if (processor) {
       let cached = extractCache.get(fileName);
+
       if (!cached) {
         const code = host.readFile(fileName, "utf-8") || "";
 
@@ -79,19 +97,7 @@ export function patch(
           cached = { snapshot: ts.ScriptSnapshot.fromString("") };
         }
 
-        // Ensure the project service knows about the file.
-        // Without this the project never registers a `ScriptInfo`.
-        // TODO: maybe we should patch readFile instead of getScriptSnapshot?
-
-        ps?.getOrCreateScriptInfoForNormalizedPath(
-          fileName as any,
-          true,
-          undefined,
-          ts.ScriptKind.Deferred,
-          false,
-          host
-        );
-
+        trackFile(fileName);
         extractCache.set(fileName, cached);
       }
 
@@ -149,7 +155,8 @@ export function patch(
         | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
 
       for (let i = 0; i < moduleLiterals.length; i++) {
-        const moduleName = moduleLiterals[i].text;
+        const moduleLiteral = moduleLiterals[i];
+        const moduleName = moduleLiteral.text;
         const processor =
           moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
         if (processor) {
@@ -219,6 +226,7 @@ export function patch(
           });
         } else if (resolvedModules) {
           resolvedModules.push(undefined);
+          normalModuleLiterals.push(moduleLiteral);
         }
       }
 
