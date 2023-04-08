@@ -23,7 +23,7 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode",
-        "/Users/dpiercey/dev/marko-js/tags-api-preview"
+        "${workspaceFolder}/packages/language-tools/src/__tests__/fixtures"
       ],
       "outFiles": [
         "${workspaceFolder}/**/dist/*.js",
