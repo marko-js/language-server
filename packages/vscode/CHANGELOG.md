@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.11
+
+### Patch Changes
+
+- [#156](https://github.com/marko-js/language-server/pull/156) [`9c78a83`](https://github.com/marko-js/language-server/commit/9c78a832e55de7f34a5bc6f202e9893ab2937227) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with ts-plugins resolver override not correctly resolving when a mix of Marko and JS files were requested.
+
 ## 1.0.10
 
 ### Patch Changes
