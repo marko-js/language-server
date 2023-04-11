@@ -1,4 +1,3 @@
-import type { DiagnosticSeverity } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import axe from "axe-core";
 import { type Parsed, extractHTML } from "@marko/language-tools";
@@ -10,14 +9,14 @@ import rules from "./axe-rules/separated-rules";
 
 const extractCache = new WeakMap<Parsed, ReturnType<typeof extractHTML>>();
 
-const axeViolationImpact: {
-  [impact in NonNullable<axe.ImpactValue>]: DiagnosticSeverity;
-} = {
-  minor: 1,
-  moderate: 2,
-  serious: 3,
-  critical: 4,
-};
+// const axeViolationImpact: {
+//   [impact in NonNullable<axe.ImpactValue>]: DiagnosticSeverity;
+// } = {
+//   minor: 1,
+//   moderate: 2,
+//   serious: 3,
+//   critical: 4,
+// };
 
 const HTMLService: Partial<Plugin> = {
   commands: {
@@ -67,23 +66,23 @@ const HTMLService: Partial<Plugin> = {
     violations.push(
       ...requiresAttrs.filter(
         ({ element }) =>
-          element?.dataset.markoAxeNodeId &&
-          !nodeDetails[element.dataset.markoAxeNodeId].hasDynamicAttrs
+          element?.dataset.markoNodeId &&
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs
       )
     );
     violations.push(
       ...requiresChildren.filter(
         ({ element }) =>
-          element?.dataset.markoAxeNodeId &&
-          !nodeDetails[element.dataset.markoAxeNodeId].hasDynamicBody
+          element?.dataset.markoNodeId &&
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
       )
     );
     violations.push(
       ...requiresAttrsOrChildren.filter(
         ({ element }) =>
-          element?.dataset.markoAxeNodeId &&
-          !nodeDetails[element.dataset.markoAxeNodeId].hasDynamicAttrs &&
-          !nodeDetails[element.dataset.markoAxeNodeId].hasDynamicBody
+          element?.dataset.markoNodeId &&
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs &&
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
       )
     );
 
@@ -95,15 +94,15 @@ const HTMLService: Partial<Plugin> = {
       if (!generatedLoc) return [];
 
       const sourceRange = extracted.sourceLocationAt(
-        generatedLoc.startOffset,
-        generatedLoc.endOffset
+        generatedLoc.startOffset + 1,
+        generatedLoc.startOffset + 1 + element.tagName.length
       );
       if (!sourceRange) return [];
 
       return [
         {
           range: sourceRange,
-          severity: axeViolationImpact[result.impact ?? "moderate"],
+          severity: 3,
           source: `axe-core(${result.ruleId})`,
           message: result.failureSummary ?? "unknown accessibility issue",
         },

@@ -31,7 +31,6 @@ class HTMLExtractor {
   }
 
   #visitNode(node: Node.ChildNode) {
-    const nodeId = `${this.#nodeIdCounter++}`;
     let hasDynamicBody = false,
       hasDynamicAttrs = false,
       isDynamic = false;
@@ -41,18 +40,25 @@ class HTMLExtractor {
           if (this.#visitNode(child)) hasDynamicBody = true;
         });
         break;
-      case NodeType.Tag:
+      case NodeType.Tag: {
+        const nodeId = `${this.#nodeIdCounter++}`;
         ({ isDynamic, hasDynamicAttrs, hasDynamicBody } = this.#writeTag(
           node,
           nodeId
         ));
+        this.#nodeDetails[nodeId] = { hasDynamicAttrs, hasDynamicBody };
         break;
+      }
       case NodeType.Text:
         this.#extractor.copy(node);
         break;
+      case NodeType.Placeholder:
+        isDynamic =
+          this.#read({
+            start: node.start + 1,
+            end: node.start + 2,
+          }) === "!";
     }
-
-    this.#nodeDetails[nodeId] = { hasDynamicAttrs, hasDynamicBody };
 
     return isDynamic || hasDynamicBody;
   }
@@ -76,7 +82,7 @@ class HTMLExtractor {
     this.#extractor.write("<");
     this.#extractor.copy(node.name);
 
-    this.#extractor.write(` data-marko-axe-node-id="${id}"`);
+    this.#extractor.write(` data-marko-node-id="${id}"`);
     // [node attributes]
     node.attrs?.forEach((attr) => {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
@@ -109,7 +115,9 @@ class HTMLExtractor {
     ) {
       return;
     }
-    const valueType = getAttributeValueType(this.#read(attr.value));
+
+    const valueString = this.#read(attr.value);
+    const valueType = getAttributeValueType(valueString);
     if (valueType === undefined) return;
 
     this.#extractor.write(" ");
@@ -120,7 +128,7 @@ class HTMLExtractor {
       case AttributeValueType.Literal:
         this.#extractor.write('="');
         this.#extractor.copy({
-          start: attr.value.start + 1,
+          start: attr.value.start + valueString.search(/[^=\s]/g),
           end: attr.value.end,
         });
         this.#extractor.write('"');
@@ -128,7 +136,7 @@ class HTMLExtractor {
       case AttributeValueType.QuotedString:
         this.#extractor.write('="');
         this.#extractor.copy({
-          start: attr.value.start + 2,
+          start: attr.value.start + valueString.search(/[^=\s]/g) + 1,
           end: attr.value.end - 1,
         });
         this.#extractor.write('"');
