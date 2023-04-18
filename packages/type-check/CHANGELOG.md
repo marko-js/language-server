@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 0.0.3
+
+### Patch Changes
+
+- [#158](https://github.com/marko-js/language-server/pull/158) [`bcfe4dc`](https://github.com/marko-js/language-server/commit/bcfe4dc0b6803764aab5a6e9b1fddeb2a1825faa) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue resolving mixed script/marko files.
+
+- Updated dependencies [[`de0df11`](https://github.com/marko-js/language-server/commit/de0df11ac522b41a0942d0791b69bc7d209aca9c)]:
+  - @marko/language-tools@2.0.2
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.10
+
+### Patch Changes
+
+- [#158](https://github.com/marko-js/language-server/pull/158) [`de0df11`](https://github.com/marko-js/language-server/commit/de0df11ac522b41a0942d0791b69bc7d209aca9c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- Updated dependencies [[`de0df11`](https://github.com/marko-js/language-server/commit/de0df11ac522b41a0942d0791b69bc7d209aca9c)]:
+  - @marko/language-tools@2.0.2
+
 ## 1.0.9
 
 ### Patch Changes
