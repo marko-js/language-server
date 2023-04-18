@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 0.0.4
+
+### Patch Changes
+
+- [#160](https://github.com/marko-js/language-server/pull/160) [`a0e13d8`](https://github.com/marko-js/language-server/commit/a0e13d884c70fb3b1d6d8e5bf3fa39c35b1123a0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where some renderer types were not being constrained enough.
+
+- Updated dependencies [[`a0e13d8`](https://github.com/marko-js/language-server/commit/a0e13d884c70fb3b1d6d8e5bf3fa39c35b1123a0)]:
+  - @marko/language-tools@2.0.3
+
 ## 0.0.3
 
 ### Patch Changes
