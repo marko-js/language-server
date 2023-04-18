@@ -321,22 +321,38 @@ declare global {
         : never;
 
       export interface NativeTagRenderer<Name extends string> {
-        (): () => <Input extends Marko.NativeTags[Name]["input"]>(
-          input: Input
-        ) => ReturnAndScope<Scopes<Input>, Marko.NativeTags[Name]["return"]>;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+        (): () => <__marko_internal_input extends unknown>(
+          input: Marko.NativeTags[Name]["input"] &
+            Relate<__marko_internal_input, Marko.NativeTags[Name]["input"]>
+        ) => ReturnAndScope<
+          Scopes<__marko_internal_input>,
+          Marko.NativeTags[Name]["return"]
+        >;
       }
 
       export interface BodyRenderer<Body extends AnyMarkoBody> {
-        (): () => <Args extends BodyParameters<Body>>(
-          input: RenderBodyInput<Args>
-        ) => ReturnAndScope<Scopes<Args>, BodyReturnType<Body>>;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+        (): () => <__marko_internal_input extends unknown>(
+          input: RenderBodyInput<BodyParameters<Body>> &
+            Relate<
+              __marko_internal_input,
+              RenderBodyInput<BodyParameters<Body>>
+            >
+        ) => ReturnAndScope<
+          Scopes<__marko_internal_input>,
+          BodyReturnType<Body>
+        >;
       }
 
       export interface BaseRenderer<
         Input extends Record<PropertyKey, unknown>,
         Return = void
       > {
-        (): () => (input: Input) => ReturnAndScope<Scopes<Input>, Return>;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+        (): () => <__marko_internal_input extends unknown>(
+          input: Input & Relate<__marko_internal_input, Input>
+        ) => ReturnAndScope<Scopes<__marko_internal_input>, Return>;
       }
 
       export interface DefaultRenderer {
