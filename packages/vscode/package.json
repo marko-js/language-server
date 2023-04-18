@@ -81,7 +81,7 @@
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@types/vscode": "^1.74.2",
     "@vscode/test-electron": "^2.3.0",
-    "ovsx": "^0.7.0",
+    "ovsx": "^0.8.0",
     "tsx": "^3.12.6",
     "vsce": "^1.97.0",
     "vscode-languageclient": "^8.1.0"
