@@ -283,10 +283,11 @@ function createCompilerHost(
         | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
 
       for (let i = 0; i < moduleLiterals.length; i++) {
-        const moduleName = moduleLiterals[i].text;
-        const process =
+        const moduleLiteral = moduleLiterals[i];
+        const moduleName = moduleLiteral.text;
+        const processor =
           moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
-        if (process) {
+        if (processor) {
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
             // For fs paths just see if it exists on disk.
@@ -297,7 +298,7 @@ function createCompilerHost(
             // try resolving the `.marko` file relative to that.
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
-            const { resolvedModule } = ts.resolveModuleName(
+            const { resolvedModule } = ts.bundlerModuleNameResolver(
               `${nodeModuleName}/package.json`,
               containingFile,
               options,
@@ -346,13 +347,14 @@ function createCompilerHost(
             resolvedModule: resolvedFileName
               ? {
                   resolvedFileName,
-                  extension: process.getScriptExtension(resolvedFileName),
+                  extension: processor.getScriptExtension(resolvedFileName),
                   isExternalLibraryImport: false,
                 }
               : undefined,
           });
         } else if (resolvedModules) {
           resolvedModules.push(undefined);
+          normalModuleLiterals.push(moduleLiteral);
         }
       }
 
