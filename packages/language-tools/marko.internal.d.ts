@@ -1,6 +1,9 @@
 // This is a typescript file which defines utilities used in the output of the typescript extractor.
 declare global {
   namespace Marko {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    export interface Directives {}
+
     // Extend the Body type to keep track of what is yielded (used for scope hoisted types).
     export interface Body<
       in Params extends readonly any[] = [],
@@ -323,8 +326,12 @@ declare global {
       export interface NativeTagRenderer<Name extends string> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
-          input: Marko.NativeTags[Name]["input"] &
-            Relate<__marko_internal_input, Marko.NativeTags[Name]["input"]>
+          input: Marko.Directives &
+            Marko.NativeTags[Name]["input"] &
+            Relate<
+              __marko_internal_input,
+              Marko.Directives & Marko.NativeTags[Name]["input"]
+            >
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
           Marko.NativeTags[Name]["return"]
@@ -334,10 +341,11 @@ declare global {
       export interface BodyRenderer<Body extends AnyMarkoBody> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
-          input: RenderBodyInput<BodyParameters<Body>> &
+          input: Marko.Directives &
+            RenderBodyInput<BodyParameters<Body>> &
             Relate<
               __marko_internal_input,
-              RenderBodyInput<BodyParameters<Body>>
+              Marko.Directives & RenderBodyInput<BodyParameters<Body>>
             >
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
@@ -350,9 +358,11 @@ declare global {
         Return = void
       > {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-        (): () => <__marko_internal_input extends unknown>(
-          input: Input & Relate<__marko_internal_input, Input>
-        ) => ReturnAndScope<Scopes<__marko_internal_input>, Return>;
+        (): () => <__marko_input_with_scope extends unknown>(
+          input: Marko.Directives &
+            Input &
+            Relate<__marko_input_with_scope, Marko.Directives & Input>
+        ) => ReturnAndScope<Scopes<__marko_input_with_scope>, Return>;
       }
 
       export interface DefaultRenderer {

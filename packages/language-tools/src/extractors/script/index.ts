@@ -347,9 +347,9 @@ function ${templateName}() {\n`);
     const internalInput = varLocal("input");
     const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
-    const renderAndReturn = `(input: Input${typeArgsStr} & ${varShared(
+    const renderAndReturn = `(input: Marko.Directives & Input${typeArgsStr} & ${varShared(
       "Relate"
-    )}<${internalInput}, Input${typeArgsStr}>) => (${varShared(
+    )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope"
     )}<${internalInput}, ${
       didReturn
