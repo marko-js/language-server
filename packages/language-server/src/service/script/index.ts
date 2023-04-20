@@ -35,6 +35,7 @@ import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
 
 import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import printJSDocTag from "./util/print-jsdoc-tag";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
 const IGNORE_DIAG_REG =
@@ -846,16 +847,16 @@ function printDocumentation(
   tags: ts.JSDocTagInfo[] | undefined
 ) {
   let result = "";
+  let sep = "";
   if (docs) {
     result += ts.displayPartsToString(docs);
+    sep = "  \n\n";
   }
 
   if (tags) {
     for (const tag of tags) {
-      const text = ts.displayPartsToString(tag.text);
-      result += `*@${tag.name}*${
-        text ? (/\n/.test(text) ? `\n${text}` : `- ${text}`) : ""
-      }`;
+      result += sep + printJSDocTag(tag);
+      sep = "  \n\n";
     }
   }
 
