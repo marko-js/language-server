@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 0.0.5
+
+### Patch Changes
+
+- [#162](https://github.com/marko-js/language-server/pull/162) [`67ef015`](https://github.com/marko-js/language-server/commit/67ef0151af21ac9773af36fe7f1ccc20428bf162) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- Updated dependencies [[`67ef015`](https://github.com/marko-js/language-server/commit/67ef0151af21ac9773af36fe7f1ccc20428bf162), [`52bc92f`](https://github.com/marko-js/language-server/commit/52bc92fffdd866f6b826cad4c55bb100b2513a72)]:
+  - @marko/language-tools@2.0.4
+
 ## 0.0.4
 
 ### Patch Changes
