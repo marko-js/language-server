@@ -6,8 +6,8 @@
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.19.1",
     "@babel/parser": "^7.21.4",
-    "@marko/compiler": "5.27.4",
-    "@marko/translator-default": "5.25.6",
+    "@marko/compiler": "5.27.7",
+    "@marko/translator-default": "5.25.7",
     "htmljs-parser": "^5.4.3",
     "relative-import-path": "^1.0.0"
   },
@@ -17,7 +17,7 @@
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@typescript/vfs": "^1.4.0",
-    "marko": "^5.25.5",
+    "marko": "^5.25.6",
     "mitata": "^0.1.6",
     "tsx": "^3.12.6"
   },
