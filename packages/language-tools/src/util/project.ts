@@ -82,14 +82,14 @@ export function getTypeLibs(
     ".marko-run/routes.d.ts"
   );
   const resolveFromFile = path.join(rootDir, "_.d.ts");
-  const { resolvedTypeReferenceDirective: resolvedInternalTypes } =
+  const internalTypesFile =
+    defaultTypeLibs.internalTypesFile ||
     ts.resolveTypeReferenceDirective(
       "@marko/language-tools/marko.internal.d.ts",
       resolveFromFile,
       resolveTypeCompilerOptions,
       host
-    );
-
+    ).resolvedTypeReferenceDirective?.resolvedFileName;
   const { resolvedTypeReferenceDirective: resolvedMarkoTypes } =
     ts.resolveTypeReferenceDirective(
       (config.translator.runtimeTypes as string | undefined) || "marko",
@@ -97,7 +97,6 @@ export function getTypeLibs(
       resolveTypeCompilerOptions,
       host
     );
-
   const { resolvedTypeReferenceDirective: resolvedMarkoRunTypes } =
     ts.resolveTypeReferenceDirective(
       "@marko/run",
@@ -105,10 +104,6 @@ export function getTypeLibs(
       resolveTypeCompilerOptions,
       host
     );
-
-  const internalTypesFile =
-    resolvedInternalTypes?.resolvedFileName ||
-    defaultTypeLibs.internalTypesFile;
   const markoTypesFile =
     resolvedMarkoTypes?.resolvedFileName || defaultTypeLibs.markoTypesFile;
   const markoRunTypesFile = resolvedMarkoRunTypes?.resolvedFileName;
