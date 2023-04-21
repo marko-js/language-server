@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.15
+
+### Patch Changes
+
+- [#164](https://github.com/marko-js/language-server/pull/164) [`50e43f1`](https://github.com/marko-js/language-server/commit/50e43f1387ebbcfb36c8120b7e9e1ce5b7b937ce) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- [#164](https://github.com/marko-js/language-server/pull/164) [`ec60968`](https://github.com/marko-js/language-server/commit/ec60968f49b1e8679bd33f2c7fc2fda69c4251d1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bring printing of hover documentation more inline with the typescript language server.
+
 ## 1.0.14
 
 ### Patch Changes
