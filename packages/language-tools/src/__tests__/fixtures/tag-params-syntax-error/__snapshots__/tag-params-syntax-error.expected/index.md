@@ -123,7 +123,7 @@
      | ^ Declaration or statement expected.
   24 | export default new (
   25 |   class Template extends Marko._.Template<{
-  26 |     
+  26 |       
 ```
 
 ### Ln 23, Col 2
@@ -134,7 +134,7 @@
      |  ^ Declaration or statement expected.
   24 | export default new (
   25 |   class Template extends Marko._.Template<{
-  26 |     
+  26 |       
 ```
 
 ### Ln 23, Col 3
@@ -145,7 +145,7 @@
      |   ^^^ Unreachable code detected.
   24 | export default new (
   25 |   class Template extends Marko._.Template<{
-  26 |     
+  26 |       
 ```
 
 ### Ln 23, Col 4
@@ -156,6 +156,6 @@
      |    ^ Expression expected.
   24 | export default new (
   25 |   class Template extends Marko._.Template<{
-  26 |     
+  26 |       
 ```
 

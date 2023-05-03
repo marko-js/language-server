@@ -45,12 +45,16 @@ export default new (class Template extends Marko._.Template<{
     ? <T extends { name: string }>() => <
         __marko_internal_input extends unknown
       >(
-        input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
+        input: Marko.Directives &
+          Input<T> &
+          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>
       ) => Marko._.ReturnWithScope<__marko_internal_input, void>
     : () => <
         __marko_internal_input extends unknown,
         T extends { name: string }
       >(
-        input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>
+        input: Marko.Directives &
+          Input<T> &
+          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>
       ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

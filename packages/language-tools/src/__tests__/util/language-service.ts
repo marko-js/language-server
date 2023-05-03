@@ -27,6 +27,8 @@ export function createLanguageService(
   fsMap: Map<string, string>,
   processors: Processors
 ) {
+  const getProcessor = (filename: string) =>
+    processors[getExt(filename)?.slice(1) || ""];
   const compilerOptions: ts.CompilerOptions = {
     ...ts.getDefaultCompilerOptions(),
     rootDir,
@@ -58,7 +60,7 @@ export function createLanguageService(
    * Trick TypeScript into thinking Marko files are TS/JS files.
    */
   lsh.getScriptKind = (filename: string) => {
-    const processor = processors[getExt(filename)!];
+    const processor = getProcessor(filename);
     return processor ? processor.kind : ts.ScriptKind.TS;
   };
 
@@ -68,7 +70,7 @@ export function createLanguageService(
    */
   const getScriptSnapshot = lsh.getScriptSnapshot!.bind(lsh);
   lsh.getScriptSnapshot = (filename: string) => {
-    const processor = processors[getExt(filename)!];
+    const processor = getProcessor(filename);
     if (processor) {
       let cached = snapshotCache.get(filename);
       if (!cached) {
@@ -126,7 +128,7 @@ export function createLanguageService(
     for (let i = resolvedModules.length; i--; ) {
       if (!resolvedModules[i]) {
         const moduleName = moduleNames[i];
-        const processor = processors[getExt(moduleName)!];
+        const processor = moduleName[0] !== "*" && getProcessor(moduleName);
         if (processor && moduleName[0] === ".") {
           // For relative paths just see if it exists on disk.
           const resolvedFileName = path.resolve(

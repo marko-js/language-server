@@ -42,7 +42,9 @@ export default new (class Template extends Marko._.Template<{
 
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <T, U>() => <__marko_internal_input extends unknown>(
-        input: Input<T, U> & Marko._.Relate<__marko_internal_input, Input<T, U>>
+        input: Marko.Directives &
+          Input<T, U> &
+          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T, U>>
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         typeof __marko_internal_template<T, U> extends () => infer Return
@@ -50,7 +52,9 @@ export default new (class Template extends Marko._.Template<{
           : never
       >
     : () => <__marko_internal_input extends unknown, T, U>(
-        input: Input<T, U> & Marko._.Relate<__marko_internal_input, Input<T, U>>
+        input: Marko.Directives &
+          Input<T, U> &
+          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T, U>>
       ) => Marko._.ReturnWithScope<
         __marko_internal_input,
         typeof __marko_internal_template<T, U> extends () => infer Return

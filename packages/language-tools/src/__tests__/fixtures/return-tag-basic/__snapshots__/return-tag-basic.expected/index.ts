@@ -53,7 +53,9 @@ export default new (class Template extends Marko._.Template<{
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
   _(): () => <__marko_internal_input extends unknown>(
-    input: Input & Marko._.Relate<__marko_internal_input, Input>
+    input: Marko.Directives &
+      Input &
+      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>
   ) => Marko._.ReturnWithScope<
     __marko_internal_input,
     typeof __marko_internal_template extends () => infer Return ? Return : never

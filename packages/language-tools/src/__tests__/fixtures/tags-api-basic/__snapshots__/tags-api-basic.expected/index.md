@@ -86,13 +86,24 @@
   21 |
 ```
 
+### Ln 32, Col 13
+```marko
+  30 |
+  31 |     <for|mobile, i, all| of=mobileList>
+> 32 |       <span id=i>${mobile} ${i} ${all.length}</span>
+     |             ^^ Type 'number' is not assignable to type 'AttrString'.
+  33 |     </for>
+  34 |
+  35 |     <div.container>
+```
+
 ### Ln 38, Col 18
 ```marko
   36 |         <${renderBody}/>
   37 |     </div>
 > 38 |     <fancyButton something=true>${type}</fancyButton>
-     |                  ^^^^^^^^^^^^^^ Argument of type '{ something: boolean; renderBody: () => MarkoReturn<void>; }' is not assignable to parameter of type 'Input'.
-  Object literal may only specify known properties, and '"something"' does not exist in type 'Input'.
+     |                  ^^^^^^^^^^^^^^ Argument of type '{ something: boolean; renderBody: () => MarkoReturn<void>; }' is not assignable to parameter of type 'Directives & Input'.
+  Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
   39 |     <div>Hello $!{"<b>World</b>"}</div>
   40 |     <div>Placeholder example: <code>\${someValue}</code></div>
   41 | </div>

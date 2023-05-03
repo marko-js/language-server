@@ -17,6 +17,16 @@
   4 |   console.log(#hello!);
 ```
 
+### Ln 1, Col 14
+```marko
+> 1 | <div data-x=#2/>
+    |              ^ Argument of type '{ "data-x": any; 2: any; }' is not assignable to parameter of type 'Directives & Marko·Inputᐸʺdivʺᐳ'.
+  Object literal may only specify known properties, and '2' does not exist in type 'Directives & Marko·Inputᐸʺdivʺᐳ'.
+  2 |
+  3 | <div onClick(a, %b) {
+  4 |   console.log(#hello!);
+```
+
 ### Ln 3, Col 14
 ```marko
   1 | <div data-x=#2/>
@@ -86,7 +96,8 @@
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |     ^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Record<string, unknown>'.
+    |     ^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Directives & Marko·Inputᐸʺdivʺᐳ'.
+  Type 'number' is not assignable to type 'Marko·Inputᐸʺdivʺᐳ'.
   4 |   console.log(#hello!);
   5 | }/>
   6 |
@@ -156,7 +167,7 @@
      | ^ Declaration or statement expected.
   28 | export default new (
   29 |   class Template extends Marko._.Template<{
-  30 |     
+  30 |       
 ```
 
 ### Ln 27, Col 2
@@ -167,7 +178,7 @@
      |  ^ Declaration or statement expected.
   28 | export default new (
   29 |   class Template extends Marko._.Template<{
-  30 |     
+  30 |       
 ```
 
 ### Ln 27, Col 3
@@ -178,7 +189,7 @@
      |   ^^^ Unreachable code detected.
   28 | export default new (
   29 |   class Template extends Marko._.Template<{
-  30 |     
+  30 |       
 ```
 
 ### Ln 27, Col 4
@@ -189,6 +200,6 @@
      |    ^ Expression expected.
   28 | export default new (
   29 |   class Template extends Marko._.Template<{
-  30 |     
+  30 |       
 ```
 
