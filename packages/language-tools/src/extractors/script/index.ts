@@ -830,12 +830,19 @@ constructor(_?: Return) {}
             break;
           case NodeType.AttrNamed: {
             const isDefault = isEmptyRange(attr.name);
-            const name = isDefault ? ATTR_UNAMED : attr.name;
             const value = attr.value;
-
+            const modifierIndex =
+              !isDefault &&
+              (!value || value.type === NodeType.AttrValue) &&
+              this.#getNamedAttrModifierIndex(attr);
             // This is printed before the object key so that we can use the
             // position of the default attribute even though there is no actual name in the source.
             const defaultMapPosition = isDefault ? attr.name : undefined;
+            let name: string | Range = isDefault ? ATTR_UNAMED : attr.name;
+
+            if (modifierIndex !== false) {
+              name = { start: attr.name.start, end: modifierIndex };
+            }
 
             if (value) {
               switch (value.type) {
@@ -977,7 +984,7 @@ constructor(_?: Return) {}
                 .write('"')
                 .copy(defaultMapPosition)
                 .copy(name)
-                .write('": true');
+                .write(`": ${modifierIndex === false ? "true" : '""'}`);
             }
             break;
           }
@@ -1617,6 +1624,16 @@ constructor(_?: Return) {}
     }
 
     return renderId;
+  }
+
+  #getNamedAttrModifierIndex(attr: Node.AttrNamed) {
+    const start = attr.name.start + 1;
+    const end = attr.name.end - 1;
+    for (let i = end; i-- > start; ) {
+      if (this.#code.charAt(i) === ":") return i;
+    }
+
+    return false;
   }
 
   #testAtIndex(reg: RegExp, index: number) {
