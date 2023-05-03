@@ -190,17 +190,15 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         }
       }
 
-      await snapshot(
-        tryFormat(extracted.toString()),
-        path.relative(fixtureDir, filename.replace(/\.marko$/, ".ts")),
-        fixtureDir
-      );
+      await snapshot(tryFormat(extracted.toString()), {
+        file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".ts")),
+        dir: fixtureDir,
+      });
 
-      await snapshot(
-        results,
-        path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
-        fixtureDir
-      );
+      await snapshot(results, {
+        file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
+        dir: fixtureDir,
+      });
     }
   });
 }

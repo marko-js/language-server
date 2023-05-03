@@ -50,12 +50,12 @@
 ```
 
 ## Generated Diagnostics
-### Ln 37, Col 12
+### Ln 37, Col 40
 ```ts
   35 |
   36 | }));
 > 37 | const el = Marko._.rendered.returns[3].value;
-     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
+     |                                        ^^^^^ Property 'value' does not exist on type '() => HTMLButtonElement'.
   38 | const __marko_internal_return = {
   39 | mutate: Marko._.mutable([
   40 | ["x", "value", Marko._.rendered.returns[2]],

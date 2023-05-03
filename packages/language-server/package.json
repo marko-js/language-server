@@ -13,20 +13,20 @@
     "@marko/compiler": "^5.27.7",
     "@marko/translator-default": "^5.25.7",
     "htmljs-parser": "^5.4.3",
-    "marko": "^5.25.8",
-    "prettier": "^2.8.7",
+    "marko": "^5.25.11",
+    "prettier": "^2.8.8",
     "prettier-plugin-marko": "^1.4.3",
     "relative-import-path": "^1.0.0",
     "strip-json-comments": "^5.0.0",
     "typescript": "^5.0.4",
-    "vscode-css-languageservice": "^6.2.4",
+    "vscode-css-languageservice": "^6.2.5",
     "vscode-languageserver": "^8.1.0",
     "vscode-languageserver-textdocument": "^1.0.8",
     "vscode-uri": "^3.0.7"
   },
   "devDependencies": {
     "@types/prettier": "^2.7.2",
-    "tsx": "^3.12.6"
+    "tsx": "^3.12.7"
   },
   "exports": {
     ".": {
