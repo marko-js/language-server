@@ -15,7 +15,7 @@
     "htmljs-parser": "^5.4.3",
     "marko": "^5.25.11",
     "prettier": "^2.8.8",
-    "prettier-plugin-marko": "^1.4.3",
+    "prettier-plugin-marko": "^1.4.6",
     "relative-import-path": "^1.0.0",
     "strip-json-comments": "^5.0.0",
     "typescript": "^5.0.4",
