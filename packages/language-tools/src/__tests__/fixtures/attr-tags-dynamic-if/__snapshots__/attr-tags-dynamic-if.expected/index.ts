@@ -30,7 +30,18 @@ export { type Component };
   });
   Marko._.renderDynamicTag(custom)()()({
     x: 1,
-    ...(x ? {} : {}),
+    ...(x
+      ? {}
+      : {
+          [Marko._.never]() {
+            const attrTags = Marko._.attrTagNames(this);
+            attrTags["@a"];
+          },
+          ["a" /*@a*/]: {
+            [Symbol.iterator]: Marko._.any,
+            /*@a*/
+          },
+        }),
   });
   Marko._.renderDynamicTag(custom)()()({
     x: 1,
@@ -48,11 +59,11 @@ export { type Component };
       : {
           [Marko._.never]() {
             const attrTags = Marko._.attrTagNames(this);
-            attrTags["@a"];
+            attrTags["@b"];
           },
-          ["a" /*@a*/]: {
+          ["b" /*@b*/]: {
             [Symbol.iterator]: Marko._.any,
-            /*@a*/
+            /*@b*/
           },
         }),
   });
@@ -73,32 +84,32 @@ export { type Component };
       ? {
           [Marko._.never]() {
             const attrTags = Marko._.attrTagNames(this);
-            attrTags["@a"];
+            attrTags["@b"];
           },
-          ["a" /*@a*/]: {
+          ["b" /*@b*/]: {
             [Symbol.iterator]: Marko._.any,
-            /*@a*/
+            /*@b*/
           },
         }
       : !y
       ? {
           [Marko._.never]() {
             const attrTags = Marko._.attrTagNames(this);
-            attrTags["@a"];
+            attrTags["@c"];
           },
-          ["a" /*@a*/]: {
+          ["c" /*@c*/]: {
             [Symbol.iterator]: Marko._.any,
-            /*@a*/
+            /*@c*/
           },
         }
       : {
           [Marko._.never]() {
             const attrTags = Marko._.attrTagNames(this);
-            attrTags["@a"];
+            attrTags["@d"];
           },
-          ["a" /*@a*/]: {
+          ["d" /*@d*/]: {
             [Symbol.iterator]: Marko._.any,
-            /*@a*/
+            /*@d*/
           },
         }),
   });
@@ -119,11 +130,11 @@ export { type Component };
       ? {
           [Marko._.never]() {
             const attrTags = Marko._.attrTagNames(this);
-            attrTags["@a"];
+            attrTags["@b"];
           },
-          ["a" /*@a*/]: {
+          ["b" /*@b*/]: {
             [Symbol.iterator]: Marko._.any,
-            /*@a*/
+            /*@b*/
           },
         }
       : {}),

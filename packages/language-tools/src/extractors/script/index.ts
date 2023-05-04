@@ -1112,10 +1112,7 @@ constructor(_?: Return) {}
             )
             .write("\n) ? ");
 
-          this.#extractor.write("{\n");
-          const body = this.#processBody(tag);
-          if (body) this.#writeAttrTags(body, true);
-          this.#extractor.write("\n} ");
+          this.#writeDynamicAttrTagBody(tag);
 
           let needsAlternate = true;
           if (alternates) {
@@ -1130,14 +1127,7 @@ constructor(_?: Return) {}
                 this.#extractor.write(": undefined ? ");
               }
 
-              const body = this.#processBody(tag);
-              if (body) {
-                this.#extractor.write("{\n");
-                this.#writeAttrTags(body, true);
-                this.#extractor.write("}");
-              } else {
-                this.#extractor.write("{}");
-              }
+              this.#writeDynamicAttrTagBody(node);
             }
           }
 
@@ -1157,17 +1147,9 @@ constructor(_?: Return) {}
             .copy(tag.typeParams)
             .write("(\n")
             .copy(tag.params?.value)
-            .write("\n) => ({\n");
-
-          const body = this.#processBody(tag);
-
-          // It's technically impossible to have a for tag which has no body and attribute tags.
-          // This is unlike the `<if>` tag which gets marked as an attribute tag parent if
-          // the alternates (`<else>` and `<elseif>`) have attribute tags.
-          // We keep the check here just incase this changes in the future to eg allow an `<else>`
-          // tag to be used with the `<for>` tag.
-          if (body) this.#writeAttrTags(body, true);
-          this.#extractor.write("}))");
+            .write("\n) => (");
+          this.#writeDynamicAttrTagBody(tag);
+          this.#extractor.write("))");
           break;
         }
         case "while": {
@@ -1175,10 +1157,9 @@ constructor(_?: Return) {}
           this.#extractor
             .write(`${varShared("mergeAttrTags")}((\n`)
             .copy(tag.args?.value || "undefined")
-            .write("\n) ? [{\n");
-          const body = this.#processBody(tag);
-          this.#writeAttrTags(body!, true);
-          this.#extractor.write("}] : [])");
+            .write("\n) ? [");
+          this.#writeDynamicAttrTagBody(tag);
+          this.#extractor.write("] : [])");
           break;
         }
       }
@@ -1510,6 +1491,26 @@ constructor(_?: Return) {}
 
     if (renderBody || staticAttrTags || dynamicAttrTagParents) {
       return { renderBody, staticAttrTags, dynamicAttrTagParents };
+    }
+  }
+
+  #writeDynamicAttrTagBody(tag: Node.ControlFlowTag) {
+    const body = this.#processBody(tag);
+    if (body) {
+      if (body.renderBody) {
+        this.#extractor.write("(() => {\n");
+        this.#writeChildren(tag, body.renderBody);
+        this.#extractor.write("return ");
+      }
+      this.#extractor.write("{\n");
+      this.#writeAttrTags(body, true);
+      this.#extractor.write("}");
+
+      if (body.renderBody) {
+        this.#extractor.write(";\n})()");
+      }
+    } else {
+      this.#extractor.write("{}");
     }
   }
 
