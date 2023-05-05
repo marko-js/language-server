@@ -16,9 +16,7 @@
     "@marko/compiler": "^5.27.7",
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
-    "@typescript/vfs": "^1.4.0",
     "marko": "^5.25.11",
-    "mitata": "^0.1.6",
     "tsx": "^3.12.7"
   },
   "exports": {
@@ -51,8 +49,6 @@
   },
   "scripts": {
     "bench": "BENCH=1 mocha './src/**/__tests__/*.test.ts'",
-    "build": "tsc -b && tsx build.mts",
-    "test": "mocha './src/**/__tests__/*.test.ts'",
-    "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
+    "build": "tsc -b && tsx build.mts"
   }
 }

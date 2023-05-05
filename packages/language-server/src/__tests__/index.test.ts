@@ -5,14 +5,26 @@ import snapshot from "mocha-snap";
 import { format } from "prettier";
 // import { bench, run } from "mitata";
 import { taglib } from "@marko/compiler";
-import type { Extracted } from "../util/extractor";
-import { Parsed, ScriptLang, extractScript, parse } from "..";
-import { codeFrame } from "./util/code-frame";
+import {
+  type Extracted,
+  Parsed,
+  ScriptLang,
+  extractScript,
+  parse,
+} from "@marko/language-tools";
+import { URI } from "vscode-uri";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import MarkoLangaugeService from "../service";
 import { createLanguageService, loadDir } from "./util/language-service";
+import { codeFrame } from "./util/code-frame";
+
+const hoverMap = setUpHoverExtaction();
 
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
-const INTERNAL_LIB_FILE = path.join(__dirname, "../../marko.internal.d.ts");
+const INTERNAL_LIB_FILE = require.resolve(
+  "@marko/language-tools/marko.internal.d.ts"
+);
 const INTERNAL_LIB_CODE = fs.readFileSync(INTERNAL_LIB_FILE, "utf-8");
 const RUNTIME_LIB_FILE = require.resolve("marko/index.d.ts");
 const RUNTIME_LIB_CODE = fs.readFileSync(RUNTIME_LIB_FILE, "utf-8");
@@ -41,8 +53,8 @@ for (const entry of fs.readdirSync(FIXTURES)) {
       marko: {
         ext: ts.Extension.Ts,
         kind: ts.ScriptKind.TS,
-        extract(filename, src) {
-          const [code, hovers] = extractHovers(src);
+        extract(filename, code) {
+          const hovers = hoverMap.get(filename);
           const parsed = parse(code, filename);
           const lookup = taglib.buildLookup(path.dirname(filename));
           const extractOptions: Parameters<typeof extractScript>[0] = {
@@ -123,6 +135,11 @@ for (const entry of fs.readdirSync(FIXTURES)) {
             pos.character + 1
           }\n\`\`\`marko\n${content}\n\`\`\`\n\n`;
         }
+      } else {
+        const errors = await MarkoLangaugeService.doValidate(
+          TextDocument.create(URI.file(filename).toString(), "marko", 0, code)
+        );
+        console.log(errors);
       }
 
       const diags = [
@@ -210,6 +227,26 @@ for (const entry of fs.readdirSync(FIXTURES)) {
 //     await run();
 //   });
 // }
+
+type Tail<T extends any[]> = T extends [any, ...infer R] ? R : never;
+
+/** Monkeypatch FS to add hover extractions **/
+function setUpHoverExtaction() {
+  const hoverMap: Map<string, number[]> = new Map();
+
+  const oldReadFileSync = fs.readFileSync;
+  fs.readFileSync = ((
+    path: Parameters<typeof oldReadFileSync>[0],
+    ...attrs: Tail<Parameters<typeof oldReadFileSync>>
+  ) => {
+    const contents = oldReadFileSync(path, ...attrs);
+    const [code, hovers] = extractHovers(contents.toString());
+    if (hovers) hoverMap.set(path.toString(), hovers);
+    return code;
+  }) as typeof fs.readFileSync;
+
+  return hoverMap;
+}
 
 function extractHovers(code: string) {
   const hoverChar = "█";

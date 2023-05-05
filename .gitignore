@@ -12,6 +12,7 @@ node_modules
 dist
 *.marko.js
 *.actual.*
+*.actual
 *.tsbuildinfo
 **/.vscode-test
 

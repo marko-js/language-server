@@ -5,8 +5,8 @@ import {
   createFSBackedSystem,
   createVirtualLanguageServiceHost,
 } from "@typescript/vfs";
-import type { Extracted } from "../../util/extractor";
-import { getExt } from "../../util/get-ext";
+import type { Extracted } from "@marko/language-tools";
+import { getExt } from "@marko/language-tools";
 
 const rootDir = process.cwd();
 const startPosition: ts.LineAndCharacter = {

@@ -26,7 +26,10 @@
   },
   "devDependencies": {
     "@types/prettier": "^2.7.2",
-    "tsx": "^3.12.7"
+    "tsx": "^3.12.7",
+    "@typescript/vfs": "^1.4.0",
+    "mitata": "^0.1.6",
+    "fs-monkey": "^1.0.3"
   },
   "exports": {
     ".": {
@@ -55,6 +58,8 @@
     "url": "https://github.com/marko-js/language-server/tree/main/packages/language-server"
   },
   "scripts": {
-    "build": "tsc -b && tsx build.mts"
+    "build": "tsc -b && tsx build.mts",
+    "test": "mocha './src/**/__tests__/*.test.ts'",
+    "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
   }
 }
