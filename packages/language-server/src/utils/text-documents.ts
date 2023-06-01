@@ -1,6 +1,12 @@
 import fs from "fs";
 import { URI } from "vscode-uri";
-import { Connection, FileChangeType } from "vscode-languageserver";
+import {
+  DidChangeTextDocumentParams,
+  DidChangeWatchedFilesParams,
+  DidCloseTextDocumentParams,
+  DidOpenTextDocumentParams,
+  FileChangeType,
+} from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 export type FileChangeHandler = (document: TextDocument | undefined) => void;
@@ -67,79 +73,80 @@ export function isOpen(doc: TextDocument) {
   return openDocs.has(doc);
 }
 
-export function setup(connection: Connection) {
-  connection.onDidOpenTextDocument((params) => {
-    const ref = params.textDocument;
-    const existingDoc = docs.get(ref.uri);
-    projectVersion++;
+export function doOpen(params: DidOpenTextDocumentParams) {
+  const doc = params.textDocument;
+  const existingDoc = docs.get(doc.uri);
 
-    if (existingDoc) {
-      if (existingDoc.version === ref.version) {
+  if (existingDoc) {
+    if (existingDoc.version === doc.version) {
+      if (!isOpen(existingDoc)) {
         openDocs.add(existingDoc);
-        return;
+        projectVersion++;
       }
+      return;
+    }
 
-      openDocs.delete(existingDoc);
+    openDocs.delete(existingDoc);
+    docs.delete(doc.uri);
+  }
+
+  const newDoc = TextDocument.create(
+    doc.uri,
+    doc.languageId,
+    doc.version,
+    doc.text
+  );
+
+  openDocs.add(newDoc);
+  fileExists.set(doc.uri, true);
+  docs.set(doc.uri, newDoc);
+  projectVersion++;
+}
+
+export function doChange(params: DidChangeTextDocumentParams) {
+  const ref = params.textDocument;
+  const changes = params.contentChanges;
+  const doc = docs.get(ref.uri);
+  if (changes.length > 0 && ref.version != null && doc) {
+    TextDocument.update(doc, changes, ref.version);
+    emitFileChange(doc);
+  }
+}
+
+export function doClose(params: DidCloseTextDocumentParams) {
+  const ref = params.textDocument;
+  const doc = docs.get(ref.uri);
+  if (doc) {
+    projectVersion++;
+    openDocs.delete(doc);
+
+    if (URI.parse(ref.uri).scheme !== "file") {
       docs.delete(ref.uri);
     }
+  }
+}
 
-    const newDoc = TextDocument.create(
-      ref.uri,
-      ref.languageId,
-      ref.version,
-      ref.text
-    );
+export function doChangeWatchedFiles(params: DidChangeWatchedFilesParams) {
+  for (const change of params.changes) {
+    switch (change.type) {
+      case FileChangeType.Created:
+        fileExists.set(change.uri, true);
+        break;
+      case FileChangeType.Deleted:
+      case FileChangeType.Changed: {
+        fileExists.set(change.uri, change.type === FileChangeType.Changed);
 
-    openDocs.add(newDoc);
-    fileExists.set(ref.uri, true);
-    docs.set(ref.uri, newDoc);
-  });
-
-  connection.onDidChangeTextDocument((params) => {
-    const ref = params.textDocument;
-    const changes = params.contentChanges;
-    const doc = docs.get(ref.uri);
-    if (changes.length > 0 && ref.version != null && doc) {
-      TextDocument.update(doc, changes, ref.version);
-      emitFileChange(doc);
-    }
-  });
-
-  connection.onDidCloseTextDocument((params) => {
-    const ref = params.textDocument;
-    const doc = docs.get(ref.uri);
-    if (doc) {
-      projectVersion++;
-      openDocs.delete(doc);
-
-      if (URI.parse(ref.uri).scheme !== "file") {
-        docs.delete(ref.uri);
-      }
-    }
-  });
-
-  connection.onDidChangeWatchedFiles(async (params) => {
-    for (const change of params.changes) {
-      switch (change.type) {
-        case FileChangeType.Created:
-          fileExists.set(change.uri, true);
-          break;
-        case FileChangeType.Deleted:
-        case FileChangeType.Changed: {
-          fileExists.set(change.uri, change.type === FileChangeType.Changed);
-
-          // When a file that's in our cache is changed or deleted and not in an open editor
-          // we clear the file from the cache since it will be reloaded when read.
-          const doc = docs.get(change.uri);
-          if (doc && !openDocs.has(doc)) {
-            docs.delete(change.uri);
-          }
+        // When a file that's in our cache is changed or deleted and not in an open editor
+        // we clear the file from the cache since it will be reloaded when read.
+        const doc = docs.get(change.uri);
+        if (doc && !openDocs.has(doc)) {
+          docs.delete(change.uri);
         }
       }
     }
+  }
 
-    emitFileChange(undefined);
-  });
+  emitFileChange(undefined);
 }
 
 function getLanguageId(uri: string) {

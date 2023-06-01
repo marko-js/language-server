@@ -85,7 +85,11 @@ connection.onInitialize(async (params) => {
 workspace.setup(connection);
 workspace.onConfigChange(validateDocs);
 
-documents.setup(connection);
+connection.onDidOpenTextDocument(documents.doOpen);
+connection.onDidChangeTextDocument(documents.doChange);
+connection.onDidCloseTextDocument(documents.doClose);
+connection.onDidChangeWatchedFiles(documents.doChangeWatchedFiles);
+
 documents.onFileChange((changeDoc) => {
   if (changeDoc) {
     queueDiagnostic();

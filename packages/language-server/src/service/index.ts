@@ -18,6 +18,21 @@ import type {
 
 import { MarkupContent, MarkupKind } from "vscode-languageserver";
 
+import {
+  doChange,
+  doChangeWatchedFiles,
+  doClose,
+  doOpen,
+  get,
+} from "../utils/text-documents";
+export const documents = {
+  get,
+  doChange,
+  doOpen,
+  doClose,
+  doChangeWatchedFiles,
+};
+
 import type { Plugin } from "./types";
 import HtmlPlugin from "./html";
 import MarkoPlugin from "./marko";

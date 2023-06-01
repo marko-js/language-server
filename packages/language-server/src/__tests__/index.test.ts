@@ -1,223 +1,112 @@
 import fs from "fs";
 import path from "path";
-import ts from "typescript/lib/tsserverlibrary";
 import snapshot from "mocha-snap";
-import { format } from "prettier";
 // import { bench, run } from "mitata";
-import { taglib } from "@marko/compiler";
-import {
-  type Extracted,
-  Parsed,
-  ScriptLang,
-  extractScript,
-  parse,
-} from "@marko/language-tools";
+
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import MarkoLangaugeService from "../service";
-import { createLanguageService, loadDir } from "./util/language-service";
+import { CancellationToken, Position } from "vscode-languageserver";
+import { Project } from "@marko/language-tools";
+import MarkoLangaugeService, { documents } from "../service";
 import { codeFrame } from "./util/code-frame";
 
-const hoverMap = setUpHoverExtaction();
+Project.setDefaultTypePaths({
+  internalTypesFile: require.resolve(
+    "@marko/language-tools/marko.internal.d.ts"
+  ),
+  markoTypesFile: require.resolve("marko/index.d.ts"),
+});
 
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
-const INTERNAL_LIB_FILE = require.resolve(
-  "@marko/language-tools/marko.internal.d.ts"
-);
-const INTERNAL_LIB_CODE = fs.readFileSync(INTERNAL_LIB_FILE, "utf-8");
-const RUNTIME_LIB_FILE = require.resolve("marko/index.d.ts");
-const RUNTIME_LIB_CODE = fs.readFileSync(RUNTIME_LIB_FILE, "utf-8");
-const FIXTURES = path.join(__dirname, "fixtures");
+const FIXTURE_DIR = path.join(__dirname, "fixtures");
 
-for (const entry of fs.readdirSync(FIXTURES)) {
-  it(entry, async () => {
-    const fixtureDir = path.join(FIXTURES, entry);
-    const fixtureFiles = loadDir(
-      fixtureDir,
-      new Map([
-        [INTERNAL_LIB_FILE, INTERNAL_LIB_CODE],
-        [RUNTIME_LIB_FILE, RUNTIME_LIB_CODE],
-      ])
-    );
-    const fileMeta = new Map<
-      string,
-      {
-        code: string;
-        parsed: Parsed;
-        extracted: Extracted;
-        hovers: number[] | undefined;
-      }
-    >();
-    const ls = createLanguageService(fixtureFiles, {
-      marko: {
-        ext: ts.Extension.Ts,
-        kind: ts.ScriptKind.TS,
-        extract(filename, code) {
-          const hovers = hoverMap.get(filename);
-          const parsed = parse(code, filename);
-          const lookup = taglib.buildLookup(path.dirname(filename));
-          const extractOptions: Parameters<typeof extractScript>[0] = {
-            ts,
-            parsed,
-            lookup,
-            scriptLang: ScriptLang.ts,
-            runtimeTypesCode: RUNTIME_LIB_CODE,
-          };
+for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
+  const fixtureSubdir = path.join(FIXTURE_DIR, subdir);
 
-          const extracted = extractScript(extractOptions);
+  if (!fs.statSync(fixtureSubdir).isDirectory()) continue;
+  for (const entry of fs.readdirSync(fixtureSubdir)) {
+    it(entry, async () => {
+      const fixtureDir = path.join(fixtureSubdir, entry);
 
-          // if (SHOULD_BENCH && !BENCHED.has(filename)) {
-          //   BENCHED.add(filename);
-          //   bench(`extract ${path.relative(FIXTURES, filename)}`, () => {
-          //     extractScripts(extractOptions);
-          //   });
-          // }
+      for (const filename of loadMarkoFiles(fixtureDir)) {
+        const doc = documents.get(URI.file(filename).toString())!;
+        const code = doc.getText();
+        const params = {
+          textDocument: {
+            uri: doc.uri,
+            languageId: doc.languageId,
+            version: doc.version,
+            text: code,
+          },
+        } as const;
+        documents.doOpen(params);
 
-          fileMeta.set(filename, {
-            code,
-            parsed,
-            extracted,
-            hovers,
-          });
+        let results = "";
 
-          return extracted;
-        },
-      },
-    });
+        for (const position of getHovers(doc)) {
+          const hoverInfo = await MarkoLangaugeService.doHover(
+            doc,
+            {
+              position,
+              textDocument: doc,
+            },
+            CancellationToken.None
+          );
+          const loc = { start: position, end: position };
 
-    for (const [filename] of fixtureFiles) {
-      // TODO: this could be better, but it's used to prime the file meta cache.
-      ls.getProgram()!.getSourceFile(filename);
-      const meta = fileMeta.get(filename);
-      if (!meta) continue;
-
-      const { code, parsed, extracted, hovers } = meta;
-      let results = "";
-
-      if (hovers) {
-        results += "## Hovers\n";
-
-        for (const sourceOffset of hovers) {
-          const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
-          const pos = parsed.positionAt(sourceOffset);
-          const loc = { start: pos, end: pos };
-          let content = "";
-
-          if (generatedOffset === undefined) {
-            content = codeFrame(
-              code,
-              "Could not find generated location for hover",
-              loc
-            );
-          } else {
-            const hoverInfo = ls.getQuickInfoAtPosition(
-              filename,
-              generatedOffset
-            );
-
-            if (hoverInfo) {
-              content = codeFrame(
-                code,
-                ts.displayPartsToString(hoverInfo.displayParts),
-                loc
-              );
+          let message = "";
+          const contents = hoverInfo?.contents;
+          if (contents) {
+            if (Array.isArray(contents)) {
+              message = "\n" + contents.join("\n  ");
+            } else if (typeof contents === "object") {
+              message = contents.value;
             } else {
-              content = codeFrame(
-                code,
-                "Could not find hover info at location",
-                loc
-              );
+              message = contents;
             }
           }
 
-          results += `### Ln ${pos.line + 1}, Col ${
-            pos.character + 1
-          }\n\`\`\`marko\n${content}\n\`\`\`\n\n`;
+          if (message) {
+            results += `### Ln ${position.line + 1}, Col ${
+              position.character + 1
+            }\n\`\`\`marko\n${codeFrame(
+              code,
+              message.replace(/```typescript\r?\n([\s\S]*)\r?\n```/gm, "$1"),
+              loc
+            )}\n\`\`\`\n\n`;
+          }
         }
-      } else {
-        const errors = await MarkoLangaugeService.doValidate(
-          TextDocument.create(URI.file(filename).toString(), "marko", 0, code)
-        );
-        console.log(errors);
-      }
 
-      const diags = [
-        ...ls.getSuggestionDiagnostics(filename),
-        ...ls.getSyntacticDiagnostics(filename),
-        ...ls.getSemanticDiagnostics(filename),
-      ];
+        if (results.length) {
+          results = `## Hovers\n${results}`;
+        }
 
-      const sourceDiagLocations: [number, string][] = [];
-      const generatedDiagLocations: [number, string][] = [];
+        const errors = await MarkoLangaugeService.doValidate(doc);
 
-      for (const diag of diags) {
-        const message = ts.flattenDiagnosticMessageText(diag.messageText, "\n");
+        if (errors && errors.length) {
+          results += "## Diagnostics\n";
 
-        if (diag.file && diag.start !== undefined) {
-          const { start } = diag;
-          const end = start + (diag.length || 0);
-          let loc = extracted.sourceLocationAt(start, end);
-          let codeForFrame = code;
-          let lang = "marko";
-
-          if (!loc) {
-            lang = "ts";
-            loc = {
-              start: ts.getLineAndCharacterOfPosition(diag.file, start),
-              end: ts.getLineAndCharacterOfPosition(diag.file, end),
+          for (const error of errors) {
+            const loc = {
+              start: error.range.start,
+              end: error.range.end,
             };
-            codeForFrame = extracted.toString();
-          }
-
-          const result =
-            `### Ln ${loc.start.line + 1}, Col ${
+            results += `### Ln ${loc.start.line + 1}, Col ${
               loc.start.character + 1
-            }\n\`\`\`${lang}\n` +
-            codeFrame(codeForFrame, message, loc) +
-            "\n```\n\n";
-
-          if (lang === "marko") {
-            sourceDiagLocations.push([
-              extracted.sourceOffsetAt(start)!,
-              result,
-            ]);
-          } else {
-            generatedDiagLocations.push([start, result]);
+            }\n\`\`\`marko\n${codeFrame(code, error.message, loc)}\n\`\`\`\n\n`;
           }
-        } else {
-          throw new Error("No file or start");
         }
+
+        documents.doClose(params);
+
+        await snapshot(results, {
+          file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
+          dir: fixtureDir,
+        });
       }
-
-      if (sourceDiagLocations.length) {
-        results += "## Source Diagnostics\n";
-        sourceDiagLocations.sort(sortByFirstIndex);
-        for (const [, result] of sourceDiagLocations) {
-          results += result;
-        }
-      }
-
-      if (generatedDiagLocations.length) {
-        results += "## Generated Diagnostics\n";
-        generatedDiagLocations.sort(sortByFirstIndex);
-
-        for (const [, result] of generatedDiagLocations) {
-          results += result;
-        }
-      }
-
-      await snapshot(tryFormat(extracted.toString()), {
-        file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".ts")),
-        dir: fixtureDir,
-      });
-
-      await snapshot(results, {
-        file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
-        dir: fixtureDir,
-      });
-    }
-  });
+    });
+  }
 }
 
 // if (SHOULD_BENCH) {
@@ -228,59 +117,26 @@ for (const entry of fs.readdirSync(FIXTURES)) {
 //   });
 // }
 
-type Tail<T extends any[]> = T extends [any, ...infer R] ? R : never;
-
-/** Monkeypatch FS to add hover extractions **/
-function setUpHoverExtaction() {
-  const hoverMap: Map<string, number[]> = new Map();
-
-  const oldReadFileSync = fs.readFileSync;
-  fs.readFileSync = ((
-    path: Parameters<typeof oldReadFileSync>[0],
-    ...attrs: Tail<Parameters<typeof oldReadFileSync>>
-  ) => {
-    const contents = oldReadFileSync(path, ...attrs);
-    const [code, hovers] = extractHovers(contents.toString());
-    if (hovers) hoverMap.set(path.toString(), hovers);
-    return code;
-  }) as typeof fs.readFileSync;
-
-  return hoverMap;
-}
-
-function extractHovers(code: string) {
-  const hoverChar = "█";
-  let nextIndex = code.indexOf(hoverChar);
-
-  if (nextIndex === -1) {
-    return [code, undefined] as const;
-  }
-
-  const hovers: number[] = [];
-  let len = 0;
-  let curIndex = 0;
-  let resultCode = "";
-
-  do {
-    hovers.push(nextIndex - len);
-    resultCode += code.slice(curIndex, nextIndex);
-    curIndex = nextIndex + 1;
-    nextIndex = code.indexOf(hoverChar, nextIndex + 1);
-    len++;
-  } while (nextIndex !== -1);
-
-  resultCode += code.slice(curIndex);
-  return [resultCode, hovers] as const;
-}
-
-function tryFormat(code: string) {
-  try {
-    return format(code, { parser: "typescript" });
-  } catch {
-    return code;
+function* getHovers(doc: TextDocument): Generator<Position> {
+  for (const { index } of doc.getText().matchAll(/\^\?/g)) {
+    const pos = doc.positionAt(index!);
+    yield {
+      line: pos.line - 1,
+      character: pos.character,
+    };
   }
 }
 
-function sortByFirstIndex<T extends [number, ...any]>([a]: T, [b]: T) {
-  return a - b;
+export function* loadMarkoFiles(dir: string): Generator<string> {
+  for (const entry of fs.readdirSync(dir)) {
+    const file = path.join(dir, entry);
+    const stat = fs.statSync(file);
+    if (stat.isFile()) {
+      if (file.endsWith(".marko")) {
+        yield file;
+      }
+    } else if (stat.isDirectory() && entry !== "__snapshots__") {
+      yield* loadMarkoFiles(file);
+    }
+  }
 }

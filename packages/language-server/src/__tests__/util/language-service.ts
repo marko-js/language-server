@@ -169,16 +169,16 @@ export function createLanguageService(
   return ls;
 }
 
-export function loadDir(dir: string, map: Map<string, string>) {
+export function loadMarkoFiles(dir: string, all = new Set<string>()) {
   for (const entry of fs.readdirSync(dir)) {
     const file = path.join(dir, entry);
     const stat = fs.statSync(file);
     if (stat.isFile()) {
-      map.set(file, fs.readFileSync(file, "utf-8"));
+      all.add(file);
     } else if (stat.isDirectory() && entry !== "__snapshots__") {
-      loadDir(file, map);
+      loadMarkoFiles(file, all);
     }
   }
 
-  return map;
+  return all;
 }
