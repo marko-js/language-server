@@ -26,10 +26,7 @@
   },
   "devDependencies": {
     "@types/prettier": "^2.7.2",
-    "tsx": "^3.12.7",
-    "@typescript/vfs": "^1.4.0",
-    "mitata": "^0.1.6",
-    "fs-monkey": "^1.0.3"
+    "tsx": "^3.12.7"
   },
   "exports": {
     ".": {

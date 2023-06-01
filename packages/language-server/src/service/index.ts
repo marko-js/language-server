@@ -40,7 +40,7 @@ import ScriptPlugin from "./script";
 import StylePlugin from "./style";
 
 const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
-const plugins = [HtmlPlugin, MarkoPlugin, ScriptPlugin, StylePlugin];
+const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin, HtmlPlugin];
 
 /**
  * Facade to all embedded plugins, eg css, typescript and our own.
