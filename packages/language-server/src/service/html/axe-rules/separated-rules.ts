@@ -34,38 +34,38 @@ const rules = {
     aria.ariaRoledescription,
     aria.ariaRoles,
     aria.ariaValidAttrValue,
-    aria.presentationRoleConflict,
+    aria.presentationRoleConflict, // TODO: Find error state or remove
     forms.autocompleteValid,
-    forms.formFieldMultipleLabels,
+    forms.formFieldMultipleLabels, // TODO: Find error state or remove
     keyboard.accesskeys,
     keyboard.focusOrderSemantics,
-    keyboard.scrollableRegionFocusable,
+    keyboard.scrollableRegionFocusable, // TODO: Find error state or remove
     keyboard.tabindex,
     language.htmlLangValid,
     language.htmlXmlLangMismatch,
     language.validLang,
-    nameRoleValue.ariaHiddenFocus,
+    nameRoleValue.ariaHiddenFocus, // TODO: Find error state or remove
     nameRoleValue.emptyHeading,
-    parsing.duplicateIdActive,
-    parsing.duplicateIdAria,
+    parsing.duplicateIdActive, // TODO: Same as `duplicateId`?
+    parsing.duplicateIdAria, // TODO: Same as `duplicateId`?
     parsing.duplicateId,
     parsing.marquee,
-    semantics.identicalLinksSamePurpose,
+    semantics.identicalLinksSamePurpose, // TODO: Find error state or remove
     semantics.landmarkNoDuplicateBanner,
     semantics.landmarkNoDuplicateContentinfo,
     semantics.landmarkNoDuplicateMain,
     semantics.landmarkUnique,
-    semantics.pAsHeading,
-    sensoryAndVisualCues.metaViewportLarge,
-    sensoryAndVisualCues.metaViewport,
-    structure.avoidInlineSpacing,
-    structure.cssOrientationLock,
-    structure.hiddenContent,
-    tables.scopeAttrValid,
-    textAlternatives.serverSideImageMap,
+    semantics.pAsHeading, // TODO: Find error state or remove
+    sensoryAndVisualCues.metaViewportLarge, // TODO: Find error state or remove
+    sensoryAndVisualCues.metaViewport, // TODO: Find error state or remove
+    structure.avoidInlineSpacing, // TODO: Find error state or remove
+    structure.cssOrientationLock, // TODO: Maybe remove from list
+    structure.hiddenContent, // TODO: Understand this rule
+    tables.scopeAttrValid, // TODO: Find error state or remove
+    textAlternatives.serverSideImageMap, // TODO: Find error state or remove
     timeAndMedia.blink,
-    timeAndMedia.metaRefresh,
-    timeAndMedia.noAutoplayAudio,
+    timeAndMedia.metaRefresh, // TODO: Find error state or remove
+    timeAndMedia.noAutoplayAudio, // TODO: Find error state or remove
   ],
 
   /**

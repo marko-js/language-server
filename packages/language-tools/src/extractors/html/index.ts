@@ -17,12 +17,14 @@ class HTMLExtractor {
     [id: string]: { hasDynamicAttrs: boolean; hasDynamicBody: boolean };
   };
   #nodeIdCounter: number;
+  #dynamicAttrValueCounter: number;
 
   constructor(parsed: Parsed) {
     this.#extractor = new Extractor(parsed);
     this.#read = parsed.read.bind(parsed);
     this.#nodeDetails = {};
     this.#nodeIdCounter = 0;
+    this.#dynamicAttrValueCounter = 0;
     parsed.program.body.forEach((node) => this.#visitNode(node));
   }
 
@@ -108,6 +110,9 @@ class HTMLExtractor {
   }
 
   #writeAttrNamed(attr: Node.AttrNamed) {
+    this.#extractor.write(" ");
+    this.#extractor.copy(attr.name);
+
     if (
       attr.value === undefined ||
       attr.name.start === attr.name.end ||
@@ -120,8 +125,6 @@ class HTMLExtractor {
     const valueType = getAttributeValueType(valueString);
     if (valueType === undefined) return;
 
-    this.#extractor.write(" ");
-    this.#extractor.copy(attr.name);
     switch (valueType) {
       case AttributeValueType.True:
         break;
@@ -142,9 +145,9 @@ class HTMLExtractor {
         this.#extractor.write('"');
         break;
       case AttributeValueType.Dynamic:
-        // Replace all dynamic values with the string "dynamic" instead of removing them
+        // Replace all dynamic values with the string "dynamic" with a counter instead of removing them
         // Subject to change-- axe-core might require "true" for aria attributes or something
-        this.#extractor.write('="dynamic"');
+        this.#extractor.write(`="dynamic${this.#dynamicAttrValueCounter++}"`);
         break;
     }
   }
