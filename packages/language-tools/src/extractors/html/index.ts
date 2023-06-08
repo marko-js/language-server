@@ -69,7 +69,7 @@ class HTMLExtractor {
     const isDynamic = !node.nameText || !isHTMLTag(node.nameText);
     let hasDynamicAttrs = false,
       hasDynamicBody = false;
-    if (node.nameText && isHTMLTag(node.nameText)) {
+    if (!isDynamic) {
       ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(node, id));
     } else {
       this.#writeCustomTag(node);
@@ -102,9 +102,9 @@ class HTMLExtractor {
 
   #writeCustomTag(node: Node.Tag) {
     if (node.body) {
-      // Replace all undefined tag names with `div`s
+      // Replace all unknown and undefined tag names with `div`s
       this.#extractor.write("<div>");
-      node.body.forEach(this.#visitNode);
+      node.body.forEach((node) => this.#visitNode(node));
       this.#extractor.write("</div>");
     }
   }

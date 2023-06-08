@@ -33,13 +33,11 @@ const rules = {
     aria.ariaHiddenBody,
     aria.ariaRoledescription,
     aria.ariaRoles,
-    aria.ariaValidAttrValue,
-    aria.presentationRoleConflict, // TODO: Find error state or remove
+    aria.presentationRoleConflict,
     forms.autocompleteValid,
     forms.formFieldMultipleLabels, // TODO: Find error state or remove
     keyboard.accesskeys,
     keyboard.focusOrderSemantics,
-    keyboard.scrollableRegionFocusable, // TODO: Find error state or remove
     keyboard.tabindex,
     language.htmlLangValid,
     language.htmlXmlLangMismatch,
@@ -55,12 +53,8 @@ const rules = {
     semantics.landmarkNoDuplicateContentinfo,
     semantics.landmarkNoDuplicateMain,
     semantics.landmarkUnique,
-    semantics.pAsHeading, // TODO: Find error state or remove
     sensoryAndVisualCues.metaViewportLarge, // TODO: Find error state or remove
     sensoryAndVisualCues.metaViewport, // TODO: Find error state or remove
-    structure.avoidInlineSpacing, // TODO: Find error state or remove
-    structure.cssOrientationLock, // TODO: Maybe remove from list
-    structure.hiddenContent, // TODO: Understand this rule
     tables.scopeAttrValid, // TODO: Find error state or remove
     textAlternatives.serverSideImageMap, // TODO: Find error state or remove
     timeAndMedia.blink,
@@ -73,18 +67,7 @@ const rules = {
    * in the node's attributes
    */
   requiresAttrs: [
-    aria.ariaCommandName,
-    aria.ariaDialogName,
-    aria.ariaInputFieldName,
-    aria.ariaMeterName,
-    aria.ariaProgressbarName,
-    aria.ariaToggleFieldName,
-    aria.ariaTooltipName,
-    aria.ariaTreeitemName,
     aria.ariaRequiredAttr,
-    forms.labelTitleOnly,
-    forms.label,
-    forms.selectName,
     language.htmlHasLang,
     textAlternatives.areaAlt,
     textAlternatives.imageAlt,
@@ -102,6 +85,7 @@ const rules = {
   requiresChildren: [
     aria.ariaRequiredChildren,
     aria.ariaText,
+    aria.ariaValidAttrValue,
     aria.emptyTableHeader,
     keyboard.frameFocusableContent,
     keyboard.skipLink,
@@ -124,6 +108,14 @@ const rules = {
    * either the node body or its attributes
    */
   requiresAttrsOrChildren: [
+    aria.ariaCommandName,
+    aria.ariaDialogName,
+    aria.ariaInputFieldName,
+    aria.ariaMeterName,
+    aria.ariaProgressbarName,
+    aria.ariaToggleFieldName,
+    aria.ariaTooltipName,
+    aria.ariaTreeitemName,
     nameRoleValue.inputButtonName,
     nameRoleValue.linkName,
   ],
@@ -134,6 +126,9 @@ const rules = {
    */
   requiresParent: [
     aria.ariaRequiredParent,
+    forms.label,
+    forms.labelTitleOnly,
+    forms.selectName,
     keyboard.bypass,
     keyboard.nestedInteractive,
     keyboard.region,
@@ -155,6 +150,19 @@ const rules = {
    * the official Marko language server.
    */
   blacklist: [structure.frameTested],
+
+  /**
+   * These are rules that cannot currently be validated, either
+   * because of limitations with JSDom + axe-core or with the
+   * current implementation of the language server.
+   */
+  cannotValidate: [
+    keyboard.scrollableRegionFocusable,
+    semantics.pAsHeading,
+    structure.avoidInlineSpacing,
+    structure.cssOrientationLock,
+    structure.hiddenContent,
+  ],
 };
 
 export default rules;
