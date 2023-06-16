@@ -1,6 +1,7 @@
 import path from "path";
 import { Project } from "@marko/language-tools";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticType } from "@marko/babel-utils";
 import { getFSPath } from "../../utils/file";
 import type { Plugin } from "../types";
 
@@ -12,69 +13,144 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
   const diagnostics: Diagnostic[] = [];
 
   try {
-    Project.getCompiler(filename && path.dirname(filename)).compileSync(
-      doc.getText(),
-      filename || "untitled.marko",
-      {
-        code: false,
-        output: "source",
-        sourceMaps: false,
-        babelConfig: {
-          caller: {
-            name: "@marko/language-server",
-            supportsStaticESM: true,
-            supportsDynamicImport: true,
-            supportsTopLevelAwait: true,
-            supportsExportNamespaceFrom: true,
-          },
+    const { meta } = Project.getCompiler(
+      filename && path.dirname(filename)
+    ).compileSync(doc.getText(), filename || "untitled.marko", {
+      code: false,
+      output: "migrate",
+      sourceMaps: false,
+      errorRecovery: true,
+      babelConfig: {
+        caller: {
+          name: "@marko/language-server",
+          supportsStaticESM: true,
+          supportsDynamicImport: true,
+          supportsTopLevelAwait: true,
+          supportsExportNamespaceFrom: true,
         },
-      }
-    );
-  } catch (err) {
-    if (isErrorWithLoc(err)) {
-      const message = err.label || err.message || err.stack;
-      if (!message) return;
-      const { loc } = err;
+      },
+    });
 
-      diagnostics.push({
-        range: {
-          start: {
-            line: loc.start.line - 1,
-            character: loc.start.column,
-          },
-          end: {
-            line: loc.end.line - 1,
-            character: loc.end.column,
-          },
+    if (meta.diagnostics) {
+      for (const diag of meta.diagnostics) {
+        const range = diag.loc
+          ? {
+              start: {
+                line: diag.loc.start.line - 1,
+                character: diag.loc.start.column,
+              },
+              end: {
+                line: diag.loc.end.line - 1,
+                character: diag.loc.end.column,
+              },
+            }
+          : {
+              start: { line: 0, character: 0 },
+              end: { line: 0, character: 0 },
+            };
+
+        let severity: DiagnosticSeverity | undefined;
+
+        switch (diag.type) {
+          case DiagnosticType.Warning:
+          case DiagnosticType.Deprecation:
+            severity = DiagnosticSeverity.Warning;
+            break;
+          case DiagnosticType.Suggestion:
+            severity = DiagnosticSeverity.Hint;
+            break;
+          default:
+            severity = DiagnosticSeverity.Error;
+            break;
+        }
+
+        diagnostics.push({
+          range,
+          source: "marko",
+          code: undefined,
+          tags: undefined,
+          severity,
+          message: diag.label,
+        });
+      }
+    }
+  } catch (err) {
+    addDiagnosticsForError(err, diagnostics);
+  }
+
+  return diagnostics;
+};
+
+function addDiagnosticsForError(err: unknown, diagnostics: Diagnostic[]) {
+  if (!isError(err)) {
+    diagnostics.push({
+      range: {
+        start: { line: 0, character: 0 },
+        end: { line: 0, character: 0 },
+      },
+      source: "marko",
+      code: undefined,
+      tags: undefined,
+      severity: DiagnosticSeverity.Error,
+      message: String(err),
+    });
+  } else if (isAggregateError(err)) {
+    for (const nestedError of err.errors) {
+      addDiagnosticsForError(nestedError, diagnostics);
+    }
+  } else if (isErrorWithLoc(err)) {
+    const message = err.label || err.message || err.stack;
+    if (!message) return;
+    const { loc } = err;
+
+    diagnostics.push({
+      range: {
+        start: {
+          line: loc.start.line - 1,
+          character: loc.start.column,
         },
+        end: {
+          line: loc.end.line - 1,
+          character: loc.end.column,
+        },
+      },
+      source: "marko",
+      code: undefined,
+      tags: undefined,
+      severity: DiagnosticSeverity.Error,
+      message,
+    });
+  } else {
+    let match: RegExpExecArray | null;
+    while ((match = markoErrorRegExp.exec((err as Error).message))) {
+      const [, , rawLine, rawCol, message] = match;
+      const pos = {
+        line: (parseInt(rawLine, 10) || 1) - 1,
+        character: (parseInt(rawCol, 10) || 1) - 1,
+      };
+      diagnostics.push({
+        range: { start: pos, end: pos },
         source: "marko",
         code: undefined,
         tags: undefined,
         severity: DiagnosticSeverity.Error,
         message,
       });
-    } else {
-      let match: RegExpExecArray | null;
-      while ((match = markoErrorRegExp.exec((err as Error).message))) {
-        const [, , rawLine, rawCol, message] = match;
-        const pos = {
-          line: (parseInt(rawLine, 10) || 1) - 1,
-          character: (parseInt(rawCol, 10) || 1) - 1,
-        };
-        diagnostics.push({
-          range: { start: pos, end: pos },
-          source: "marko",
-          code: undefined,
-          tags: undefined,
-          severity: DiagnosticSeverity.Error,
-          message,
-        });
-      }
     }
   }
+}
 
-  return diagnostics;
-};
+function isError(err: unknown): err is Error {
+  return (
+    err != null &&
+    typeof err === "object" &&
+    typeof (err as { message: unknown }).message === "string"
+  );
+}
+
+function isAggregateError(err: unknown): err is AggregateError {
+  return Array.isArray((err as { errors: unknown })?.errors);
+}
 
 function isErrorWithLoc(err: unknown): err is Error & {
   label?: string;
