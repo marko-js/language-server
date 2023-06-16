@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.0.7
+
+### Patch Changes
+
+- [#171](https://github.com/marko-js/language-server/pull/171) [`6259092`](https://github.com/marko-js/language-server/commit/625909231a4e00d0cf9c4669ab1b470d905028d2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where trailing commas in the arguments of some tags would produce invalid typescript.
+
 ## 2.0.6
 
 ### Patch Changes
