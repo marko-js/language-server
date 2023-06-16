@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.17
+
+### Patch Changes
+
+- [#171](https://github.com/marko-js/language-server/pull/171) [`6259092`](https://github.com/marko-js/language-server/commit/625909231a4e00d0cf9c4669ab1b470d905028d2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where trailing commas in the arguments of some tags would produce invalid typescript.
+
+- [#171](https://github.com/marko-js/language-server/pull/171) [`70b4703`](https://github.com/marko-js/language-server/commit/70b4703ee585c293b8ec488485001b982f1272aa) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Use new error location meta data from compiler if available.
+
 ## 1.0.16
 
 ### Patch Changes
