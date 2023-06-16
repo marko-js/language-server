@@ -481,7 +481,7 @@ constructor(_?: Return) {}
               this.#extractor
                 .write("if (")
                 .copy(
-                  child.args?.value ||
+                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
                     this.#getAttrValue(child, ATTR_UNAMED) ||
                     "undefined"
                 )
@@ -595,7 +595,10 @@ constructor(_?: Return) {}
               this.#writeComments(child);
               this.#extractor
                 .write("while (\n")
-                .copy(child.args?.value || "undefined")
+                .copy(
+                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
+                    "undefined"
+                )
                 .write("\n) {\n");
 
               const body = this.#processBody(child);
@@ -1103,7 +1106,7 @@ constructor(_?: Return) {}
           this.#extractor
             .write("((\n")
             .copy(
-              tag.args?.value ||
+              this.#getRangeWithoutTrailingComma(tag.args?.value) ||
                 this.#getAttrValue(tag, ATTR_UNAMED) ||
                 "undefined"
             )
@@ -1153,7 +1156,9 @@ constructor(_?: Return) {}
           this.#writeComments(tag);
           this.#extractor
             .write(`${varShared("mergeAttrTags")}((\n`)
-            .copy(tag.args?.value || "undefined")
+            .copy(
+              this.#getRangeWithoutTrailingComma(tag.args?.value) || "undefined"
+            )
             .write("\n) ? [");
           this.#writeDynamicAttrTagBody(tag);
           this.#extractor.write("] : [])");
@@ -1399,8 +1404,9 @@ constructor(_?: Return) {}
                       case "else-if": {
                         const alternate: IfTagAlternate = {
                           condition:
-                            nextChild.args?.value ||
-                            this.#getAttrValue(nextChild, ATTR_UNAMED),
+                            this.#getRangeWithoutTrailingComma(
+                              nextChild.args?.value
+                            ) || this.#getAttrValue(nextChild, ATTR_UNAMED),
                           node: nextChild as IfTagAlternate["node"],
                         };
 
@@ -1522,6 +1528,27 @@ constructor(_?: Return) {}
         }
       }
     }
+  }
+
+  #getRangeWithoutTrailingComma(range: Range | undefined) {
+    if (!range) return undefined;
+
+    const { start } = range;
+    let end = range.end - 1;
+
+    while (end >= start) {
+      if (isWhitespaceCode(this.#code.charCodeAt(end))) {
+        // Skip to the last non whitespace character.
+        end--;
+      } else if (this.#code.charAt(end) === ",") {
+        // If we find a comma then we can return the range without the trailing comma.
+        return { start, end };
+      } else {
+        break;
+      }
+    }
+
+    return range;
   }
 
   #isEmptyText(text: Node.Text) {
