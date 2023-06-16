@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.18
+
+### Patch Changes
+
+- [#173](https://github.com/marko-js/language-server/pull/173) [`fc90d03`](https://github.com/marko-js/language-server/commit/fc90d03519bc27f99624eb030533002cd5b03b72) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Surface new diagnostic information from Marko compiler. Also properly surfaces diagnostic from AggregateErrors thrown in the compiler.
+
 ## 1.0.17
 
 ### Patch Changes
