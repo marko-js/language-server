@@ -80,10 +80,10 @@
     "@marko/language-server": "^1.0.14",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@types/vscode": "^1.74.2",
-    "@vscode/test-electron": "^2.3.0",
-    "ovsx": "^0.8.0",
+    "@vscode/test-electron": "^2.3.3",
+    "@vscode/vsce": "^2.19.0",
+    "ovsx": "^0.8.1",
     "tsx": "^3.12.7",
-    "vsce": "^1.97.0",
     "vscode-languageclient": "^8.1.0"
   },
   "displayName": "Marko VSCode",
