@@ -15,7 +15,7 @@
    7 | <${input.renderBody}=["a", "c"] />
    8 |
 >  9 | <${input.renderBody}=["a", "b", "c"] />
-     |                     ^ Type '["a", "b", "c"]' is not assignable to type '["a", "b"]'.
+     |                     ^ Type '["a", "b", string]' is not assignable to type '["a", "b"]'.
   Source has 3 element(s) but target allows only 2.
   10 |
 ```

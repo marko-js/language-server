@@ -63,13 +63,10 @@ type IfTagAlternates = Repeatable<IfTagAlternate>;
 
 // TODO: Dedupe taglib completions with TS completions. (typescript project ignore taglib completions)
 // TODO: special types for macro and tag tags.
-// TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
 
 // Later todos:
 // TODO: completions within attr whitespace should not include quotes.
 // TODO: handle top level attribute tags.
-// TODO: bring in native tag types to Marko
-// TODO: write types for tags api preview
 // TODO: css modules
 // TODO: should support member expression tag vars.
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
@@ -136,7 +133,7 @@ class ScriptExtractor {
 
     const componentFileName = getComponentFilename(this.#filename);
     const inputType = this.#getInputType(program);
-    let componentClassBody: Range | void;
+    let componentClassBody: Range | undefined;
 
     for (const node of program.static) {
       switch (node.type) {

@@ -37,6 +37,14 @@ export default new (class Template extends Marko._.Template<{
     }
   ): Marko.Out<Component<FirstName, LastName, Extra>>;
 
+  render<FirstName extends string, LastName extends string, Extra>(
+    input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>,
+    cb?: (
+      err: Error | null,
+      result: Marko.RenderResult<Component<FirstName, LastName, Extra>>
+    ) => void
+  ): Marko.Out<Component<FirstName, LastName, Extra>>;
+
   renderSync<FirstName extends string, LastName extends string, Extra>(
     input: Marko.TemplateInput<Input<FirstName, LastName, Extra>>
   ): Marko.RenderResult<Component<FirstName, LastName, Extra>>;

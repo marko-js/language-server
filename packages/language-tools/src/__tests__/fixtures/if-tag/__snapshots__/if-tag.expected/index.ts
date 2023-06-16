@@ -224,6 +224,11 @@ export default new (class Template extends Marko._.Template<{
     }
   ): Marko.Out<Component>;
 
+  render(
+    input: Marko.TemplateInput<Input>,
+    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void
+  ): Marko.Out<Component>;
+
   renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
 
   renderToString(input: Marko.TemplateInput<Input>): string;
