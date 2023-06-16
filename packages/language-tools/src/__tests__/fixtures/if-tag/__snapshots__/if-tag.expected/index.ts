@@ -200,6 +200,14 @@ export { type Component };
   if (show) {
   } else if (undefined) {
   }
+  if (show) {
+  }
+  if (show) {
+  }
+  if ((show, y)) {
+  }
+  if ((show, y)) {
+  }
   Marko._.renderDynamicTag(effect)()()({
     value() {
       a;

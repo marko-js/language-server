@@ -1,89 +1,133 @@
 ## Hovers
-### Ln 72, Col 3
+### Ln 86, Col 3
 ```marko
-  70 |
-  71 | <effect() {
-> 72 |   a;
+  84 |
+  85 | <effect() {
+> 86 |   a;
      |   ^ const a: 0 | undefined
-  73 |   b;
-  74 |   c;
-  75 |   d;
+  87 |   b;
+  88 |   c;
+  89 |   d;
 ```
 
-### Ln 73, Col 3
+### Ln 87, Col 3
 ```marko
-  71 | <effect() {
-  72 |   a;
-> 73 |   b;
+  85 | <effect() {
+  86 |   a;
+> 87 |   b;
      |   ^ const b: 1 | undefined
-  74 |   c;
-  75 |   d;
-  76 |   e;
+  88 |   c;
+  89 |   d;
+  90 |   e;
 ```
 
-### Ln 74, Col 3
+### Ln 88, Col 3
 ```marko
-  72 |   a;
-  73 |   b;
-> 74 |   c;
+  86 |   a;
+  87 |   b;
+> 88 |   c;
      |   ^ const c: 2 | undefined
-  75 |   d;
-  76 |   e;
-  77 |   f;
+  89 |   d;
+  90 |   e;
+  91 |   f;
 ```
 
-### Ln 75, Col 3
+### Ln 89, Col 3
 ```marko
-  73 |   b;
-  74 |   c;
-> 75 |   d;
+  87 |   b;
+  88 |   c;
+> 89 |   d;
      |   ^ const d: 3 | undefined
-  76 |   e;
-  77 |   f;
-  78 |   g;
+  90 |   e;
+  91 |   f;
+  92 |   g;
 ```
 
-### Ln 76, Col 3
+### Ln 90, Col 3
 ```marko
-  74 |   c;
-  75 |   d;
-> 76 |   e;
+  88 |   c;
+  89 |   d;
+> 90 |   e;
      |   ^ const e: 4 | undefined
-  77 |   f;
-  78 |   g;
-  79 | }/>
+  91 |   f;
+  92 |   g;
+  93 | }/>
 ```
 
-### Ln 77, Col 3
+### Ln 91, Col 3
 ```marko
-  75 |   d;
-  76 |   e;
-> 77 |   f;
+  89 |   d;
+  90 |   e;
+> 91 |   f;
      |   ^ const f: 4 | undefined
-  78 |   g;
-  79 | }/>
-  80 |
+  92 |   g;
+  93 | }/>
+  94 |
 ```
 
-### Ln 78, Col 3
+### Ln 92, Col 3
 ```marko
-  76 |   e;
-  77 |   f;
-> 78 |   g;
+  90 |   e;
+  91 |   f;
+> 92 |   g;
      |   ^ const g: 5 | 6
-  79 | }/>
-  80 |
+  93 | }/>
+  94 |
 ```
 
 ## Source Diagnostics
-### Ln 71, Col 2
+### Ln 77, Col 5
 ```marko
-  69 |
-  70 |
-> 71 | <effect() {
+  75 | </if>
+  76 |
+> 77 | <if(show, y)>
+     |     ^^^^ Left side of comma operator is unused and has no side effects.
+  78 |   Hi
+  79 | </if>
+  80 |
+```
+
+### Ln 77, Col 11
+```marko
+  75 | </if>
+  76 |
+> 77 | <if(show, y)>
+     |           ^ Cannot find name 'y'.
+  78 |   Hi
+  79 | </if>
+  80 |
+```
+
+### Ln 81, Col 5
+```marko
+  79 | </if>
+  80 |
+> 81 | <if(show,  y, )>
+     |     ^^^^ Left side of comma operator is unused and has no side effects.
+  82 |   Hi
+  83 | </if>
+  84 |
+```
+
+### Ln 81, Col 12
+```marko
+  79 | </if>
+  80 |
+> 81 | <if(show,  y, )>
+     |            ^ Cannot find name 'y'.
+  82 |   Hi
+  83 | </if>
+  84 |
+```
+
+### Ln 85, Col 2
+```marko
+  83 | </if>
+  84 |
+> 85 | <effect() {
      |  ^^^^^^ Cannot find name 'effect'.
-  72 |   a;
-  73 |   b;
-  74 |   c;
+  86 |   a;
+  87 |   b;
+  88 |   c;
 ```
 
