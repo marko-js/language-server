@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.17
+
+### Patch Changes
+
+- [#176](https://github.com/marko-js/language-server/pull/176) [`1ce128e`](https://github.com/marko-js/language-server/commit/1ce128e0009ee3385f83f3dfe975eb8dd40be13c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where tags exposed from modules with "export maps" were not being discovered if their package.json file was not exported. (This now instead resolves relative to the marko.json file which should be listed in the export map).
+
 ## 1.0.16
 
 ### Patch Changes
