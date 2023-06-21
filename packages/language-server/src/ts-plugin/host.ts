@@ -170,12 +170,13 @@ export function patch(
             // try resolving the `.marko` file relative to that.
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
-            const { resolvedModule } = ts.bundlerModuleNameResolver(
-              `${nodeModuleName}/marko.json`,
+            const { resolvedModule } = ts.nodeModuleNameResolver(
+              `${nodeModuleName}/package.json`,
               containingFile,
               options,
               host,
-              resolutionCache
+              resolutionCache,
+              redirectedReference
             );
 
             if (resolvedModule) {
