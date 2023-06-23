@@ -288,6 +288,7 @@ function createCompilerHost(
         const processor =
           moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
         if (processor) {
+          let isExternalLibraryImport = false;
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
             // For fs paths just see if it exists on disk.
@@ -308,6 +309,7 @@ function createCompilerHost(
             );
 
             if (resolvedModule) {
+              isExternalLibraryImport = true;
               resolvedFileName = path.join(
                 resolvedModule.resolvedFileName,
                 "..",
@@ -349,7 +351,7 @@ function createCompilerHost(
               ? {
                   resolvedFileName,
                   extension: processor.getScriptExtension(resolvedFileName),
-                  isExternalLibraryImport: false,
+                  isExternalLibraryImport,
                 }
               : undefined,
           });
