@@ -262,7 +262,7 @@ class ScriptExtractor {
         this.#extractor.write(
           `/** @typedef {import("${stripExt(
             relativeImportPath(this.#filename, componentFileName)
-          )}").default} Component */\n`
+          )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`
         );
       }
     } else {
