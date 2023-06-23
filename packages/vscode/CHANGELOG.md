@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.22
+
+### Patch Changes
+
+- [#183](https://github.com/marko-js/language-server/pull/183) [`f2c791a`](https://github.com/marko-js/language-server/commit/f2c791af24690ec8d6d7155c6a6d7ed6b6b373e7) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix importing a commonjs component file with JSDOC type generation.
+
 ## 1.0.21
 
 ### Patch Changes
