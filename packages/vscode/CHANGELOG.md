@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.23
+
+### Patch Changes
+
+- [#186](https://github.com/marko-js/language-server/pull/186) [`5992e17`](https://github.com/marko-js/language-server/commit/5992e174e64d7106b73a51c878745b84293b3588) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fixes an issue where @marko/type-check was emitting files within node_modules.
+
 ## 1.0.22
 
 ### Patch Changes
