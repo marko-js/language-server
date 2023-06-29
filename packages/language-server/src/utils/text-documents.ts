@@ -74,33 +74,30 @@ export function isOpen(doc: TextDocument) {
 }
 
 export function doOpen(params: DidOpenTextDocumentParams) {
-  const doc = params.textDocument;
-  const existingDoc = docs.get(doc.uri);
+  const ref = params.textDocument;
+  const existingDoc = docs.get(ref.uri);
+  projectVersion++;
 
   if (existingDoc) {
-    if (existingDoc.version === doc.version) {
-      if (!isOpen(existingDoc)) {
-        openDocs.add(existingDoc);
-        projectVersion++;
-      }
+    if (existingDoc.version === ref.version) {
+      openDocs.add(existingDoc);
       return;
     }
 
     openDocs.delete(existingDoc);
-    docs.delete(doc.uri);
+    docs.delete(ref.uri);
   }
 
   const newDoc = TextDocument.create(
-    doc.uri,
-    doc.languageId,
-    doc.version,
-    doc.text
+    ref.uri,
+    ref.languageId,
+    ref.version,
+    ref.text
   );
 
   openDocs.add(newDoc);
-  fileExists.set(doc.uri, true);
-  docs.set(doc.uri, newDoc);
-  projectVersion++;
+  fileExists.set(ref.uri, true);
+  docs.set(ref.uri, newDoc);
 }
 
 export function doChange(params: DidChangeTextDocumentParams) {

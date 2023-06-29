@@ -19,7 +19,10 @@
     "mocha-snap": "^5.0.0",
     "prettier": "^2.8.8",
     "tsx": "^3.12.7",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "@types/jsdom": "^21.1.1",
+    "axe-core": "^4.6.3",
+    "jsdom": "^21.1.1"
   },
   "private": true,
   "scripts": {
@@ -34,10 +37,5 @@
   },
   "workspaces": [
     "./packages/*"
-  ],
-  "dependencies": {
-    "@types/jsdom": "^21.1.1",
-    "axe-core": "^4.6.3",
-    "jsdom": "^21.1.1"
-  }
+  ]
 }
