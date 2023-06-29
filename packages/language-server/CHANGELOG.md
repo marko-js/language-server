@@ -1,5 +1,66 @@
 # Change Log
 
+## 1.0.21
+
+### Patch Changes
+
+- [#186](https://github.com/marko-js/language-server/pull/186) [`5992e17`](https://github.com/marko-js/language-server/commit/5992e174e64d7106b73a51c878745b84293b3588) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fixes an issue where @marko/type-check was emitting files within node_modules.
+
+- Updated dependencies [[`5992e17`](https://github.com/marko-js/language-server/commit/5992e174e64d7106b73a51c878745b84293b3588)]:
+  - @marko/language-tools@2.0.11
+
+## 1.0.20
+
+### Patch Changes
+
+- [#183](https://github.com/marko-js/language-server/pull/183) [`f2c791a`](https://github.com/marko-js/language-server/commit/f2c791af24690ec8d6d7155c6a6d7ed6b6b373e7) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix importing a commonjs component file with JSDOC type generation.
+
+- Updated dependencies [[`f2c791a`](https://github.com/marko-js/language-server/commit/f2c791af24690ec8d6d7155c6a6d7ed6b6b373e7)]:
+  - @marko/language-tools@2.0.10
+
+## 1.0.19
+
+### Patch Changes
+
+- [#181](https://github.com/marko-js/language-server/pull/181) [`15cf245`](https://github.com/marko-js/language-server/commit/15cf245555148a07a20ccd3f08a855cc41364260) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fixes an issue where Marko files within node_modules without an explicit `marko.json` were not being loaded. Internally this switches to a new api that should not be tripped up by either export maps and / or a missing `marko.json` when trying to resolve Marko files.
+
+- Updated dependencies [[`15cf245`](https://github.com/marko-js/language-server/commit/15cf245555148a07a20ccd3f08a855cc41364260)]:
+  - @marko/language-tools@2.0.9
+
+## 1.0.18
+
+### Patch Changes
+
+- [#179](https://github.com/marko-js/language-server/pull/179) [`b743baa`](https://github.com/marko-js/language-server/commit/b743baa9047b6b6eace64c808b5f913cf0864133) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - The format command should now propely output export statements which can be parsed by the Marko parser.
+
+- [#179](https://github.com/marko-js/language-server/pull/179) [`b743baa`](https://github.com/marko-js/language-server/commit/b743baa9047b6b6eace64c808b5f913cf0864133) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Downgrade the strip-json-comments module to match the version used by Marko. The latest version does not work in commonjs environments.
+
+- Updated dependencies [[`b743baa`](https://github.com/marko-js/language-server/commit/b743baa9047b6b6eace64c808b5f913cf0864133), [`b743baa`](https://github.com/marko-js/language-server/commit/b743baa9047b6b6eace64c808b5f913cf0864133)]:
+  - @marko/language-tools@2.0.8
+
+## 1.0.17
+
+### Patch Changes
+
+- [#176](https://github.com/marko-js/language-server/pull/176) [`1ce128e`](https://github.com/marko-js/language-server/commit/1ce128e0009ee3385f83f3dfe975eb8dd40be13c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where tags exposed from modules with "export maps" were not being discovered if their package.json file was not exported. (This now instead resolves relative to the marko.json file which should be listed in the export map).
+
+## 1.0.16
+
+### Patch Changes
+
+- [#173](https://github.com/marko-js/language-server/pull/173) [`fc90d03`](https://github.com/marko-js/language-server/commit/fc90d03519bc27f99624eb030533002cd5b03b72) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Surface new diagnostic information from Marko compiler. Also properly surfaces diagnostic from AggregateErrors thrown in the compiler.
+
+## 1.0.15
+
+### Patch Changes
+
+- [#171](https://github.com/marko-js/language-server/pull/171) [`6259092`](https://github.com/marko-js/language-server/commit/625909231a4e00d0cf9c4669ab1b470d905028d2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where trailing commas in the arguments of some tags would produce invalid typescript.
+
+- [#171](https://github.com/marko-js/language-server/pull/171) [`70b4703`](https://github.com/marko-js/language-server/commit/70b4703ee585c293b8ec488485001b982f1272aa) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Use new error location meta data from compiler if available.
+
+- Updated dependencies [[`6259092`](https://github.com/marko-js/language-server/commit/625909231a4e00d0cf9c4669ab1b470d905028d2)]:
+  - @marko/language-tools@2.0.7
+
 ## 1.0.14
 
 ### Patch Changes

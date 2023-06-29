@@ -166,16 +166,17 @@ export function patch(
             resolvedFileName = path.resolve(containingFile, "..", moduleName);
           } else {
             // For other paths we treat it as a node_module and try resolving
-            // that modules `package.json`. If the `package.json` exists then we'll
+            // that modules `marko.json`. If the `marko.json` exists then we'll
             // try resolving the `.marko` file relative to that.
             const [, nodeModuleName, relativeModulePath] =
               modulePartsReg.exec(moduleName)!;
-            const { resolvedModule } = ts.bundlerModuleNameResolver(
+            const { resolvedModule } = ts.nodeModuleNameResolver(
               `${nodeModuleName}/package.json`,
               containingFile,
               options,
               host,
-              resolutionCache
+              resolutionCache,
+              redirectedReference
             );
 
             if (resolvedModule) {

@@ -63,13 +63,10 @@ type IfTagAlternates = Repeatable<IfTagAlternate>;
 
 // TODO: Dedupe taglib completions with TS completions. (typescript project ignore taglib completions)
 // TODO: special types for macro and tag tags.
-// TODO: fix syntax highlighting for tag param type parameters, attr shorthand method type parameters and tag type arguments
 
 // Later todos:
 // TODO: completions within attr whitespace should not include quotes.
 // TODO: handle top level attribute tags.
-// TODO: bring in native tag types to Marko
-// TODO: write types for tags api preview
 // TODO: css modules
 // TODO: should support member expression tag vars.
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
@@ -136,7 +133,7 @@ class ScriptExtractor {
 
     const componentFileName = getComponentFilename(this.#filename);
     const inputType = this.#getInputType(program);
-    let componentClassBody: Range | void;
+    let componentClassBody: Range | undefined;
 
     for (const node of program.static) {
       switch (node.type) {
@@ -265,7 +262,7 @@ class ScriptExtractor {
         this.#extractor.write(
           `/** @typedef {import("${stripExt(
             relativeImportPath(this.#filename, componentFileName)
-          )}").default} Component */\n`
+          )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`
         );
       }
     } else {
@@ -484,7 +481,7 @@ constructor(_?: Return) {}
               this.#extractor
                 .write("if (")
                 .copy(
-                  child.args?.value ||
+                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
                     this.#getAttrValue(child, ATTR_UNAMED) ||
                     "undefined"
                 )
@@ -598,7 +595,10 @@ constructor(_?: Return) {}
               this.#writeComments(child);
               this.#extractor
                 .write("while (\n")
-                .copy(child.args?.value || "undefined")
+                .copy(
+                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
+                    "undefined"
+                )
                 .write("\n) {\n");
 
               const body = this.#processBody(child);
@@ -1106,7 +1106,7 @@ constructor(_?: Return) {}
           this.#extractor
             .write("((\n")
             .copy(
-              tag.args?.value ||
+              this.#getRangeWithoutTrailingComma(tag.args?.value) ||
                 this.#getAttrValue(tag, ATTR_UNAMED) ||
                 "undefined"
             )
@@ -1156,7 +1156,9 @@ constructor(_?: Return) {}
           this.#writeComments(tag);
           this.#extractor
             .write(`${varShared("mergeAttrTags")}((\n`)
-            .copy(tag.args?.value || "undefined")
+            .copy(
+              this.#getRangeWithoutTrailingComma(tag.args?.value) || "undefined"
+            )
             .write("\n) ? [");
           this.#writeDynamicAttrTagBody(tag);
           this.#extractor.write("] : [])");
@@ -1402,8 +1404,9 @@ constructor(_?: Return) {}
                       case "else-if": {
                         const alternate: IfTagAlternate = {
                           condition:
-                            nextChild.args?.value ||
-                            this.#getAttrValue(nextChild, ATTR_UNAMED),
+                            this.#getRangeWithoutTrailingComma(
+                              nextChild.args?.value
+                            ) || this.#getAttrValue(nextChild, ATTR_UNAMED),
                           node: nextChild as IfTagAlternate["node"],
                         };
 
@@ -1525,6 +1528,27 @@ constructor(_?: Return) {}
         }
       }
     }
+  }
+
+  #getRangeWithoutTrailingComma(range: Range | undefined) {
+    if (!range) return undefined;
+
+    const { start } = range;
+    let end = range.end - 1;
+
+    while (end >= start) {
+      if (isWhitespaceCode(this.#code.charCodeAt(end))) {
+        // Skip to the last non whitespace character.
+        end--;
+      } else if (this.#code.charAt(end) === ",") {
+        // If we find a comma then we can return the range without the trailing comma.
+        return { start, end };
+      } else {
+        break;
+      }
+    }
+
+    return range;
   }
 
   #isEmptyText(text: Node.Text) {

@@ -140,14 +140,14 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
           position,
           findInStrings,
           findInComments,
-          providePrefixAndSuffixTextForRename
+          preferences
         ) => {
           const renames = findRenameLocations(
             fileName,
             position,
             findInStrings,
             findInComments,
-            providePrefixAndSuffixTextForRename
+            preferences as any
           );
           if (!renames) return;
 

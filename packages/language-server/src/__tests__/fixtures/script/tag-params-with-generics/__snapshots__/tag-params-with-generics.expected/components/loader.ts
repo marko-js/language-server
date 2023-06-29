@@ -28,6 +28,14 @@ export default new (class Template extends Marko._.Template<{
     }
   ): Marko.Out<Component<TData>>;
 
+  render<TData = string>(
+    input: Marko.TemplateInput<Input<TData>>,
+    cb?: (
+      err: Error | null,
+      result: Marko.RenderResult<Component<TData>>
+    ) => void
+  ): Marko.Out<Component<TData>>;
+
   renderSync<TData = string>(
     input: Marko.TemplateInput<Input<TData>>
   ): Marko.RenderResult<Component<TData>>;

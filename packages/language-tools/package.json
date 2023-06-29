@@ -1,22 +1,24 @@
 {
   "name": "@marko/language-tools",
   "description": "Marko Language Tools",
-  "version": "2.0.6",
+  "version": "2.0.11",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
-    "@babel/helper-validator-identifier": "^7.19.1",
-    "@babel/parser": "^7.21.8",
-    "@marko/compiler": "5.27.7",
-    "@marko/translator-default": "5.25.7",
-    "htmljs-parser": "^5.4.3",
+    "@babel/helper-validator-identifier": "^7.22.5",
+    "@babel/parser": "^7.22.5",
+    "@marko/compiler": "5.28.4",
+    "@marko/translator-default": "5.26.5",
+    "htmljs-parser": "^5.5.0",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.21.4",
-    "@marko/compiler": "^5.27.7",
+    "@babel/code-frame": "^7.22.5",
+    "@marko/compiler": "^5.28.5",
     "@types/babel__code-frame": "^7.0.3",
     "@types/babel__helper-validator-identifier": "^7.15.0",
-    "marko": "^5.25.11",
+    "@typescript/vfs": "^1.4.0",
+    "marko": "^5.26.5",
+    "mitata": "^0.1.6",
     "tsx": "^3.12.7"
   },
   "exports": {
