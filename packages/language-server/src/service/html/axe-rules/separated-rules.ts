@@ -35,31 +35,30 @@ const rules = {
     aria.ariaRoles,
     aria.presentationRoleConflict,
     forms.autocompleteValid,
-    forms.formFieldMultipleLabels, // TODO: Find error state or remove
+    forms.formFieldMultipleLabels, // Could not find error state
     keyboard.accesskeys,
     keyboard.focusOrderSemantics,
     keyboard.tabindex,
     language.htmlLangValid,
     language.htmlXmlLangMismatch,
     language.validLang,
-    nameRoleValue.ariaHiddenFocus, // TODO: Find error state or remove
+    nameRoleValue.ariaHiddenFocus, // Could not find error state
     nameRoleValue.emptyHeading,
-    parsing.duplicateIdActive, // TODO: Same as `duplicateId`?
-    parsing.duplicateIdAria, // TODO: Same as `duplicateId`?
-    parsing.duplicateId,
+    parsing.duplicateIdActive,
+    parsing.duplicateIdAria,
     parsing.marquee,
-    semantics.identicalLinksSamePurpose, // TODO: Find error state or remove
+    semantics.identicalLinksSamePurpose, // Could not find error state
     semantics.landmarkNoDuplicateBanner,
     semantics.landmarkNoDuplicateContentinfo,
     semantics.landmarkNoDuplicateMain,
     semantics.landmarkUnique,
-    sensoryAndVisualCues.metaViewportLarge, // TODO: Find error state or remove
-    sensoryAndVisualCues.metaViewport, // TODO: Find error state or remove
-    tables.scopeAttrValid, // TODO: Find error state or remove
-    textAlternatives.serverSideImageMap, // TODO: Find error state or remove
+    sensoryAndVisualCues.metaViewportLarge, // Could not find error state
+    sensoryAndVisualCues.metaViewport, // Could not find error state
+    tables.scopeAttrValid, // Could not find error state
+    textAlternatives.serverSideImageMap, // Could not find error state
     timeAndMedia.blink,
-    timeAndMedia.metaRefresh, // TODO: Find error state or remove
-    timeAndMedia.noAutoplayAudio, // TODO: Find error state or remove
+    timeAndMedia.metaRefresh, // Could not find error state
+    timeAndMedia.noAutoplayAudio, // Could not find error state
   ],
 
   /**
@@ -149,7 +148,7 @@ const rules = {
    * These rules should not be enforced to all users of
    * the official Marko language server.
    */
-  blacklist: [structure.frameTested],
+  blacklist: [structure.frameTested, parsing.duplicateId],
 
   /**
    * These are rules that cannot currently be validated, either
