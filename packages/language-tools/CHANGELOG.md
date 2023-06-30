@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.1.0
+
+### Minor Changes
+
+- [#189](https://github.com/marko-js/language-server/pull/189) [`e7f82cc`](https://github.com/marko-js/language-server/commit/e7f82ccbb9d91b2327809dad4343cee1ab01d62d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add accessibility linting for Marko templates.
+
 ## 2.0.11
 
 ### Patch Changes
