@@ -85,7 +85,19 @@ connection.onInitialize(async (params) => {
 workspace.setup(connection);
 workspace.onConfigChange(validateDocs);
 
-connection.onDidOpenTextDocument(documents.doOpen);
+connection.onDidOpenTextDocument(async (params) => {
+  documents.doOpen(params);
+
+  const doc = documents.get(params.textDocument.uri);
+  if (doc) {
+    const diagnostics = (await service.doValidate(doc)) || [];
+    prevDiags.set(doc, diagnostics);
+    connection.sendDiagnostics({
+      uri: doc.uri,
+      diagnostics,
+    });
+  }
+});
 connection.onDidChangeTextDocument(documents.doChange);
 connection.onDidCloseTextDocument(documents.doClose);
 connection.onDidChangeWatchedFiles(documents.doChangeWatchedFiles);
