@@ -63,37 +63,15 @@
   27 | };
 ```
 
-### Ln 44, Col 36
+### Ln 69, Col 13
 ```marko
-  42 |     const year: number = input.year;
-  43 |     const isSmartOnly: boolean = input.isSmartOnly;
-> 44 |     const type: string = component.input.type;
-     |                                    ^^^^^ Property 'input' does not exist on type 'Component'.
-  45 |
-  46 |     const mobiles:Array<Mobile> = component.input.mobileList;
-  47 |
-```
-
-### Ln 46, Col 45
-```marko
-  44 |     const type: string = component.input.type;
-  45 |
-> 46 |     const mobiles:Array<Mobile> = component.input.mobileList;
-     |                                             ^^^^^ Property 'input' does not exist on type 'Component'.
-  47 |
-  48 |     mobiles.forEach((mobile:Mobile) => {
-  49 |         console.log(mobile.brandName);
-```
-
-### Ln 62, Col 49
-```marko
-  60 |     <span class="subnote">phoneType: ${type}</span>
-  61 |     $ {
-> 62 |         const mobiles:Array<Mobile> = component.input.mobileList;
-     |                                                 ^^^^^ Property 'input' does not exist on type 'Component'.
-  63 |         mobiles.forEach((mobile:Mobile) => {
-  64 |             console.log(mobile.brandName);
-  65 |         });
+  67 |
+  68 |     <for|mobile, i, all| of=mobiles>
+> 69 |       <span id=i>${mobile} ${i} ${all.length}</span>
+     |             ^^ Type 'number' is not assignable to type 'AttrString'.
+  70 |     </for>
+  71 |
+  72 |     <div.container>
 ```
 
 ### Ln 75, Col 18

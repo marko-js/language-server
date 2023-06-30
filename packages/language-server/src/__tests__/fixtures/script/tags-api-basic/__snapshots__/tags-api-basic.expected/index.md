@@ -86,6 +86,17 @@
   21 |
 ```
 
+### Ln 33, Col 13
+```marko
+  31 |     <for|mobile, i, all| of=mobileList>
+  32 | //                          ^?
+> 33 |       <span id=i>${mobile} ${i} ${all.length}</span>
+     |             ^^ Type 'number' is not assignable to type 'AttrString'.
+  34 | //                 ^?        ^?
+  35 |     </for>
+  36 |
+```
+
 ### Ln 40, Col 18
 ```marko
   38 |         <${renderBody}/>

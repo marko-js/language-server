@@ -4,7 +4,7 @@
   12 |
   13 | <effect() {
 > 14 |   console.log(el())
-     |               ^ const el: never
+     |               ^ const el: any
   15 | //            ^?
   16 | }/>
   17 |
@@ -15,7 +15,7 @@
   16 | }/>
   17 |
 > 18 | -- ${x}
-     |      ^ const x: never
+     |      ^ const x: number
   19 | //   ^?
 ```
 
@@ -29,18 +29,6 @@
   14 |   console.log(el())
   15 | //            ^?
   16 | }/>
-```
-
-### Ln 14, Col 15
-```marko
-  12 |
-  13 | <effect() {
-> 14 |   console.log(el())
-     |               ^^ This expression is not callable.
-  Type 'never' has no call signatures.
-  15 | //            ^?
-  16 | }/>
-  17 |
 ```
 
 ### Ln 18, Col 6

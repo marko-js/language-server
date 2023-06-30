@@ -37,7 +37,7 @@
   13 | </div>
   14 |
 > 15 | -- ${x}
-     |      ^ const x: never
+     |      ^ const x: number
   16 | //   ^?
 ```
 
