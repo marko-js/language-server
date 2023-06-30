@@ -1,5 +1,6 @@
 import type { Connection } from "vscode-languageserver";
 
+let isInitialized = false;
 let connection!: Connection;
 const configChangeHandlers: Set<ConfigChangeHandler> = new Set();
 const settingsCache = new Map<string, any>();
@@ -26,8 +27,12 @@ export function onConfigChange(handler: ConfigChangeHandler) {
 export function setup(_: Connection) {
   connection = _;
   connection.onDidChangeConfiguration(() => {
-    settingsCache.clear();
-    emitConfigChange();
+    if (isInitialized) {
+      settingsCache.clear();
+      emitConfigChange();
+    } else {
+      isInitialized = true;
+    }
   });
 }
 
