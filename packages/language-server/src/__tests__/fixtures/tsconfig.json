@@ -1,0 +1,25 @@
+{
+  "include": ["./**/*"],
+  "exclude": ["**/__snapshots__"],
+  "compilerOptions": {
+    "lib": ["ESNext", "dom"],
+    "strict": true,
+    "target": "ESNext",
+    "sourceMap": false,
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "noImplicitReturns": false,
+    "noImplicitOverride": true,
+    "allowUnreachableCode": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -18,13 +18,29 @@ import type {
 
 import { MarkupContent, MarkupKind } from "vscode-languageserver";
 
+import {
+  doChange,
+  doChangeWatchedFiles,
+  doClose,
+  doOpen,
+  get,
+} from "../utils/text-documents";
+export const documents = {
+  get,
+  doChange,
+  doOpen,
+  doClose,
+  doChangeWatchedFiles,
+};
+
 import type { Plugin } from "./types";
+import HtmlPlugin from "./html";
 import MarkoPlugin from "./marko";
 import ScriptPlugin from "./script";
 import StylePlugin from "./style";
 
 const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
-const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin];
+const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin, HtmlPlugin];
 
 /**
  * Facade to all embedded plugins, eg css, typescript and our own.

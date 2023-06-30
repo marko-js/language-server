@@ -51,8 +51,6 @@
   },
   "scripts": {
     "bench": "BENCH=1 mocha './src/**/__tests__/*.test.ts'",
-    "build": "tsc -b && tsx build.mts",
-    "test": "mocha './src/**/__tests__/*.test.ts'",
-    "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
+    "build": "tsc -b && tsx build.mts"
   }
 }
