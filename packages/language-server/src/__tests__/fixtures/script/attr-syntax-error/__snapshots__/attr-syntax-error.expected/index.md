@@ -1,13 +1,4 @@
 ## Diagnostics
-### Ln 1, Col 13
-```marko
-> 1 | <div data-x=#2/>
-    |             ^ Unexpected digit after hash token.
-  2 |
-  3 | <div onClick(a, %b) {
-  4 |   console.log(#hello!);
-```
-
 ### Ln 3, Col 17
 ```marko
   1 | <div data-x=#2/>

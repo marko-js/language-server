@@ -1,9 +1,9 @@
 ## Diagnostics
-### Ln 2, Col 3
+### Ln 1, Col 1
 ```marko
-  1 | export interface Input {
-> 2 |   %: string;
-    |   ^ Unexpected token
+> 1 | export interface Input {
+    | ^^^^^^ Unexpected token
+  2 |   %: string;
   3 | }
   4 |
 ```

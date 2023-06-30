@@ -1,90 +1,145 @@
 ## Hovers
-### Ln 72, Col 3
+### Ln 86, Col 3
 ```marko
-  70 |
-  71 | <effect() {
-> 72 |   a;
+  84 |
+  85 | <effect() {
+> 86 |   a;
      |   ^ const a: 0 | undefined
-  73 | //^?
-  74 |   b;
-  75 | //^?
+  87 | //^?
+  88 |   b;
+  89 | //^?
 ```
 
-### Ln 74, Col 3
+### Ln 88, Col 3
 ```marko
-  72 |   a;
-  73 | //^?
-> 74 |   b;
+  86 |   a;
+  87 | //^?
+> 88 |   b;
      |   ^ const b: 1 | undefined
-  75 | //^?
-  76 |   c;
-  77 | //^?
+  89 | //^?
+  90 |   c;
+  91 | //^?
 ```
 
-### Ln 76, Col 3
+### Ln 90, Col 3
 ```marko
-  74 |   b;
-  75 | //^?
-> 76 |   c;
+  88 |   b;
+  89 | //^?
+> 90 |   c;
      |   ^ const c: 2 | undefined
-  77 | //^?
-  78 |   d;
-  79 | //^?
+  91 | //^?
+  92 |   d;
+  93 | //^?
 ```
 
-### Ln 78, Col 3
+### Ln 92, Col 3
 ```marko
-  76 |   c;
-  77 | //^?
-> 78 |   d;
+  90 |   c;
+  91 | //^?
+> 92 |   d;
      |   ^ const d: 3 | undefined
-  79 | //^?
-  80 |   e;
-  81 | //^?
+  93 | //^?
+  94 |   e;
+  95 | //^?
 ```
 
-### Ln 80, Col 3
+### Ln 94, Col 3
 ```marko
-  78 |   d;
-  79 | //^?
-> 80 |   e;
+  92 |   d;
+  93 | //^?
+> 94 |   e;
      |   ^ const e: 4 | undefined
-  81 | //^?
-  82 |   f;
-  83 | //^?
+  95 | //^?
+  96 |   f;
+  97 | //^?
 ```
 
-### Ln 82, Col 3
+### Ln 96, Col 3
 ```marko
-  80 |   e;
-  81 | //^?
-> 82 |   f;
+  94 |   e;
+  95 | //^?
+> 96 |   f;
      |   ^ const f: 4 | undefined
-  83 | //^?
-  84 |   g;
-  85 | //^?
+  97 | //^?
+  98 |   g;
+  99 | //^?
 ```
 
-### Ln 84, Col 3
+### Ln 98, Col 3
 ```marko
-  82 |   f;
-  83 | //^?
-> 84 |   g;
-     |   ^ const g: 5 | 6
-  85 | //^?
-  86 | }/>
-  87 |
+   96 |   f;
+   97 | //^?
+>  98 |   g;
+      |   ^ const g: 5 | 6
+   99 | //^?
+  100 | }/>
+  101 |
 ```
 
 ## Diagnostics
-### Ln 71, Col 2
+### Ln 98, Col 3
 ```marko
-  69 |
-  70 |
-> 71 | <effect() {
+   96 |   f;
+   97 | //^?
+>  98 |   g;
+      |   ^ Ambiguous reference, variable was defined in multiple places and was not shadowed.
+   99 | //^?
+  100 | }/>
+  101 |
+```
+
+### Ln 77, Col 5
+```marko
+  75 | </if>
+  76 |
+> 77 | <if(show, y)>
+     |     ^^^^ Left side of comma operator is unused and has no side effects.
+  78 |   Hi
+  79 | </if>
+  80 |
+```
+
+### Ln 77, Col 11
+```marko
+  75 | </if>
+  76 |
+> 77 | <if(show, y)>
+     |           ^ Cannot find name 'y'.
+  78 |   Hi
+  79 | </if>
+  80 |
+```
+
+### Ln 81, Col 5
+```marko
+  79 | </if>
+  80 |
+> 81 | <if(show,  y, )>
+     |     ^^^^ Left side of comma operator is unused and has no side effects.
+  82 |   Hi
+  83 | </if>
+  84 |
+```
+
+### Ln 81, Col 12
+```marko
+  79 | </if>
+  80 |
+> 81 | <if(show,  y, )>
+     |            ^ Cannot find name 'y'.
+  82 |   Hi
+  83 | </if>
+  84 |
+```
+
+### Ln 85, Col 2
+```marko
+  83 | </if>
+  84 |
+> 85 | <effect() {
      |  ^^^^^^ Cannot find name 'effect'.
-  72 |   a;
-  73 | //^?
-  74 |   b;
+  86 |   a;
+  87 | //^?
+  88 |   b;
 ```
 
