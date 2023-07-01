@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.1
+
+### Patch Changes
+
+- [#191](https://github.com/marko-js/language-server/pull/191) [`026f4ed`](https://github.com/marko-js/language-server/commit/026f4edf5448e324594ece33a03c0d8d184dda2e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with jsdom not being bundled for the vscode plugin.
+
 ## 1.1.0
 
 ### Minor Changes
