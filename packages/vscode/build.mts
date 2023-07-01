@@ -89,6 +89,23 @@ await Promise.all([
           }));
         },
       },
+      {
+        name: "jsdom-fix",
+        setup(build) {
+          build.onLoad(
+            { filter: /\/jsdom\/.*\/XMLHttpRequest-impl\.js$/ },
+            async (args) => {
+              return {
+                loader: "js",
+                contents: (await fs.readFile(args.path, "utf8")).replace(
+                  'require.resolve ? require.resolve("./xhr-sync-worker.js") :',
+                  ""
+                ),
+              };
+            }
+          );
+        },
+      },
     ],
   }).then(async (result) => {
     if (isProd) {
