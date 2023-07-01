@@ -61,7 +61,7 @@ await Promise.all([
       "mocha-snap",
       "fast-glob",
       "tsx",
-      "jsdom",
+      "canvas",
       "@babel/preset-typescript",
     ],
     plugins: [
