@@ -40,8 +40,6 @@ const extractCache = new WeakMap<
   ReturnType<Processors.Processor["extract"]>
 >();
 const requiredTSCompilerOptions: ts.CompilerOptions = {
-  module: ts.ModuleKind.ESNext,
-  moduleResolution: ts.ModuleResolutionKind.Bundler,
   allowJs: true,
   declaration: true,
   skipLibCheck: true,
