@@ -81,7 +81,9 @@ export function AttrName({
     let snippet = attr.name;
 
     if (attr.enum) {
-      snippet += `="\${1|${attr.enum.join()}|}"$0`;
+      // TODO: We should use the following, but vscode has a regression with multi choice snippets form the language server.
+      // snippet += `="\${1|${attr.enum.join()}|}"$0`;
+      snippet += `="$1"$0`;
     } else {
       switch (type) {
         case "string":

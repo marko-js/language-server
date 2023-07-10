@@ -53,7 +53,6 @@ const service: Plugin = {
     );
   },
   async doComplete(doc, params, cancel) {
-    let isIncomplete = false;
     // TODO: this should handle CompletionList.itemDefaults.
     // If there is a single responding plugin, pass through, otherwise need to apply the defaults to the completion items for the plugin.
 
@@ -70,7 +69,6 @@ const service: Plugin = {
             curItems = cur;
           } else {
             curItems = cur.items;
-            isIncomplete ||= cur.isIncomplete;
           }
 
           for (const item of curItems) {
@@ -91,7 +89,7 @@ const service: Plugin = {
     if (cancel.isCancellationRequested) return;
 
     if (itemsByLabel.size) {
-      return { items: [...itemsByLabel.values()], isIncomplete };
+      return { items: [...itemsByLabel.values()], isIncomplete: true };
     }
   },
   async doCompletionResolve(item, cancel) {

@@ -33,7 +33,10 @@ export async function activate(ctx: ExtensionContext) {
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     // Register the server for marko text documents
-    documentSelector: [{ language: "marko" }],
+    documentSelector: [
+      { scheme: "file", language: "marko" },
+      { scheme: "untitled", language: "marko" },
+    ],
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
