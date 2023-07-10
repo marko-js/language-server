@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 0.0.14
+
+### Patch Changes
+
+- [#194](https://github.com/marko-js/language-server/pull/194) [`f63e8f7`](https://github.com/marko-js/language-server/commit/f63e8f73b3b99bb36dd33e854d9729f39b91b98f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - No longer overwrite the module or moduleResultion tsconfig options.
+
 ## 0.0.13
 
 ### Patch Changes
