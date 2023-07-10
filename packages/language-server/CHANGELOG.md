@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.1
+
+### Patch Changes
+
+- [#195](https://github.com/marko-js/language-server/pull/195) [`7a07f85`](https://github.com/marko-js/language-server/commit/7a07f8585e4a0c6e0464aa375f5e4e53138b51a6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - VSCode has a regression which causes all intelisense to break after a completion with a multi choice snippet is provided. The language server currently uses that to provide completions for attributes defined with an `enum` value. To resolve this issue, enum completions are simplified to not provide the choice based completion until this is resolved in vscode or another workaround is found.
+
 ## 1.1.0
 
 ### Minor Changes
