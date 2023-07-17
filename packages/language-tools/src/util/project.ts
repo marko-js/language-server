@@ -2,15 +2,14 @@ import path from "path";
 import { createRequire } from "module";
 import type TS from "typescript/lib/tsserverlibrary";
 import type { TaglibLookup } from "@marko/babel-utils";
-import * as defaultCompiler from "@marko/compiler";
-import * as defaultConfig from "@marko/compiler/config";
-import * as defaultTranslator from "@marko/translator-default";
+import type * as Compiler from "@marko/compiler";
 import stripJSONComments from "strip-json-comments";
 import { ScriptLang } from "../extractors/script";
 
 export interface Meta {
-  compiler: typeof defaultCompiler;
-  config: Omit<defaultCompiler.Config, "cache" | "translator"> & {
+  fallback: boolean;
+  compiler: typeof Compiler;
+  config: Omit<Compiler.Config, "cache" | "translator"> & {
     cache: Map<any, any>;
     translator: {
       runtimeTypes?: string;
@@ -31,16 +30,6 @@ const defaultTypeLibs: Partial<TypeLibs> = {};
 const ignoreErrors = (_err: Error) => {};
 const metaByDir = new Map<string, Meta>();
 const metaByCompiler = new Map<string, Meta>();
-const defaultMeta: Meta = {
-  compiler: defaultCompiler,
-  config: {
-    ...defaultConfig,
-    cache: new Map(),
-    translator: defaultTranslator,
-  },
-};
-
-defaultCompiler.configure(defaultMeta.config);
 
 export function getCompiler(dir?: string) {
   return getMeta(dir).compiler;
@@ -189,7 +178,6 @@ export function getScriptLang(
 }
 
 export function clearCaches() {
-  clearCacheForMeta(defaultMeta);
   for (const project of metaByCompiler.values()) {
     clearCacheForMeta(project);
   }
@@ -199,24 +187,23 @@ export function setDefaultTypePaths(defaults: typeof defaultTypeLibs) {
   Object.assign(defaultTypeLibs, defaults);
 }
 
-function getMeta(dir?: string): Meta {
-  if (!dir) return defaultMeta;
-
+function getMeta(dir = __dirname): Meta {
   let cached = metaByDir.get(dir);
   if (!cached) {
+    const fallback = dir === __dirname;
+
     try {
       const require = createRequire(dir);
-      const compilerConfigPath = require.resolve("@marko/compiler/config");
-      cached = metaByCompiler.get(compilerConfigPath);
+      const configPath = require.resolve("@marko/compiler/config");
+      cached = metaByCompiler.get(configPath);
       if (!cached) {
         const compiler = require(path.join(
-          compilerConfigPath,
+          configPath,
           ".."
-        )) as typeof defaultCompiler;
-        const config = interopDefault(
-          require(compilerConfigPath)
-        ) as defaultCompiler.Config;
+        )) as typeof Compiler;
+        const config = interopDefault(require(configPath)) as Compiler.Config;
         cached = {
+          fallback,
           compiler,
           config: {
             ...config,
@@ -225,10 +212,11 @@ function getMeta(dir?: string): Meta {
           },
         };
         compiler.configure(cached.config);
-        metaByCompiler.set(compilerConfigPath, cached);
+        metaByCompiler.set(configPath, cached);
       }
-    } catch {
-      cached = defaultMeta;
+    } catch (err) {
+      if (fallback) throw err;
+      cached = getMeta();
     }
 
     metaByDir.set(dir, cached);
@@ -252,8 +240,8 @@ function getTagLookupForProject(meta: Meta, dir: string): TaglibLookup {
         ignoreErrors
       );
     } catch {
-      if (meta !== defaultMeta) {
-        lookup = getTagLookupForProject(defaultMeta, dir);
+      if (!meta.fallback) {
+        lookup = getTagLookupForProject(getMeta(), dir);
       }
     }
 
