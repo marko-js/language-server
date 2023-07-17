@@ -1,14 +1,14 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "bin": {
     "marko-language-server": "./bin.js"
   },
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.22.5",
-    "@marko/language-tools": "^2.1.0",
+    "@marko/language-tools": "^2.1.1",
     "@marko/babel-utils": "^6.2.0",
     "@marko/compiler": "^5.31.1",
     "@marko/translator-default": "^5.29.1",
