@@ -208,6 +208,8 @@ export function setDefaultCompilerMeta(
       translator,
     },
   };
+
+  compiler.configure(defaultMeta.config);
 }
 
 function getMeta(dir?: string): Meta {
