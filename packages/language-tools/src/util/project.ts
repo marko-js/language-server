@@ -7,7 +7,6 @@ import stripJSONComments from "strip-json-comments";
 import { ScriptLang } from "../extractors/script";
 
 export interface Meta {
-  fallback: boolean;
   compiler: typeof Compiler;
   config: Omit<Compiler.Config, "cache" | "translator"> & {
     cache: Map<any, any>;
@@ -27,6 +26,7 @@ interface TypeLibs {
 }
 
 const defaultTypeLibs: Partial<TypeLibs> = {};
+let defaultMeta: Meta | undefined;
 const ignoreErrors = (_err: Error) => {};
 const metaByDir = new Map<string, Meta>();
 const metaByCompiler = new Map<string, Meta>();
@@ -178,6 +178,10 @@ export function getScriptLang(
 }
 
 export function clearCaches() {
+  if (defaultMeta) {
+    clearCacheForMeta(defaultMeta);
+  }
+
   for (const project of metaByCompiler.values()) {
     clearCacheForMeta(project);
   }
@@ -187,11 +191,38 @@ export function setDefaultTypePaths(defaults: typeof defaultTypeLibs) {
   Object.assign(defaultTypeLibs, defaults);
 }
 
-function getMeta(dir = __dirname): Meta {
+export function setDefaultCompilerMeta(
+  compiler: typeof Compiler,
+  config: Compiler.Config
+) {
+  const { translator } = config;
+  if (typeof translator !== "object") {
+    throw new Error("Translator must be fully resolved and loaded.");
+  }
+
+  defaultMeta = {
+    compiler,
+    config: {
+      ...config,
+      cache: new Map(),
+      translator,
+    },
+  };
+}
+
+function getMeta(dir?: string): Meta {
+  if (!dir) {
+    if (!defaultMeta) {
+      throw new Error(
+        "@marko/compiler must be installed or compiler registered."
+      );
+    }
+
+    return defaultMeta;
+  }
+
   let cached = metaByDir.get(dir);
   if (!cached) {
-    const fallback = dir === __dirname;
-
     try {
       const require = createRequire(dir);
       const configPath = require.resolve("@marko/compiler/config");
@@ -203,7 +234,6 @@ function getMeta(dir = __dirname): Meta {
         )) as typeof Compiler;
         const config = interopDefault(require(configPath)) as Compiler.Config;
         cached = {
-          fallback,
           compiler,
           config: {
             ...config,
@@ -215,7 +245,6 @@ function getMeta(dir = __dirname): Meta {
         metaByCompiler.set(configPath, cached);
       }
     } catch (err) {
-      if (fallback) throw err;
       cached = getMeta();
     }
 
@@ -240,7 +269,7 @@ function getTagLookupForProject(meta: Meta, dir: string): TaglibLookup {
         ignoreErrors
       );
     } catch {
-      if (!meta.fallback) {
+      if (meta !== defaultMeta) {
         lookup = getTagLookupForProject(getMeta(), dir);
       }
     }
