@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.4
+
+### Patch Changes
+
+- [#200](https://github.com/marko-js/language-server/pull/200) [`e05c6f6`](https://github.com/marko-js/language-server/commit/e05c6f622730160e05581552df6e5bf4bb64ce57) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with default compiler not being found.
+
+- [#200](https://github.com/marko-js/language-server/pull/200) [`7903aa0`](https://github.com/marko-js/language-server/commit/7903aa09acbedddee3f9177cd54ec05b79edc75e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure consistent ordering of results returned from merged language server plugins. Previously response order was determined by the order in which individual plugins (css, typescript, marko and html) responded asynchronously, now it is always in a preset order.
+
 ## 1.1.3
 
 ### Patch Changes
