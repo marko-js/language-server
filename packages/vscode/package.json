@@ -83,7 +83,7 @@
   "devDependencies": {
     "@marko/language-server": "^1.1.2",
     "@types/babel__helper-validator-identifier": "^7.15.0",
-    "@types/vscode": "^1.74.2",
+    "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.3.3",
     "@vscode/vsce": "^2.19.0",
     "ovsx": "^0.8.2",
@@ -92,7 +92,7 @@
   },
   "displayName": "Marko VSCode",
   "engines": {
-    "vscode": "^1.74.2"
+    "vscode": "^1.80.0"
   },
   "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
   "icon": "img/marko.png",
