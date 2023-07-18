@@ -57,40 +57,32 @@ const service: Plugin = {
     // If there is a single responding plugin, pass through, otherwise need to apply the defaults to the completion items for the plugin.
 
     // Used to filter out duplicate labels (highest sortText wins).
-    const itemsByLabel = new Map<string, CompletionItem>();
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.doComplete?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) {
-          let curItems!: CompletionItem[];
-          if (Array.isArray(cur)) {
-            curItems = cur;
-          } else {
-            curItems = cur.items;
-          }
-
-          for (const item of curItems) {
-            const { label } = item;
-            const existingItem = itemsByLabel.get(label);
-            if (existingItem) {
-              if ((existingItem.sortText || label) < (item.sortText || label)) {
-                itemsByLabel.set(label, item);
-              }
-            } else {
-              itemsByLabel.set(label, item);
-            }
-          }
-        }
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.doComplete?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
 
-    if (itemsByLabel.size) {
-      return { items: [...itemsByLabel.values()], isIncomplete: true };
+    const itemsByLabel = new Map<string, CompletionItem>();
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+
+      for (const item of Array.isArray(result.value)
+        ? result.value
+        : result.value.items) {
+        const { label } = item;
+        const existingItem = itemsByLabel.get(label);
+        if (existingItem) {
+          if ((existingItem.sortText || label) < (item.sortText || label)) {
+            itemsByLabel.set(label, item);
+          }
+        } else {
+          itemsByLabel.set(label, item);
+        }
+      }
     }
+
+    return { items: [...itemsByLabel.values()], isIncomplete: true };
   },
   async doCompletionResolve(item, cancel) {
     for (const plugin of plugins) {
@@ -104,167 +96,180 @@ const service: Plugin = {
     }
   },
   async findDefinition(doc, params, cancel) {
-    let result: (Location | DefinitionLink)[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findDefinition?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.findDefinition?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let links: (Location | DefinitionLink)[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      links = (links || []).concat(result.value);
+    }
+
+    return links;
   },
   async findReferences(doc, params, cancel) {
-    let result: Location[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findReferences?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.findReferences?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let references: Location[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      references = (references || []).concat(result.value);
+    }
+
+    return references;
   },
   async findDocumentSymbols(doc, params, cancel) {
-    let result: SymbolInformation[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findDocumentSymbols?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.findDocumentSymbols?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let symbols: SymbolInformation[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      symbols = (symbols || []).concat(result.value);
+    }
+
+    return symbols;
   },
   async findDocumentLinks(doc, params, cancel) {
-    let result: DocumentLink[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findDocumentLinks?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.findDocumentLinks?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let links: DocumentLink[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      links = (links || []).concat(result.value);
+    }
+
+    return links;
   },
   async findDocumentHighlights(doc, params, cancel) {
-    let result: DocumentHighlight[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findDocumentHighlights?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) =>
+        plugin.findDocumentHighlights?.(doc, params, cancel)
+      )
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let highlights: DocumentHighlight[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      highlights = (highlights || []).concat(result.value);
+    }
+
+    return highlights;
   },
   async findDocumentColors(doc, params, cancel) {
-    let result: ColorInformation[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.findDocumentColors?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.findDocumentColors?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let colors: ColorInformation[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      colors = (colors || []).concat(result.value);
+    }
+
+    return colors;
   },
   async getColorPresentations(doc, params, cancel) {
-    let result: ColorPresentation[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.getColorPresentations?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) =>
+        plugin.getColorPresentations?.(doc, params, cancel)
+      )
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let presentations: ColorPresentation[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      presentations = (presentations || []).concat(result.value);
+    }
+
+    return presentations;
   },
   async doHover(doc, params, cancel) {
-    let result: Hover | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.doHover?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) {
-          if (result) {
-            result.range = maxRange(result.range, cur.range);
-            result.contents = mergeHoverContents(result.contents, cur.contents);
-          } else {
-            result = cur;
-          }
-        }
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.doHover?.(doc, params, cancel))
     );
 
-    return result;
+    if (cancel.isCancellationRequested) return;
+
+    let hovers: Hover | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      if (hovers) {
+        hovers.range = maxRange(hovers.range, result.value.range);
+        hovers.contents = mergeHoverContents(
+          hovers.contents,
+          result.value.contents
+        );
+      } else {
+        hovers = result.value;
+      }
+    }
+
+    return hovers;
   },
   async doRename(doc, params, cancel) {
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.doRename?.(doc, params, cancel))
+    );
+
+    if (cancel.isCancellationRequested) return;
+
     let changes: WorkspaceEdit["changes"];
     let changeAnnotations: WorkspaceEdit["changeAnnotations"];
     let documentChanges: WorkspaceEdit["documentChanges"];
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      const { value } = result;
+      if (value.changes) {
+        if (changes) {
+          changes = { ...changes };
 
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.doRename?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-
-        if (cur) {
-          if (cur.changes) {
-            if (changes) {
-              changes = { ...changes };
-
-              for (const uri in cur.changes) {
-                changes[uri] = changes[uri]
-                  ? changes[uri].concat(cur.changes[uri])
-                  : cur.changes[uri];
-              }
-            } else {
-              changes = cur.changes;
-            }
+          for (const uri in value.changes) {
+            changes[uri] = changes[uri]
+              ? changes[uri].concat(value.changes[uri])
+              : value.changes[uri];
           }
-
-          if (cur.changeAnnotations) {
-            changeAnnotations = changeAnnotations
-              ? {
-                  ...changeAnnotations,
-                  ...cur.changeAnnotations,
-                }
-              : cur.changeAnnotations;
-          }
-
-          if (cur.documentChanges) {
-            documentChanges = documentChanges
-              ? documentChanges.concat(cur.documentChanges)
-              : cur.documentChanges;
-          }
+        } else {
+          changes = value.changes;
         }
-      })
-    );
+      }
 
-    if (cancel.isCancellationRequested) return;
+      if (value.changeAnnotations) {
+        changeAnnotations = changeAnnotations
+          ? {
+              ...changeAnnotations,
+              ...value.changeAnnotations,
+            }
+          : value.changeAnnotations;
+      }
+
+      if (value.documentChanges) {
+        documentChanges = documentChanges
+          ? documentChanges.concat(value.documentChanges)
+          : value.documentChanges;
+      }
+    }
+
     if (changes || changeAnnotations || documentChanges) {
       return {
         changes,
@@ -274,30 +279,32 @@ const service: Plugin = {
     }
   },
   async doCodeActions(doc, params, cancel) {
-    let result: (Command | CodeAction)[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.doCodeActions?.(doc, params, cancel);
-        if (cancel.isCancellationRequested) return;
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.doCodeActions?.(doc, params, cancel))
     );
 
     if (cancel.isCancellationRequested) return;
-    return result;
+
+    let actions: (Command | CodeAction)[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      actions = (actions || []).concat(result.value);
+    }
+
+    return actions;
   },
   async doValidate(doc) {
-    let result: Diagnostic[] | undefined;
-
-    await Promise.allSettled(
-      plugins.map(async (plugin) => {
-        const cur = await plugin.doValidate?.(doc);
-        if (cur) result = (result || []).concat(cur);
-      })
+    const results = await Promise.allSettled(
+      plugins.map((plugin) => plugin.doValidate?.(doc))
     );
 
-    return result;
+    let diagnostics: Diagnostic[] | undefined;
+    for (const result of results) {
+      if (result.status !== "fulfilled" || !result.value) continue;
+      diagnostics = (diagnostics || []).concat(result.value);
+    }
+
+    return diagnostics;
   },
   format: MarkoPlugin.format,
 };
