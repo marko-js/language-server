@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.1.2
+
+### Patch Changes
+
+- [#200](https://github.com/marko-js/language-server/pull/200) [`e05c6f6`](https://github.com/marko-js/language-server/commit/e05c6f622730160e05581552df6e5bf4bb64ce57) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with default compiler not being found.
+
 ## 2.1.1
 
 ### Patch Changes
