@@ -223,31 +223,50 @@ function getMeta(dir?: string): Meta {
     return defaultMeta;
   }
 
+  if (defaultMeta) {
+    try {
+      return loadMeta(dir);
+    } catch {
+      metaByDir.set(dir, defaultMeta);
+      return defaultMeta;
+    }
+  }
+
+  return loadMeta(dir);
+}
+
+function loadMeta(dir: string): Meta {
   let cached = metaByDir.get(dir);
   if (!cached) {
+    let require = createRequire(dir);
+    let configPath: string;
+
     try {
-      const require = createRequire(dir);
-      const configPath = require.resolve("@marko/compiler/config");
-      cached = metaByCompiler.get(configPath);
-      if (!cached) {
-        const compiler = require(path.join(
-          configPath,
-          ".."
-        )) as typeof Compiler;
-        const config = interopDefault(require(configPath)) as Compiler.Config;
-        cached = {
-          compiler,
-          config: {
-            ...config,
-            cache: new Map(),
-            translator: require(config.translator),
-          },
-        };
-        compiler.configure(cached.config);
-        metaByCompiler.set(configPath, cached);
-      }
-    } catch (err) {
-      cached = getMeta();
+      // Try loading compiler directly.
+      configPath = require.resolve("@marko/compiler/config");
+    } catch {
+      // Fallback to checking if compiler is a installed relative to the Marko package.
+      require = createRequire(
+        path.dirname(require.resolve("marko/package.json"))
+      );
+      configPath = require.resolve("@marko/compiler/config");
+    }
+
+    cached = metaByCompiler.get(configPath);
+
+    if (!cached) {
+      const compiler = require(path.dirname(configPath)) as typeof Compiler;
+      const config = interopDefault(require(configPath)) as Compiler.Config;
+      cached = {
+        compiler,
+        config: {
+          ...config,
+          cache: new Map(),
+          translator: require(config.translator),
+        },
+      };
+      compiler.configure(cached.config);
+      metaByCompiler.set(configPath, cached);
     }
 
     metaByDir.set(dir, cached);
