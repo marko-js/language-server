@@ -22,11 +22,11 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 
 - Custom Attribute Names
 
-![goToAttrName](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToAttrName.gif)
+![goToAttrName](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrName.gif)
 
 - Custom Handlers
 
-![goToAttrValue](https://raw.githubusercontent.com/marko-js/language-server/main/clients/vscode/img/goToAttrValue.gif)
+![goToAttrValue](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrValue.gif)
 
 # License
 
