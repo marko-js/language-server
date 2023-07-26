@@ -12,25 +12,27 @@ export interface MarkoFile {
   scheme: string;
   version: number;
   lookup: TaglibLookup;
-  filename: string;
-  dirname: string;
+  filename: string | undefined;
+  dirname: string | undefined;
   parsed: Parsed;
   code: string;
 }
 
 export function getFSDir(doc: TextDocument): string | undefined {
   const filename = getFSPath(doc);
-  return filename ? path.dirname(filename) : undefined;
+  return filename && path.dirname(filename);
 }
 
 export function getFSPath(doc: TextDocument): string | undefined {
-  return URI.parse(doc.uri).fsPath;
+  const parsed = URI.parse(doc.uri);
+  return parsed.scheme === "file" ? parsed.fsPath : undefined;
 }
 
 export function getMarkoFile(doc: TextDocument): MarkoFile {
   const { uri } = doc;
-  const { fsPath: filename, scheme } = URI.parse(uri);
-  const dirname = filename && path.dirname(filename);
+  const { fsPath, scheme } = URI.parse(uri);
+  const filename = scheme === "file" ? fsPath : undefined;
+  const dirname = filename ? path.dirname(filename) : process.cwd();
   const cache = Project.getCache(dirname) as Map<TextDocument, MarkoFile>;
   let file = cache.get(doc);
   if (!file) {
@@ -57,10 +59,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
 }
 
 export function clearMarkoCacheForFile(doc: TextDocument) {
-  const { fsPath: filename } = URI.parse(doc.uri);
-  const dirname = filename && path.dirname(filename);
-  const cache = Project.getCache(dirname) as Map<TextDocument, MarkoFile>;
-  cache.delete(doc);
+  (Project.getCache(getFSDir(doc)) as Map<TextDocument, MarkoFile>).delete(doc);
 }
 
 /**

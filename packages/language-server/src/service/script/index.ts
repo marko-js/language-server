@@ -513,7 +513,9 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
       ts,
       parsed,
       lookup,
-      scriptLang: Project.getScriptLang(filename, markoScriptLang, ts, host),
+      scriptLang: filename
+        ? Project.getScriptLang(filename, markoScriptLang, ts, host)
+        : markoScriptLang,
       runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
         ?.markoTypesCode,
     });
