@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.5
+
+### Patch Changes
+
+- [#207](https://github.com/marko-js/language-server/pull/207) [`db71899`](https://github.com/marko-js/language-server/commit/db71899ba0f82dc5f2bbc6033cb0942e0143b09e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with untitled files causing errors in the language server.
+
 ## 1.1.4
 
 ### Patch Changes
