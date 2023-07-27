@@ -61,7 +61,7 @@ For more information, visit ${color.blue(
   )}
 `);
 } else if (args["--version"]) {
-  const require = createRequire(__dirname);
+  const require = createRequire(__filename);
   const getPackageVersion = (id: string) => {
     try {
       return `${id} v${require(`${id}/package.json`).version}`;
