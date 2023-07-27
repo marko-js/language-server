@@ -5,7 +5,7 @@ import { createRequire } from "module";
 import { fileURLToPath } from "url";
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(thisDir, "dist");
-const require = createRequire(thisDir);
+const require = createRequire(import.meta.url);
 const isProd = process.env.NODE_ENV === "production";
 
 await Promise.all([

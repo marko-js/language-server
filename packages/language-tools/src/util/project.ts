@@ -238,20 +238,8 @@ function getMeta(dir?: string): Meta {
 function loadMeta(dir: string): Meta {
   let cached = metaByDir.get(dir);
   if (!cached) {
-    let require = createRequire(dir);
-    let configPath: string;
-
-    try {
-      // Try loading compiler directly.
-      configPath = require.resolve("@marko/compiler/config");
-    } catch {
-      // Fallback to checking if compiler is a installed relative to the Marko package.
-      require = createRequire(
-        path.dirname(require.resolve("marko/package.json"))
-      );
-      configPath = require.resolve("@marko/compiler/config");
-    }
-
+    const require = createRequire(path.join(dir, "_.js"));
+    const configPath: string = require.resolve("@marko/compiler/config");
     cached = metaByCompiler.get(configPath);
 
     if (!cached) {
