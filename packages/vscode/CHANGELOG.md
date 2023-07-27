@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.1.7
+
+### Patch Changes
+
+- [#209](https://github.com/marko-js/language-server/pull/209) [`dbcee5a`](https://github.com/marko-js/language-server/commit/dbcee5a387bcb58cad93624ec7f3982b27fc093a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- [#209](https://github.com/marko-js/language-server/pull/209) [`374392e`](https://github.com/marko-js/language-server/commit/374392e78f82671c065426726ff420e90ddf6148) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where directory names instead of file names were being passed to `createRequire` causing some lookups to be one directory too high and missing resolving installed modules.
+
+- [#209](https://github.com/marko-js/language-server/pull/209) [`5b371ff`](https://github.com/marko-js/language-server/commit/5b371ffa26cf691bbb8dbda77319ef9d6cfca9cb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where default compiler config was not being set properly.
+
 ## 1.1.6
 
 ### Patch Changes
