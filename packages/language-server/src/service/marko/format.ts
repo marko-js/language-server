@@ -16,8 +16,6 @@ export const format: Plugin["format"] = async (doc, params, cancel) => {
     const options: prettier.Options = {
       parser: "marko",
       filepath,
-      markoCompiler: Project.getCompiler(dir),
-      markoCompilerConfig: Project.getConfig(dir),
       plugins: [markoPrettier],
       tabWidth: params.options.tabSize,
       useTabs: params.options.insertSpaces === false,
@@ -31,6 +29,8 @@ export const format: Plugin["format"] = async (doc, params, cancel) => {
     };
 
     if (cancel.isCancellationRequested) return;
+
+    markoPrettier.setCompiler(Project.getCompiler(dir), Project.getConfig(dir));
 
     // TODO: format selection
     const ret = [
