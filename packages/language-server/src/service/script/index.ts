@@ -588,25 +588,40 @@ function docLocationAtTextSpan(
   };
 }
 
+function getTSConfigFile(fileName: string) {
+  let configFile: string | undefined;
+  const docFsDir = path.dirname(fileName);
+  const cache = Project.getCache(docFsDir);
+  let configFileCache = cache.get(getTSConfigFile) as
+    | Map<string, string | undefined>
+    | undefined;
+
+  if (configFileCache) {
+    configFile = configFileCache.get(docFsDir);
+  } else {
+    configFileCache = new Map();
+    cache.set(getTSConfigFile, configFileCache);
+  }
+
+  if (!configFile) {
+    configFile =
+      ts.findConfigFile(fileName, ts.sys.fileExists, "tsconfig.json") ||
+      ts.findConfigFile(fileName, ts.sys.fileExists, "jsconfig.json");
+  }
+
+  configFileCache.set(docFsDir, configFile);
+
+  return configFile;
+}
+
 function getTSProject(docFsPath: string): TSProject {
   let configFile: string | undefined;
   let markoScriptLang = ScriptLang.js;
 
   if (docFsPath) {
-    configFile = ts.findConfigFile(
-      docFsPath,
-      ts.sys.fileExists,
-      "tsconfig.json"
-    );
-
-    if (configFile) {
+    configFile = getTSConfigFile(docFsPath);
+    if (configFile?.endsWith("tsconfig.json")) {
       markoScriptLang = ScriptLang.ts;
-    } else {
-      configFile = ts.findConfigFile(
-        docFsPath,
-        ts.sys.fileExists,
-        "jsconfig.json"
-      );
     }
   }
 
@@ -728,7 +743,12 @@ function getTSProject(docFsPath: string): TSProject {
         const result = new Set(potentialGlobalFiles);
         for (const doc of documents.getAllOpen()) {
           const { scheme, fsPath } = URI.parse(doc.uri);
-          if (scheme === "file") result.add(fsPath);
+          if (scheme === "file") {
+            const projectForFile = getTSProject(fsPath);
+            if (projectForFile === tsProject) {
+              result.add(fsPath);
+            }
+          }
         }
 
         return [...result];
