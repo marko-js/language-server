@@ -84,11 +84,11 @@
     "@marko/language-server": "^1.1.6",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@types/vscode": "^1.80.0",
-    "@vscode/test-electron": "^2.3.3",
-    "@vscode/vsce": "^2.19.0",
-    "ovsx": "^0.8.2",
-    "tsx": "^3.12.7",
-    "vscode-languageclient": "^8.1.0"
+    "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^2.21.0",
+    "ovsx": "^0.8.3",
+    "tsx": "^3.13.0",
+    "vscode-languageclient": "^9.0.1"
   },
   "displayName": "Marko VSCode",
   "engines": {

@@ -31,8 +31,7 @@ ${rules
   )
   .join("\n\n");
 
-fs.writeFile(
-  "./src/service/html/axe-rules/axe-rules.ts".split("/").join(path.sep),
-  contents.replaceAll(/<[^>]*>/g, "`$&`"),
-  () => {}
+fs.writeFileSync(
+  path.join(__dirname, "axe-rules.ts"),
+  contents.replaceAll(/<[^>]*>/g, "`$&`")
 );

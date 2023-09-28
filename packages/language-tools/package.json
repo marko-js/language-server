@@ -7,21 +7,21 @@
     "@marko/compiler": "^5.28.4"
   },
   "dependencies": {
-    "@babel/helper-validator-identifier": "^7.22.5",
-    "@babel/parser": "^7.22.7",
+    "@babel/helper-validator-identifier": "^7.22.20",
+    "@babel/parser": "^7.23.0",
     "htmljs-parser": "^5.5.0",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.22.5",
-    "@marko/compiler": "^5.31.2",
-    "@marko/translator-default": "^5.29.2",
-    "@types/babel__code-frame": "^7.0.3",
+    "@babel/code-frame": "^7.22.13",
+    "@marko/compiler": "^5.33.2",
+    "@marko/translator-default": "^5.31.3",
+    "@types/babel__code-frame": "^7.0.4",
     "@types/babel__helper-validator-identifier": "^7.15.0",
     "@typescript/vfs": "^1.5.0",
-    "marko": "^5.29.2",
+    "marko": "^5.31.10",
     "mitata": "^0.1.6",
-    "tsx": "^3.12.7"
+    "tsx": "^3.13.0"
   },
   "exports": {
     ".": {

@@ -92,10 +92,13 @@ class HTMLExtractor {
     });
     // [body or self-closing `/`]
     this.#extractor.write(">");
-    node.body?.forEach((child) => {
-      if (this.#visitNode(child)) hasDynamicBody = true;
-    });
-    this.#extractor.write(`</${node.nameText}>`);
+
+    if (!isVoidTag(node.nameText)) {
+      node.body?.forEach((child) => {
+        if (this.#visitNode(child)) hasDynamicBody = true;
+      });
+      this.#extractor.write(`</${node.nameText}>`);
+    }
 
     return { hasDynamicAttrs, hasDynamicBody };
   }
@@ -150,5 +153,27 @@ class HTMLExtractor {
         this.#extractor.write(`="dynamic${this.#dynamicAttrValueCounter++}"`);
         break;
     }
+  }
+}
+
+function isVoidTag(tagName: string | undefined) {
+  switch (tagName) {
+    case "area":
+    case "base":
+    case "br":
+    case "col":
+    case "embed":
+    case "hr":
+    case "img":
+    case "input":
+    case "link":
+    case "meta":
+    case "param":
+    case "source":
+    case "track":
+    case "wbr":
+      return true;
+    default:
+      return false;
   }
 }
