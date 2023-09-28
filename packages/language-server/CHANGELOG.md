@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.1.7
+
+### Patch Changes
+
+- [#212](https://github.com/marko-js/language-server/pull/212) [`5fbd91d`](https://github.com/marko-js/language-server/commit/5fbd91de84d331c945de4dd4dcd931c9769ff788) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - When considering if a Marko file should be parsed as typescript, it will now default to typescript for any file containing `tsconfig`. Previously this would exclusively match `tsconfig.json` which would fail with files like `tsconfig.build.json`.
+
+- [#214](https://github.com/marko-js/language-server/pull/214) [`97787c2`](https://github.com/marko-js/language-server/commit/97787c2be4d136e335664b0aa9252916125c6f63) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- Updated dependencies [[`5fbd91d`](https://github.com/marko-js/language-server/commit/5fbd91de84d331c945de4dd4dcd931c9769ff788), [`97787c2`](https://github.com/marko-js/language-server/commit/97787c2be4d136e335664b0aa9252916125c6f63)]:
+  - @marko/language-tools@2.1.5
+
 ## 1.1.6
 
 ### Patch Changes
