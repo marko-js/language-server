@@ -31,8 +31,8 @@ const rules = {
     aria.ariaAllowedAttr,
     aria.ariaAllowedRole,
     aria.ariaHiddenBody,
-    aria.ariaRoledescription,
     aria.ariaRoles,
+    aria.ariaDeprecatedRole,
     aria.presentationRoleConflict,
     forms.autocompleteValid,
     forms.formFieldMultipleLabels, // Could not find error state
@@ -44,8 +44,6 @@ const rules = {
     language.validLang,
     nameRoleValue.ariaHiddenFocus, // Could not find error state
     nameRoleValue.emptyHeading,
-    parsing.duplicateIdActive,
-    parsing.duplicateIdAria,
     parsing.marquee,
     semantics.identicalLinksSamePurpose, // Could not find error state
     semantics.landmarkNoDuplicateBanner,
@@ -67,6 +65,7 @@ const rules = {
    */
   requiresAttrs: [
     aria.ariaRequiredAttr,
+    aria.ariaProhibitedAttr,
     language.htmlHasLang,
     textAlternatives.areaAlt,
     textAlternatives.imageAlt,
@@ -85,7 +84,7 @@ const rules = {
     aria.ariaRequiredChildren,
     aria.ariaText,
     aria.ariaValidAttrValue,
-    aria.emptyTableHeader,
+    nameRoleValue.emptyTableHeader,
     keyboard.frameFocusableContent,
     keyboard.skipLink,
     nameRoleValue.ariaHiddenFocus,
@@ -99,7 +98,6 @@ const rules = {
     textAlternatives.frameTitleUnique,
     textAlternatives.frameTitle,
     textAlternatives.videoCaption,
-    timeAndMedia.audioCaption,
   ],
 
   /**
@@ -148,7 +146,7 @@ const rules = {
    * These rules should not be enforced to all users of
    * the official Marko language server.
    */
-  blacklist: [structure.frameTested, parsing.duplicateId],
+  blacklist: [structure.frameTested],
 
   /**
    * These are rules that cannot currently be validated, either
@@ -156,11 +154,13 @@ const rules = {
    * current implementation of the language server.
    */
   cannotValidate: [
+    parsing.duplicateIdAria,
     keyboard.scrollableRegionFocusable,
     semantics.pAsHeading,
     structure.avoidInlineSpacing,
     structure.cssOrientationLock,
     structure.hiddenContent,
+    sensoryAndVisualCues.targetSize,
   ],
 };
 

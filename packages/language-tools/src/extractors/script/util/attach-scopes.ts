@@ -158,10 +158,9 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
             parentScope.bindings ??= {};
 
             // TODO: should support member expression tag vars.
-            const parsedFn = scriptParser.expressionAt<t.AssignmentExpression>(
-              child.var.value.start - 6,
-              `${read(child.var.value)}=0`
-            );
+            const parsedFn = scriptParser.expressionAt<
+              t.AssignmentExpression & { left: t.LVal }
+            >(child.var.value.start - 6, `${read(child.var.value)}=0`);
 
             if (parsedFn) {
               const lVal = parsedFn.left;
@@ -607,7 +606,9 @@ function trackMutations(
       }
       break;
     case "ClassDeclaration":
-      trackShadows(node.id, scope, parentBlockShadows);
+      if (node.id) {
+        trackShadows(node.id, scope, parentBlockShadows);
+      }
 
       block = node.body;
       blockShadows = new Set(blockShadows);
