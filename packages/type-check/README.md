@@ -25,7 +25,6 @@ mtc [options]
 | ---------------- | ----- | ---------------------------------------------------------------------- | ---------------------------------- |
 | --project <path> | -p    | Path to the tsconfig or jsconfig file                                  | ./tsconfig.json or ./jsconfig.json |
 | --display <type> | -d    | Set the display type for error output. Choices: codeframe or condensed | codeframe                          |
-| --emit           | -e    | Emit .js, .d.ts, .marko (with types stripped), and .d.marko files      | false                              |
 | --help           | -h    | Display the help text                                                  |                                    |
 | --version        | -v    | Display the CLI version, Marko version, and TypeScript version         |                                    |
 
@@ -43,17 +42,11 @@ marko-type-check
 mtc -p ./jsconfig.json -d condensed
 ```
 
-### Run type check and emit output files:
-
-```
-marko-type-check -e
-```
-
 ## FAQ
 
-### What files are emitted with the `--emit` option?
+### What files are emitted?
 
-The `emit` option outputs files similar to the [`tsc` cli](https://www.typescriptlang.org/docs/handbook/compiler-options.html). Meaning `.js` and `.d.ts` files will be output. Beyond that `.marko` files _with their types stripped_ and an associated `.d.marko` file will be output that serve a similar purpose to the `.js` and `.d.ts` files.
+Outputs files are similar to the [`tsc` cli in build mode](https://www.typescriptlang.org/docs/handbook/project-references.html). Meaning `.js` and `.d.ts` files will be output (depending on your project config). Beyond that `.marko` files _with their types stripped_ and an associated `.d.marko` file will be output that serve a similar purpose to the `.js` and `.d.ts` files.
 
 ### What is a `.d.marko` file?
 

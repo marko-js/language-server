@@ -11,12 +11,10 @@ const args = arg(
   {
     "--project": String,
     "--display": String,
-    "--emit": Boolean,
     "--help": Boolean,
     "--version": Boolean,
     "-p": "--project",
     "-d": "--display",
-    "-e": "--emit",
     "-h": "--help",
     "-v": "--version",
   },
@@ -42,11 +40,6 @@ ${color.bold("Options:")}
   )}       Set the display type for error output. Choices: ${color.green(
     `"codeframe"`
   )} or ${color.green(`"condensed"`)} (default: ${color.green(`"codeframe"`)})
-  ${color.yellow(
-    "-e, --emit"
-  )}                 Emit .js, .d.ts, .marko (with types stripped), and .d.marko files (default: ${color.magenta(
-    "false"
-  )})
   ${color.yellow(
     "-v, --version"
   )}              Display the CLI version, Marko version, and TypeScript version
@@ -78,7 +71,6 @@ For more information, visit ${color.blue(
   );
 } else {
   const {
-    "--emit": emit,
     "--display": display = process.env.CI
       ? Display.condensed
       : Display.codeframe,
@@ -93,7 +85,7 @@ For more information, visit ${color.blue(
   }
 
   checkDisplay(display);
-  run({ project, display, emit });
+  run({ project, display });
 }
 
 function checkDisplay(
