@@ -1,8 +1,8 @@
 // TODO:
-// * Support a non verbose output for ci
 // * Add a `--watch` option?
 
 import path from "path";
+import crypto from "crypto";
 import ts from "typescript/lib/tsserverlibrary";
 import color from "kleur";
 import { codeFrameColumns } from "@babel/code-frame";
@@ -28,11 +28,13 @@ export interface Options {
 interface Report {
   out: string[];
   display: Exclude<Options["display"], undefined>;
-  hasErrors: boolean;
   formatSettings: Required<ts.FormatCodeSettings>;
 }
 
 const currentDirectory = ts.sys.getCurrentDirectory();
+const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
+  ? (fileName: string) => fileName
+  : (fileName: string) => fileName.toLowerCase();
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const extractCache = new WeakMap<
@@ -41,74 +43,263 @@ const extractCache = new WeakMap<
 >();
 const requiredTSCompilerOptions: ts.CompilerOptions = {
   allowJs: true,
+  composite: true,
+  incremental: true,
   declaration: true,
   skipLibCheck: true,
   isolatedModules: true,
   allowNonTsExtensions: true,
 };
-const requiredTSCompilerOptionsEmit: ts.CompilerOptions = {
-  ...requiredTSCompilerOptions,
-  noEmit: false,
-  declaration: true,
-  emitDeclarationOnly: false,
-};
-const requiredTSCompilerOptionsNoEmit: ts.CompilerOptions = {
-  ...requiredTSCompilerOptions,
-  noEmit: true,
-  declaration: false,
-  emitDeclarationOnly: false,
-};
-
-const defaultTSConfig = {
-  include: [],
-  compilerOptions: {
-    lib: ["dom", "node", "esnext"],
-  } satisfies ts.CompilerOptions,
-};
 
 export default function run(opts: Options) {
   const {
-    emit = false,
     display = Display.codeframe,
-    project: configFile = findConfigFile("tsconfig.json") ||
-      findConfigFile("jsconfig.json"),
+    project: configFile = findRootConfigFile("tsconfig.json") ||
+      findRootConfigFile("jsconfig.json"),
   } = opts;
 
   if (!configFile)
     throw new Error("Could not find tsconfig.json or jsconfig.json");
 
-  const { host, parsedCommandLine, getProcessor } = createCompilerHost(
-    configFile,
-    emit ? requiredTSCompilerOptionsEmit : requiredTSCompilerOptionsNoEmit
-  );
   const formatSettings = ts.getDefaultFormatCodeSettings(
-    host.getNewLine?.() || ts.sys.newLine
+    ts.sys.newLine
   ) as Required<ts.FormatCodeSettings>;
   const report: Report = {
     out: [],
     display,
-    hasErrors: false,
     formatSettings,
   };
-  const program = ts.createProgram({
-    host,
-    options: parsedCommandLine.options,
-    rootNames: parsedCommandLine.fileNames,
-    projectReferences: parsedCommandLine.projectReferences,
-  });
+  const extraExtensions = Processors.extensions.map((extension) => ({
+    extension,
+    isMixedContent: false,
+    scriptKind: ts.ScriptKind.Deferred,
+  }));
 
-  reportDiagnostics(report, ts.getPreEmitDiagnostics(program));
+  const solutionHost = ts.createSolutionBuilderHost(
+    undefined,
+    (
+      rootNames,
+      options,
+      compilerHost,
+      oldProgram,
+      configFileParsingDiagnostics,
+      projectReferences
+    ) => {
+      if (!compilerHost) {
+        throw new Error("Expected compilerHost to be provided.");
+      }
+      const resolutionCache = ts.createModuleResolutionCache(
+        currentDirectory,
+        getCanonicalFileName,
+        options
+      );
 
-  if (!report.hasErrors) {
-    const typeChecker = program.getTypeChecker();
-    const printer = ts.createPrinter({
-      noEmitHelpers: true,
-      removeComments: true,
-    });
-    const emitResult = program.emit(
-      undefined,
-      emit
-        ? (fileName, _text, writeByteOrderMark, onError, sourceFiles, data) => {
+      const { readDirectory = ts.sys.readDirectory } = compilerHost;
+      compilerHost.readDirectory = (
+        path,
+        extensions,
+        exclude,
+        include,
+        depth
+      ) =>
+        readDirectory(
+          path,
+          extensions?.concat(Processors.extensions),
+          exclude,
+          include,
+          depth
+        );
+
+      compilerHost.resolveModuleNameLiterals = (
+        moduleLiterals,
+        containingFile,
+        redirectedReference,
+        options,
+        _containingSourceFile,
+        _reusedNames
+      ) => {
+        let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
+        let resolvedModules:
+          | undefined
+          | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
+
+        for (let i = 0; i < moduleLiterals.length; i++) {
+          const moduleLiteral = moduleLiterals[i];
+          const moduleName = moduleLiteral.text;
+          const processor =
+            moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
+          if (processor) {
+            let isExternalLibraryImport = false;
+            let resolvedFileName: string | undefined;
+            if (fsPathReg.test(moduleName)) {
+              // For fs paths just see if it exists on disk.
+              resolvedFileName = path.resolve(containingFile, "..", moduleName);
+            } else {
+              // For other paths we treat it as a node_module and try resolving
+              // that modules `marko.json`. If the `marko.json` exists then we'll
+              // try resolving the `.marko` file relative to that.
+              const [, nodeModuleName, relativeModulePath] =
+                modulePartsReg.exec(moduleName)!;
+              const { resolvedModule } = ts.nodeModuleNameResolver(
+                `${nodeModuleName}/package.json`,
+                containingFile,
+                options,
+                compilerHost,
+                resolutionCache,
+                redirectedReference
+              );
+
+              if (resolvedModule) {
+                isExternalLibraryImport = true;
+                resolvedFileName = path.join(
+                  resolvedModule.resolvedFileName,
+                  "..",
+                  relativeModulePath
+                );
+              }
+            }
+
+            if (!resolvedModules) {
+              resolvedModules = [];
+              normalModuleLiterals = [];
+              for (let j = 0; j < i; j++) {
+                resolvedModules.push(undefined);
+                normalModuleLiterals.push(moduleLiterals[j]);
+              }
+            }
+
+            if (resolvedFileName) {
+              if (isDefinitionFile(resolvedFileName)) {
+                if (!compilerHost.fileExists(resolvedFileName)) {
+                  resolvedFileName = undefined;
+                }
+              } else {
+                const ext = getExt(resolvedFileName)!;
+                const definitionFile = `${resolvedFileName.slice(
+                  0,
+                  -ext.length
+                )}.d${ext}`;
+                if (compilerHost.fileExists(definitionFile)) {
+                  resolvedFileName = definitionFile;
+                } else if (!compilerHost.fileExists(resolvedFileName)) {
+                  resolvedFileName = undefined;
+                }
+              }
+            }
+
+            resolvedModules.push({
+              resolvedModule: resolvedFileName
+                ? {
+                    resolvedFileName,
+                    extension: processor.getScriptExtension(resolvedFileName),
+                    isExternalLibraryImport,
+                  }
+                : undefined,
+            });
+          } else if (resolvedModules) {
+            resolvedModules.push(undefined);
+            normalModuleLiterals.push(moduleLiteral);
+          }
+        }
+
+        const normalResolvedModules = normalModuleLiterals.length
+          ? normalModuleLiterals.map((moduleLiteral) => {
+              return ts.bundlerModuleNameResolver(
+                moduleLiteral.text,
+                containingFile,
+                options,
+                compilerHost,
+                resolutionCache,
+                redirectedReference
+              );
+            })
+          : undefined;
+
+        if (resolvedModules) {
+          if (normalResolvedModules) {
+            for (let i = 0, j = 0; i < resolvedModules.length; i++) {
+              if (!resolvedModules[i]) {
+                resolvedModules[i] = normalResolvedModules[j++];
+              }
+            }
+          }
+          return resolvedModules as readonly ts.ResolvedModuleWithFailedLookupLocations[];
+        } else {
+          return normalResolvedModules!;
+        }
+      };
+
+      const getSourceFile = compilerHost.getSourceFile.bind(compilerHost);
+      compilerHost.getSourceFile = (
+        fileName,
+        languageVersion,
+        onError,
+        shouldCreateNewSourceFile
+      ) => {
+        const processor = getProcessor(fileName);
+        const code = compilerHost.readFile(fileName);
+        if (code !== undefined) {
+          if (processor) {
+            const extracted = processor.extract(fileName, code);
+            const extractedCode = extracted.toString();
+            const sourceFile = ts.createSourceFile(
+              fileName,
+              extractedCode,
+              languageVersion,
+              true,
+              processor.getScriptKind(fileName)
+            );
+
+            (sourceFile as any).version = crypto
+              .createHash("md5")
+              .update(extractedCode)
+              .digest("hex");
+            extractCache.set(sourceFile, extracted);
+            return sourceFile;
+          }
+
+          return getSourceFile(
+            fileName,
+            languageVersion,
+            onError,
+            shouldCreateNewSourceFile
+          );
+        }
+      };
+
+      const builderProgram = ts.createEmitAndSemanticDiagnosticsBuilderProgram(
+        rootNames,
+        options,
+        compilerHost,
+        oldProgram,
+        configFileParsingDiagnostics,
+        projectReferences
+      );
+
+      const program = builderProgram.getProgram();
+      const builderEmit = builderProgram.emit.bind(builderProgram);
+      builderProgram.emit = (
+        targetSourceFile,
+        _writeFile,
+        cancellationToken,
+        emitOnlyDtsFiles,
+        customTransformers
+      ) => {
+        let writeFile = _writeFile;
+        if (_writeFile) {
+          const typeChecker = program.getTypeChecker();
+          const printer = ts.createPrinter({
+            noEmitHelpers: true,
+            removeComments: true,
+          });
+          writeFile = (
+            fileName,
+            _text,
+            writeByteOrderMark,
+            onError,
+            sourceFiles,
+            data
+          ) => {
             const processor =
               (sourceFiles?.length === 1 &&
                 getProcessor(sourceFiles[0].fileName)) ||
@@ -126,7 +317,13 @@ export default function run(opts: Options) {
                 : undefined;
 
               if (!inExt) {
-                throw new Error("Unexpected file extension: " + fileName);
+                const msg = `Unexpected file extension: ${fileName}`;
+                if (onError) {
+                  onError(msg);
+                  return;
+                }
+
+                throw new Error(msg);
               }
 
               const isDts = inExt === inDtsExt;
@@ -162,10 +359,10 @@ export default function run(opts: Options) {
                 printer,
                 typeChecker,
                 sourceFile,
-                formatSettings,
+                formatSettings: report.formatSettings,
               };
 
-              host.writeFile(
+              _writeFile(
                 outFileName,
                 isDts
                   ? processor.printTypes(printContext).code
@@ -176,7 +373,7 @@ export default function run(opts: Options) {
                 data
               );
             } else {
-              host.writeFile(
+              _writeFile(
                 fileName,
                 _text,
                 writeByteOrderMark,
@@ -185,327 +382,131 @@ export default function run(opts: Options) {
                 data
               );
             }
-          }
-        : undefined,
-      undefined,
-      false
-    );
+          };
+        }
 
-    reportDiagnostics(report, emitResult.diagnostics);
-  }
+        return builderEmit(
+          targetSourceFile,
+          writeFile,
+          cancellationToken,
+          emitOnlyDtsFiles,
+          customTransformers
+        );
+      };
 
-  const lineSep =
-    report.formatSettings.newLineCharacter +
-    report.formatSettings.newLineCharacter;
-  console.log(report.out.join(lineSep));
-  process.exitCode = report.hasErrors ? 1 : 0;
-}
-
-function createCompilerHost(
-  configFile: string,
-  compilerOptions: ts.CompilerOptions
-) {
-  // const processors: Record<keyof Processors, Processor> = {};
+      return builderProgram;
+    },
+    (diag) => reportDiagnostic(report, diag)
+  );
+  const processors = Processors.create({
+    ts,
+    configFile,
+    host: solutionHost,
+  });
   const getProcessor = (fileName: string) => {
     const ext = getExt(fileName);
     return ext ? processors[ext] : undefined;
   };
-  const resolveModuleNameLiterals: Exclude<
-    ts.CompilerHost["resolveModuleNameLiterals"],
-    undefined
-  > = (
-    moduleLiterals,
-    containingFile,
-    redirectedReference,
-    options,
-    _containingSourceFile,
-    _reusedNames
-  ) => {
-    return moduleLiterals.map((moduleLiteral) => {
-      return ts.bundlerModuleNameResolver(
-        moduleLiteral.text,
-        containingFile,
-        options,
-        host,
-        resolutionCache,
-        redirectedReference
-      );
-    });
+
+  solutionHost.getParsedCommandLine = (fileName) => {
+    const parsedCommandLine = ts.getParsedCommandLineOfConfigFile(
+      fileName,
+      requiredTSCompilerOptions,
+      {
+        ...ts.sys,
+        onUnRecoverableConfigFileDiagnostic(diag) {
+          reportDiagnostic(report, diag);
+        },
+      },
+      undefined,
+      undefined,
+      extraExtensions
+    );
+    if (!parsedCommandLine) return;
+
+    const finalRootNames = new Set(parsedCommandLine.fileNames);
+    for (const name in processors) {
+      const rootNames =
+        processors[name as keyof typeof processors].getRootNames?.();
+      if (rootNames) {
+        for (const rootName of rootNames) {
+          finalRootNames.add(rootName);
+        }
+      }
+    }
+
+    parsedCommandLine.fileNames = [...finalRootNames];
+    return parsedCommandLine;
   };
 
-  const parsedCommandLine = ts.parseJsonConfigFileContent(
-    (configFile && ts.readConfigFile(configFile, ts.sys.readFile).config) ||
-      defaultTSConfig,
-    ts.sys,
-    currentDirectory,
-    compilerOptions,
-    configFile,
-    undefined,
-    Processors.extensions.map((extension) => ({
-      extension,
-      isMixedContent: false,
-      scriptKind: ts.ScriptKind.Deferred,
-    }))
+  process.exitCode = ts
+    .createSolutionBuilder(solutionHost, [configFile], {})
+    .build();
+  console.log(
+    report.out.join(
+      report.formatSettings.newLineCharacter +
+        report.formatSettings.newLineCharacter
+    )
   );
-
-  const host: ts.CompilerHost = {
-    getDefaultLibFileName: ts.getDefaultLibFilePath,
-    writeFile: ts.sys.writeFile,
-    getCurrentDirectory: ts.sys.getCurrentDirectory,
-    getDirectories: ts.sys.getDirectories,
-    getCanonicalFileName: (fileName) =>
-      ts.sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase(),
-    getNewLine: () => ts.sys.newLine,
-    useCaseSensitiveFileNames: () => ts.sys.useCaseSensitiveFileNames,
-    fileExists: ts.sys.fileExists,
-    readFile: ts.sys.readFile,
-    readDirectory: (path, extensions, exclude, include, depth) =>
-      ts.sys.readDirectory(
-        path,
-        extensions?.concat(Processors.extensions),
-        exclude,
-        include,
-        depth
-      ),
-    resolveModuleNameLiterals(
-      moduleLiterals,
-      containingFile,
-      redirectedReference,
-      options,
-      containingSourceFile,
-      reusedNames
-    ) {
-      let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
-      let resolvedModules:
-        | undefined
-        | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
-
-      for (let i = 0; i < moduleLiterals.length; i++) {
-        const moduleLiteral = moduleLiterals[i];
-        const moduleName = moduleLiteral.text;
-        const processor =
-          moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
-        if (processor) {
-          let isExternalLibraryImport = false;
-          let resolvedFileName: string | undefined;
-          if (fsPathReg.test(moduleName)) {
-            // For fs paths just see if it exists on disk.
-            resolvedFileName = path.resolve(containingFile, "..", moduleName);
-          } else {
-            // For other paths we treat it as a node_module and try resolving
-            // that modules `marko.json`. If the `marko.json` exists then we'll
-            // try resolving the `.marko` file relative to that.
-            const [, nodeModuleName, relativeModulePath] =
-              modulePartsReg.exec(moduleName)!;
-            const { resolvedModule } = ts.nodeModuleNameResolver(
-              `${nodeModuleName}/package.json`,
-              containingFile,
-              options,
-              host,
-              resolutionCache,
-              redirectedReference
-            );
-
-            if (resolvedModule) {
-              isExternalLibraryImport = true;
-              resolvedFileName = path.join(
-                resolvedModule.resolvedFileName,
-                "..",
-                relativeModulePath
-              );
-            }
-          }
-
-          if (!resolvedModules) {
-            resolvedModules = [];
-            normalModuleLiterals = [];
-            for (let j = 0; j < i; j++) {
-              resolvedModules.push(undefined);
-              normalModuleLiterals.push(moduleLiterals[j]);
-            }
-          }
-
-          if (resolvedFileName) {
-            if (isDefinitionFile(resolvedFileName)) {
-              if (!host.fileExists(resolvedFileName)) {
-                resolvedFileName = undefined;
-              }
-            } else {
-              const ext = getExt(resolvedFileName)!;
-              const definitionFile = `${resolvedFileName.slice(
-                0,
-                -ext.length
-              )}.d${ext}`;
-              if (host.fileExists(definitionFile)) {
-                resolvedFileName = definitionFile;
-              } else if (!host.fileExists(resolvedFileName)) {
-                resolvedFileName = undefined;
-              }
-            }
-          }
-
-          resolvedModules.push({
-            resolvedModule: resolvedFileName
-              ? {
-                  resolvedFileName,
-                  extension: processor.getScriptExtension(resolvedFileName),
-                  isExternalLibraryImport,
-                }
-              : undefined,
-          });
-        } else if (resolvedModules) {
-          resolvedModules.push(undefined);
-          normalModuleLiterals.push(moduleLiteral);
-        }
-      }
-
-      const normalResolvedModules = normalModuleLiterals.length
-        ? resolveModuleNameLiterals(
-            normalModuleLiterals,
-            containingFile,
-            redirectedReference,
-            options,
-            containingSourceFile,
-            reusedNames
-          )
-        : undefined;
-
-      if (resolvedModules) {
-        if (normalResolvedModules) {
-          for (let i = 0, j = 0; i < resolvedModules.length; i++) {
-            if (!resolvedModules[i]) {
-              resolvedModules[i] = normalResolvedModules[j++];
-            }
-          }
-        }
-        return resolvedModules as readonly ts.ResolvedModuleWithFailedLookupLocations[];
-      } else {
-        return normalResolvedModules!;
-      }
-    },
-    getSourceFile: (fileName, languageVersion) => {
-      const processor = getProcessor(fileName);
-      const code = host.readFile(fileName);
-      if (code !== undefined) {
-        if (processor) {
-          const extracted = processor.extract(fileName, code);
-          const sourceFile = ts.createSourceFile(
-            fileName,
-            extracted.toString(),
-            languageVersion,
-            true,
-            processor.getScriptKind(fileName)
-          );
-
-          extractCache.set(sourceFile, extracted);
-          return sourceFile;
-        }
-
-        return ts.createSourceFile(fileName, code, languageVersion, true);
-      }
-    },
-  };
-
-  const resolutionCache = ts.createModuleResolutionCache(
-    currentDirectory,
-    host.getCanonicalFileName,
-    parsedCommandLine.options
-  );
-
-  const processors = Processors.create({
-    ts,
-    host,
-    configFile,
-  });
-
-  parsedCommandLine.fileNames = [
-    ...new Set(
-      parsedCommandLine.fileNames.concat(
-        Object.values(processors)
-          .map((processor) => processor.getRootNames?.())
-          .flat()
-          .filter(Boolean) as string[]
-      )
-    ),
-  ];
-
-  return {
-    host,
-    parsedCommandLine,
-    getProcessor,
-  };
 }
 
-function reportDiagnostics(report: Report, diags: readonly ts.Diagnostic[]) {
-  for (const diag of diags) {
-    if (diag.file && diag.start !== undefined) {
-      const extracted = extractCache.get(diag.file);
-      let code = diag.file.text;
-      let loc: Location | void;
+function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
+  if (diag.file && diag.start !== undefined) {
+    const extracted = extractCache.get(diag.file);
+    let code = diag.file.text;
+    let loc: Location | void;
 
-      if (extracted) {
-        loc = extracted.sourceLocationAt(
-          diag.start,
-          diag.start + (diag.length || 0)
-        );
-        code = extracted.parsed.code;
+    if (extracted) {
+      loc = extracted.sourceLocationAt(
+        diag.start,
+        diag.start + (diag.length || 0)
+      );
+      code = extracted.parsed.code;
 
-        if (!loc) continue; // Ignore diagnostics that are outside of the extracted code.
-      } else {
-        const start = ts.getLineAndCharacterOfPosition(diag.file, diag.start);
-        const end = diag.length
-          ? ts.getLineAndCharacterOfPosition(
-              diag.file,
-              diag.start + diag.length
-            )
-          : start;
-        loc = {
-          start,
-          end,
-        };
-      }
+      if (!loc) return; // Ignore diagnostics that are outside of the extracted code.
+    } else {
+      const start = ts.getLineAndCharacterOfPosition(diag.file, diag.start);
+      const end = diag.length
+        ? ts.getLineAndCharacterOfPosition(diag.file, diag.start + diag.length)
+        : start;
+      loc = {
+        start,
+        end,
+      };
+    }
 
-      if (diag.category === ts.DiagnosticCategory.Error) {
-        report.hasErrors = true;
-      }
+    const diagMessage = flattenDiagnosticMessage(
+      diag.messageText,
+      report.display,
+      report.formatSettings.newLineCharacter
+    );
 
-      const diagMessage = flattenDiagnosticMessage(
+    report.out.push(
+      `${color.cyan(
+        path.relative(currentDirectory, diag.file.fileName)
+      )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
+        loc.start.character + 1
+      )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
+        `TS${diag.code}`
+      )}${report.formatSettings.newLineCharacter}${
+        report.display === Display.codeframe
+          ? report.formatSettings.newLineCharacter +
+            formatCodeFrameMessage(code, loc, diagMessage)
+          : diagMessage
+      }`
+    );
+  } else {
+    report.out.push(
+      flattenDiagnosticMessage(
         diag.messageText,
         report.display,
         report.formatSettings.newLineCharacter
-      );
+      )
+    );
+  }
 
-      report.out.push(
-        `${color.cyan(
-          path.relative(currentDirectory, diag.file.fileName)
-        )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
-          loc.start.character + 1
-        )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
-          `TS${diag.code}`
-        )}${report.formatSettings.newLineCharacter}${
-          report.display === Display.codeframe
-            ? report.formatSettings.newLineCharacter +
-              formatCodeFrameMessage(code, loc, diagMessage)
-            : diagMessage
-        }`
-      );
-    } else {
-      if (diag.category === ts.DiagnosticCategory.Error) {
-        report.hasErrors = true;
-      }
-
-      report.out.push(
-        flattenDiagnosticMessage(
-          diag.messageText,
-          report.display,
-          report.formatSettings.newLineCharacter
-        )
-      );
-    }
-
-    if (diag.relatedInformation && report.display === Display.codeframe) {
-      reportRelatedDiagnostics(report, diag.relatedInformation);
-    }
+  if (diag.relatedInformation && report.display === Display.codeframe) {
+    reportRelatedDiagnostics(report, diag.relatedInformation);
   }
 }
 
@@ -514,55 +515,7 @@ function reportRelatedDiagnostics(
   diags: readonly ts.DiagnosticRelatedInformation[]
 ) {
   for (const diag of diags) {
-    if (diag.file && diag.start) {
-      const extracted = extractCache.get(diag.file);
-      let code = diag.file.text;
-      let loc: Location | void;
-
-      if (extracted) {
-        loc = extracted.sourceLocationAt(
-          diag.start,
-          diag.start + (diag.length || 0)
-        );
-        code = extracted.parsed.code;
-      } else {
-        const start = ts.getLineAndCharacterOfPosition(diag.file, diag.start);
-        const end = diag.length
-          ? ts.getLineAndCharacterOfPosition(
-              diag.file,
-              diag.start + diag.length
-            )
-          : start;
-        loc = {
-          start,
-          end,
-        };
-      }
-
-      if (loc) {
-        report.out.push(
-          formatCodeFrameMessage(
-            code,
-            loc,
-            `${flattenDiagnosticMessage(
-              diag.messageText,
-              report.display,
-              report.formatSettings.newLineCharacter
-            )} @ ${path.relative(currentDirectory, diag.file.fileName)}:${
-              loc.start.line + 1
-            }:${loc.start.character + 1}`
-          )
-        );
-      }
-    } else {
-      report.out.push(
-        flattenDiagnosticMessage(
-          diag.messageText,
-          report.display,
-          report.formatSettings.newLineCharacter
-        )
-      );
-    }
+    reportDiagnostic(report, diag);
   }
 }
 
@@ -615,6 +568,6 @@ function coloredDiagnosticCategory(category: ts.DiagnosticCategory) {
   }
 }
 
-function findConfigFile(name: string) {
+function findRootConfigFile(name: string) {
   return ts.findConfigFile(currentDirectory, ts.sys.fileExists, name);
 }

@@ -13,7 +13,7 @@ export default {
       ? host.getCurrentDirectory()
       : ts.sys.getCurrentDirectory();
     const defaultScriptLang =
-      configFile && /tsconfig.json$/.test(configFile)
+      configFile && /tsconfig/g.test(configFile)
         ? ScriptLang.ts
         : ScriptLang.js;
     const runtimeTypes = Project.getTypeLibs(currentDirectory, ts, host);
