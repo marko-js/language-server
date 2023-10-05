@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 1.0.1
+
+### Patch Changes
+
+- [#216](https://github.com/marko-js/language-server/pull/216) [`dba9915`](https://github.com/marko-js/language-server/commit/dba9915e98b8d1c0eac3b23653886e67e4898fea) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure mtc only gives a non zero status code when an error is reported (not ignored errors).
+
 ## 1.0.0
 
 ### Major Changes
