@@ -27,6 +27,7 @@ export interface Options {
 
 interface Report {
   out: string[];
+  hasErrors: boolean;
   display: Exclude<Options["display"], undefined>;
   formatSettings: Required<ts.FormatCodeSettings>;
 }
@@ -68,6 +69,7 @@ export default function run(opts: Options) {
     out: [],
     display,
     formatSettings,
+    hasErrors: false,
   };
   const extraExtensions = Processors.extensions.map((extension) => ({
     extension,
@@ -439,9 +441,8 @@ export default function run(opts: Options) {
     return parsedCommandLine;
   };
 
-  process.exitCode = ts
-    .createSolutionBuilder(solutionHost, [configFile], {})
-    .build();
+  ts.createSolutionBuilder(solutionHost, [configFile], {}).build();
+  process.exitCode = report.hasErrors ? 1 : 0;
   console.log(
     report.out.join(
       report.formatSettings.newLineCharacter +
@@ -503,6 +504,10 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
         report.formatSettings.newLineCharacter
       )
     );
+  }
+
+  if (!report.hasErrors && diag.category === ts.DiagnosticCategory.Error) {
+    report.hasErrors = true;
   }
 
   if (diag.relatedInformation && report.display === Display.codeframe) {
