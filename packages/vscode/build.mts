@@ -46,9 +46,15 @@ await Promise.all([
     format: "cjs",
     outdir: "dist",
     outbase: "src",
-    platform: "node",
+    platform: "node", 
     target: ["node16"],
     sourcemap: "linked",
+    define: {
+      "import.meta.url": "_importMetaUrl"
+    },
+    banner: {
+      js: "const _importMetaUrl = require('url').pathToFileURL(__filename);"
+    },
     entryPoints: [
       "src/index.ts",
       "src/server.ts",
