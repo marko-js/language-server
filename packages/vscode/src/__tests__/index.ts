@@ -17,7 +17,7 @@ export async function run() {
     path.resolve(__dirname, "../../src/__tests__/**/*.test.ts"),
     {
       absolute: true,
-    }
+    },
   ) as AsyncIterable<string>;
 
   for await (const file of files) {
@@ -25,6 +25,6 @@ export async function run() {
   }
 
   await new Promise<void>((resolve, reject) =>
-    mocha.run((failures) => (failures ? reject() : resolve()))
+    mocha.run((failures) => (failures ? reject() : resolve())),
   );
 }

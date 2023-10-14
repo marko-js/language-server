@@ -17,7 +17,7 @@ describe("document highlight", () => {
   .test {
     display: none;
   }
-}`
+}`,
         ),
       `[
   {
@@ -31,7 +31,7 @@ describe("document highlight", () => {
     value: '.test'
   },
   [length]: 2
-]`
+]`,
     );
   });
 });

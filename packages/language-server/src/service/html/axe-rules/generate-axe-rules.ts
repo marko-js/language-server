@@ -24,14 +24,14 @@ ${rules
    * - ${rule.description}
    * - ${rule.help} ([url](${rule.helpUrl}))
    */
-  ${kebabToCamelCase(rule.ruleId)}: "${rule.ruleId}",`
+  ${kebabToCamelCase(rule.ruleId)}: "${rule.ruleId}",`,
   )
   .join("\n")}
-};`
+};`,
   )
   .join("\n\n");
 
 fs.writeFileSync(
   path.join(__dirname, "axe-rules.ts"),
-  contents.replaceAll(/<[^>]*>/g, "`$&`")
+  contents.replaceAll(/<[^>]*>/g, "`$&`"),
 );

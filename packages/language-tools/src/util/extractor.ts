@@ -69,7 +69,11 @@ export class Extracted {
   #sourceToGenerated: SourceToGeneratedView | typeof emptyView;
   #generatedToSource: GeneratedToSourceView | typeof emptyView;
   #cachedGeneratedLines: number[] | undefined;
-  constructor(public parsed: Parsed, generated: string, tokens: Token[]) {
+  constructor(
+    public parsed: Parsed,
+    generated: string,
+    tokens: Token[],
+  ) {
     this.#generated = generated;
 
     if (tokens.length === 0) {
@@ -77,7 +81,7 @@ export class Extracted {
     } else {
       this.#generatedToSource = new GeneratedToSourceView(tokens);
       this.#sourceToGenerated = new SourceToGeneratedView(
-        [...tokens].sort(sortBySourceThenGenerated)
+        [...tokens].sort(sortBySourceThenGenerated),
       );
     }
   }
@@ -100,11 +104,11 @@ export class Extracted {
 
   sourceLocationAt(
     generatedStart: number,
-    generatedEnd: number
+    generatedEnd: number,
   ): Location | undefined {
     const sourceRange = this.#generatedToSource.rangeAt(
       generatedStart,
-      generatedEnd
+      generatedEnd,
     );
     if (sourceRange) {
       return this.parsed.locationAt(sourceRange);
@@ -124,17 +128,17 @@ export class Extracted {
 
   generatedLocationAt(
     sourceStart: number,
-    sourceEnd: number
+    sourceEnd: number,
   ): Location | undefined {
     const generatedRange = this.#sourceToGenerated.rangeAt(
       sourceStart,
-      sourceEnd
+      sourceEnd,
     );
     if (generatedRange) {
       return getLocation(
         this.#generatedLines,
         generatedRange.start,
-        generatedRange.end
+        generatedRange.end,
       );
     }
   }

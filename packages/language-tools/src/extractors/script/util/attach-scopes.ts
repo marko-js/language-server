@@ -170,7 +170,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                 parsed,
                 lVal,
                 "",
-                ATTR_UNAMED
+                ATTR_UNAMED,
               )) {
                 const { name, objectPath, sourceName } = id;
                 const binding: VarBinding = (parentScope.bindings[name] = {
@@ -202,7 +202,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               const parsedFn =
                 scriptParser.expressionAt<t.ArrowFunctionExpression>(
                   child.params.start,
-                  `(${read(child.params.value)})=>{}`
+                  `(${read(child.params.value)})=>{}`,
                 );
 
               if (parsedFn) {
@@ -233,8 +233,8 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                     parentScope,
                     scriptParser.expressionAt(
                       attr.value.start,
-                      read(attr.value)
-                    )
+                      read(attr.value),
+                    ),
                   );
                   break;
                 }
@@ -243,7 +243,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                     case NodeType.AttrValue: {
                       const parsedValue = scriptParser.expressionAt(
                         attr.value.value.start,
-                        read(attr.value.value)
+                        read(attr.value.value),
                       );
 
                       if (parsedValue) {
@@ -252,7 +252,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                             if (attr.value.bound) {
                               const binding = resolveWritableVar(
                                 parentScope,
-                                parsedValue.name
+                                parsedValue.name,
                               );
                               if (binding) {
                                 binding.mutated = true;
@@ -263,7 +263,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                             if (attr.value.bound) {
                               BoundAttrMemberExpressionStartOffsets.set(
                                 attr.value,
-                                parsedValue.property.start! - 1
+                                parsedValue.property.start! - 1,
                               );
                             }
                             break;
@@ -284,8 +284,8 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                           `{_${read({
                             start: attr.value.params.start,
                             end: attr.value.body.end,
-                          })}}`
-                        )
+                          })}}`,
+                        ),
                       );
                       break;
                     }
@@ -429,7 +429,7 @@ function* getVarIdentifiers(
   parsed: Parsed,
   lVal: t.LVal,
   objectPath: string,
-  sourceName?: string
+  sourceName?: string,
 ): Generator<{
   name: string;
   objectPath: string;
@@ -450,7 +450,7 @@ function* getVarIdentifiers(
             parsed,
             prop.argument,
             objectPath,
-            sourceName
+            sourceName,
           );
         } else {
           let sourceName: string;
@@ -468,7 +468,7 @@ function* getVarIdentifiers(
             parsed,
             prop.value as t.LVal,
             objectPath + accessor,
-            sourceName
+            sourceName,
           );
         }
       }
@@ -500,7 +500,7 @@ function* getVarIdentifiers(
 function trackMutationsInClosures(
   root: t.Node,
   scope: Scope,
-  mutations: number[]
+  mutations: number[],
 ) {
   traverse(root, (node) => {
     switch (node.type) {
@@ -525,7 +525,7 @@ function trackMutations(
   mutations: number[],
   parentBlock: t.Node,
   parentBlockShadows: Set<string>,
-  parentBlockMutations: t.Identifier[]
+  parentBlockMutations: t.Identifier[],
 ): void {
   if (!node) return;
 
@@ -652,7 +652,7 @@ function trackMutations(
           mutations,
           block,
           blockShadows,
-          blockMutations
+          blockMutations,
         );
       }
     } else {
@@ -662,7 +662,7 @@ function trackMutations(
         mutations,
         block,
         blockShadows,
-        blockMutations
+        blockMutations,
       );
     }
   }
@@ -692,7 +692,7 @@ function trackShadows(node: t.LVal, scope: Scope, shadows: Set<string>) {
  */
 function traverse(
   node: t.Node | null | void,
-  enter: (node: t.Node) => void | boolean // return true to stop traversing
+  enter: (node: t.Node) => void | boolean, // return true to stop traversing
 ): void {
   if (!node) return;
   if (enter(node)) return;

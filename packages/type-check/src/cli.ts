@@ -18,30 +18,30 @@ const args = arg(
     "-h": "--help",
     "-v": "--version",
   },
-  { permissive: false, argv: process.argv.slice(2) }
+  { permissive: false, argv: process.argv.slice(2) },
 );
 
 if (args["--help"]) {
   console.log(`${color.bold(
     `Usage: ${color.cyan("marko-type-check")} ${color.magenta(
-      `[options]`
-    )} | ${color.cyan("mtc")} ${color.magenta(`[options]`)}\n`
+      `[options]`,
+    )} | ${color.cyan("mtc")} ${color.magenta(`[options]`)}\n`,
   )}
 A command-line interface for running type checks on .marko, .ts, and .js files.
 
 ${color.bold("Options:")}
   ${color.yellow("-p, --project")} ${color.magenta(
-    "<path>"
+    "<path>",
   )}       Path to the tsconfig or jsconfig file (default: ${color.green(
-    `"./tsconfig.json"`
+    `"./tsconfig.json"`,
   )} or ${color.green(`"./jsconfig.json"`)})
   ${color.yellow("-d, --display")} ${color.magenta(
-    "<type>"
+    "<type>",
   )}       Set the display type for error output. Choices: ${color.green(
-    `"codeframe"`
+    `"codeframe"`,
   )} or ${color.green(`"condensed"`)} (default: ${color.green(`"codeframe"`)})
   ${color.yellow(
-    "-v, --version"
+    "-v, --version",
   )}              Display the CLI version, Marko version, and TypeScript version
   ${color.yellow("-h, --help")}                 Display this help text
 
@@ -50,7 +50,7 @@ ${color.bold("Examples:")}
   ${color.cyan("mtc")} -p ./jsconfig.json -d condensed -e
 
 For more information, visit ${color.blue(
-    "https://github.com/marko-js/language-server/tree/main/packages/marko-type-check"
+    "https://github.com/marko-js/language-server/tree/main/packages/marko-type-check",
   )}
 `);
 } else if (args["--version"]) {
@@ -67,7 +67,7 @@ For more information, visit ${color.blue(
       getPackageVersion("marko"),
       getPackageVersion("@marko/compiler"),
       getPackageVersion("typescript"),
-    ].join(", ")})`
+    ].join(", ")})`,
   );
 } else {
   const {
@@ -89,13 +89,13 @@ For more information, visit ${color.blue(
 }
 
 function checkDisplay(
-  display: string | undefined
+  display: string | undefined,
 ): asserts display is Display | undefined {
   if (display && (Display as any)[display] === undefined) {
     throw new Error(
       `Invalid display option, must be one of: ${Object.values(Display).join(
-        ", "
-      )}`
+        ", ",
+      )}`,
     );
   }
 }

@@ -44,7 +44,7 @@ export async function activate(ctx: ExtensionContext) {
         "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cts,*.marko,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}",
         false,
         false,
-        false
+        false,
       ),
     },
   };
@@ -61,7 +61,7 @@ export async function activate(ctx: ExtensionContext) {
     commands.registerCommand("marko.showScriptOutput", async () => {
       if (!window.activeTextEditor) {
         window.showErrorMessage(
-          "You must have an open Marko file to view the script output for."
+          "You must have an open Marko file to view the script output for.",
         );
         return;
       }
@@ -76,19 +76,19 @@ export async function activate(ctx: ExtensionContext) {
           {
             preview: true,
             viewColumn: ViewColumn.Beside,
-          }
+          },
         );
       } else {
         window.showErrorMessage("Unable to extract script for Marko document.");
       }
-    })
+    }),
   );
 
   ctx.subscriptions.push(
     commands.registerCommand("marko.showHtmlOutput", async () => {
       if (!window.activeTextEditor) {
         window.showErrorMessage(
-          "You must have an open Marko file to view the static HTML output for."
+          "You must have an open Marko file to view the static HTML output for.",
         );
         return;
       }
@@ -103,14 +103,14 @@ export async function activate(ctx: ExtensionContext) {
           {
             preview: true,
             viewColumn: ViewColumn.Beside,
-          }
+          },
         );
       } else {
         window.showErrorMessage(
-          "Unable to extract static HTML for Marko document."
+          "Unable to extract static HTML for Marko document.",
         );
       }
-    })
+    }),
   );
 
   // Start the client. This will also launch the server

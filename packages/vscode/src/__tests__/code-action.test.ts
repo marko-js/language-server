@@ -16,9 +16,9 @@ describe("code action", () => {
   body {
     col█o: blue;
   }
-}`
+}`,
         ),
-      `Rename to 'color'`
+      `Rename to 'color'`,
     );
   });
 });
@@ -31,7 +31,7 @@ async function codeAction(src: string) {
   const [{ title }] = await vscode.commands.executeCommand<vscode.Command[]>(
     "vscode.executeCodeActionProvider",
     doc.uri,
-    getTestEditor().selection
+    getTestEditor().selection,
   );
 
   return title;

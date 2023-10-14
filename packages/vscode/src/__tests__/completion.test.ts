@@ -11,7 +11,7 @@ describe("completion", () => {
       () => suggest("<spa█/>"),
       `
 <span/>
-`
+`,
     );
   });
 
@@ -22,7 +22,7 @@ describe("completion", () => {
 <div>
     
 </div>
-`
+`,
     );
   });
 
@@ -31,7 +31,7 @@ describe("completion", () => {
       () => suggest("<div aria-liv█>"),
       `
 <div aria-live="">
-`
+`,
     );
   });
 
@@ -40,7 +40,7 @@ describe("completion", () => {
       () => suggest("<div id:s█>"),
       `
 <div id:scoped>
-`
+`,
     );
   });
 
@@ -58,7 +58,7 @@ style {
     color: ;
   }
 }
-`
+`,
     );
   });
 });

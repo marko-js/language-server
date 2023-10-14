@@ -29,7 +29,7 @@ export default function getTagNameCompletion({
   const fileForTag = tag.template || tag.renderer || tag.filePath;
   const fileURIForTag = URI.file(fileForTag).toString();
   const nodeModuleMatch = /\/node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(
-    fileForTag
+    fileForTag,
   );
 
   const nodeModuleName = nodeModuleMatch && nodeModuleMatch[1];

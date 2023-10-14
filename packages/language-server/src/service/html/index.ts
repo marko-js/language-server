@@ -51,7 +51,7 @@ const HTMLService: Partial<Plugin> = {
           elementRef: true,
         })
       ).violations.flatMap(({ nodes, id }) =>
-        nodes.map((node) => ({ ...node, ruleId: id }))
+        nodes.map((node) => ({ ...node, ruleId: id })),
       );
 
     const release = await acquireMutexLock();
@@ -59,7 +59,7 @@ const HTMLService: Partial<Plugin> = {
     const requiresAttrs = await getViolationNodes(rules.requiresAttrs);
     const requiresChildren = await getViolationNodes(rules.requiresChildren);
     const requiresAttrsOrChildren = await getViolationNodes(
-      rules.requiresAttrsOrChildren
+      rules.requiresAttrsOrChildren,
     );
     release();
 
@@ -67,23 +67,23 @@ const HTMLService: Partial<Plugin> = {
       ...requiresAttrs.filter(
         ({ element }) =>
           element?.dataset.markoNodeId &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs
-      )
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs,
+      ),
     );
     violations.push(
       ...requiresChildren.filter(
         ({ element }) =>
           element?.dataset.markoNodeId &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
-      )
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody,
+      ),
     );
     violations.push(
       ...requiresAttrsOrChildren.filter(
         ({ element }) =>
           element?.dataset.markoNodeId &&
           !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
-      )
+          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody,
+      ),
     );
 
     return violations.flatMap((result) => {
@@ -95,7 +95,7 @@ const HTMLService: Partial<Plugin> = {
 
       const sourceRange = extracted.sourceLocationAt(
         generatedLoc.startOffset + 1,
-        generatedLoc.startOffset + 1 + element.tagName.length
+        generatedLoc.startOffset + 1 + element.tagName.length,
       );
       if (!sourceRange) return [];
 

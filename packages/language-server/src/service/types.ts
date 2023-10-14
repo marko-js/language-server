@@ -36,7 +36,7 @@ export type Result<V> = Promise<V | void> | V | void;
 type Handler<P, R> = (
   doc: TextDocument,
   params: P extends null ? CancellationToken : P,
-  token: P extends null ? never : CancellationToken
+  token: P extends null ? never : CancellationToken,
 ) => Result<R>;
 
 export type Plugin = {
@@ -45,7 +45,7 @@ export type Plugin = {
   doComplete: Handler<CompletionParams, CompletionItem[] | CompletionList>;
   doCompletionResolve: (
     item: CompletionItem,
-    token: CancellationToken
+    token: CancellationToken,
   ) => Result<CompletionItem>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;

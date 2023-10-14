@@ -49,7 +49,7 @@ const service: Plugin = {
   commands: Object.assign({}, ...plugins.map(({ commands }) => commands)),
   async initialize(params) {
     await Promise.allSettled(
-      plugins.map((plugin) => plugin.initialize?.(params))
+      plugins.map((plugin) => plugin.initialize?.(params)),
     );
   },
   async doComplete(doc, params, cancel) {
@@ -58,7 +58,7 @@ const service: Plugin = {
 
     // Used to filter out duplicate labels (highest sortText wins).
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.doComplete?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.doComplete?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -97,7 +97,7 @@ const service: Plugin = {
   },
   async findDefinition(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.findDefinition?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.findDefinition?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -112,7 +112,7 @@ const service: Plugin = {
   },
   async findReferences(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.findReferences?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.findReferences?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -127,7 +127,9 @@ const service: Plugin = {
   },
   async findDocumentSymbols(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.findDocumentSymbols?.(doc, params, cancel))
+      plugins.map(
+        (plugin) => plugin.findDocumentSymbols?.(doc, params, cancel),
+      ),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -142,7 +144,7 @@ const service: Plugin = {
   },
   async findDocumentLinks(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.findDocumentLinks?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.findDocumentLinks?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -157,9 +159,9 @@ const service: Plugin = {
   },
   async findDocumentHighlights(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) =>
-        plugin.findDocumentHighlights?.(doc, params, cancel)
-      )
+      plugins.map(
+        (plugin) => plugin.findDocumentHighlights?.(doc, params, cancel),
+      ),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -174,7 +176,7 @@ const service: Plugin = {
   },
   async findDocumentColors(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.findDocumentColors?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.findDocumentColors?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -189,9 +191,9 @@ const service: Plugin = {
   },
   async getColorPresentations(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) =>
-        plugin.getColorPresentations?.(doc, params, cancel)
-      )
+      plugins.map(
+        (plugin) => plugin.getColorPresentations?.(doc, params, cancel),
+      ),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -206,7 +208,7 @@ const service: Plugin = {
   },
   async doHover(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.doHover?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.doHover?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -218,7 +220,7 @@ const service: Plugin = {
         hovers.range = maxRange(hovers.range, result.value.range);
         hovers.contents = mergeHoverContents(
           hovers.contents,
-          result.value.contents
+          result.value.contents,
         );
       } else {
         hovers = result.value;
@@ -229,7 +231,7 @@ const service: Plugin = {
   },
   async doRename(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.doRename?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.doRename?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -280,7 +282,7 @@ const service: Plugin = {
   },
   async doCodeActions(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.doCodeActions?.(doc, params, cancel))
+      plugins.map((plugin) => plugin.doCodeActions?.(doc, params, cancel)),
     );
 
     if (cancel.isCancellationRequested) return;
@@ -295,7 +297,7 @@ const service: Plugin = {
   },
   async doValidate(doc) {
     const results = await Promise.allSettled(
-      plugins.map((plugin) => plugin.doValidate?.(doc))
+      plugins.map((plugin) => plugin.doValidate?.(doc)),
     );
 
     let diagnostics: Diagnostic[] | undefined;
@@ -350,7 +352,7 @@ function mergeHoverContents(a: Hover["contents"], b: Hover["contents"]) {
 }
 
 function markedStringToMarkupContent(
-  markedString: MarkedString | MarkedString[]
+  markedString: MarkedString | MarkedString[],
 ): MarkupContent {
   return {
     kind: MarkupKind.Markdown,
