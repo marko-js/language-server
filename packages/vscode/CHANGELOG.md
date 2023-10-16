@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.9
+
+### Patch Changes
+
+- [#219](https://github.com/marko-js/language-server/pull/219) [`301bdf4`](https://github.com/marko-js/language-server/commit/301bdf420bf636250b3213ec6bbcd912ad9a338c) Thanks [@LuLaValva](https://github.com/LuLaValva)! - fix in attribute tags within if statements
+
 ## 1.1.8
 
 ### Patch Changes
