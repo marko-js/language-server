@@ -224,7 +224,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item
+          | infer Item extends Record<PropertyKey, any>
           ? AttrTagByListSize<Value, Item>
           : never;
       };
@@ -237,7 +237,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item
+          | infer Item extends Record<PropertyKey, any>
           ? AttrTagByObjectSize<Value, Item>
           : never;
       };
@@ -257,7 +257,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item
+          | infer Item extends Record<PropertyKey, any>
           ? number extends From | To | Step
             ? MaybeRepeatable<Item>
             : Step extends 0
@@ -285,7 +285,7 @@ declare global {
       }): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item
+          | infer Item extends Record<PropertyKey, any>
           ? MaybeRepeatable<Item>
           : never;
       };
