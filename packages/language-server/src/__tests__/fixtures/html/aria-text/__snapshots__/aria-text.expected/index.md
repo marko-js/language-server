@@ -16,3 +16,16 @@
   3 |   button
 ```
 
+### Ln 3, Col 3
+```marko
+  1 | p role="text"
+  2 |   -- body text
+> 3 |   button
+    |   ^^^^^^ Fix any of the following:
+  Element does not have inner text that is visible to screen readers
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+```
+
