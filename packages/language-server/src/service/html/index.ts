@@ -5,7 +5,7 @@ import { JSDOM } from "jsdom";
 import type { Plugin } from "../types";
 import { getMarkoFile } from "../../utils/file";
 import { get } from "../../utils/text-documents";
-import rules from "./axe-rules/separated-rules";
+import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
 const extractCache = new WeakMap<Parsed, ReturnType<typeof extractHTML>>();
 
@@ -55,40 +55,26 @@ const HTMLService: Partial<Plugin> = {
       );
 
     const release = await acquireMutexLock();
-    const violations = await getViolationNodes(rules.alwaysAllowed);
-    const requiresAttrs = await getViolationNodes(rules.requiresAttrs);
-    const requiresChildren = await getViolationNodes(rules.requiresChildren);
-    const requiresAttrsOrChildren = await getViolationNodes(
-      rules.requiresAttrsOrChildren
-    );
+    const violations = await getViolationNodes(Object.keys(ruleExceptions));
     release();
-
-    violations.push(
-      ...requiresAttrs.filter(
-        ({ element }) =>
-          element?.dataset.markoNodeId &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs
-      )
-    );
-    violations.push(
-      ...requiresChildren.filter(
-        ({ element }) =>
-          element?.dataset.markoNodeId &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
-      )
-    );
-    violations.push(
-      ...requiresAttrsOrChildren.filter(
-        ({ element }) =>
-          element?.dataset.markoNodeId &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicAttrs &&
-          !nodeDetails[element.dataset.markoNodeId].hasDynamicBody
-      )
-    );
 
     return violations.flatMap((result) => {
       const { element } = result;
       if (!element) return [];
+      const ruleId = result.ruleId as keyof typeof ruleExceptions;
+
+      if (element.dataset.markoNodeId) {
+        const details = nodeDetails[element.dataset.markoNodeId];
+        if (
+          (ruleExceptions[ruleId].attrSpread && details.hasDynamicAttrs) ||
+          (ruleExceptions[ruleId].unknownBody && details.hasDynamicBody) ||
+          ruleExceptions[ruleId].dynamicAttrs?.some(
+            (attr) => element.getAttribute(attr) === "dynamic"
+          )
+        ) {
+          return [];
+        }
+      }
 
       const generatedLoc = jsdom.nodeLocation(element);
       if (!generatedLoc) return [];
@@ -103,7 +89,7 @@ const HTMLService: Partial<Plugin> = {
         {
           range: sourceRange,
           severity: 3,
-          source: `axe-core(${result.ruleId})`,
+          source: `axe-core(${ruleId})`,
           message: result.failureSummary ?? "unknown accessibility issue",
         },
       ];
