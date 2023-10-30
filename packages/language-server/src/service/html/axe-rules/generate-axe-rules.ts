@@ -27,7 +27,7 @@ ${rules
   ${kebabToCamelCase(rule.ruleId)}: "${rule.ruleId}",`
   )
   .join("\n")}
-};`
+} as const;`
   )
   .join("\n\n");
 
