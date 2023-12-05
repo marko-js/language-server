@@ -13,7 +13,7 @@ export enum AttributeValueType {
 }
 
 export function getAttributeValueType(
-  value: string | undefined
+  value: string | undefined,
 ): AttributeValueType | undefined {
   if (value === undefined || value[0] !== "=") return undefined;
   value = value.substring(1).trim(); // Remove "=" from value

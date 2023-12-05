@@ -63,7 +63,7 @@ export default function run(opts: Options) {
     throw new Error("Could not find tsconfig.json or jsconfig.json");
 
   const formatSettings = ts.getDefaultFormatCodeSettings(
-    ts.sys.newLine
+    ts.sys.newLine,
   ) as Required<ts.FormatCodeSettings>;
   const report: Report = {
     out: [],
@@ -85,7 +85,7 @@ export default function run(opts: Options) {
       compilerHost,
       oldProgram,
       configFileParsingDiagnostics,
-      projectReferences
+      projectReferences,
     ) => {
       if (!compilerHost) {
         throw new Error("Expected compilerHost to be provided.");
@@ -93,7 +93,7 @@ export default function run(opts: Options) {
       const resolutionCache = ts.createModuleResolutionCache(
         currentDirectory,
         getCanonicalFileName,
-        options
+        options,
       );
 
       const { readDirectory = ts.sys.readDirectory } = compilerHost;
@@ -102,14 +102,14 @@ export default function run(opts: Options) {
         extensions,
         exclude,
         include,
-        depth
+        depth,
       ) =>
         readDirectory(
           path,
           extensions?.concat(Processors.extensions),
           exclude,
           include,
-          depth
+          depth,
         );
 
       compilerHost.resolveModuleNameLiterals = (
@@ -118,7 +118,7 @@ export default function run(opts: Options) {
         redirectedReference,
         options,
         _containingSourceFile,
-        _reusedNames
+        _reusedNames,
       ) => {
         let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
         let resolvedModules:
@@ -148,7 +148,7 @@ export default function run(opts: Options) {
                 options,
                 compilerHost,
                 resolutionCache,
-                redirectedReference
+                redirectedReference,
               );
 
               if (resolvedModule) {
@@ -156,7 +156,7 @@ export default function run(opts: Options) {
                 resolvedFileName = path.join(
                   resolvedModule.resolvedFileName,
                   "..",
-                  relativeModulePath
+                  relativeModulePath,
                 );
               }
             }
@@ -179,7 +179,7 @@ export default function run(opts: Options) {
                 const ext = getExt(resolvedFileName)!;
                 const definitionFile = `${resolvedFileName.slice(
                   0,
-                  -ext.length
+                  -ext.length,
                 )}.d${ext}`;
                 if (compilerHost.fileExists(definitionFile)) {
                   resolvedFileName = definitionFile;
@@ -212,7 +212,7 @@ export default function run(opts: Options) {
                 options,
                 compilerHost,
                 resolutionCache,
-                redirectedReference
+                redirectedReference,
               );
             })
           : undefined;
@@ -236,7 +236,7 @@ export default function run(opts: Options) {
         fileName,
         languageVersion,
         onError,
-        shouldCreateNewSourceFile
+        shouldCreateNewSourceFile,
       ) => {
         const processor = getProcessor(fileName);
         const code = compilerHost.readFile(fileName);
@@ -249,7 +249,7 @@ export default function run(opts: Options) {
               extractedCode,
               languageVersion,
               true,
-              processor.getScriptKind(fileName)
+              processor.getScriptKind(fileName),
             );
 
             (sourceFile as any).version = crypto
@@ -264,7 +264,7 @@ export default function run(opts: Options) {
             fileName,
             languageVersion,
             onError,
-            shouldCreateNewSourceFile
+            shouldCreateNewSourceFile,
           );
         }
       };
@@ -275,7 +275,7 @@ export default function run(opts: Options) {
         compilerHost,
         oldProgram,
         configFileParsingDiagnostics,
-        projectReferences
+        projectReferences,
       );
 
       const program = builderProgram.getProgram();
@@ -285,7 +285,7 @@ export default function run(opts: Options) {
         _writeFile,
         cancellationToken,
         emitOnlyDtsFiles,
-        customTransformers
+        customTransformers,
       ) => {
         let writeFile = _writeFile;
         if (_writeFile) {
@@ -300,7 +300,7 @@ export default function run(opts: Options) {
             writeByteOrderMark,
             onError,
             sourceFiles,
-            data
+            data,
           ) => {
             const processor =
               (sourceFiles?.length === 1 &&
@@ -315,8 +315,8 @@ export default function run(opts: Options) {
               const inExt = fileName.endsWith(inDtsExt)
                 ? inDtsExt
                 : fileName.endsWith(inJsExt)
-                ? inJsExt
-                : undefined;
+                  ? inJsExt
+                  : undefined;
 
               if (!inExt) {
                 const msg = `Unexpected file extension: ${fileName}`;
@@ -340,8 +340,8 @@ export default function run(opts: Options) {
                   program.getSourceFile(
                     `${sourceFile.fileName.slice(
                       0,
-                      -processorExt.length
-                    )}.d${processorExt}`
+                      -processorExt.length,
+                    )}.d${processorExt}`,
                   )
                 ) {
                   // If a `.d.marko` file exists, don't emit the source files `.d.marko`.
@@ -354,7 +354,7 @@ export default function run(opts: Options) {
               }
 
               const extracted = extractCache.get(
-                program.getSourceFile(sourceFile.fileName)!
+                program.getSourceFile(sourceFile.fileName)!,
               )!;
               const printContext: Processors.PrintContext = {
                 extracted,
@@ -372,7 +372,7 @@ export default function run(opts: Options) {
                 writeByteOrderMark,
                 onError,
                 sourceFiles,
-                data
+                data,
               );
             } else {
               _writeFile(
@@ -381,7 +381,7 @@ export default function run(opts: Options) {
                 writeByteOrderMark,
                 onError,
                 sourceFiles,
-                data
+                data,
               );
             }
           };
@@ -392,13 +392,13 @@ export default function run(opts: Options) {
           writeFile,
           cancellationToken,
           emitOnlyDtsFiles,
-          customTransformers
+          customTransformers,
         );
       };
 
       return builderProgram;
     },
-    (diag) => reportDiagnostic(report, diag)
+    (diag) => reportDiagnostic(report, diag),
   );
   const processors = Processors.create({
     ts,
@@ -422,7 +422,7 @@ export default function run(opts: Options) {
       },
       undefined,
       undefined,
-      extraExtensions
+      extraExtensions,
     );
     if (!parsedCommandLine) return;
 
@@ -446,8 +446,8 @@ export default function run(opts: Options) {
   console.log(
     report.out.join(
       report.formatSettings.newLineCharacter +
-        report.formatSettings.newLineCharacter
-    )
+        report.formatSettings.newLineCharacter,
+    ),
   );
 }
 
@@ -460,7 +460,7 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
     if (extracted) {
       loc = extracted.sourceLocationAt(
         diag.start,
-        diag.start + (diag.length || 0)
+        diag.start + (diag.length || 0),
       );
       code = extracted.parsed.code;
 
@@ -479,30 +479,30 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
     const diagMessage = flattenDiagnosticMessage(
       diag.messageText,
       report.display,
-      report.formatSettings.newLineCharacter
+      report.formatSettings.newLineCharacter,
     );
 
     report.out.push(
       `${color.cyan(
-        path.relative(currentDirectory, diag.file.fileName)
+        path.relative(currentDirectory, diag.file.fileName),
       )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
-        loc.start.character + 1
+        loc.start.character + 1,
       )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
-        `TS${diag.code}`
+        `TS${diag.code}`,
       )}${report.formatSettings.newLineCharacter}${
         report.display === Display.codeframe
           ? report.formatSettings.newLineCharacter +
             formatCodeFrameMessage(code, loc, diagMessage)
           : diagMessage
-      }`
+      }`,
     );
   } else {
     report.out.push(
       flattenDiagnosticMessage(
         diag.messageText,
         report.display,
-        report.formatSettings.newLineCharacter
-      )
+        report.formatSettings.newLineCharacter,
+      ),
     );
   }
 
@@ -517,7 +517,7 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
 
 function reportRelatedDiagnostics(
   report: Report,
-  diags: readonly ts.DiagnosticRelatedInformation[]
+  diags: readonly ts.DiagnosticRelatedInformation[],
 ) {
   for (const diag of diags) {
     reportDiagnostic(report, diag);
@@ -540,14 +540,14 @@ function formatCodeFrameMessage(code: string, loc: Location, message: string) {
     {
       highlightCode: true,
       message,
-    }
+    },
   );
 }
 
 function flattenDiagnosticMessage(
   message: string | ts.DiagnosticMessageChain,
   display: Display,
-  newLine: string
+  newLine: string,
 ) {
   const str = ts.flattenDiagnosticMessageText(message, newLine);
   const strWithNewlines = str.replace(/(?:\r?\n)[ \t]+/g, newLine);
@@ -568,7 +568,7 @@ function coloredDiagnosticCategory(category: ts.DiagnosticCategory) {
       return color.magenta("suggestion");
     default:
       return color.red(
-        (ts.DiagnosticCategory[category] || "unknown").toLocaleLowerCase()
+        (ts.DiagnosticCategory[category] || "unknown").toLocaleLowerCase(),
       );
   }
 }

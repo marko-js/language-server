@@ -14,7 +14,7 @@ enum Replacement {
 export function getRuntimeOverrides(
   runtimeTypes: string,
   generics: string,
-  applyGenerics: string
+  applyGenerics: string,
 ) {
   let overloads = RuntimeOverloads.get(runtimeTypes);
 
@@ -40,7 +40,7 @@ export function getRuntimeOverrides(
             curText,
             propertyName === "Component"
               ? Replacement.Component
-              : Replacement.Input
+              : Replacement.Input,
           );
         }
       }

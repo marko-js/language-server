@@ -13,12 +13,12 @@ describe("document color", () => {
   body {
     color: blue;
   }
-}`
+}`,
         ),
       `rgb(0, 0, 255)
 #0000ff
 hsl(240, 100%, 50%)
-hwb(240 0% 0%)`
+hwb(240 0% 0%)`,
     );
   });
 });

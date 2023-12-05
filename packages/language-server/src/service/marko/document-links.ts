@@ -44,7 +44,7 @@ function extractDocumentLinks({
             if (isDocumentLinkAttr(code, node, attr)) {
               const resolved = resolveUrl(
                 read(attr.value.value).slice(1, -1),
-                uri
+                uri,
               );
               if (resolved) {
                 links.push({

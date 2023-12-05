@@ -100,7 +100,7 @@ const ScriptService: Partial<Plugin> = {
         filename,
         tsProject.markoScriptLang,
         ts,
-        tsProject.host
+        tsProject.host,
       );
       const generated = extracted.toString();
       const content = (() => {
@@ -151,7 +151,7 @@ const ScriptService: Partial<Plugin> = {
         ...(await getPreferences(project.markoScriptLang)),
         ...params.context,
         triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
-      }
+      },
     );
     if (!completions?.entries.length) return;
 
@@ -201,7 +201,7 @@ const ScriptService: Partial<Plugin> = {
       if (replacementSpan) {
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
-          replacementSpan
+          replacementSpan,
         );
 
         if (sourceRange) {
@@ -259,7 +259,7 @@ const ScriptService: Partial<Plugin> = {
       {},
       data.originalSource,
       await getPreferences(project.markoScriptLang),
-      data.originalData
+      data.originalData,
     );
 
     if (!detail?.codeActions) return;
@@ -316,13 +316,13 @@ const ScriptService: Partial<Plugin> = {
 
     const boundary = project.service.getDefinitionAndBoundSpan(
       fileName,
-      generatedOffset
+      generatedOffset,
     );
     if (!boundary?.definitions) return;
 
     const originSelectionRange = sourceLocationAtTextSpan(
       extracted,
-      boundary.textSpan
+      boundary.textSpan,
     );
     let result: DefinitionLink[] | DefinitionLink | undefined;
 
@@ -385,7 +385,7 @@ const ScriptService: Partial<Plugin> = {
 
     const quickInfo = project.service.getQuickInfoAtPosition(
       fileName,
-      generatedOffset
+      generatedOffset,
     );
     if (!quickInfo) return;
 
@@ -401,7 +401,7 @@ const ScriptService: Partial<Plugin> = {
 
     const documentation = printDocumentation(
       quickInfo.documentation,
-      quickInfo.tags
+      quickInfo.tags,
     );
     if (documentation) {
       contents += `\n---\n${documentation}`;
@@ -427,7 +427,7 @@ const ScriptService: Partial<Plugin> = {
       generatedOffset,
       false,
       false,
-      false
+      false,
     );
 
     if (!renameLocations) return;
@@ -443,7 +443,7 @@ const ScriptService: Partial<Plugin> = {
         const extracted = processScript(renameDoc, project);
         const sourceRange = sourceLocationAtTextSpan(
           extracted,
-          rename.textSpan
+          rename.textSpan,
         );
         if (sourceRange) {
           edit = {
@@ -572,7 +572,7 @@ function getOffsetAfterComments(node: Node.AnyNode) {
 
 function sourceLocationAtTextSpan(
   extracted: Extracted,
-  { start, length }: ts.TextSpan
+  { start, length }: ts.TextSpan,
 ) {
   if (start === 0 && length === 0) return START_LOCATION;
   return extracted.sourceLocationAt(start, start + length);
@@ -580,7 +580,7 @@ function sourceLocationAtTextSpan(
 
 function docLocationAtTextSpan(
   doc: TextDocument,
-  { start, length }: ts.TextSpan
+  { start, length }: ts.TextSpan,
 ) {
   return {
     start: doc.positionAt(start),
@@ -654,14 +654,14 @@ function getTSProject(docFsPath: string): TSProject {
       requiredTSCompilerOptions,
       configFile,
       undefined,
-      extraTSCompilerExtensions
+      extraTSCompilerExtensions,
     );
 
   options.rootDir ??= rootDir;
 
   // Only ts like files can inject globals into the project, so we filter out everything else.
   const potentialGlobalFiles = new Set<string>(
-    fileNames.filter((file) => /\.[cm]?ts$/.test(file))
+    fileNames.filter((file) => /\.[cm]?ts$/.test(file)),
   );
 
   const tsPkgFile =
@@ -670,13 +670,13 @@ function getTSProject(docFsPath: string): TSProject {
       .resolvedModule?.resolvedFileName;
   const defaultLibFile = path.join(
     tsPkgFile ? path.join(tsPkgFile, "../lib") : __dirname,
-    ts.getDefaultLibFileName(options)
+    ts.getDefaultLibFileName(options),
   );
 
   const resolutionCache = ts.createModuleResolutionCache(
     rootDir,
     getCanonicalFileName,
-    options
+    options,
   );
 
   const host: ts.LanguageServiceHost = patch(
@@ -719,7 +719,7 @@ function getTSProject(docFsPath: string): TSProject {
         redirectedReference,
         options,
         _containingSourceFile,
-        _reusedNames
+        _reusedNames,
       ) {
         return moduleLiterals.map((moduleLiteral) => {
           return ts.bundlerModuleNameResolver(
@@ -728,7 +728,7 @@ function getTSProject(docFsPath: string): TSProject {
             options,
             host,
             resolutionCache,
-            redirectedReference
+            redirectedReference,
           );
         });
       },
@@ -790,7 +790,7 @@ function getTSProject(docFsPath: string): TSProject {
 
         return snapshot;
       },
-    }
+    },
   );
 
   const tsProject: TSProject = {
@@ -809,7 +809,7 @@ function filenameToURI(filename: string) {
 }
 
 async function getPreferences(
-  scriptLang: ScriptLang
+  scriptLang: ScriptLang,
 ): Promise<ts.UserPreferences> {
   const configName = scriptLang === ScriptLang.js ? "javascript" : "typescript";
   const [preferencesConfig, suggestConfig, inlayHintsConfig] =
@@ -866,7 +866,7 @@ async function getPreferences(
 
 function printDocumentation(
   docs: ts.SymbolDisplayPart[] | undefined,
-  tags: ts.JSDocTagInfo[] | undefined
+  tags: ts.JSDocTagInfo[] | undefined,
 ) {
   let result = "";
   let sep = "";
@@ -887,7 +887,7 @@ function printDocumentation(
 
 function convertDiag(
   extracted: Extracted,
-  tsDiag: ts.Diagnostic
+  tsDiag: ts.Diagnostic,
 ): Diagnostic | undefined {
   const sourceRange =
     tsDiag.start === undefined

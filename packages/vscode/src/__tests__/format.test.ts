@@ -11,7 +11,7 @@ describe("format", () => {
       `
 <div/>
 
-`
+`,
     );
   });
 
@@ -19,7 +19,7 @@ describe("format", () => {
     await snap.inline(
       () =>
         format(
-          "<div really=long attributes=should spread=across multiple=lines and=this is=one of=those/>"
+          "<div really=long attributes=should spread=across multiple=lines and=this is=one of=those/>",
         ),
       `
 <div
@@ -32,7 +32,7 @@ describe("format", () => {
     of=those
 />
 
-`
+`,
     );
   });
 });

@@ -51,7 +51,7 @@ const HTMLService: Partial<Plugin> = {
           elementRef: true,
         })
       ).violations.flatMap(({ nodes, id }) =>
-        nodes.map((node) => ({ ...node, ruleId: id }))
+        nodes.map((node) => ({ ...node, ruleId: id })),
       );
 
     const release = await acquireMutexLock();
@@ -69,7 +69,7 @@ const HTMLService: Partial<Plugin> = {
           (ruleExceptions[ruleId].attrSpread && details.hasDynamicAttrs) ||
           (ruleExceptions[ruleId].unknownBody && details.hasDynamicBody) ||
           ruleExceptions[ruleId].dynamicAttrs?.some(
-            (attr) => element.getAttribute(attr) === "dynamic"
+            (attr) => element.getAttribute(attr) === "dynamic",
           )
         ) {
           return [];
@@ -81,7 +81,7 @@ const HTMLService: Partial<Plugin> = {
 
       const sourceRange = extracted.sourceLocationAt(
         generatedLoc.startOffset + 1,
-        generatedLoc.startOffset + 1 + element.tagName.length
+        generatedLoc.startOffset + 1 + element.tagName.length,
       );
       if (!sourceRange) return [];
 

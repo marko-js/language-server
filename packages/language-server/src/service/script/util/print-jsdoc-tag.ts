@@ -15,7 +15,7 @@ const REG_CODE_BLOCK = /^\s*[~`]{3}/m;
 const REG_CAPTION = /^<caption>(.*?)<\/caption>\s*(\r\n|\n)/;
 
 export default function printJSDocTag(
-  tag: ts.JSDocTagInfo
+  tag: ts.JSDocTagInfo,
 ): string | undefined {
   switch (tag.name) {
     case "augments":
@@ -26,7 +26,7 @@ export default function printJSDocTag(
       if (body?.length === 3) {
         const [, param, text] = body;
         return `${printTagName(tag.name)} \`${param}\`${printTagBody(
-          replaceLinks(text)
+          replaceLinks(text),
         )}`;
       }
       break;
@@ -70,7 +70,7 @@ function getTagBodyText(tag: ts.JSDocTagInfo): string {
       if (captionTagMatches) {
         const [captionMatch, captionText] = captionTagMatches;
         return `${captionText}\n${ensureCodeblock(
-          captionText.slice(captionMatch.length)
+          captionText.slice(captionMatch.length),
         )}`;
       } else {
         return ensureCodeblock(text);
@@ -93,7 +93,7 @@ function getTagBodyText(tag: ts.JSDocTagInfo): string {
 }
 
 function convertLinkTags(
-  parts: readonly ts.SymbolDisplayPart[] | string | undefined
+  parts: readonly ts.SymbolDisplayPart[] | string | undefined,
 ): string {
   if (!parts) return "";
   if (typeof parts === "string") return parts;
@@ -167,7 +167,7 @@ function replaceLinks(text: string): string {
     (_, tag: string, link: string, text?: string) => {
       const alt = text ? text.trim() : link;
       return `[${tag === "linkcode" ? `\`${alt}\`` : alt}](${link})`;
-    }
+    },
   );
 }
 

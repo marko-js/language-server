@@ -25,9 +25,9 @@ export async function updateTestDoc(src: string) {
     builder.replace(
       new vscode.Range(
         new vscode.Position(0, 0),
-        doc.positionAt(doc.getText().length)
+        doc.positionAt(doc.getText().length),
       ),
-      src
+      src,
     );
   });
 
@@ -41,9 +41,9 @@ export async function updateTestDoc(src: string) {
       builder.replace(
         new vscode.Range(
           cursorPos,
-          new vscode.Position(cursorPos.line, cursorPos.character + 1)
+          new vscode.Position(cursorPos.line, cursorPos.character + 1),
         ),
-        ""
+        "",
       );
     });
   }
@@ -59,9 +59,9 @@ export async function writeTestFiles(files: Record<string, string>) {
       await vscode.commands.executeCommand(
         "vscode.openWith",
         vscode.Uri.file(fileName),
-        "marko"
+        "marko",
       );
-    })
+    }),
   );
 }
 
@@ -75,7 +75,7 @@ before(async () => {
   await vscode.commands.executeCommand(
     "vscode.openWith",
     vscode.Uri.file(activeFile),
-    "marko"
+    "marko",
   );
 
   await timers.setTimeout(500);
@@ -83,7 +83,7 @@ before(async () => {
 
 afterEach(async () => {
   await Promise.all(
-    Array.from(tempFiles).map((file) => fs.promises.unlink(file).catch(noop))
+    Array.from(tempFiles).map((file) => fs.promises.unlink(file).catch(noop)),
   );
   tempFiles.clear();
 });

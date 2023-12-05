@@ -59,7 +59,7 @@ const StyleSheetService: Partial<Plugin> = {
         style.virtualDoc,
         generatedPos,
         style.parsed,
-        { resolveReference }
+        { resolveReference },
       );
 
       if (result.itemDefaults) {
@@ -82,7 +82,7 @@ const StyleSheetService: Partial<Plugin> = {
         if (item.additionalTextEdits) {
           item.additionalTextEdits = getSourceEdits(
             style,
-            item.additionalTextEdits
+            item.additionalTextEdits,
           );
         }
       }
@@ -100,7 +100,7 @@ const StyleSheetService: Partial<Plugin> = {
       const result = style.service.findDefinition(
         style.virtualDoc,
         generatedPos,
-        style.parsed
+        style.parsed,
       );
 
       if (result) {
@@ -127,7 +127,7 @@ const StyleSheetService: Partial<Plugin> = {
       for (const location of style.service.findReferences(
         style.virtualDoc,
         generatedPos,
-        style.parsed
+        style.parsed,
       )) {
         const sourceRange = getSourceRange(style, location.range);
         if (sourceRange) {
@@ -146,7 +146,7 @@ const StyleSheetService: Partial<Plugin> = {
     for (const extracted of processStyle(doc)) {
       for (const symbol of extracted.service.findDocumentSymbols(
         extracted.virtualDoc,
-        extracted.parsed
+        extracted.parsed,
       )) {
         if (symbol.location.uri === doc.uri) {
           const sourceRange = getSourceRange(extracted, symbol.location.range);
@@ -174,7 +174,7 @@ const StyleSheetService: Partial<Plugin> = {
       for (const link of await extracted.service.findDocumentLinks2(
         extracted.virtualDoc,
         extracted.parsed,
-        { resolveReference }
+        { resolveReference },
       )) {
         const sourceRange = getSourceRange(extracted, link.range);
         if (sourceRange) {
@@ -201,7 +201,7 @@ const StyleSheetService: Partial<Plugin> = {
       for (const highlight of style.service.findDocumentHighlights(
         style.virtualDoc,
         generatedPos,
-        style.parsed
+        style.parsed,
       )) {
         const sourceRange = getSourceRange(style, highlight.range);
         if (sourceRange) {
@@ -220,7 +220,7 @@ const StyleSheetService: Partial<Plugin> = {
     for (const extracted of processStyle(doc)) {
       for (const colorInfo of extracted.service.findDocumentColors(
         extracted.virtualDoc,
-        extracted.parsed
+        extracted.parsed,
       )) {
         const sourceRange = getSourceRange(extracted, colorInfo.range);
         if (sourceRange) {
@@ -245,7 +245,7 @@ const StyleSheetService: Partial<Plugin> = {
         extracted.virtualDoc,
         extracted.parsed,
         params.color,
-        generatedRange
+        generatedRange,
       )) {
         const textEdit =
           colorPresentation.textEdit &&
@@ -276,7 +276,7 @@ const StyleSheetService: Partial<Plugin> = {
       const result = style.service.doHover(
         style.virtualDoc,
         generatedPos,
-        style.parsed
+        style.parsed,
       );
 
       if (result) {
@@ -305,7 +305,7 @@ const StyleSheetService: Partial<Plugin> = {
         style.virtualDoc,
         style.virtualDoc.positionAt(generatedOffset),
         params.newName,
-        style.parsed
+        style.parsed,
       );
 
       if (result.changes) {
@@ -340,7 +340,7 @@ const StyleSheetService: Partial<Plugin> = {
         extracted.virtualDoc,
         generatedRange,
         params.context,
-        extracted.parsed
+        extracted.parsed,
       );
 
       for (const command of result) {
@@ -358,7 +358,7 @@ const StyleSheetService: Partial<Plugin> = {
     for (const extracted of processStyle(doc)) {
       for (const diag of extracted.service.doValidation(
         extracted.virtualDoc,
-        extracted.parsed
+        extracted.parsed,
       )) {
         const sourceRange = getSourceRange(extracted, diag.range);
         if (sourceRange) {
@@ -391,7 +391,7 @@ function processStyle(doc: TextDocument) {
           uri,
           "css",
           version,
-          extracted.toString()
+          extracted.toString(),
         );
         result.push({
           service,
@@ -408,7 +408,7 @@ function processStyle(doc: TextDocument) {
 
 function getSourceEdits(
   extracted: ProcessedStyle,
-  edits: TextEdit[]
+  edits: TextEdit[],
 ): TextEdit[] | undefined {
   const result: TextEdit[] = [];
 
@@ -424,7 +424,7 @@ function getSourceEdits(
 
 function getSourceEdit(
   extracted: ProcessedStyle,
-  textEdit: TextEdit
+  textEdit: TextEdit,
 ): TextEdit | undefined {
   const sourceRange = getSourceRange(extracted, textEdit.range);
   if (sourceRange) {
@@ -437,7 +437,7 @@ function getSourceEdit(
 
 function getSourceInsertReplaceEdit(
   extracted: ProcessedStyle,
-  textEdit: TextEdit | InsertReplaceEdit
+  textEdit: TextEdit | InsertReplaceEdit,
 ): TextEdit | InsertReplaceEdit | undefined {
   if (isTextEdit(textEdit)) {
     return getSourceEdit(extracted, textEdit);
@@ -462,22 +462,22 @@ function getSourceInsertReplaceEdit(
 
 function getSourceRange(
   style: ProcessedStyle,
-  range: Range
+  range: Range,
 ): Range | undefined {
   return style.extracted.sourceLocationAt(
     style.virtualDoc.offsetAt(range.start),
-    style.virtualDoc.offsetAt(range.end)
+    style.virtualDoc.offsetAt(range.end),
   );
 }
 
 function getGeneratedRange(
   doc: TextDocument,
   style: ProcessedStyle,
-  range: Range
+  range: Range,
 ): Range | undefined {
   return style.extracted.generatedLocationAt(
     doc.offsetAt(range.start),
-    doc.offsetAt(range.end)
+    doc.offsetAt(range.end),
   );
 }
 

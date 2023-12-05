@@ -17,7 +17,7 @@ describe("references", () => {
   body {
       color: var(--color);
   }
-}`
+}`,
         ),
       `[
   {
@@ -29,7 +29,7 @@ describe("references", () => {
     value: '--color'
   },
   [length]: 2
-]`
+]`,
     );
   });
 });
@@ -41,7 +41,7 @@ async function references(src: string) {
   const locations = await vscode.commands.executeCommand<vscode.Location[]>(
     "vscode.executeReferenceProvider",
     doc.uri,
-    editor.selection.start
+    editor.selection.start,
   );
 
   return locations.map((it) => ({

@@ -13,7 +13,7 @@ describe("hover", () => {
   body {
     color█: blue;
   }
-}`
+}`,
         ),
       `Sets the color of an element's text
 
@@ -21,7 +21,7 @@ describe("hover", () => {
 
 Syntax: &lt;color&gt;
 
-[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/color)`
+[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/color)`,
     );
   });
 });
@@ -31,7 +31,7 @@ async function hover(src: string) {
   const [hover] = await vscode.commands.executeCommand<vscode.Hover[]>(
     "vscode.executeHoverProvider",
     getTestDoc().uri,
-    getTestEditor().selection.start
+    getTestEditor().selection.start,
   );
   return hover.contents
     .map((it) => (typeof it === "string" ? it : it.value))

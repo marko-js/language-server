@@ -50,7 +50,7 @@ export function Tag({
             start,
             end,
           }),
-          closingTagStr
+          closingTagStr,
         ),
       },
     ];

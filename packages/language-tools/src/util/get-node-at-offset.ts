@@ -2,7 +2,7 @@ import { Node, NodeType } from "../parser";
 
 export function getNodeAtOffset(
   offset: number,
-  program: Node.Program
+  program: Node.Program,
 ): Node.AnyNode {
   const childNode = childAtOffset(offset, program.body);
   if (childNode) return visitChildNode(offset, childNode);
@@ -83,7 +83,7 @@ function visitAttrNode(offset: number, attr: Node.AttrNode): Node.AnyNode {
 
 function childAtOffset<T extends Node.AnyNode[]>(
   offset: number,
-  children: T
+  children: T,
 ): undefined | T[number] {
   let max = children.length - 1;
   if (max === -1) return undefined;

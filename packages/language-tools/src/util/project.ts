@@ -50,7 +50,7 @@ export function getTagLookup(dir: string) {
 export function getTypeLibs(
   rootDir: string,
   ts: typeof TS,
-  host: TS.ModuleResolutionHost
+  host: TS.ModuleResolutionHost,
 ) {
   const config = getConfig(rootDir);
   let typeLibs = config.cache.get(getTypeLibs) as
@@ -68,7 +68,7 @@ export function getTypeLibs(
   };
   const markoRunGeneratedTypesFile = path.join(
     rootDir,
-    ".marko-run/routes.d.ts"
+    ".marko-run/routes.d.ts",
   );
   const resolveFromFile = path.join(rootDir, "_.d.ts");
   const internalTypesFile =
@@ -77,21 +77,21 @@ export function getTypeLibs(
       "@marko/language-tools/marko.internal.d.ts",
       resolveFromFile,
       resolveTypeCompilerOptions,
-      host
+      host,
     ).resolvedTypeReferenceDirective?.resolvedFileName;
   const { resolvedTypeReferenceDirective: resolvedMarkoTypes } =
     ts.resolveTypeReferenceDirective(
       (config.translator.runtimeTypes as string | undefined) || "marko",
       resolveFromFile,
       resolveTypeCompilerOptions,
-      host
+      host,
     );
   const { resolvedTypeReferenceDirective: resolvedMarkoRunTypes } =
     ts.resolveTypeReferenceDirective(
       "@marko/run",
       resolveFromFile,
       resolveTypeCompilerOptions,
-      host
+      host,
     );
   const markoTypesFile =
     resolvedMarkoTypes?.resolvedFileName || defaultTypeLibs.markoTypesFile;
@@ -111,7 +111,7 @@ export function getTypeLibs(
       markoRunGeneratedTypesFile: host.fileExists(markoRunGeneratedTypesFile)
         ? markoRunGeneratedTypesFile
         : undefined,
-    })
+    }),
   );
 
   return typeLibs;
@@ -121,7 +121,7 @@ export function getScriptLang(
   fileName: string,
   defaultScriptLang: ScriptLang,
   ts: typeof TS,
-  host: TS.ModuleResolutionHost
+  host: TS.ModuleResolutionHost,
 ): ScriptLang {
   if (fileName.endsWith(".d.marko")) return ScriptLang.ts;
 
@@ -136,7 +136,7 @@ export function getScriptLang(
     const configPath = ts.findConfigFile(
       dir,
       host.fileExists.bind(host),
-      "marko.json"
+      "marko.json",
     );
 
     if (configPath) {
@@ -193,7 +193,7 @@ export function setDefaultTypePaths(defaults: typeof defaultTypeLibs) {
 
 export function setDefaultCompilerMeta(
   compiler: typeof Compiler,
-  config: Compiler.Config
+  config: Compiler.Config,
 ) {
   const { translator } = config;
   if (typeof translator !== "object") {
@@ -216,7 +216,7 @@ function getMeta(dir?: string): Meta {
   if (!dir) {
     if (!defaultMeta) {
       throw new Error(
-        "@marko/compiler must be installed or compiler registered."
+        "@marko/compiler must be installed or compiler registered.",
       );
     }
 
@@ -275,7 +275,7 @@ function getTagLookupForProject(meta: Meta, dir: string): TaglibLookup {
       lookup = meta.compiler.taglib.buildLookup(
         dir,
         meta.config.translator,
-        ignoreErrors
+        ignoreErrors,
       );
     } catch {
       if (meta !== defaultMeta) {

@@ -12,7 +12,7 @@ import { codeFrame } from "./util/code-frame";
 
 Project.setDefaultTypePaths({
   internalTypesFile: require.resolve(
-    "@marko/language-tools/marko.internal.d.ts"
+    "@marko/language-tools/marko.internal.d.ts",
   ),
   markoTypesFile: require.resolve("marko/index.d.ts"),
 });
@@ -51,7 +51,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
               position,
               textDocument: doc,
             },
-            CancellationToken.None
+            CancellationToken.None,
           );
           const loc = { start: position, end: position };
 
@@ -73,7 +73,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
             }\n\`\`\`marko\n${codeFrame(
               code,
               message.replace(/```typescript\r?\n([\s\S]*)\r?\n```/gm, "$1"),
-              loc
+              loc,
             )}\n\`\`\`\n\n`;
           }
         }

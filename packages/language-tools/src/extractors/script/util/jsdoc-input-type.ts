@@ -11,7 +11,7 @@ export default function getJSDocInputType(comment: string, ts: typeof TS) {
     comment,
     ts.ScriptTarget.Latest,
     false,
-    ts.ScriptKind.JS
+    ts.ScriptKind.JS,
   );
   const tags = (sourceFile.endOfFileToken as any).jsDoc?.[0]?.tags as
     | TS.JSDocTag[]
@@ -52,7 +52,7 @@ export default function getJSDocInputType(comment: string, ts: typeof TS) {
 function hasInputTypeDef(
   ts: typeof TS,
   sourceFile: TS.SourceFile,
-  tags: TS.JSDocTag[]
+  tags: TS.JSDocTag[],
 ) {
   for (const tag of tags) {
     if (
@@ -68,14 +68,14 @@ function hasInputTypeDef(
 
 function isTypeDefTag(
   ts: typeof TS,
-  tag: TS.JSDocTag
+  tag: TS.JSDocTag,
 ): tag is TS.JSDocTypedefTag {
   return tag.kind === ts.SyntaxKind.JSDocTypedefTag;
 }
 
 function isTemplateTag(
   ts: typeof TS,
-  tag: TS.JSDocTag
+  tag: TS.JSDocTag,
 ): tag is TS.JSDocTemplateTag {
   return tag.kind === ts.SyntaxKind.JSDocTemplateTag;
 }
