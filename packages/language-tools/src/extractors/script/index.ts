@@ -158,7 +158,7 @@ class ScriptExtractor {
             const [, , tagName] = tagImportMatch;
             const templatePath = resolveTagImport(
               this.#filename,
-              this.#lookup.getTag(tagName)
+              this.#lookup.getTag(tagName),
             );
             if (templatePath) {
               const [{ length }] = tagImportMatch;
@@ -238,7 +238,7 @@ class ScriptExtractor {
         this.#extractor.write(
           isExternalComponentFile
             ? "export type Input = Component['input'];\n"
-            : `export interface Input {}\n`
+            : `export interface Input {}\n`,
         );
       } else {
         this.#extractor.write(
@@ -246,7 +246,7 @@ class ScriptExtractor {
             isExternalComponentFile
               ? "Component['input']"
               : "Record<string, unknown>"
-          }} Input */\n`
+          }} Input */\n`,
         );
       }
     }
@@ -255,14 +255,14 @@ class ScriptExtractor {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
           `import type Component from "${stripExt(
-            relativeImportPath(this.#filename, componentFileName)
-          )}";\n`
+            relativeImportPath(this.#filename, componentFileName),
+          )}";\n`,
         );
       } else {
         this.#extractor.write(
           `/** @typedef {import("${stripExt(
-            relativeImportPath(this.#filename, componentFileName)
-          )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`
+            relativeImportPath(this.#filename, componentFileName),
+          )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`,
         );
       }
     } else {
@@ -271,7 +271,7 @@ class ScriptExtractor {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor
           .write(
-            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`
+            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
           )
           .copy(body)
           .write("\nexport { type Component }\n");
@@ -296,7 +296,7 @@ class ScriptExtractor {
 
     if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write(
-        `function ${templateName}${typeParamsStr}(this: void) {\n`
+        `function ${templateName}${typeParamsStr}(this: void) {\n`,
       );
     } else {
       this.#extractor.write(`/**${jsDocTemplateTagsStr}
@@ -327,7 +327,7 @@ function ${templateName}() {\n`);
       this.#extractor.write("const ");
       this.#writeObjectKeys(hoists);
       this.#extractor.write(
-        ` = ${varShared("readScopes")}(${varShared("rendered")});\n`
+        ` = ${varShared("readScopes")}(${varShared("rendered")});\n`,
       );
       this.#extractor.write(`${varShared("noop")}(`);
       this.#writeObjectKeys(hoists);
@@ -345,9 +345,9 @@ function ${templateName}() {\n`);
     const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
     const renderAndReturn = `(input: Marko.Directives & Input${typeArgsStr} & ${varShared(
-      "Relate"
+      "Relate",
     )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
-      "ReturnWithScope"
+      "ReturnWithScope",
     )}<${internalInput}, ${
       didReturn
         ? `typeof ${
@@ -365,9 +365,9 @@ function ${templateName}() {\n`);
       ? `<${internalApply} = 1>(): ${internalApply} extends 0
     ? ${typeParamsStr}() => <${internalInputWithExtends}>${renderAndReturn}
     : () => <${internalInputWithExtends}, ${typeParamsStr.slice(
-          1,
-          -1
-        )}>${renderAndReturn};`
+      1,
+      -1,
+    )}>${renderAndReturn};`
       : `(): () => <${internalInputWithExtends}>${renderAndReturn};`
   }
 }>`;
@@ -392,8 +392,8 @@ function ${templateName}() {\n`);
     const firstComments = program.static.length
       ? program.static[0].comments
       : program.body.length
-      ? (program.body[0] as Node.Commentable).comments
-      : program.comments;
+        ? (program.body[0] as Node.Commentable).comments
+        : program.comments;
 
     if (firstComments) {
       for (const comment of firstComments) {
@@ -421,7 +421,7 @@ function ${templateName}() {\n`);
 
   #writeReturn(
     returned: Range | string | undefined,
-    localBindings: Repeatable<string>
+    localBindings: Repeatable<string>,
   ) {
     if (!returned && !localBindings) {
       this.#extractor.write(`return ${varShared("voidReturn")};\n`);
@@ -472,8 +472,8 @@ constructor(_?: Return) {}
               if (renderId) {
                 this.#extractor.write(
                   `${varShared("assertRendered")}(${varShared(
-                    "rendered"
-                  )}, ${renderId}, (() => {\n`
+                    "rendered",
+                  )}, ${renderId}, (() => {\n`,
                 );
               }
 
@@ -483,7 +483,7 @@ constructor(_?: Return) {}
                 .copy(
                   this.#getRangeWithoutTrailingComma(child.args?.value) ||
                     this.#getAttrValue(child, ATTR_UNAMED) ||
-                    "undefined"
+                    "undefined",
                 )
                 .write(") {\n");
 
@@ -546,8 +546,8 @@ constructor(_?: Return) {}
               if (renderId) {
                 this.#extractor.write(
                   `${varShared("assertRendered")}(${varShared(
-                    "rendered"
-                  )}, ${renderId}, `
+                    "rendered",
+                  )}, ${renderId}, `,
                 );
               }
 
@@ -578,7 +578,7 @@ constructor(_?: Return) {}
 
               this.#writeReturn(
                 undefined,
-                body?.renderBody ? getHoistSources(child) : undefined
+                body?.renderBody ? getHoistSources(child) : undefined,
               );
 
               this.#extractor.write("})");
@@ -597,7 +597,7 @@ constructor(_?: Return) {}
                 .write("while (\n")
                 .copy(
                   this.#getRangeWithoutTrailingComma(child.args?.value) ||
-                    "undefined"
+                    "undefined",
                 )
                 .write("\n) {\n");
 
@@ -654,12 +654,12 @@ constructor(_?: Return) {}
                 ? `, ${JSON.stringify(binding.sourceName)}`
                 : "")
             }, ${varShared("rendered")}.returns[${this.#getRenderId(
-              binding.node as Node.ParentTag
-            )}]${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`
+              binding.node as Node.ParentTag,
+            )}]${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
           );
         }
         this.#extractor.write(
-          `]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`
+          `]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`,
         );
       }
 
@@ -685,7 +685,9 @@ constructor(_?: Return) {}
 
     if (renderId) {
       this.#extractor.write(
-        `${varShared("assertRendered")}(${varShared("rendered")}, ${renderId}, `
+        `${varShared("assertRendered")}(${varShared(
+          "rendered",
+        )}, ${renderId}, `,
       );
     }
 
@@ -697,14 +699,14 @@ constructor(_?: Return) {}
         const renderer = importPath?.endsWith(".marko")
           ? `renderTemplate(import("${importPath}"))`
           : def.html
-          ? `renderNativeTag("${def.name}")`
-          : "missingTag";
+            ? `renderNativeTag("${def.name}")`
+            : "missingTag";
         if (!def.html && isValidIdentifier(tagName)) {
           this.#extractor
             .write(
               `${varShared("renderPreferLocal")}(
 // @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-(${varShared("error")}, `
+(${varShared("error")}, `,
             )
             .copy(tag.name)
             .write(`),\n${varShared(renderer)})`);
@@ -743,7 +745,7 @@ constructor(_?: Return) {}
       this.#extractor.write(`const `);
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
-        ` = ${varShared("rendered")}.returns[${renderId}].${ATTR_UNAMED};\n`
+        ` = ${varShared("rendered")}.returns[${renderId}].${ATTR_UNAMED};\n`,
       );
     }
   }
@@ -812,7 +814,7 @@ constructor(_?: Return) {}
       tag.shorthandClassNames?.[tag.shorthandClassNames.length - 1]?.end ?? -1,
       tag.var?.end ?? -1,
       tag.args?.end ?? -1,
-      tag.params?.end ?? -1
+      tag.params?.end ?? -1,
     );
 
     if (tag.attrs) {
@@ -879,7 +881,7 @@ constructor(_?: Return) {}
                             isMutatedVar(tag.parent, valueLiteral)
                               ? `${varLocal("return")}.mutate.`
                               : ""
-                          }`
+                          }`,
                         )
                         .copy(value.value)
                         .write(`= _${valueLiteral};\n}`);
@@ -934,7 +936,7 @@ constructor(_?: Return) {}
             } else if (attr.args) {
               const stringLiteralFirstArgMatch = this.#execAtIndex(
                 REG_ATTR_ARG_LITERAL,
-                attr.args.value.start
+                attr.args.value.start,
               );
               this.#extractor.write('"').copy(name).write('": ');
 
@@ -943,7 +945,7 @@ constructor(_?: Return) {}
                 const stringLiteralValue = stringLiteralFirstArgMatch[2];
                 const stringLiteralStart = stringLiteralFirstArgMatch.index;
                 const isValidProperty = REG_OBJECT_PROPERTY.test(
-                  stringLiteralFirstArgMatch[2]
+                  stringLiteralFirstArgMatch[2],
                 );
 
                 if (isValidProperty) {
@@ -1002,8 +1004,8 @@ constructor(_?: Return) {}
             ? 1
             : 0
           : tag.selfClosed
-          ? 2
-          : 1)
+            ? 2
+            : 1),
     );
 
     return hasAttrs;
@@ -1011,7 +1013,7 @@ constructor(_?: Return) {}
 
   #writeAttrTags(
     { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
-    inMerge: boolean
+    inMerge: boolean,
   ) {
     let wasMerge = false;
 
@@ -1041,13 +1043,13 @@ constructor(_?: Return) {}
 
   #writeStaticAttrTags(
     staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
-    wasMerge: boolean
+    wasMerge: boolean,
   ) {
     if (!wasMerge) this.#extractor.write("...{");
     this.#extractor.write(
       `[${varShared("never")}](){\nconst attrTags = ${varShared(
-        "attrTagNames"
-      )}(this);\n`
+        "attrTagNames",
+      )}(this);\n`,
     );
 
     for (const nameText in staticAttrTags) {
@@ -1094,7 +1096,7 @@ constructor(_?: Return) {}
     dynamicAttrTagParents: Exclude<
       ProcessedBody["dynamicAttrTagParents"],
       undefined
-    >
+    >,
   ) {
     for (const tag of dynamicAttrTagParents) {
       switch (tag.nameText) {
@@ -1108,7 +1110,7 @@ constructor(_?: Return) {}
             .copy(
               this.#getRangeWithoutTrailingComma(tag.args?.value) ||
                 this.#getAttrValue(tag, ATTR_UNAMED) ||
-                "undefined"
+                "undefined",
             )
             .write("\n) ? ");
 
@@ -1157,7 +1159,8 @@ constructor(_?: Return) {}
           this.#extractor
             .write(`${varShared("mergeAttrTags")}((\n`)
             .copy(
-              this.#getRangeWithoutTrailingComma(tag.args?.value) || "undefined"
+              this.#getRangeWithoutTrailingComma(tag.args?.value) ||
+                "undefined",
             )
             .write("\n) ? [");
           this.#writeDynamicAttrTagBody(tag);
@@ -1237,7 +1240,7 @@ constructor(_?: Return) {}
 
       this.#writeReturn(
         didReturn ? `${varLocal("return")}.return` : undefined,
-        localBindings
+        localBindings,
       );
 
       if (tag.params) {
@@ -1251,7 +1254,7 @@ constructor(_?: Return) {}
 
     if (tag.type === NodeType.AttrTag) {
       this.#extractor.write(
-        `[Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`
+        `[Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`,
       );
     }
 
@@ -1405,7 +1408,7 @@ constructor(_?: Return) {}
                         const alternate: IfTagAlternate = {
                           condition:
                             this.#getRangeWithoutTrailingComma(
-                              nextChild.args?.value
+                              nextChild.args?.value,
                             ) || this.#getAttrValue(nextChild, ATTR_UNAMED),
                           node: nextChild as IfTagAlternate["node"],
                         };
@@ -1691,7 +1694,7 @@ function getReturnTag(parent: Node.ParentNode) {
 }
 
 function isValueAttribute(
-  attr: Node.AttrNode
+  attr: Node.AttrNode,
 ): attr is Node.AttrNamed & { value: Node.AttrValue } {
   return (
     attr.type === NodeType.AttrNamed && attr.value?.type === NodeType.AttrValue

@@ -51,7 +51,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
         dirname,
         parsed,
         code,
-      })
+      }),
     );
   }
 
@@ -68,7 +68,7 @@ export function clearMarkoCacheForFile(doc: TextDocument) {
  */
 export function processDoc<T>(
   doc: TextDocument,
-  process: (file: MarkoFile) => T
+  process: (file: MarkoFile) => T,
 ): T {
   const file = getMarkoFile(doc);
   const cache = processorCaches.get(file.parsed) as

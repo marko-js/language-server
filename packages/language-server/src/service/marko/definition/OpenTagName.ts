@@ -48,14 +48,14 @@ export function OpenTagName({
     const tagDefSource = fs.readFileSync(tagEntryFile, "utf-8");
     const match =
       RegExpBuilder`/"(?:<${tag.nameText}>|${tag.nameText})"\s*:\s*[^\r\n,]+/g`.exec(
-        tagDefSource
+        tagDefSource,
       );
 
     if (match && match.index) {
       range = getLocation(
         getLines(tagDefSource),
         match.index,
-        match.index + match[0].length
+        match.index + match[0].length,
       );
     }
   }

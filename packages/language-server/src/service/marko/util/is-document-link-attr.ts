@@ -23,7 +23,7 @@ const linkedAttrs: Map<string, Set<string>> = new Map([
 export default function isDocumentLinkAttr(
   code: string,
   tag: Node.ParentTag,
-  attr: Node.AttrNode
+  attr: Node.AttrNode,
 ): attr is Node.AttrNamed & { value: Node.AttrValue } {
   return (
     (tag.nameText &&

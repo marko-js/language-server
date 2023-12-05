@@ -25,7 +25,7 @@ export type Processors = Record<
 
 export function createLanguageService(
   fsMap: Map<string, string>,
-  processors: Processors
+  processors: Processors,
 ) {
   const getProcessor = (filename: string) =>
     processors[getExt(filename)?.slice(1) || ""];
@@ -50,7 +50,7 @@ export function createLanguageService(
     sys,
     rootFiles,
     compilerOptions,
-    ts
+    ts,
   );
 
   const ls = ts.createLanguageService(lsh);
@@ -76,14 +76,14 @@ export function createLanguageService(
       if (!cached) {
         const extracted = processor.extract(
           filename,
-          lsh.readFile(filename, "utf-8") || ""
+          lsh.readFile(filename, "utf-8") || "",
         );
         snapshotCache.set(
           filename,
           (cached = [
             extracted,
             ts.ScriptSnapshot.fromString(extracted.toString()),
-          ])
+          ]),
         );
       }
 
@@ -105,7 +105,7 @@ export function createLanguageService(
       extensions?.concat(additionalExts),
       exclude,
       include,
-      depth
+      depth,
     );
   };
 
@@ -122,7 +122,7 @@ export function createLanguageService(
     )[] = moduleNames.map<ts.ResolvedModule | undefined>(
       (moduleName) =>
         ts.resolveModuleName(moduleName, containingFile, compilerOptions, sys)
-          .resolvedModule
+          .resolvedModule,
     );
 
     for (let i = resolvedModules.length; i--; ) {
@@ -134,7 +134,7 @@ export function createLanguageService(
           const resolvedFileName = path.resolve(
             containingFile,
             "..",
-            moduleName
+            moduleName,
           );
           if (lsh.fileExists(resolvedFileName)) {
             resolvedModules[i] = {

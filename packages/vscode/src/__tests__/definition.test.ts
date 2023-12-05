@@ -17,7 +17,7 @@ describe("definition", () => {
     });
     await snap.inline(
       () => definition("<example█/>"),
-      `components/example.marko`
+      `components/example.marko`,
     );
   });
 });
@@ -29,7 +29,7 @@ async function definition(src: string) {
   >(
     "vscode.executeDefinitionProvider",
     getTestDoc().uri,
-    getTestEditor().selection.start
+    getTestEditor().selection.start,
   );
   return relativeToTempDir(location.targetUri.fsPath);
 }

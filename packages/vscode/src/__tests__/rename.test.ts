@@ -18,7 +18,7 @@ describe("rename", () => {
   body {
     color: var(--test);
   }
-}`
+}`,
         ),
       `
 style {
@@ -30,7 +30,7 @@ style {
     color: var(--test2);
   }
 }
-`
+`,
     );
   });
 });
@@ -42,7 +42,7 @@ async function rename(newName: string, src: string) {
     "vscode.executeDocumentRenameProvider",
     doc.uri,
     getTestEditor().selection.start,
-    newName
+    newName,
   );
 
   await vscode.workspace.applyEdit(edit);

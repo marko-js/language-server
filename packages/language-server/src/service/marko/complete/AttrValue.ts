@@ -61,7 +61,7 @@ export async function AttrValue({
                   label: entry,
                   kind: CompletionItemKind.File,
                   textEdit: TextEdit.replace(replaceRange, entry),
-                }
+                },
           );
         }
       }

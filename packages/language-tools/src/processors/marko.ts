@@ -57,14 +57,14 @@ export default {
             fileName,
             defaultScriptLang,
             ts,
-            host
+            host,
           ),
           runtimeTypesCode: runtimeTypes.markoTypesCode,
         });
       },
       print({ extracted: { parsed } }) {
         const { code, map } = Project.getCompiler(
-          path.dirname(parsed.filename)
+          path.dirname(parsed.filename),
         ).compileSync(parsed.code, parsed.filename, {
           output: "source",
           stripTypes: true,
@@ -124,7 +124,7 @@ export default {
           const printed = printer.printNode(
             ts.EmitHint.Unspecified,
             statement,
-            sourceFile
+            sourceFile,
           );
 
           // Add `static` to all non-import/export statements.
@@ -186,7 +186,9 @@ export default {
 
             if (valueType) {
               code += `= ${castType(
-                typeChecker.typeToString(typeChecker.getTypeOfSymbol(valueType))
+                typeChecker.typeToString(
+                  typeChecker.getTypeOfSymbol(valueType),
+                ),
               )}`;
             } else {
               code += `...${castType(typeChecker.typeToString(returnType))}`;

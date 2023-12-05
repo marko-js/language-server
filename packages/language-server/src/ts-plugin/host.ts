@@ -35,7 +35,7 @@ export function patch(
   >,
   resolutionCache: ts.ModuleResolutionCache | undefined,
   host: ts.LanguageServiceHost,
-  ps?: InstanceType<typeof ts.server.ProjectService>
+  ps?: InstanceType<typeof ts.server.ProjectService>,
 ) {
   const processors = Processors.create({
     ts,
@@ -59,7 +59,7 @@ export function patch(
           undefined,
           ts.ScriptKind.Deferred,
           false,
-          host
+          host,
         );
       }
     : () => {};
@@ -135,7 +135,7 @@ export function patch(
         extensions?.concat(Processors.extensions),
         exclude,
         include,
-        depth
+        depth,
       );
     };
   }
@@ -154,7 +154,7 @@ export function patch(
       redirectedReference,
       options,
       containingSourceFile,
-      reusedNames
+      reusedNames,
     ) => {
       let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
       let resolvedModules:
@@ -183,14 +183,14 @@ export function patch(
               options,
               host,
               resolutionCache,
-              redirectedReference
+              redirectedReference,
             );
 
             if (resolvedModule) {
               resolvedFileName = path.join(
                 resolvedModule.resolvedFileName,
                 "..",
-                relativeModulePath
+                relativeModulePath,
               );
             }
           }
@@ -213,7 +213,7 @@ export function patch(
               const ext = getExt(resolvedFileName)!;
               const definitionFile = `${resolvedFileName.slice(
                 0,
-                -ext.length
+                -ext.length,
               )}.d${ext}`;
               if (host.fileExists(definitionFile)) {
                 resolvedFileName = definitionFile;
@@ -245,7 +245,7 @@ export function patch(
             redirectedReference,
             options,
             containingSourceFile,
-            reusedNames
+            reusedNames,
           )
         : undefined;
 

@@ -14,7 +14,7 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
 
   try {
     const { meta } = Project.getCompiler(
-      filename && path.dirname(filename)
+      filename && path.dirname(filename),
     ).compileSync(doc.getText(), filename || "untitled.marko", {
       code: false,
       output: "migrate",

@@ -29,7 +29,7 @@ export default function getTagNameCompletion({
   const fileForTag = tag.template || tag.renderer || tag.filePath;
   const fileURIForTag = URI.file(fileForTag).toString();
   const nodeModuleMatch = /\/node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(
-    fileForTag
+    fileForTag,
   );
 
   const nodeModuleName = nodeModuleMatch && nodeModuleMatch[1];
@@ -41,12 +41,12 @@ export default function getTagNameCompletion({
     value: tag.html
       ? `Built in [&lt;${tag.name}&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
       : isCoreTag
-      ? `Core Marko &lt;${tag.name}&gt; tag.`
-      : nodeModuleName
-      ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
-      : `Custom Marko tag discovered from:\n\n[${
-          importer ? path.relative(importer, fileForTag) : fileForTag
-        }](${fileURIForTag})`,
+        ? `Core Marko &lt;${tag.name}&gt; tag.`
+        : nodeModuleName
+          ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
+          : `Custom Marko tag discovered from:\n\n[${
+              importer ? path.relative(importer, fileForTag) : fileForTag
+            }](${fileURIForTag})`,
   };
 
   if (tag.description) {

@@ -44,7 +44,7 @@ class HTMLExtractor {
         const nodeId = `${this.#nodeIdCounter++}`;
         ({ isDynamic, hasDynamicAttrs, hasDynamicBody } = this.#writeTag(
           node,
-          nodeId
+          nodeId,
         ));
         this.#nodeDetails[nodeId] = { hasDynamicAttrs, hasDynamicBody };
         break;

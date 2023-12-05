@@ -46,7 +46,7 @@ export function AttrName({
           start: node.start,
           end: node.start + name.length,
         }
-      : node
+      : node,
   );
 
   const tagName = node.parent.parent.nameText || "";

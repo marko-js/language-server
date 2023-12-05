@@ -116,7 +116,7 @@ connection.onCompletion(async (params, cancel) => {
     (await service.doComplete(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -130,7 +130,7 @@ connection.onDefinition(async (params, cancel) => {
     ((await service.findDefinition(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) as DefinitionLink[]) || null
   );
 });
@@ -140,7 +140,7 @@ connection.onReferences(async (params, cancel) => {
     (await service.findReferences(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -150,7 +150,7 @@ connection.onDocumentLinks(async (params, cancel) => {
     (await service.findDocumentLinks(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -160,7 +160,7 @@ connection.onDocumentSymbol(async (params, cancel) => {
     (await service.findDocumentSymbols(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -170,7 +170,7 @@ connection.onDocumentHighlight(async (params, cancel) => {
     (await service.findDocumentHighlights(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -180,7 +180,7 @@ connection.onDocumentColor(async (params, cancel) => {
     (await service.findDocumentColors(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -190,7 +190,7 @@ connection.onColorPresentation(async (params, cancel) => {
     (await service.getColorPresentations(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -200,7 +200,7 @@ connection.onHover(async (params, cancel) => {
     (await service.doHover(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -210,7 +210,7 @@ connection.onRenameRequest(async (params, cancel) => {
     (await service.doRename(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -220,7 +220,7 @@ connection.onCodeAction(async (params, cancel) => {
     (await service.doCodeActions(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -230,7 +230,7 @@ connection.onDocumentFormatting(async (params, cancel) => {
     (await service.format(
       documents.get(params.textDocument.uri)!,
       params,
-      cancel
+      cancel,
     )) || null
   );
 });
@@ -257,7 +257,7 @@ function queueDiagnostic() {
         const nextDiag = (await service.doValidate(doc)) || [];
         if (isDeepStrictEqual(prevDiag, nextDiag)) return;
         return [doc, nextDiag] as const;
-      })
+      }),
     );
 
     // Check that it wasn't canceled.

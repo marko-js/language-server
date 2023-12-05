@@ -15,7 +15,7 @@ describe("diagnostics", () => {
   it("unknown tag", async () => {
     await snap.inline(
       () => diagnostic("<span class= >"),
-      `Missing value for attribute`
+      `Missing value for attribute`,
     );
   });
 
@@ -25,9 +25,9 @@ describe("diagnostics", () => {
         diagnostic(
           `style {
  body { color: }
-}`
+}`,
         ),
-      `property value expected`
+      `property value expected`,
     );
   });
 });

@@ -455,7 +455,7 @@ class Builder {
                 },
                 start: range.start,
                 end: UNFINISHED,
-              })
+              }),
             );
 
             this.#comments = undefined;
@@ -473,7 +473,7 @@ class Builder {
               comments: this.#comments,
               start: range.start,
               end: UNFINISHED,
-            })
+            }),
           );
 
           this.#comments = undefined;
@@ -486,7 +486,7 @@ class Builder {
               comments: this.#comments,
               start: range.start,
               end: UNFINISHED,
-            })
+            }),
           );
 
           this.#comments = undefined;
@@ -499,7 +499,7 @@ class Builder {
               comments: this.#comments,
               start: range.start,
               end: UNFINISHED,
-            })
+            }),
           );
 
           this.#comments = undefined;
@@ -512,7 +512,7 @@ class Builder {
               comments: this.#comments,
               start: range.start,
               end: UNFINISHED,
-            })
+            }),
           );
 
           this.#comments = undefined;
@@ -718,7 +718,7 @@ class Builder {
           args: undefined,
           start: range.start,
           end: range.end,
-        })
+        }),
     );
   }
   onAttrArgs(range: Ranges.Value) {
@@ -819,7 +819,7 @@ function pushAttr(parent: Node.ParentTag, node: Node.AttrNode) {
 }
 
 function hasCloseTag(
-  parent: Node.AnyNode
+  parent: Node.AnyNode,
 ): parent is Node.ParentTag & { close: Range } {
   return (parent as Node.ParentTag).close !== undefined;
 }

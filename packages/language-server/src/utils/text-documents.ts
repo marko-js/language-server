@@ -38,7 +38,7 @@ export function get(uri: string) {
         uri,
         getLanguageId(uri),
         fs.statSync(fsPath).mtimeMs,
-        fs.readFileSync(fsPath, "utf-8")
+        fs.readFileSync(fsPath, "utf-8"),
       );
 
       docs.set(uri, newDoc);
@@ -92,7 +92,7 @@ export function doOpen(params: DidOpenTextDocumentParams) {
     ref.uri,
     ref.languageId,
     ref.version,
-    ref.text
+    ref.text,
   );
 
   openDocs.add(newDoc);

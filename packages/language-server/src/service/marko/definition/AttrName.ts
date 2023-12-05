@@ -29,14 +29,14 @@ export function AttrName({
   if (/\.json$/.test(attrEntryFile)) {
     const tagDefSource = fs.readFileSync(attrEntryFile, "utf-8");
     const match = RegExpBuilder`/"@${attrName}"\s*:\s*[^\r\n,]+/g`.exec(
-      tagDefSource
+      tagDefSource,
     );
 
     if (match && match.index) {
       range = getLocation(
         getLines(tagDefSource),
         match.index,
-        match.index + match[0].length
+        match.index + match[0].length,
       );
     }
 
