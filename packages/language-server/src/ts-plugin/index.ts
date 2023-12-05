@@ -45,7 +45,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
                   extension,
                   isMixedContent: false,
                   scriptKind: ts.ScriptKind.Deferred,
-                }))
+                })),
               ),
             });
           }
@@ -56,9 +56,9 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
           ts,
           (tsProject as ts.server.ConfiguredProject).canonicalConfigFilePath,
           extractCache,
-          tsProject.getModuleResolutionCache(),
+          (tsProject as any).getModuleResolutionCache(),
           lsh,
-          ps
+          ps,
         );
 
         /**
@@ -69,7 +69,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         if (onSourceFileChanged) {
           (ps as any).onSourceFileChanged = (
             info: ts.server.ScriptInfo,
-            eventKind: ts.FileWatcherEventKind
+            eventKind: ts.FileWatcherEventKind,
           ) => {
             if (markoTaglibFilesReg.test(info.fileName)) {
               Project.clearCaches();
@@ -140,14 +140,14 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
           position,
           findInStrings,
           findInComments,
-          preferences
+          preferences,
         ) => {
           const renames = findRenameLocations(
             fileName,
             position,
             findInStrings,
             findInComments,
-            preferences as any
+            preferences as any,
           );
           if (!renames) return;
 
@@ -177,7 +177,7 @@ function mapTextSpans<
   T extends {
     textSpan: ts.TextSpan;
     contextSpan?: ts.TextSpan;
-  }
+  },
 >(extracted: ExtractedSnapshot, data: T) {
   const textSpan = sourceTextSpan(extracted, data.textSpan);
   if (textSpan) {
@@ -192,7 +192,7 @@ function mapTextSpans<
 
 function sourceTextSpan(
   extracted: Extracted,
-  { start, length }: ts.TextSpan
+  { start, length }: ts.TextSpan,
 ): ts.TextSpan | undefined {
   const sourceStart = extracted.sourceOffsetAt(start);
   if (sourceStart !== undefined) {

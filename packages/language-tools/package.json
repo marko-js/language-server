@@ -8,20 +8,20 @@
   },
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.22.20",
-    "@babel/parser": "^7.23.0",
-    "htmljs-parser": "^5.5.0",
+    "@babel/parser": "^7.23.5",
+    "htmljs-parser": "^5.5.1",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.22.13",
-    "@marko/compiler": "^5.33.2",
-    "@marko/translator-default": "^5.31.3",
-    "@types/babel__code-frame": "^7.0.4",
-    "@types/babel__helper-validator-identifier": "^7.15.0",
+    "@babel/code-frame": "^7.23.5",
+    "@marko/compiler": "^5.34.1",
+    "@marko/translator-default": "^5.31.8",
+    "@types/babel__code-frame": "^7.0.6",
+    "@types/babel__helper-validator-identifier": "^7.15.2",
     "@typescript/vfs": "^1.5.0",
-    "marko": "^5.31.10",
+    "marko": "^5.32.0",
     "mitata": "^0.1.6",
-    "tsx": "^3.13.0"
+    "tsx": "^4.6.2"
   },
   "exports": {
     ".": {
