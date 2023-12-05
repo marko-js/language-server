@@ -64,6 +64,12 @@ await Promise.all([
       "canvas",
       "@babel/preset-typescript",
     ],
+    define: {
+      "import.meta.url": "_importMetaUrl"
+    },
+    banner: {
+      js: "const _importMetaUrl = require('url').pathToFileURL(__filename);"
+    },
     plugins: [
       {
         name: "vscode-css-languageservice-fix",

@@ -9,24 +9,24 @@
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.22.20",
     "@marko/language-tools": "^2.1.6",
-    "@marko/babel-utils": "^6.3.1",
-    "@marko/compiler": "^5.33.2",
-    "@marko/translator-default": "^5.31.3",
-    "htmljs-parser": "^5.5.0",
-    "marko": "^5.31.10",
-    "prettier": "^2.8.8",
-    "prettier-plugin-marko": "^2.1.0",
+    "@marko/babel-utils": "^6.3.4",
+    "@marko/compiler": "^5.34.1",
+    "@marko/translator-default": "^5.31.8",
+    "htmljs-parser": "^5.5.1",
+    "marko": "^5.32.0",
+    "prettier": "^3.1.0",
+    "prettier-plugin-marko": "^3.1.1",
     "relative-import-path": "^1.0.0",
     "strip-json-comments": "^3.1.1",
-    "typescript": "^5.2.2",
-    "vscode-css-languageservice": "^6.2.9",
+    "typescript": "^5.3.2",
+    "vscode-css-languageservice": "^6.2.11",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.11",
-    "vscode-uri": "^3.0.7"
+    "vscode-uri": "^3.0.8"
   },
   "devDependencies": {
     "@types/prettier": "^2.7.3",
-    "tsx": "^3.13.0"
+    "tsx": "^4.6.2"
   },
   "exports": {
     ".": {

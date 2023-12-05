@@ -39,7 +39,7 @@ export const format: Plugin["format"] = async (doc, params, cancel) => {
           start: START_POSITION,
           end: doc.positionAt(text.length),
         },
-        prettier.format(text, options)
+        await prettier.format(text, options),
       ),
     ];
     return ret;

@@ -4,15 +4,15 @@
   "version": "1.0.2",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
-    "@babel/code-frame": "^7.22.13",
+    "@babel/code-frame": "^7.23.5",
     "@marko/language-tools": "^2.1.6",
     "arg": "^5.0.2",
     "kleur": "^4.1.5",
     "strip-json-comments": "^3.1.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.2"
   },
   "devDependencies": {
-    "@types/babel__code-frame": "^7.0.4"
+    "@types/babel__code-frame": "^7.0.6"
   },
   "files": [
     "dist",

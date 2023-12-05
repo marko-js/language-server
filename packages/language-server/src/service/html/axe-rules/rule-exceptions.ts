@@ -1,7 +1,7 @@
 import * as r from "./axe-rules";
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
+  k: infer I,
 ) => void
   ? I
   : never;
@@ -85,7 +85,6 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.language.htmlXmlLangMismatch]: {},
   [r.language.validLang]: { dynamicAttrs: ["lang"] },
   [r.nameRoleValue.ariaHiddenFocus]: { unknownBody: true },
-  [r.nameRoleValue.ariaHiddenFocus]: {},
   [r.nameRoleValue.buttonName]: { unknownBody: true, attrSpread: true },
   [r.nameRoleValue.emptyHeading]: {},
   [r.nameRoleValue.emptyTableHeader]: { unknownBody: true },

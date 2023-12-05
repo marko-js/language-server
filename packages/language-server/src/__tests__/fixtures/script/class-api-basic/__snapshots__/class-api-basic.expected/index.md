@@ -79,8 +79,7 @@
   73 |         <${input.renderBody}/>
   74 |     </div>
 > 75 |     <fancyButton something=true>${type}</fancyButton>
-     |                  ^^^^^^^^^ Argument of type '{ something: boolean; renderBody: () => MarkoReturn<void>; }' is not assignable to parameter of type 'Directives & Input'.
-  Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
+     |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
   76 |     <div>Hello $!{"<b>World</b>"}</div>
   77 |     <div>Placeholder example: <code>\${someValue}</code></div>
   78 |
