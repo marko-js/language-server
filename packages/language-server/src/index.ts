@@ -10,6 +10,7 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { Project } from "@marko/language-tools";
 
+import "./utils/project-defaults";
 import { clearMarkoCacheForFile } from "./utils/file";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";

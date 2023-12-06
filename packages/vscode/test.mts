@@ -13,6 +13,7 @@ process.once("exit", () => {
 });
 
 await runTests({
+  version: "insiders",
   extensionDevelopmentPath: pkgDir,
   extensionTestsPath: path.join(pkgDir, "dist/__tests__/index.js"),
 });
