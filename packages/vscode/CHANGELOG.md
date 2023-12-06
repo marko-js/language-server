@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.10
+
+### Patch Changes
+
+- [#224](https://github.com/marko-js/language-server/pull/224) [`a60e2f9`](https://github.com/marko-js/language-server/commit/a60e2f9297f63730235cc84b8f592156141f0801) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade package dependencies
+
 ## 1.1.9
 
 ### Patch Changes
