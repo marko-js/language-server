@@ -1,7 +1,7 @@
 import * as r from "./axe-rules";
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
+  k: infer I
 ) => void
   ? I
   : never;
@@ -67,7 +67,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaProgressbarName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaRequiredAttr]: { attrSpread: true },
   [r.aria.ariaRequiredChildren]: { unknownBody: true },
-  [r.aria.ariaRoles]: {},
+  [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
   [r.aria.ariaText]: { unknownBody: true },
   [r.aria.ariaToggleFieldName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaTooltipName]: { unknownBody: true, attrSpread: true },
