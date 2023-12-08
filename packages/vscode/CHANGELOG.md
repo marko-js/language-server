@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.11
+
+### Patch Changes
+
+- [#226](https://github.com/marko-js/language-server/pull/226) [`bca7c20`](https://github.com/marko-js/language-server/commit/bca7c20c7b3f17ff5e93049e762bc7d215a12f23) Thanks [@LuLaValva](https://github.com/LuLaValva)! - add new rule filter to a11y linter
+
 ## 1.1.10
 
 ### Patch Changes
