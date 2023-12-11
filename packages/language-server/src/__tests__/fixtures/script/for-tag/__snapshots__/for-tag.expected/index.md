@@ -44,162 +44,223 @@
   17 |
 ```
 
-### Ln 25, Col 3
+### Ln 18, Col 18
 ```marko
-  23 |
-  24 | <effect() {
-> 25 |   hoistedFromForOf;
-     |   ^ const hoistedFromForOf: 1 | 2 | 3
-  26 | //^?
-  27 | }/>
-  28 |
-```
-
-### Ln 32, Col 5
-```marko
-  30 |
-  31 | <for|key, value| in=record>
-> 32 |   ${key} ${value}
-     |     ^ (parameter) key: "a" | "b"
-  33 | //  ^?     ^?
-  34 | </for>
-  35 |
-```
-
-### Ln 32, Col 12
-```marko
-  30 |
-  31 | <for|key, value| in=record>
-> 32 |   ${key} ${value}
-     |            ^ (parameter) value: 1 | 2
-  33 | //  ^?     ^?
-  34 | </for>
-  35 |
-```
-
-### Ln 41, Col 3
-```marko
-  39 |
-  40 | <effect() {
-> 41 |   hoistedFromForIn;
-     |   ^ const hoistedFromForIn: "a" | "b"
-  42 | //^?
-  43 | }/>
-  44 |
-```
-
-### Ln 46, Col 5
-```marko
-  44 |
-  45 | <for|index| to=10>
-> 46 |   ${index}
-     |     ^ (parameter) index: number
-  47 | //  ^?
-  48 | </for>
-  49 |
-```
-
-### Ln 51, Col 5
-```marko
-  49 |
-  50 | <for|index| from=1 to=10>
-> 51 |   ${index}
-     |     ^ (parameter) index: number
-  52 | //  ^?
-  53 | </for>
-  54 |
-```
-
-### Ln 56, Col 5
-```marko
-  54 |
-  55 | <for|index| to=10 step=2>
-> 56 |   ${index}
-     |     ^ (parameter) index: number
-  57 | //  ^?
-  58 | </for>
-  59 |
-```
-
-### Ln 65, Col 3
-```marko
-  63 |
-  64 | <effect() {
-> 65 |   hoistedFromForTo;
-     |   ^ const hoistedFromForTo: number
-  66 | //^?
-  67 | }/>
-  68 |
-```
-
-## Diagnostics
-### Ln 22, Col 6
-```marko
+  16 | </for>
+  17 |
+> 18 | <for of=list by=(item, index) => `${item}-${index}`>
+     |                  ^ (parameter) item: {
+    readonly value: 1;
+} | {
+    readonly value: 2;
+} | {
+    readonly value: 3;
+}
+  19 | //               ^?    ^?
   20 | </for>
   21 |
-> 22 | <for|item| of=list></for>
-     |      ^^^^ 'item' is declared but its value is never read.
-  23 |
-  24 | <effect() {
-  25 |   hoistedFromForOf;
 ```
 
-### Ln 24, Col 2
+### Ln 18, Col 24
 ```marko
-  22 | <for|item| of=list></for>
-  23 |
-> 24 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  25 |   hoistedFromForOf;
-  26 | //^?
-  27 | }/>
+  16 | </for>
+  17 |
+> 18 | <for of=list by=(item, index) => `${item}-${index}`>
+     |                        ^ (parameter) index: number
+  19 | //               ^?    ^?
+  20 | </for>
+  21 |
 ```
 
-### Ln 40, Col 2
+### Ln 29, Col 3
+```marko
+  27 |
+  28 | <effect() {
+> 29 |   hoistedFromForOf;
+     |   ^ const hoistedFromForOf: 1 | 2 | 3
+  30 | //^?
+  31 | }/>
+  32 |
+```
+
+### Ln 36, Col 5
+```marko
+  34 |
+  35 | <for|key, value| in=record>
+> 36 |   ${key} ${value}
+     |     ^ (parameter) key: "a" | "b"
+  37 | //  ^?     ^?
+  38 | </for>
+  39 |
+```
+
+### Ln 36, Col 12
+```marko
+  34 |
+  35 | <for|key, value| in=record>
+> 36 |   ${key} ${value}
+     |            ^ (parameter) value: 1 | 2
+  37 | //  ^?     ^?
+  38 | </for>
+  39 |
+```
+
+### Ln 40, Col 20
 ```marko
   38 | </for>
   39 |
-> 40 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  41 |   hoistedFromForIn;
-  42 | //^?
-  43 | }/>
+> 40 | <for in=record by=(value, key) => `${value}-${key}`>
+     |                    ^ (parameter) value: 1 | 2
+  41 | //                 ^?     ^?
+  42 | </for>
+  43 |
 ```
 
-### Ln 64, Col 2
+### Ln 40, Col 27
 ```marko
-  62 | </for>
-  63 |
-> 64 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  65 |   hoistedFromForTo;
-  66 | //^?
-  67 | }/>
+  38 | </for>
+  39 |
+> 40 | <for in=record by=(value, key) => `${value}-${key}`>
+     |                           ^ (parameter) key: "a" | "b"
+  41 | //                 ^?     ^?
+  42 | </for>
+  43 |
 ```
 
-### Ln 69, Col 2
+### Ln 49, Col 3
 ```marko
-  67 | }/>
-  68 |
-> 69 | <for|index|>
+  47 |
+  48 | <effect() {
+> 49 |   hoistedFromForIn;
+     |   ^ const hoistedFromForIn: "a" | "b"
+  50 | //^?
+  51 | }/>
+  52 |
+```
+
+### Ln 54, Col 5
+```marko
+  52 |
+  53 | <for|index| to=10>
+> 54 |   ${index}
+     |     ^ (parameter) index: number
+  55 | //  ^?
+  56 | </for>
+  57 |
+```
+
+### Ln 58, Col 16
+```marko
+  56 | </for>
+  57 |
+> 58 | <for to=10 by=(index) => `${index}`>
+     |                ^ (parameter) index: number
+  59 | //             ^?
+  60 | </for>
+  61 |
+```
+
+### Ln 63, Col 5
+```marko
+  61 |
+  62 | <for|index| from=1 to=10>
+> 63 |   ${index}
+     |     ^ (parameter) index: number
+  64 | //  ^?
+  65 | </for>
+  66 |
+```
+
+### Ln 68, Col 5
+```marko
+  66 |
+  67 | <for|index| to=10 step=2>
+> 68 |   ${index}
+     |     ^ (parameter) index: number
+  69 | //  ^?
+  70 | </for>
+  71 |
+```
+
+### Ln 77, Col 3
+```marko
+  75 |
+  76 | <effect() {
+> 77 |   hoistedFromForTo;
+     |   ^ const hoistedFromForTo: number
+  78 | //^?
+  79 | }/>
+  80 |
+```
+
+## Diagnostics
+### Ln 26, Col 6
+```marko
+  24 | </for>
+  25 |
+> 26 | <for|item| of=list></for>
+     |      ^^^^ 'item' is declared but its value is never read.
+  27 |
+  28 | <effect() {
+  29 |   hoistedFromForOf;
+```
+
+### Ln 28, Col 2
+```marko
+  26 | <for|item| of=list></for>
+  27 |
+> 28 | <effect() {
+     |  ^^^^^^ Cannot find name 'effect'.
+  29 |   hoistedFromForOf;
+  30 | //^?
+  31 | }/>
+```
+
+### Ln 48, Col 2
+```marko
+  46 | </for>
+  47 |
+> 48 | <effect() {
+     |  ^^^^^^ Cannot find name 'effect'.
+  49 |   hoistedFromForIn;
+  50 | //^?
+  51 | }/>
+```
+
+### Ln 76, Col 2
+```marko
+  74 | </for>
+  75 |
+> 76 | <effect() {
+     |  ^^^^^^ Cannot find name 'effect'.
+  77 |   hoistedFromForTo;
+  78 | //^?
+  79 | }/>
+```
+
+### Ln 81, Col 2
+```marko
+  79 | }/>
+  80 |
+> 81 | <for|index|>
      |  ^^^^^^^^^ No overload matches this call.
   The last overload gave the following error.
-    Argument of type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { in: unknown; } | { of: readonly unknown[] | Iterable<unknown>; }) & { renderBody?: AnyMarkoBody | undefined; }'.
-      Type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to type '{ of: readonly unknown[] | Iterable<unknown>; } & { renderBody?: AnyMarkoBody | undefined; }'.
+    Argument of type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { in: unknown; } | { of: readonly unknown[] | Iterable<unknown>; }) & { renderBody?: AnyMarkoBody | undefined; by?: ((...args: unknown[]) => string) | undefined; }'.
+      Type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to type '{ of: readonly unknown[] | Iterable<unknown>; } & { renderBody?: AnyMarkoBody | undefined; by?: ((...args: unknown[]) => string) | undefined; }'.
         Property 'of' is missing in type '{ renderBody: (index: any) => MarkoReturn<void>; }' but required in type '{ of: readonly unknown[] | Iterable<unknown>; }'.
-  70 |   Should error
-  71 | </for>
-  72 |
+  82 |   Should error
+  83 | </for>
+  84 |
 ```
 
-### Ln 69, Col 6
+### Ln 81, Col 6
 ```marko
-  67 | }/>
-  68 |
-> 69 | <for|index|>
+  79 | }/>
+  80 |
+> 81 | <for|index|>
      |      ^^^^^ 'index' is declared but its value is never read.
-  70 |   Should error
-  71 | </for>
-  72 |
+  82 |   Should error
+  83 | </for>
+  84 |
 ```
 

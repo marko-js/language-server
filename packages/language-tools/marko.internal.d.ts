@@ -153,19 +153,19 @@ declare global {
 
       export function forTag<
         Value,
+        Item extends Value extends
+          | readonly (infer Item)[]
+          | Iterable<infer Item>
+          ? Item
+          : unknown,
         RenderBody extends Marko.Body<
-          [
-            value: Value extends readonly (infer Item)[] | Iterable<infer Item>
-              ? Item
-              : unknown,
-            index: number,
-            all: Value,
-          ],
+          [item: Item, index: number, all: Value],
           void
         >,
       >(input: {
         of: Value;
         renderBody: RenderBody;
+        by?: (item: Item, index: number) => string;
       }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
 
       export function forTag<
@@ -177,6 +177,7 @@ declare global {
       >(input: {
         in: Value;
         renderBody: RenderBody;
+        by?: (value: Value[keyof Value], key: keyof Value) => string;
       }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
 
       export function forTag<
@@ -189,6 +190,7 @@ declare global {
         to: To;
         step?: Step;
         renderBody: RenderBody;
+        by?: (index: number) => string;
       }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
 
       export function forTag<RenderBody extends AnyMarkoBody>(
@@ -204,7 +206,7 @@ declare global {
           | {
               of: readonly unknown[] | Iterable<unknown>;
             }
-        ) & { renderBody?: RenderBody },
+        ) & { renderBody?: RenderBody; by?: (...args: unknown[]) => string },
       ): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
 
       export function forAttrTag<
