@@ -15,6 +15,10 @@
 //  ^?      ^?       ^?
 </for>
 
+<for of=list by=(item, index) => `${item}-${index}`>
+//               ^?    ^?
+</for>
+
 <for|item| of=list>
   <const/{ value: hoistedFromForOf } = item/>
 </for>
@@ -33,6 +37,10 @@
 //  ^?     ^?
 </for>
 
+<for in=record by=(value, key) => `${value}-${key}`>
+//                 ^?     ^?
+</for>
+
 <for|key| in=record>
   <const/hoistedFromForIn = key/>
 </for>
@@ -45,6 +53,10 @@
 <for|index| to=10>
   ${index}
 //  ^?
+</for>
+
+<for to=10 by=(index) => `${index}`>
+//             ^?
 </for>
 
 <for|index| from=1 to=10>
