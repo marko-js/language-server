@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.1.9
+
+### Patch Changes
+
+- [#231](https://github.com/marko-js/language-server/pull/231) [`52187ac`](https://github.com/marko-js/language-server/commit/52187acf6c14cd049b6b68c93436830a53a45de6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix missing package dependency for language-tools package
+
 ## 2.1.8
 
 ### Patch Changes
