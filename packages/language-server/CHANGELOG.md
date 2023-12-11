@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.1.11
+
+### Patch Changes
+
+- [#229](https://github.com/marko-js/language-server/pull/229) [`6c7e1a9`](https://github.com/marko-js/language-server/commit/6c7e1a97d3177411d7a4145d634da999c50748bd) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add `by` attribute types for `<for>` tag.
+
+- Updated dependencies [[`6c7e1a9`](https://github.com/marko-js/language-server/commit/6c7e1a97d3177411d7a4145d634da999c50748bd)]:
+  - @marko/language-tools@2.1.8
+
 ## 1.1.10
 
 ### Patch Changes
