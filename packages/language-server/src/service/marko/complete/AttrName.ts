@@ -120,6 +120,10 @@ export function AttrName({
       }
     }
 
+    if (!attr.required) {
+      label += "?";
+    }
+
     completions.push({
       label,
       documentation: documentation.value ? documentation : undefined,
