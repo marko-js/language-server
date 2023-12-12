@@ -46,6 +46,7 @@ const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
+const START_OF_FILE: Range = { start: 0, end: 0 };
 
 type ProcessedBody = {
   renderBody: Repeatable<Node.ChildNode>;
@@ -371,6 +372,8 @@ function ${templateName}() {\n`);
       : `(): () => <${internalInputWithExtends}>${renderAndReturn};`
   }
 }>`;
+
+    this.#extractor.copy(START_OF_FILE);
 
     if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write(`export default new (
