@@ -2,7 +2,7 @@
 ### Ln 1, Col 6
 ```marko
 > 1 | <div role="fake-role"></div>
-    |      ^^^^ Type '"fake-role"' is not assignable to type 'AttrMissing | "none" | "search" | "list" | "link" | "dialog" | "grid" | "listbox" | "menu" | "tree" | "alert" | "alertdialog" | "application" | "article" | "banner" | ... 55 more ... | "treeitem"'.
+    |      ^^^^ Type '"fake-role"' is not assignable to type 'AttrMissing | "alert" | "alertdialog" | "application" | "article" | "banner" | "button" | "cell" | "checkbox" | "columnheader" | "combobox" | "complementary" | ... 58 more ... | "treeitem"'.
   2 |
 ```
 

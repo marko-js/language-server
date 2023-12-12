@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/helper-validator-identifier": "^7.22.20",
-    "@babel/parser": "^7.23.5",
+    "@babel/parser": "^7.23.6",
     "htmljs-parser": "^5.5.1",
     "strip-json-comments": "^3.1.1",
     "relative-import-path": "^1.0.0"
@@ -20,7 +20,7 @@
     "@types/babel__code-frame": "^7.0.6",
     "@types/babel__helper-validator-identifier": "^7.15.2",
     "@typescript/vfs": "^1.5.0",
-    "marko": "^5.32.0",
+    "marko": "^5.32.1",
     "mitata": "^0.1.6",
     "tsx": "^4.6.2"
   },
