@@ -9,7 +9,7 @@
 ### Ln 1, Col 6
 ```marko
 > 1 | <div hi
-    |      ^^ Object literal may only specify known properties, and '"hi"' does not exist in type 'Directives & Marko·Inputᐸʺdivʺᐳ'.
+    |      ^^ Object literal may only specify known properties, and '"hi"' does not exist in type 'Directives & Div'.
   2 |
 ```
 
