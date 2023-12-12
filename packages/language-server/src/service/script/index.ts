@@ -103,15 +103,11 @@ const ScriptService: Partial<Plugin> = {
         tsProject.host,
       );
       const generated = extracted.toString();
-      const content = (() => {
-        try {
-          return prettier.format(generated, {
-            parser: lang === ScriptLang.ts ? "typescript" : "babel",
-          });
-        } catch {
-          return generated;
-        }
-      })();
+      const content = await prettier
+        .format(generated, {
+          parser: lang === ScriptLang.ts ? "typescript" : "babel",
+        })
+        .catch(() => generated);
       return {
         language: lang === ScriptLang.ts ? "typescript" : "javascript",
         content,
