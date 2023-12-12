@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.1.10
+
+### Patch Changes
+
+- [#235](https://github.com/marko-js/language-server/pull/235) [`4524d4c`](https://github.com/marko-js/language-server/commit/4524d4cb3ce2882c14913dd8e4847de1c013543c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Surface errors from default export at the top of the Marko file.
+
 ## 2.1.9
 
 ### Patch Changes
