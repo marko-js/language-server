@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.13
+
+### Patch Changes
+
+- [#233](https://github.com/marko-js/language-server/pull/233) [`05bff91`](https://github.com/marko-js/language-server/commit/05bff9172afea4a3beedd6440a6c8532ef03591b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with extracted script code debug command.
+
 ## 1.1.12
 
 ### Patch Changes
