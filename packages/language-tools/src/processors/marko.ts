@@ -21,6 +21,23 @@ export default {
       runtimeTypes.internalTypesFile,
       runtimeTypes.markoTypesFile,
     ];
+    const compileConfig: import("@marko/compiler").Config = {
+      output: "source",
+      stripTypes: true,
+      sourceMaps: true,
+      babelConfig: {
+        babelrc: false,
+        configFile: false,
+        browserslistConfigFile: false,
+        caller: {
+          name: "@marko/type-check",
+          supportsStaticESM: true,
+          supportsDynamicImport: true,
+          supportsTopLevelAwait: true,
+          supportsExportNamespaceFrom: true,
+        },
+      },
+    };
 
     if (runtimeTypes.markoRunTypesFile) {
       rootNames.push(runtimeTypes.markoRunTypesFile);
@@ -65,11 +82,7 @@ export default {
       print({ extracted: { parsed } }) {
         const { code, map } = Project.getCompiler(
           path.dirname(parsed.filename),
-        ).compileSync(parsed.code, parsed.filename, {
-          output: "source",
-          stripTypes: true,
-          sourceMaps: true,
-        });
+        ).compileSync(parsed.code, parsed.filename, compileConfig);
         return { code, map };
       },
       printTypes({ printer, typeChecker, sourceFile, formatSettings }) {
