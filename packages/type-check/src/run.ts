@@ -452,58 +452,66 @@ export default function run(opts: Options) {
 }
 
 function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
-  if (diag.file && diag.start !== undefined) {
-    const extracted = extractCache.get(diag.file);
+  const diagMessage = flattenDiagnosticMessage(
+    diag.messageText,
+    report.display,
+    report.formatSettings.newLineCharacter,
+  );
+
+  if (diag.file) {
     let code = diag.file.text;
-    let loc: Location | void;
+    let loc: Location | void = undefined;
 
-    if (extracted) {
-      loc = extracted.sourceLocationAt(
-        diag.start,
-        diag.start + (diag.length || 0),
-      );
-      code = extracted.parsed.code;
+    if (diag.start !== undefined) {
+      const extracted = extractCache.get(diag.file);
 
-      if (!loc) return; // Ignore diagnostics that are outside of the extracted code.
-    } else {
-      const start = ts.getLineAndCharacterOfPosition(diag.file, diag.start);
-      const end = diag.length
-        ? ts.getLineAndCharacterOfPosition(diag.file, diag.start + diag.length)
-        : start;
-      loc = {
-        start,
-        end,
-      };
+      if (extracted) {
+        loc = extracted.sourceLocationAt(
+          diag.start,
+          diag.start + (diag.length || 0),
+        );
+        code = extracted.parsed.code;
+      } else {
+        const start = ts.getLineAndCharacterOfPosition(diag.file, diag.start);
+        const end = diag.length
+          ? ts.getLineAndCharacterOfPosition(
+              diag.file,
+              diag.start + diag.length,
+            )
+          : start;
+        loc = {
+          start,
+          end,
+        };
+      }
     }
 
-    const diagMessage = flattenDiagnosticMessage(
-      diag.messageText,
-      report.display,
-      report.formatSettings.newLineCharacter,
-    );
-
-    report.out.push(
-      `${color.cyan(
-        path.relative(currentDirectory, diag.file.fileName),
-      )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
-        loc.start.character + 1,
-      )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
-        `TS${diag.code}`,
-      )}${report.formatSettings.newLineCharacter}${
-        report.display === Display.codeframe
-          ? report.formatSettings.newLineCharacter +
-            formatCodeFrameMessage(code, loc, diagMessage)
-          : diagMessage
-      }`,
-    );
+    if (loc) {
+      report.out.push(
+        `${color.cyan(
+          path.relative(currentDirectory, diag.file.fileName),
+        )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
+          loc.start.character + 1,
+        )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
+          `TS${diag.code}`,
+        )}${report.formatSettings.newLineCharacter}${
+          report.display === Display.codeframe
+            ? report.formatSettings.newLineCharacter +
+              formatCodeFrameMessage(code, loc, diagMessage)
+            : diagMessage
+        }`,
+      );
+    } else {
+      report.out.push(
+        `${color.cyan(
+          path.relative(currentDirectory, diag.file.fileName),
+        )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
+          `TS${diag.code}`,
+        )}${report.formatSettings.newLineCharacter}${diagMessage}`,
+      );
+    }
   } else {
-    report.out.push(
-      flattenDiagnosticMessage(
-        diag.messageText,
-        report.display,
-        report.formatSettings.newLineCharacter,
-      ),
-    );
+    report.out.push(diagMessage);
   }
 
   if (!report.hasErrors && diag.category === ts.DiagnosticCategory.Error) {
