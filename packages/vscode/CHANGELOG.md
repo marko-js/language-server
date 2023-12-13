@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.15
+
+### Patch Changes
+
+- [#237](https://github.com/marko-js/language-server/pull/237) [`a59b23d`](https://github.com/marko-js/language-server/commit/a59b23da89ce721dad3d1529d4894362861f7698) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where mtc was striping `Input` type if it was an empty interface with an extends clause.
+
+- [#237](https://github.com/marko-js/language-server/pull/237) [`b0f43ce`](https://github.com/marko-js/language-server/commit/b0f43ce0a2bda2b80f98ef55d2d3346f12b9f960) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Correctly resolve ts errors related to Symbol.iterator in the template.
+
 ## 1.1.14
 
 ### Patch Changes

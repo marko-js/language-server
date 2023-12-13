@@ -1,5 +1,18 @@
 # @marko/type-check
 
+## 1.0.7
+
+### Patch Changes
+
+- [#237](https://github.com/marko-js/language-server/pull/237) [`a59b23d`](https://github.com/marko-js/language-server/commit/a59b23da89ce721dad3d1529d4894362861f7698) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where mtc was striping `Input` type if it was an empty interface with an extends clause.
+
+- [#237](https://github.com/marko-js/language-server/pull/237) [`265686c`](https://github.com/marko-js/language-server/commit/265686c58d1ee035586da1701101375f9016e01a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure all compiler diagnostics are emitted, even if there is no exact location in the file.
+
+- [#237](https://github.com/marko-js/language-server/pull/237) [`b0f43ce`](https://github.com/marko-js/language-server/commit/b0f43ce0a2bda2b80f98ef55d2d3346f12b9f960) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Correctly resolve ts errors related to Symbol.iterator in the template.
+
+- Updated dependencies [[`a59b23d`](https://github.com/marko-js/language-server/commit/a59b23da89ce721dad3d1529d4894362861f7698), [`b0f43ce`](https://github.com/marko-js/language-server/commit/b0f43ce0a2bda2b80f98ef55d2d3346f12b9f960)]:
+  - @marko/language-tools@2.1.11
+
 ## 1.0.6
 
 ### Patch Changes
