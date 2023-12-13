@@ -232,6 +232,7 @@ export default {
           statement.type.members.length === 0) ||
         (ts.isInterfaceDeclaration(statement) &&
           statement.name.escapedText === "Input" &&
+          !statement.heritageClauses &&
           !statement.typeParameters &&
           statement.members.length === 0)
       );
