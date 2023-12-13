@@ -1256,9 +1256,10 @@ constructor(_?: Return) {}
     }
 
     if (tag.type === NodeType.AttrTag) {
-      this.#extractor.write(
-        `[Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`,
-      );
+      this.#extractor
+        .write("[/*")
+        .copy(tag.name)
+        .write(`*/Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`);
     }
 
     if (!hasInput) {
