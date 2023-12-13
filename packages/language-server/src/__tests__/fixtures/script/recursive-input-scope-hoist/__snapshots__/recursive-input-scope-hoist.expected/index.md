@@ -48,13 +48,11 @@
    7 |     <let/a = "a" as const/>
    8 |   </@comment>
 >  9 |   <@comment>
-     |    ^^^^^^^^^
-> 10 |     <let/c = "c" as const/>
-     | ^^^^^^^^^^^ Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
+     |    ^^^^^^^^ Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
   Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' but required in type 'Comment'.
+  10 |     <let/c = "c" as const/>
   11 |   </@comment>
   12 | </comments>
-  13 |
 ```
 
 ### Ln 14, Col 2
