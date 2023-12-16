@@ -1,5 +1,16 @@
 # @marko/type-check
 
+## 1.1.0
+
+### Minor Changes
+
+- [#241](https://github.com/marko-js/language-server/pull/241) [`842b5ba`](https://github.com/marko-js/language-server/commit/842b5ba18ca9efd559df45b710df77a6201609bc) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Automatically add `.js` extensions where necessary in files output by `@marko/type-check` to work better with native es modules.
+
+### Patch Changes
+
+- Updated dependencies [[`842b5ba`](https://github.com/marko-js/language-server/commit/842b5ba18ca9efd559df45b710df77a6201609bc)]:
+  - @marko/language-tools@2.2.0
+
 ## 1.0.7
 
 ### Patch Changes
