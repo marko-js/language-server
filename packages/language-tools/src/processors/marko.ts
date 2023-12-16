@@ -1,10 +1,15 @@
 import path from "path";
+import type { Config, types as t } from "@marko/compiler";
 import type ts from "typescript/lib/tsserverlibrary";
 import { ScriptLang, extractScript } from "../extractors/script";
 import { parse } from "../parser";
 
 import * as Project from "../util/project";
 import type { ProcessorConfig } from ".";
+
+const isRemapExtensionReg = /\.ts$/;
+const skipRemapExtensionsReg =
+  /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
 export default {
   extension: ".marko",
@@ -21,7 +26,10 @@ export default {
       runtimeTypes.internalTypesFile,
       runtimeTypes.markoTypesFile,
     ];
-    const compileConfig: import("@marko/compiler").Config = {
+    const getJSFileIfTSExists = (source: string, importer: string) =>
+      host.fileExists(path.join(importer, "..", `${source}.ts`)) &&
+      `${source}.js`;
+    const compileConfig: Config = {
       output: "source",
       stripTypes: true,
       sourceMaps: true,
@@ -29,6 +37,38 @@ export default {
         babelrc: false,
         configFile: false,
         browserslistConfigFile: false,
+        plugins: [
+          {
+            visitor: {
+              // Find all relative imports in Marko template
+              // if they would map to a `.ts` file, then we convert it to a `.js` file for the output.
+              "ImportDeclaration|ExportNamedDeclaration"(
+                decl: t.NodePath<
+                  t.ImportDeclaration | t.ExportNamedDeclaration
+                >,
+              ) {
+                const { node } = decl;
+                const value = node.source?.value;
+                const importKind =
+                  "importKind" in node ? node.importKind : undefined;
+                if (
+                  value?.[0] === "." &&
+                  (!importKind || importKind === "value") &&
+                  !skipRemapExtensionsReg.test(value)
+                ) {
+                  const filename = decl.hub.file.opts.filename as string;
+                  const remap = isRemapExtensionReg.test(value)
+                    ? `${value.slice(0, -2)}js`
+                    : getJSFileIfTSExists(value, filename) ||
+                      getJSFileIfTSExists(`${value}/index`, filename);
+                  if (remap) {
+                    node.source!.value = remap;
+                  }
+                }
+              },
+            },
+          },
+        ],
         caller: {
           name: "@marko/type-check",
           supportsStaticESM: true,

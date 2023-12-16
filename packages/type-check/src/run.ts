@@ -38,6 +38,10 @@ const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
   : (fileName: string) => fileName.toLowerCase();
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
+const isRemapExtensionReg = /\.ts$/;
+const skipRemapExtensionsReg =
+  /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
+
 const extractCache = new WeakMap<
   ts.SourceFile,
   ReturnType<Processors.Processor["extract"]>
@@ -95,6 +99,61 @@ export default function run(opts: Options) {
         getCanonicalFileName,
         options,
       );
+      const getJSFileIfTSExists = (source: string, importer: string) =>
+        compilerHost.fileExists(path.join(importer, "..", `${source}.ts`)) &&
+        `${source}.js`;
+
+      // Find all relative imports in typescript output
+      // if they would map to a `.ts` file, then we convert it to a `.js` file for the output.
+      const customTransformers: ts.CustomTransformers = {
+        after: [
+          (ctx) => (sourceFile) => {
+            return ts.visitNode(sourceFile, visit) as ts.SourceFile;
+
+            function visit(node: ts.Node): ts.Node {
+              if (ts.isSourceFile(node)) {
+                return ts.visitEachChild(node, visit, ctx);
+              }
+
+              if (
+                (ts.isImportDeclaration(node) ||
+                  ts.isExportDeclaration(node)) &&
+                node.moduleSpecifier &&
+                ts.isStringLiteral(node.moduleSpecifier)
+              ) {
+                const value = node.moduleSpecifier.text;
+                if (value[0] === "." && !skipRemapExtensionsReg.test(value)) {
+                  const { fileName } = sourceFile;
+                  const remap = isRemapExtensionReg.test(value)
+                    ? `${value.slice(0, -2)}js`
+                    : getJSFileIfTSExists(value, fileName) ||
+                      getJSFileIfTSExists(`${value}/index`, fileName);
+                  if (remap) {
+                    return ts.isImportDeclaration(node)
+                      ? ctx.factory.updateImportDeclaration(
+                          node,
+                          node.modifiers,
+                          node.importClause,
+                          ctx.factory.createStringLiteral(remap),
+                          node.attributes,
+                        )
+                      : ctx.factory.updateExportDeclaration(
+                          node,
+                          node.modifiers,
+                          node.isTypeOnly,
+                          node.exportClause,
+                          ctx.factory.createStringLiteral(remap),
+                          node.attributes,
+                        );
+                  }
+                }
+              }
+
+              return node;
+            }
+          },
+        ],
+      };
 
       const { readDirectory = ts.sys.readDirectory } = compilerHost;
       compilerHost.readDirectory = (
@@ -138,7 +197,7 @@ export default function run(opts: Options) {
               resolvedFileName = path.resolve(containingFile, "..", moduleName);
             } else {
               // For other paths we treat it as a node_module and try resolving
-              // that modules `marko.json`. If the `marko.json` exists then we'll
+              // that modules `package.json`. If the `package.json` exists then we'll
               // try resolving the `.marko` file relative to that.
               const [, nodeModuleName, relativeModulePath] =
                 modulePartsReg.exec(moduleName)!;
@@ -285,7 +344,6 @@ export default function run(opts: Options) {
         _writeFile,
         cancellationToken,
         emitOnlyDtsFiles,
-        customTransformers,
       ) => {
         let writeFile = _writeFile;
         if (_writeFile) {
