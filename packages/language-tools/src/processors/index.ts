@@ -41,7 +41,7 @@ export interface PrintContext {
 
 export const extensions = [marko.extension] as ProcessorExtension[];
 
-export function create(options: Parameters<ProcessorConfig["create"]>[0]) {
+export function create(options: CreateProcessorOptions) {
   return {
     [marko.extension]: marko.create(options),
   } as Record<ProcessorExtension, Processor>;
