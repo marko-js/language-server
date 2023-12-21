@@ -1,7 +1,7 @@
 import * as r from "./axe-rules";
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
+  k: infer I
 ) => void
   ? I
   : never;
@@ -52,12 +52,12 @@ type Blacklist =
   | typeof r.structure.cssOrientationLock
   | typeof r.structure.hiddenContent
   // handled by TypeScript
-  | typeof r.aria.ariaValidAttrValue;
+  | typeof r.aria.ariaValidAttrValue
+  | typeof r.aria.ariaAllowedAttr;
 
 type Whitelist = Exclude<RuleId, Blacklist>;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
-  [r.aria.ariaAllowedAttr]: {},
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
   [r.aria.ariaCommandName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaDialogName]: { unknownBody: true, attrSpread: true },
