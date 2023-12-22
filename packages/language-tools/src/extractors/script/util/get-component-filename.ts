@@ -3,7 +3,10 @@ import path from "path";
 
 export function getComponentFilename(from: string) {
   const dir = path.dirname(from);
-  const nameNoExt = path.basename(from, ".marko");
+  let nameNoExt = path.basename(from, ".marko");
+  if (nameNoExt.endsWith(".d")) {
+    nameNoExt = nameNoExt.slice(0, -2);
+  }
   const isEntry = nameNoExt === "index";
   const componentFull = `${nameNoExt}.component.`;
   const componentBrowserFull = `${nameNoExt}.component-browser.`;
