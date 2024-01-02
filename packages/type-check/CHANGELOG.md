@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 1.1.1
+
+### Patch Changes
+
+- [#246](https://github.com/marko-js/language-server/pull/246) [`2dc0bcb`](https://github.com/marko-js/language-server/commit/2dc0bcb07abfd0936e567d1cf89bb512fe483072) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Change autodiscovery for `component.d.ts` files
+
 ## 1.1.0
 
 ### Minor Changes
