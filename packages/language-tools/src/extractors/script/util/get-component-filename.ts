@@ -8,7 +8,7 @@ export function getComponentFilename(from: string) {
     nameNoExt = nameNoExt.slice(0, -2);
   }
   const isEntry = nameNoExt === "index";
-  const fileMatch = `(${nameNoExt.replace(/\./g, "\\.")}\\.${
+  const fileMatch = `(${nameNoExt.replace(/[.*+?^$[\]()|\\:!{}]/g, "\\$&")}\\.${
     isEntry ? "|" : ""
   })`;
   const componentMatch = new RegExp(
