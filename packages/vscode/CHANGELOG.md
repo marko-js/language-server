@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.16
+
+### Patch Changes
+
+- [#244](https://github.com/marko-js/language-server/pull/244) [`8132732`](https://github.com/marko-js/language-server/commit/813273297542cf1bcedb7a003fa8848a350ffea3) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix types for imported d.marko files
+
+- [#243](https://github.com/marko-js/language-server/pull/243) [`6ea5808`](https://github.com/marko-js/language-server/commit/6ea580828a7b3b88bdc2b0500fa70d8c893e185b) Thanks [@LuLaValva](https://github.com/LuLaValva)! - remove false positive from axe
+
 ## 1.1.15
 
 ### Patch Changes

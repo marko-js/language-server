@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.2.1
+
+### Patch Changes
+
+- [#244](https://github.com/marko-js/language-server/pull/244) [`8132732`](https://github.com/marko-js/language-server/commit/813273297542cf1bcedb7a003fa8848a350ffea3) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix types for imported d.marko files
+
 ## 2.2.0
 
 ### Minor Changes
