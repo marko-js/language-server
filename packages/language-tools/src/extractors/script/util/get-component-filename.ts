@@ -3,21 +3,19 @@ import path from "path";
 
 export function getComponentFilename(from: string) {
   const dir = path.dirname(from);
-  const nameNoExt = path.basename(from, ".marko");
+  let nameNoExt = path.basename(from, ".marko");
+  if (nameNoExt.endsWith(".d")) {
+    nameNoExt = nameNoExt.slice(0, -2);
+  }
   const isEntry = nameNoExt === "index";
-  const componentFull = `${nameNoExt}.component.`;
-  const componentBrowserFull = `${nameNoExt}.component-browser.`;
-  const componentPartial = isEntry ? "component." : undefined;
-  const componentBrowserPartial = isEntry ? "component-browser." : undefined;
+  const fileMatch = `(${nameNoExt.replace(/\./g, "\\.")}\\.${
+    isEntry ? "|" : ""
+  })`;
+  const componentMatch = new RegExp(
+    `^${fileMatch}component(-browser)?\\.\\w+$`,
+  );
   for (const entry of tryReaddirSync(dir)) {
-    // Prefers `component-browser` over `component`.
-    if (
-      (entry !== from &&
-        ((isEntry && entry.startsWith(componentBrowserPartial!)) ||
-          entry.startsWith(componentPartial!))) ||
-      entry.startsWith(componentBrowserFull) ||
-      entry.startsWith(componentFull)
-    ) {
+    if (componentMatch.test(entry)) {
       return path.join(dir, entry);
     }
   }
