@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.1.16
+
+### Patch Changes
+
+- [#248](https://github.com/marko-js/language-server/pull/248) [`64478f6`](https://github.com/marko-js/language-server/commit/64478f68cbf216a8eb27153bf2f8eab61a61dfc2) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix regex for component filenames
+
+- Updated dependencies [[`64478f6`](https://github.com/marko-js/language-server/commit/64478f68cbf216a8eb27153bf2f8eab61a61dfc2)]:
+  - @marko/language-tools@2.2.2
+
 ## 1.1.15
 
 ### Patch Changes
