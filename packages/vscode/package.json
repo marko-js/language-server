@@ -87,7 +87,7 @@
     "@vscode/test-electron": "^2.3.8",
     "@vscode/vsce": "^2.22.0",
     "ovsx": "^0.8.3",
-    "tsx": "^4.6.2",
+    "tsx": "^4.7.0",
     "vscode-languageclient": "^9.0.1"
   },
   "displayName": "Marko VSCode",
