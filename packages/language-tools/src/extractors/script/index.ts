@@ -937,52 +937,60 @@ constructor(_?: Return) {}
                   break;
               }
             } else if (attr.args) {
-              const stringLiteralFirstArgMatch = this.#execAtIndex(
-                REG_ATTR_ARG_LITERAL,
-                attr.args.value.start,
-              );
               this.#extractor.write('"').copy(name).write('": ');
 
-              if (stringLiteralFirstArgMatch) {
-                const hasPartialArgs = stringLiteralFirstArgMatch[3] === ",";
-                const stringLiteralValue = stringLiteralFirstArgMatch[2];
-                const stringLiteralStart = stringLiteralFirstArgMatch.index;
-                const isValidProperty = REG_OBJECT_PROPERTY.test(
-                  stringLiteralFirstArgMatch[2],
+              if (
+                typeof name !== "string" &&
+                this.#read(name).startsWith("on")
+              ) {
+                const stringLiteralFirstArgMatch = this.#execAtIndex(
+                  REG_ATTR_ARG_LITERAL,
+                  attr.args.value.start,
                 );
 
-                if (isValidProperty) {
-                  const propertNameStart = stringLiteralStart + 1;
-                  this.#extractor.write("component.").copy({
-                    start: propertNameStart,
-                    end: propertNameStart + stringLiteralValue.length,
-                  });
+                if (stringLiteralFirstArgMatch) {
+                  const hasPartialArgs = stringLiteralFirstArgMatch[3] === ",";
+                  const stringLiteralValue = stringLiteralFirstArgMatch[2];
+                  const stringLiteralStart = stringLiteralFirstArgMatch.index;
+                  const isValidProperty = REG_OBJECT_PROPERTY.test(
+                    stringLiteralFirstArgMatch[2],
+                  );
+
+                  if (isValidProperty) {
+                    const propertNameStart = stringLiteralStart + 1;
+                    this.#extractor.write("component.").copy({
+                      start: propertNameStart,
+                      end: propertNameStart + stringLiteralValue.length,
+                    });
+                  } else {
+                    this.#extractor
+                      .write(`component[`)
+                      .copy({
+                        start: stringLiteralStart,
+                        end: stringLiteralStart + stringLiteralValue.length + 2,
+                      })
+                      .write("]");
+                  }
+
+                  if (hasPartialArgs) {
+                    this.#extractor
+                      .write(`.bind(component, `)
+                      .copy({
+                        start:
+                          stringLiteralStart +
+                          stringLiteralFirstArgMatch[0].length,
+                        end: attr.args.value.end,
+                      })
+                      .write(")");
+                  }
                 } else {
                   this.#extractor
-                    .write(`component[`)
-                    .copy({
-                      start: stringLiteralStart,
-                      end: stringLiteralStart + stringLiteralValue.length + 2,
-                    })
-                    .write("]");
-                }
-
-                if (hasPartialArgs) {
-                  this.#extractor
-                    .write(`.bind(component, `)
-                    .copy({
-                      start:
-                        stringLiteralStart +
-                        stringLiteralFirstArgMatch[0].length,
-                      end: attr.args.value.end,
-                    })
-                    .write(")");
+                    .write(`${varShared("bind")}(component, \n`)
+                    .copy(attr.args.value)
+                    .write("\n)");
                 }
               } else {
-                this.#extractor
-                  .write(`${varShared("bind")}(component, \n`)
-                  .copy(attr.args.value)
-                  .write("\n)");
+                this.#extractor.copy(attr.args);
               }
             } else {
               this.#extractor
