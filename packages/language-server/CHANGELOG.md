@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.1.17
+
+### Patch Changes
+
+- [#251](https://github.com/marko-js/language-server/pull/251) [`26e6d44`](https://github.com/marko-js/language-server/commit/26e6d44806c7fdee98a4c2a83eac35a94654189b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid loading babel config files when validating documents.
+
+- [#251](https://github.com/marko-js/language-server/pull/251) [`1a614e7`](https://github.com/marko-js/language-server/commit/1a614e7ed24006010087ad02ce92c88fb5414f43) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update dependencies
+
+- [#251](https://github.com/marko-js/language-server/pull/251) [`36a769c`](https://github.com/marko-js/language-server/commit/36a769cbf8c81caa7a22cce9b22b5688c9a0950a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Only inject component method completions for event handler attributes. Fixes issue with `no-update-if` directive.
+
+- Updated dependencies [[`1a614e7`](https://github.com/marko-js/language-server/commit/1a614e7ed24006010087ad02ce92c88fb5414f43), [`36a769c`](https://github.com/marko-js/language-server/commit/36a769cbf8c81caa7a22cce9b22b5688c9a0950a)]:
+  - @marko/language-tools@2.2.3
+
 ## 1.1.16
 
 ### Patch Changes
