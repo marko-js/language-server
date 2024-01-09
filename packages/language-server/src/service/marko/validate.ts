@@ -2,11 +2,30 @@ import path from "path";
 import { Project } from "@marko/language-tools";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { DiagnosticType } from "@marko/babel-utils";
+import type { Config } from "@marko/compiler";
 import { getFSPath } from "../../utils/file";
 import type { Plugin } from "../types";
 
 const markoErrorRegExp =
   /^(.+?)\.marko(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
+const compilerConfig: Config = {
+  code: false,
+  output: "migrate",
+  sourceMaps: false,
+  errorRecovery: true,
+  babelConfig: {
+    babelrc: false,
+    configFile: false,
+    browserslistConfigFile: false,
+    caller: {
+      name: "@marko/language-server",
+      supportsStaticESM: true,
+      supportsDynamicImport: true,
+      supportsTopLevelAwait: true,
+      supportsExportNamespaceFrom: true,
+    },
+  },
+};
 
 export const doValidate: Plugin["doValidate"] = (doc) => {
   const filename = getFSPath(doc);
@@ -15,21 +34,7 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
   try {
     const { meta } = Project.getCompiler(
       filename && path.dirname(filename),
-    ).compileSync(doc.getText(), filename || "untitled.marko", {
-      code: false,
-      output: "migrate",
-      sourceMaps: false,
-      errorRecovery: true,
-      babelConfig: {
-        caller: {
-          name: "@marko/language-server",
-          supportsStaticESM: true,
-          supportsDynamicImport: true,
-          supportsTopLevelAwait: true,
-          supportsExportNamespaceFrom: true,
-        },
-      },
-    });
+    ).compileSync(doc.getText(), filename || "untitled.marko", compilerConfig);
 
     if (meta.diagnostics) {
       for (const diag of meta.diagnostics) {
