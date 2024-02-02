@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- [#253](https://github.com/marko-js/language-server/pull/253) [`5313aae`](https://github.com/marko-js/language-server/commit/5313aaefe6f7bf977724235e65c32af7821f0911) Thanks [@svallory](https://github.com/svallory)! - Add syntax highlighting for Marko code blocks in Markdown and MDX files
+
 ## 1.1.18
 
 ### Patch Changes
