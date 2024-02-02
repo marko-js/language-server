@@ -55,6 +55,20 @@
           "source.scss": "scss",
           "source.ts": "typescript"
         }
+      },
+      {
+        "scopeName": "embedded.marko.block",
+        "path": "./syntaxes/embedded.marko.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown",
+          "source.mdx"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.marko": "marko"
+        },
+        "tokenTypes": {
+          "meta.embedded.block.marko": "other"
+        }
       }
     ],
     "configuration": {

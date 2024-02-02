@@ -1,0 +1,51 @@
+{
+  "information_for_contributors": [
+    "Check these references to learn about the Markdown syntax spec and grammar injection in VS Code",
+    "",
+    "CommonMark Spec: https://spec.commonmark.org/0.31.2/#code-fence",
+    "VS Code source code links:",
+    "  Markdown Grammar: https://github.com/microsoft/vscode-markdown-tm-grammar",
+    "  Markdown tmLanguage: https://github.com/microsoft/vscode/blob/9794c5e919eb3a44c8159a72d6db90bf1bee9c38/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json",
+    "",
+    "Injection grammars: https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#injection-grammars",
+    "  Examples:",
+    "    - https://github.com/mjbvz/vscode-fenced-code-block-grammar-injection-example",
+    "    - markdown-math: https://github.com/microsoft/vscode/tree/9794c5e919eb3a44c8159a72d6db90bf1bee9c38/extensions/markdown-math"
+  ],
+  "name": "Fenced Marko Code Block in Markdown",
+  "scopeName": "embedded.marko.block",
+  "injectionSelector": "L:text.html.markdown - meta.embedded.marko, L:source.mdx - meta.embedded.marko",
+  "fileTypes": [],
+  "patterns": [{ "include": "#marko-code-block" }],
+  "repository": {
+    "marko-code-block": {
+      "name": "markup.fenced_code.block.markdown.marko, markup.code",
+      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(marko)((\\s+|:|,|\\{|\\?)[^`]*)?$)",
+      "beginCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown, string.other.begin.code.fenced.mdx"
+        },
+        "4": {
+          "name": "fenced_code.block.language.markdown, entity.name.function.mdx"
+        },
+        "5": {
+          "name": "fenced_code.block.language.attributes.markdown, markup.code.other.mdx"
+        }
+      },
+      "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+      "endCaptures": {
+        "3": {
+          "name": "punctuation.definition.markdown, string.other.end.code.fenced.mdx"
+        }
+      },
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.marko",
+          "patterns": [{ "include": "text.marko" }]
+        }
+      ]
+    }
+  }
+}
