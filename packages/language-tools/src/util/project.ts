@@ -1,9 +1,9 @@
 import path from "path";
 import { createRequire } from "module";
 import type TS from "typescript/lib/tsserverlibrary";
+import { strip as stripJSONComments } from "@luxass/strip-json-comments";
 import type { TaglibLookup } from "@marko/babel-utils";
 import type * as Compiler from "@marko/compiler";
-import stripJSONComments from "strip-json-comments";
 import { ScriptLang } from "../extractors/script";
 
 export interface Meta {

@@ -98,8 +98,8 @@
     "@marko/language-server": "^1.1.17",
     "@types/babel__helper-validator-identifier": "^7.15.2",
     "@types/vscode": "^1.80.0",
-    "@vscode/test-electron": "^2.3.8",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.23.0",
     "ovsx": "^0.8.3",
     "tsx": "^4.7.0",
     "vscode-languageclient": "^9.0.1"
