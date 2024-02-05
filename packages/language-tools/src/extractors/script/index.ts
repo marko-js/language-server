@@ -310,6 +310,7 @@ function ${templateName}() {\n`);
   const input = ${this.#getCastedType(`Input${typeArgsStr}`)};
   const component = ${this.#getCastedType(`Component${typeArgsStr}`)};
   const state = ${varShared("state")}(component);
+  const $signal = ${this.#getCastedType("AbortSignal")};
   const $global = ${varShared("getGlobal")}(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (${varShared("error")}, ${this.#getCastedType("MarkoRun.Context")})
