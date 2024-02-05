@@ -1,7 +1,7 @@
 {
   "name": "marko-vscode",
   "description": "Marko Tooling for VSCode",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "activationEvents": [
     "workspaceContains:**/*.marko"
   ],
@@ -95,7 +95,7 @@
     }
   },
   "devDependencies": {
-    "@marko/language-server": "^1.1.17",
+    "@marko/language-server": "^1.1.18",
     "@types/babel__helper-validator-identifier": "^7.15.2",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.3.9",
