@@ -127,8 +127,8 @@ const service: Plugin = {
   },
   async findDocumentSymbols(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map(
-        (plugin) => plugin.findDocumentSymbols?.(doc, params, cancel),
+      plugins.map((plugin) =>
+        plugin.findDocumentSymbols?.(doc, params, cancel),
       ),
     );
 
@@ -159,8 +159,8 @@ const service: Plugin = {
   },
   async findDocumentHighlights(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map(
-        (plugin) => plugin.findDocumentHighlights?.(doc, params, cancel),
+      plugins.map((plugin) =>
+        plugin.findDocumentHighlights?.(doc, params, cancel),
       ),
     );
 
@@ -191,8 +191,8 @@ const service: Plugin = {
   },
   async getColorPresentations(doc, params, cancel) {
     const results = await Promise.allSettled(
-      plugins.map(
-        (plugin) => plugin.getColorPresentations?.(doc, params, cancel),
+      plugins.map((plugin) =>
+        plugin.getColorPresentations?.(doc, params, cancel),
       ),
     );
 
