@@ -316,7 +316,7 @@ function ${templateName}() {\n`);
     (${varShared("error")}, ${this.#getCastedType("MarkoRun.Context")})
   );
   const out = ${varShared("out")};
-  ${varShared("noop")}({ input, component, state, out, $global });\n`);
+  ${varShared("noop")}({ input, component, state, out, $global, $signal });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
 
