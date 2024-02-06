@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.1.19
+
+### Patch Changes
+
+- [#258](https://github.com/marko-js/language-server/pull/258) [`b7c4fe8`](https://github.com/marko-js/language-server/commit/b7c4fe8e0cbc4c38788073c36681a4038f3f0afe) Thanks [@LuLaValva](https://github.com/LuLaValva)! - prevent $signal from being declared but never read
+
+- Updated dependencies [[`b7c4fe8`](https://github.com/marko-js/language-server/commit/b7c4fe8e0cbc4c38788073c36681a4038f3f0afe)]:
+  - @marko/language-tools@2.2.5
+
 ## 1.1.18
 
 ### Patch Changes
