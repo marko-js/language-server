@@ -39,6 +39,7 @@ const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const isRemapExtensionReg = /\.ts$/;
+const isSourceMapExtensionReg = /\.map$/;
 const skipRemapExtensionsReg =
   /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
@@ -366,6 +367,11 @@ export default function run(opts: Options) {
               undefined;
 
             if (processor) {
+              // TODO: for now any processed sourcemap files are ignored.
+              // it should be fairly easy to instead read the sourcemap and
+              // translate the sourcemap to the original file via the extracted
+              // source location.
+              if (isSourceMapExtensionReg.test(fileName)) return;
               const [sourceFile] = sourceFiles!;
               const processorExt = getExt(sourceFile.fileName)!;
               const inDtsExt = processorExt + ts.Extension.Dts;
