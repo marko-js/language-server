@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 1.1.6
+
+### Patch Changes
+
+- [#260](https://github.com/marko-js/language-server/pull/260) [`54d5995`](https://github.com/marko-js/language-server/commit/54d59956fd65ce404939cbff153a2cfce0a79fa3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix error when running with declaration maps enabled.
+
 ## 1.1.5
 
 ### Patch Changes
