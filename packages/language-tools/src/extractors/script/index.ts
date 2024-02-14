@@ -1049,7 +1049,7 @@ constructor(_?: Return) {}
 
     if (dynamicAttrTagParents) {
       this.#writeDynamicAttrTagParents(dynamicAttrTagParents);
-      if (wasMerge) this.#extractor.write(")");
+      if (wasMerge) this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
     }
   }
 
