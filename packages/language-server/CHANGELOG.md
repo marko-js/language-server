@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.1.20
+
+### Patch Changes
+
+- [#262](https://github.com/marko-js/language-server/pull/262) [`521a0da`](https://github.com/marko-js/language-server/commit/521a0da14c4dddec61ab324972b6764a60714b9e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with typescript output when using static attr tags, dynamic attr tags and a renderBody all together.
+
+- Updated dependencies [[`521a0da`](https://github.com/marko-js/language-server/commit/521a0da14c4dddec61ab324972b6764a60714b9e)]:
+  - @marko/language-tools@2.2.6
+
 ## 1.1.19
 
 ### Patch Changes
