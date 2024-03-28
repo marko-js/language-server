@@ -308,7 +308,7 @@ const service: Plugin = {
 
     return diagnostics;
   },
-  format: MarkoPlugin.format,
+  format: MarkoPlugin.format!,
 };
 
 function maxRange(a: Range | undefined, b: Range | undefined) {

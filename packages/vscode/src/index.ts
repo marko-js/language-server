@@ -1,6 +1,10 @@
 import {
   type ExtensionContext,
+  Position,
+  Range,
+  TextEdit,
   ViewColumn,
+  WorkspaceEdit,
   commands,
   window,
   workspace,
@@ -113,6 +117,18 @@ export async function activate(ctx: ExtensionContext) {
     }),
   );
 
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.formatToConciseMode", async () => {
+      formatForced("concise");
+    }),
+  );
+
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.formatToHtmlMode", async () => {
+      formatForced("html");
+    }),
+  );
+
   // Start the client. This will also launch the server
   await client.start();
 }
@@ -123,4 +139,35 @@ export function deactivate(): Thenable<void> | void {
   }
 
   return client.stop();
+}
+
+async function formatForced(mode: "concise" | "html") {
+  const { activeTextEditor } = window;
+  if (!activeTextEditor) {
+    window.showErrorMessage("No open Marko file detected for formatting");
+    return;
+  }
+  const edits: TextEdit[] = await client.sendRequest("$/formatWithMode", {
+    doc: activeTextEditor.document.uri.toString(),
+    options: {
+      tabSize: activeTextEditor.options.tabSize,
+      insertSpaces: activeTextEditor.options.insertSpaces,
+      mode,
+    },
+  });
+
+  const workspaceEdit = new WorkspaceEdit();
+
+  for (const edit of edits) {
+    workspaceEdit.replace(
+      activeTextEditor.document.uri,
+      new Range(
+        new Position(edit.range.start.line, edit.range.start.character),
+        new Position(edit.range.end.line, edit.range.end.character),
+      ),
+      edit.newText,
+    );
+  }
+
+  await workspace.applyEdit(workspaceEdit);
 }
