@@ -31,6 +31,14 @@
       {
         "command": "marko.showHtmlOutput",
         "title": "Marko: Debug: Show Extracted Static HTML Output"
+      },
+      {
+        "command": "marko.formatToConciseMode",
+        "title": "Marko: Format: Force Concise Mode"
+      },
+      {
+        "command": "marko.formatToHtmlMode",
+        "title": "Marko: Format: Force Html Mode"
       }
     ],
     "typescriptServerPlugins": [
