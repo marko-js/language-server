@@ -72,7 +72,7 @@
       "comment": "Top level blocks parsed as JavaScript",
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
-      "begin": "^\\s*(?:(static\\b)|(?=(?:class|import|export)\\b))",
+      "begin": "^\\s*(?:((?:static|server|client)\\b)|(?=(?:class|import|export)\\b))",
       "end": "(?=\\n|$)",
       "patterns": [{ "include": "source.ts" }],
       "beginCaptures": { "1": { "name": "keyword.control.static.marko" } }
