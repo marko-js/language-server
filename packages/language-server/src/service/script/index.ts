@@ -61,7 +61,6 @@ const requiredTSCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
   moduleResolution: ts.ModuleResolutionKind.Bundler,
   noEmit: true,
-  rootDir: ".",
   allowJs: true,
   composite: false,
   declaration: false,
@@ -653,6 +652,8 @@ function getTSProject(docFsPath: string): TSProject {
       undefined,
       extraTSCompilerExtensions,
     );
+
+  options.rootDir = basePath;
 
   // Only ts like files can inject globals into the project, so we filter out everything else.
   const potentialGlobalFiles = new Set<string>(
