@@ -61,6 +61,7 @@ const requiredTSCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
   moduleResolution: ts.ModuleResolutionKind.Bundler,
   noEmit: true,
+  rootDir: ".",
   allowJs: true,
   composite: false,
   declaration: false,
@@ -621,8 +622,8 @@ function getTSProject(docFsPath: string): TSProject {
     }
   }
 
-  const rootDir = (configFile && path.dirname(configFile)) || process.cwd();
-  const cache = Project.getCache(configFile && rootDir);
+  const basePath = (configFile && path.dirname(configFile)) || process.cwd();
+  const cache = Project.getCache(configFile && basePath);
   let projectCache = cache.get(getTSProject) as
     | Map<string, TSProject>
     | undefined;
@@ -632,7 +633,7 @@ function getTSProject(docFsPath: string): TSProject {
   // cached with the Marko compiler cache.
   // This causes the cache to be properly cleared when files change.
   if (projectCache) {
-    cached = projectCache.get(rootDir);
+    cached = projectCache.get(basePath);
     if (cached) return cached;
   } else {
     // Within the compiler cache we store a map
@@ -646,14 +647,12 @@ function getTSProject(docFsPath: string): TSProject {
       (configFile && ts.readConfigFile(configFile, ts.sys.readFile).config) ||
         defaultTSConfig,
       ts.sys,
-      rootDir,
+      basePath,
       requiredTSCompilerOptions,
       configFile,
       undefined,
       extraTSCompilerExtensions,
     );
-
-  options.rootDir ??= rootDir;
 
   // Only ts like files can inject globals into the project, so we filter out everything else.
   const potentialGlobalFiles = new Set<string>(
@@ -670,7 +669,7 @@ function getTSProject(docFsPath: string): TSProject {
   );
 
   const resolutionCache = ts.createModuleResolutionCache(
-    rootDir,
+    basePath,
     getCanonicalFileName,
     options,
   );
@@ -796,7 +795,7 @@ function getTSProject(docFsPath: string): TSProject {
     markoScriptLang,
   };
 
-  projectCache.set(rootDir, tsProject);
+  projectCache.set(basePath, tsProject);
   return tsProject;
 }
 
