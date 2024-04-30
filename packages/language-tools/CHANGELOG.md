@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.3.0
+
+### Minor Changes
+
+- [#264](https://github.com/marko-js/language-server/pull/264) [`44cddf7`](https://github.com/marko-js/language-server/commit/44cddf78022568e74c9f4794278de804c925f93e) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Allow formatting with forced mode
+
 ## 2.2.6
 
 ### Patch Changes

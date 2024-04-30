@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- [#264](https://github.com/marko-js/language-server/pull/264) [`44cddf7`](https://github.com/marko-js/language-server/commit/44cddf78022568e74c9f4794278de804c925f93e) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Allow formatting with forced mode
+
+### Patch Changes
+
+- [#266](https://github.com/marko-js/language-server/pull/266) [`7dfe34c`](https://github.com/marko-js/language-server/commit/7dfe34c155aa739d2b14bbcb5f3e965ef3100866) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix rootDir
+
+- Updated dependencies [[`44cddf7`](https://github.com/marko-js/language-server/commit/44cddf78022568e74c9f4794278de804c925f93e)]:
+  - @marko/language-tools@2.3.0
+
 ## 1.1.20
 
 ### Patch Changes
