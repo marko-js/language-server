@@ -351,7 +351,6 @@ export default function run(opts: Options) {
           const typeChecker = program.getTypeChecker();
           const printer = ts.createPrinter({
             noEmitHelpers: true,
-            removeComments: true,
           });
           writeFile = (
             fileName,
