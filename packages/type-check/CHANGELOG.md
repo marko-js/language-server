@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 1.1.8
+
+### Patch Changes
+
+- [#271](https://github.com/marko-js/language-server/pull/271) [`290802c`](https://github.com/marko-js/language-server/commit/290802c70009e277b8576c0c7c11fd17e62f35a0) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Preserve comments
+
 ## 1.1.7
 
 ### Patch Changes
