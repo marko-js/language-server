@@ -115,10 +115,10 @@ class HTMLExtractor {
   #writeAttrNamed(attr: Node.AttrNamed) {
     this.#extractor.write(" ");
     const nameString = this.#read(attr.name);
-    if (nameString.endsWith(":scoped") || nameString.endsWith(":no-update")) {
+    if (/:(?:scoped|(?:no-update(?:-if)?))$/.test(nameString)) {
       this.#extractor.copy({
         start: attr.name.start,
-        end: attr.name.start + nameString.indexOf(":"),
+        end: attr.name.start + nameString.lastIndexOf(":"),
       });
     } else {
       this.#extractor.copy(attr.name);
