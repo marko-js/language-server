@@ -67,6 +67,7 @@
   Element has no title attribute
   17 |
   18 | <svg role="img"></svg>
+  19 |
 ```
 
 ### Ln 18, Col 2
@@ -79,5 +80,7 @@
   aria-label attribute does not exist or is empty
   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
   Element has no title attribute
+  19 |
+  20 | <img alt:no-update="test" />
 ```
 
