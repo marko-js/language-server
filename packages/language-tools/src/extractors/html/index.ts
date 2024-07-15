@@ -114,7 +114,15 @@ class HTMLExtractor {
 
   #writeAttrNamed(attr: Node.AttrNamed) {
     this.#extractor.write(" ");
-    this.#extractor.copy(attr.name);
+    const nameString = this.#read(attr.name);
+    if (/:(?:scoped|(?:no-update(?:-if)?))$/.test(nameString)) {
+      this.#extractor.copy({
+        start: attr.name.start,
+        end: attr.name.start + nameString.lastIndexOf(":"),
+      });
+    } else {
+      this.#extractor.copy(attr.name);
+    }
 
     if (
       attr.value === undefined ||
