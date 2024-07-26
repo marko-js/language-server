@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.2.1
+
+### Patch Changes
+
+- [#273](https://github.com/marko-js/language-server/pull/273) [`6f1932f`](https://github.com/marko-js/language-server/commit/6f1932f438dc80efc607c3e258ff2ba9c3f696f7) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Ignore modifiers in html extractor
+
+- Updated dependencies [[`6f1932f`](https://github.com/marko-js/language-server/commit/6f1932f438dc80efc607c3e258ff2ba9c3f696f7)]:
+  - @marko/language-tools@2.3.1
+
 ## 1.2.0
 
 ### Minor Changes
