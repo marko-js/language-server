@@ -211,7 +211,7 @@ declare global {
 
       export function forAttrTag<
         Value extends Iterable<any> | readonly any[],
-        Return,
+        const Return,
       >(
         input: {
           of: Value;
@@ -231,7 +231,7 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<Value extends object, Return>(
+      export function forAttrTag<Value extends object, const Return>(
         input: {
           in: Value;
         },
@@ -248,7 +248,7 @@ declare global {
         From extends void | number,
         To extends number,
         Step extends void | number,
-        Return,
+        const Return,
       >(
         input: {
           from?: From;
@@ -270,7 +270,7 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<Return>(attrs: {
+      export function forAttrTag<const Return>(attrs: {
         input:
           | {
               of: any;
