@@ -306,14 +306,10 @@ declare global {
             ? NativeTagRenderer<Name>
             : [Name] extends [AnyMarkoBody]
               ? BodyRenderer<Name>
-              : [Name] extends [{ renderBody?: AnyMarkoBody }]
-                ? [Name["renderBody"]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name["renderBody"]>
-                  : BaseRenderer<
-                      RenderBodyInput<
-                        BodyParameters<Exclude<Name["renderBody"], void>>
-                      >
-                    >
+              : [Name] extends [
+                    { renderBody?: infer Name extends AnyMarkoBody },
+                  ]
+                ? BodyRenderer<Name>
                 : DefaultRenderer;
 
       export type TemplateRenderer<Template> = Template extends {
@@ -345,12 +341,8 @@ declare global {
       export interface BodyRenderer<Body extends AnyMarkoBody> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
-          input: Marko.Directives &
-            RenderBodyInput<BodyParameters<Body>> &
-            Relate<
-              __marko_internal_input,
-              Marko.Directives & RenderBodyInput<BodyParameters<Body>>
-            >,
+          ...args: BodyParamsWithDefault<Body> &
+            Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
           BodyReturnType<Body>
@@ -397,15 +389,12 @@ type ReturnAndScope<Scope, Return> = {
   scope: Scope;
 };
 
-type RenderBodyInput<Args extends readonly unknown[]> = Args extends {
-  length: infer Length;
-}
-  ? number extends Length
-    ? { value?: Args }
-    : 0 extends Length
-      ? { value?: [] }
-      : { value: Args }
-  : never;
+type BodyParamsWithDefault<Body extends AnyMarkoBody> =
+  Body extends Marko.Body<infer Params, any>
+    ? Params extends []
+      ? [input?: Record<string, never>]
+      : Params
+    : never;
 
 type Scopes<Input> = [0] extends [1 & Input]
   ? never
