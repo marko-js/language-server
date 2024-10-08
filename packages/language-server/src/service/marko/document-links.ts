@@ -7,7 +7,7 @@ import type { Plugin } from "../types";
 
 import isDocumentLinkAttr from "./util/is-document-link-attr";
 
-const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/g;
+const importTagReg = /(['"])<((?:[^'"\\>]+|\\.)*)>?\1/g;
 
 export const findDocumentLinks: Plugin["findDocumentLinks"] = async (doc) => {
   return processDoc(doc, extractDocumentLinks);

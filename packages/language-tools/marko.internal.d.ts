@@ -24,7 +24,7 @@ declare global {
 
       export function getGlobal<Override>(
         override: Override,
-      ): 1 extends Override & 0 ? Marko.Global : Override;
+      ): [0] extends [1 & Override] ? Marko.Global : Override;
 
       export function attrTagNames<Input, Keys extends keyof Input>(
         input: Input,
@@ -144,7 +144,7 @@ declare global {
       export function renderPreferLocal<Name, Fallback>(
         name: Name,
         fallback: Fallback,
-      ): 0 extends 1 & Name ? Fallback : DynamicRenderer<Name>;
+      ): [0] extends [1 & Name] ? Fallback : DynamicRenderer<Name>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -226,7 +226,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item extends Record<PropertyKey, any>
+          | (infer Item extends Record<PropertyKey, any>)
           ? AttrTagByListSize<Value, Item>
           : never;
       };
@@ -239,7 +239,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item extends Record<PropertyKey, any>
+          | (infer Item extends Record<PropertyKey, any>)
           ? AttrTagByObjectSize<Value, Item>
           : never;
       };
@@ -259,7 +259,7 @@ declare global {
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item extends Record<PropertyKey, any>
+          | (infer Item extends Record<PropertyKey, any>)
           ? number extends From | To | Step
             ? MaybeRepeatable<Item>
             : Step extends 0
@@ -287,7 +287,7 @@ declare global {
       }): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
-          | infer Item extends Record<PropertyKey, any>
+          | (infer Item extends Record<PropertyKey, any>)
           ? MaybeRepeatable<Item>
           : never;
       };
@@ -298,7 +298,7 @@ declare global {
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
-      export type DynamicRenderer<Name> = 0 extends 1 & Name
+      export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
         : [Name] extends [Marko.Template]
           ? TemplateRenderer<Name>
@@ -407,7 +407,7 @@ type RenderBodyInput<Args extends readonly unknown[]> = Args extends {
       : { value: Args }
   : never;
 
-type Scopes<Input> = 0 extends 1 & Input
+type Scopes<Input> = [0] extends [1 & Input]
   ? never
   : Input extends Record<any, unknown>
     ? MergeScopes<FlatScopes<Input>>
@@ -425,7 +425,7 @@ type ComponentEventHandlers<Component extends Marko.Component> = {
 
 type FlatScopes<Input extends object, Objects = Input> = Input[keyof Input &
   (string | number)] extends infer Prop
-  ? 0 extends 1 & Prop
+  ? [0] extends [1 & Prop]
     ? unknown
     : Prop extends (...args: any) => { [Marko._.scope]: infer Scope }
       ? unknown extends Scope

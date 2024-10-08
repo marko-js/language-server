@@ -297,6 +297,7 @@ export default {
         statement.exportClause &&
         ts.isNamedExports(statement.exportClause) &&
         statement.exportClause.elements.length === 1 &&
+        ts.isIdentifier(statement.exportClause.elements[0].name) &&
         statement.exportClause.elements[0].name.escapedText === "Component"
       );
     }

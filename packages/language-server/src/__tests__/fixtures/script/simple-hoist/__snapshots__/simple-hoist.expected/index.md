@@ -4,7 +4,7 @@
   12 |
   13 | <effect() {
 > 14 |   console.log(el())
-     |               ^ const el: any
+     |               ^ const el: () => HTMLButtonElement
   15 | //            ^?
   16 | }/>
   17 |
