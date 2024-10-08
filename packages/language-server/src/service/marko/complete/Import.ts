@@ -5,7 +5,7 @@ import getTagNameCompletion from "../util/get-tag-name-completion";
 
 import type { CompletionMeta, CompletionResult } from ".";
 
-const importTagReg = /(['"])<((?:[^\1\\>]+|\\.)*)>?\1/;
+const importTagReg = /(['"])<((?:[^'"\\>]+|\\.)*)>?\1/;
 
 export function Import({
   node,

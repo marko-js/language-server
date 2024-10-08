@@ -2,29 +2,29 @@
   "name": "marko-language-server-repo",
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
-    "@changesets/cli": "^2.27.1",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20.11.16",
+    "@changesets/cli": "^2.27.9",
+    "@types/mocha": "^10.0.8",
+    "@types/node": "^22.7.4",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.24.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "fast-glob": "^3.3.2",
-    "husky": "^9.0.10",
-    "lint-staged": "^15.2.2",
-    "mocha": "^10.2.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "mocha": "^10.7.3",
     "mocha-snap": "^5.0.0",
-    "prettier": "^3.2.5",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3",
-    "@types/jsdom": "^21.1.6"
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "@types/jsdom": "^21.1.7"
   },
   "dependencies": {
-    "axe-core": "^4.8.3",
-    "jsdom": "^24.0.0"
+    "axe-core": "^4.10.0",
+    "jsdom": "^25.0.1"
   },
   "private": true,
   "scripts": {
