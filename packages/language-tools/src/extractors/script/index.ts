@@ -13,7 +13,6 @@ import {
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
 import { ScriptParser } from "./util/script-parser";
-import { isValidIdentifier } from "./util/is-valid-identifier";
 import {
   crawlProgramScope,
   getBoundAttrMemberExpressionStartOffset,
@@ -44,6 +43,7 @@ const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
+const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z_$]+$/;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
@@ -705,7 +705,7 @@ constructor(_?: Return) {}
           : def.html
             ? `renderNativeTag("${def.name}")`
             : "missingTag";
-        if (!def.html && isValidIdentifier(tagName)) {
+        if (!def.html && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
           this.#extractor
             .write(
               `${varShared("renderPreferLocal")}(
@@ -717,7 +717,7 @@ constructor(_?: Return) {}
         } else {
           this.#extractor.write(varShared(renderer));
         }
-      } else if (isValidIdentifier(tagName)) {
+      } else if (REG_TAG_NAME_IDENTIFIER.test(tagName)) {
         this.#extractor
           .write(`${varShared("renderDynamicTag")}(\n`)
           .copy(tag.name)

@@ -1,7 +1,7 @@
 ## Diagnostics
 ### Ln 2, Col 1
 ```marko
-  1 | import fancyButton from "<fancy-button>";
+  1 | import FancyButton from "<fancy-button>";
 > 2 | import { get } from "@ebay/retriever";
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 'get' is declared but its value is never read.
   3 | /** Hi */
@@ -11,7 +11,7 @@
 
 ### Ln 2, Col 21
 ```marko
-  1 | import fancyButton from "<fancy-button>";
+  1 | import FancyButton from "<fancy-button>";
 > 2 | import { get } from "@ebay/retriever";
     |                     ^^^^^^^^^^^^^^^^^ Cannot find module '@ebay/retriever' or its corresponding type declarations.
   3 | /** Hi */
@@ -78,7 +78,7 @@
 ```marko
   73 |         <${input.renderBody}/>
   74 |     </div>
-> 75 |     <fancyButton something=true>${type}</fancyButton>
+> 75 |     <FancyButton something=true>${type}</FancyButton>
      |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
   76 |     <div>Hello $!{"<b>World</b>"}</div>
   77 |     <div>Placeholder example: <code>\${someValue}</code></div>
@@ -89,8 +89,8 @@
 ```marko
   77 |     <div>Placeholder example: <code>\${someValue}</code></div>
   78 |
-> 79 |     <missing/>
-     |      ^^^^^^^ Cannot find name 'missing'.
+> 79 |     <Missing/>
+     |      ^^^^^^^ Cannot find name 'Missing'.
   80 |     <complex-missing/>
   81 | </div>
   82 |

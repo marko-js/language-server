@@ -205,39 +205,6 @@
   29 |   hoistedFromForOf;
 ```
 
-### Ln 28, Col 2
-```marko
-  26 | <for|item| of=list></for>
-  27 |
-> 28 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  29 |   hoistedFromForOf;
-  30 | //^?
-  31 | }/>
-```
-
-### Ln 48, Col 2
-```marko
-  46 | </for>
-  47 |
-> 48 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  49 |   hoistedFromForIn;
-  50 | //^?
-  51 | }/>
-```
-
-### Ln 76, Col 2
-```marko
-  74 | </for>
-  75 |
-> 76 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  77 |   hoistedFromForTo;
-  78 | //^?
-  79 | }/>
-```
-
 ### Ln 81, Col 2
 ```marko
   79 | }/>

@@ -132,14 +132,3 @@
   84 |
 ```
 
-### Ln 85, Col 2
-```marko
-  83 | </if>
-  84 |
-> 85 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  86 |   a;
-  87 | //^?
-  88 |   b;
-```
-

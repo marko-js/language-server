@@ -9,13 +9,3 @@
   5 |   };
 ```
 
-## Diagnostics
-### Ln 1, Col 2
-```marko
-> 1 | <effect() {
-    |  ^^^^^^ Cannot find name 'effect'.
-  2 |   $signal.onabort = () => {
-  3 | // ^?
-  4 |     console.log('aborted');
-```
-

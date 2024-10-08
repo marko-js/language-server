@@ -55,14 +55,3 @@
   12 | </comments>
 ```
 
-### Ln 14, Col 2
-```marko
-  12 | </comments>
-  13 |
-> 14 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  15 |   a;
-  16 | //^?
-  17 |   b;
-```
-

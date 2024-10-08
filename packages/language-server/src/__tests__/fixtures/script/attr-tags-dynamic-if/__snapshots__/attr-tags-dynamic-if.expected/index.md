@@ -121,14 +121,3 @@
   75 |     <const/hoistedFromStaticMember = 1 as const/>
 ```
 
-### Ln 92, Col 2
-```marko
-  90 | </>
-  91 |
-> 92 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  93 |   hoistedFromStaticMember;
-  94 | //^?
-  95 |   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
-```
-
