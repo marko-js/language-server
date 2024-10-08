@@ -233,17 +233,6 @@
   46 |       <const/{ value: hoistedFromForOf } = item/>
 ```
 
-### Ln 51, Col 2
-```marko
-  49 | </>
-  50 |
-> 51 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  52 |   hoistedFromForOf;
-  53 | //^?
-  54 | }/>
-```
-
 ### Ln 58, Col 4
 ```marko
   56 | <let/record={ a: 1, b: 2 } as const/>
@@ -264,17 +253,6 @@
   68 |   <for|key| in=record>
   69 |     <@a>
   70 |       <const/hoistedFromForIn = key/>
-```
-
-### Ln 75, Col 2
-```marko
-  73 | </>
-  74 |
-> 75 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  76 |   hoistedFromForIn;
-  77 | //^?
-  78 | }/>
 ```
 
 ### Ln 80, Col 4
@@ -319,16 +297,5 @@
   109 |   <for|index| to=10>
   110 |     <@a>
   111 |       <const/hoistedFromForTo = index/>
-```
-
-### Ln 116, Col 2
-```marko
-  114 | </>
-  115 |
-> 116 | <effect() {
-      |  ^^^^^^ Cannot find name 'effect'.
-  117 |   hoistedFromForTo;
-  118 | //^?
-  119 | }/>
 ```
 

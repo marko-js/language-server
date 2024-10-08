@@ -20,17 +20,6 @@
 ```
 
 ## Diagnostics
-### Ln 13, Col 2
-```marko
-  11 | </div>
-  12 |
-> 13 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  14 |   console.log(el())
-  15 | //            ^?
-  16 | }/>
-```
-
 ### Ln 18, Col 6
 ```marko
   16 | }/>

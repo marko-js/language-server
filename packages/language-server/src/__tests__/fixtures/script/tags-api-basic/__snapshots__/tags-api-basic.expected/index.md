@@ -35,7 +35,7 @@
 ## Diagnostics
 ### Ln 2, Col 1
 ```marko
-  1 | import fancyButton from "<fancy-button>";
+  1 | import FancyButton from "<fancy-button>";
 > 2 | import { get } from "@ebay/retriever";
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 'get' is declared but its value is never read.
   3 | /** Hi */
@@ -45,7 +45,7 @@
 
 ### Ln 2, Col 21
 ```marko
-  1 | import fancyButton from "<fancy-button>";
+  1 | import FancyButton from "<fancy-button>";
 > 2 | import { get } from "@ebay/retriever";
     |                     ^^^^^^^^^^^^^^^^^ Cannot find module '@ebay/retriever' or its corresponding type declarations.
   3 | /** Hi */
@@ -101,7 +101,7 @@
 ```marko
   38 |         <${renderBody}/>
   39 |     </div>
-> 40 |     <fancyButton something=true>${type}</fancyButton>
+> 40 |     <FancyButton something=true>${type}</FancyButton>
      |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
   41 |     <div>Hello $!{"<b>World</b>"}</div>
   42 |     <div>Placeholder example: <code>\${someValue}</code></div>

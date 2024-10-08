@@ -20,14 +20,3 @@
   4 |   <@a b=1>
 ```
 
-### Ln 12, Col 2
-```marko
-  10 | </>
-  11 |
-> 12 | <effect() {
-     |  ^^^^^^ Cannot find name 'effect'.
-  13 |   hoistedFromStaticMember;
-  14 | //^?
-  15 | }/>
-```
-
