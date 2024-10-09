@@ -1,7 +1,7 @@
 import * as r from "./axe-rules";
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
+  k: infer I,
 ) => void
   ? I
   : never;
@@ -63,12 +63,16 @@ type Whitelist = Exclude<RuleId, Blacklist>;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
+  [r.aria.ariaBrailleEquivalent]: { attrSpread: true },
   [r.aria.ariaCommandName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaConditionalAttr]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaDeprecatedRole]: { dynamicAttrs: ["role"] },
   [r.aria.ariaDialogName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaHiddenBody]: {},
   [r.aria.ariaInputFieldName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaMeterName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaProgressbarName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaProhibitedAttr]: {},
   [r.aria.ariaRequiredAttr]: { attrSpread: true },
   [r.aria.ariaRequiredChildren]: { unknownBody: true },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
@@ -96,6 +100,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
     attrSpread: true,
   },
   [r.nameRoleValue.linkName]: { unknownBody: true, attrSpread: true },
+  [r.nameRoleValue.summaryName]: { unknownBody: true, attrSpread: true },
   [r.parsing.marquee]: {},
   [r.semantics.identicalLinksSamePurpose]: {},
   [r.semantics.landmarkNoDuplicateBanner]: {},

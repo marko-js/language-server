@@ -15,9 +15,10 @@ axe.getRules().forEach((rule) => {
   }
 });
 
-const contents = Object.entries(categories)
-  .map(
-    ([cat, rules]) => `export const ${kebabToCamelCase(cat.slice(4))} = {
+const contents =
+  Object.entries(categories)
+    .map(
+      ([cat, rules]) => `export const ${kebabToCamelCase(cat.slice(4))} = {
 ${rules
   .map(
     (rule) => `  /**
@@ -28,8 +29,8 @@ ${rules
   )
   .join("\n")}
 } as const;`,
-  )
-  .join("\n\n");
+    )
+    .join("\n\n") + "\n";
 
 fs.writeFileSync(
   path.join(__dirname, "axe-rules.ts"),
