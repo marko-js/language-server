@@ -1,113 +1,134 @@
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import axe from "axe-core";
-import { type Parsed, extractHTML } from "@marko/language-tools";
 import { JSDOM } from "jsdom";
-import type { Plugin } from "../types";
-import { getMarkoFile } from "../../utils/file";
-import { get } from "../../utils/text-documents";
+import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
+import { URI } from "vscode-uri";
+import { MarkoVirtualCode } from "../core/marko-plugin";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
-const extractCache = new WeakMap<Parsed, ReturnType<typeof extractHTML>>();
-
-// const axeViolationImpact: {
-//   [impact in NonNullable<axe.ImpactValue>]: DiagnosticSeverity;
-// } = {
-//   minor: 1,
-//   moderate: 2,
-//   serious: 3,
-//   critical: 4,
-// };
-
-const HTMLService: Partial<Plugin> = {
-  commands: {
-    "$/showHtmlOutput": async (uri: string) => {
-      const doc = get(uri);
-      if (!doc) return;
-
-      const { extracted } = extract(doc);
-
-      return {
-        language: "html",
-        content: extracted.toString(),
-      };
+export const create = (): LanguageServicePlugin => {
+  return {
+    name: "marko-template",
+    capabilities: {
+      diagnosticProvider: {
+        interFileDependencies: true,
+        workspaceDiagnostics: false,
+      },
     },
-  },
-  async doValidate(doc) {
-    const { extracted, nodeDetails } = extract(doc);
+    create(context) {
+      return {
+        async provideDiagnostics(document, token) {
+          if (token.isCancellationRequested) return;
 
-    const jsdom = new JSDOM(extracted.toString(), {
-      includeNodeLocations: true,
-    });
-    const { documentElement } = jsdom.window.document;
+          return worker(document, async (virtualCode) => {
+            const htmlAst = virtualCode.htmlAst;
+            if (!htmlAst) {
+              return [];
+            }
 
-    const getViolationNodes = async (runOnly: string[]) =>
-      (
-        await axe.run(documentElement, {
-          runOnly,
-          rules: {
-            "color-contrast": { enabled: false },
-          },
-          resultTypes: ["violations"],
-          elementRef: true,
-        })
-      ).violations.flatMap(({ nodes, id }) =>
-        nodes.map((node) => ({ ...node, ruleId: id })),
-      );
+            const jsdom = new JSDOM(htmlAst.toString(), {
+              includeNodeLocations: true,
+            });
+            const { documentElement } = jsdom.window.document;
 
-    const release = await acquireMutexLock();
-    const violations = await getViolationNodes(Object.keys(ruleExceptions));
-    release();
+            const getViolationNodes = async (runOnly: string[]) =>
+              (
+                await axe.run(documentElement, {
+                  runOnly,
+                  rules: {
+                    "color-contrast": { enabled: false },
+                  },
+                  resultTypes: ["violations"],
+                  elementRef: true,
+                })
+              ).violations.flatMap(({ nodes, id }) =>
+                nodes.map((node) => ({ ...node, ruleId: id })),
+              );
 
-    return violations.flatMap((result) => {
-      const { element } = result;
-      if (!element) return [];
-      const ruleId = result.ruleId as keyof typeof ruleExceptions;
+            const release = await acquireMutexLock();
+            const violations = await getViolationNodes(
+              Object.keys(ruleExceptions),
+            );
+            release();
 
-      if (element.dataset.markoNodeId) {
-        const details = nodeDetails[element.dataset.markoNodeId];
-        if (
-          (ruleExceptions[ruleId].attrSpread && details.hasDynamicAttrs) ||
-          (ruleExceptions[ruleId].unknownBody && details.hasDynamicBody) ||
-          ruleExceptions[ruleId].dynamicAttrs?.some(
-            (attr) => element.getAttribute(attr) === "dynamic",
-          )
-        ) {
-          return [];
-        }
-      }
+            return violations.flatMap((result) => {
+              const { element } = result;
+              if (!element) return [];
+              const ruleId = result.ruleId as keyof typeof ruleExceptions;
 
-      const generatedLoc = jsdom.nodeLocation(element);
-      if (!generatedLoc) return [];
+              if (element.dataset.markoNodeId) {
+                const details =
+                  htmlAst.nodeDetails[element.dataset.markoNodeId];
+                if (
+                  (ruleExceptions[ruleId].attrSpread &&
+                    details.hasDynamicAttrs) ||
+                  (ruleExceptions[ruleId].unknownBody &&
+                    details.hasDynamicBody) ||
+                  ruleExceptions[ruleId].dynamicAttrs?.some(
+                    (attr) => element.getAttribute(attr) === "dynamic",
+                  )
+                ) {
+                  return [];
+                }
+              }
 
-      const sourceRange = extracted.sourceLocationAt(
-        generatedLoc.startOffset + 1,
-        generatedLoc.startOffset + 1 + element.tagName.length,
-      );
-      if (!sourceRange) return [];
+              const generatedLoc = jsdom.nodeLocation(element);
+              if (!generatedLoc) return [];
 
-      return [
-        {
-          range: sourceRange,
-          severity: 3,
-          source: `axe-core(${ruleId})`,
-          message: result.failureSummary ?? "unknown accessibility issue",
+              const sourceRange = htmlAst.extracted.sourceLocationAt(
+                generatedLoc.startOffset + 1,
+                generatedLoc.startOffset + 1 + element.tagName.length,
+              );
+              if (!sourceRange) return [];
+
+              return [
+                {
+                  range: sourceRange,
+                  severity: 3,
+                  source: `axe-core(${ruleId})`,
+                  message:
+                    result.failureSummary ?? "unknown accessibility issue",
+                } satisfies Diagnostic,
+              ];
+            });
+          });
         },
-      ];
-    });
-  },
+      };
+
+      async function worker<T>(
+        document: TextDocument,
+        callback: (markoDocument: MarkoVirtualCode) => T,
+      ): Promise<Awaited<T> | undefined> {
+        const decoded = context.decodeEmbeddedDocumentUri(
+          URI.parse(document.uri),
+        );
+        const sourceScript =
+          decoded && context.language.scripts.get(decoded[0]);
+        const virtualCode =
+          decoded && sourceScript?.generated?.embeddedCodes.get(decoded[1]);
+        if (!(virtualCode instanceof MarkoVirtualCode)) return;
+
+        return await callback(virtualCode);
+      }
+    },
+  };
 };
+// TODO: Actions are done outside the servie layer.
+// const HTMLService: LanguageServicePlugin = {
+//   commands: {
+//     "$/showHtmlOutput": async (uri: string) => {
+//       const doc = get(uri);
+//       if (!doc) return;
 
-function extract(doc: TextDocument) {
-  const { parsed } = getMarkoFile(doc);
-  let cached = extractCache.get(parsed);
+//       const { extracted } = extract(doc);
 
-  if (!cached) {
-    cached = extractHTML(parsed);
-    extractCache.set(parsed, cached);
-  }
-
-  return cached;
-}
+//       return {
+//         language: "html",
+//         content: extracted.toString(),
+//       };
+//     },
+//   },
+// };
 
 let lock: Promise<void> | undefined;
 async function acquireMutexLock() {
@@ -117,5 +138,3 @@ async function acquireMutexLock() {
   await currLock;
   return resolve;
 }
-
-export default HTMLService;

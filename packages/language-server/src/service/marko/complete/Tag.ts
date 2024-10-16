@@ -1,23 +1,22 @@
 import {
+  CompletionItem,
   CompletionItemKind,
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-
 import { type Node, UNFINISHED } from "@marko/language-tools";
-
-import type { CompletionMeta, CompletionResult } from ".";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 
 const partialCloseTagReg = /<\/(?:[^><]*>)?/iy;
 
 /**
  * Provide completion for the closing tag.
  */
-export function Tag({
-  node,
-  offset,
-  file: { parsed, code },
-}: CompletionMeta<Node.Tag>): CompletionResult {
+export function Tag(
+  node: Node.Tag,
+  file: MarkoVirtualCode,
+  offset: number,
+): CompletionItem[] | undefined {
   const isClosed = node.end !== UNFINISHED;
   if (isClosed || node.concise) return;
 
@@ -37,6 +36,7 @@ export function Tag({
     // We have an unfinished closing tag.
     const start = node.close.start;
     partialCloseTagReg.lastIndex = start;
+    const code = file.snapshot.getText(0, file.snapshot.getLength());
     const [{ length }] = partialCloseTagReg.exec(code)!;
     const end = start + length;
 
@@ -46,7 +46,7 @@ export function Tag({
         kind: CompletionItemKind.Class,
         insertTextFormat: InsertTextFormat.Snippet,
         textEdit: TextEdit.replace(
-          parsed.locationAt({
+          file.markoAst.locationAt({
             start,
             end,
           }),

@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-
 import { URI } from "vscode-uri";
 import type { TagDefinition } from "@marko/babel-utils";
 import {
@@ -9,16 +8,15 @@ import {
   getLines,
   getLocation,
 } from "@marko/language-tools";
-
+import { LocationLink } from "@volar/language-service";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 
-import type { DefinitionMeta, DefinitionResult } from ".";
-
-export function OpenTagName({
-  node,
-  file: { parsed, lookup },
-}: DefinitionMeta<Node.OpenTagName>): DefinitionResult {
+export function OpenTagName(
+  node: Node.OpenTagName,
+  file: MarkoVirtualCode,
+): LocationLink[] | undefined {
   const tag = node.parent;
   let tagDef: TagDefinition | null | undefined;
   let range = START_LOCATION;
@@ -28,10 +26,10 @@ export function OpenTagName({
     while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
     tagDef =
       parentTag && parentTag.nameText
-        ? lookup.getTag(parentTag.nameText)
+        ? file.tagLookup.getTag(parentTag.nameText)
         : undefined;
   } else {
-    tagDef = tag.nameText ? lookup.getTag(tag.nameText) : undefined;
+    tagDef = tag.nameText ? file.tagLookup.getTag(tag.nameText) : undefined;
   }
 
   if (!tagDef) {
@@ -65,7 +63,7 @@ export function OpenTagName({
       targetUri: URI.file(tagEntryFile).toString(),
       targetRange: range,
       targetSelectionRange: range,
-      originSelectionRange: parsed.locationAt(node),
+      originSelectionRange: file.markoAst.locationAt(node),
     },
   ];
 }

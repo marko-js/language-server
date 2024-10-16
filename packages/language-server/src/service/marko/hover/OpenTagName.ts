@@ -1,23 +1,22 @@
 import type { Node } from "@marko/language-tools";
-
+import { Hover } from "vscode-languageserver";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 import { START_LOCATION } from "../../../utils/constants";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 
-import type { HoverMeta, HoverResult } from ".";
-
-export function OpenTagName({
-  node,
-  file: { parsed, filename, lookup },
-}: HoverMeta<Node.OpenTagName>): HoverResult {
+export function OpenTagName(
+  node: Node.OpenTagName,
+  file: MarkoVirtualCode,
+): Hover | undefined {
   const tag = node.parent;
-  const range = parsed.locationAt(node);
-  const tagDef = tag.nameText && lookup.getTag(tag.nameText);
+  const range = file.markoAst.locationAt(node);
+  const tagDef = tag.nameText && file.tagLookup.getTag(tag.nameText);
 
   if (tagDef) {
     const completion = getTagNameCompletion({
       tag: tagDef,
       range: START_LOCATION,
-      importer: filename,
+      importer: file.fileName,
     });
 
     if (completion.documentation) {

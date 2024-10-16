@@ -1,46 +1,29 @@
-import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 import { NodeType } from "@marko/language-tools";
-
-import { MarkoFile, getMarkoFile } from "../../../utils/file";
-import type { Plugin, Result } from "../../types";
-
+import { CompletionItem } from "vscode-languageserver";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 import { AttrName } from "./AttrName";
-import { AttrValue } from "./AttrValue";
 import { Import } from "./Import";
 import { OpenTagName } from "./OpenTagName";
 import { Tag } from "./Tag";
 
-export type CompletionResult = Result<CompletionItem[]>;
-export interface CompletionMeta<N = unknown> {
-  file: MarkoFile;
-  params: CompletionParams;
-  offset: number;
-  node: N;
+export function provideCompletions(
+  doc: MarkoVirtualCode,
+  offset: number,
+): CompletionItem[] | undefined {
+  const node = doc.markoAst.nodeAt(offset);
+
+  switch (node?.type) {
+    case NodeType.AttrName:
+      return AttrName(node, doc, offset);
+    // case NodeType.AttrValue:
+    //   return AttrValue(node, doc, offset);
+    case NodeType.Import:
+      return Import(node, doc);
+    case NodeType.Tag:
+      return Tag(node, doc, offset);
+    case NodeType.OpenTagName:
+      return OpenTagName(node, doc);
+    default:
+      return;
+  }
 }
-
-const handlers: Record<
-  string,
-  (data: CompletionMeta<any>) => CompletionResult
-> = {
-  Tag,
-  OpenTagName,
-  AttrName,
-  AttrValue,
-  Import,
-};
-
-export const doComplete: Plugin["doComplete"] = async (doc, params) => {
-  const file = getMarkoFile(doc);
-  const offset = doc.offsetAt(params.position);
-  const node = file.parsed.nodeAt(offset);
-  return {
-    items:
-      (await handlers[NodeType[node.type]]?.({
-        file,
-        params,
-        offset,
-        node,
-      })) || [],
-    isIncomplete: true,
-  };
-};

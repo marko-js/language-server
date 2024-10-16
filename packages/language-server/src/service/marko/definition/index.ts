@@ -1,38 +1,21 @@
-import type { DefinitionLink, DefinitionParams } from "vscode-languageserver";
 import { NodeType } from "@marko/language-tools";
-
-import { MarkoFile, getMarkoFile } from "../../../utils/file";
-import type { Plugin, Result } from "../../types";
-
+import { LocationLink } from "vscode-languageserver";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 import { AttrName } from "./AttrName";
 import { OpenTagName } from "./OpenTagName";
 
-export type DefinitionResult = Result<DefinitionLink[]>;
-export interface DefinitionMeta<N = unknown> {
-  file: MarkoFile;
-  params: DefinitionParams;
-  offset: number;
-  node: N;
+export function provideDefinitions(
+  doc: MarkoVirtualCode,
+  offset: number,
+): LocationLink[] | undefined {
+  const node = doc.markoAst.nodeAt(offset);
+
+  switch (node?.type) {
+    case NodeType.AttrName:
+      return AttrName(node, doc);
+    case NodeType.OpenTagName:
+      return OpenTagName(node, doc);
+    default:
+      return;
+  }
 }
-
-const handlers: Record<
-  string,
-  (data: DefinitionMeta<any>) => DefinitionResult
-> = {
-  OpenTagName,
-  AttrName,
-};
-
-export const findDefinition: Plugin["findDefinition"] = async (doc, params) => {
-  const file = getMarkoFile(doc);
-  const offset = doc.offsetAt(params.position);
-  const node = file.parsed.nodeAt(offset);
-  return (
-    (await handlers[NodeType[node.type]]?.({
-      file,
-      params,
-      offset,
-      node,
-    })) || []
-  );
-};

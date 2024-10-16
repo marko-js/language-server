@@ -1,16 +1,14 @@
 import type { CompletionItem } from "vscode-languageserver";
 import { type Node, NodeType } from "@marko/language-tools";
-
 import getTagNameCompletion from "../util/get-tag-name-completion";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 
-import type { CompletionMeta, CompletionResult } from ".";
-
-export function OpenTagName({
-  node,
-  file: { parsed, filename, lookup },
-}: CompletionMeta<Node.OpenTagName>): CompletionResult {
+export function OpenTagName(
+  node: Node.OpenTagName,
+  file: MarkoVirtualCode,
+): CompletionItem[] | undefined {
   const tag = node.parent;
-  const range = parsed.locationAt(node);
+  const range = file.markoAst.locationAt(node);
   const isAttrTag = tag.type === NodeType.AttrTag;
   const result: CompletionItem[] = [];
 
@@ -18,7 +16,9 @@ export function OpenTagName({
     let parentTag = tag.owner;
     while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
     const parentTagDef =
-      parentTag && parentTag.nameText && lookup.getTag(parentTag.nameText);
+      parentTag &&
+      parentTag.nameText &&
+      file.tagLookup.getTag(parentTag.nameText);
 
     if (parentTagDef) {
       const { nestedTags } = parentTagDef;
@@ -29,7 +29,7 @@ export function OpenTagName({
             getTagNameCompletion({
               tag,
               range,
-              importer: filename,
+              importer: file.fileName,
               showAutoComplete: true,
             }),
           );
@@ -40,7 +40,7 @@ export function OpenTagName({
     const skipStatements = !(
       tag.concise && tag.parent.type === NodeType.Program
     );
-    for (const tag of lookup.getTagsSorted()) {
+    for (const tag of file.tagLookup.getTagsSorted()) {
       if (
         !(
           tag.name === "*" ||
@@ -53,7 +53,7 @@ export function OpenTagName({
         const completion = getTagNameCompletion({
           tag,
           range,
-          importer: filename,
+          importer: file.fileName,
           showAutoComplete: true,
         });
         completion.sortText = `0${completion.label}`; // Ensure higher priority than typescript.

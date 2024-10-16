@@ -1,82 +1,67 @@
-import path from "path";
-import { Project } from "@marko/language-tools";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { DiagnosticType } from "@marko/babel-utils";
-import type { Config } from "@marko/compiler";
-import { getFSPath } from "../../utils/file";
-import type { Plugin } from "../types";
+import { Config } from "@marko/compiler";
+import { MarkoVirtualCode } from "../core/marko-plugin";
 
 const markoErrorRegExp =
   /^(.+?)\.marko(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
-const compilerConfig: Config = {
-  code: false,
-  output: "migrate",
-  sourceMaps: false,
-  errorRecovery: true,
-  babelConfig: {
-    babelrc: false,
-    configFile: false,
-    browserslistConfigFile: false,
-    caller: {
-      name: "@marko/language-server",
-      supportsStaticESM: true,
-      supportsDynamicImport: true,
-      supportsTopLevelAwait: true,
-      supportsExportNamespaceFrom: true,
-    },
-  },
-};
 
-export const doValidate: Plugin["doValidate"] = (doc) => {
-  const filename = getFSPath(doc);
+export async function provideValidations(
+  file: MarkoVirtualCode,
+): Promise<Diagnostic[]> {
   const diagnostics: Diagnostic[] = [];
-
   try {
-    const { meta } = Project.getCompiler(
-      filename && path.dirname(filename),
-    ).compileSync(doc.getText(), filename || "untitled.marko", compilerConfig);
+    // Instead of compiling in the virtual code, we compile the code as part of the diagnostics
+    // callback to avoid blocking other more urgent requests like completions or hovers.
+    const compilerResult = await file.compiler?.compile(
+      file.code,
+      file.fileName,
+      compilerConfig,
+    );
 
-    if (meta.diagnostics) {
-      for (const diag of meta.diagnostics) {
-        const range = diag.loc
-          ? {
-              start: {
-                line: diag.loc.start.line - 1,
-                character: diag.loc.start.column,
-              },
-              end: {
-                line: diag.loc.end.line - 1,
-                character: diag.loc.end.column,
-              },
-            }
-          : {
-              start: { line: 0, character: 0 },
-              end: { line: 0, character: 0 },
-            };
+    if (compilerResult) {
+      if (compilerResult.meta.diagnostics) {
+        for (const diag of compilerResult.meta.diagnostics) {
+          const range = diag.loc
+            ? {
+                start: {
+                  line: diag.loc.start.line - 1,
+                  character: diag.loc.start.column,
+                },
+                end: {
+                  line: diag.loc.end.line - 1,
+                  character: diag.loc.end.column,
+                },
+              }
+            : {
+                start: { line: 0, character: 0 },
+                end: { line: 0, character: 0 },
+              };
 
-        let severity: DiagnosticSeverity | undefined;
+          let severity: DiagnosticSeverity | undefined;
 
-        switch (diag.type) {
-          case DiagnosticType.Warning:
-          case DiagnosticType.Deprecation:
-            severity = DiagnosticSeverity.Warning;
-            break;
-          case DiagnosticType.Suggestion:
-            severity = DiagnosticSeverity.Hint;
-            break;
-          default:
-            severity = DiagnosticSeverity.Error;
-            break;
+          switch (diag.type) {
+            case DiagnosticType.Warning:
+            case DiagnosticType.Deprecation:
+              severity = DiagnosticSeverity.Warning;
+              break;
+            case DiagnosticType.Suggestion:
+              severity = DiagnosticSeverity.Hint;
+              break;
+            default:
+              severity = DiagnosticSeverity.Error;
+              break;
+          }
+
+          diagnostics.push({
+            range,
+            source: "marko",
+            code: undefined,
+            tags: undefined,
+            severity,
+            message: diag.label,
+          });
         }
-
-        diagnostics.push({
-          range,
-          source: "marko",
-          code: undefined,
-          tags: undefined,
-          severity,
-          message: diag.label,
-        });
       }
     }
   } catch (err) {
@@ -84,7 +69,7 @@ export const doValidate: Plugin["doValidate"] = (doc) => {
   }
 
   return diagnostics;
-};
+}
 
 function addDiagnosticsForError(err: unknown, diagnostics: Diagnostic[]) {
   if (!isError(err)) {
@@ -177,3 +162,22 @@ function isErrorWithLoc(err: unknown): err is Error & {
     typeof (loc as { end: { column: unknown } }).end.column === "number"
   );
 }
+
+const compilerConfig: Config = {
+  code: false,
+  output: "migrate",
+  sourceMaps: false,
+  errorRecovery: true,
+  babelConfig: {
+    babelrc: false,
+    configFile: false,
+    browserslistConfigFile: false,
+    caller: {
+      name: "@marko/language-server",
+      supportsStaticESM: true,
+      supportsDynamicImport: true,
+      supportsTopLevelAwait: true,
+      supportsExportNamespaceFrom: true,
+    },
+  },
+};

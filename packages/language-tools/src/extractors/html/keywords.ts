@@ -33,11 +33,18 @@ export function getAttributeValueType(
 
   if (
     // double quote string
-    /^"(?:[^"\\]+|\\.)*"$/.test(value) ||
+    /^"(?:[^"\\]*(?:\\.)?)*"$/.test(value) ||
     // single quote string
-    /^'(?:[^'\\]+|\\.)*'$/.test(value) ||
+    /^'(?:[^'\\]+|\\.)*'$/.test(value)
+    // ***************************************************************************
+    // BREAKING CHANGE: This regex is disabled because it causes the LSP to hang.
+    // ***************************************************************************
+    // This regex causes the LSP to hang for the following attribute value:
+    // `test?id=${state.id}` no idea why...
+    // It doesn't hang in the non-volar version.
+    // ***************************************************************************
     // template literal without any interpolations
-    /^`(?:[^`\\$]+|\\.|\$(?!\{))*`$/.test(value)
+    // /^`(?:[^`\\$]+|\\.|\$(?!\{))*`$/.test(value)
   ) {
     return AttributeValueType.QuotedString;
   } else if (

@@ -6,17 +6,15 @@ import {
   MarkupKind,
   TextEdit,
 } from "vscode-languageserver";
-
 import type { Node } from "@marko/language-tools";
+import { MarkoVirtualCode } from "../../core/marko-plugin";
 
-import type { CompletionMeta, CompletionResult } from ".";
-
-export function AttrName({
-  offset,
-  node,
-  file: { parsed, lookup },
-}: CompletionMeta<Node.AttrName>): CompletionResult {
-  let name = parsed.read(node);
+export function AttrName(
+  node: Node.AttrName,
+  file: MarkoVirtualCode,
+  offset: number,
+): CompletionItem[] | undefined {
+  let name = file.markoAst.read(node);
   const modifierIndex = name.indexOf(":");
   const hasModifier = modifierIndex !== -1;
 
@@ -40,7 +38,7 @@ export function AttrName({
   }
 
   const completions: CompletionItem[] = [];
-  const attrNameLoc = parsed.locationAt(
+  const attrNameLoc = file.markoAst.locationAt(
     hasModifier
       ? {
           start: node.start,
@@ -50,7 +48,7 @@ export function AttrName({
   );
 
   const tagName = node.parent.parent.nameText || "";
-  const tagDef = tagName && lookup.getTag(tagName);
+  const tagDef = tagName && file.tagLookup.getTag(tagName);
   const nestedTagAttrs: { [x: string]: boolean } = {};
 
   if (tagDef && tagDef.nestedTags) {
@@ -60,7 +58,7 @@ export function AttrName({
     }
   }
 
-  lookup.forEachAttribute(tagName, (attr, parent) => {
+  file.tagLookup.forEachAttribute(tagName, (attr, parent) => {
     if (
       attr.deprecated ||
       nestedTagAttrs[attr.name] ||
