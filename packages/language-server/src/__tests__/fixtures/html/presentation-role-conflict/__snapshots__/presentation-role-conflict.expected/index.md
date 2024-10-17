@@ -20,6 +20,8 @@
   aria-label attribute does not exist or is empty
   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
   Element has no title attribute
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
   Element's role is not presentational because it is focusable
   4 |
   5 | <li role="presentation" id="tabindex" tabindex="0"></li>
