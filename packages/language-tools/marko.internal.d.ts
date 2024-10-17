@@ -26,11 +26,11 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
-      export function attrTagNames<Input, Keys extends keyof Input>(
+      export function attrTagNames<Input, Keys extends keyof Input & string>(
         input: Input,
       ): Record<string, never> & {
         [Key in Keys as `@${Input[Key] extends infer Value
-          ? Value extends { renderBody?: any }
+          ? Value extends Marko.AttrTag<any>
             ? Key
             : never
           : never}`]: Input[Key];
@@ -261,12 +261,12 @@ declare global {
           | readonly (infer Item)[]
           | (infer Item extends Record<PropertyKey, any>)
           ? number extends From | To | Step
-            ? MaybeRepeatable<Item>
+            ? undefined | Marko.AttrTag<Item>
             : Step extends 0
               ? never
               : [To] extends [From extends void ? 0 : From]
                 ? undefined
-                : Repeatable<Item>
+                : Marko.AttrTag<Item>
           : never;
       };
 
@@ -288,13 +288,17 @@ declare global {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
           | (infer Item extends Record<PropertyKey, any>)
-          ? MaybeRepeatable<Item>
+          ? undefined | Marko.AttrTag<Item>
           : never;
       };
 
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
+
+      export function repeatedAttrTag<AttrTag>(
+        ...attrTags: Marko.AttrTag<AttrTag>[]
+      ): AttrTag;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
@@ -461,30 +465,25 @@ type MergeAttrTag<A, B> = {
       : never;
 };
 
-type MergeAttrTagValue<A, B> = A extends readonly any[]
-  ? B extends readonly any[]
-    ? [...A, ...B]
+type MergeAttrTagValue<A, B> = A extends readonly (infer AType)[]
+  ? B extends readonly (infer BType)[]
+    ? AType | BType
     : B extends void
       ? A
-      : [...A, B]
+      : AType | B
   : A extends void
     ? B
     : B extends void
       ? A
-      : [A, B];
+      : A | B;
 
 type AttrTagByListSize<T, Item> = T extends
-  | readonly [any, any, ...any[]]
-  | readonly [...any[], any, any]
-  | readonly [any, ...any[], any]
-  ? Repeated<Item>
-  : T extends readonly [any]
-    ? Item
-    : T extends readonly [any, ...any[]] | readonly [...any[], any]
-      ? Repeatable<Item>
-      : T extends readonly []
-        ? undefined
-        : MaybeRepeatable<Item>;
+  | readonly [any, ...any[]]
+  | readonly [...any[], any]
+  ? Marko.AttrTag<Item>
+  : T extends readonly []
+    ? undefined
+    : undefined | Marko.AttrTag<Item>;
 
 type AttrTagByObjectSize<
   Value,
@@ -494,22 +493,7 @@ type AttrTagByObjectSize<
 > = CheckNever<
   Keys,
   undefined,
-  CheckUnionSize<
-    KnownKeys,
-    [Keys] extends [KnownKeys] ? Item : Repeatable<Item>,
-    Repeated<Item>,
-    MaybeRepeatable<Item>
-  >
->;
-
-type CheckUnionSize<T, IfOne, IfMany, Else, Copy = T> = CheckNever<
-  T,
-  Else,
-  T extends T
-    ? (Copy extends T ? never : true) extends never
-      ? IfOne
-      : IfMany
-    : never
+  CheckNever<KnownKeys, Marko.AttrTag<Item>, undefined | Marko.AttrTag<Item>>
 >;
 
 type RecordKeys<T> = keyof {
@@ -533,9 +517,5 @@ type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
 ) => any
   ? U
   : never;
-
-type Repeated<T> = [T, T, ...T[]];
-type Repeatable<T> = T | Repeated<T>;
-type MaybeRepeatable<T> = undefined | Repeatable<T>;
 
 export {};
