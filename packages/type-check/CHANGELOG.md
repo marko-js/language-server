@@ -1,5 +1,24 @@
 # @marko/type-check
 
+## 1.2.0
+
+### Minor Changes
+
+- [#281](https://github.com/marko-js/language-server/pull/281) [`aff5f68`](https://github.com/marko-js/language-server/commit/aff5f68db713660665149e266b6d19ac9d658d84) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Align attribute tag type generation with new types from Marko core.
+
+### Patch Changes
+
+- [#277](https://github.com/marko-js/language-server/pull/277) [`2f0f701`](https://github.com/marko-js/language-server/commit/2f0f70142b6abd6a6f58991babf578dc7c621a99) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Allow type narrowing when attr tags are in for loops
+
+- [#279](https://github.com/marko-js/language-server/pull/279) [`2ad9437`](https://github.com/marko-js/language-server/commit/2ad943706818e3a02229b478544c67a38c54f922) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade deps, fix issues related to recent typescript changes.
+
+- [#279](https://github.com/marko-js/language-server/pull/279) [`aefe17d`](https://github.com/marko-js/language-server/commit/aefe17de52172078bfe611a4b6c065a1530a822e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update local variable tag name interpolation to align with Marko 6 and only support PascalCase identifiers.
+
+- [#280](https://github.com/marko-js/language-server/pull/280) [`abbb30a`](https://github.com/marko-js/language-server/commit/abbb30ae2343aa46e8c9d10040e9082ad4b32cea) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Align tag arguments type generation with Marko 6.
+
+- Updated dependencies [[`2f0f701`](https://github.com/marko-js/language-server/commit/2f0f70142b6abd6a6f58991babf578dc7c621a99), [`2ad9437`](https://github.com/marko-js/language-server/commit/2ad943706818e3a02229b478544c67a38c54f922), [`aefe17d`](https://github.com/marko-js/language-server/commit/aefe17de52172078bfe611a4b6c065a1530a822e), [`abbb30a`](https://github.com/marko-js/language-server/commit/abbb30ae2343aa46e8c9d10040e9082ad4b32cea), [`aff5f68`](https://github.com/marko-js/language-server/commit/aff5f68db713660665149e266b6d19ac9d658d84)]:
+  - @marko/language-tools@2.4.0
+
 ## 1.1.8
 
 ### Patch Changes
