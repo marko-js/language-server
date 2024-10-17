@@ -34,7 +34,6 @@ type Blacklist =
   | typeof r.semantics.pageHasHeadingOne
   | typeof r.structure.dlitem
   | typeof r.structure.listitem
-  | typeof r.tables.tdHasHeader
   | typeof r.tables.tdHeadersAttr
   // Seemingly broken in axe-core or JSDom
   | typeof r.aria.ariaRoledescription
@@ -46,25 +45,34 @@ type Blacklist =
   | typeof r.parsing.duplicateId
   | typeof r.parsing.duplicateIdActive
   | typeof r.parsing.duplicateIdAria
-  | typeof r.semantics.pAsHeading
   | typeof r.sensoryAndVisualCues.targetSize
   | typeof r.structure.avoidInlineSpacing
-  | typeof r.structure.cssOrientationLock
-  | typeof r.structure.hiddenContent
   // handled by TypeScript
   | typeof r.aria.ariaValidAttrValue
-  | typeof r.aria.ariaAllowedAttr;
+  | typeof r.aria.ariaAllowedAttr
+  // blacklisted as the rules are in axe-core experimental phase
+  | typeof r.structure.cssOrientationLock
+  | typeof r.keyboard.focusOrderSemantics
+  | typeof r.structure.hiddenContent
+  | typeof r.semantics.labelContentNameMismatch
+  | typeof r.semantics.pAsHeading
+  | typeof r.tables.tableFakeCaption
+  | typeof r.tables.tdHasHeader;
 
 type Whitelist = Exclude<RuleId, Blacklist>;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
+  [r.aria.ariaBrailleEquivalent]: { attrSpread: true },
   [r.aria.ariaCommandName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaConditionalAttr]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaDeprecatedRole]: { dynamicAttrs: ["role"] },
   [r.aria.ariaDialogName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaHiddenBody]: {},
   [r.aria.ariaInputFieldName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaMeterName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaProgressbarName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaProhibitedAttr]: {},
   [r.aria.ariaRequiredAttr]: { attrSpread: true },
   [r.aria.ariaRequiredChildren]: { unknownBody: true },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
@@ -76,7 +84,6 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
   [r.keyboard.accesskeys]: {},
-  [r.keyboard.focusOrderSemantics]: {},
   [r.keyboard.frameFocusableContent]: { unknownBody: true },
   [r.keyboard.skipLink]: { unknownBody: true },
   [r.keyboard.tabindex]: {},
@@ -93,9 +100,9 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
     attrSpread: true,
   },
   [r.nameRoleValue.linkName]: { unknownBody: true, attrSpread: true },
+  [r.nameRoleValue.summaryName]: { unknownBody: true, attrSpread: true },
   [r.parsing.marquee]: {},
   [r.semantics.identicalLinksSamePurpose]: {},
-  [r.semantics.labelContentNameMismatch]: { unknownBody: true },
   [r.semantics.landmarkNoDuplicateBanner]: {},
   [r.semantics.landmarkNoDuplicateContentinfo]: {},
   [r.semantics.landmarkNoDuplicateMain]: {},
@@ -106,7 +113,6 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.structure.list]: { unknownBody: true },
   [r.tables.scopeAttrValid]: {},
   [r.tables.tableDuplicateName]: { unknownBody: true },
-  [r.tables.tableFakeCaption]: { unknownBody: true },
   [r.tables.thHasDataCells]: { unknownBody: true },
   [r.textAlternatives.areaAlt]: { attrSpread: true },
   [r.textAlternatives.documentTitle]: { unknownBody: true },
