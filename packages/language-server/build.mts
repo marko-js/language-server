@@ -7,7 +7,7 @@ const opts: BuildOptions = {
   outdir: "dist",
   outbase: "src",
   platform: "node",
-  target: ["node16"],
+  target: ["node20"],
   sourcemap: "linked",
   entryPoints: ["src/index.ts"],
   absWorkingDir: path.dirname(fileURLToPath(import.meta.url)),
