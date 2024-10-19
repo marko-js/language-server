@@ -109,21 +109,5 @@ export const create = (
 };
 
 // export default {
-//   findDefinition,
 //   findDocumentLinks,
 //   findDocumentSymbols,
-//   format,
-//   commands: {
-//     "$/formatWithMode": async ({
-//       doc: docURI,
-//       options,
-//     }: {
-//       doc: string;
-//       options: FormatOptions;
-//     }) => {
-//       const doc = documents.get(docURI)!;
-//       const formatted = await formatDocument(doc, options);
-//       return formatted;
-//     },
-//   },
-// } as Partial<Plugin>;

@@ -5,6 +5,11 @@ import {
 } from "@volar/vscode";
 import * as vscode from "vscode";
 
+/**
+ * Registers the debug commands for the Marko extension. This is useful if you don't have the Volar Labs
+ * extension installed. Prefer using the Volar Labs extension if you have it installed because it's more
+ * feature-rich.
+ */
 export function register(
   context: vscode.ExtensionContext,
   client: BaseLanguageClient,

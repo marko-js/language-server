@@ -9,6 +9,7 @@ import {
 import * as vscode from "vscode";
 import * as lsp from "vscode-languageclient/node";
 import * as debug from "./features/debug";
+import * as syntax from "./features/syntax";
 
 let client: lsp.BaseLanguageClient;
 
@@ -58,6 +59,7 @@ export async function activate(
 
   // Register VSCode features.
   debug.register(context, client);
+  syntax.register(context, client);
 
   // support for https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volarjs-labs
   // ref: https://twitter.com/johnsoncodehk/status/1656126976774791168

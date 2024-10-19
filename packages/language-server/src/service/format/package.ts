@@ -13,7 +13,7 @@ export function importPrettier(fromPath: string): typeof prettier | undefined {
 
 export function getMarkoPrettierPluginPath(
   fromPath: string,
-): [string, "prettier-plugin-marko"] | [undefined, undefined] {
+): string | undefined {
   const corePluginPath = getPackagePath(
     "prettier-plugin-marko",
     [fromPath, __dirname],
@@ -22,8 +22,8 @@ export function getMarkoPrettierPluginPath(
 
   // Prefer the official plugin if it's installed.
   if (corePluginPath) {
-    return [corePluginPath, "prettier-plugin-marko"];
+    return corePluginPath;
   }
 
-  return [undefined, undefined];
+  return undefined;
 }

@@ -35,12 +35,12 @@
         "category": "Marko (Debug)"
       },
       {
-        "command": "marko.actions.formatToConciseMode",
+        "command": "marko.actions.formatToConciseSyntax",
         "title": "Format in Concise Mode",
         "category": "Marko"
       },
       {
-        "command": "marko.actions.formatToHtmlMode",
+        "command": "marko.actions.formatToHtmlSyntax",
         "title": "Format in Html Mode",
         "category": "Marko"
       }
