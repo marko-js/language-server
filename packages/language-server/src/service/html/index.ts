@@ -3,20 +3,33 @@ import axe from "axe-core";
 import { JSDOM } from "jsdom";
 import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
 import { URI } from "vscode-uri";
+import { create as createHtmlService } from "volar-service-html";
 import { MarkoVirtualCode } from "../core/marko-plugin";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
 export const create = (): LanguageServicePlugin => {
+  const baseService = createHtmlService({
+    configurationSections: {
+      autoCreateQuotes: "",
+      autoClosingTags: "",
+    },
+  });
   return {
     name: "marko-template",
     capabilities: {
       diagnosticProvider: {
-        interFileDependencies: true,
+        interFileDependencies: false,
         workspaceDiagnostics: false,
       },
+      documentLinkProvider: baseService.capabilities.documentLinkProvider,
     },
     create(context) {
+      const baseServiceInstance = baseService.create(context);
       return {
+        provideDocumentLinks(document, token) {
+          // Defer to the HTML service to provide links for us.
+          return baseServiceInstance.provideDocumentLinks?.(document, token);
+        },
         async provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
 
@@ -113,22 +126,6 @@ export const create = (): LanguageServicePlugin => {
     },
   };
 };
-// TODO: Actions are done outside the servie layer.
-// const HTMLService: LanguageServicePlugin = {
-//   commands: {
-//     "$/showHtmlOutput": async (uri: string) => {
-//       const doc = get(uri);
-//       if (!doc) return;
-
-//       const { extracted } = extract(doc);
-
-//       return {
-//         language: "html",
-//         content: extracted.toString(),
-//       };
-//     },
-//   },
-// };
 
 let lock: Promise<void> | undefined;
 async function acquireMutexLock() {

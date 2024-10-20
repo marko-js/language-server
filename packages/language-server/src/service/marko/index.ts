@@ -9,6 +9,7 @@ import { provideCompletions } from "./complete";
 import { provideHover } from "./hover";
 import { provideValidations } from "./validate";
 import { provideDefinitions } from "./definition";
+// import { provideDocumentSymbols } from "./document-symbols";
 
 export const create = (
   _: typeof import("typescript"),
@@ -19,7 +20,7 @@ export const create = (
       hoverProvider: true,
       definitionProvider: true,
       diagnosticProvider: {
-        interFileDependencies: true,
+        interFileDependencies: false,
         workspaceDiagnostics: false,
       },
       completionProvider: {
@@ -48,6 +49,13 @@ export const create = (
     },
     create(context): LanguageServicePluginInstance {
       return {
+        // TODO: Is this necessary?
+        // provideDocumentSymbols(document, token) {
+        //   if (token.isCancellationRequested) return;
+        //   return worker(document, (virtualCode) => {
+        //     return provideDocumentSymbols(virtualCode);
+        //   });
+        // },
         provideDefinition(document, position, token) {
           if (token.isCancellationRequested) return;
           return worker(document, (virtualCode) => {
@@ -57,8 +65,12 @@ export const create = (
         },
         provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
-          return worker(document, (virtualCode) => {
-            return provideValidations(virtualCode);
+          return worker(document, async (virtualCode) => {
+            const validations = await provideValidations(virtualCode);
+            if (validations.length) {
+              console.log("validations", validations);
+            }
+            return validations;
           });
         },
         provideHover(document, position, token) {
@@ -77,7 +89,10 @@ export const create = (
             if (completions) {
               return {
                 isIncomplete: false,
-                items: completions,
+                items: completions.map((it) => {
+                  it.data.source = "marko";
+                  return it;
+                }),
               };
             }
 

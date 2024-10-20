@@ -1,3 +1,4 @@
+import "../utils/project-defaults";
 // import { create as createEmmetService } from "volar-service-emmet";
 import { create as createCssService } from "volar-service-css";
 import { create as createTypeScriptTwoSlashService } from "volar-service-typescript-twoslash-queries";
