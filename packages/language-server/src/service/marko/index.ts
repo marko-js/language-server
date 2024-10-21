@@ -90,7 +90,7 @@ export const create = (
               return {
                 isIncomplete: false,
                 items: completions.map((it) => {
-                  it.data.source = "marko";
+                  it.data = { source: "marko" };
                   return it;
                 }),
               };
