@@ -1,4 +1,4 @@
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver-protocol";
 import { DiagnosticType } from "@marko/babel-utils";
 import { Config } from "@marko/compiler";
 import { MarkoVirtualCode } from "../core/marko-plugin";

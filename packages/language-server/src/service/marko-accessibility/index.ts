@@ -3,33 +3,21 @@ import axe from "axe-core";
 import { JSDOM } from "jsdom";
 import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
 import { URI } from "vscode-uri";
-import { create as createHtmlService } from "volar-service-html";
 import { MarkoVirtualCode } from "../core/marko-plugin";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
+// This plugin provides accessibility diagnostics for Marko templates.
 export const create = (): LanguageServicePlugin => {
-  const baseService = createHtmlService({
-    configurationSections: {
-      autoCreateQuotes: "",
-      autoClosingTags: "",
-    },
-  });
   return {
-    name: "marko-template",
+    name: "marko-accessibility",
     capabilities: {
       diagnosticProvider: {
         interFileDependencies: false,
         workspaceDiagnostics: false,
       },
-      documentLinkProvider: baseService.capabilities.documentLinkProvider,
     },
     create(context) {
-      const baseServiceInstance = baseService.create(context);
       return {
-        provideDocumentLinks(document, token) {
-          // Defer to the HTML service to provide links for us.
-          return baseServiceInstance.provideDocumentLinks?.(document, token);
-        },
         async provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
 
@@ -39,7 +27,8 @@ export const create = (): LanguageServicePlugin => {
               return [];
             }
 
-            const jsdom = new JSDOM(htmlAst.toString(), {
+            const htmlText = htmlAst.extracted.toString();
+            const jsdom = new JSDOM(htmlText, {
               includeNodeLocations: true,
             });
             const { documentElement } = jsdom.window.document;

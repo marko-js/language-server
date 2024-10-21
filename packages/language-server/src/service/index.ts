@@ -6,12 +6,13 @@ import { create as createTypeScriptServices } from "volar-service-typescript";
 import type { Connection } from "@volar/language-server";
 import { Project } from "@marko/language-tools";
 import ts from "typescript";
-import { create as createHtmlService } from "./html";
+import { create as createAccessibilityService } from "./marko-accessibility";
 import { create as createMarkoService } from "./marko";
 import { getMarkoLanguagePlugin } from "./core/marko-plugin";
 import { getMarkoPrettierService } from "./format";
 import { create as createMarkoDebugService } from "./marko-debug";
 import { create as createMarkoFormatActionService } from "./marko-action-format";
+import { create as createMarkoHtmlService } from "./marko-html";
 
 const decoratedHosts = new WeakSet<ts.LanguageServiceHost>();
 
@@ -55,11 +56,12 @@ export function getLanguageServicePlugins(
 ) {
   const result = [
     createMarkoService(ts),
-    createHtmlService(),
+    createMarkoHtmlService(),
     createCssService(),
     ...createTypeScriptServices(ts),
     createTypeScriptTwoSlashService(ts),
     getMarkoPrettierService(connection),
+    createAccessibilityService(),
     createMarkoDebugService(),
     createMarkoFormatActionService(),
   ];
