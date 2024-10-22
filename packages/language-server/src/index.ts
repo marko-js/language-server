@@ -10,8 +10,6 @@ import {
   getLanguagePlugins,
   getLanguageServicePlugins,
 } from "./service";
-//   import { getMarkoInstall } from "./util/getMarkoInstall.js";
-//   import { addMarkoTypes } from "./core/index.js";
 
 const connection = createConnection();
 const server = createServer(connection);
@@ -48,17 +46,6 @@ connection.onInitialize((params) => {
             typescript.sys.fileExists,
             "package.json",
           );
-
-          //   const markoInstall = getMarkoInstall([rootPath], {
-          //     nearestPackageJson: nearestPackageJson,
-          //   });
-
-          //   if (!markoInstall) {
-          //     connection.sendNotification(ShowMessageNotification.type, {
-          //       message: `Couldn't find Marko in workspace "${rootPath}".`,
-          //       type: MessageType.Warning,
-          //     });
-          //   }
 
           if (nearestPackageJson) {
             addMarkoTypes(

@@ -21,7 +21,7 @@ export const create = (): LanguageServicePlugin => {
         async provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
 
-          return worker(document, async (virtualCode) => {
+          return await worker(document, async (virtualCode) => {
             const htmlAst = virtualCode.htmlAst;
             if (!htmlAst) {
               return [];
