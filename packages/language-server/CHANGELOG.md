@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.1
+
+### Patch Changes
+
+- [#276](https://github.com/marko-js/language-server/pull/276) [`c0ca744`](https://github.com/marko-js/language-server/commit/c0ca74408aae63045eec9603fe7a186387b2bdbe) Thanks [@saiponnada](https://github.com/saiponnada)! - fix(axe-core): disabled experimental rules
+
 ## 1.3.0
 
 ### Minor Changes
