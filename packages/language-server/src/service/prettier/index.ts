@@ -14,7 +14,7 @@ import { Options } from "prettier";
 import { dynamicRequire } from "../../utils/importPackage";
 import { getMarkoPrettierPluginPath, importPrettier } from "./package";
 
-export function getMarkoPrettierService(
+export function createMarkoPrettierService(
   connection: Connection,
 ): LanguageServicePlugin {
   let prettier: typeof import("prettier") | undefined;

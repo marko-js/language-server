@@ -1,5 +1,4 @@
 import "../utils/project-defaults";
-// import { create as createEmmetService } from "volar-service-emmet";
 import { create as createCssService } from "volar-service-css";
 import { create as createTypeScriptTwoSlashService } from "volar-service-typescript-twoslash-queries";
 import { create as createTypeScriptServices } from "volar-service-typescript";
@@ -9,10 +8,10 @@ import ts from "typescript";
 import { create as createAccessibilityService } from "./marko-accessibility";
 import { create as createMarkoService } from "./marko";
 import { getMarkoLanguagePlugin } from "./core/marko-plugin";
-import { getMarkoPrettierService } from "./format";
+import { createMarkoPrettierService } from "./prettier";
 import { create as createMarkoDebugService } from "./marko-debug";
 import { create as createMarkoFormatActionService } from "./marko-action-format";
-import { create as createMarkoHtmlService } from "./marko-html";
+import { create as createMarkoHtmlService } from "./html";
 
 const decoratedHosts = new WeakSet<ts.LanguageServiceHost>();
 
@@ -60,7 +59,7 @@ export function getLanguageServicePlugins(
     createCssService(),
     ...createTypeScriptServices(ts),
     createTypeScriptTwoSlashService(ts),
-    getMarkoPrettierService(connection),
+    createMarkoPrettierService(connection),
     createAccessibilityService(),
     createMarkoDebugService(),
     createMarkoFormatActionService(),

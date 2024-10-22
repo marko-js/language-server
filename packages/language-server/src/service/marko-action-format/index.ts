@@ -1,7 +1,7 @@
 import { LanguageServicePlugin } from "@volar/language-service";
 import { URI } from "vscode-uri";
-import { MarkoVirtualCode } from "./core/marko-plugin";
-import { getFormattingOptions, getPrettierInstance } from "./format";
+import { MarkoVirtualCode } from "../core/marko-plugin";
+import { getFormattingOptions, getPrettierInstance } from "../prettier";
 
 export const create = (): LanguageServicePlugin => {
   return {

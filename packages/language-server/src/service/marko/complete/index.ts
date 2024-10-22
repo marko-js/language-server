@@ -15,8 +15,6 @@ export function provideCompletions(
   switch (node?.type) {
     case NodeType.AttrName:
       return AttrName(node, doc, offset);
-    // case NodeType.AttrValue:
-    //   return AttrValue(node, doc, offset);
     case NodeType.Import:
       return Import(node, doc);
     case NodeType.Tag:
