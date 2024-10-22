@@ -4,7 +4,7 @@ import {
 } from "@volar/language-service";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import { MarkoVirtualCode } from "../core/marko-plugin";
+import { MarkoVirtualCode } from "../../language";
 import { provideCompletions } from "./complete";
 import { provideHover } from "./hover";
 import { provideValidations } from "./validate";
@@ -66,7 +66,9 @@ export const create = (
         provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
           return worker(document, async (virtualCode) => {
-            return await provideValidations(virtualCode);
+            const diagnostics = await provideValidations(virtualCode);
+            console.log("Diagnostics", diagnostics);
+            return diagnostics;
           });
         },
         provideHover(document, position, token) {
@@ -118,7 +120,3 @@ export const create = (
     },
   };
 };
-
-// export default {
-//   findDocumentLinks,
-//   findDocumentSymbols,

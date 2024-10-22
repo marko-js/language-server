@@ -5,11 +5,8 @@ import {
   createTypeScriptProject,
   loadTsdkByPath,
 } from "@volar/language-server/node";
-import {
-  addMarkoTypes,
-  getLanguagePlugins,
-  getLanguageServicePlugins,
-} from "./service";
+import { getLanguageServicePlugins } from "./plugins";
+import { addMarkoTypes, createMarkoLanguagePlugin } from "./language";
 
 const connection = createConnection();
 const server = createServer(connection);
@@ -34,7 +31,7 @@ connection.onInitialize((params) => {
     params,
     createTypeScriptProject(typescript, diagnosticMessages, ({ env }) => {
       return {
-        languagePlugins: getLanguagePlugins(typescript),
+        languagePlugins: [createMarkoLanguagePlugin(typescript)],
         setup({ project }) {
           const { languageServiceHost, configFileName } = project.typescript!;
 

@@ -7,7 +7,7 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 import type { Node } from "@marko/language-tools";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 export function AttrName(
   node: Node.AttrName,

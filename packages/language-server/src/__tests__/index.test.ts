@@ -7,7 +7,7 @@ import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CancellationToken, Position } from "vscode-languageserver";
 import { Project } from "@marko/language-tools";
-import MarkoLangaugeService, { documents } from "../service";
+import MarkoLangaugeService, { documents } from "../plugins";
 import { codeFrame } from "./util/code-frame";
 
 Project.setDefaultTypePaths({

@@ -4,7 +4,7 @@ import { type Node, getLines, getLocation } from "@marko/language-tools";
 import { LocationLink } from "@volar/language-service";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 export function AttrName(
   node: Node.AttrName,

@@ -1,7 +1,7 @@
 import type { CompletionItem } from "vscode-languageserver";
 import { type Node, NodeType } from "@marko/language-tools";
 import getTagNameCompletion from "../util/get-tag-name-completion";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 export function OpenTagName(
   node: Node.OpenTagName,

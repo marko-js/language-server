@@ -11,7 +11,7 @@ import {
 import { LocationLink } from "@volar/language-service";
 import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 export function OpenTagName(
   node: Node.OpenTagName,

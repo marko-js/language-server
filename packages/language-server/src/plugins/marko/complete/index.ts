@@ -1,6 +1,6 @@
 import { NodeType } from "@marko/language-tools";
 import { CompletionItem } from "vscode-languageserver";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 import { AttrName } from "./AttrName";
 import { Import } from "./Import";
 import { OpenTagName } from "./OpenTagName";

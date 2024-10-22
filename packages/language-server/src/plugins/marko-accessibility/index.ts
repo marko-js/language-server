@@ -3,7 +3,7 @@ import axe from "axe-core";
 import { JSDOM } from "jsdom";
 import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
 import { URI } from "vscode-uri";
-import { MarkoVirtualCode } from "../core/marko-plugin";
+import { MarkoVirtualCode } from "../../language";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
 // This plugin provides accessibility diagnostics for Marko templates.

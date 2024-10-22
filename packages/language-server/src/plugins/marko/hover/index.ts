@@ -1,18 +1,15 @@
 import { NodeType } from "@marko/language-tools";
-import { LocationLink } from "vscode-languageserver";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
-import { AttrName } from "./AttrName";
+import { Hover } from "vscode-languageserver";
+import { MarkoVirtualCode } from "../../../language";
 import { OpenTagName } from "./OpenTagName";
 
-export function provideDefinitions(
+export function provideHover(
   doc: MarkoVirtualCode,
   offset: number,
-): LocationLink[] | undefined {
+): Hover | undefined {
   const node = doc.markoAst.nodeAt(offset);
 
   switch (node?.type) {
-    case NodeType.AttrName:
-      return AttrName(node, doc);
     case NodeType.OpenTagName:
       return OpenTagName(node, doc);
     default:

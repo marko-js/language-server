@@ -1,7 +1,7 @@
 import { CompletionItem, TextEdit } from "vscode-languageserver";
 import type { Node } from "@marko/language-tools";
 import getTagNameCompletion from "../util/get-tag-name-completion";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 const importTagReg = /(['"])<((?:[^'"\\>]+|\\.)*)>?\1/;
 

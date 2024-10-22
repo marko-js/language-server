@@ -12,8 +12,41 @@ import { TaglibLookup } from "@marko/babel-utils";
 import { parseScripts } from "./parseScript";
 import { parseStyles } from "./parseStyles";
 import { parseHtml } from "./parseHtml";
+import "../utils/project-defaults";
 
-export function getMarkoLanguagePlugin(
+const decoratedHosts = new WeakSet<ts.LanguageServiceHost>();
+
+export function addMarkoTypes(
+  rootDir: string,
+  ts: typeof import("typescript"),
+  host: ts.LanguageServiceHost,
+) {
+  if (decoratedHosts.has(host)) {
+    return;
+  }
+  decoratedHosts.add(host);
+
+  const getScriptFileNames = host.getScriptFileNames.bind(host);
+
+  host.getScriptFileNames = () => {
+    const addedFileNames = [];
+
+    const typeLibs = Project.getTypeLibs(rootDir, ts, host);
+
+    addedFileNames.push(typeLibs.internalTypesFile);
+    if (typeLibs.markoRunTypesFile) {
+      addedFileNames.push(typeLibs.markoRunTypesFile);
+    }
+    if (typeLibs.markoRunGeneratedTypesFile) {
+      addedFileNames.push(typeLibs.markoRunGeneratedTypesFile);
+    }
+    addedFileNames.push(typeLibs.markoTypesFile);
+
+    return [...getScriptFileNames(), ...addedFileNames];
+  };
+}
+
+export function createMarkoLanguagePlugin(
   ts: typeof import("typescript"),
 ): LanguagePlugin<URI, MarkoVirtualCode> {
   return {
@@ -54,8 +87,8 @@ export class MarkoVirtualCode implements VirtualCode {
   embeddedCodes!: VirtualCode[];
   markoAst: ReturnType<typeof parse>;
   tagLookup: TaglibLookup;
-  htmlAst?: ReturnType<typeof extractHTML>;
-  compiler?: typeof import("@marko/compiler");
+  htmlAst: ReturnType<typeof extractHTML>;
+  compiler: typeof import("@marko/compiler");
   code: string;
 
   constructor(

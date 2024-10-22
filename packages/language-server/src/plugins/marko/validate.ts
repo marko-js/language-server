@@ -1,7 +1,7 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver-protocol";
 import { DiagnosticType } from "@marko/babel-utils";
 import { Config } from "@marko/compiler";
-import { MarkoVirtualCode } from "../core/marko-plugin";
+import { MarkoVirtualCode } from "../../language";
 
 const markoErrorRegExp =
   /^(.+?)\.marko(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
@@ -13,7 +13,7 @@ export async function provideValidations(
   try {
     // Instead of compiling in the virtual code, we compile the code as part of the diagnostics
     // callback to avoid blocking other more urgent requests like completions or hovers.
-    const compilerResult = await file.compiler?.compile(
+    const compilerResult = await file.compiler.compile(
       file.code,
       file.fileName,
       compilerConfig,

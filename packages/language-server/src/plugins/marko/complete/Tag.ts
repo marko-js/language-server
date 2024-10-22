@@ -5,7 +5,7 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 import { type Node, UNFINISHED } from "@marko/language-tools";
-import { MarkoVirtualCode } from "../../core/marko-plugin";
+import { MarkoVirtualCode } from "../../../language";
 
 const partialCloseTagReg = /<\/(?:[^><]*>)?/iy;
 
