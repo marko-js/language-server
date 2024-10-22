@@ -1079,7 +1079,7 @@ constructor(_?: Return) {}
     for (const nameText in staticAttrTags) {
       const attrTag = staticAttrTags[nameText];
       const attrTagDef = this.#lookup.getTag(nameText);
-      const isRepeated = attrTag.length > 1 ? true : attrTagDef?.isRepeated;
+      const isRepeated = attrTag.length > 1;
       const [firstAttrTag] = attrTag;
       const name =
         attrTagDef?.targetProperty ||
@@ -1090,7 +1090,7 @@ constructor(_?: Return) {}
       this.#extractor.write("]: ");
 
       if (isRepeated) {
-        this.#extractor.write("[\n");
+        this.#extractor.write(`${varShared("repeatedAttrTag")}(\n`);
       }
 
       for (const childNode of attrTag) {
@@ -1099,7 +1099,7 @@ constructor(_?: Return) {}
       }
 
       if (isRepeated) {
-        this.#extractor.write(`]${SEP_COMMA_NEW_LINE}`);
+        this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
       }
     }
   }
@@ -1169,14 +1169,14 @@ constructor(_?: Return) {}
         case "while": {
           this.#writeComments(tag);
           this.#extractor
-            .write(`${varShared("mergeAttrTags")}((\n`)
+            .write("((\n")
             .copy(
               this.#getRangeWithoutTrailingComma(tag.args?.value) ||
                 "undefined",
             )
-            .write("\n) ? [");
+            .write("\n) ? ");
           this.#writeDynamicAttrTagBody(tag);
-          this.#extractor.write("] : [])");
+          this.#extractor.write(" : {})");
           break;
         }
       }

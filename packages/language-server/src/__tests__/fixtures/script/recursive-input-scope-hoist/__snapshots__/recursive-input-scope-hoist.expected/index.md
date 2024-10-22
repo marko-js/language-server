@@ -1,15 +1,4 @@
 ## Hovers
-### Ln 3, Col 7
-```marko
-  1 | <comments>
-  2 |   <@comment#a>
-> 3 |     <@comment#b>
-    |       ^ (property) comment?: Marko.RepeatableAttrTag<Comment> | undefined
-  4 | //    ^?
-  5 |       <let/b = "b" as const/>
-  6 |     </@comment>
-```
-
 ### Ln 15, Col 3
 ```marko
   13 |
@@ -43,15 +32,15 @@
 ```
 
 ## Diagnostics
-### Ln 9, Col 4
+### Ln 2, Col 4
 ```marko
-   7 |     <let/a = "a" as const/>
-   8 |   </@comment>
->  9 |   <@comment>
-     |    ^^^^^^^^ Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
-  Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' but required in type 'Comment'.
-  10 |     <let/c = "c" as const/>
-  11 |   </@comment>
-  12 | </comments>
+  1 | <comments>
+> 2 |   <@comment#a>
+    |    ^^^^^^^^ Type '{ comment: { id: string; renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }; renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; id: string; } | { renderBody: () => MarkoReturn<...>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
+  Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<Comment>'.
+    Property 'id' is missing in type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; }' but required in type 'Comment'.
+  3 |     <@comment#b>
+  4 | //    ^?
+  5 |       <let/b = "b" as const/>
 ```
 
