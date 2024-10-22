@@ -66,11 +66,7 @@ export const create = (
         provideDiagnostics(document, token) {
           if (token.isCancellationRequested) return;
           return worker(document, async (virtualCode) => {
-            const validations = await provideValidations(virtualCode);
-            if (validations.length) {
-              console.log("validations", validations);
-            }
-            return validations;
+            return await provideValidations(virtualCode);
           });
         },
         provideHover(document, position, token) {
