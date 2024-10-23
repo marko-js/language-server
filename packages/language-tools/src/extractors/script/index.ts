@@ -448,7 +448,11 @@ constructor(_?: Return) {}
     this.#extractor.write(");\n");
   }
 
-  #writeChildren(parent: Node.ParentNode, children: Node.ChildNode[]) {
+  #writeChildren(
+    parent: Node.ParentNode,
+    children: Node.ChildNode[],
+    skipRenderId = false,
+  ) {
     const last = children.length - 1;
     let returnTag: Node.Tag | undefined;
     let i = 0;
@@ -465,20 +469,23 @@ constructor(_?: Return) {}
               // @ts-expect-error we know we are in an If Tag
               declare const child: IfTag;
               const alternates = IF_TAG_ALTERNATES.get(child);
-              let renderId = this.#getRenderId(child);
+              let renderId: number | undefined;
 
-              if (!renderId && alternates) {
-                for (const { node } of alternates) {
-                  if ((renderId = this.#getRenderId(node))) break;
+              if (!skipRenderId) {
+                renderId = this.#getRenderId(child);
+                if (!renderId && alternates) {
+                  for (const { node } of alternates) {
+                    if ((renderId = this.#getRenderId(node))) break;
+                  }
                 }
-              }
 
-              if (renderId) {
-                this.#extractor.write(
-                  `${varShared("assertRendered")}(${varShared(
-                    "rendered",
-                  )}, ${renderId}, (() => {\n`,
-                );
+                if (renderId) {
+                  this.#extractor.write(
+                    `${varShared("assertRendered")}(${varShared(
+                      "rendered",
+                    )}, ${renderId}, (() => {\n`,
+                  );
+                }
               }
 
               this.#writeComments(child);
@@ -491,9 +498,10 @@ constructor(_?: Return) {}
                 )
                 .write(") {\n");
 
-              if (child.body) {
+              const ifBody = this.#processBody(child);
+              if (ifBody?.renderBody) {
                 const localBindings = getHoistSources(child);
-                this.#writeChildren(child, child.body);
+                this.#writeChildren(child, ifBody.renderBody, true);
 
                 if (localBindings) {
                   this.#extractor.write("return {\nscope:");
@@ -519,9 +527,10 @@ constructor(_?: Return) {}
                     this.#extractor.write("\n} else if (undefined) {\n");
                   }
 
-                  if (node.body) {
+                  const alternateBody = this.#processBody(node);
+                  if (alternateBody?.renderBody) {
                     const localBindings = getHoistSources(node);
-                    this.#writeChildren(node, node.body);
+                    this.#writeChildren(node, alternateBody.renderBody, true);
 
                     if (localBindings) {
                       this.#extractor.write("return {\nscope:");
@@ -1400,7 +1409,6 @@ constructor(_?: Return) {}
               // If tags are special, here we group them with their related else-if and else tags.
               let alternates: IfTagAlternates;
               hasDynamicAttrTags ||= child.hasAttrTags;
-
               loop: while (i <= last) {
                 const nextChild = body[i++];
                 switch (nextChild.type) {
