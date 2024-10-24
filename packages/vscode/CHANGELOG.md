@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.4.2
+
+### Patch Changes
+
+- [#286](https://github.com/marko-js/language-server/pull/286) [`f585449`](https://github.com/marko-js/language-server/commit/f585449654947fe82fb0a56cc4e8a443589e574c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Revert change to renderBody codegen which caused a regression with the `<await>` tag.
+
 ## 1.4.1
 
 ### Patch Changes
