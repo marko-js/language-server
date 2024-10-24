@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.4.2
+
+### Patch Changes
+
+- [#286](https://github.com/marko-js/language-server/pull/286) [`f585449`](https://github.com/marko-js/language-server/commit/f585449654947fe82fb0a56cc4e8a443589e574c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Revert change to renderBody codegen which caused a regression with the `<await>` tag.
+
+## 1.4.1
+
+### Patch Changes
+
+- [#284](https://github.com/marko-js/language-server/pull/284) [`f2f3c2c`](https://github.com/marko-js/language-server/commit/f2f3c2cb03d07052e78315ad3a0c43fa33a1828e) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type errors with nested conditional change
+
 ## 1.4.0
 
 ### Minor Changes

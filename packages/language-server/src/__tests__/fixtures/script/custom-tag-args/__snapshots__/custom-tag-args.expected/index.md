@@ -1,20 +1,11 @@
 ## Diagnostics
-### Ln 2, Col 11
+### Ln 3, Col 10
 ```marko
-  1 | <test-tag({ value: "hello!" })/>
-> 2 | <test-tag("hello!")/>
-    |           ^^^^^^^^ Argument of type 'string' is not assignable to parameter of type 'Directives & Input'.
-  Type 'string' is not assignable to type 'Input'.
-  3 | <test-tag("hello!", 1, 2)/>
-  4 |
-```
-
-### Ln 3, Col 21
-```marko
-  1 | <test-tag({ value: "hello!" })/>
-  2 | <test-tag("hello!")/>
+  1 | <test-tag("hello!")/>
+  2 | <test-tag("hello!", 1)/>
 > 3 | <test-tag("hello!", 1, 2)/>
-    |                     ^^^^ Expected 1 arguments, but got 3.
+    |          ^^^^^^^^^^^^^^^^ Type of computed property's value is '[string, number, number]', which is not assignable to type '[string, (number | undefined)?]'.
+  Source has 3 element(s) but target allows only 2.
   4 |
 ```
 

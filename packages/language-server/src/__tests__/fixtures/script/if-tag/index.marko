@@ -59,6 +59,18 @@
   <const/g = 6 as const/>
 </else>
 
+<if(show)></if>
+<else-if(showAlt)>
+  <if(show)>
+  </if>
+  <else-if(showAlt)>
+    <const/h = 7 as const/>
+  </else-if>
+  <else>
+    <const/i = 8 as const/>
+  </else>
+</else-if>
+
 <if=show>
   Hi
 </if>
@@ -82,6 +94,7 @@
   Hi
 </if>
 
+
 <effect() {
   a;
 //^?
@@ -96,5 +109,9 @@
   f;
 //^?
   g;
+//^?
+  h;
+//^?
+  i;
 //^?
 }/>

@@ -1,5 +1,29 @@
 # Change Log
 
+## 1.3.3
+
+### Patch Changes
+
+- [#286](https://github.com/marko-js/language-server/pull/286) [`f585449`](https://github.com/marko-js/language-server/commit/f585449654947fe82fb0a56cc4e8a443589e574c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Revert change to renderBody codegen which caused a regression with the `<await>` tag.
+
+- Updated dependencies [[`f585449`](https://github.com/marko-js/language-server/commit/f585449654947fe82fb0a56cc4e8a443589e574c)]:
+  - @marko/language-tools@2.4.2
+
+## 1.3.2
+
+### Patch Changes
+
+- [#284](https://github.com/marko-js/language-server/pull/284) [`f2f3c2c`](https://github.com/marko-js/language-server/commit/f2f3c2cb03d07052e78315ad3a0c43fa33a1828e) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type errors with nested conditional change
+
+- Updated dependencies [[`f2f3c2c`](https://github.com/marko-js/language-server/commit/f2f3c2cb03d07052e78315ad3a0c43fa33a1828e)]:
+  - @marko/language-tools@2.4.1
+
+## 1.3.1
+
+### Patch Changes
+
+- [#276](https://github.com/marko-js/language-server/pull/276) [`c0ca744`](https://github.com/marko-js/language-server/commit/c0ca74408aae63045eec9603fe7a186387b2bdbe) Thanks [@saiponnada](https://github.com/saiponnada)! - fix(axe-core): disabled experimental rules
+
 ## 1.3.0
 
 ### Minor Changes
