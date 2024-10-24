@@ -1197,27 +1197,33 @@ constructor(_?: Return) {}
   #writeTagInputObject(tag: Node.ParentTag) {
     if (!tag.params) this.#writeComments(tag);
 
-    const body = this.#processBody(tag);
-    let writeInputObj = true;
     let hasInput = false;
+    this.#extractor.write("{\n");
 
     if (tag.args) {
       hasInput = true;
-      this.#extractor.copy(tag.args.value);
-
-      if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
-        this.#extractor.write(",\n{\n");
-      } else {
-        writeInputObj = false;
-      }
-    } else {
-      this.#extractor.write("{\n");
+      this.#extractor
+        .write("[")
+        .copy({
+          start: tag.args.start,
+          end: tag.args.start + 1,
+        })
+        .write('"value"')
+        .copy({
+          start: tag.args.end - 1,
+          end: tag.args.end,
+        })
+        .write(`]: ${varShared("tuple")}(`)
+        .copy(tag.args.value)
+        .write(")")
+        .write(",\n");
     }
 
     if (this.#writeAttrs(tag)) {
       hasInput = true;
     }
 
+    const body = this.#processBody(tag);
     let hasRenderBody = false;
     if (body) {
       hasInput = true;
@@ -1278,9 +1284,7 @@ constructor(_?: Return) {}
       this.#writeTagNameComment(tag);
     }
 
-    if (writeInputObj) {
-      this.#extractor.write("\n}");
-    }
+    this.#extractor.write("\n}");
   }
 
   #writeObjectKeys(keys: Iterable<string>) {
