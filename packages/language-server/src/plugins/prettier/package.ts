@@ -1,19 +1,32 @@
-import * as prettier from "prettier";
-import { getPackagePath } from "../../utils/importPackage";
+import type * as prettier from "prettier";
+import type * as prettierPluginMarko from "prettier-plugin-marko";
 
-export function importPrettier(fromPath: string): typeof prettier {
-  const prettierPkg = getPackagePath("prettier", [fromPath, __dirname]);
-
-  if (prettierPkg) {
-    return require(prettierPkg);
+export function importPrettier(fromPath: string): typeof prettier | undefined {
+  try {
+    const packagePath = require.resolve("prettier", {
+      paths: [fromPath, __dirname],
+    });
+    console.log("Found Prettier", packagePath);
+    return require(packagePath);
+  } catch (error) {
+    console.error(error);
   }
 
-  // Return the built-in prettier instance if the user doesn't have it installed.
-  return prettier;
+  return undefined;
 }
 
-export function getMarkoPrettierPluginPath(
+export function importMarkoPrettierPlugin(
   fromPath: string,
-): string | undefined {
-  return getPackagePath("prettier-plugin-marko", [fromPath, __dirname], false);
+): typeof prettierPluginMarko | undefined {
+  try {
+    const packagePath = require.resolve("prettier-plugin-marko", {
+      paths: [fromPath, __dirname],
+    });
+    console.log("prettier-plugin-marko", packagePath);
+    return require(packagePath);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return undefined;
 }

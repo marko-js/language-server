@@ -10,36 +10,46 @@ import { MessageType } from "@volar/language-server";
 import { URI } from "vscode-uri";
 import { Project } from "@marko/language-tools";
 import * as markoPrettier from "prettier-plugin-marko";
-import { Options } from "prettier";
-import { dynamicRequire } from "../../utils/importPackage";
-import { getMarkoPrettierPluginPath, importPrettier } from "./package";
+import type { Options } from "prettier";
+import * as prettierBuiltIn from "prettier";
+import { importMarkoPrettierPlugin, importPrettier } from "./package";
 
 export function createMarkoPrettierService(
   connection: Connection,
 ): LanguageServicePlugin {
-  let prettier: typeof import("prettier") | undefined;
-  let prettierPluginPath: string | undefined;
+  let prettier: typeof prettierBuiltIn | undefined;
+  let prettierPlugin: typeof markoPrettier | undefined;
   let hasShownNotification = false;
 
   return createPrettierService(
     (context) => {
-      const { prettierInstance, markoPluginPath } =
+      const { prettierInstance, prettierPluginMarko } =
         getPrettierInstance(context);
 
       prettier = prettierInstance;
-      prettierPluginPath = markoPluginPath;
+      prettierPlugin = prettierPluginMarko;
 
       // Show a warning notification if Prettier or the Marko plugin isn't installed.
-      if ((!prettier || !prettierPluginPath) && !hasShownNotification) {
+      if ((!prettier || !prettierPlugin) && !hasShownNotification) {
         connection.sendNotification(ShowMessageNotification.type, {
           message:
-            "Couldn't load `prettier` or `prettier-plugin-marko`. Formatting will not work. Please make sure those two packages are installed into your project and restart the language server.",
+            "Couldn't load `prettier` or `prettier-plugin-marko`. Falling back to built-in versions.",
           type: MessageType.Warning,
         });
         hasShownNotification = true;
       }
 
-      return prettierInstance;
+      if (!prettier) {
+        // Fallback to the built-in version of prettier.
+        prettier = prettierBuiltIn;
+      }
+
+      if (!prettierPlugin) {
+        // Fallback to the built-in version of prettier-plugin-marko.
+        prettierPlugin = markoPrettier;
+      }
+
+      return prettier;
     },
     {
       documentSelector: [{ language: "marko" }],
@@ -64,7 +74,7 @@ export function createMarkoPrettierService(
       ) => {
         return getFormattingOptions(
           prettierInstance,
-          prettierPluginPath,
+          prettierPlugin!,
           document.uri,
           formatOptions,
           context,
@@ -82,16 +92,16 @@ export function createMarkoPrettierService(
 
 export function getPrettierInstance(context: LanguageServiceContext): {
   prettierInstance?: typeof import("prettier");
-  markoPluginPath?: string;
+  prettierPluginMarko?: typeof import("prettier-plugin-marko");
 } {
   for (const workspaceFolder of context.env.workspaceFolders) {
     if (workspaceFolder.scheme === "file") {
       const prettierInstance = importPrettier(workspaceFolder.fsPath);
-      const markoPluginPath = getMarkoPrettierPluginPath(
+      const prettierPluginMarko = importMarkoPrettierPlugin(
         workspaceFolder.fsPath,
       );
 
-      return { prettierInstance, markoPluginPath };
+      return { prettierInstance, prettierPluginMarko };
     }
   }
   return {};
@@ -99,7 +109,7 @@ export function getPrettierInstance(context: LanguageServiceContext): {
 
 export async function getFormattingOptions(
   prettierInstance: typeof import("prettier"),
-  markoPluginPath: string | undefined,
+  prettierPlugin: typeof markoPrettier,
   documentUriString: string,
   formatOptions: FormattingOptions,
   context: LanguageServiceContext,
@@ -143,21 +153,14 @@ export async function getFormattingOptions(
   };
 
   try {
-    let resolvedPlugin;
-    if (markoPluginPath) {
-      resolvedPlugin = dynamicRequire(markoPluginPath);
-    } else {
-      resolvedPlugin = markoPrettier;
-    }
-
-    resolvedPlugin.setCompiler(
+    prettierPlugin.setCompiler(
       Project.getCompiler(fileDir),
       Project.getConfig(fileDir),
     );
 
     return {
       ...resolvedConfig,
-      plugins: [resolvedPlugin, ...(resolvedConfig.plugins ?? [])],
+      plugins: [prettierPlugin, ...(resolvedConfig.plugins ?? [])],
       parser: "marko",
     };
   } catch (e) {

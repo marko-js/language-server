@@ -26,15 +26,15 @@ export const create = (): LanguageServicePlugin => {
             return;
           }
 
-          const { prettierInstance, markoPluginPath } =
+          const { prettierInstance, prettierPluginMarko } =
             getPrettierInstance(context);
-          if (!prettierInstance || !markoPluginPath) {
+          if (!prettierInstance || !prettierPluginMarko) {
             return;
           }
 
           const prettierOptions = await getFormattingOptions(
             prettierInstance,
-            markoPluginPath,
+            prettierPluginMarko,
             fileUri,
             options,
             context,
