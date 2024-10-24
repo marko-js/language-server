@@ -11,7 +11,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "stripInternal": true,
-    "noUnusedLocals": false, // Temporarily disabled.
+    "noUnusedLocals": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,

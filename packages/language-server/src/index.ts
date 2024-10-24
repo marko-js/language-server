@@ -1,10 +1,10 @@
-import { dirname } from "path";
 import {
   createConnection,
   createServer,
   createTypeScriptProject,
   loadTsdkByPath,
 } from "@volar/language-server/node";
+import { URI } from "vscode-uri";
 import { getLanguageServicePlugins } from "./plugins";
 import { addMarkoTypes, createMarkoLanguagePlugin } from "./language";
 
@@ -31,26 +31,19 @@ connection.onInitialize((params) => {
     params,
     createTypeScriptProject(typescript, diagnosticMessages, ({ env }) => {
       return {
-        languagePlugins: [createMarkoLanguagePlugin(typescript)],
+        languagePlugins: [
+          createMarkoLanguagePlugin(typescript, (uri: URI) =>
+            uri.fsPath.replace(/\\/g, "/"),
+          ),
+        ],
         setup({ project }) {
           const { languageServiceHost, configFileName } = project.typescript!;
 
           const rootPath = configFileName
             ? configFileName.split("/").slice(0, -1).join("/")
             : env.workspaceFolders[0]!.fsPath;
-          const nearestPackageJson = typescript.findConfigFile(
-            rootPath,
-            typescript.sys.fileExists,
-            "package.json",
-          );
 
-          if (nearestPackageJson) {
-            addMarkoTypes(
-              dirname(nearestPackageJson),
-              typescript,
-              languageServiceHost,
-            );
-          }
+          addMarkoTypes(rootPath, typescript, languageServiceHost);
         },
       };
     }),

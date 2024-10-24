@@ -5,7 +5,6 @@ import {
   type VirtualCode,
   forEachEmbeddedCode,
 } from "@volar/language-core";
-import type { URI } from "vscode-uri";
 import type ts from "typescript";
 import { Project, extractHTML, parse } from "@marko/language-tools";
 import { TaglibLookup } from "@marko/babel-utils";
@@ -30,7 +29,6 @@ export function addMarkoTypes(
 
   host.getScriptFileNames = () => {
     const addedFileNames = [];
-
     const typeLibs = Project.getTypeLibs(rootDir, ts, host);
 
     addedFileNames.push(typeLibs.internalTypesFile);
@@ -46,18 +44,21 @@ export function addMarkoTypes(
   };
 }
 
-export function createMarkoLanguagePlugin(
+export function createMarkoLanguagePlugin<T>(
   ts: typeof import("typescript"),
-): LanguagePlugin<URI, MarkoVirtualCode> {
+  asFileName: (scriptId: T) => string,
+): LanguagePlugin<T, MarkoVirtualCode> {
   return {
-    getLanguageId(uri) {
-      if (uri.path.endsWith(".marko")) {
+    getLanguageId(scriptId) {
+      const fileName = asFileName(scriptId);
+
+      if (fileName.endsWith(".marko")) {
         return "marko";
       }
     },
-    createVirtualCode(uri, languageId, snapshot) {
+    createVirtualCode(scriptId, languageId, snapshot) {
       if (languageId === "marko") {
-        const fileName = uri.fsPath.replace(/\\/g, "/");
+        const fileName = asFileName(scriptId);
         return new MarkoVirtualCode(fileName, snapshot, ts);
       }
     },
