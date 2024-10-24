@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.4.1
+
+### Patch Changes
+
+- [#284](https://github.com/marko-js/language-server/pull/284) [`f2f3c2c`](https://github.com/marko-js/language-server/commit/f2f3c2cb03d07052e78315ad3a0c43fa33a1828e) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type errors with nested conditional change
+
 ## 2.4.0
 
 ### Minor Changes
