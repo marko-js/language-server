@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.4.4
+
+### Patch Changes
+
+- [#290](https://github.com/marko-js/language-server/pull/290) [`9c5ad9b`](https://github.com/marko-js/language-server/commit/9c5ad9b9dd7e6944079f98e8e6ec804b00a8dd3d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade deps.
+
 ## 2.4.3
 
 ### Patch Changes
