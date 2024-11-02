@@ -1,5 +1,23 @@
 # Change Log
 
+## 1.3.6
+
+### Patch Changes
+
+- [#292](https://github.com/marko-js/language-server/pull/292) [`f46beb1`](https://github.com/marko-js/language-server/commit/f46beb15c36450a8e7f7b61edfc3db6738c6bc32) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- Updated dependencies [[`f46beb1`](https://github.com/marko-js/language-server/commit/f46beb15c36450a8e7f7b61edfc3db6738c6bc32)]:
+  - @marko/language-tools@2.4.5
+
+## 1.3.5
+
+### Patch Changes
+
+- [#290](https://github.com/marko-js/language-server/pull/290) [`9c5ad9b`](https://github.com/marko-js/language-server/commit/9c5ad9b9dd7e6944079f98e8e6ec804b00a8dd3d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade deps.
+
+- Updated dependencies [[`9c5ad9b`](https://github.com/marko-js/language-server/commit/9c5ad9b9dd7e6944079f98e8e6ec804b00a8dd3d)]:
+  - @marko/language-tools@2.4.4
+
 ## 1.3.4
 
 ### Patch Changes
