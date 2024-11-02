@@ -1,10 +1,11 @@
+import { TaglibLookup } from "@marko/babel-utils";
 import { ScriptLang, extractScript, parse } from "@marko/language-tools";
 import type { CodeMapping, VirtualCode } from "@volar/language-core";
 
 export function parseScripts(
   parsed: ReturnType<typeof parse>,
   ts: typeof import("typescript"),
-  tagLookup: any,
+  tagLookup: TaglibLookup,
 ): VirtualCode[] {
   const script = extractScript({
     parsed,
@@ -34,7 +35,7 @@ export function parseScripts(
     return [
       {
         id: "script",
-        languageId: "typescript",
+        languageId: "ts",
         snapshot: {
           getText: (start, end) => scriptText.substring(start, end),
           getLength: () => scriptText.length,
