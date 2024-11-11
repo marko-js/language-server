@@ -1107,7 +1107,13 @@ constructor(_?: Return) {}
       this.#extractor.write("]: ");
 
       if (isRepeated) {
-        this.#extractor.write(`${varShared("repeatedAttrTag")}(...[\n`);
+        this.#extractor.write(`${varShared("repeatedAttrTag")}(\n...\n`);
+        if (nestedTagType && this.#scriptLang === ScriptLang.js) {
+          this.#extractor.write(
+            `/** @satisfies {${nestedTagType}["${name}"][]} */\n`,
+          );
+        }
+        this.#extractor.write(`([\n`);
       }
 
       for (const childNode of attrTag) {
@@ -1116,8 +1122,8 @@ constructor(_?: Return) {}
       }
 
       if (isRepeated) {
-        this.#extractor.write("]");
-        if (nestedTagType) {
+        this.#extractor.write("])");
+        if (nestedTagType && this.#scriptLang === ScriptLang.ts) {
           this.#extractor.write(` satisfies ${nestedTagType}["${name}"][]`);
         }
         this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
