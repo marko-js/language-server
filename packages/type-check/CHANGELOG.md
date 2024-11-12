@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 1.2.5
+
+### Patch Changes
+
+- [#295](https://github.com/marko-js/language-server/pull/295) [`b6c4578`](https://github.com/marko-js/language-server/commit/b6c45780de08cee5d18115aa892e2e40b069d4f0) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Improve type inference for repeated attr tags
+
 ## 1.2.4
 
 ### Patch Changes
