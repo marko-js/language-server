@@ -1,7 +1,7 @@
 # Marko Language Support
 
 Using the [Language Server Protocol](https://langserver.org/) to improve Marko's developer experience.
-Server implementation can be found [here](server).
+Server implementation can be found [here](https://github.com/marko-js/language-server/tree/main/packages/language-server).
 
 ![image](https://user-images.githubusercontent.com/1958812/62816318-f30e9700-bad9-11e9-82ba-ff3b360eb1f7.png)
 
