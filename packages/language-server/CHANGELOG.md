@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.8
+
+### Patch Changes
+
+- [#298](https://github.com/marko-js/language-server/pull/298) [`6fc8f8d`](https://github.com/marko-js/language-server/commit/6fc8f8de8695245e007a77ad0807174f873cbdaf) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix dependency issue
+
 ## 1.3.7
 
 ### Patch Changes
