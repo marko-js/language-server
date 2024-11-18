@@ -695,6 +695,7 @@ constructor(_?: Return) {}
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
+    let nestedTagType: string | undefined;
 
     if (renderId) {
       this.#extractor.write(
@@ -709,6 +710,10 @@ constructor(_?: Return) {}
 
       if (def) {
         const importPath = resolveTagImport(this.#filename, def);
+        const isMarkoFile = importPath?.endsWith(".marko");
+        if (isMarkoFile) {
+          nestedTagType = `import("${importPath}").Input`;
+        }
         const renderer = importPath?.endsWith(".marko")
           ? `renderTemplate(import("${importPath}"))`
           : def.html
@@ -727,6 +732,7 @@ constructor(_?: Return) {}
           this.#extractor.write(varShared(renderer));
         }
       } else if (REG_TAG_NAME_IDENTIFIER.test(tagName)) {
+        nestedTagType = `Marko.Input<typeof ${this.#read(tag.name)}>`;
         this.#extractor
           .write(`${varShared("renderDynamicTag")}(\n`)
           .copy(tag.name)
@@ -746,7 +752,7 @@ constructor(_?: Return) {}
       this.#extractor.write("()()(");
     }
 
-    this.#writeTagInputObject(tag);
+    this.#writeTagInputObject(tag, nestedTagType);
 
     if (renderId) {
       this.#extractor.write(`)`);
@@ -1035,6 +1041,7 @@ constructor(_?: Return) {}
   #writeAttrTags(
     { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
     inMerge: boolean,
+    nestedTagType?: string,
   ) {
     let wasMerge = false;
 
@@ -1051,7 +1058,7 @@ constructor(_?: Return) {}
     }
 
     if (staticAttrTags) {
-      this.#writeStaticAttrTags(staticAttrTags, inMerge);
+      this.#writeStaticAttrTags(staticAttrTags, inMerge, nestedTagType);
       if (dynamicAttrTagParents)
         this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     }
@@ -1065,6 +1072,7 @@ constructor(_?: Return) {}
   #writeStaticAttrTags(
     staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
     wasMerge: boolean,
+    nestedTagType?: string,
   ) {
     if (!wasMerge) this.#extractor.write("...{");
     this.#extractor.write(
@@ -1099,7 +1107,13 @@ constructor(_?: Return) {}
       this.#extractor.write("]: ");
 
       if (isRepeated) {
-        this.#extractor.write(`${varShared("repeatedAttrTag")}(\n`);
+        this.#extractor.write(`${varShared("repeatedAttrTag")}(\n...\n`);
+        if (nestedTagType && this.#scriptLang === ScriptLang.js) {
+          this.#extractor.write(
+            `/** @satisfies {${nestedTagType}["${name}"][]} */\n`,
+          );
+        }
+        this.#extractor.write(`([\n`);
       }
 
       for (const childNode of attrTag) {
@@ -1108,6 +1122,10 @@ constructor(_?: Return) {}
       }
 
       if (isRepeated) {
+        this.#extractor.write("])");
+        if (nestedTagType && this.#scriptLang === ScriptLang.ts) {
+          this.#extractor.write(` satisfies ${nestedTagType}["${name}"][]`);
+        }
         this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
       }
     }
@@ -1194,7 +1212,7 @@ constructor(_?: Return) {}
     }
   }
 
-  #writeTagInputObject(tag: Node.ParentTag) {
+  #writeTagInputObject(tag: Node.ParentTag, nestedTagType?: string) {
     if (!tag.params) this.#writeComments(tag);
 
     let hasInput = false;
@@ -1227,7 +1245,7 @@ constructor(_?: Return) {}
     let hasRenderBody = false;
     if (body) {
       hasInput = true;
-      this.#writeAttrTags(body, false);
+      this.#writeAttrTags(body, false, nestedTagType);
       hasRenderBody = body.renderBody !== undefined;
     } else if (tag.close) {
       hasRenderBody = true;
