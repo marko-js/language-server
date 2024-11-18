@@ -1,11 +1,11 @@
 {
-  "name": "marko-vscode",
-  "description": "Marko Syntax Highlighting, Pretty-printing, TypeScript, IntelliSense, and more",
-  "version": "2.0.0-alpha01",
+  "name": "polar-vscode",
+  "description": "Language Tools for Marko built using Volar",
+  "version": "0.1.2",
   "activationEvents": [
     "workspaceContains:**/*.marko"
   ],
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
+  "bugs": "https://github.com/AngusMorton/marko-language-server/issues/new",
   "categories": [
     "Programming Languages"
   ],
@@ -102,7 +102,7 @@
     },
     "configurationDefaults": {
       "[marko]": {
-        "editor.defaultFormatter": "Marko-JS.marko-vscode"
+        "editor.defaultFormatter": "AngusMorton.polar-vscode"
       }
     }
   },
@@ -117,19 +117,19 @@
     "tsx": "^4.19.2",
     "vscode-languageclient": "^9.0.1"
   },
-  "displayName": "Marko VSCode",
+  "displayName": "Polar: Marko Language Tools",
   "engines": {
     "vscode": "^1.80.0"
   },
-  "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
+  "homepage": "https://github.com/AngusMorton/marko-language-server/tree/main/packages/vscode/README.md",
   "icon": "img/marko.png",
   "license": "MIT",
   "main": "./dist/index.js",
   "private": true,
-  "publisher": "Marko-JS",
+  "publisher": "AngusMorton",
   "repository": {
     "type": "git",
-    "url": "https://github.com/marko-js/language-server/tree/main/clients/vscode/"
+    "url": "https://github.com/AngusMorton/marko-language-server/tree/main/packages/vscode/"
   },
   "scripts": {
     "build": "tsc -b && tsx build.mts",
