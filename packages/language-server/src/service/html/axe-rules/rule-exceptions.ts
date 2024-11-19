@@ -72,7 +72,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaInputFieldName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaMeterName]: { unknownBody: true, attrSpread: true },
   [r.aria.ariaProgressbarName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaProhibitedAttr]: {},
+  [r.aria.ariaProhibitedAttr]: { dynamicAttrs: ["role"] },
   [r.aria.ariaRequiredAttr]: { attrSpread: true },
   [r.aria.ariaRequiredChildren]: { unknownBody: true },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
