@@ -119,7 +119,7 @@ class ScriptExtractor {
     this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
-    this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
+    this.#scriptParser = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
     this.#writeProgram(parsed.program);
