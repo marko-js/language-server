@@ -1,7 +1,7 @@
-import path from "path";
-import Mocha from "mocha";
 import { stream } from "fast-glob";
+import Mocha from "mocha";
 import { mochaHooks } from "mocha-snap";
+import path from "path";
 
 export async function run() {
   // enables typescript for imported files below.

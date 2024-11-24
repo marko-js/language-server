@@ -1,10 +1,9 @@
+import { type Node, UNFINISHED } from "@marko/language-tools";
 import {
   CompletionItemKind,
   InsertTextFormat,
   TextEdit,
 } from "vscode-languageserver";
-
-import { type Node, UNFINISHED } from "@marko/language-tools";
 
 import type { CompletionMeta, CompletionResult } from ".";
 

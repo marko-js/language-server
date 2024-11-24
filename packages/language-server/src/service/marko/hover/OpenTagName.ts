@@ -1,8 +1,7 @@
 import type { Node } from "@marko/language-tools";
 
-import getTagNameCompletion from "../util/get-tag-name-completion";
 import { START_LOCATION } from "../../../utils/constants";
-
+import getTagNameCompletion from "../util/get-tag-name-completion";
 import type { HoverMeta, HoverResult } from ".";
 
 export function OpenTagName({

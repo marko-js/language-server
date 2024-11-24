@@ -1,5 +1,5 @@
-import { type Location, type Position } from "htmljs-parser";
 import { codeFrameColumns } from "@babel/code-frame";
+import type { Location, Position } from "htmljs-parser";
 
 export function codeFrame(code: string, message: string, loc: Location) {
   return codeFrameColumns(code, toBabelLocation(loc), { message });

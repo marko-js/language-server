@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import { createRequire } from "module";
 import arg from "arg";
+import fs from "fs";
 import color from "kleur";
+import { createRequire } from "module";
+import path from "path";
+
 import run, { Display } from "./run";
 
 const args = arg(

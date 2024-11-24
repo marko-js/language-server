@@ -1,5 +1,4 @@
 import fs from "fs";
-import { URI } from "vscode-uri";
 import {
   DidChangeTextDocumentParams,
   DidChangeWatchedFilesParams,
@@ -8,6 +7,7 @@ import {
   FileChangeType,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { URI } from "vscode-uri";
 
 export type FileChangeHandler = (document: TextDocument | undefined) => void;
 

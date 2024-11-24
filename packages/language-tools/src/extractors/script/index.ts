@@ -1,8 +1,8 @@
-import type TS from "typescript/lib/tsserverlibrary";
 import type * as t from "@babel/types";
-import { relativeImportPath } from "relative-import-path";
-
 import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
+import { relativeImportPath } from "relative-import-path";
+import type TS from "typescript/lib/tsserverlibrary";
+
 import {
   type Node,
   NodeType,
@@ -12,19 +12,19 @@ import {
   type Repeated,
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
-import { ScriptParser } from "./util/script-parser";
 import {
   crawlProgramScope,
   getBoundAttrMemberExpressionStartOffset,
-  getHoistSources,
   getHoists,
+  getHoistSources,
   getMutatedVars,
   hasHoists,
   isMutatedVar,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
-import { getRuntimeOverrides } from "./util/runtime-overrides";
 import getJSDocInputType from "./util/jsdoc-input-type";
+import { getRuntimeOverrides } from "./util/runtime-overrides";
+import { ScriptParser } from "./util/script-parser";
 
 const SEP_EMPTY = "";
 const SEP_SPACE = " ";

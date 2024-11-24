@@ -1,12 +1,12 @@
-import fs from "fs";
-import path from "path";
-import ts from "typescript";
+import type { Extracted } from "@marko/language-tools";
+import { getExt } from "@marko/language-tools";
 import {
   createFSBackedSystem,
   createVirtualLanguageServiceHost,
 } from "@typescript/vfs";
-import type { Extracted } from "@marko/language-tools";
-import { getExt } from "@marko/language-tools";
+import fs from "fs";
+import path from "path";
+import ts from "typescript";
 
 const rootDir = process.cwd();
 const startPosition: ts.LineAndCharacter = {

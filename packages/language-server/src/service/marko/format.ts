@@ -2,8 +2,8 @@ import { Project } from "@marko/language-tools";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
 import { CancellationToken, TextEdit } from "vscode-languageserver";
-
 import { TextDocument } from "vscode-languageserver-textdocument";
+
 import { START_POSITION } from "../../utils/constants";
 import { getFSDir, getFSPath } from "../../utils/file";
 import { displayError } from "../../utils/messages";

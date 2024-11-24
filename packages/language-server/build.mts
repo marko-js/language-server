@@ -1,6 +1,6 @@
+import { build, BuildOptions } from "esbuild";
 import path from "path";
 import { fileURLToPath } from "url";
-import { build, BuildOptions } from "esbuild";
 
 const opts: BuildOptions = {
   bundle: true,

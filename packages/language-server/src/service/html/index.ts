@@ -1,10 +1,11 @@
-import type { TextDocument } from "vscode-languageserver-textdocument";
+import { extractHTML, type Parsed } from "@marko/language-tools";
 import axe from "axe-core";
-import { type Parsed, extractHTML } from "@marko/language-tools";
 import { JSDOM } from "jsdom";
-import type { Plugin } from "../types";
+import type { TextDocument } from "vscode-languageserver-textdocument";
+
 import { getMarkoFile } from "../../utils/file";
 import { get } from "../../utils/text-documents";
+import type { Plugin } from "../types";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 
 const extractCache = new WeakMap<Parsed, ReturnType<typeof extractHTML>>();

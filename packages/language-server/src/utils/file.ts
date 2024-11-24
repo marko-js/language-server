@@ -1,8 +1,7 @@
-import path from "path";
-
-import type { TextDocument } from "vscode-languageserver-textdocument";
 import type { TaglibLookup } from "@marko/babel-utils";
-import { type Parsed, Project, parse } from "@marko/language-tools";
+import { parse, type Parsed, Project } from "@marko/language-tools";
+import path from "path";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 const processorCaches = new WeakMap<Parsed, Map<unknown, unknown>>();

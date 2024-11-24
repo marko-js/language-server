@@ -1,10 +1,11 @@
+import { type Extracted, extractStyle } from "@marko/language-tools";
 import {
-  type LanguageService,
-  type LanguageServiceOptions,
-  type Stylesheet,
   getCSSLanguageService,
   getLESSLanguageService,
   getSCSSLanguageService,
+  type LanguageService,
+  type LanguageServiceOptions,
+  type Stylesheet,
 } from "vscode-css-languageservice";
 import {
   ColorInformation,
@@ -21,7 +22,7 @@ import {
   TextEdit,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { type Extracted, extractStyle } from "@marko/language-tools";
+
 import { processDoc } from "../../utils/file";
 import fileSystemProvider from "../../utils/file-system";
 import resolveReference from "../../utils/resolve-url";

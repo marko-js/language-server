@@ -1,11 +1,11 @@
-import path from "path";
-import type ts from "typescript/lib/tsserverlibrary";
 import {
   type Extracted,
-  Processors,
   getExt,
   isDefinitionFile,
+  Processors,
 } from "@marko/language-tools";
+import path from "path";
+import type ts from "typescript/lib/tsserverlibrary";
 
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;

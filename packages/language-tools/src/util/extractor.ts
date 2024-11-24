@@ -1,11 +1,11 @@
 import {
+  getLines,
+  getLocation,
+  getPosition,
   type Location,
   type Parsed,
   type Position,
   type Range,
-  getLines,
-  getLocation,
-  getPosition,
 } from "../parser";
 
 interface Token {

@@ -15,7 +15,6 @@ import type {
   SymbolInformation,
   WorkspaceEdit,
 } from "vscode-languageserver";
-
 import { MarkupContent, MarkupKind } from "vscode-languageserver";
 
 import {
@@ -33,11 +32,11 @@ export const documents = {
   doChangeWatchedFiles,
 };
 
-import type { Plugin } from "./types";
 import HtmlPlugin from "./html";
 import MarkoPlugin from "./marko";
 import ScriptPlugin from "./script";
 import StylePlugin from "./style";
+import type { Plugin } from "./types";
 
 const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
 const plugins = [MarkoPlugin, ScriptPlugin, StylePlugin, HtmlPlugin];
