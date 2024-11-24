@@ -1,3 +1,4 @@
+import type { Node } from "@marko/language-tools";
 import {
   type CompletionItem,
   CompletionItemKind,
@@ -6,8 +7,6 @@ import {
   MarkupKind,
   TextEdit,
 } from "vscode-languageserver";
-
-import type { Node } from "@marko/language-tools";
 
 import type { CompletionMeta, CompletionResult } from ".";
 

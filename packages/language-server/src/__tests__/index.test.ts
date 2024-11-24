@@ -1,12 +1,12 @@
-import fs from "fs";
-import path from "path";
-import snapshot from "mocha-snap";
-// import { bench, run } from "mitata";
-
-import { URI } from "vscode-uri";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { CancellationToken, Position } from "vscode-languageserver";
 import { Project } from "@marko/language-tools";
+import fs from "fs";
+import snapshot from "mocha-snap";
+import path from "path";
+import { CancellationToken, Position } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
+// import { bench, run } from "mitata";
+import { URI } from "vscode-uri";
+
 import MarkoLangaugeService, { documents } from "../service";
 import { codeFrame } from "./util/code-frame";
 

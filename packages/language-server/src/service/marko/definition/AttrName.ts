@@ -1,10 +1,9 @@
+import { getLines, getLocation, type Node } from "@marko/language-tools";
 import fs from "fs";
 import { URI } from "vscode-uri";
-import { type Node, getLines, getLocation } from "@marko/language-tools";
 
-import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
-
+import RegExpBuilder from "../../../utils/regexp-builder";
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function AttrName({

@@ -1,11 +1,10 @@
-import type { Plugin } from "../types";
-
 import * as documents from "../../utils/text-documents";
+import type { Plugin } from "../types";
 import { doComplete } from "./complete";
 import { findDefinition } from "./definition";
 import { findDocumentLinks } from "./document-links";
 import { findDocumentSymbols } from "./document-symbols";
-import { FormatOptions, format, formatDocument } from "./format";
+import { format, formatDocument, FormatOptions } from "./format";
 import { doHover } from "./hover";
 import { doValidate } from "./validate";
 

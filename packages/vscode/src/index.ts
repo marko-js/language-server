@@ -1,15 +1,14 @@
 import {
+  commands,
   type ExtensionContext,
   Position,
   Range,
   TextEdit,
   ViewColumn,
-  WorkspaceEdit,
-  commands,
   window,
   workspace,
+  WorkspaceEdit,
 } from "vscode";
-
 import {
   LanguageClient,
   LanguageClientOptions,

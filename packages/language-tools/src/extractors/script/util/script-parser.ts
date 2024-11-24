@@ -1,9 +1,9 @@
-import type * as t from "@babel/types";
 import {
-  ParserOptions,
-  parseExpression,
   parse as parseStatement,
+  parseExpression,
+  ParserOptions,
 } from "@babel/parser";
+import type * as t from "@babel/types";
 
 const plugins: ParserOptions["plugins"] = [
   "exportDefaultFrom",

@@ -1,21 +1,21 @@
-import { inspect, isDeepStrictEqual } from "util";
+import "./utils/project-defaults";
 
+import { Project } from "@marko/language-tools";
+import { inspect, isDeepStrictEqual } from "util";
 import {
+  createConnection,
   DefinitionLink,
   Diagnostic,
   ProposedFeatures,
   TextDocumentSyncKind,
-  createConnection,
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
-import { Project } from "@marko/language-tools";
 
-import "./utils/project-defaults";
+import service from "./service";
 import { clearMarkoCacheForFile } from "./utils/file";
+import setupMessages from "./utils/messages";
 import * as documents from "./utils/text-documents";
 import * as workspace from "./utils/workspace";
-import setupMessages from "./utils/messages";
-import service from "./service";
 
 if (
   typeof require !== "undefined" &&

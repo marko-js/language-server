@@ -1,8 +1,10 @@
-import type ts from "typescript/lib/tsserverlibrary";
+import "../utils/project-defaults";
+
 import { Extracted, Processors, Project } from "@marko/language-tools";
+import type ts from "typescript/lib/tsserverlibrary";
+
 import { START_POSITION } from "../utils/constants";
 import { ExtractedSnapshot, patch } from "./host";
-import "../utils/project-defaults";
 
 const markoTaglibFilesReg = /[\\/]marko(?:-tag)\.json$/;
 const getStartLineCharacter = () => START_POSITION;

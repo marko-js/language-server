@@ -1,10 +1,9 @@
-import type { DocumentLink } from "vscode-languageserver";
 import { type Node, NodeType } from "@marko/language-tools";
-import { MarkoFile, processDoc } from "../../utils/file";
+import type { DocumentLink } from "vscode-languageserver";
 
+import { MarkoFile, processDoc } from "../../utils/file";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
-
 import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^'"\\>]+|\\.)*)>?\1/g;

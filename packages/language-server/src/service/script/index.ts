@@ -1,5 +1,15 @@
+import {
+  type Extracted,
+  extractScript,
+  type Location,
+  Node,
+  NodeType,
+  type Parsed,
+  Project,
+  ScriptLang,
+} from "@marko/language-tools";
 import path from "path";
-
+import * as prettier from "prettier";
 import { relativeImportPath } from "relative-import-path";
 import ts from "typescript/lib/tsserverlibrary";
 import {
@@ -16,25 +26,13 @@ import {
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import * as prettier from "prettier";
 
-import {
-  type Extracted,
-  type Location,
-  Node,
-  NodeType,
-  type Parsed,
-  Project,
-  ScriptLang,
-  extractScript,
-} from "@marko/language-tools";
+import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import { START_LOCATION } from "../../utils/constants";
 import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
-import { START_LOCATION } from "../../utils/constants";
 import type { Plugin } from "../types";
-
-import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
 import printJSDocTag from "./util/print-jsdoc-tag";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.

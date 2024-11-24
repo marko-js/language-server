@@ -1,17 +1,17 @@
 // TODO:
 // * Add a `--watch` option?
 
-import path from "path";
-import crypto from "crypto";
-import ts from "typescript/lib/tsserverlibrary";
-import color from "kleur";
 import { codeFrameColumns } from "@babel/code-frame";
 import {
-  type Location,
-  Processors,
   getExt,
   isDefinitionFile,
+  type Location,
+  Processors,
 } from "@marko/language-tools";
+import crypto from "crypto";
+import color from "kleur";
+import path from "path";
+import ts from "typescript/lib/tsserverlibrary";
 
 export const Display = {
   codeframe: "codeframe",

@@ -1,18 +1,16 @@
-import fs from "fs";
-import path from "path";
-
-import { URI } from "vscode-uri";
 import type { TagDefinition } from "@marko/babel-utils";
 import {
-  type Node,
-  NodeType,
   getLines,
   getLocation,
+  type Node,
+  NodeType,
 } from "@marko/language-tools";
+import fs from "fs";
+import path from "path";
+import { URI } from "vscode-uri";
 
-import RegExpBuilder from "../../../utils/regexp-builder";
 import { START_LOCATION } from "../../../utils/constants";
-
+import RegExpBuilder from "../../../utils/regexp-builder";
 import type { DefinitionMeta, DefinitionResult } from ".";
 
 export function OpenTagName({

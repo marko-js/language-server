@@ -1,9 +1,8 @@
-import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 import { NodeType } from "@marko/language-tools";
+import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 
-import { MarkoFile, getMarkoFile } from "../../../utils/file";
+import { getMarkoFile, MarkoFile } from "../../../utils/file";
 import type { Plugin, Result } from "../../types";
-
 import { AttrName } from "./AttrName";
 import { AttrValue } from "./AttrValue";
 import { Import } from "./Import";

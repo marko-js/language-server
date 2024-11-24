@@ -1,8 +1,9 @@
-import path from "path";
-import { Project } from "@marko/language-tools";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { DiagnosticType } from "@marko/babel-utils";
 import type { Config } from "@marko/compiler";
+import { Project } from "@marko/language-tools";
+import path from "path";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+
 import { getFSPath } from "../../utils/file";
 import type { Plugin } from "../types";
 

@@ -1,7 +1,8 @@
-import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 import { type Node, NodeType } from "@marko/language-tools";
-import type { Plugin } from "../types";
+import { SymbolInformation, SymbolKind } from "vscode-languageserver";
+
 import { MarkoFile, processDoc } from "../../utils/file";
+import type { Plugin } from "../types";
 
 export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (doc) =>
   processDoc(doc, extractDocumentSymbols);

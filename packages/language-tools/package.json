@@ -14,12 +14,12 @@
   },
   "devDependencies": {
     "@babel/code-frame": "^7.26.2",
-    "@marko/compiler": "^5.37.23",
-    "@marko/translator-default": "^6.0.23",
+    "@marko/compiler": "^5.38.0",
+    "@marko/translator-default": "^6.1.0",
     "@types/babel__code-frame": "^7.0.6",
     "@typescript/vfs": "^1.6.0",
-    "marko": "^5.35.32",
-    "mitata": "^0.1.8",
+    "marko": "^5.36.0",
+    "mitata": "^1.0.16",
     "tsx": "^4.19.2"
   },
   "exports": {

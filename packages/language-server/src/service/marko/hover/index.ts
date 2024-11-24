@@ -1,9 +1,8 @@
-import type { Hover, HoverParams } from "vscode-languageserver";
 import { NodeType } from "@marko/language-tools";
+import type { Hover, HoverParams } from "vscode-languageserver";
 
-import { MarkoFile, getMarkoFile } from "../../../utils/file";
+import { getMarkoFile, MarkoFile } from "../../../utils/file";
 import type { Plugin, Result } from "../../types";
-
 import { OpenTagName } from "./OpenTagName";
 
 export type HoverResult = Result<Hover>;

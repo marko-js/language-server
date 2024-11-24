@@ -1,16 +1,14 @@
+import type { Node } from "@marko/language-tools";
 import path from "path";
-
 import {
   CompletionItem,
   CompletionItemKind,
   TextEdit,
 } from "vscode-languageserver";
 
-import type { Node } from "@marko/language-tools";
-import isDocumentLinkAttr from "../util/is-document-link-attr";
 import fileSystem, { FileType } from "../../../utils/file-system";
 import resolveUrl from "../../../utils/resolve-url";
-
+import isDocumentLinkAttr from "../util/is-document-link-attr";
 import type { CompletionMeta } from ".";
 
 export async function AttrValue({
