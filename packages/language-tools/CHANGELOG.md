@@ -1,5 +1,13 @@
 # @marko/language-tools
 
+## 2.4.6
+
+### Patch Changes
+
+- [#304](https://github.com/marko-js/language-server/pull/304) [`124ad10`](https://github.com/marko-js/language-server/commit/124ad10b8ccc05c716e727fff2eacf83b320520d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve script parsing performance.
+
+- [#304](https://github.com/marko-js/language-server/pull/304) [`f3ca04a`](https://github.com/marko-js/language-server/commit/f3ca04a36216a5484bb972acb1b19f3cc54ca367) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update deps.
+
 ## 2.4.5
 
 ### Patch Changes

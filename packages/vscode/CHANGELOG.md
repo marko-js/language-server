@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.4.7
+
+### Patch Changes
+
+- [#304](https://github.com/marko-js/language-server/pull/304) [`f3ca04a`](https://github.com/marko-js/language-server/commit/f3ca04a36216a5484bb972acb1b19f3cc54ca367) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update deps.
+
+- [#302](https://github.com/marko-js/language-server/pull/302) [`6d2ceb9`](https://github.com/marko-js/language-server/commit/6d2ceb9a4ad3b8e8c8e4b401b16bbbf8ae3e8d15) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Remove false positive for aria-prohibited-attr rule
+
 ## 1.4.6
 
 ### Patch Changes
