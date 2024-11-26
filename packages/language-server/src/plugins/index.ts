@@ -1,7 +1,7 @@
 import { create as createCssService } from "volar-service-css";
 import { create as createTypeScriptTwoSlashService } from "volar-service-typescript-twoslash-queries";
-import { create as createTypeScriptServices } from "volar-service-typescript";
 import type { Connection } from "@volar/language-server";
+import { create as createTypeScriptServices } from "./typescript";
 import { create as createAccessibilityService } from "./marko-accessibility";
 import { create as createMarkoService } from "./marko";
 import { createMarkoPrettierService } from "./prettier";
