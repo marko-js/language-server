@@ -1,8 +1,9 @@
 import "./build.mts";
-import fs from "fs";
-import url from "url";
-import path from "path";
+
 import { runTests } from "@vscode/test-electron";
+import fs from "fs";
+import path from "path";
+import url from "url";
 
 const pkgDir = path.dirname(url.fileURLToPath(import.meta.url));
 const pkgFile = path.join(pkgDir, "package.json");

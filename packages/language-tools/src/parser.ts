@@ -1,4 +1,4 @@
-import { type Range, type Ranges, TagType, createParser } from "htmljs-parser";
+import { createParser, type Range, type Ranges, TagType } from "htmljs-parser";
 
 import { getNodeAtOffset } from "./util/get-node-at-offset";
 
@@ -10,12 +10,12 @@ export const UNFINISHED = Number.MAX_SAFE_INTEGER;
 
 export {
   getLines,
-  getPosition,
   getLocation,
+  getPosition,
+  type Location,
+  type Position,
   type Range,
   type Ranges,
-  type Position,
-  type Location,
 } from "htmljs-parser";
 
 export type Parsed = ReturnType<typeof parse>;

@@ -1,7 +1,6 @@
+import snap from "mocha-snap";
 import { setTimeout } from "timers/promises";
 import vscode from "vscode";
-
-import snap from "mocha-snap";
 
 import { getTestDoc, updateTestDoc } from "./setup.test";
 

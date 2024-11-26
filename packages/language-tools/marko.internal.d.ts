@@ -1,7 +1,6 @@
 // This is a typescript file which defines utilities used in the output of the typescript extractor.
 declare global {
   namespace Marko {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     export interface Directives {}
 
     // Extend the Body type to keep track of what is yielded (used for scope hoisted types).

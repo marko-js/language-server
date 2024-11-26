@@ -1,4 +1,5 @@
 import { createLanguageServicePlugin } from "@volar/typescript/lib/quickstart/createLanguageServicePlugin.js";
+
 import { addMarkoTypes, createMarkoLanguagePlugin } from "../language";
 
 export const init = createLanguageServicePlugin((ts, info) => {
