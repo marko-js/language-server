@@ -64,23 +64,25 @@ function adjustDiagnostic(
   const startOffset = document.offsetAt(diagnostic.range.start);
   const endOffset = document.offsetAt(diagnostic.range.end);
 
-  const startMarkerIndex = document.lastIndexOf(
-    ATTRIBUTE_START_TAG,
-    startOffset,
-  );
-  const endMarkerIndex = documentText.indexOf(ATTRIBUTE_END_TAG, endOffset);
-  if (
-    startMarkerIndex !== -1 &&
-    endMarkerIndex !== -1 &&
-    startMarkerIndex < diagnostic.range.start.character &&
-    endMarkerIndex > diagnostic.range.end.character
-  ) {
-    console.log(
-      "Adjusting diagnostic range for TS2353 error code in attributes",
-    );
-    diagnostic.range.start.character =
-      startMarkerIndex + ATTRIBUTE_START_TAG.length; // Adjust start character
-    diagnostic.range.end.character = endMarkerIndex; // Adjust end character
+  const startMetaOffset = startOffset - ATTRIBUTE_START_TAG.length;
+  const endMetaOFfset = endOffset + ATTRIBUTE_END_TAG.length;
+
+  const startMarker = document.getText({
+    start: document.positionAt(startMetaOffset),
+    end: diagnostic.range.start,
+  });
+  const endMarker = document.getText({
+    start: diagnostic.range.end,
+    end: document.positionAt(endMetaOFfset),
+  });
+  if (startMarker === ATTRIBUTE_START_TAG && endMarker === ATTRIBUTE_END_TAG) {
+    // Attributes in the extracted script have quotes around them, the TypeScript
+    // diagnostics range doesn't match the Marko template which means that Volar
+    // doesn't display the diagnostics.
+    // So, we wrap the extracted attribute names with comments so that we can
+    // tell when the diagnostics are for an attribute.
+    diagnostic.range.start.character = diagnostic.range.start.character + 1;
+    diagnostic.range.end.character = diagnostic.range.end.character - 1;
   }
   return diagnostic;
 }
