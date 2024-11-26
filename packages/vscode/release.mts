@@ -1,8 +1,8 @@
-import path from "path";
-import fs from "fs/promises";
 import cp from "child_process";
-import { promisify } from "util";
+import fs from "fs/promises";
+import path from "path";
 import { fileURLToPath } from "url";
+import { promisify } from "util";
 
 const exec = promisify(cp.exec);
 const dir = path.dirname(fileURLToPath(import.meta.url));

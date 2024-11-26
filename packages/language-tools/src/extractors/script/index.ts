@@ -1,8 +1,8 @@
-import type TS from "typescript/lib/tsserverlibrary";
 import type * as t from "@babel/types";
-import { relativeImportPath } from "relative-import-path";
-
 import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
+import { relativeImportPath } from "relative-import-path";
+import type TS from "typescript/lib/tsserverlibrary";
+
 import {
   type Node,
   NodeType,
@@ -12,19 +12,19 @@ import {
   type Repeated,
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
-import { ScriptParser } from "./util/script-parser";
 import {
   crawlProgramScope,
   getBoundAttrMemberExpressionStartOffset,
-  getHoistSources,
   getHoists,
+  getHoistSources,
   getMutatedVars,
   hasHoists,
   isMutatedVar,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
-import { getRuntimeOverrides } from "./util/runtime-overrides";
 import getJSDocInputType from "./util/jsdoc-input-type";
+import { getRuntimeOverrides } from "./util/runtime-overrides";
+import { ScriptParser } from "./util/script-parser";
 
 const SEP_EMPTY = "";
 const SEP_SPACE = " ";
@@ -119,7 +119,7 @@ class ScriptExtractor {
     this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
-    this.#scriptParser = new ScriptParser(parsed.filename, parsed.code);
+    this.#scriptParser = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
     this.#writeProgram(parsed.program);
@@ -956,7 +956,11 @@ constructor(_?: Return) {}
                   break;
               }
             } else if (attr.args) {
-              this.#extractor.write('"').copy(name).write('": ');
+              this.#extractor
+                .write("/**attribute-name-start*/")
+                .write('"')
+                .copy(name)
+                .write('"/**attribute-name-end*/: ');
 
               if (
                 typeof name !== "string" &&

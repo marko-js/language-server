@@ -1,6 +1,5 @@
-import vscode from "vscode";
-
 import snap from "mocha-snap";
+import vscode from "vscode";
 
 import { getTestDoc, getTestEditor, updateTestDoc } from "./setup.test";
 

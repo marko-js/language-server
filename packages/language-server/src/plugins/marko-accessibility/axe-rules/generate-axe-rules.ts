@@ -1,6 +1,6 @@
+import axe from "axe-core";
 import fs from "fs";
 import path from "path";
-import axe from "axe-core";
 
 const kebabToCamelCase = (str: string) =>
   str.replaceAll(/-(.)/g, (_, char) => char.toUpperCase());

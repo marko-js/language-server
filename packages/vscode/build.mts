@@ -1,7 +1,7 @@
-import path from "path";
-import fs from "fs/promises";
 import { analyzeMetafile, build } from "esbuild";
+import fs from "fs/promises";
 import { createRequire } from "module";
+import path from "path";
 import { fileURLToPath } from "url";
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(thisDir, "dist");

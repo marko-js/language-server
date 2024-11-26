@@ -35,6 +35,7 @@ export const create = (
                 ) {
                   console.log(
                     "Adjusting diagnostic range for TS2353 error code",
+                    diagnostic,
                   );
                   return adjustDiagnostic(diagnostic, document);
                 }

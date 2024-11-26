@@ -1,10 +1,11 @@
+import { getLines, getLocation, type Node } from "@marko/language-tools";
+import { LocationLink } from "@volar/language-service";
 import fs from "fs";
 import { URI } from "vscode-uri";
-import { type Node, getLines, getLocation } from "@marko/language-tools";
-import { LocationLink } from "@volar/language-service";
-import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_LOCATION } from "../../../utils/constants";
+
 import { MarkoVirtualCode } from "../../../language";
+import { START_LOCATION } from "../../../utils/constants";
+import RegExpBuilder from "../../../utils/regexp-builder";
 
 export function AttrName(
   node: Node.AttrName,

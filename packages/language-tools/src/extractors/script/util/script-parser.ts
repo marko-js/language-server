@@ -1,9 +1,11 @@
-import type * as t from "@babel/types";
 import {
-  ParserOptions,
-  parseExpression,
   parse as parseStatement,
+  parseExpression,
+  ParserOptions,
 } from "@babel/parser";
+import type * as t from "@babel/types";
+
+import type { Parsed } from "../../../parser";
 
 const plugins: ParserOptions["plugins"] = [
   "exportDefaultFrom",
@@ -12,17 +14,19 @@ const plugins: ParserOptions["plugins"] = [
 ];
 
 export class ScriptParser {
-  #sourceFileName: string;
-  #whitespace: string;
-  constructor(sourceFileName: string, code: string) {
-    this.#sourceFileName = sourceFileName;
-    this.#whitespace = code.replace(/[^\s]/g, " "); // used to ensure that babel provides the correct source locations.
+  #parsed: Parsed;
+  constructor(parsed: Parsed) {
+    this.#parsed = parsed;
   }
 
-  statementAt<T = t.Statement[]>(offset: number, src: string) {
+  statementAt<T = t.Statement[]>(startIndex: number, src: string) {
+    const pos = this.#parsed.positionAt(startIndex);
     try {
-      return parseStatement(this.#whitespace.slice(0, offset) + src, {
+      return parseStatement(src, {
         plugins,
+        startIndex,
+        startLine: pos.line + 1,
+        startColumn: pos.character,
         strictMode: true,
         errorRecovery: true,
         sourceType: "module",
@@ -30,17 +34,21 @@ export class ScriptParser {
         allowSuperOutsideMethod: true,
         allowAwaitOutsideFunction: true,
         allowReturnOutsideFunction: true,
-        sourceFilename: this.#sourceFileName,
+        sourceFilename: this.#parsed.filename,
       }).program.body as unknown as T extends unknown[] ? T : Readonly<[T]>;
     } catch {
       return [];
     }
   }
 
-  expressionAt<T = t.Expression>(offset: number, src: string) {
+  expressionAt<T = t.Expression>(startIndex: number, src: string) {
+    const pos = this.#parsed.positionAt(startIndex);
     try {
-      return parseExpression(this.#whitespace.slice(0, offset) + src, {
+      return parseExpression(src, {
         plugins,
+        startIndex,
+        startLine: pos.line + 1,
+        startColumn: pos.character,
         strictMode: true,
         errorRecovery: true,
         sourceType: "module",
@@ -48,7 +56,7 @@ export class ScriptParser {
         allowSuperOutsideMethod: true,
         allowAwaitOutsideFunction: true,
         allowReturnOutsideFunction: true,
-        sourceFilename: this.#sourceFileName,
+        sourceFilename: this.#parsed.filename,
       }) as unknown as T;
     } catch {
       return;

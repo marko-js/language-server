@@ -1,17 +1,18 @@
+import type { TagDefinition } from "@marko/babel-utils";
+import {
+  getLines,
+  getLocation,
+  type Node,
+  NodeType,
+} from "@marko/language-tools";
+import { LocationLink } from "@volar/language-service";
 import fs from "fs";
 import path from "path";
 import { URI } from "vscode-uri";
-import type { TagDefinition } from "@marko/babel-utils";
-import {
-  type Node,
-  NodeType,
-  getLines,
-  getLocation,
-} from "@marko/language-tools";
-import { LocationLink } from "@volar/language-service";
-import RegExpBuilder from "../../../utils/regexp-builder";
-import { START_LOCATION } from "../../../utils/constants";
+
 import { MarkoVirtualCode } from "../../../language";
+import { START_LOCATION } from "../../../utils/constants";
+import RegExpBuilder from "../../../utils/regexp-builder";
 
 export function OpenTagName(
   node: Node.OpenTagName,
