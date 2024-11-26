@@ -1,10 +1,13 @@
+import { Project } from "@marko/language-tools";
 import fs from "fs";
-import path from "path";
 import snapshot from "mocha-snap";
+import path from "path";
+import { Position } from "vscode-languageserver";
 // import { bench, run } from "mitata";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Position } from "vscode-languageserver";
-import { Project } from "@marko/language-tools";
+// import { bench, run } from "mitata";
+import { URI } from "vscode-uri";
+
 import { codeFrame } from "./util/code-frame";
 import { getLanguageServer } from "./util/language-service";
 
