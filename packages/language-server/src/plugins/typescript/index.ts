@@ -33,11 +33,10 @@ export const create = (
                   diagnostic.code ===
                   DiagnosticCodes.ObjectLiteralKnownPropertyNames
                 ) {
-                  console.log(
-                    "Adjusting diagnostic range for TS2353 error code",
-                    diagnostic,
-                  );
-                  return adjustDiagnostic(diagnostic, document);
+                  return adjustUnknownAttributeDiagnostic(diagnostic, document);
+                }
+                if (diagnostic.code === DiagnosticCodes.MissingProperty) {
+                  return adjustMissingPropertyDiagnostic(diagnostic, document);
                 }
                 return diagnostic;
               });
@@ -56,9 +55,10 @@ const ATTRIBUTE_END_TAG = "/**attribute-name-end*/";
 // https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
 const DiagnosticCodes = {
   ObjectLiteralKnownPropertyNames: 2353,
+  MissingProperty: 2345,
 };
 
-function adjustDiagnostic(
+function adjustUnknownAttributeDiagnostic(
   diagnostic: Diagnostic,
   document: TextDocument,
 ): Diagnostic {
@@ -87,3 +87,28 @@ function adjustDiagnostic(
   }
   return diagnostic;
 }
+
+const TAG_NAME_REGEX = /\/\*\*tag-name\(([^)]+)\)\*\//;
+
+function adjustMissingPropertyDiagnostic(
+  diagnostic: Diagnostic,
+  document: TextDocument,
+): Diagnostic {
+  const diagnosticText = document.getText(diagnostic.range);
+  const tagNameMatch = diagnosticText.match(TAG_NAME_REGEX);
+
+  if (tagNameMatch) {
+    const tagName = tagNameMatch[0];
+    const startIndex = diagnosticText.indexOf(tagName);
+    const endIndex = startIndex + tagName.length;
+  }
+}
+//   // Attributes in the extracted script have quotes around them, the TypeScript
+//   // diagnostics range doesn't match the Marko template which means that Volar
+//   // doesn't display the diagnostics.
+//   // So, we wrap the extracted attribute names with comments so that we can
+//   // tell when the diagnostics are for an attribute.
+//   diagnostic.range.start.character = diagnostic.range.start.character + 1;
+//   diagnostic.range.end.character = diagnostic.range.end.character - 1;
+// }
+// return diagnostic;

@@ -799,6 +799,7 @@ constructor(_?: Return) {}
   }
 
   #writeAttrs(tag: Node.ParentTag) {
+    this.#extractor.write("/**tag-name(").copy(tag.name).write(")*/");
     let hasAttrs = false;
     if (tag.shorthandId) {
       hasAttrs = true;
