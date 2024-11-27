@@ -12,7 +12,7 @@
     "@marko/babel-utils": "^6.6.0",
     "@marko/compiler": "^5.38.0",
     "@marko/translator-default": "^6.1.0",
-    "htmljs-parser": "^5.5.2",
+    "htmljs-parser": "^5.5.3",
     "marko": "^5.36.0",
     "prettier": "^3.3.3",
     "prettier-plugin-marko": "^3.1.7",
