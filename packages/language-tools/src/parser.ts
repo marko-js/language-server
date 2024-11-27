@@ -504,6 +504,8 @@ class Builder {
 
           this.#comments = undefined;
           return TagType.statement;
+        case "server":
+        case "client":
         case "static":
           this.#program.static.push(
             (this.#staticNode = {
