@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 1.2.7
+
+### Patch Changes
+
+- [#305](https://github.com/marko-js/language-server/pull/305) [`2414702`](https://github.com/marko-js/language-server/commit/241470257cead224f48ab7e2b533c858de3dccc1) Thanks [@LuLaValva](https://github.com/LuLaValva)! - `client` and `server` statements, `satisfies` keyword, explicit type annotations on `let`
+
+- Updated dependencies [[`2414702`](https://github.com/marko-js/language-server/commit/241470257cead224f48ab7e2b533c858de3dccc1)]:
+  - @marko/language-tools@2.4.7
+
 ## 1.2.6
 
 ### Patch Changes
