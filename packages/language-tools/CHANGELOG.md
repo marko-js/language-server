@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.4.8
+
+### Patch Changes
+
+- [#307](https://github.com/marko-js/language-server/pull/307) [`38b62ec`](https://github.com/marko-js/language-server/commit/38b62ecfd5d3b444772194e8dbeae216f1c617f2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update core tag names to align with Marko 6.
+
 ## 2.4.7
 
 ### Patch Changes
