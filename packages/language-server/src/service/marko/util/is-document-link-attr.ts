@@ -10,6 +10,7 @@ const linkedAttrs: Map<string, Set<string>> = new Map([
       "img",
       "input",
       "script",
+      "html-script",
       "source",
       "track",
       "video",

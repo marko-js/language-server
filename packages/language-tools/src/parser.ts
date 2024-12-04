@@ -546,6 +546,8 @@ class Builder {
           bodyType = TagType.void;
           break;
         case "html-comment":
+        case "html-script":
+        case "html-style":
         case "script":
         case "textarea":
           bodyType = TagType.text;
