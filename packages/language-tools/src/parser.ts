@@ -536,9 +536,18 @@ class Builder {
         case "source":
         case "track":
         case "wbr":
+        case "const":
+        case "debug":
+        case "id":
+        case "let":
+        case "lifecycle":
+        case "log":
+        case "return":
           bodyType = TagType.void;
           break;
         case "html-comment":
+        case "html-script":
+        case "html-style":
         case "script":
         case "textarea":
           bodyType = TagType.text;

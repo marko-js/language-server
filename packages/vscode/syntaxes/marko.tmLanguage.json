@@ -811,7 +811,7 @@
       "patterns": [
         {
           "comment": "HTML void elements",
-          "begin": "\\s*(<)(?=(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\\b)",
+          "begin": "\\s*(<)(?=(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr|const|debug|id|let|lifecycle|log|return)\\b)",
           "end": "/?>",
           "patterns": [{ "include": "#open-tag-content" }],
           "beginCaptures": {
@@ -1083,7 +1083,7 @@
               "patterns": [
                 {
                   "name": "support.type.builtin.marko",
-                  "match": "(attrs|style|effect|lifecycle)(?=\\b)(?![-:@])"
+                  "match": "(script|style|html-script|html-style|html-comment)(?=\\b)(?![-:@])"
                 },
                 {
                   "name": "keyword.control.flow.marko",
@@ -1091,7 +1091,7 @@
                 },
                 {
                   "name": "support.function.marko",
-                  "match": "(macro|tag|async|let|const|context|id|html-comment)(?=\\b)(?![-:@])"
+                  "match": "(const|context|debug|define|id|let|log|lifecycle)(?=\\b)(?![-:@])"
                 },
                 {
                   "comment": "Attribute tag.",
