@@ -37,7 +37,7 @@ const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
 const REG_ATTR_ARG_LITERAL =
-  /(?<=\s*)(["'])((?:[^"'\\]+|\\.|(?!\1))*)\1\s*([,)])/my;
+  /(?<=\s*)(["'])((?:[^"'\\]|\\.|(?!\1))*)\1\s*([,)])/my;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^'">]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;

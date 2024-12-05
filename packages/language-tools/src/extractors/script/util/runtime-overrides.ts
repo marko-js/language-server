@@ -1,5 +1,5 @@
 const RuntimeOverloads = new Map<string, (string | Replacement)[]>();
-const commentsReg = /\/\*(?:[^*]+|\*[^/])*\*\//gm;
+const commentsReg = /\/\*(?:[^*]|\*[^/])*\*\//gm;
 const replaceTokensReg =
   /\babstract\s+(\w+)|Marko\.(TemplateInput(?:<[^>]+>)?|Component)/gm;
 const overrideBlockReg =

@@ -33,11 +33,11 @@ export function getAttributeValueType(
 
   if (
     // double quote string
-    /^"(?:[^"\\]+|\\.)*"$/.test(value) ||
+    /^"(?:[^"\\]|\\.)*"$/.test(value) ||
     // single quote string
-    /^'(?:[^'\\]+|\\.)*'$/.test(value) ||
+    /^'(?:[^'\\]|\\.)*'$/.test(value) ||
     // template literal without any interpolations
-    /^`(?:[^`\\$]+|\\.|\$(?!\{))*`$/.test(value)
+    /^`(?:[^`\\$]|\\.|\$(?!\{))*`$/.test(value)
   ) {
     return AttributeValueType.QuotedString;
   } else if (
