@@ -391,7 +391,7 @@
             },
             {
               "comment": "Concise style tag less",
-              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.less\\b)",
+              "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.less\\b)",
               "while": "(?=^(?:[})\\]`]|\\*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -401,7 +401,7 @@
             },
             {
               "comment": "Concise style tag scss",
-              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.scss\\b)",
+              "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.scss\\b)",
               "while": "(?=^(?:[})\\]`]|\\*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -411,7 +411,7 @@
             },
             {
               "comment": "Concise style tag js/ts",
-              "begin": "^(\\s*)(?=style\\b[^\\s]*\\.[tj]s\\b)",
+              "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.[tj]s\\b)",
               "while": "(?=^(?:[})\\]`]|\\*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -421,7 +421,7 @@
             },
             {
               "comment": "Concise style tag",
-              "begin": "^(\\s*)(?=style\\b)",
+              "begin": "^(\\s*)(?=(?:html-)?style\\b)",
               "while": "(?=^(?:[})\\]`]|\\*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -431,7 +431,7 @@
             },
             {
               "comment": "Concise script tag",
-              "begin": "^(\\s*)(?=script\\b)",
+              "begin": "^(\\s*)(?=(?:html-)?script\\b)",
               "while": "(?=^(?:[})\\]`]|\\*/|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -851,15 +851,15 @@
         },
         {
           "comment": "HTML style tag with less",
-          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.less\\b)",
-          "end": "/>|(?<=</(?:style)?>)",
+          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.less\\b)",
+          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Style body content",
               "contentName": "source.less",
               "begin": ">",
-              "end": "\\s*(</)(style)?(>)",
+              "end": "\\s*(</)((?:html-)?style)?(>)",
               "patterns": [{ "include": "#content-embedded-style-less" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -880,15 +880,15 @@
         },
         {
           "comment": "HTML style tag with scss",
-          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.scss\\b)",
-          "end": "/>|(?<=</(?:style)?>)",
+          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.scss\\b)",
+          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Style body content",
               "contentName": "source.scss",
               "begin": ">",
-              "end": "\\s*(</)(style)?(>)",
+              "end": "\\s*(</)((?:html-)?style)?(>)",
               "patterns": [{ "include": "#content-embedded-style-scss" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -909,15 +909,15 @@
         },
         {
           "comment": "HTML style tag with js/ts",
-          "begin": "\\s*(<)(?=style\\b[^\\s]*\\.[tj]s\\b)",
-          "end": "/>|(?<=</(?:style)?>)",
+          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.[tj]s\\b)",
+          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Style body content",
               "contentName": "source.ts",
               "begin": ">",
-              "end": "\\s*(</)(style)?(>)",
+              "end": "\\s*(</)((?:html-)?style)?(>)",
               "patterns": [{ "include": "#content-embedded-script" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -938,8 +938,8 @@
         },
         {
           "comment": "HTML style tag",
-          "begin": "\\s*(<)(?=style\\b)",
-          "end": "/>|(?<=</(?:style)?>)",
+          "begin": "\\s*(<)(?=(?:html-)?style\\b)",
+          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
           },
@@ -952,7 +952,7 @@
               "comment": "Style body content",
               "contentName": "source.css",
               "begin": ">",
-              "end": "\\s*(</)(style)?(>)",
+              "end": "\\s*(</)((?:html-)?style)?(>)",
               "patterns": [{ "include": "#content-embedded-style" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -967,15 +967,15 @@
         },
         {
           "comment": "HTML script tag",
-          "begin": "\\s*(<)(?=script\\b)",
-          "end": "/>|(?<=</(?:script)?>)",
+          "begin": "\\s*(<)(?=(?:html-)?script\\b)",
+          "end": "/>|(?<=</(?:(?:html-)?script)?>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Script body content",
               "contentName": "source.ts",
               "begin": ">",
-              "end": "\\s*(</)(script)?(>)",
+              "end": "\\s*(</)((?:html-)?script)?(>)",
               "patterns": [{ "include": "#content-embedded-script" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
