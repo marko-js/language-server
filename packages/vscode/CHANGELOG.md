@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.5.0
+
+### Minor Changes
+
+- [#309](https://github.com/marko-js/language-server/pull/309) [`6f91eec`](https://github.com/marko-js/language-server/commit/6f91eec8bde53e62f833faf56ad31db84b4d8288) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Include script tag contents in script output.
+
+### Patch Changes
+
+- [#309](https://github.com/marko-js/language-server/pull/309) [`d51d086`](https://github.com/marko-js/language-server/commit/d51d086bc8b69219016546e913c1dd1aff02f0a1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add highlighting for html-script and html-style tags.
+
 ## 1.4.9
 
 ### Patch Changes

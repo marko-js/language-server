@@ -1,5 +1,16 @@
 # @marko/type-check
 
+## 1.3.0
+
+### Minor Changes
+
+- [#309](https://github.com/marko-js/language-server/pull/309) [`6f91eec`](https://github.com/marko-js/language-server/commit/6f91eec8bde53e62f833faf56ad31db84b4d8288) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Include script tag contents in script output.
+
+### Patch Changes
+
+- Updated dependencies [[`d51d086`](https://github.com/marko-js/language-server/commit/d51d086bc8b69219016546e913c1dd1aff02f0a1), [`6f91eec`](https://github.com/marko-js/language-server/commit/6f91eec8bde53e62f833faf56ad31db84b4d8288)]:
+  - @marko/language-tools@2.5.0
+
 ## 1.2.8
 
 ### Patch Changes
