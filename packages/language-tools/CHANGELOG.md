@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.1
+
+### Patch Changes
+
+- [#311](https://github.com/marko-js/language-server/pull/311) [`7019798`](https://github.com/marko-js/language-server/commit/701979852ae652bb4afc0aff62dc46638d795606) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix catastrophic backtracking in some regexps.
+
 ## 2.5.0
 
 ### Minor Changes
