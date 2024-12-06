@@ -31,13 +31,14 @@ export const create = (
               return diagnostics.map((diagnostic) => {
                 if (
                   diagnostic.code ===
-                  DiagnosticCodes.ObjectLiteralKnownPropertyNames
+                    DiagnosticCodes.ObjectLiteralKnownPropertyNames ||
+                  diagnostic.code === DiagnosticCodes.NotAssignable
                 ) {
                   return adjustUnknownAttributeDiagnostic(diagnostic, document);
                 }
-                if (diagnostic.code === DiagnosticCodes.MissingProperty) {
-                  return adjustMissingPropertyDiagnostic(diagnostic, document);
-                }
+                // if (diagnostic.code === DiagnosticCodes.MissingProperty) {
+                //   return adjustMissingPropertyDiagnostic(diagnostic, document);
+                // }
                 return diagnostic;
               });
             },
@@ -54,6 +55,7 @@ const ATTRIBUTE_END_TAG = "/**attribute-name-end*/";
 
 // https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
 const DiagnosticCodes = {
+  NotAssignable: 2322,
   ObjectLiteralKnownPropertyNames: 2353,
   MissingProperty: 2345,
 };
@@ -88,21 +90,21 @@ function adjustUnknownAttributeDiagnostic(
   return diagnostic;
 }
 
-const TAG_NAME_REGEX = /\/\*\*tag-name\(([^)]+)\)\*\//;
+// const TAG_NAME_REGEX = /\/\*\*tag-name\(([^)]+)\)\*\//;
 
-function adjustMissingPropertyDiagnostic(
-  diagnostic: Diagnostic,
-  document: TextDocument,
-): Diagnostic {
-  const diagnosticText = document.getText(diagnostic.range);
-  const tagNameMatch = diagnosticText.match(TAG_NAME_REGEX);
+// function adjustMissingPropertyDiagnostic(
+//   diagnostic: Diagnostic,
+//   document: TextDocument,
+// ): Diagnostic {
+//   const diagnosticText = document.getText(diagnostic.range);
+//   const tagNameMatch = diagnosticText.match(TAG_NAME_REGEX);
 
-  if (tagNameMatch) {
-    const tagName = tagNameMatch[0];
-    const startIndex = diagnosticText.indexOf(tagName);
-    const endIndex = startIndex + tagName.length;
-  }
-}
+//   if (tagNameMatch) {
+//     const tagName = tagNameMatch[0];
+//     const startIndex = diagnosticText.indexOf(tagName);
+//     const endIndex = startIndex + tagName.length;
+//   }
+// }
 //   // Attributes in the extracted script have quotes around them, the TypeScript
 //   // diagnostics range doesn't match the Marko template which means that Volar
 //   // doesn't display the diagnostics.

@@ -799,7 +799,6 @@ constructor(_?: Return) {}
   }
 
   #writeAttrs(tag: Node.ParentTag) {
-    this.#extractor.write("/**tag-name(").copy(tag.name).write(")*/");
     let hasAttrs = false;
     if (tag.shorthandId) {
       hasAttrs = true;
@@ -1018,10 +1017,14 @@ constructor(_?: Return) {}
               }
             } else {
               this.#extractor
-                .write('"')
                 .copy(defaultMapPosition)
+                .write("/**attribute-name-start*/")
+                .write('"')
                 .copy(name)
-                .write(`": ${modifierIndex === false ? "true" : '""'}`);
+                .write('"')
+                .write("/**attribute-name-end*/")
+                .write(": ")
+                .write(modifierIndex === false ? "true" : '""');
             }
             break;
           }
