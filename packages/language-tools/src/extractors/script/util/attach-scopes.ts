@@ -224,7 +224,20 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               }
             }
 
-            visit(child.body, bodyScope);
+            if (child.nameText === "script" && child.body) {
+              checkForMutations(
+                parentScope,
+                scriptParser.expressionAt(
+                  child.body[0].start - "()=>{\n".length,
+                  `()=>{\n${read({
+                    start: child.body[0].start,
+                    end: child.body[child.body.length - 1].end,
+                  })}\n}`,
+                ),
+              );
+            } else {
+              visit(child.body, bodyScope);
+            }
             Scopes.set(child.body, bodyScope);
           }
 

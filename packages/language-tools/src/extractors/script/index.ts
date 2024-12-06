@@ -37,7 +37,7 @@ const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
 const REG_ATTR_ARG_LITERAL =
-  /(?<=\s*)(["'])((?:[^"'\\]+|\\.|(?!\1))*)\1\s*([,)])/my;
+  /(?<=\s*)(["'])((?:[^"'\\]|\\.|(?!\1))*)\1\s*([,)])/my;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^'">]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
@@ -1248,9 +1248,12 @@ constructor(_?: Return) {}
       hasInput = true;
     }
 
-    const body = this.#processBody(tag);
+    const isScript = tag.nameText === "script";
+    const body = !isScript ? this.#processBody(tag) : undefined;
     let hasRenderBody = false;
-    if (body) {
+    if (isScript) {
+      hasRenderBody = !!tag.body;
+    } else if (body) {
       hasInput = true;
       this.#writeAttrTags(body, false, nestedTagType);
       hasRenderBody = body.renderBody !== undefined;
@@ -1276,9 +1279,20 @@ constructor(_?: Return) {}
         this.#extractor.write(`(() => {\n`);
       }
 
-      const localBindings = getHoistSources(tag);
-      const didReturn =
-        body?.renderBody && this.#writeChildren(tag, body.renderBody);
+      let didReturn = false;
+
+      if (isScript) {
+        if (tag.body) {
+          this.#copyWithMutationsReplaced({
+            start: tag.body[0].start,
+            end: tag.body[tag.body.length - 1].end,
+          });
+
+          didReturn = this.#writeChildren(tag, []);
+        }
+      } else if (body?.renderBody) {
+        didReturn = this.#writeChildren(tag, body.renderBody);
+      }
 
       if (!tag.params) {
         this.#extractor.write(`return () => {\n`);
@@ -1286,7 +1300,7 @@ constructor(_?: Return) {}
 
       this.#writeReturn(
         didReturn ? `${varLocal("return")}.return` : undefined,
-        localBindings,
+        getHoistSources(tag),
       );
 
       if (tag.params) {
