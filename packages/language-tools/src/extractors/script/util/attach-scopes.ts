@@ -159,12 +159,14 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
             parentScope.bindings ??= {};
 
             // TODO: should support member expression tag vars.
-            const parsedFn = scriptParser.expressionAt<
-              t.AssignmentExpression & { left: t.LVal }
-            >(child.var.value.start - 6, `${read(child.var.value)}=0`);
+            const parsedFn =
+              scriptParser.expressionAt<t.ArrowFunctionExpression>(
+                child.var.value.start - 1,
+                `(${read(child.var.value)})=>0`,
+              );
 
             if (parsedFn) {
-              const lVal = parsedFn.left;
+              const lVal = parsedFn.params[0];
               checkForMutations(parentScope, lVal);
 
               for (const id of getVarIdentifiers(
@@ -222,7 +224,20 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               }
             }
 
-            visit(child.body, bodyScope);
+            if (child.nameText === "script" && child.body) {
+              checkForMutations(
+                parentScope,
+                scriptParser.expressionAt(
+                  child.body[0].start - "()=>{\n".length,
+                  `()=>{\n${read({
+                    start: child.body[0].start,
+                    end: child.body[child.body.length - 1].end,
+                  })}\n}`,
+                ),
+              );
+            } else {
+              visit(child.body, bodyScope);
+            }
             Scopes.set(child.body, bodyScope);
           }
 

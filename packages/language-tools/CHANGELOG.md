@@ -1,5 +1,33 @@
 # @marko/language-tools
 
+## 2.5.1
+
+### Patch Changes
+
+- [#311](https://github.com/marko-js/language-server/pull/311) [`7019798`](https://github.com/marko-js/language-server/commit/701979852ae652bb4afc0aff62dc46638d795606) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix catastrophic backtracking in some regexps.
+
+## 2.5.0
+
+### Minor Changes
+
+- [#309](https://github.com/marko-js/language-server/pull/309) [`6f91eec`](https://github.com/marko-js/language-server/commit/6f91eec8bde53e62f833faf56ad31db84b4d8288) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Include script tag contents in script output.
+
+### Patch Changes
+
+- [#309](https://github.com/marko-js/language-server/pull/309) [`d51d086`](https://github.com/marko-js/language-server/commit/d51d086bc8b69219016546e913c1dd1aff02f0a1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add highlighting for html-script and html-style tags.
+
+## 2.4.8
+
+### Patch Changes
+
+- [#307](https://github.com/marko-js/language-server/pull/307) [`38b62ec`](https://github.com/marko-js/language-server/commit/38b62ecfd5d3b444772194e8dbeae216f1c617f2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update core tag names to align with Marko 6.
+
+## 2.4.7
+
+### Patch Changes
+
+- [#305](https://github.com/marko-js/language-server/pull/305) [`2414702`](https://github.com/marko-js/language-server/commit/241470257cead224f48ab7e2b533c858de3dccc1) Thanks [@LuLaValva](https://github.com/LuLaValva)! - `client` and `server` statements, `satisfies` keyword, explicit type annotations on `let`
+
 ## 2.4.6
 
 ### Patch Changes
