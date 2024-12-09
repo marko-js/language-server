@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.2
+
+### Patch Changes
+
+- [#314](https://github.com/marko-js/language-server/pull/314) [`a839384`](https://github.com/marko-js/language-server/commit/a8393841d60a29341e3c2854378246e653c1749f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure script tags are only processed as javascript when they contain no other attributes or placeholders in the body content.
+
 ## 2.5.1
 
 ### Patch Changes
