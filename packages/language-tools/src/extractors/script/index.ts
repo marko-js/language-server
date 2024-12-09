@@ -22,6 +22,7 @@ import {
   isMutatedVar,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
+import { isTextOnlyScript } from "./util/is-text-only-script";
 import getJSDocInputType from "./util/jsdoc-input-type";
 import { getRuntimeOverrides } from "./util/runtime-overrides";
 import { ScriptParser } from "./util/script-parser";
@@ -1241,17 +1242,26 @@ constructor(_?: Return) {}
       hasInput = true;
     }
 
-    const isScript = tag.nameText === "script";
-    const body = !isScript ? this.#processBody(tag) : undefined;
+    const isScript = isTextOnlyScript(tag);
     let hasRenderBody = false;
+    let body: ProcessedBody | undefined;
+
     if (isScript) {
-      hasRenderBody = !!tag.body;
-    } else if (body) {
-      hasInput = true;
-      this.#writeAttrTags(body, false, nestedTagType);
-      hasRenderBody = body.renderBody !== undefined;
-    } else if (tag.close) {
-      hasRenderBody = true;
+      this.#extractor.write("value(){");
+      this.#copyWithMutationsReplaced({
+        start: tag.body[0].start,
+        end: tag.body[tag.body.length - 1].end,
+      });
+      this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
+    } else {
+      body = this.#processBody(tag);
+      if (body) {
+        hasInput = true;
+        this.#writeAttrTags(body, false, nestedTagType);
+        hasRenderBody = body.renderBody !== undefined;
+      } else if (tag.close) {
+        hasRenderBody = true;
+      }
     }
 
     if (tag.params || hasRenderBody) {
@@ -1274,16 +1284,7 @@ constructor(_?: Return) {}
 
       let didReturn = false;
 
-      if (isScript) {
-        if (tag.body) {
-          this.#copyWithMutationsReplaced({
-            start: tag.body[0].start,
-            end: tag.body[tag.body.length - 1].end,
-          });
-
-          didReturn = this.#writeChildren(tag, []);
-        }
-      } else if (body?.renderBody) {
+      if (body?.renderBody) {
         didReturn = this.#writeChildren(tag, body.renderBody);
       }
 

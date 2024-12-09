@@ -8,6 +8,7 @@ import {
   Repeatable,
   Repeated,
 } from "../../../parser";
+import { isTextOnlyScript } from "./is-text-only-script";
 import type { ScriptParser } from "./script-parser";
 
 export interface Options {
@@ -224,7 +225,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               }
             }
 
-            if (child.nameText === "script" && child.body) {
+            if (isTextOnlyScript(child)) {
               checkForMutations(
                 parentScope,
                 scriptParser.expressionAt(
