@@ -229,8 +229,8 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               checkForMutations(
                 parentScope,
                 scriptParser.expressionAt(
-                  child.body[0].start - "()=>{\n".length,
-                  `()=>{\n${read({
+                  child.body[0].start - "async ()=>{\n".length,
+                  `async ()=>{\n${read({
                     start: child.body[0].start,
                     end: child.body[child.body.length - 1].end,
                   })}\n}`,

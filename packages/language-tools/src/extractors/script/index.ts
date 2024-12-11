@@ -1247,7 +1247,7 @@ constructor(_?: Return) {}
     let body: ProcessedBody | undefined;
 
     if (isScript) {
-      this.#extractor.write("value(){");
+      this.#extractor.write("async value(){");
       this.#copyWithMutationsReplaced({
         start: tag.body[0].start,
         end: tag.body[tag.body.length - 1].end,
