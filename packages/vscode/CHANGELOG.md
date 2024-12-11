@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.4
+
+### Patch Changes
+
+- [#318](https://github.com/marko-js/language-server/pull/318) [`712cf2c`](https://github.com/marko-js/language-server/commit/712cf2c3d1244fd726f100eba9a82ec7159dd392) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade prettier-plugin-marko to fix script tag printing.
+
 ## 1.5.3
 
 ### Patch Changes
