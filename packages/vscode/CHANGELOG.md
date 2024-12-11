@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.3
+
+### Patch Changes
+
+- [#316](https://github.com/marko-js/language-server/pull/316) [`11f8953`](https://github.com/marko-js/language-server/commit/11f89532b330e31621cbbc6fe5bda11e0128788d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Allow await inside script tags.
+
 ## 1.5.2
 
 ### Patch Changes
