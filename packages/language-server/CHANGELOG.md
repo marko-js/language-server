@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.5
+
+### Patch Changes
+
+- [#320](https://github.com/marko-js/language-server/pull/320) [`b806534`](https://github.com/marko-js/language-server/commit/b806534db87002674dcf56141876b0953e52b350) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade all deps.
+
+- Updated dependencies [[`b806534`](https://github.com/marko-js/language-server/commit/b806534db87002674dcf56141876b0953e52b350)]:
+  - @marko/language-tools@2.5.4
+
 ## 1.4.4
 
 ### Patch Changes
