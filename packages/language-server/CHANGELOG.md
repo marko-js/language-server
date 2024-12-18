@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.6
+
+### Patch Changes
+
+- [#322](https://github.com/marko-js/language-server/pull/322) [`c99ca6c`](https://github.com/marko-js/language-server/commit/c99ca6c448da7ed5adbe260752856efd53fb4353) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve `<for>` tag codegen and types.
+
+- Updated dependencies [[`c99ca6c`](https://github.com/marko-js/language-server/commit/c99ca6c448da7ed5adbe260752856efd53fb4353)]:
+  - @marko/language-tools@2.5.5
+
 ## 1.4.5
 
 ### Patch Changes
