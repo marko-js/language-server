@@ -210,11 +210,7 @@
   79 | }/>
   80 |
 > 81 | <for|index|>
-     |  ^^^^^^^^^ No overload matches this call.
-  The last overload gave the following error.
-    Argument of type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { in: unknown; } | { of: readonly unknown[] | Iterable<unknown>; }) & { renderBody?: AnyMarkoBody | undefined; by?: ((...args: unknown[]) => string) | undefined; }'.
-      Type '{ renderBody: (index: any) => MarkoReturn<void>; }' is not assignable to type '{ of: readonly unknown[] | Iterable<unknown>; } & { renderBody?: AnyMarkoBody | undefined; by?: ((...args: unknown[]) => string) | undefined; }'.
-        Property 'of' is missing in type '{ renderBody: (index: any) => MarkoReturn<void>; }' but required in type '{ of: readonly unknown[] | Iterable<unknown>; }'.
+     |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { in: false | void | object | null; } | { of: false | void | readonly unknown[] | Iterable<unknown> | null; }) & { by?: ((...args: unknown[]) => string) | undefined; }'.
   82 |   Should error
   83 | </for>
   84 |

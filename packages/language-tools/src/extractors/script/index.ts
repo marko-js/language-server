@@ -565,18 +565,16 @@ constructor(_?: Return) {}
                 );
               }
 
-              this.#extractor.write(`${varShared("forTag")}({\n`);
+              this.#extractor.write(
+                `${varShared(getForTagRuntime(this.#parsed, child))}({\n`,
+              );
+              this.#writeTagNameComment(child);
               this.#writeAttrs(child);
-
-              // Adds a comment containing the tag name inside the renderBody key
-              // this causes any errors which are just for the renderBody
-              // to show on the tag.
               this.#extractor
-                .write(`["renderBody"/*`)
-                .copy(child.name)
-                .write(`*/]: (`);
+                .write("\n}" + SEP_COMMA_NEW_LINE)
+                .copy(child.typeParams)
+                .write("(\n");
               this.#writeComments(child);
-              this.#extractor.copy(child.typeParams).write("(\n");
 
               if (child.params) {
                 this.#copyWithMutationsReplaced(child.params.value);
@@ -594,8 +592,6 @@ constructor(_?: Return) {}
                 undefined,
                 body?.renderBody ? getHoistSources(child) : undefined,
               );
-
-              this.#extractor.write("})");
 
               if (renderId) {
                 this.#extractor.write("\n}));\n");
@@ -1181,9 +1177,12 @@ constructor(_?: Return) {}
           break;
         }
         case "for": {
-          this.#extractor.write(`${varShared("forAttrTag")}({\n`);
-          if (!this.#writeAttrs(tag)) this.#writeTagNameComment(tag);
-          this.#extractor.write("}, \n");
+          this.#extractor.write(
+            `${varShared(getForAttrTagRuntime(this.#parsed, tag))}({\n`,
+          );
+          this.#writeTagNameComment(tag);
+          this.#writeAttrs(tag);
+          this.#extractor.write("\n}, \n");
           this.#writeComments(tag);
           this.#extractor
             .copy(tag.typeParams)
@@ -1726,6 +1725,61 @@ constructor(_?: Return) {}
   #execAtIndex(reg: RegExp, index: number) {
     reg.lastIndex = index;
     return reg.exec(this.#code);
+  }
+}
+
+const enum ForTagType {
+  unknown,
+  of,
+  in,
+  to,
+}
+function getForTagType(parsed: Parsed, tag: Node.Tag) {
+  if (tag.attrs) {
+    for (const attr of tag.attrs) {
+      if (attr.type === NodeType.AttrSpread) {
+        return ForTagType.unknown;
+      }
+
+      switch (parsed.read(attr.name)) {
+        case "of":
+          return ForTagType.of;
+        case "in":
+          return ForTagType.in;
+        case "to":
+        case "from":
+        case "step":
+          return ForTagType.to;
+      }
+    }
+  }
+
+  return ForTagType.unknown;
+}
+
+function getForTagRuntime(parsed: Parsed, tag: Node.Tag) {
+  switch (getForTagType(parsed, tag)) {
+    case ForTagType.of:
+      return "forOfTag";
+    case ForTagType.in:
+      return "forInTag";
+    case ForTagType.to:
+      return "forToTag";
+    default:
+      return "forTag";
+  }
+}
+
+function getForAttrTagRuntime(parsed: Parsed, tag: Node.Tag) {
+  switch (getForTagType(parsed, tag)) {
+    case ForTagType.of:
+      return "forOfAttrTag";
+    case ForTagType.in:
+      return "forInAttrTag";
+    case ForTagType.to:
+      return "forToAttrTag";
+    default:
+      return "forAttrTag";
   }
 }
 

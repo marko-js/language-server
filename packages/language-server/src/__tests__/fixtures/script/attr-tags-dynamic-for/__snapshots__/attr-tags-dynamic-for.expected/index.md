@@ -174,16 +174,7 @@
 ```marko
   1 | <${custom}>
 > 2 |   <for>
-    |    ^^^ No overload matches this call.
-  Overload 1 of 4, '(input: { of: readonly any[] | Iterable<any>; }, renderBody: (value: any, index: number, all: readonly any[] | Iterable<any>) => unknown): {}', gave the following error.
-    Argument of type '{}' is not assignable to parameter of type '{ of: readonly any[] | Iterable<any>; }'.
-      Property 'of' is missing in type '{}' but required in type '{ of: readonly any[] | Iterable<any>; }'.
-  Overload 2 of 4, '(input: { in: object; }, renderBody: (key: never, value: never) => unknown): {}', gave the following error.
-    Argument of type '{}' is not assignable to parameter of type '{ in: object; }'.
-      Property 'in' is missing in type '{}' but required in type '{ in: object; }'.
-  Overload 3 of 4, '(input: { from?: number | void | undefined; to: number; step?: number | void | undefined; }, renderBody: (index: number) => unknown): {}', gave the following error.
-    Argument of type '{}' is not assignable to parameter of type '{ from?: number | void | undefined; to: number; step?: number | void | undefined; }'.
-      Property 'to' is missing in type '{}' but required in type '{ from?: number | void | undefined; to: number; step?: number | void | undefined; }'.
+    |    ^^^ Argument of type '{}' is not assignable to parameter of type '{ of: false | void | readonly unknown[] | Iterable<unknown> | null; } | { in: object; } | { from?: number | undefined; to: number; step?: number | undefined; }'.
   3 |     <@a/>
   4 |   </for>
   5 | </>
