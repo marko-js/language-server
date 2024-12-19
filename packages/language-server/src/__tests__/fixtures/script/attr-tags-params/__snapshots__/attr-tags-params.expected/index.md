@@ -32,21 +32,12 @@
   21 |   <@foo bar/>
   22 |   <@foo|data|>
 > 23 |     ${data}
-     |       ^ (parameter) data: any
+     |       ^ (parameter) data: {
+    a: string;
+    b: number;
+}
   24 |     //^?
   25 |   </@foo>
   26 | </>
-```
-
-## Diagnostics
-### Ln 22, Col 9
-```marko
-  20 | <${true && Child}>
-  21 |   <@foo bar/>
-> 22 |   <@foo|data|>
-     |         ^^^^ Parameter 'data' implicitly has an 'any' type.
-  23 |     ${data}
-  24 |     //^?
-  25 |   </@foo>
 ```
 

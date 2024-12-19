@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@babel/code-frame": "^7.26.2",
-    "@marko/compiler": "^5.39.4",
+    "@marko/compiler": "^5.39.6",
     "@types/babel__code-frame": "^7.0.6",
     "@typescript/vfs": "^1.6.0",
-    "marko": "^5.37.4",
+    "marko": "^5.37.7",
     "mitata": "^1.0.21",
     "tsx": "^4.19.2"
   },
