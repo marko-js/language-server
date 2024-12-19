@@ -501,12 +501,13 @@ const ScriptService: Partial<Plugin> = {
 };
 
 function processScript(doc: TextDocument, tsProject: TSProject) {
-  return processDoc(doc, ({ filename, parsed, lookup }) => {
+  return processDoc(doc, ({ filename, parsed, lookup, dirname }) => {
     const { host, markoScriptLang } = tsProject;
     return extractScript({
       ts,
       parsed,
       lookup,
+      translator: Project.getConfig(dirname).translator,
       scriptLang: filename
         ? Project.getScriptLang(filename, markoScriptLang, ts, host)
         : markoScriptLang,

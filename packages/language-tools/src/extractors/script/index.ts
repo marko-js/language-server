@@ -4,6 +4,7 @@ import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";
 
 import {
+  isControlFlowTag,
   type Node,
   NodeType,
   type Parsed,
@@ -12,6 +13,7 @@ import {
   type Repeated,
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
+import type { Meta } from "../../util/project";
 import {
   crawlProgramScope,
   getBoundAttrMemberExpressionStartOffset,
@@ -22,6 +24,7 @@ import {
   isMutatedVar,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
+import { getRuntimeAPI, RuntimeAPI } from "./util/get-runtime-api";
 import { isTextOnlyScript } from "./util/is-text-only-script";
 import getJSDocInputType from "./util/jsdoc-input-type";
 import { getRuntimeOverrides } from "./util/runtime-overrides";
@@ -44,13 +47,13 @@ const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
-const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z_$]+$/;
+const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z0-9_$]+$/;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
 
 type ProcessedBody = {
-  renderBody: Repeatable<Node.ChildNode>;
+  content: Repeatable<Node.ChildNode>;
   staticAttrTags: undefined | Record<string, Repeated<Node.AttrTag>>;
   dynamicAttrTagParents: Repeatable<Node.ControlFlowTag>;
 };
@@ -74,7 +77,7 @@ type IfTagAlternates = Repeatable<IfTagAlternate>;
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
 
 // SUPER LATER TODOS:
-// Have it self close tags by default if we detect it's input does not have a renderBody.
+// Have it self close tags by default if we detect it's input does not have a content.
 
 /**
  * Iterate over the Marko CST and extract all the script content.
@@ -91,6 +94,7 @@ export interface ExtractScriptOptions {
   lookup: TaglibLookup;
   scriptLang: ScriptLang;
   runtimeTypesCode?: string;
+  translator: Meta["config"]["translator"];
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -104,11 +108,14 @@ class ScriptExtractor {
   #scriptParser: ScriptParser;
   #read: Parsed["read"];
   #lookup: TaglibLookup;
+  #tagIds = new Map<Node.ParentTag, number>();
   #renderIds = new Map<Node.ParentTag, number>();
   #scriptLang: ScriptLang;
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
+  #api: RuntimeAPI;
   #mutationOffsets: Repeatable<number>;
+  #tagId = 1;
   #renderId = 1;
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
@@ -122,6 +129,7 @@ class ScriptExtractor {
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
+    this.#api = getRuntimeAPI(opts.translator, parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
     this.#writeProgram(parsed.program);
   }
@@ -321,8 +329,8 @@ function ${templateName}() {\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
 
-    if (body?.renderBody) {
-      this.#writeChildren(program, body.renderBody);
+    if (body?.content) {
+      this.#writeChildren(program, body.content);
     }
     const hoists = getHoists(program);
 
@@ -363,6 +371,7 @@ function ${templateName}() {\n`);
         ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
         : ""
     }
+  ${this.#api ? `api: "${this.#api}",` : ""}
   _${
     typeParamsStr
       ? `<${internalApply} = 1>(): ${internalApply} extends 0
@@ -500,9 +509,9 @@ constructor(_?: Return) {}
                 .write(") {\n");
 
               const ifBody = this.#processBody(child);
-              if (ifBody?.renderBody) {
+              if (ifBody?.content) {
                 const localBindings = getHoistSources(child);
-                this.#writeChildren(child, ifBody.renderBody, true);
+                this.#writeChildren(child, ifBody.content, true);
 
                 if (localBindings) {
                   this.#extractor.write("return {\nscope:");
@@ -529,9 +538,9 @@ constructor(_?: Return) {}
                   }
 
                   const alternateBody = this.#processBody(node);
-                  if (alternateBody?.renderBody) {
+                  if (alternateBody?.content) {
                     const localBindings = getHoistSources(node);
-                    this.#writeChildren(node, alternateBody.renderBody, true);
+                    this.#writeChildren(node, alternateBody.content, true);
 
                     if (localBindings) {
                       this.#extractor.write("return {\nscope:");
@@ -584,13 +593,13 @@ constructor(_?: Return) {}
 
               const body = this.#processBody(child);
 
-              if (body?.renderBody) {
-                this.#writeChildren(child, body.renderBody);
+              if (body?.content) {
+                this.#writeChildren(child, body.content);
               }
 
               this.#writeReturn(
                 undefined,
-                body?.renderBody ? getHoistSources(child) : undefined,
+                body?.content ? getHoistSources(child) : undefined,
               );
 
               if (renderId) {
@@ -612,10 +621,10 @@ constructor(_?: Return) {}
                 .write("\n) {\n");
 
               const body = this.#processBody(child);
-              if (body?.renderBody) {
+              if (body?.content) {
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
-                this.#writeChildren(child, body.renderBody);
+                this.#writeChildren(child, body.content);
               }
 
               this.#extractor.write("\n}\n");
@@ -692,55 +701,51 @@ constructor(_?: Return) {}
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
-    let nestedTagType: string | undefined;
+    const def = tagName ? this.#lookup.getTag(tagName) : undefined;
 
     if (renderId) {
       this.#extractor.write(
-        `${varShared("assertRendered")}(${varShared(
-          "rendered",
-        )}, ${renderId}, `,
+        `${varShared("assertRendered")}(${varShared("rendered")},${renderId},`,
       );
     }
 
-    if (tagName) {
-      const def = this.#lookup.getTag(tagName);
-
-      if (def) {
-        const importPath = resolveTagImport(this.#filename, def);
-        const isMarkoFile = importPath?.endsWith(".marko");
-        if (isMarkoFile) {
-          nestedTagType = `import("${importPath}").Input`;
-        }
-        const renderer = importPath?.endsWith(".marko")
-          ? `renderTemplate(import("${importPath}"))`
-          : def.html
-            ? `renderNativeTag("${def.name}")`
-            : "missingTag";
-        if (!def.html && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-          this.#extractor
-            .write(
-              `${varShared("renderPreferLocal")}(
-// @ts-expect-error We expect the compiler to error because we are checking if the tag is defined.
-(${varShared("error")}, `,
-            )
-            .copy(tag.name)
-            .write(`),\n${varShared(renderer)})`);
-        } else {
-          this.#extractor.write(varShared(renderer));
-        }
-      } else if (REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-        nestedTagType = `Marko.Input<typeof ${this.#read(tag.name)}>`;
-        this.#extractor
-          .write(`${varShared("renderDynamicTag")}(\n`)
-          .copy(tag.name)
-          .write("\n)");
-      } else {
-        this.#extractor.write(`${varShared("missingTag")}`);
-      }
+    if (def?.html) {
+      this.#extractor
+        .write(`${varShared("renderNativeTag")}("`)
+        .copy(tag.name)
+        .write('")');
     } else {
-      this.#extractor.write(`${varShared("renderDynamicTag")}(`);
-      this.#writeDynamicTagName(tag);
-      this.#extractor.write(")");
+      const importPath = def && resolveTagImport(this.#filename, def);
+      if (def && !importPath) {
+        this.#extractor.write(varShared("missingTag"));
+      } else {
+        const tagId = this.#ensureTagId(tag);
+        let isDynamic = true;
+        this.#extractor.write(
+          `(${varShared("assertTag")}(${varShared("tags")},${tagId},(\n`,
+        );
+
+        if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
+          if (importPath) {
+            this.#extractor.write(
+              `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
+            );
+          } else {
+            this.#extractor.copy(tag.name);
+          }
+        } else if (importPath) {
+          isDynamic = !importPath.endsWith(".marko");
+          this.#extractor.write(
+            `${varShared("resolveTemplate")}(import("${importPath}"))`,
+          );
+        } else {
+          this.#writeDynamicTagName(tag);
+        }
+
+        this.#extractor.write(
+          `\n)),${varShared(isDynamic ? "renderDynamicTag" : "renderTemplate")}(${varShared("tags")}[${tagId}]))`,
+        );
+      }
     }
 
     if (tag.typeArgs) {
@@ -749,7 +754,7 @@ constructor(_?: Return) {}
       this.#extractor.write("()()(");
     }
 
-    this.#writeTagInputObject(tag, nestedTagType);
+    this.#writeTagInputObject(tag);
 
     if (renderId) {
       this.#extractor.write(`)`);
@@ -1038,7 +1043,6 @@ constructor(_?: Return) {}
   #writeAttrTags(
     { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
     inMerge: boolean,
-    nestedTagType?: string,
   ) {
     let wasMerge = false;
 
@@ -1055,7 +1059,7 @@ constructor(_?: Return) {}
     }
 
     if (staticAttrTags) {
-      this.#writeStaticAttrTags(staticAttrTags, inMerge, nestedTagType);
+      this.#writeStaticAttrTags(staticAttrTags, inMerge);
       if (dynamicAttrTagParents)
         this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     }
@@ -1069,7 +1073,6 @@ constructor(_?: Return) {}
   #writeStaticAttrTags(
     staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
     wasMerge: boolean,
-    nestedTagType?: string,
   ) {
     if (!wasMerge) this.#extractor.write("...{");
     this.#extractor.write(
@@ -1092,25 +1095,35 @@ constructor(_?: Return) {}
 
     for (const nameText in staticAttrTags) {
       const attrTag = staticAttrTags[nameText];
-      const attrTagDef = this.#lookup.getTag(nameText);
       const isRepeated = attrTag.length > 1;
       const [firstAttrTag] = attrTag;
-      const name =
-        attrTagDef?.targetProperty ||
-        nameText.slice(nameText.lastIndexOf(":") + 1);
+      const name = this.#getAttrTagName(firstAttrTag);
 
       this.#extractor.write(`["${name}"`);
       this.#writeTagNameComment(firstAttrTag);
       this.#extractor.write("]: ");
 
       if (isRepeated) {
-        this.#extractor.write(`${varShared("repeatedAttrTag")}(\n...\n`);
-        if (nestedTagType && this.#scriptLang === ScriptLang.js) {
+        const tagId = this.#tagIds.get(firstAttrTag.owner!);
+        if (tagId) {
+          let accessor = `["${name}"]`;
+          let curTag = firstAttrTag.parent;
+          while (curTag) {
+            if (curTag.type === NodeType.AttrTag) {
+              accessor = `["${this.#getAttrTagName(curTag)}"]${accessor}`;
+            } else if (!isControlFlowTag(curTag)) {
+              break;
+            }
+
+            curTag = curTag.parent as Node.ParentTag;
+          }
+
           this.#extractor.write(
-            `/** @satisfies {${nestedTagType}["${name}"][]} */\n`,
+            `${varShared("attrTags")}(${varShared("input")}(${varShared("tags")}[${tagId}])${accessor})([\n`,
           );
+        } else {
+          this.#extractor.write(`${varShared("attrTags")}()([\n`);
         }
-        this.#extractor.write(`([\n`);
       }
 
       for (const childNode of attrTag) {
@@ -1119,11 +1132,7 @@ constructor(_?: Return) {}
       }
 
       if (isRepeated) {
-        this.#extractor.write("])");
-        if (nestedTagType && this.#scriptLang === ScriptLang.ts) {
-          this.#extractor.write(` satisfies ${nestedTagType}["${name}"][]`);
-        }
-        this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
+        this.#extractor.write(`])${SEP_COMMA_NEW_LINE}`);
       }
     }
   }
@@ -1212,7 +1221,7 @@ constructor(_?: Return) {}
     }
   }
 
-  #writeTagInputObject(tag: Node.ParentTag, nestedTagType?: string) {
+  #writeTagInputObject(tag: Node.ParentTag) {
     if (!tag.params) this.#writeComments(tag);
 
     let hasInput = false;
@@ -1242,7 +1251,7 @@ constructor(_?: Return) {}
     }
 
     const isScript = isTextOnlyScript(tag);
-    let hasRenderBody = false;
+    let hasBodyContent = false;
     let body: ProcessedBody | undefined;
 
     if (isScript) {
@@ -1256,18 +1265,42 @@ constructor(_?: Return) {}
       body = this.#processBody(tag);
       if (body) {
         hasInput = true;
-        this.#writeAttrTags(body, false, nestedTagType);
-        hasRenderBody = body.renderBody !== undefined;
+        this.#writeAttrTags(body, false);
+        hasBodyContent = body.content !== undefined;
       } else if (tag.close) {
-        hasRenderBody = true;
+        hasBodyContent = true;
       }
     }
 
-    if (tag.params || hasRenderBody) {
-      // Adds a comment containing the tag name inside the renderBody key
-      // this causes any errors which are just for the renderBody
+    if (tag.params || hasBodyContent) {
+      this.#extractor.write("[");
+
+      switch (this.#api) {
+        case RuntimeAPI.tags:
+          this.#extractor.write('"content"');
+          break;
+        case RuntimeAPI.class:
+          this.#extractor.write('"renderBody"');
+          break;
+        default: {
+          const tagId = this.#tagIds.get(
+            tag.type === NodeType.AttrTag ? tag.owner! : tag,
+          );
+
+          if (tagId) {
+            this.#extractor.write(
+              `${varShared("contentFor")}(${varShared("tags")}[${tagId}])`,
+            );
+          } else {
+            this.#extractor.write(varShared("content"));
+          }
+          break;
+        }
+      }
+
+      // Adds a comment containing the tag name inside the body content key
+      // this causes any errors which are just for the body content
       // to show on the tag.
-      this.#extractor.write('["renderBody"');
       this.#writeTagNameComment(tag);
       this.#extractor.write("]: ");
 
@@ -1283,8 +1316,8 @@ constructor(_?: Return) {}
 
       let didReturn = false;
 
-      if (body?.renderBody) {
-        didReturn = this.#writeChildren(tag, body.renderBody);
+      if (body?.content) {
+        didReturn = this.#writeChildren(tag, body.content);
       }
 
       if (!tag.params) {
@@ -1409,7 +1442,7 @@ constructor(_?: Return) {}
     if (!body) return;
 
     const last = body.length - 1;
-    let renderBody: ProcessedBody["renderBody"];
+    let content: ProcessedBody["content"];
     let staticAttrTags: ProcessedBody["staticAttrTags"];
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
     let i = 0;
@@ -1517,10 +1550,10 @@ constructor(_?: Return) {}
             } else {
               dynamicAttrTagParents = [child];
             }
-          } else if (renderBody) {
-            renderBody.push(child);
+          } else if (content) {
+            content.push(child);
           } else {
-            renderBody = [child];
+            content = [child];
           }
 
           break;
@@ -1528,10 +1561,10 @@ constructor(_?: Return) {}
         case NodeType.Text: {
           // Only include text nodes if they have content.
           if (!this.#isEmptyText(child)) {
-            if (renderBody) {
-              renderBody.push(child);
+            if (content) {
+              content.push(child);
             } else {
-              renderBody = [child];
+              content = [child];
             }
           }
 
@@ -1539,33 +1572,33 @@ constructor(_?: Return) {}
         }
 
         default:
-          if (renderBody) {
-            renderBody.push(child);
+          if (content) {
+            content.push(child);
           } else {
-            renderBody = [child];
+            content = [child];
           }
           break;
       }
     }
 
-    if (renderBody || staticAttrTags || dynamicAttrTagParents) {
-      return { renderBody, staticAttrTags, dynamicAttrTagParents };
+    if (content || staticAttrTags || dynamicAttrTagParents) {
+      return { content, staticAttrTags, dynamicAttrTagParents };
     }
   }
 
   #writeDynamicAttrTagBody(tag: Node.ControlFlowTag) {
     const body = this.#processBody(tag);
     if (body) {
-      if (body.renderBody) {
+      if (body.content) {
         this.#extractor.write("(() => {\n");
-        this.#writeChildren(tag, body.renderBody);
+        this.#writeChildren(tag, body.content);
         this.#extractor.write("return ");
       }
       this.#extractor.write("{\n");
       this.#writeAttrTags(body, true);
       this.#extractor.write("}");
 
-      if (body.renderBody) {
+      if (body.content) {
         this.#extractor.write(";\n})()");
       }
     } else {
@@ -1707,6 +1740,17 @@ constructor(_?: Return) {}
     return renderId;
   }
 
+  #ensureTagId(tag: Node.ParentTag) {
+    // Reuses ids from renderId but unconditional.
+    let tagId = this.#tagIds.get(tag);
+    if (!tagId) {
+      tagId = this.#tagId++;
+      this.#tagIds.set(tag, tagId);
+    }
+
+    return tagId;
+  }
+
   #getNamedAttrModifierIndex(attr: Node.AttrNamed) {
     const start = attr.name.start + 1;
     const end = attr.name.end - 1;
@@ -1715,6 +1759,14 @@ constructor(_?: Return) {}
     }
 
     return false;
+  }
+
+  #getAttrTagName(tag: Node.AttrTag) {
+    const { nameText } = tag;
+    return (
+      this.#lookup.getTag(nameText)?.targetProperty ||
+      nameText.slice(nameText.lastIndexOf(":") + 1)
+    );
   }
 
   #testAtIndex(reg: RegExp, index: number) {

@@ -40,6 +40,19 @@ declare global {
         returns: Record<number, never>;
       };
 
+      export const tags: Record<number, unknown>;
+      export const content: DefaultBodyContentKey;
+
+      export function contentFor<Name>(
+        tag: Name,
+      ): Name extends { api: infer API }
+        ? API extends "tags"
+          ? "content"
+          : API extends "class"
+            ? "renderBody"
+            : DefaultBodyContentKey
+        : DefaultBodyContentKey;
+
       export const Template: new <Overrides = unknown>() => {
         [K in Exclude<
           keyof Marko.Template,
@@ -81,6 +94,12 @@ declare global {
         Rendered extends { scopes: Record<any, infer Scope> } ? Scope : never
       > &
         Record<any, never>;
+
+      export function assertTag<Index extends number, Tags, Tag>(
+        tags: Tags,
+        index: Index,
+        tag: Tag,
+      ): asserts tags is Tags & Record<Index, Tag>;
 
       export function assertRendered<Index extends number, Rendered, Result>(
         rendered: Rendered,
@@ -134,16 +153,20 @@ declare global {
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
       export function renderTemplate<Name extends Marko.Template>(
-        imported: Promise<{ default: Name }>,
+        template: Name,
       ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
         tag: Name,
       ): NativeTagRenderer<Name>;
       export const missingTag: DefaultRenderer;
-      export function renderPreferLocal<Name, Fallback>(
-        name: Name,
-        fallback: Fallback,
-      ): [0] extends [1 & Name] ? Fallback : DynamicRenderer<Name>;
+      export function resolveTemplate<Template>(
+        imported: Promise<{ default: Template }>,
+      ): Template;
+      export function fallbackTemplate<Tag, Template>(
+        tag: Tag,
+        fallback: Promise<{ default: Template }>,
+      ): [0] extends [1 & Tag] ? Template : Tag;
+      export function input<Name>(tag: Name): Marko.Input<Name>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -301,10 +324,18 @@ declare global {
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
-
-      export function repeatedAttrTag<AttrTag>(
-        ...attrTags: Marko.AttrTag<AttrTag>[]
-      ): AttrTag;
+      export function attrTags<T>(
+        type?: T,
+      ): <AttrTag>(
+        attrTags: Relate<
+          AttrTag,
+          [0] extends [1 & T]
+            ? Marko.AttrTag<unknown>
+            : T extends Marko.AttrTag<infer Type>
+              ? Marko.AttrTag<Type>
+              : Marko.AttrTag<unknown>
+        >[],
+      ) => AttrTag;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
@@ -316,12 +347,14 @@ declare global {
             ? NativeTagRenderer<Name>
             : [Name] extends [AnyMarkoBody]
               ? BodyRenderer<Name>
-              : [Name] extends [{ renderBody?: AnyMarkoBody }]
-                ? [Name["renderBody"]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name["renderBody"]>
+              : [Name] extends [{ [BodyContentKey]?: AnyMarkoBody }]
+                ? [Name[DefaultBodyContentKey]] extends [AnyMarkoBody]
+                  ? BodyRenderer<Name[DefaultBodyContentKey]>
                   : BaseRenderer<
                       BodyContentInput<
-                        BodyParameters<Exclude<Name["renderBody"], void>>
+                        BodyParameters<
+                          Exclude<Name[DefaultBodyContentKey], void>
+                        >
                       >
                     >
                 : DefaultRenderer;
@@ -534,5 +567,10 @@ type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
 ) => any
   ? U
   : never;
+
+type DefaultBodyContentKey = keyof Exclude<
+  Marko.Renderable,
+  Marko.Template<any, any> | Marko.Body<any, any> | string
+>;
 
 export {};

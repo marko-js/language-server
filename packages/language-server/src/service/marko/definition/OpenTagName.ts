@@ -22,11 +22,9 @@ export function OpenTagName({
   let range = START_LOCATION;
 
   if (tag.type === NodeType.AttrTag) {
-    let parentTag = tag.owner;
-    while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
     tagDef =
-      parentTag && parentTag.nameText
-        ? lookup.getTag(parentTag.nameText)
+      tag.owner && tag.owner.nameText
+        ? lookup.getTag(tag.owner.nameText)
         : undefined;
   } else {
     tagDef = tag.nameText ? lookup.getTag(tag.nameText) : undefined;

@@ -32,7 +32,10 @@
   21 |   <@foo bar/>
   22 |   <@foo|data|>
 > 23 |     ${data}
-     |       ^ (parameter) data: any
+     |       ^ (parameter) data: {
+    a: string;
+    b: number;
+}
   24 |     //^?
   25 |   </@foo>
   26 | </>
