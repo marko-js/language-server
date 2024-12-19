@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.5.7
+
+### Patch Changes
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve body content processing for tags api.
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve repeated attribute tag processing.
+
 ## 1.5.6
 
 ### Patch Changes
