@@ -1,5 +1,16 @@
 # @marko/type-check
 
+## 1.3.6
+
+### Patch Changes
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve body content processing for tags api.
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve repeated attribute tag processing.
+
+- Updated dependencies [[`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5), [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5)]:
+  - @marko/language-tools@2.5.6
+
 ## 1.3.5
 
 ### Patch Changes
