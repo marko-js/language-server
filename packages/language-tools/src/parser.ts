@@ -137,7 +137,7 @@ export namespace Node {
   export interface AttrTag extends Range, Commentable {
     type: NodeType.AttrTag;
     parent: ParentTag;
-    owner: ParentTag | undefined;
+    owner: Tag | undefined;
     concise: boolean;
     selfClosed: boolean;
     hasAttrTags: boolean;
@@ -840,7 +840,7 @@ function hasCloseTag(
  * When control flow is the parent of an attribute tag, we add the attribute tag to
  * the closest non control flow ancestor attrs instead.
  */
-function isControlFlowTag(node: Node.Tag): node is Node.ControlFlowTag {
+export function isControlFlowTag(node: Node.Tag): node is Node.ControlFlowTag {
   switch (node.nameText) {
     case "if":
     case "else":

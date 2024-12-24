@@ -40,6 +40,19 @@ declare global {
         returns: Record<number, never>;
       };
 
+      export const tags: Record<number, unknown>;
+      export const content: DefaultBodyContentKey;
+
+      export function contentFor<Name>(
+        tag: Name,
+      ): Name extends { api: infer API }
+        ? API extends "tags"
+          ? "content"
+          : API extends "class"
+            ? "renderBody"
+            : DefaultBodyContentKey
+        : DefaultBodyContentKey;
+
       export const Template: new <Overrides = unknown>() => {
         [K in Exclude<
           keyof Marko.Template,
@@ -81,6 +94,12 @@ declare global {
         Rendered extends { scopes: Record<any, infer Scope> } ? Scope : never
       > &
         Record<any, never>;
+
+      export function assertTag<Index extends number, Tags, Tag>(
+        tags: Tags,
+        index: Index,
+        tag: Tag,
+      ): asserts tags is Tags & Record<Index, Tag>;
 
       export function assertRendered<Index extends number, Rendered, Result>(
         rendered: Rendered,
@@ -134,65 +153,75 @@ declare global {
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
       export function renderTemplate<Name extends Marko.Template>(
-        imported: Promise<{ default: Name }>,
+        template: Name,
       ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
         tag: Name,
       ): NativeTagRenderer<Name>;
       export const missingTag: DefaultRenderer;
-      export function renderPreferLocal<Name, Fallback>(
-        name: Name,
-        fallback: Fallback,
-      ): [0] extends [1 & Name] ? Fallback : DynamicRenderer<Name>;
+      export function resolveTemplate<Template>(
+        imported: Promise<{ default: Template }>,
+      ): Template;
+      export function fallbackTemplate<Tag, Template>(
+        tag: Tag,
+        fallback: Promise<{ default: Template }>,
+      ): [0] extends [1 & Tag] ? Template : Tag;
+      export function input<Name>(tag: Name): Marko.Input<Name>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
         Input extends { value: unknown; valueChange?: (value: any) => void },
       >(input: Input): Input;
 
-      export function forTag<
+      export function forOfTag<
         Value,
         Item extends Value extends
           | readonly (infer Item)[]
           | Iterable<infer Item>
           ? Item
           : unknown,
-        RenderBody extends Marko.Body<
+        BodyContent extends Marko.Body<
           [item: Item, index: number, all: Value],
           void
         >,
-      >(input: {
-        of: Value;
-        renderBody: RenderBody;
-        by?: (item: Item, index: number) => string;
-      }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
+      >(
+        input: {
+          of: Value | false | void | null;
+          by?: (item: Item, index: number) => string;
+        },
+        content: BodyContent,
+      ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
-      export function forTag<
+      export function forInTag<
         Value,
-        RenderBody extends Marko.Body<
+        BodyContent extends Marko.Body<
           [key: keyof Value, value: Value[keyof Value]],
           void
         >,
-      >(input: {
-        in: Value;
-        renderBody: RenderBody;
-        by?: (value: Value[keyof Value], key: keyof Value) => string;
-      }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
+      >(
+        input: {
+          in: Value | false | void | null;
+          by?: (value: Value[keyof Value], key: keyof Value) => string;
+        },
+        content: BodyContent,
+      ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
-      export function forTag<
+      export function forToTag<
         From extends void | number,
         To extends number,
         Step extends void | number,
-        RenderBody extends Marko.Body<[index: number], void>,
-      >(input: {
-        from?: From;
-        to: To;
-        step?: Step;
-        renderBody: RenderBody;
-        by?: (index: number) => string;
-      }): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
+        BodyContent extends Marko.Body<[index: number], void>,
+      >(
+        input: {
+          from?: From;
+          to: To;
+          step?: Step;
+          by?: (index: number) => string;
+        },
+        content: BodyContent,
+      ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
-      export function forTag<RenderBody extends AnyMarkoBody>(
+      export function forTag<BodyContent extends AnyMarkoBody>(
         input: (
           | {
               from?: number;
@@ -200,22 +229,23 @@ declare global {
               step?: number;
             }
           | {
-              in: unknown;
+              in: object | false | void | null;
             }
           | {
-              of: readonly unknown[] | Iterable<unknown>;
+              of: Iterable<unknown> | readonly unknown[] | false | void | null;
             }
-        ) & { renderBody?: RenderBody; by?: (...args: unknown[]) => string },
-      ): ReturnAndScope<RenderBodyScope<RenderBody>, void>;
+        ) & { by?: (...args: unknown[]) => string },
+        content: BodyContent,
+      ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
-      export function forAttrTag<
+      export function forOfAttrTag<
         Value extends Iterable<any> | readonly any[],
         const Return,
       >(
         input: {
-          of: Value;
+          of: Value | false | void | null;
         },
-        renderBody: (
+        content: (
           value: Value extends readonly (infer Item)[] | Iterable<infer Item>
             ? Item
             : unknown,
@@ -230,11 +260,11 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<Value extends object, const Return>(
+      export function forInAttrTag<Value extends object, const Return>(
         input: {
-          in: Value;
+          in: Value | false | void | null;
         },
-        renderBody: (key: keyof Value, value: Value[keyof Value]) => Return,
+        content: (key: keyof Value, value: Value[keyof Value]) => Return,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -243,7 +273,7 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<
+      export function forToAttrTag<
         From extends void | number,
         To extends number,
         Step extends void | number,
@@ -254,7 +284,7 @@ declare global {
           to: To;
           step?: Step;
         },
-        renderBody: (index: number) => Return,
+        content: (index: number) => Return,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -269,21 +299,21 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<const Return>(attrs: {
+      export function forAttrTag<const Return>(
         input:
           | {
-              of: any;
+              of: Iterable<unknown> | readonly unknown[] | false | void | null;
             }
           | {
-              in: any;
+              in: object;
             }
           | {
-              from?: any;
-              to: any;
-              step?: any;
-            };
-        renderBody: (index: number) => Return;
-      }): {
+              from?: number;
+              to: number;
+              step?: number;
+            },
+        content: (...args: unknown[]) => Return,
+      ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
           | (infer Item extends Record<PropertyKey, any>)
@@ -294,10 +324,18 @@ declare global {
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
-
-      export function repeatedAttrTag<AttrTag>(
-        ...attrTags: Marko.AttrTag<AttrTag>[]
-      ): AttrTag;
+      export function attrTags<T>(
+        type?: T,
+      ): <AttrTag>(
+        attrTags: Relate<
+          AttrTag,
+          [0] extends [1 & T]
+            ? Marko.AttrTag<unknown>
+            : T extends Marko.AttrTag<infer Type>
+              ? Marko.AttrTag<Type>
+              : Marko.AttrTag<unknown>
+        >[],
+      ) => AttrTag;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
@@ -309,12 +347,14 @@ declare global {
             ? NativeTagRenderer<Name>
             : [Name] extends [AnyMarkoBody]
               ? BodyRenderer<Name>
-              : [Name] extends [{ renderBody?: AnyMarkoBody }]
-                ? [Name["renderBody"]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name["renderBody"]>
+              : [Name] extends [{ [BodyContentKey]?: AnyMarkoBody }]
+                ? [Name[DefaultBodyContentKey]] extends [AnyMarkoBody]
+                  ? BodyRenderer<Name[DefaultBodyContentKey]>
                   : BaseRenderer<
-                      RenderBodyInput<
-                        BodyParameters<Exclude<Name["renderBody"], void>>
+                      BodyContentInput<
+                        BodyParameters<
+                          Exclude<Name[DefaultBodyContentKey], void>
+                        >
                       >
                     >
                 : DefaultRenderer;
@@ -349,10 +389,10 @@ declare global {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
           input: Marko.Directives &
-            RenderBodyInput<BodyParameters<Body>> &
+            BodyContentInput<BodyParameters<Body>> &
             Relate<
               __marko_internal_input,
-              Marko.Directives & RenderBodyInput<BodyParameters<Body>>
+              Marko.Directives & BodyContentInput<BodyParameters<Body>>
             >,
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
@@ -389,7 +429,7 @@ declare abstract class MarkoReturn<Return> {
 
 type AnyMarkoBody = Marko.Body<any, any>;
 
-type RenderBodyScope<RenderBody> = RenderBody extends (...params: any) => {
+type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
   [Marko._.scope]: infer Scope;
 }
   ? Scope
@@ -400,7 +440,7 @@ type ReturnAndScope<Scope, Return> = {
   scope: Scope;
 };
 
-type RenderBodyInput<Args extends readonly unknown[]> = Args extends {
+type BodyContentInput<Args extends readonly unknown[]> = Args extends {
   length: infer Length;
 }
   ? number extends Length
@@ -527,5 +567,10 @@ type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
 ) => any
   ? U
   : never;
+
+type DefaultBodyContentKey = keyof Exclude<
+  Marko.Renderable,
+  Marko.Template<any, any> | Marko.Body<any, any> | string
+>;
 
 export {};

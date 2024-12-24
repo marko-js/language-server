@@ -8,6 +8,7 @@ import {
   Repeatable,
   Repeated,
 } from "../../../parser";
+import { isTextOnlyScript } from "./is-text-only-script";
 import type { ScriptParser } from "./script-parser";
 
 export interface Options {
@@ -224,12 +225,12 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               }
             }
 
-            if (child.nameText === "script" && child.body) {
+            if (isTextOnlyScript(child)) {
               checkForMutations(
                 parentScope,
                 scriptParser.expressionAt(
-                  child.body[0].start - "()=>{\n".length,
-                  `()=>{\n${read({
+                  child.body[0].start - "async ()=>{\n".length,
+                  `async ()=>{\n${read({
                     start: child.body[0].start,
                     end: child.body[child.body.length - 1].end,
                   })}\n}`,

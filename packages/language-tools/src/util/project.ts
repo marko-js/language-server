@@ -12,6 +12,7 @@ export interface Meta {
   config: Omit<Compiler.Config, "cache" | "translator"> & {
     cache: Map<any, any>;
     translator: {
+      preferAPI?: string;
       runtimeTypes?: string;
       [x: string]: unknown;
     };

@@ -1,5 +1,43 @@
 # Change Log
 
+## 1.5.7
+
+### Patch Changes
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve body content processing for tags api.
+
+- [#324](https://github.com/marko-js/language-server/pull/324) [`258fa7a`](https://github.com/marko-js/language-server/commit/258fa7a712970fcfc20abf558a332f6bed3abde5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve repeated attribute tag processing.
+
+## 1.5.6
+
+### Patch Changes
+
+- [#322](https://github.com/marko-js/language-server/pull/322) [`c99ca6c`](https://github.com/marko-js/language-server/commit/c99ca6c448da7ed5adbe260752856efd53fb4353) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve `<for>` tag codegen and types.
+
+## 1.5.5
+
+### Patch Changes
+
+- [#320](https://github.com/marko-js/language-server/pull/320) [`b806534`](https://github.com/marko-js/language-server/commit/b806534db87002674dcf56141876b0953e52b350) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade all deps.
+
+## 1.5.4
+
+### Patch Changes
+
+- [#318](https://github.com/marko-js/language-server/pull/318) [`712cf2c`](https://github.com/marko-js/language-server/commit/712cf2c3d1244fd726f100eba9a82ec7159dd392) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade prettier-plugin-marko to fix script tag printing.
+
+## 1.5.3
+
+### Patch Changes
+
+- [#316](https://github.com/marko-js/language-server/pull/316) [`11f8953`](https://github.com/marko-js/language-server/commit/11f89532b330e31621cbbc6fe5bda11e0128788d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Allow await inside script tags.
+
+## 1.5.2
+
+### Patch Changes
+
+- [#314](https://github.com/marko-js/language-server/pull/314) [`a839384`](https://github.com/marko-js/language-server/commit/a8393841d60a29341e3c2854378246e653c1749f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure script tags are only processed as javascript when they contain no other attributes or placeholders in the body content.
+
 ## 1.5.1
 
 ### Patch Changes

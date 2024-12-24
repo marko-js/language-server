@@ -14,15 +14,13 @@ export function OpenTagName(
   const result: CompletionItem[] = [];
 
   if (isAttrTag) {
-    let parentTag = tag.owner;
-    while (parentTag?.type === NodeType.AttrTag) parentTag = parentTag.owner;
-    const parentTagDef =
-      parentTag &&
-      parentTag.nameText &&
-      file.tagLookup.getTag(parentTag.nameText);
+    const ownerTagDef =
+      tag.owner &&
+      tag.owner.nameText &&
+      file.tagLookup.getTag(tag.owner.nameText);
 
-    if (parentTagDef) {
-      const { nestedTags } = parentTagDef;
+    if (ownerTagDef) {
+      const { nestedTags } = ownerTagDef;
       for (const key in nestedTags) {
         if (key !== "*") {
           const tag = nestedTags[key];
