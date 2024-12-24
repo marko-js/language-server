@@ -1,23 +1,24 @@
-import { dirname } from "path";
-import { create as createPrettierService } from "volar-service-prettier";
+import { Project } from "@marko/language-tools";
+import { Connection, ShowMessageNotification } from "@volar/language-server";
+import { MessageType } from "@volar/language-server";
 import type {
   FormattingOptions,
   LanguageServiceContext,
   LanguageServicePlugin,
 } from "@volar/language-service";
-import { Connection, ShowMessageNotification } from "@volar/language-server";
-import { MessageType } from "@volar/language-server";
-import { URI } from "vscode-uri";
-import { Project } from "@marko/language-tools";
-import * as markoPrettier from "prettier-plugin-marko";
+import { dirname } from "path";
 import type { Options } from "prettier";
 import * as prettierBuiltIn from "prettier";
+import * as markoPrettier from "prettier-plugin-marko";
+import { create as createPrettierService } from "volar-service-prettier";
+import { URI } from "vscode-uri";
+
 import { importMarkoPrettierPlugin, importPrettier } from "./package";
 
 export function createMarkoPrettierService(
   connection: Connection,
 ): LanguageServicePlugin {
-  let prettier: typeof prettierBuiltIn | undefined;
+  let prettier: typeof import("prettier") | undefined;
   let prettierPlugin: typeof markoPrettier | undefined;
   let hasShownNotification = false;
 

@@ -1,46 +1,57 @@
 ## Hovers
-### Ln 9, Col 17
+### Ln 10, Col 17
 ```marko
-   7 |   <const/y="hi"/>
-   8 |   <script>
->  9 |     console.log(x);
+   8 |   <const/promise=Promise.resolve("world")/>
+   9 |   <script>
+> 10 |     console.log(x);
      |                 ^ const x: number
-  10 | //              ^?
-  11 |     console.log(y);
-  12 | //              ^?
+  11 | //              ^?
+  12 |     console.log(y);
+  13 | //              ^?
 ```
 
-### Ln 11, Col 17
+### Ln 12, Col 17
 ```marko
-   9 |     console.log(x);
-  10 | //              ^?
-> 11 |     console.log(y);
+  10 |     console.log(x);
+  11 | //              ^?
+> 12 |     console.log(y);
      |                 ^ const y: string
-  12 | //              ^?
-  13 |     console.log(input.name);
-  14 | //                    ^?
+  13 | //              ^?
+  14 |     console.log(input.name);
+  15 | //                    ^?
 ```
 
-### Ln 13, Col 23
+### Ln 14, Col 23
 ```marko
-  11 |     console.log(y);
-  12 | //              ^?
-> 13 |     console.log(input.name);
+  12 |     console.log(y);
+  13 | //              ^?
+> 14 |     console.log(input.name);
      |                       ^ (property) Input<T>.name: T extends string
-  14 | //                    ^?
-  15 |     x = 2;
-  16 |     y = "bye";
+  15 | //                    ^?
+  16 |
+  17 |     const resolved = await promise;
+```
+
+### Ln 18, Col 17
+```marko
+  16 |
+  17 |     const resolved = await promise;
+> 18 |     console.log(resolved);
+     |                 ^ const resolved: string
+  19 |     //          ^?
+  20 |     x = 2;
+  21 |     y = "bye";
 ```
 
 ## Diagnostics
-### Ln 16, Col 5
+### Ln 21, Col 5
 ```marko
-  14 | //                    ^?
-  15 |     x = 2;
-> 16 |     y = "bye";
+  19 |     //          ^?
+  20 |     x = 2;
+> 21 |     y = "bye";
      |     ^ Cannot assign to 'y' because it is a read-only property.
-  17 |   </script>
-  18 | </div>
-  19 |
+  22 |   </script>
+  23 | </div>
+  24 |
 ```
 

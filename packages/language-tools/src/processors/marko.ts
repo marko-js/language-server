@@ -109,6 +109,7 @@ export default {
         return extractScript({
           ts,
           parsed,
+          translator: Project.getConfig(dir).translator,
           lookup: Project.getTagLookup(dir),
           scriptLang: Project.getScriptLang(
             fileName,

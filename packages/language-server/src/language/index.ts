@@ -1,17 +1,20 @@
-import path from "path";
+import "../utils/project-defaults";
+
+import { TaglibLookup } from "@marko/babel-utils";
+import { extractHTML, parse, Project } from "@marko/language-tools";
+import { Meta } from "@marko/language-tools/src/util/project";
 import {
   type CodeMapping,
+  forEachEmbeddedCode,
   type LanguagePlugin,
   type VirtualCode,
-  forEachEmbeddedCode,
 } from "@volar/language-core";
+import path from "path";
 import type ts from "typescript";
-import { Project, extractHTML, parse } from "@marko/language-tools";
-import { TaglibLookup } from "@marko/babel-utils";
+
+import { parseHtml } from "./parseHtml";
 import { parseScripts } from "./parseScript";
 import { parseStyles } from "./parseStyles";
-import { parseHtml } from "./parseHtml";
-import "../utils/project-defaults";
 
 const decoratedHosts = new WeakSet<ts.LanguageServiceHost>();
 
@@ -91,6 +94,7 @@ export class MarkoVirtualCode implements VirtualCode {
   htmlAst: ReturnType<typeof extractHTML>;
   compiler: typeof import("@marko/compiler");
   code: string;
+  project: Meta["config"];
 
   constructor(
     public fileName: string,
@@ -114,15 +118,21 @@ export class MarkoVirtualCode implements VirtualCode {
     ];
 
     this.embeddedCodes = [];
+    const dirname = path.dirname(fileName);
+    this.project = Project.getConfig(dirname);
 
     this.code = this.snapshot.getText(0, this.snapshot.getLength());
     this.markoAst = parse(this.code, this.fileName);
 
-    const dirname = path.dirname(fileName);
     this.tagLookup = Project.getTagLookup(dirname);
     this.compiler = Project.getCompiler(path.dirname(this.fileName));
 
-    const scripts = parseScripts(this.markoAst, this.ts, this.tagLookup);
+    const scripts = parseScripts(
+      this.markoAst,
+      this.ts,
+      this.tagLookup,
+      this.project,
+    );
     this.embeddedCodes.push(...scripts);
 
     const styles = parseStyles(this.markoAst, this.tagLookup);
