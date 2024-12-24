@@ -15,8 +15,8 @@ await fs.rename(workspacePkg, workspacePkgTmp);
 
 try {
   await exec(
-    "vsce package -o $dist && vsce publish --packagePath $dist && ovsx publish $dist",
-    { env: { ...process.env, dist } }
+    "vsce package -o $dist", // && vsce publish --packagePath $dist && ovsx publish $dist",
+    { env: { ...process.env, dist } },
   );
 } finally {
   await fs.rename(workspacePkgTmp, workspacePkg);
