@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.8
+
+### Patch Changes
+
+- [#326](https://github.com/marko-js/language-server/pull/326) [`b65c79b`](https://github.com/marko-js/language-server/commit/b65c79bd5afb960129a00d1455048d51a5d9800a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix type issue in the internal language tool types.
+
+- Updated dependencies [[`b65c79b`](https://github.com/marko-js/language-server/commit/b65c79bd5afb960129a00d1455048d51a5d9800a)]:
+  - @marko/language-tools@2.5.7
+
 ## 1.4.7
 
 ### Patch Changes
