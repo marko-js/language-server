@@ -347,14 +347,16 @@ declare global {
             ? NativeTagRenderer<Name>
             : [Name] extends [AnyMarkoBody]
               ? BodyRenderer<Name>
-              : [Name] extends [{ [BodyContentKey]?: AnyMarkoBody }]
-                ? [Name[DefaultBodyContentKey]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name[DefaultBodyContentKey]>
+              : [Name] extends [
+                    {
+                      [BodyContentKey in DefaultBodyContentKey]?: AnyMarkoBody;
+                    },
+                  ]
+                ? [Name[BodyContentKey]] extends [AnyMarkoBody]
+                  ? BodyRenderer<Name[BodyContentKey]>
                   : BaseRenderer<
                       BodyContentInput<
-                        BodyParameters<
-                          Exclude<Name[DefaultBodyContentKey], void>
-                        >
+                        BodyParameters<Exclude<Name[BodyContentKey], void>>
                       >
                     >
                 : DefaultRenderer;
