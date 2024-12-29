@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.7
+
+### Patch Changes
+
+- [#326](https://github.com/marko-js/language-server/pull/326) [`b65c79b`](https://github.com/marko-js/language-server/commit/b65c79bd5afb960129a00d1455048d51a5d9800a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix type issue in the internal language tool types.
+
 ## 2.5.6
 
 ### Patch Changes
