@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 1.3.8
+
+### Patch Changes
+
+- [#328](https://github.com/marko-js/language-server/pull/328) [`091726b`](https://github.com/marko-js/language-server/commit/091726b9f6347e5c27284c12ecdfcf6e319f3f13) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve attribute tag type generation and completions.
+
+- Updated dependencies [[`091726b`](https://github.com/marko-js/language-server/commit/091726b9f6347e5c27284c12ecdfcf6e319f3f13)]:
+  - @marko/language-tools@2.5.8
+
 ## 1.3.7
 
 ### Patch Changes
