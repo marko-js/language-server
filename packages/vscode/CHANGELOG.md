@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.10
+
+### Patch Changes
+
+- [#330](https://github.com/marko-js/language-server/pull/330) [`808a3b5`](https://github.com/marko-js/language-server/commit/808a3b5b4b6c02926066465e348cab0ec18d5798) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve fallback for dynamic tag.
+
 ## 1.5.9
 
 ### Patch Changes
