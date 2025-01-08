@@ -351,15 +351,13 @@ declare global {
               ? BodyRenderer<Name>
               : [Name] extends [
                     {
-                      [BodyContentKey in DefaultBodyContentKey]?: AnyMarkoBody;
+                      [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue;
                     },
                   ]
-                ? [Name[BodyContentKey]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name[BodyContentKey]>
+                ? [BodyValue] extends [AnyMarkoBody]
+                  ? BodyRenderer<BodyValue>
                   : BaseRenderer<
-                      BodyContentInput<
-                        BodyParameters<Exclude<Name[BodyContentKey], void>>
-                      >
+                      BodyContentInput<BodyParameters<Exclude<BodyValue, void>>>
                     >
                 : DefaultRenderer;
 
