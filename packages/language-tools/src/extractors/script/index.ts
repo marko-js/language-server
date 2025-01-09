@@ -708,6 +708,42 @@ constructor(_?: Return) {}
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
+    const isHTML = def?.html;
+    const importPath = !isHTML && resolveTagImport(this.#filename, def);
+    const isMissing = def && !isHTML && !importPath;
+    let tagIdentifier: undefined | string;
+    let isTemplate = false;
+
+    if (!isHTML || !isMissing) {
+      const tagId = this.#ensureTagId(tag);
+      tagIdentifier = varLocal("tag_" + tagId);
+      this.#extractor.write(`const ${tagIdentifier} = (\n`);
+
+      if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
+        if (importPath) {
+          this.#extractor.write(
+            `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
+          );
+        } else {
+          this.#extractor.copy(tag.name);
+        }
+      } else if (importPath) {
+        isTemplate = importPath.endsWith(".marko");
+        this.#extractor.write(
+          `${varShared("resolveTemplate")}(import("${importPath}"))`,
+        );
+      } else {
+        this.#writeDynamicTagName(tag);
+      }
+
+      this.#extractor.write("\n);\n");
+
+      const attrTagTree = this.#getAttrTagTree(tag);
+      if (attrTagTree) {
+        this.#writeAttrTagTree(attrTagTree, tagIdentifier);
+        this.#extractor.write(";\n");
+      }
+    }
 
     if (renderId) {
       this.#extractor.write(
@@ -715,51 +751,17 @@ constructor(_?: Return) {}
       );
     }
 
-    if (def?.html) {
+    if (isHTML) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
         .copy(tag.name)
         .write('")');
+    } else if (tagIdentifier) {
+      this.#extractor.write(
+        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${tagIdentifier})`,
+      );
     } else {
-      const importPath = def && resolveTagImport(this.#filename, def);
-      if (def && !importPath) {
-        this.#extractor.write(varShared("missingTag"));
-      } else {
-        const tagId = this.#ensureTagId(tag);
-        let isDynamic = true;
-        this.#extractor.write(
-          `(${varShared("assertTag")}(${varShared("tags")},${tagId},(\n`,
-        );
-
-        if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-          if (importPath) {
-            this.#extractor.write(
-              `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
-            );
-          } else {
-            this.#extractor.copy(tag.name);
-          }
-        } else if (importPath) {
-          isDynamic = !importPath.endsWith(".marko");
-          this.#extractor.write(
-            `${varShared("resolveTemplate")}(import("${importPath}"))`,
-          );
-        } else {
-          this.#writeDynamicTagName(tag);
-        }
-
-        this.#extractor.write("\n)),");
-
-        const attrTagTree = this.#getAttrTagTree(tag);
-        if (attrTagTree) {
-          this.#writeAttrTagTree(attrTagTree, `${varShared("tags")}[${tagId}]`);
-          this.#extractor.write(",");
-        }
-
-        this.#extractor.write(
-          `${varShared(isDynamic ? "renderDynamicTag" : "renderTemplate")}(${varShared("tags")}[${tagId}]))`,
-        );
-      }
+      this.#extractor.write(varShared("missingTag"));
     }
 
     if (tag.typeArgs) {
@@ -1110,7 +1112,7 @@ constructor(_?: Return) {}
           }
 
           this.#extractor.write(
-            `${varShared("attrTagFor")}(${varShared("tags")}[${tagId}],${accessor})([`,
+            `${varShared("attrTagFor")}(${varLocal("tag_" + tagId)},${accessor})([`,
           );
         } else {
           this.#extractor.write(`${varShared("attrTag")}([`);
@@ -1280,7 +1282,7 @@ constructor(_?: Return) {}
 
           if (tagId) {
             this.#extractor.write(
-              `${varShared("contentFor")}(${varShared("tags")}[${tagId}])`,
+              `${varShared("contentFor")}(${varLocal("tag_" + tagId)})`,
             );
           } else {
             this.#extractor.write(varShared("content"));
