@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.12
+
+### Patch Changes
+
+- [#334](https://github.com/marko-js/language-server/pull/334) [`b87f4b2`](https://github.com/marko-js/language-server/commit/b87f4b2970c02c1e84cdc0d688eca4fcb3523e96) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix some flawed boolean logic
+
 ## 1.5.11
 
 ### Patch Changes
