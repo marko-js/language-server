@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 1.3.10
+
+### Patch Changes
+
+- [#332](https://github.com/marko-js/language-server/pull/332) [`f21cfe4`](https://github.com/marko-js/language-server/commit/f21cfe40011b6d706d3890546d69d75a4f927545) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix TypeScript for nested attribute tags in for-of loops
+
+- Updated dependencies [[`f21cfe4`](https://github.com/marko-js/language-server/commit/f21cfe40011b6d706d3890546d69d75a4f927545)]:
+  - @marko/language-tools@2.5.10
+
 ## 1.3.9
 
 ### Patch Changes
