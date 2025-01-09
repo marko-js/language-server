@@ -331,11 +331,13 @@ declare global {
       ): <AttrTag>(
         attrTags: Relate<
           AttrTag,
-          Marko.Input<Tag> extends infer Input
-            ? [0] extends [1 & Input]
-              ? Marko.AttrTag<unknown>
-              : AttrTagValue<Marko.Input<Tag>, Path>
-            : Marko.AttrTag<unknown>
+          [0] extends [1 & Tag]
+            ? Marko.AttrTag<unknown>
+            : Marko.Input<Tag> extends infer Input
+              ? [0] extends [1 & Input]
+                ? Marko.AttrTag<unknown>
+                : AttrTagValue<Marko.Input<Tag>, Path>
+              : Marko.AttrTag<unknown>
         >[],
       ) => AttrTag;
 
