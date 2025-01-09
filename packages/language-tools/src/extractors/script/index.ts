@@ -710,11 +710,10 @@ constructor(_?: Return) {}
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const isHTML = def?.html;
     const importPath = !isHTML && resolveTagImport(this.#filename, def);
-    const isMissing = def && !isHTML && !importPath;
     let tagIdentifier: undefined | string;
     let isTemplate = false;
 
-    if (!isHTML || !isMissing) {
+    if (!isHTML && (!def || importPath)) {
       const tagId = this.#ensureTagId(tag);
       tagIdentifier = varLocal("tag_" + tagId);
       this.#extractor.write(`const ${tagIdentifier} = (\n`);
