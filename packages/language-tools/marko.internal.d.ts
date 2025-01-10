@@ -328,7 +328,7 @@ declare global {
       export function attrTagFor<Tag, Path extends readonly string[]>(
         tag: Tag,
         ...path: Path
-      ): <AttrTag>(
+      ): <const AttrTag>(
         attrTags: Relate<
           AttrTag,
           [0] extends [1 & Tag]
