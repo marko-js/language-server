@@ -4,11 +4,8 @@
   4 |
   5 | <test-tag>
 > 6 |   <@item x=1>
-    |    ^^^^^ Type '{ x: number; renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; } | { renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; x?: undefined; }' is not assignable to type 'AttrTag<{ x: number; renderBody?: Body<[], void> | undefined; }>'.
-  Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; x?: undefined; }' is not assignable to type 'AttrTag<{ x: number; renderBody?: Body<[], void> | undefined; }>'.
-    Type '{ renderBody: () => MarkoReturn<void>; [Symbol.iterator]: any; x?: undefined; }' is not assignable to type '{ x: number; renderBody?: Body<[], void> | undefined; }'.
-      Types of property 'x' are incompatible.
-        Type 'undefined' is not assignable to type 'number'.
+    |    ^^^^^ Type '{ [Symbol.iterator](): Iterator<unknown, any, any>; }' is not assignable to type '{ x: number; renderBody?: Body<[], void> | undefined; } & { [Symbol.iterator](): Iterator<{ x: number; renderBody?: Body<[], void> | undefined; }, any, any>; } & { ...; }'.
+  Property 'x' is missing in type '{ [Symbol.iterator](): Iterator<unknown, any, any>; }' but required in type '{ x: number; renderBody?: Body<[], void> | undefined; }'.
   7 |     Hello!
   8 |   </>
   9 |
