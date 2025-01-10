@@ -328,18 +328,19 @@ declare global {
       export function attrTagFor<Tag, Path extends readonly string[]>(
         tag: Tag,
         ...path: Path
-      ): <const AttrTag>(
-        attrTags: Relate<
-          AttrTag,
-          [0] extends [1 & Tag]
-            ? Marko.AttrTag<unknown>
-            : Marko.Input<Tag> extends infer Input
-              ? [0] extends [1 & Input]
-                ? Marko.AttrTag<unknown>
-                : AttrTagValue<Marko.Input<Tag>, Path>
-              : Marko.AttrTag<unknown>
-        >[],
-      ) => AttrTag;
+      ): <
+        AttrTag extends [0] extends [1 & Tag]
+          ? Marko.AttrTag<unknown>
+          : Marko.Input<Tag> extends infer Input
+            ? [0] extends [1 & Input]
+              ? Marko.AttrTag<unknown>
+              : AttrTagValue<Marko.Input<Tag>, Path>
+            : Marko.AttrTag<unknown>,
+      >(
+        attrTags: AttrTag[],
+      ) => AttrTag extends Marko.AttrTag<infer Input>
+        ? Marko.AttrTag<Input>
+        : any;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
