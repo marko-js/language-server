@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.13
+
+### Patch Changes
+
+- [#336](https://github.com/marko-js/language-server/pull/336) [`a4954b6`](https://github.com/marko-js/language-server/commit/a4954b67084889e8eaf3841aa504237bf6e70036) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type narrowing for attr tags, reducing need for `as const`
+
 ## 1.5.12
 
 ### Patch Changes
