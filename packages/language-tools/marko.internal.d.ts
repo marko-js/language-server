@@ -25,15 +25,14 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
-      export function attrTagNames<Input, Keys extends keyof Input & string>(
+      export function attrTagNames<Tag>(
+        tag: Tag,
+        fn: (input: AttrTagNames<Marko.Input<Tag>>) => void,
+      ): void;
+      export function nestedAttrTagNames<Input>(
         input: Input,
-      ): Record<string, never> & {
-        [Key in Keys as `@${Input[Key] extends infer Value
-          ? Value extends Marko.AttrTag<any>
-            ? Key
-            : never
-          : never}`]: Input[Key];
-      };
+        fn: (input: AttrTagNames<Input>) => void,
+      ): void;
 
       export const rendered: {
         scopes: Record<number, never>;
@@ -99,7 +98,8 @@ declare global {
         tags: Tags,
         index: Index,
         tag: Tag,
-      ): asserts tags is Tags & Record<Index, Tag>;
+      ): asserts tags is Tags &
+        Record<Index, [0] extends [1 & Tag] ? any : Tag>;
 
       export function assertRendered<Index extends number, Rendered, Result>(
         rendered: Rendered,
@@ -324,18 +324,23 @@ declare global {
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
-      export function attrTags<T>(
-        type?: T,
-      ): <AttrTag>(
-        attrTags: Relate<
-          AttrTag,
-          [0] extends [1 & T]
-            ? Marko.AttrTag<unknown>
-            : T extends Marko.AttrTag<infer Type>
-              ? Marko.AttrTag<Type>
-              : Marko.AttrTag<unknown>
-        >[],
-      ) => AttrTag;
+      export function attrTag<AttrTag>(attrTags: AttrTag[]): AttrTag;
+      export function attrTagFor<Tag, Path extends readonly string[]>(
+        tag: Tag,
+        ...path: Path
+      ): <
+        AttrTag extends [0] extends [1 & Tag]
+          ? Marko.AttrTag<unknown>
+          : Marko.Input<Tag> extends infer Input
+            ? [0] extends [1 & Input]
+              ? Marko.AttrTag<unknown>
+              : AttrTagValue<Marko.Input<Tag>, Path>
+            : Marko.AttrTag<unknown>,
+      >(
+        attrTags: AttrTag[],
+      ) => AttrTag extends Marko.AttrTag<infer Input>
+        ? Marko.AttrTag<Input>
+        : any;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
@@ -347,15 +352,15 @@ declare global {
             ? NativeTagRenderer<Name>
             : [Name] extends [AnyMarkoBody]
               ? BodyRenderer<Name>
-              : [Name] extends [{ [BodyContentKey]?: AnyMarkoBody }]
-                ? [Name[DefaultBodyContentKey]] extends [AnyMarkoBody]
-                  ? BodyRenderer<Name[DefaultBodyContentKey]>
+              : [Name] extends [
+                    {
+                      [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue;
+                    },
+                  ]
+                ? [BodyValue] extends [AnyMarkoBody]
+                  ? BodyRenderer<BodyValue>
                   : BaseRenderer<
-                      BodyContentInput<
-                        BodyParameters<
-                          Exclude<Name[DefaultBodyContentKey], void>
-                        >
-                      >
+                      BodyContentInput<BodyParameters<Exclude<BodyValue, void>>>
                     >
                 : DefaultRenderer;
 
@@ -545,6 +550,28 @@ type AttrTagByObjectSize<
   undefined,
   CheckNever<KnownKeys, Marko.AttrTag<Item>, undefined | Marko.AttrTag<Item>>
 >;
+
+type AttrTagValue<Input, Path extends readonly string[]> = Path extends [
+  infer Prop extends keyof Input,
+  ...infer Rest extends readonly string[],
+]
+  ? Input[Prop] & Marko.AttrTag<unknown> extends infer Value
+    ? Rest extends readonly []
+      ? Value
+      : AttrTagValue<Value, Rest>
+    : Marko.AttrTag<unknown>
+  : Marko.AttrTag<unknown>;
+
+type AttrTagNames<Input> = Record<string, never> &
+  (Input extends infer Input extends {}
+    ? {
+        [Key in keyof Input & string as `@${Input[Key] extends infer Value
+          ? Value extends Marko.AttrTag<any>
+            ? Key
+            : never
+          : never}`]: Input[Key];
+      }
+    : never);
 
 type RecordKeys<T> = keyof {
   [K in keyof T as CheckNever<T[K], never, K>]: 0;

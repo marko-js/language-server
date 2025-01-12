@@ -65,6 +65,12 @@ type IfTagAlternate = {
   };
 };
 type IfTagAlternates = Repeatable<IfTagAlternate>;
+type AttrTagTree = {
+  [x: string]: {
+    tags: Node.AttrTag[];
+    nested?: AttrTagTree;
+  };
+};
 
 // TODO: Dedupe taglib completions with TS completions. (typescript project ignore taglib completions)
 // TODO: special types for macro and tag tags.
@@ -702,6 +708,41 @@ constructor(_?: Return) {}
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
+    const isHTML = def?.html;
+    const importPath = !isHTML && resolveTagImport(this.#filename, def);
+    let tagIdentifier: undefined | string;
+    let isTemplate = false;
+
+    if (!isHTML && (!def || importPath)) {
+      const tagId = this.#ensureTagId(tag);
+      tagIdentifier = varLocal("tag_" + tagId);
+      this.#extractor.write(`const ${tagIdentifier} = (\n`);
+
+      if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
+        if (importPath) {
+          this.#extractor.write(
+            `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
+          );
+        } else {
+          this.#extractor.copy(tag.name);
+        }
+      } else if (importPath) {
+        isTemplate = importPath.endsWith(".marko");
+        this.#extractor.write(
+          `${varShared("resolveTemplate")}(import("${importPath}"))`,
+        );
+      } else {
+        this.#writeDynamicTagName(tag);
+      }
+
+      this.#extractor.write("\n);\n");
+
+      const attrTagTree = this.#getAttrTagTree(tag);
+      if (attrTagTree) {
+        this.#writeAttrTagTree(attrTagTree, tagIdentifier);
+        this.#extractor.write(";\n");
+      }
+    }
 
     if (renderId) {
       this.#extractor.write(
@@ -709,43 +750,17 @@ constructor(_?: Return) {}
       );
     }
 
-    if (def?.html) {
+    if (isHTML) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
         .copy(tag.name)
         .write('")');
+    } else if (tagIdentifier) {
+      this.#extractor.write(
+        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${tagIdentifier})`,
+      );
     } else {
-      const importPath = def && resolveTagImport(this.#filename, def);
-      if (def && !importPath) {
-        this.#extractor.write(varShared("missingTag"));
-      } else {
-        const tagId = this.#ensureTagId(tag);
-        let isDynamic = true;
-        this.#extractor.write(
-          `(${varShared("assertTag")}(${varShared("tags")},${tagId},(\n`,
-        );
-
-        if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-          if (importPath) {
-            this.#extractor.write(
-              `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
-            );
-          } else {
-            this.#extractor.copy(tag.name);
-          }
-        } else if (importPath) {
-          isDynamic = !importPath.endsWith(".marko");
-          this.#extractor.write(
-            `${varShared("resolveTemplate")}(import("${importPath}"))`,
-          );
-        } else {
-          this.#writeDynamicTagName(tag);
-        }
-
-        this.#extractor.write(
-          `\n)),${varShared(isDynamic ? "renderDynamicTag" : "renderTemplate")}(${varShared("tags")}[${tagId}]))`,
-        );
-      }
+      this.#extractor.write(varShared("missingTag"));
     }
 
     if (tag.typeArgs) {
@@ -1051,26 +1066,23 @@ constructor(_?: Return) {}
     return hasAttrs;
   }
 
-  #writeAttrTags(
-    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
-    inMerge: boolean,
-  ) {
+  #writeAttrTags({ staticAttrTags, dynamicAttrTagParents }: ProcessedBody) {
     let wasMerge = false;
 
     if (dynamicAttrTagParents) {
       if (staticAttrTags) {
         this.#extractor.write(`...${varShared("mergeAttrTags")}({\n`);
-        inMerge = wasMerge = true;
+        wasMerge = true;
       } else if (dynamicAttrTagParents.length > 1) {
         this.#extractor.write(`...${varShared("mergeAttrTags")}(\n`);
-        inMerge = wasMerge = true;
+        wasMerge = true;
       } else {
         this.#extractor.write(`...`);
       }
     }
 
     if (staticAttrTags) {
-      this.#writeStaticAttrTags(staticAttrTags, inMerge);
+      this.#writeStaticAttrTags(staticAttrTags);
       if (dynamicAttrTagParents)
         this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     }
@@ -1083,27 +1095,7 @@ constructor(_?: Return) {}
 
   #writeStaticAttrTags(
     staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
-    wasMerge: boolean,
   ) {
-    if (!wasMerge) this.#extractor.write("...{");
-    this.#extractor.write(
-      `[${varShared("never")}](){\nconst attrTags = ${varShared(
-        "attrTagNames",
-      )}(this);\n`,
-    );
-
-    for (const nameText in staticAttrTags) {
-      for (const tag of staticAttrTags[nameText]) {
-        this.#extractor.write(`attrTags["`);
-        this.#extractor.copy(tag.name);
-        this.#extractor.write('"];\n');
-      }
-    }
-
-    this.#extractor.write("\n}");
-    if (!wasMerge) this.#extractor.write("}");
-    this.#extractor.write(SEP_COMMA_NEW_LINE);
-
     for (const nameText in staticAttrTags) {
       const attrTag = staticAttrTags[nameText];
       const isRepeated = attrTag.length > 1;
@@ -1117,11 +1109,11 @@ constructor(_?: Return) {}
       if (isRepeated) {
         const tagId = this.#tagIds.get(firstAttrTag.owner!);
         if (tagId) {
-          let accessor = `["${name}"]`;
+          let accessor = `"${name}"`;
           let curTag = firstAttrTag.parent;
           while (curTag) {
             if (curTag.type === NodeType.AttrTag) {
-              accessor = `["${this.#getAttrTagName(curTag)}"]${accessor}`;
+              accessor = `"${this.#getAttrTagName(curTag)}",${accessor}`;
             } else if (!isControlFlowTag(curTag)) {
               break;
             }
@@ -1130,10 +1122,10 @@ constructor(_?: Return) {}
           }
 
           this.#extractor.write(
-            `${varShared("attrTags")}(${varShared("input")}(${varShared("tags")}[${tagId}])${accessor})([\n`,
+            `${varShared("attrTagFor")}(${varLocal("tag_" + tagId)},${accessor})([`,
           );
         } else {
-          this.#extractor.write(`${varShared("attrTags")}()([\n`);
+          this.#extractor.write(`${varShared("attrTag")}([`);
         }
       }
 
@@ -1276,7 +1268,7 @@ constructor(_?: Return) {}
       body = this.#processBody(tag);
       if (body) {
         hasInput = true;
-        this.#writeAttrTags(body, false);
+        this.#writeAttrTags(body);
         hasBodyContent = body.content !== undefined;
       } else if (tag.close) {
         hasBodyContent = true;
@@ -1300,7 +1292,7 @@ constructor(_?: Return) {}
 
           if (tagId) {
             this.#extractor.write(
-              `${varShared("contentFor")}(${varShared("tags")}[${tagId}])`,
+              `${varShared("contentFor")}(${varLocal("tag_" + tagId)})`,
             );
           } else {
             this.#extractor.write(varShared("content"));
@@ -1606,7 +1598,7 @@ constructor(_?: Return) {}
         this.#extractor.write("return ");
       }
       this.#extractor.write("{\n");
-      this.#writeAttrTags(body, true);
+      this.#writeAttrTags(body);
       this.#extractor.write("}");
 
       if (body.content) {
@@ -1778,6 +1770,55 @@ constructor(_?: Return) {}
       this.#lookup.getTag(nameText)?.targetProperty ||
       nameText.slice(nameText.lastIndexOf(":") + 1)
     );
+  }
+
+  #writeAttrTagTree(tree: AttrTagTree, valueExpression: string, nested?: true) {
+    this.#extractor.write(
+      `${varShared(nested ? "nestedAttrTagNames" : "attrTagNames")}(${valueExpression},input=>{\n`,
+    );
+    for (const name in tree) {
+      const { tags, nested } = tree[name];
+      for (const tag of tags) {
+        this.#extractor.write('input["').copy(tag.name).write('"];\n');
+      }
+
+      if (nested) {
+        this.#writeAttrTagTree(nested, `input["@${name}"]`, true);
+      }
+    }
+    this.#extractor.write(`})`);
+  }
+
+  #getAttrTagTree(tag: Node.Tag | Node.AttrTag, attrTags?: AttrTagTree) {
+    if (!tag.hasAttrTags || !tag.body) return attrTags;
+
+    const curAttrTags = attrTags || {};
+    for (const child of tag.body) {
+      switch (child.type) {
+        case NodeType.AttrTag: {
+          const name = this.#getAttrTagName(child);
+          const prev = curAttrTags[name];
+
+          if (prev) {
+            prev.tags.push(child);
+            prev.nested = this.#getAttrTagTree(child, prev.nested);
+          } else {
+            curAttrTags[name] = {
+              tags: [child],
+              nested: this.#getAttrTagTree(child),
+            };
+          }
+          break;
+        }
+        case NodeType.Tag:
+          if (isControlFlowTag(child)) {
+            this.#getAttrTagTree(child, curAttrTags);
+          }
+          break;
+      }
+    }
+
+    return curAttrTags;
   }
 
   #testAtIndex(reg: RegExp, index: number) {

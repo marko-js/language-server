@@ -1,5 +1,59 @@
 # @marko/type-check
 
+## 1.3.12
+
+### Patch Changes
+
+- [#336](https://github.com/marko-js/language-server/pull/336) [`a4954b6`](https://github.com/marko-js/language-server/commit/a4954b67084889e8eaf3841aa504237bf6e70036) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type narrowing for attr tags, reducing need for `as const`
+
+- Updated dependencies [[`a4954b6`](https://github.com/marko-js/language-server/commit/a4954b67084889e8eaf3841aa504237bf6e70036)]:
+  - @marko/language-tools@2.5.12
+
+## 1.3.11
+
+### Patch Changes
+
+- [#334](https://github.com/marko-js/language-server/pull/334) [`b87f4b2`](https://github.com/marko-js/language-server/commit/b87f4b2970c02c1e84cdc0d688eca4fcb3523e96) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix some flawed boolean logic
+
+- Updated dependencies [[`b87f4b2`](https://github.com/marko-js/language-server/commit/b87f4b2970c02c1e84cdc0d688eca4fcb3523e96)]:
+  - @marko/language-tools@2.5.11
+
+## 1.3.10
+
+### Patch Changes
+
+- [#332](https://github.com/marko-js/language-server/pull/332) [`f21cfe4`](https://github.com/marko-js/language-server/commit/f21cfe40011b6d706d3890546d69d75a4f927545) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix TypeScript for nested attribute tags in for-of loops
+
+- Updated dependencies [[`f21cfe4`](https://github.com/marko-js/language-server/commit/f21cfe40011b6d706d3890546d69d75a4f927545)]:
+  - @marko/language-tools@2.5.10
+
+## 1.3.9
+
+### Patch Changes
+
+- [#330](https://github.com/marko-js/language-server/pull/330) [`808a3b5`](https://github.com/marko-js/language-server/commit/808a3b5b4b6c02926066465e348cab0ec18d5798) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve fallback for dynamic tag.
+
+- Updated dependencies [[`808a3b5`](https://github.com/marko-js/language-server/commit/808a3b5b4b6c02926066465e348cab0ec18d5798)]:
+  - @marko/language-tools@2.5.9
+
+## 1.3.8
+
+### Patch Changes
+
+- [#328](https://github.com/marko-js/language-server/pull/328) [`091726b`](https://github.com/marko-js/language-server/commit/091726b9f6347e5c27284c12ecdfcf6e319f3f13) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve attribute tag type generation and completions.
+
+- Updated dependencies [[`091726b`](https://github.com/marko-js/language-server/commit/091726b9f6347e5c27284c12ecdfcf6e319f3f13)]:
+  - @marko/language-tools@2.5.8
+
+## 1.3.7
+
+### Patch Changes
+
+- [#326](https://github.com/marko-js/language-server/pull/326) [`b65c79b`](https://github.com/marko-js/language-server/commit/b65c79bd5afb960129a00d1455048d51a5d9800a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix type issue in the internal language tool types.
+
+- Updated dependencies [[`b65c79b`](https://github.com/marko-js/language-server/commit/b65c79bd5afb960129a00d1455048d51a5d9800a)]:
+  - @marko/language-tools@2.5.7
+
 ## 1.3.6
 
 ### Patch Changes
