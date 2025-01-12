@@ -50,8 +50,8 @@ export const create = (
   });
 };
 
-const ATTRIBUTE_START_TAG = "/**attribute-name-start*/";
-const ATTRIBUTE_END_TAG = "/**attribute-name-end*/";
+const ATTRIBUTE_START_TAG = "/*attribute-name-start*/";
+const ATTRIBUTE_END_TAG = "/*attribute-name-end*/";
 
 // https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
 const DiagnosticCodes = {
