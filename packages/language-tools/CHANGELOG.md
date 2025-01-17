@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.13
+
+### Patch Changes
+
+- [#338](https://github.com/marko-js/language-server/pull/338) [`7226d59`](https://github.com/marko-js/language-server/commit/7226d5922e4c61e367e9e1fad2625fb836170a75) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid outputting `component` related code when targeting tags api.
+
 ## 2.5.12
 
 ### Patch Changes
