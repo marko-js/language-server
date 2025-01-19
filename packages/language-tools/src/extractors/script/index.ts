@@ -147,7 +147,10 @@ class ScriptExtractor {
   #writeProgram(program: Node.Program) {
     this.#writeCommentPragmas(program);
 
-    const componentFileName = getComponentFilename(this.#filename);
+    const componentFileName =
+      this.#api !== RuntimeAPI.tags
+        ? getComponentFilename(this.#filename)
+        : undefined;
     const inputType = this.#getInputType(program);
     let componentClassBody: Range | undefined;
 
@@ -267,39 +270,41 @@ class ScriptExtractor {
       }
     }
 
-    if (isExternalComponentFile) {
-      if (this.#scriptLang === ScriptLang.ts) {
-        this.#extractor.write(
-          `import type Component from "${stripExt(
-            relativeImportPath(this.#filename, componentFileName),
-          )}";\n`,
-        );
+    if (this.#api !== RuntimeAPI.tags) {
+      if (isExternalComponentFile) {
+        if (this.#scriptLang === ScriptLang.ts) {
+          this.#extractor.write(
+            `import type Component from "${stripExt(
+              relativeImportPath(this.#filename, componentFileName),
+            )}";\n`,
+          );
+        } else {
+          this.#extractor.write(
+            `/** @typedef {import("${stripExt(
+              relativeImportPath(this.#filename, componentFileName),
+            )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`,
+          );
+        }
       } else {
-        this.#extractor.write(
-          `/** @typedef {import("${stripExt(
-            relativeImportPath(this.#filename, componentFileName),
-          )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`,
-        );
-      }
-    } else {
-      const body = componentClassBody || " {}";
+        const body = componentClassBody || " {}";
 
-      if (this.#scriptLang === ScriptLang.ts) {
-        this.#extractor
-          .write(
-            `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
-          )
-          .copy(body)
-          .write("\nexport { type Component }\n");
-      } else {
-        this.#extractor.write(`/**${jsDocTemplateTagsStr}
-  * @extends {Marko.Component<Input${typeArgsStr}>}
-  * @abstract
-  */\n`);
-        this.#extractor
-          .write(`export class Component extends Marko.Component`)
-          .copy(body)
-          .write("\n");
+        if (this.#scriptLang === ScriptLang.ts) {
+          this.#extractor
+            .write(
+              `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
+            )
+            .copy(body)
+            .write("\nexport { type Component }\n");
+        } else {
+          this.#extractor.write(`/**${jsDocTemplateTagsStr}
+    * @extends {Marko.Component<Input${typeArgsStr}>}
+    * @abstract
+    */\n`);
+          this.#extractor
+            .write(`export class Component extends Marko.Component`)
+            .copy(body)
+            .write("\n");
+        }
       }
     }
 
@@ -322,16 +327,20 @@ function ${templateName}() {\n`);
     }
 
     this.#extractor.write(`\
-  const input = ${this.#getCastedType(`Input${typeArgsStr}`)};
+  const input = ${this.#getCastedType(`Input${typeArgsStr}`)};${
+    this.#api !== RuntimeAPI.tags
+      ? `
   const component = ${this.#getCastedType(`Component${typeArgsStr}`)};
   const state = ${varShared("state")}(component);
+  const out = ${varShared("out")};`
+      : ""
+  }
   const $signal = ${this.#getCastedType("AbortSignal")};
   const $global = ${varShared("getGlobal")}(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (${varShared("error")}, ${this.#getCastedType("MarkoRun.Context")})
   );
-  const out = ${varShared("out")};
-  ${varShared("noop")}({ input, component, state, out, $global, $signal });\n`);
+  ${varShared("noop")}({ ${this.#api !== RuntimeAPI.tags ? "component, state, out, " : ""}input, $global, $signal });\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
 
@@ -980,6 +989,7 @@ constructor(_?: Return) {}
                 .write('"/*attribute-name-end*/: ');
 
               if (
+                this.#api !== RuntimeAPI.tags &&
                 typeof name !== "string" &&
                 this.#read(name).startsWith("on")
               ) {
