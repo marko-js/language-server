@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.15
+
+### Patch Changes
+
+- [#340](https://github.com/marko-js/language-server/pull/340) [`4607c2d`](https://github.com/marko-js/language-server/commit/4607c2d476bf756a8b7d6f128d9ffffb1673e5d8) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where tag var mutations at multiple levels were causing higher levels to be non writable.
+
+- Updated dependencies [[`4607c2d`](https://github.com/marko-js/language-server/commit/4607c2d476bf756a8b7d6f128d9ffffb1673e5d8)]:
+  - @marko/language-tools@2.5.14
+
 ## 1.4.14
 
 ### Patch Changes
