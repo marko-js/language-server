@@ -82,6 +82,45 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           results = `## Hovers\n${results}`;
         }
 
+        const scriptOutput:
+          | {
+              language: string;
+              content: string;
+            }
+          | undefined = await MarkoLangaugeService.commands[
+          "$/showScriptOutput"
+        ](doc.uri);
+        if (scriptOutput) {
+          await snapshot(scriptOutput.content, {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(
+                /\.marko$/,
+                scriptOutput.language === "typescript" ? ".ts" : ".js",
+              ),
+            ),
+            dir: fixtureDir,
+          });
+        }
+
+        const htmlOutput:
+          | {
+              language: string;
+              content: string;
+            }
+          | undefined = await MarkoLangaugeService.commands["$/showHtmlOutput"](
+          doc.uri,
+        );
+        if (htmlOutput) {
+          await snapshot(htmlOutput.content, {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(/\.marko$/, ".html"),
+            ),
+            dir: fixtureDir,
+          });
+        }
+
         const errors = await MarkoLangaugeService.doValidate(doc);
 
         if (errors && errors.length) {
