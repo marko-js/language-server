@@ -1,9 +1,9 @@
+import { Project } from "@marko/language-tools";
+import { LanguageServerHandle, startLanguageServer } from "@volar/test-utils";
 import fs from "fs";
 import path from "path";
 import ts from "typescript";
-import { LanguageServerHandle, startLanguageServer } from "@volar/test-utils";
 import * as protocol from "vscode-languageserver-protocol/node";
-import { Project } from "@marko/language-tools";
 
 const rootDir = process.cwd();
 
