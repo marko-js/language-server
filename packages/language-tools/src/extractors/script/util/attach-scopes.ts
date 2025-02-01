@@ -22,12 +22,14 @@ export interface ProgramScope {
   parent: undefined;
   hoists: false;
   bindings: Bindings;
+  mutatedBindings: undefined | Set<VarBinding>;
 }
 
 export interface TagScope {
   parent: Scope;
   hoists: boolean;
   bindings: undefined | Bindings;
+  mutatedBindings: undefined | Set<VarBinding>;
 }
 
 export type Binding = VarBinding | ParamBinding | HoistedBinding;
@@ -85,6 +87,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
     parent: undefined,
     hoists: false,
     bindings: {},
+    mutatedBindings: undefined,
   };
 
   programScope.bindings.input = {
@@ -198,6 +201,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               parent: parentScope,
               hoists: false,
               bindings: {},
+              mutatedBindings: undefined,
             };
 
             if (child.params) {
@@ -273,6 +277,9 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                               );
                               if (binding) {
                                 binding.mutated = true;
+                                (parentScope.mutatedBindings ||= new Set()).add(
+                                  binding,
+                                );
                               }
                             }
                             break;
@@ -370,27 +377,17 @@ export function getHoistSources(node: Node.ParentNode) {
 }
 
 export function getMutatedVars(node: Node.ParentNode) {
-  let result: Repeatable<VarBinding>;
-  const { bindings } = Scopes.get(node.body!)!;
-
-  for (const key in bindings) {
-    const binding = bindings[key];
-    if (binding.type === BindingType.var && binding.mutated) {
-      if (result) {
-        result.push(binding);
-      } else {
-        result = [binding];
-      }
-    }
-  }
-
-  return result;
+  return Scopes.get(node.body!)!.mutatedBindings;
 }
 
 export function isMutatedVar(node: Node.ParentNode, name: string) {
-  const { bindings } = Scopes.get(node.body!)!;
-  const binding = bindings?.[name];
-  return binding?.type === BindingType.var && binding.mutated;
+  const { mutatedBindings } = Scopes.get(node.body!)!;
+  if (mutatedBindings) {
+    for (const binding of mutatedBindings) {
+      if (binding.name === name) return true;
+    }
+  }
+  return false;
 }
 
 export function hasHoists(node: Node.ParentTag) {
@@ -691,6 +688,7 @@ function trackMutations(
       if (binding) {
         binding.mutated = true;
         mutations.push(start!);
+        (scope.mutatedBindings ||= new Set()).add(binding);
       }
     }
   }

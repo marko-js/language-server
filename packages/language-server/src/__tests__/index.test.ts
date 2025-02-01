@@ -5,8 +5,6 @@ import path from "path";
 import { Position } from "vscode-languageserver";
 // import { bench, run } from "mitata";
 import { TextDocument } from "vscode-languageserver-textdocument";
-// import { bench, run } from "mitata";
-import { URI } from "vscode-uri";
 
 import { codeFrame } from "./util/code-frame";
 import { getLanguageServer } from "./util/language-service";
@@ -78,9 +76,47 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           results = `## Hovers\n${results}`;
         }
 
+        const scriptOutput:
+          | {
+              language: string;
+              content: string;
+            }
+          | undefined = await serverHandle.sendExecuteCommandRequest(
+          "marko.debug.showScriptOutput",
+        );
+        if (scriptOutput) {
+          await snapshot(scriptOutput.content, {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(
+                /\.marko$/,
+                scriptOutput.language === "typescript" ? ".ts" : ".js",
+              ),
+            ),
+            dir: fixtureDir,
+          });
+        }
+
+        const htmlOutput:
+          | {
+              language: string;
+              content: string;
+            }
+          | undefined = await serverHandle.sendExecuteCommandRequest(
+          "marko.debug.showHtmlOutput",
+        );
+        if (htmlOutput) {
+          await snapshot(htmlOutput.content, {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(/\.marko$/, ".html"),
+            ),
+            dir: fixtureDir,
+          });
+        }
+
         const diagnosticReport =
           await serverHandle.sendDocumentDiagnosticRequest(doc.uri);
-
         if (
           diagnosticReport.kind === "full" &&
           diagnosticReport.items &&
