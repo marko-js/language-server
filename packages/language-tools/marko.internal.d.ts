@@ -471,20 +471,21 @@ type ComponentEventHandlers<Component extends Marko.Component> = {
   >]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
-type FlatScopes<Input extends object, Objects = Input> = Input[keyof Input &
-  (string | number)] extends infer Prop
-  ? [0] extends [1 & Prop]
-    ? unknown
-    : Prop extends (...args: any) => { [Marko._.scope]: infer Scope }
-      ? unknown extends Scope
-        ? never
-        : Scope
-      : Prop extends object
-        ? Prop extends Extract<Objects, Prop>
-          ? never
-          : FlatScopes<Prop, Objects | Prop>
-        : never
-  : unknown;
+type FlatScopes<Input> = [0] extends [1 & Input]
+  ? never
+  :
+      | (Input[("content" | "renderBody") & keyof Input] extends infer Prop
+          ? Prop extends (...args: any[]) => { [Marko._.scope]: infer Scope }
+            ? Scope
+            : never
+          : never)
+      | (Input[string & keyof Input] extends infer Prop
+          ? Prop extends { [Symbol.iterator]: any }
+            ? Prop extends readonly any[]
+              ? never
+              : FlatScopes<Prop>
+            : never
+          : never);
 
 type MergeScopes<Scopes> = {
   [K in Scopes extends Scopes ? keyof Scopes : never]: Scopes extends Scopes
