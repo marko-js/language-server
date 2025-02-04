@@ -5,4 +5,4 @@
 "marko-vscode": patch
 ---
 
-Reduce recursion in complex input types
+Reduce recursion in complex input types to prevent excessive depth errors
