@@ -718,33 +718,41 @@ constructor(_?: Return) {}
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const isHTML = def?.html;
-    const importPath = !isHTML && resolveTagImport(this.#filename, def);
+    const importPath = !isHTML
+      ? resolveTagImport(this.#filename, def)
+      : undefined;
     let tagIdentifier: undefined | string;
     let isTemplate = false;
 
     if (!isHTML && (!def || importPath)) {
-      const tagId = this.#ensureTagId(tag);
-      tagIdentifier = varLocal("tag_" + tagId);
-      this.#extractor.write(`const ${tagIdentifier} = (\n`);
+      const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
+      const isMarkoFile = importPath?.endsWith(".marko");
 
-      if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-        if (importPath) {
+      if (isIdentifier || isMarkoFile || !importPath) {
+        tagIdentifier = varLocal("tag_" + this.#ensureTagId(tag));
+        this.#extractor.write(`const ${tagIdentifier} = (\n`);
+
+        if (isIdentifier) {
+          if (importPath) {
+            this.#extractor.write(
+              `${varShared("fallbackTemplate")}(${tagName},${isMarkoFile ? `import("${importPath}")` : varShared("any")})`,
+            );
+          } else {
+            this.#extractor.copy(tag.name);
+          }
+        } else if (isMarkoFile) {
+          isTemplate = true;
           this.#extractor.write(
-            `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
+            `${varShared("resolveTemplate")}(import("${importPath}"))`,
           );
         } else {
-          this.#extractor.copy(tag.name);
+          this.#writeDynamicTagName(tag);
         }
-      } else if (importPath) {
-        isTemplate = importPath.endsWith(".marko");
-        this.#extractor.write(
-          `${varShared("resolveTemplate")}(import("${importPath}"))`,
-        );
-      } else {
-        this.#writeDynamicTagName(tag);
-      }
 
-      this.#extractor.write("\n);\n");
+        this.#extractor.write("\n);\n");
+      } else {
+        tagIdentifier = varShared("missingTag");
+      }
 
       const attrTagTree = this.#getAttrTagTree(tag);
       if (attrTagTree) {
