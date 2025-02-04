@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.16
+
+### Patch Changes
+
+- [#342](https://github.com/marko-js/language-server/pull/342) [`263a8f5`](https://github.com/marko-js/language-server/commit/263a8f56fa1d2ae169a6aa8760308c508bd27d2e) Thanks [@rturnq](https://github.com/rturnq)! - Reduce recursion in complex input types to prevent excessive depth errors
+
 ## 1.5.15
 
 ### Patch Changes
