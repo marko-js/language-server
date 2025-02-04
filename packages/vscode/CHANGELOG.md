@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.17
+
+### Patch Changes
+
+- [#344](https://github.com/marko-js/language-server/pull/344) [`ed43a8d`](https://github.com/marko-js/language-server/commit/ed43a8d40cdac6c9e8f5511e7daf74d480c190fb) Thanks [@rturnq](https://github.com/rturnq)! - Ignore types for non-Marko templates to remove errors for missing types
+
 ## 1.5.16
 
 ### Patch Changes
