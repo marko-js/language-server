@@ -9,8 +9,17 @@ type AllRules = UnionToIntersection<(typeof r)[keyof typeof r]>;
 type RuleId = AllRules[keyof AllRules];
 
 export interface Exceptions {
+  /**
+   * Exclude if the listed attributes have a dynamic value
+   */
   dynamicAttrs?: string[];
+  /**
+   * Exclude if the tag has a spread attribute
+   */
   attrSpread?: boolean;
+  /**
+   * Exclude if the body content can't be determined
+   */
   unknownBody?: boolean;
 }
 
@@ -61,46 +70,50 @@ type Blacklist =
 
 type Whitelist = Exclude<RuleId, Blacklist>;
 
+// utility variables so the objects don't all need `: true` everywhere
+const unknownBody = true;
+const attrSpread = true;
+
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
-  [r.aria.ariaBrailleEquivalent]: { attrSpread: true },
-  [r.aria.ariaCommandName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaConditionalAttr]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaBrailleEquivalent]: { attrSpread },
+  [r.aria.ariaCommandName]: { unknownBody, attrSpread },
+  [r.aria.ariaConditionalAttr]: { unknownBody, attrSpread },
   [r.aria.ariaDeprecatedRole]: { dynamicAttrs: ["role"] },
-  [r.aria.ariaDialogName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaDialogName]: { unknownBody, attrSpread },
   [r.aria.ariaHiddenBody]: {},
-  [r.aria.ariaInputFieldName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaMeterName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaProgressbarName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaInputFieldName]: { unknownBody, attrSpread },
+  [r.aria.ariaMeterName]: { unknownBody, attrSpread },
+  [r.aria.ariaProgressbarName]: { unknownBody, attrSpread },
   [r.aria.ariaProhibitedAttr]: { dynamicAttrs: ["role"] },
-  [r.aria.ariaRequiredAttr]: { attrSpread: true },
-  [r.aria.ariaRequiredChildren]: { unknownBody: true },
+  [r.aria.ariaRequiredAttr]: { attrSpread },
+  [r.aria.ariaRequiredChildren]: { unknownBody },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
-  [r.aria.ariaText]: { unknownBody: true },
-  [r.aria.ariaToggleFieldName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaTooltipName]: { unknownBody: true, attrSpread: true },
-  [r.aria.ariaTreeitemName]: { unknownBody: true, attrSpread: true },
+  [r.aria.ariaText]: { unknownBody },
+  [r.aria.ariaToggleFieldName]: { unknownBody, attrSpread },
+  [r.aria.ariaTooltipName]: { unknownBody, attrSpread },
+  [r.aria.ariaTreeitemName]: { unknownBody, attrSpread },
   [r.aria.presentationRoleConflict]: {},
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
   [r.keyboard.accesskeys]: {},
-  [r.keyboard.frameFocusableContent]: { unknownBody: true },
-  [r.keyboard.skipLink]: { unknownBody: true },
+  [r.keyboard.frameFocusableContent]: { unknownBody },
+  [r.keyboard.skipLink]: { unknownBody },
   [r.keyboard.tabindex]: {},
-  [r.language.htmlHasLang]: { attrSpread: true },
+  [r.language.htmlHasLang]: { attrSpread },
   [r.language.htmlLangValid]: { dynamicAttrs: ["lang"] },
   [r.language.htmlXmlLangMismatch]: {},
   [r.language.validLang]: { dynamicAttrs: ["lang"] },
-  [r.nameRoleValue.ariaHiddenFocus]: { unknownBody: true },
-  [r.nameRoleValue.buttonName]: { unknownBody: true, attrSpread: true },
-  [r.nameRoleValue.emptyHeading]: {},
-  [r.nameRoleValue.emptyTableHeader]: { unknownBody: true },
+  [r.nameRoleValue.ariaHiddenFocus]: { unknownBody },
+  [r.nameRoleValue.buttonName]: { unknownBody, attrSpread },
+  [r.nameRoleValue.emptyHeading]: { unknownBody, attrSpread },
+  [r.nameRoleValue.emptyTableHeader]: { unknownBody, attrSpread },
   [r.nameRoleValue.inputButtonName]: {
-    unknownBody: true,
-    attrSpread: true,
+    unknownBody,
+    attrSpread,
   },
-  [r.nameRoleValue.linkName]: { unknownBody: true, attrSpread: true },
-  [r.nameRoleValue.summaryName]: { unknownBody: true, attrSpread: true },
+  [r.nameRoleValue.linkName]: { unknownBody, attrSpread },
+  [r.nameRoleValue.summaryName]: { unknownBody, attrSpread },
   [r.parsing.marquee]: {},
   [r.semantics.identicalLinksSamePurpose]: {},
   [r.semantics.landmarkNoDuplicateBanner]: {},
@@ -109,24 +122,24 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.semantics.landmarkUnique]: {},
   [r.sensoryAndVisualCues.metaViewport]: {},
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
-  [r.structure.definitionList]: { unknownBody: true },
-  [r.structure.list]: { unknownBody: true },
+  [r.structure.definitionList]: { unknownBody },
+  [r.structure.list]: { unknownBody },
   [r.tables.scopeAttrValid]: {},
-  [r.tables.tableDuplicateName]: { unknownBody: true },
-  [r.tables.thHasDataCells]: { unknownBody: true },
-  [r.textAlternatives.areaAlt]: { attrSpread: true },
-  [r.textAlternatives.documentTitle]: { unknownBody: true },
-  [r.textAlternatives.frameTitle]: { unknownBody: true },
-  [r.textAlternatives.frameTitleUnique]: { unknownBody: true },
-  [r.textAlternatives.imageAlt]: { attrSpread: true },
-  [r.textAlternatives.imageRedundantAlt]: { attrSpread: true },
-  [r.textAlternatives.inputImageAlt]: { attrSpread: true },
-  [r.textAlternatives.objectAlt]: { attrSpread: true },
-  [r.textAlternatives.roleImgAlt]: { attrSpread: true },
+  [r.tables.tableDuplicateName]: { unknownBody },
+  [r.tables.thHasDataCells]: { unknownBody },
+  [r.textAlternatives.areaAlt]: { attrSpread },
+  [r.textAlternatives.documentTitle]: { unknownBody },
+  [r.textAlternatives.frameTitle]: { unknownBody },
+  [r.textAlternatives.frameTitleUnique]: { unknownBody },
+  [r.textAlternatives.imageAlt]: { attrSpread },
+  [r.textAlternatives.imageRedundantAlt]: { attrSpread },
+  [r.textAlternatives.inputImageAlt]: { attrSpread },
+  [r.textAlternatives.objectAlt]: { attrSpread },
+  [r.textAlternatives.roleImgAlt]: { attrSpread },
   [r.textAlternatives.serverSideImageMap]: {},
-  [r.textAlternatives.svgImgAlt]: { attrSpread: true },
-  [r.textAlternatives.videoCaption]: { unknownBody: true },
-  [r.timeAndMedia.audioCaption]: { unknownBody: true },
+  [r.textAlternatives.svgImgAlt]: { attrSpread },
+  [r.textAlternatives.videoCaption]: { unknownBody },
+  [r.timeAndMedia.audioCaption]: { unknownBody },
   [r.timeAndMedia.blink]: {},
   [r.timeAndMedia.metaRefresh]: {},
   [r.timeAndMedia.metaRefreshNoExceptions]: {},
