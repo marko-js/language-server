@@ -15,31 +15,27 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/const/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: 1,
-    }),
-  );
-  const a = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: 1,
+  });
+  const a = __marko_internal_rendered_1.return.value;
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("../../../components/let/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    2,
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
-      value: a,
-      valueChange(_a) {
-        __marko_internal_return.mutate.a = _a;
-      },
-    }),
-  );
-  const b = Marko._.rendered.returns[2].value;
+  const __marko_internal_rendered_2 = Marko._.renderTemplate(
+    __marko_internal_tag_2,
+  )()()({
+    value: a,
+    valueChange(_a) {
+      __marko_internal_return.mutate.a = _a;
+    },
+  });
+  const b = __marko_internal_rendered_2.return.value;
   const __marko_internal_return = {
     mutate: Marko._.mutable([
-      ["a", "value", Marko._.rendered.returns[1]],
+      ["a", "value", __marko_internal_rendered_1.return],
     ] as const),
   };
   Marko._.noop({

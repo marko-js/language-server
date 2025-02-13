@@ -15,14 +15,12 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/let/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: false,
-    }),
-  );
-  const someCondition = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: false,
+  });
+  const someCondition = __marko_internal_rendered_1.return.value;
   const __marko_internal_tag_2 = custom;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@header"];

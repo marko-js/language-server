@@ -188,82 +188,77 @@ export { type Component };
     input["@b"];
     input["@b"];
   });
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderDynamicTag(__marko_internal_tag_9)()()({
-      x: 1,
-      ...Marko._.mergeAttrTags(
-        {
-          // hi
-          ["a" /*@a*/]: {
-            b: 1,
-            ["renderBody" /*@a*/]: (() => {
-              const __marko_internal_tag_10 = Marko._.resolveTemplate(
-                import("../../../components/const/index.marko"),
-              );
-              Marko._.assertRendered(
-                Marko._.rendered,
-                2,
-                Marko._.renderTemplate(__marko_internal_tag_10)()()({
-                  value: 1 as const,
-                }),
-              );
-              const hoistedFromStaticMember = Marko._.rendered.returns[2].value;
-              return () => {
-                return new (class MarkoReturn<Return = void> {
-                  [Marko._.scope] = { hoistedFromStaticMember };
-                  declare return: Return;
-                  constructor(_?: Return) {}
-                })();
-              };
-            })(),
-            [/*@a*/ Symbol.iterator]: Marko._.any,
-          },
-          ["b" /*@b*/]: {
-            [/*@b*/ Symbol.iterator]: Marko._.any,
-            /*@b*/
-          },
+  const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
+    __marko_internal_tag_9,
+  )()()({
+    x: 1,
+    ...Marko._.mergeAttrTags(
+      {
+        // hi
+        ["a" /*@a*/]: {
+          b: 1,
+          ["renderBody" /*@a*/]: (() => {
+            const __marko_internal_tag_10 = Marko._.resolveTemplate(
+              import("../../../components/const/index.marko"),
+            );
+            const __marko_internal_rendered_2 = Marko._.renderTemplate(
+              __marko_internal_tag_10,
+            )()()({
+              value: 1 as const,
+            });
+            const hoistedFromStaticMember =
+              __marko_internal_rendered_2.return.value;
+            return () => {
+              return new (class MarkoReturn<Return = void> {
+                [Marko._.scope] = { hoistedFromStaticMember };
+                declare return: Return;
+                constructor(_?: Return) {}
+              })();
+            };
+          })(),
+          [/*@a*/ Symbol.iterator]: Marko._.any,
         },
-        x
-          ? {
-              ["b" /*@b*/]: {
-                ["renderBody" /*@b*/]: (() => {
-                  const __marko_internal_tag_11 = Marko._.resolveTemplate(
-                    import("../../../components/const/index.marko"),
-                  );
-                  Marko._.assertRendered(
-                    Marko._.rendered,
-                    3,
-                    Marko._.renderTemplate(__marko_internal_tag_11)()()({
-                      value: 2 as const,
-                    }),
-                  );
-                  const hoistedFromDynamicMember =
-                    Marko._.rendered.returns[3].value;
-                  return () => {
-                    return new (class MarkoReturn<Return = void> {
-                      [Marko._.scope] = { hoistedFromDynamicMember };
-                      declare return: Return;
-                      constructor(_?: Return) {}
-                    })();
-                  };
-                })(),
-                [/*@b*/ Symbol.iterator]: Marko._.any,
-              },
-            }
-          : {},
-        y
-          ? {
-              ["a" /*@a*/]: {
-                [/*@a*/ Symbol.iterator]: Marko._.any,
-                /*@a*/
-              },
-            }
-          : {},
-      ),
-    }),
-  );
+        ["b" /*@b*/]: {
+          [/*@b*/ Symbol.iterator]: Marko._.any,
+          /*@b*/
+        },
+      },
+      x
+        ? {
+            ["b" /*@b*/]: {
+              ["renderBody" /*@b*/]: (() => {
+                const __marko_internal_tag_11 = Marko._.resolveTemplate(
+                  import("../../../components/const/index.marko"),
+                );
+                const __marko_internal_rendered_3 = Marko._.renderTemplate(
+                  __marko_internal_tag_11,
+                )()()({
+                  value: 2 as const,
+                });
+                const hoistedFromDynamicMember =
+                  __marko_internal_rendered_3.return.value;
+                return () => {
+                  return new (class MarkoReturn<Return = void> {
+                    [Marko._.scope] = { hoistedFromDynamicMember };
+                    declare return: Return;
+                    constructor(_?: Return) {}
+                  })();
+                };
+              })(),
+              [/*@b*/ Symbol.iterator]: Marko._.any,
+            },
+          }
+        : {},
+      y
+        ? {
+            ["a" /*@a*/]: {
+              [/*@a*/ Symbol.iterator]: Marko._.any,
+              /*@a*/
+            },
+          }
+        : {},
+    ),
+  });
   const __marko_internal_tag_12 = Marko._.interpolated`effect`;
   Marko._.renderDynamicTag(__marko_internal_tag_12)()()({
     value() {
@@ -274,7 +269,7 @@ export { type Component };
     },
   });
   const { hoistedFromStaticMember, hoistedFromDynamicMember } =
-    Marko._.readScopes(Marko._.rendered);
+    Marko._.readScopes({ __marko_internal_rendered_1 });
   Marko._.noop({ hoistedFromStaticMember, hoistedFromDynamicMember });
   return;
 })();

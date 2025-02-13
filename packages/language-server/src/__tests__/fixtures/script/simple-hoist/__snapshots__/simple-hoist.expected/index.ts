@@ -12,58 +12,50 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderNativeTag("div")()()({
-      ["renderBody" /*div*/]: (() => {
-        const __marko_internal_tag_1 = Marko._.resolveTemplate(
-          import("../../../components/let/index.marko"),
-        );
-        Marko._.assertRendered(
-          Marko._.rendered,
-          2,
-          Marko._.renderTemplate(__marko_internal_tag_1)()()({
-            value: 1,
-          }),
-        );
-        const x = Marko._.rendered.returns[2].value;
-        x;
-        Marko._.assertRendered(
-          Marko._.rendered,
-          3,
-          Marko._.renderNativeTag("button")()()({
-            onClick() {
-              __marko_internal_return.mutate.x = 2;
-              __marko_internal_return.mutate.x++;
-              ++__marko_internal_return.mutate.x;
-            },
-            ["renderBody" /*button*/]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-          }),
-        );
-        const el = Marko._.rendered.returns[3].value;
-        const __marko_internal_return = {
-          mutate: Marko._.mutable([
-            ["x", "value", Marko._.rendered.returns[2]],
-          ] as const),
-        };
-        Marko._.noop({
-          x,
-        });
-        return () => {
-          return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { x, el };
-            declare return: Return;
-            constructor(_?: Return) {}
-          })();
-        };
-      })(),
-    }),
-  );
+  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+    ["renderBody" /*div*/]: (() => {
+      const __marko_internal_tag_1 = Marko._.resolveTemplate(
+        import("../../../components/let/index.marko"),
+      );
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_1,
+      )()()({
+        value: 1,
+      });
+      const x = __marko_internal_rendered_2.return.value;
+      x;
+      const __marko_internal_rendered_3 = Marko._.renderNativeTag("button")()()(
+        {
+          onClick() {
+            __marko_internal_return.mutate.x = 2;
+            __marko_internal_return.mutate.x++;
+            ++__marko_internal_return.mutate.x;
+          },
+          ["renderBody" /*button*/]: (() => {
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+        },
+      );
+      const el = __marko_internal_rendered_3.return.value;
+      const __marko_internal_return = {
+        mutate: Marko._.mutable([
+          ["x", "value", __marko_internal_rendered_2.return],
+        ] as const),
+      };
+      Marko._.noop({
+        x,
+      });
+      return () => {
+        return new (class MarkoReturn<Return = void> {
+          [Marko._.scope] = { x, el };
+          declare return: Return;
+          constructor(_?: Return) {}
+        })();
+      };
+    })(),
+  });
   const __marko_internal_tag_2 = Marko._.interpolated`effect`;
   Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
     value() {
@@ -72,7 +64,7 @@ export { type Component };
     },
   });
   x;
-  const { x, el } = Marko._.readScopes(Marko._.rendered);
+  const { x, el } = Marko._.readScopes({ __marko_internal_rendered_1 });
   Marko._.noop({ x, el });
   return;
 })();

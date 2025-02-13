@@ -34,12 +34,6 @@ declare global {
         fn: (input: AttrTagNames<Input>) => void,
       ): void;
 
-      export const rendered: {
-        scopes: Record<number, never>;
-        returns: Record<number, never>;
-      };
-
-      export const tags: Record<number, unknown>;
       export const content: DefaultBodyContentKey;
 
       export function contentFor<Name>(
@@ -87,35 +81,19 @@ declare global {
         ? Instance
         : never;
 
-      export function readScopes<Rendered>(
-        rendered: Rendered,
-      ): MergeScopes<
-        Rendered extends { scopes: Record<any, infer Scope> } ? Scope : never
-      > &
-        Record<any, never>;
-
-      export function assertTag<Index extends number, Tags, Tag>(
-        tags: Tags,
-        index: Index,
-        tag: Tag,
-      ): asserts tags is Tags &
-        Record<Index, [0] extends [1 & Tag] ? any : Tag>;
-
-      export function assertRendered<Index extends number, Rendered, Result>(
-        rendered: Rendered,
-        index: Index,
-        result: Result,
-      ): asserts rendered is Rendered & {
-        scopes: Record<
-          Index,
-          MergeOptionalScopes<
-            Result extends { scope: infer Scope } ? Scope : undefined
-          >
-        >;
-        returns: Result extends { return?: infer Return }
-          ? Record<Index, Return>
-          : Record<Index, never>;
-      };
+      export function readScopes<Rendered>(rendered: Rendered): MergeScopes<
+        {
+          [K in keyof Rendered]: Rendered[K] extends infer Value
+            ? undefined extends Value
+              ? Value extends { scope: infer Scope }
+                ? Partial<Scope>
+                : never
+              : Value extends { scope: infer Scope }
+                ? Scope
+                : never
+            : never;
+        }[keyof Rendered]
+      >;
 
       export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
         Lookup extends readonly (infer Item)[]

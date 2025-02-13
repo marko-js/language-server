@@ -29,15 +29,13 @@ function __marko_internal_template(this: void) {
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/const/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: input,
-    }),
-  );
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: input,
+  });
   const { year, isSmartOnly, type, mobileList, renderBody } =
-    Marko._.rendered.returns[1].value;
+    __marko_internal_rendered_1.return.value;
   Marko._.renderNativeTag("div")()()({
     class: "mobiles__list",
     ["renderBody" /*div*/]: (() => {
