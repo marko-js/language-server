@@ -352,10 +352,18 @@ function ${templateName}() {\n`);
     if (hoists) {
       this.#extractor.write("const ");
       this.#writeObjectKeys(hoists);
-      this.#extractor.write(
-        ` = ${varShared("readScopes")}(${varShared("rendered")});\n`,
-      );
-      this.#extractor.write(`${varShared("noop")}(`);
+      this.#extractor.write(` = ${varShared("readScopes")}({`);
+      for (const child of program.body) {
+        if (child.type === NodeType.Tag) {
+          const renderId = this.#renderIds.get(child);
+          if (renderId !== undefined) {
+            this.#extractor.write(
+              `${varLocal("rendered_" + renderId)}${SEP_COMMA_SPACE}`,
+            );
+          }
+        }
+      }
+      this.#extractor.write(`});\n${varShared("noop")}(`);
       this.#writeObjectKeys(hoists);
       this.#extractor.write(");\n");
     }
@@ -506,9 +514,7 @@ constructor(_?: Return) {}
 
                 if (renderId) {
                   this.#extractor.write(
-                    `${varShared("assertRendered")}(${varShared(
-                      "rendered",
-                    )}, ${renderId}, (() => {\n`,
+                    `const ${varLocal("rendered_" + renderId)} = (() => {\n`,
                   );
                 }
               }
@@ -573,7 +579,7 @@ constructor(_?: Return) {}
               }
 
               if (renderId) {
-                this.#extractor.write("\n})())\n");
+                this.#extractor.write("\n})()\n");
               }
 
               break;
@@ -583,9 +589,7 @@ constructor(_?: Return) {}
 
               if (renderId) {
                 this.#extractor.write(
-                  `${varShared("assertRendered")}(${varShared(
-                    "rendered",
-                  )}, ${renderId}, `,
+                  `const ${varLocal("rendered_" + renderId)} = `,
                 );
               }
 
@@ -617,11 +621,7 @@ constructor(_?: Return) {}
                 body?.content ? getHoistSources(child) : undefined,
               );
 
-              if (renderId) {
-                this.#extractor.write("\n}));\n");
-              } else {
-                this.#extractor.write("\n});\n");
-              }
+              this.#extractor.write("\n});\n");
 
               break;
             }
@@ -687,9 +687,9 @@ constructor(_?: Return) {}
               (binding.sourceName && binding.sourceName !== binding.name
                 ? `, ${JSON.stringify(binding.sourceName)}`
                 : "")
-            }, ${varShared("rendered")}.returns[${this.#getRenderId(
-              binding.node as Node.ParentTag,
-            )}]${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
+            }, ${varLocal(
+              "rendered_" + this.#getRenderId(binding.node as Node.ParentTag),
+            )}.return${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
           );
         }
         this.#extractor.write(
@@ -762,9 +762,7 @@ constructor(_?: Return) {}
     }
 
     if (renderId) {
-      this.#extractor.write(
-        `${varShared("assertRendered")}(${varShared("rendered")},${renderId},`,
-      );
+      this.#extractor.write(`const ${varLocal("rendered_" + renderId)} = `);
     }
 
     if (isHTML) {
@@ -788,17 +786,13 @@ constructor(_?: Return) {}
 
     this.#writeTagInputObject(tag);
 
-    if (renderId) {
-      this.#extractor.write(`)`);
-    }
-
     this.#extractor.write(");\n");
 
     if (renderId && tag.var) {
       this.#extractor.write(`const `);
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
-        ` = ${varShared("rendered")}.returns[${renderId}].${ATTR_UNAMED};\n`,
+        ` = ${varLocal("rendered_" + renderId)}.return.${ATTR_UNAMED};\n`,
       );
     }
   }
