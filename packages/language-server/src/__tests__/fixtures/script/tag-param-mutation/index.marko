@@ -1,0 +1,8 @@
+<let/string="bar"/>
+  //  ^?
+<test-tag|val|>
+  <button onClick() { string = val }>
+                  //   ^?      ^?
+    ${val}
+  </button>
+</test-tag>

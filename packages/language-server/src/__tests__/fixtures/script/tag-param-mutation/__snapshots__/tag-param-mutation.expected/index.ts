@@ -1,7 +1,7 @@
 export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function __marko_internal_template(this: void) {
+(function (this: void) {
   const input = Marko._.any as Input;
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
@@ -18,27 +18,40 @@ function __marko_internal_template(this: void) {
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
     __marko_internal_tag_1,
   )()()({
-    value: 1,
+    value: "bar",
   });
-  const value = __marko_internal_rendered_1.return.value;
-  Marko._.renderNativeTag("button")()()({
-    onClick() {
-      __marko_internal_return.mutate.value++;
+  const string = __marko_internal_rendered_1.return.value;
+  const __marko_internal_tag_2 = Marko._.resolveTemplate(
+    import("./components/test-tag.marko"),
+  );
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    //  ^?
+    ["renderBody" /*test-tag*/]: (val) => {
+      Marko._.renderNativeTag("button")()()({
+        onClick() {
+          __marko_internal_return.mutate.string = val;
+        },
+        ["renderBody" /*button*/]: (() => {
+          //   ^?      ^?
+          val;
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      const __marko_internal_return = {
+        mutate: Marko._.mutable([
+          ["string", "value", __marko_internal_rendered_1.return],
+        ] as const),
+      };
+      Marko._.noop({
+        string,
+      });
+      return Marko._.voidReturn;
     },
   });
-  const __marko_internal_return = {
-    return: Marko._.returnTag({
-      value: value,
-    }),
-    mutate: Marko._.mutable([
-      ["value", __marko_internal_rendered_1.return],
-    ] as const),
-  };
-  Marko._.noop({
-    value,
-  });
-  return __marko_internal_return.return;
-}
+  return;
+})();
 export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
@@ -66,8 +79,5 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.Directives &
       Input &
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<
-    __marko_internal_input,
-    typeof __marko_internal_template extends () => infer Return ? Return : never
-  >;
+  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();

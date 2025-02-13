@@ -15,14 +15,12 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/const/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: "hi",
-    }),
-  );
-  const value = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: "hi",
+  });
+  const value = __marko_internal_rendered_1.return.value;
   Marko._.renderNativeTag("div")()()({
     id: Marko._.interpolated`test`,
   });

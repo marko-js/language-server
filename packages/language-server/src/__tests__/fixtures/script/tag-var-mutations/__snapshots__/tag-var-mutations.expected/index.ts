@@ -15,14 +15,12 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/let/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: 1,
-    }),
-  );
-  const x = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: 1,
+  });
+  const x = __marko_internal_rendered_1.return.value;
   Marko._.renderNativeTag("div")()()({
     "data-function"() {
       __marko_internal_return.mutate.x++;
@@ -89,7 +87,7 @@ export { type Component };
   });
   const __marko_internal_return = {
     mutate: Marko._.mutable([
-      ["x", "value", Marko._.rendered.returns[1]],
+      ["x", "value", __marko_internal_rendered_1.return],
     ] as const),
   };
   Marko._.noop({

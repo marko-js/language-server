@@ -1,7 +1,9 @@
-export interface Input {}
+export interface Input {
+  renderBody: Marko.Body<[string]>;
+}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
-function __marko_internal_template(this: void) {
+(function (this: void) {
   const input = Marko._.any as Input;
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
@@ -12,33 +14,12 @@ function __marko_internal_template(this: void) {
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("../../../components/let/index.marko"),
-  );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
-  )()()({
-    value: 1,
+  const __marko_internal_tag_1 = input.renderBody;
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+    value: ["foo"],
   });
-  const value = __marko_internal_rendered_1.return.value;
-  Marko._.renderNativeTag("button")()()({
-    onClick() {
-      __marko_internal_return.mutate.value++;
-    },
-  });
-  const __marko_internal_return = {
-    return: Marko._.returnTag({
-      value: value,
-    }),
-    mutate: Marko._.mutable([
-      ["value", __marko_internal_rendered_1.return],
-    ] as const),
-  };
-  Marko._.noop({
-    value,
-  });
-  return __marko_internal_return.return;
-}
+  return;
+})();
 export default new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
@@ -66,8 +47,5 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.Directives &
       Input &
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<
-    __marko_internal_input,
-    typeof __marko_internal_template extends () => infer Return ? Return : never
-  >;
+  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
