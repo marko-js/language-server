@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 1.3.17
+
+### Patch Changes
+
+- [#348](https://github.com/marko-js/language-server/pull/348) [`70494a1`](https://github.com/marko-js/language-server/commit/70494a14fbcb61c69e8ba740718d6c70000c1b61) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix setters to tag vars in parent scopes in presence of tag params
+
+- Updated dependencies [[`71b049b`](https://github.com/marko-js/language-server/commit/71b049b5ab573aab953b58799fcbcbe3babbde6a), [`70494a1`](https://github.com/marko-js/language-server/commit/70494a14fbcb61c69e8ba740718d6c70000c1b61)]:
+  - @marko/language-tools@2.5.17
+
 ## 1.3.16
 
 ### Patch Changes
