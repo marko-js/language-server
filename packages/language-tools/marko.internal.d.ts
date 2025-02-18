@@ -86,14 +86,19 @@ declare global {
           [K in keyof Rendered]: Rendered[K] extends infer Value
             ? undefined extends Value
               ? Value extends { scope: infer Scope }
-                ? Partial<Scope>
+                ? [0] extends [1 & Scope]
+                  ? never
+                  : Partial<Scope>
                 : never
               : Value extends { scope: infer Scope }
-                ? Scope
+                ? [0] extends [1 & Scope]
+                  ? never
+                  : Scope
                 : never
             : never;
         }[keyof Rendered]
-      >;
+      > &
+        Record<any, never>;
 
       export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
         Lookup extends readonly (infer Item)[]
@@ -152,7 +157,7 @@ declare global {
       >(input: Input): Input;
 
       export function forOfTag<
-        Value,
+        Value extends Iterable,
         Item extends Value extends
           | readonly (infer Item)[]
           | Iterable<infer Item>

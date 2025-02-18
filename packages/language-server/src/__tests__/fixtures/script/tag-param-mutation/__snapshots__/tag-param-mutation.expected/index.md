@@ -30,3 +30,13 @@
   7 |   </button>
 ```
 
+### Ln 18, Col 6
+```marko
+  16 |
+  17 | <button onClick() {
+> 18 |   inputId;
+     |      ^ const inputId: never
+  19 |   // ^?
+  20 | }>Body to prevent a11y error</button>
+```
+

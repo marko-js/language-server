@@ -50,6 +50,50 @@ export { type Component };
       return Marko._.voidReturn;
     },
   });
+  const __marko_internal_rendered_2 = Marko._.forOfTag(
+    {
+      /*for*/ of: [],
+    },
+    (
+      // for this one we need to look in the compiled code 😬
+      // readScopes should include `inputId`
+      _unused,
+    ) => {
+      const __marko_internal_tag_3 = Marko._.resolveTemplate(
+        import("../../../components/let/index.marko"),
+      );
+      const __marko_internal_rendered_3 = Marko._.renderTemplate(
+        __marko_internal_tag_3,
+      )()()({
+        value: "",
+      });
+      const inputId = __marko_internal_rendered_3.return.value;
+      Marko._.renderNativeTag("input")()()({
+        id: inputId,
+      });
+      return new (class MarkoReturn<Return = void> {
+        [Marko._.scope] = { inputId };
+        declare return: Return;
+        constructor(_?: Return) {}
+      })();
+    },
+  );
+  Marko._.renderNativeTag("button")()()({
+    onClick() {
+      inputId;
+      // ^?
+    },
+    ["renderBody" /*button*/]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
+  const { inputId } = Marko._.readScopes({
+    __marko_internal_rendered_1,
+    __marko_internal_rendered_2,
+  });
+  Marko._.noop({ inputId });
   return;
 })();
 export default new (class Template extends Marko._.Template<{
