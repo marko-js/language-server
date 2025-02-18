@@ -54,11 +54,7 @@ export { type Component };
     {
       /*for*/ of: [],
     },
-    (
-      // for this one we need to look in the compiled code 😬
-      // readScopes should include `inputId`
-      _unused,
-    ) => {
+    (_unused) => {
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("../../../components/let/index.marko"),
       );
