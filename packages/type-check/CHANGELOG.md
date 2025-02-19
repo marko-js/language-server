@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 1.3.18
+
+### Patch Changes
+
+- [#349](https://github.com/marko-js/language-server/pull/349) [`4ec0467`](https://github.com/marko-js/language-server/commit/4ec0467ab39b7ea8309535860149194ded45ed68) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix tag vars in unreachable bodies
+
+- Updated dependencies [[`4ec0467`](https://github.com/marko-js/language-server/commit/4ec0467ab39b7ea8309535860149194ded45ed68)]:
+  - @marko/language-tools@2.5.18
+
 ## 1.3.17
 
 ### Patch Changes
