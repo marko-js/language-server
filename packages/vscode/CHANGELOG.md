@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.20
+
+### Patch Changes
+
+- [#351](https://github.com/marko-js/language-server/pull/351) [`aa8d9d5`](https://github.com/marko-js/language-server/commit/aa8d9d5ae7b9bfb36741d53ad1ecf9179fa6aa8a) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix HTML comments that contain `*/`
+
 ## 1.5.19
 
 ### Patch Changes
