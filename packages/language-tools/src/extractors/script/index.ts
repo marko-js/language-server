@@ -448,6 +448,22 @@ function ${templateName}() {\n`);
         if (!WROTE_COMMENT.has(comment)) {
           if (this.#code.charAt(comment.start + 1) === "/") {
             this.#extractor.write("//").copy(comment.value).write("\n");
+          } else if (this.#code.charAt(comment.start + 1) === "!") {
+            this.#extractor.write("/*");
+            let startIndex = comment.value.start;
+            // handle closing JS comments _within_ the HTML comment
+            for (const { index } of this.#read(comment.value).matchAll(
+              /\*\//g,
+            )) {
+              this.#extractor
+                .copy({
+                  start: startIndex,
+                  end: (startIndex = comment.value.start + index + 1),
+                })
+                .write("\\");
+            }
+            this.#extractor.copy({ start: startIndex, end: comment.value.end });
+            this.#extractor.write("*/");
           } else {
             this.#extractor.write("/*").copy(comment.value).write("*/");
           }
