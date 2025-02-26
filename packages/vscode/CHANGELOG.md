@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.5.20
+
+### Patch Changes
+
+- [#351](https://github.com/marko-js/language-server/pull/351) [`aa8d9d5`](https://github.com/marko-js/language-server/commit/aa8d9d5ae7b9bfb36741d53ad1ecf9179fa6aa8a) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix HTML comments that contain `*/`
+
+- [#353](https://github.com/marko-js/language-server/pull/353) [`4e3d8b8`](https://github.com/marko-js/language-server/commit/4e3d8b84e2f0461c6b3706aa265b6552b51848c5) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix semicolon bug
+
 ## 1.5.19
 
 ### Patch Changes
