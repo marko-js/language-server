@@ -1803,7 +1803,7 @@ constructor(_?: Return) {}
         this.#writeAttrTagTree(nested, `input["@${name}"]`, true);
       }
     }
-    this.#extractor.write(`})`);
+    this.#extractor.write(`});`);
   }
 
   #getAttrTagTree(tag: Node.Tag | Node.AttrTag, attrTags?: AttrTagTree) {
