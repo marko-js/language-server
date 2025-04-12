@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.21
+
+### Patch Changes
+
+- [#355](https://github.com/marko-js/language-server/pull/355) [`90dcf36`](https://github.com/marko-js/language-server/commit/90dcf363a4dabbffca1c23d02a997cb06096b685) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Prefer javascript style comments in completions.
+
 ## 1.5.20
 
 ### Patch Changes
