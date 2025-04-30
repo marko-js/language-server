@@ -158,11 +158,11 @@ declare global {
 
       export function forOfTag<
         Value extends Iterable,
-        Item extends Value extends
-          | readonly (infer Item)[]
-          | Iterable<infer Item>
-          ? Item
-          : unknown,
+        Item extends [0] extends [1 & Value]
+          ? any
+          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+            ? Item
+            : never,
         BodyContent extends Marko.Body<
           [item: Item, index: number, all: Value],
           void
