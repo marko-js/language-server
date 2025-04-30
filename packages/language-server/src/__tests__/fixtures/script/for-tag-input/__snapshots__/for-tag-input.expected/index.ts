@@ -68,6 +68,58 @@ export { type Component };
       })(),
     },
   );
+  const __marko_internal_tag_1 = Marko._.resolveTemplate(
+    import("./components/my-select.marko"),
+  );
+  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+    input["@option"];
+    input["@option"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_1)()()(
+    // ^?
+    {
+      ...Marko._.mergeAttrTags(
+        Marko._.forOfAttrTag(
+          {
+            /*for*/ of: input.tab,
+          },
+          ({ href, title }) => ({
+            // ^?
+            ["option" /*@option*/]: {
+              value: href,
+              ["renderBody" /*@option*/]: (() => {
+                // ^?
+                title;
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [/*@option*/ Symbol.iterator]: Marko._.any,
+            },
+          }),
+        ),
+        Marko._.forOfAttrTag(
+          {
+            /*for*/ of: input.option,
+          },
+          ({ value, content }) => ({
+            // ^?
+            ["option" /*@option*/]: {
+              value: value,
+              ["renderBody" /*@option*/]: (() => {
+                // ^?
+                content;
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [/*@option*/ Symbol.iterator]: Marko._.any,
+            },
+          }),
+        ),
+      ),
+    },
+  );
   return;
 })();
 export default new (class Template extends Marko._.Template<{
@@ -99,4 +151,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-// ^?

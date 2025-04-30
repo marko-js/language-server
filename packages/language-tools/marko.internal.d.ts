@@ -222,19 +222,18 @@ declare global {
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
       export function forOfAttrTag<
-        Value extends Iterable<any> | readonly any[],
+        Value extends Iterable,
+        Item extends [0] extends [1 & Value]
+          ? any
+          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+            ? Item
+            : never,
         const Return,
       >(
         input: {
           of: Value | false | void | null;
         },
-        content: (
-          value: Value extends readonly (infer Item)[] | Iterable<infer Item>
-            ? Item
-            : unknown,
-          index: number,
-          all: Value,
-        ) => Return,
+        content: (value: Item, index: number, all: Value) => Return,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]

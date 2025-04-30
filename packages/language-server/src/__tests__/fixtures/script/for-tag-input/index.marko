@@ -23,3 +23,20 @@ export interface Input {
     </option>
   </for>
 </select>
+
+<my-select>
+  <for|{ href, title }| of=input.tab>
+      // ^?
+    <@option value=href>
+      // ^?
+      ${title}
+    </@option>
+  </for>
+  <for|{ value, content }| of=input.option>
+      // ^?
+    <@option value=value>
+      // ^?
+      ${content}
+    </@option>
+  </for>
+</my-select>
