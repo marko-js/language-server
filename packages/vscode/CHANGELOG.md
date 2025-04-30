@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.22
+
+### Patch Changes
+
+- [#357](https://github.com/marko-js/language-server/pull/357) [`9e243c1`](https://github.com/marko-js/language-server/commit/9e243c1c6013e65b0ee1776ac6c38dae1059b191) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix TS for `<for of>` loops
+
 ## 1.5.21
 
 ### Patch Changes
