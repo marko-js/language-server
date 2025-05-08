@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.21
+
+### Patch Changes
+
+- [#359](https://github.com/marko-js/language-server/pull/359) [`31106f0`](https://github.com/marko-js/language-server/commit/31106f055243697697763b06bd26700da04e1924) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure empty tag name types default to "div".
+
 ## 2.5.20
 
 ### Patch Changes
