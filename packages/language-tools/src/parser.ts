@@ -435,7 +435,7 @@ class Builder {
     }
 
     if (!range.expressions.length) {
-      switch ((nameText = this.#code.slice(range.start, range.end))) {
+      switch ((nameText = this.#code.slice(range.start, range.end) || "div")) {
         // All statement types will early return.
         case "style": {
           styleBlockReg.lastIndex = range.end;
