@@ -1,4 +1,4 @@
-import { type Node, NodeType, Parsed } from "../../parser";
+import { type Node, NodeType, Parsed, Range } from "../../parser";
 import { Extractor } from "../../util/extractor";
 import {
   AttributeValueType,
@@ -41,6 +41,9 @@ class HTMLExtractor {
         });
         break;
       case NodeType.Tag: {
+        if (node.nameText === "script" || node.nameText === "style") {
+          break;
+        }
         const nodeId = `${this.#nodeIdCounter++}`;
         ({ isDynamic, hasDynamicAttrs, hasDynamicBody } = this.#writeTag(
           node,
@@ -69,10 +72,10 @@ class HTMLExtractor {
     const isDynamic = !node.nameText || !isHTMLTag(node.nameText);
     let hasDynamicAttrs = false,
       hasDynamicBody = false;
-    if (!isDynamic) {
-      ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(node, id));
-    } else {
+    if (isDynamic) {
       this.#writeCustomTag(node);
+    } else {
+      ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(node, id));
     }
     return { isDynamic, hasDynamicAttrs, hasDynamicBody };
   }
@@ -82,7 +85,7 @@ class HTMLExtractor {
       hasDynamicBody = false;
     // <[node name]
     this.#extractor.write("<");
-    this.#extractor.copy(node.name);
+    this.#extractor.copy(isEmptyRange(node.name) ? node.nameText : node.name);
 
     this.#extractor.write(` data-marko-node-id="${id}"`);
     // [node attributes]
@@ -184,4 +187,8 @@ function isVoidTag(tagName: string | undefined) {
     default:
       return false;
   }
+}
+
+function isEmptyRange(range: Range) {
+  return range.start === range.end;
 }

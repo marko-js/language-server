@@ -784,7 +784,7 @@ constructor(_?: Return) {}
     if (isHTML) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
-        .copy(tag.name)
+        .copy(isEmptyRange(tag.name) ? tagName : tag.name)
         .write('")');
     } else if (tagIdentifier) {
       this.#extractor.write(
