@@ -350,10 +350,7 @@ declare global {
         _: infer Renderer;
       }
         ? Renderer
-        : Template extends Marko.Template<
-              infer Input extends Record<string, unknown>,
-              infer Return
-            >
+        : Template extends Marko.Template<infer Input, infer Return>
           ? BaseRenderer<Input, Return>
           : never;
 
@@ -387,10 +384,7 @@ declare global {
         >;
       }
 
-      export interface BaseRenderer<
-        Input extends Record<PropertyKey, unknown>,
-        Return = void,
-      > {
+      export interface BaseRenderer<Input, Return = void> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_input_with_scope extends unknown>(
           input: Marko.Directives &
@@ -400,9 +394,7 @@ declare global {
       }
 
       export interface DefaultRenderer {
-        (): () => <Input extends Record<PropertyKey, unknown>>(
-          input: Input,
-        ) => ReturnAndScope<Scopes<Input>, void>;
+        (): () => <Input>(input: Input) => ReturnAndScope<Scopes<Input>, void>;
       }
 
       export type Relate<A, B> = B extends A ? A : B;
@@ -439,9 +431,7 @@ type BodyContentInput<Args extends readonly unknown[]> = Args extends {
 
 type Scopes<Input> = [0] extends [1 & Input]
   ? never
-  : Input extends Record<any, unknown>
-    ? MergeScopes<FlatScopes<Input>>
-    : never;
+  : MergeScopes<FlatScopes<Input>>;
 
 type ComponentEventHandlers<Component extends Marko.Component> = {
   [K in Exclude<
