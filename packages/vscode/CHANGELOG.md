@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.24
+
+### Patch Changes
+
+- [#361](https://github.com/marko-js/language-server/pull/361) [`9b54683`](https://github.com/marko-js/language-server/commit/9b546832e7fcc44fc68fff1fb658a790403ab7f9) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type stub issue
+
 ## 1.5.23
 
 ### Patch Changes

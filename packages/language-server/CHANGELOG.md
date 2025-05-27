@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.23
+
+### Patch Changes
+
+- [#361](https://github.com/marko-js/language-server/pull/361) [`9b54683`](https://github.com/marko-js/language-server/commit/9b546832e7fcc44fc68fff1fb658a790403ab7f9) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type stub issue
+
+- Updated dependencies [[`9b54683`](https://github.com/marko-js/language-server/commit/9b546832e7fcc44fc68fff1fb658a790403ab7f9)]:
+  - @marko/language-tools@2.5.22
+
 ## 1.4.22
 
 ### Patch Changes
