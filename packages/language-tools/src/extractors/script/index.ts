@@ -352,10 +352,18 @@ function ${templateName}() {\n`);
     if (hoists) {
       this.#extractor.write("const ");
       this.#writeObjectKeys(hoists);
-      this.#extractor.write(
-        ` = ${varShared("readScopes")}(${varShared("rendered")});\n`,
-      );
-      this.#extractor.write(`${varShared("noop")}(`);
+      this.#extractor.write(` = ${varShared("readScopes")}({`);
+      for (const child of program.body) {
+        if (child.type === NodeType.Tag) {
+          const renderId = this.#renderIds.get(child);
+          if (renderId !== undefined) {
+            this.#extractor.write(
+              `${varLocal("rendered_" + renderId)}${SEP_COMMA_SPACE}`,
+            );
+          }
+        }
+      }
+      this.#extractor.write(`});\n${varShared("noop")}(`);
       this.#writeObjectKeys(hoists);
       this.#extractor.write(");\n");
     }
@@ -440,6 +448,22 @@ function ${templateName}() {\n`);
         if (!WROTE_COMMENT.has(comment)) {
           if (this.#code.charAt(comment.start + 1) === "/") {
             this.#extractor.write("//").copy(comment.value).write("\n");
+          } else if (this.#code.charAt(comment.start + 1) === "!") {
+            this.#extractor.write("/*");
+            let startIndex = comment.value.start;
+            // handle closing JS comments _within_ the HTML comment
+            for (const { index } of this.#read(comment.value).matchAll(
+              /\*\//g,
+            )) {
+              this.#extractor
+                .copy({
+                  start: startIndex,
+                  end: (startIndex = comment.value.start + index + 1),
+                })
+                .write("\\");
+            }
+            this.#extractor.copy({ start: startIndex, end: comment.value.end });
+            this.#extractor.write("*/");
           } else {
             this.#extractor.write("/*").copy(comment.value).write("*/");
           }
@@ -506,9 +530,7 @@ constructor(_?: Return) {}
 
                 if (renderId) {
                   this.#extractor.write(
-                    `${varShared("assertRendered")}(${varShared(
-                      "rendered",
-                    )}, ${renderId}, (() => {\n`,
+                    `const ${varLocal("rendered_" + renderId)} = (() => {\n`,
                   );
                 }
               }
@@ -573,7 +595,7 @@ constructor(_?: Return) {}
               }
 
               if (renderId) {
-                this.#extractor.write("\n})())\n");
+                this.#extractor.write("\n})()\n");
               }
 
               break;
@@ -583,9 +605,7 @@ constructor(_?: Return) {}
 
               if (renderId) {
                 this.#extractor.write(
-                  `${varShared("assertRendered")}(${varShared(
-                    "rendered",
-                  )}, ${renderId}, `,
+                  `const ${varLocal("rendered_" + renderId)} = `,
                 );
               }
 
@@ -617,11 +637,7 @@ constructor(_?: Return) {}
                 body?.content ? getHoistSources(child) : undefined,
               );
 
-              if (renderId) {
-                this.#extractor.write("\n}));\n");
-              } else {
-                this.#extractor.write("\n});\n");
-              }
+              this.#extractor.write("\n});\n");
 
               break;
             }
@@ -687,9 +703,9 @@ constructor(_?: Return) {}
               (binding.sourceName && binding.sourceName !== binding.name
                 ? `, ${JSON.stringify(binding.sourceName)}`
                 : "")
-            }, ${varShared("rendered")}.returns[${this.#getRenderId(
-              binding.node as Node.ParentTag,
-            )}]${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
+            }, ${varLocal(
+              "rendered_" + this.#getRenderId(binding.node as Node.ParentTag),
+            )}.return${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
           );
         }
         this.#extractor.write(
@@ -718,33 +734,41 @@ constructor(_?: Return) {}
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const isHTML = def?.html;
-    const importPath = !isHTML && resolveTagImport(this.#filename, def);
+    const importPath = !isHTML
+      ? resolveTagImport(this.#filename, def)
+      : undefined;
     let tagIdentifier: undefined | string;
     let isTemplate = false;
 
     if (!isHTML && (!def || importPath)) {
-      const tagId = this.#ensureTagId(tag);
-      tagIdentifier = varLocal("tag_" + tagId);
-      this.#extractor.write(`const ${tagIdentifier} = (\n`);
+      const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
+      const isMarkoFile = importPath?.endsWith(".marko");
 
-      if (tagName && REG_TAG_NAME_IDENTIFIER.test(tagName)) {
-        if (importPath) {
+      if (isIdentifier || isMarkoFile || !importPath) {
+        tagIdentifier = varLocal("tag_" + this.#ensureTagId(tag));
+        this.#extractor.write(`const ${tagIdentifier} = (\n`);
+
+        if (isIdentifier) {
+          if (importPath) {
+            this.#extractor.write(
+              `${varShared("fallbackTemplate")}(${tagName},${isMarkoFile ? `import("${importPath}")` : varShared("any")})`,
+            );
+          } else {
+            this.#extractor.copy(tag.name);
+          }
+        } else if (isMarkoFile) {
+          isTemplate = true;
           this.#extractor.write(
-            `${varShared("fallbackTemplate")}(${tagName},import("${importPath}"))`,
+            `${varShared("resolveTemplate")}(import("${importPath}"))`,
           );
         } else {
-          this.#extractor.copy(tag.name);
+          this.#writeDynamicTagName(tag);
         }
-      } else if (importPath) {
-        isTemplate = importPath.endsWith(".marko");
-        this.#extractor.write(
-          `${varShared("resolveTemplate")}(import("${importPath}"))`,
-        );
-      } else {
-        this.#writeDynamicTagName(tag);
-      }
 
-      this.#extractor.write("\n);\n");
+        this.#extractor.write("\n);\n");
+      } else {
+        tagIdentifier = varShared("missingTag");
+      }
 
       const attrTagTree = this.#getAttrTagTree(tag);
       if (attrTagTree) {
@@ -754,15 +778,13 @@ constructor(_?: Return) {}
     }
 
     if (renderId) {
-      this.#extractor.write(
-        `${varShared("assertRendered")}(${varShared("rendered")},${renderId},`,
-      );
+      this.#extractor.write(`const ${varLocal("rendered_" + renderId)} = `);
     }
 
     if (isHTML) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
-        .copy(tag.name)
+        .copy(isEmptyRange(tag.name) ? tagName : tag.name)
         .write('")');
     } else if (tagIdentifier) {
       this.#extractor.write(
@@ -780,17 +802,13 @@ constructor(_?: Return) {}
 
     this.#writeTagInputObject(tag);
 
-    if (renderId) {
-      this.#extractor.write(`)`);
-    }
-
     this.#extractor.write(");\n");
 
     if (renderId && tag.var) {
       this.#extractor.write(`const `);
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
-        ` = ${varShared("rendered")}.returns[${renderId}].${ATTR_UNAMED};\n`,
+        ` = ${varLocal("rendered_" + renderId)}.return.${ATTR_UNAMED};\n`,
       );
     }
   }
@@ -1796,7 +1814,7 @@ constructor(_?: Return) {}
         this.#writeAttrTagTree(nested, `input["@${name}"]`, true);
       }
     }
-    this.#extractor.write(`})`);
+    this.#extractor.write(`});`);
   }
 
   #getAttrTagTree(tag: Node.Tag | Node.AttrTag, attrTags?: AttrTagTree) {

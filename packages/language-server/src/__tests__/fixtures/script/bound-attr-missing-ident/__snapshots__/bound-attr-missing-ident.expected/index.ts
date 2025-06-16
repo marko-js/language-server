@@ -15,17 +15,15 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/let/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: a,
-      valueChange(_a) {
-        a = _a;
-      },
-    }),
-  );
-  const b = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: a,
+    valueChange(_a) {
+      a = _a;
+    },
+  });
+  const b = __marko_internal_rendered_1.return.value;
   return;
 })();
 export default new (class Template extends Marko._.Template<{

@@ -63,6 +63,57 @@ export { type Component };
       }),
     ),
   });
+  const __marko_internal_tag_2 = Marko._.resolveTemplate(
+    import("./components/my-table.marko"),
+  );
+  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+    input["@row"];
+    Marko._.nestedAttrTagNames(input["@row"], (input) => {
+      input["@cell"];
+      input["@cell"];
+    });
+  });
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    ...Marko._.forOfAttrTag(
+      {
+        /*for*/ of: [
+          { foo: "a", bar: "b" },
+          { foo: "c", bar: "d" },
+        ] as const,
+      },
+      (row) => ({
+        ["row" /*@row*/]: {
+          ["cell" /*@cell*/]: Marko._.attrTagFor(
+            __marko_internal_tag_2,
+            "row",
+            "cell",
+          )([
+            // ^?
+            {
+              ["renderBody" /*@cell*/]: (() => {
+                row.foo;
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [/*@cell*/ Symbol.iterator]: Marko._.any,
+            },
+            // ^?     ^?
+            {
+              ["renderBody" /*@cell*/]: (() => {
+                row.bar;
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [/*@cell*/ Symbol.iterator]: Marko._.any,
+            },
+          ]),
+          [/*@row*/ Symbol.iterator]: Marko._.any,
+        },
+      }),
+    ),
+  });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

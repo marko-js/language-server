@@ -1,5 +1,81 @@
 # Change Log
 
+## 1.4.23
+
+### Patch Changes
+
+- [#361](https://github.com/marko-js/language-server/pull/361) [`9b54683`](https://github.com/marko-js/language-server/commit/9b546832e7fcc44fc68fff1fb658a790403ab7f9) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix type stub issue
+
+- Updated dependencies [[`9b54683`](https://github.com/marko-js/language-server/commit/9b546832e7fcc44fc68fff1fb658a790403ab7f9)]:
+  - @marko/language-tools@2.5.22
+
+## 1.4.22
+
+### Patch Changes
+
+- [#359](https://github.com/marko-js/language-server/pull/359) [`31106f0`](https://github.com/marko-js/language-server/commit/31106f055243697697763b06bd26700da04e1924) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure empty tag name types default to "div".
+
+- Updated dependencies [[`31106f0`](https://github.com/marko-js/language-server/commit/31106f055243697697763b06bd26700da04e1924)]:
+  - @marko/language-tools@2.5.21
+
+## 1.4.21
+
+### Patch Changes
+
+- [#357](https://github.com/marko-js/language-server/pull/357) [`9e243c1`](https://github.com/marko-js/language-server/commit/9e243c1c6013e65b0ee1776ac6c38dae1059b191) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix TS for `<for of>` loops
+
+- Updated dependencies [[`9e243c1`](https://github.com/marko-js/language-server/commit/9e243c1c6013e65b0ee1776ac6c38dae1059b191)]:
+  - @marko/language-tools@2.5.20
+
+## 1.4.20
+
+### Patch Changes
+
+- [#351](https://github.com/marko-js/language-server/pull/351) [`aa8d9d5`](https://github.com/marko-js/language-server/commit/aa8d9d5ae7b9bfb36741d53ad1ecf9179fa6aa8a) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix HTML comments that contain `*/`
+
+- [#353](https://github.com/marko-js/language-server/pull/353) [`4e3d8b8`](https://github.com/marko-js/language-server/commit/4e3d8b84e2f0461c6b3706aa265b6552b51848c5) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix semicolon bug
+
+- Updated dependencies [[`aa8d9d5`](https://github.com/marko-js/language-server/commit/aa8d9d5ae7b9bfb36741d53ad1ecf9179fa6aa8a), [`4e3d8b8`](https://github.com/marko-js/language-server/commit/4e3d8b84e2f0461c6b3706aa265b6552b51848c5)]:
+  - @marko/language-tools@2.5.19
+
+## 1.4.19
+
+### Patch Changes
+
+- [#349](https://github.com/marko-js/language-server/pull/349) [`4ec0467`](https://github.com/marko-js/language-server/commit/4ec0467ab39b7ea8309535860149194ded45ed68) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix tag vars in unreachable bodies
+
+- Updated dependencies [[`4ec0467`](https://github.com/marko-js/language-server/commit/4ec0467ab39b7ea8309535860149194ded45ed68)]:
+  - @marko/language-tools@2.5.18
+
+## 1.4.18
+
+### Patch Changes
+
+- [#346](https://github.com/marko-js/language-server/pull/346) [`71b049b`](https://github.com/marko-js/language-server/commit/71b049b5ab573aab953b58799fcbcbe3babbde6a) Thanks [@LuLaValva](https://github.com/LuLaValva)! - A11y liter: remove false positives for empty-heading rule
+
+- [#348](https://github.com/marko-js/language-server/pull/348) [`70494a1`](https://github.com/marko-js/language-server/commit/70494a14fbcb61c69e8ba740718d6c70000c1b61) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Fix setters to tag vars in parent scopes in presence of tag params
+
+- Updated dependencies [[`71b049b`](https://github.com/marko-js/language-server/commit/71b049b5ab573aab953b58799fcbcbe3babbde6a), [`70494a1`](https://github.com/marko-js/language-server/commit/70494a14fbcb61c69e8ba740718d6c70000c1b61)]:
+  - @marko/language-tools@2.5.17
+
+## 1.4.17
+
+### Patch Changes
+
+- [#344](https://github.com/marko-js/language-server/pull/344) [`ed43a8d`](https://github.com/marko-js/language-server/commit/ed43a8d40cdac6c9e8f5511e7daf74d480c190fb) Thanks [@rturnq](https://github.com/rturnq)! - Ignore types for non-Marko templates to remove errors for missing types
+
+- Updated dependencies [[`ed43a8d`](https://github.com/marko-js/language-server/commit/ed43a8d40cdac6c9e8f5511e7daf74d480c190fb)]:
+  - @marko/language-tools@2.5.16
+
+## 1.4.16
+
+### Patch Changes
+
+- [#342](https://github.com/marko-js/language-server/pull/342) [`263a8f5`](https://github.com/marko-js/language-server/commit/263a8f56fa1d2ae169a6aa8760308c508bd27d2e) Thanks [@rturnq](https://github.com/rturnq)! - Reduce recursion in complex input types to prevent excessive depth errors
+
+- Updated dependencies [[`263a8f5`](https://github.com/marko-js/language-server/commit/263a8f56fa1d2ae169a6aa8760308c508bd27d2e)]:
+  - @marko/language-tools@2.5.15
+
 ## 1.4.15
 
 ### Patch Changes
