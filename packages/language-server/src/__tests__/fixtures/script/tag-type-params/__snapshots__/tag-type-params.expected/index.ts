@@ -15,28 +15,26 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      data: 1 as const,
-      ["renderBody" /*test-tag*/]: <A,>(data: A) => {
-        const __marko_internal_return = {
-          return: Marko._.returnTag(
-            //                         ^?
-            {
-              value: { result: data },
-            },
-          ),
-        };
-        return new (class MarkoReturn<Return = void> {
-          declare return: Return;
-          constructor(_?: Return) {}
-        })(__marko_internal_return.return);
-      },
-    }),
-  );
-  const result = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    data: 1 as const,
+    ["renderBody" /*test-tag*/]: <A,>(data: A) => {
+      const __marko_internal_return = {
+        return: Marko._.returnTag(
+          //                         ^?
+          {
+            value: { result: data },
+          },
+        ),
+      };
+      return new (class MarkoReturn<Return = void> {
+        declare return: Return;
+        constructor(_?: Return) {}
+      })(__marko_internal_return.return);
+    },
+  });
+  const result = __marko_internal_rendered_1.return.value;
   //                  ^?
   result;
   return;

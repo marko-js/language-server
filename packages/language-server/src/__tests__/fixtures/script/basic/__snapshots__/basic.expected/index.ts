@@ -14,40 +14,34 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderNativeTag("div")()()({
-      ["renderBody" /*div*/]: (() => {
-        const __marko_internal_tag_1 = Marko._.resolveTemplate(
-          import("../../../components/let/index.marko"),
-        );
-        Marko._.assertRendered(
-          Marko._.rendered,
-          2,
-          Marko._.renderTemplate(__marko_internal_tag_1)()()({
-            value: 1,
-          }),
-        );
-        const x = Marko._.rendered.returns[2].value;
-        new Thing();
-        //      ^?
-        x;
-        //  ^?
-        input.name;
-        return () => {
-          return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { x };
-            declare return: Return;
-            constructor(_?: Return) {}
-          })();
-        };
-      })(),
-    }),
-  );
+  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+    ["renderBody" /*div*/]: (() => {
+      const __marko_internal_tag_1 = Marko._.resolveTemplate(
+        import("../../../components/let/index.marko"),
+      );
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_1,
+      )()()({
+        value: 1,
+      });
+      const x = __marko_internal_rendered_2.return.value;
+      new Thing();
+      //      ^?
+      x;
+      //  ^?
+      input.name;
+      return () => {
+        return new (class MarkoReturn<Return = void> {
+          [Marko._.scope] = { x };
+          declare return: Return;
+          constructor(_?: Return) {}
+        })();
+      };
+    })(),
+  });
   //        ^?
   x;
-  const { x } = Marko._.readScopes(Marko._.rendered);
+  const { x } = Marko._.readScopes({ __marko_internal_rendered_1 });
   Marko._.noop({ x });
   return;
 })();

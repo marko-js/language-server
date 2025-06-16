@@ -26,39 +26,37 @@ export { type Component };
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
-      //  ^?   ^?
-      ["renderBody" /*test-tag*/]: (a) => {
-        const __marko_internal_tag_3 = Marko._.resolveTemplate(
-          import("../../../components/const/index.marko"),
-        );
-        Marko._.assertRendered(
-          Marko._.rendered,
-          2,
-          Marko._.renderTemplate(__marko_internal_tag_3)()()(
-            //        ^?
-            {
-              value: a,
-            },
-          ),
-        );
-        const hoistedFromTestTag = Marko._.rendered.returns[2].value;
-        return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = { hoistedFromTestTag };
-          declare return: Return;
-          constructor(_?: Return) {}
-        })();
-      },
-    }),
-  );
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_2,
+  )()()({
+    //  ^?   ^?
+    ["renderBody" /*test-tag*/]: (a) => {
+      const __marko_internal_tag_3 = Marko._.resolveTemplate(
+        import("../../../components/const/index.marko"),
+      );
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_3,
+      )()()(
+        //        ^?
+        {
+          value: a,
+        },
+      );
+      const hoistedFromTestTag = __marko_internal_rendered_2.return.value;
+      return new (class MarkoReturn<Return = void> {
+        [Marko._.scope] = { hoistedFromTestTag };
+        declare return: Return;
+        constructor(_?: Return) {}
+      })();
+    },
+  });
   () => {
     hoistedFromTestTag;
     //^?
   };
-  const { hoistedFromTestTag } = Marko._.readScopes(Marko._.rendered);
+  const { hoistedFromTestTag } = Marko._.readScopes({
+    __marko_internal_rendered_1,
+  });
   Marko._.noop({ hoistedFromTestTag });
   return;
 })();

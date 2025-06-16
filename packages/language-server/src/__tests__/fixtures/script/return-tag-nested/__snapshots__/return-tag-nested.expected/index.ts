@@ -77,42 +77,38 @@ export { type Component };
   const __marko_internal_tag_5 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_5)()()({
-      ["renderBody" /*test-tag*/]: (() => {
-        const __marko_internal_tag_6 = Marko._.resolveTemplate(
-          import("../../../components/let/index.marko"),
-        );
-        Marko._.assertRendered(
-          Marko._.rendered,
-          2,
-          Marko._.renderTemplate(__marko_internal_tag_6)()()({
-            value: 1 as const,
-          }),
-        );
-        const hoisted = Marko._.rendered.returns[2].value;
-        const __marko_internal_return = {
-          return: Marko._.returnTag({
-            value: "b" as const,
-          }),
-        };
-        return () => {
-          return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { hoisted };
-            declare return: Return;
-            constructor(_?: Return) {}
-          })(__marko_internal_return.return);
-        };
-      })(),
-    }),
-  );
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_5,
+  )()()({
+    ["renderBody" /*test-tag*/]: (() => {
+      const __marko_internal_tag_6 = Marko._.resolveTemplate(
+        import("../../../components/let/index.marko"),
+      );
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_6,
+      )()()({
+        value: 1 as const,
+      });
+      const hoisted = __marko_internal_rendered_2.return.value;
+      const __marko_internal_return = {
+        return: Marko._.returnTag({
+          value: "b" as const,
+        }),
+      };
+      return () => {
+        return new (class MarkoReturn<Return = void> {
+          [Marko._.scope] = { hoisted };
+          declare return: Return;
+          constructor(_?: Return) {}
+        })(__marko_internal_return.return);
+      };
+    })(),
+  });
   () => {
     hoisted;
     //^?
   };
-  const { hoisted } = Marko._.readScopes(Marko._.rendered);
+  const { hoisted } = Marko._.readScopes({ __marko_internal_rendered_1 });
   Marko._.noop({ hoisted });
   return;
 })();

@@ -34,12 +34,6 @@ declare global {
         fn: (input: AttrTagNames<Input>) => void,
       ): void;
 
-      export const rendered: {
-        scopes: Record<number, never>;
-        returns: Record<number, never>;
-      };
-
-      export const tags: Record<number, unknown>;
       export const content: DefaultBodyContentKey;
 
       export function contentFor<Name>(
@@ -87,35 +81,24 @@ declare global {
         ? Instance
         : never;
 
-      export function readScopes<Rendered>(
-        rendered: Rendered,
-      ): MergeScopes<
-        Rendered extends { scopes: Record<any, infer Scope> } ? Scope : never
+      export function readScopes<Rendered>(rendered: Rendered): MergeScopes<
+        {
+          [K in keyof Rendered]: Rendered[K] extends infer Value
+            ? undefined extends Value
+              ? Value extends { scope: infer Scope }
+                ? [0] extends [1 & Scope]
+                  ? never
+                  : Partial<Scope>
+                : never
+              : Value extends { scope: infer Scope }
+                ? [0] extends [1 & Scope]
+                  ? never
+                  : Scope
+                : never
+            : never;
+        }[keyof Rendered]
       > &
         Record<any, never>;
-
-      export function assertTag<Index extends number, Tags, Tag>(
-        tags: Tags,
-        index: Index,
-        tag: Tag,
-      ): asserts tags is Tags &
-        Record<Index, [0] extends [1 & Tag] ? any : Tag>;
-
-      export function assertRendered<Index extends number, Rendered, Result>(
-        rendered: Rendered,
-        index: Index,
-        result: Result,
-      ): asserts rendered is Rendered & {
-        scopes: Record<
-          Index,
-          MergeOptionalScopes<
-            Result extends { scope: infer Scope } ? Scope : undefined
-          >
-        >;
-        returns: Result extends { return?: infer Return }
-          ? Record<Index, Return>
-          : Record<Index, never>;
-      };
 
       export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
         Lookup extends readonly (infer Item)[]
@@ -174,12 +157,12 @@ declare global {
       >(input: Input): Input;
 
       export function forOfTag<
-        Value,
-        Item extends Value extends
-          | readonly (infer Item)[]
-          | Iterable<infer Item>
-          ? Item
-          : unknown,
+        Value extends Iterable,
+        Item extends [0] extends [1 & Value]
+          ? any
+          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+            ? Item
+            : never,
         BodyContent extends Marko.Body<
           [item: Item, index: number, all: Value],
           void
@@ -239,19 +222,18 @@ declare global {
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
       export function forOfAttrTag<
-        Value extends Iterable<any> | readonly any[],
+        Value extends Iterable,
+        Item extends [0] extends [1 & Value]
+          ? any
+          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+            ? Item
+            : never,
         const Return,
       >(
         input: {
           of: Value | false | void | null;
         },
-        content: (
-          value: Value extends readonly (infer Item)[] | Iterable<infer Item>
-            ? Item
-            : unknown,
-          index: number,
-          all: Value,
-        ) => Return,
+        content: (value: Item, index: number, all: Value) => Return,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -368,10 +350,7 @@ declare global {
         _: infer Renderer;
       }
         ? Renderer
-        : Template extends Marko.Template<
-              infer Input extends Record<string, unknown>,
-              infer Return
-            >
+        : Template extends Marko.Template<infer Input, infer Return>
           ? BaseRenderer<Input, Return>
           : never;
 
@@ -405,10 +384,7 @@ declare global {
         >;
       }
 
-      export interface BaseRenderer<
-        Input extends Record<PropertyKey, unknown>,
-        Return = void,
-      > {
+      export interface BaseRenderer<Input, Return = void> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_input_with_scope extends unknown>(
           input: Marko.Directives &
@@ -418,9 +394,7 @@ declare global {
       }
 
       export interface DefaultRenderer {
-        (): () => <Input extends Record<PropertyKey, unknown>>(
-          input: Input,
-        ) => ReturnAndScope<Scopes<Input>, void>;
+        (): () => <Input>(input: Input) => ReturnAndScope<Scopes<Input>, void>;
       }
 
       export type Relate<A, B> = B extends A ? A : B;
@@ -457,9 +431,7 @@ type BodyContentInput<Args extends readonly unknown[]> = Args extends {
 
 type Scopes<Input> = [0] extends [1 & Input]
   ? never
-  : Input extends Record<any, unknown>
-    ? MergeScopes<FlatScopes<Input>>
-    : never;
+  : MergeScopes<FlatScopes<Input>>;
 
 type ComponentEventHandlers<Component extends Marko.Component> = {
   [K in Exclude<
@@ -471,20 +443,21 @@ type ComponentEventHandlers<Component extends Marko.Component> = {
   >]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
-type FlatScopes<Input extends object, Objects = Input> = Input[keyof Input &
-  (string | number)] extends infer Prop
-  ? [0] extends [1 & Prop]
-    ? unknown
-    : Prop extends (...args: any) => { [Marko._.scope]: infer Scope }
-      ? unknown extends Scope
-        ? never
-        : Scope
-      : Prop extends object
-        ? Prop extends Extract<Objects, Prop>
-          ? never
-          : FlatScopes<Prop, Objects | Prop>
-        : never
-  : unknown;
+type FlatScopes<Input> = [0] extends [1 & Input]
+  ? never
+  :
+      | (Input[("content" | "renderBody") & keyof Input] extends infer Prop
+          ? Prop extends (...args: any[]) => { [Marko._.scope]: infer Scope }
+            ? Scope
+            : never
+          : never)
+      | (Input[string & keyof Input] extends infer Prop
+          ? Prop extends { [Symbol.iterator]: any }
+            ? Prop extends readonly any[]
+              ? never
+              : FlatScopes<Prop>
+            : never
+          : never);
 
 type MergeScopes<Scopes> = {
   [K in Scopes extends Scopes ? keyof Scopes : never]: Scopes extends Scopes

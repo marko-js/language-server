@@ -15,14 +15,12 @@ function __marko_internal_template(this: void) {
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../../../components/let/index.marko"),
   );
-  Marko._.assertRendered(
-    Marko._.rendered,
-    1,
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      value: 1,
-    }),
-  );
-  const value = Marko._.rendered.returns[1].value;
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_tag_1,
+  )()()({
+    value: 1,
+  });
+  const value = __marko_internal_rendered_1.return.value;
   Marko._.renderNativeTag("button")()()({
     onClick() {
       __marko_internal_return.mutate.value++;
@@ -32,7 +30,9 @@ function __marko_internal_template(this: void) {
     return: Marko._.returnTag({
       value: value,
     }),
-    mutate: Marko._.mutable([["value", Marko._.rendered.returns[1]]] as const),
+    mutate: Marko._.mutable([
+      ["value", __marko_internal_rendered_1.return],
+    ] as const),
   };
   Marko._.noop({
     value,
