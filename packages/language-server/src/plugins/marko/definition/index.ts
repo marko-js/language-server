@@ -1,5 +1,6 @@
 import { NodeType } from "@marko/language-tools";
 import { LocationLink } from "vscode-languageserver";
+
 import { MarkoVirtualCode } from "../../../language";
 import { AttrName } from "./AttrName";
 import { OpenTagName } from "./OpenTagName";

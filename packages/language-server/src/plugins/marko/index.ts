@@ -4,11 +4,12 @@ import {
 } from "@volar/language-service";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
 import { MarkoVirtualCode } from "../../language";
 import { provideCompletions } from "./complete";
+import { provideDefinitions } from "./definition";
 import { provideHover } from "./hover";
 import { provideValidations } from "./validate";
-import { provideDefinitions } from "./definition";
 // import { provideDocumentSymbols } from "./document-symbols";
 
 export const create = (

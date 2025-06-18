@@ -1,8 +1,9 @@
 import type { Node } from "@marko/language-tools";
 import { Hover } from "vscode-languageserver";
-import getTagNameCompletion from "../util/get-tag-name-completion";
-import { START_LOCATION } from "../../../utils/constants";
+
 import { MarkoVirtualCode } from "../../../language";
+import { START_LOCATION } from "../../../utils/constants";
+import getTagNameCompletion from "../util/get-tag-name-completion";
 
 export function OpenTagName(
   node: Node.OpenTagName,

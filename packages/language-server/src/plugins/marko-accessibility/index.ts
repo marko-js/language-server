@@ -1,8 +1,9 @@
-import type { TextDocument } from "vscode-languageserver-textdocument";
+import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
 import axe from "axe-core";
 import { JSDOM } from "jsdom";
-import type { Diagnostic, LanguageServicePlugin } from "@volar/language-server";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
+
 import { MarkoVirtualCode } from "../../language";
 import { ruleExceptions } from "./axe-rules/rule-exceptions";
 

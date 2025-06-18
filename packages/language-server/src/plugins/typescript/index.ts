@@ -1,10 +1,11 @@
 import type {
-  Diagnostic,
   LanguageServicePlugin,
   LanguageServicePluginInstance,
 } from "@volar/language-server";
 import { create as createTypeScriptServices } from "volar-service-typescript";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { URI } from "vscode-uri";
+
+import { MarkoVirtualCode } from "../../language";
 
 export const create = (
   ts: typeof import("typescript"),
@@ -28,19 +29,51 @@ export const create = (
               );
               if (!diagnostics) return null;
 
-              return diagnostics.map((diagnostic) => {
-                if (
-                  diagnostic.code ===
-                    DiagnosticCodes.ObjectLiteralKnownPropertyNames ||
-                  diagnostic.code === DiagnosticCodes.NotAssignable
-                ) {
-                  return adjustUnknownAttributeDiagnostic(diagnostic, document);
-                }
-                // if (diagnostic.code === DiagnosticCodes.MissingProperty) {
-                //   return adjustMissingPropertyDiagnostic(diagnostic, document);
-                // }
-                return diagnostic;
-              });
+              const decoded = context.decodeEmbeddedDocumentUri(
+                URI.parse(document.uri),
+              );
+              const sourceScript =
+                decoded && context.language.scripts.get(decoded[0]);
+              const rootCode = sourceScript?.generated?.root;
+              const scriptCode =
+                sourceScript?.generated?.embeddedCodes.get("script");
+
+              if (rootCode instanceof MarkoVirtualCode && scriptCode) {
+                return diagnostics.map((diagnostic) => {
+                  const scriptStartOffset = document.offsetAt(
+                    diagnostic.range.start,
+                  );
+                  const scriptEndOffset = document.offsetAt(
+                    diagnostic.range.end,
+                  );
+
+                  for (const mapping of scriptCode.mappings) {
+                    // If any of the mappings intersect with the diagnostic range,
+                    // we can assume that the diagnostic is for that mapping.
+                    //
+                    // This should ideally capture all mappings in the diagnostic range.
+                    const generatedStartOffset = mapping.generatedOffsets[0];
+                    const generatedEndOffset =
+                      generatedStartOffset + mapping.lengths[0];
+
+                    if (
+                      generatedStartOffset <= scriptEndOffset &&
+                      scriptStartOffset <= generatedEndOffset
+                    ) {
+                      const start = document.positionAt(
+                        mapping.generatedOffsets[0],
+                      );
+                      const end = document.positionAt(
+                        mapping.generatedOffsets[0] + mapping.lengths[0],
+                      );
+                      diagnostic.range.start = start;
+                      diagnostic.range.end = end;
+                      return diagnostic;
+                    }
+                  }
+                  return diagnostic;
+                });
+              }
             },
           };
         },
@@ -49,68 +82,3 @@ export const create = (
     return plugin;
   });
 };
-
-const ATTRIBUTE_START_TAG = "/*attribute-name-start*/";
-const ATTRIBUTE_END_TAG = "/*attribute-name-end*/";
-
-// https://github.com/Microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
-const DiagnosticCodes = {
-  NotAssignable: 2322,
-  ObjectLiteralKnownPropertyNames: 2353,
-  MissingProperty: 2345,
-};
-
-function adjustUnknownAttributeDiagnostic(
-  diagnostic: Diagnostic,
-  document: TextDocument,
-): Diagnostic {
-  const startOffset = document.offsetAt(diagnostic.range.start);
-  const endOffset = document.offsetAt(diagnostic.range.end);
-
-  const startMetaOffset = startOffset - ATTRIBUTE_START_TAG.length;
-  const endMetaOFfset = endOffset + ATTRIBUTE_END_TAG.length;
-
-  const startMarker = document.getText({
-    start: document.positionAt(startMetaOffset),
-    end: diagnostic.range.start,
-  });
-  const endMarker = document.getText({
-    start: diagnostic.range.end,
-    end: document.positionAt(endMetaOFfset),
-  });
-  if (startMarker === ATTRIBUTE_START_TAG && endMarker === ATTRIBUTE_END_TAG) {
-    // Attributes in the extracted script have quotes around them, the TypeScript
-    // diagnostics range doesn't match the Marko template which means that Volar
-    // doesn't display the diagnostics.
-    // So, we wrap the extracted attribute names with comments so that we can
-    // tell when the diagnostics are for an attribute.
-    diagnostic.range.start.character = diagnostic.range.start.character + 1;
-    diagnostic.range.end.character = diagnostic.range.end.character - 1;
-  }
-  return diagnostic;
-}
-
-// const TAG_NAME_REGEX = /\/\*\*tag-name\(([^)]+)\)\*\//;
-
-// function adjustMissingPropertyDiagnostic(
-//   diagnostic: Diagnostic,
-//   document: TextDocument,
-// ): Diagnostic {
-//   const diagnosticText = document.getText(diagnostic.range);
-//   const tagNameMatch = diagnosticText.match(TAG_NAME_REGEX);
-
-//   if (tagNameMatch) {
-//     const tagName = tagNameMatch[0];
-//     const startIndex = diagnosticText.indexOf(tagName);
-//     const endIndex = startIndex + tagName.length;
-//   }
-// }
-//   // Attributes in the extracted script have quotes around them, the TypeScript
-//   // diagnostics range doesn't match the Marko template which means that Volar
-//   // doesn't display the diagnostics.
-//   // So, we wrap the extracted attribute names with comments so that we can
-//   // tell when the diagnostics are for an attribute.
-//   diagnostic.range.start.character = diagnostic.range.start.character + 1;
-//   diagnostic.range.end.character = diagnostic.range.end.character - 1;
-// }
-// return diagnostic;

@@ -1,5 +1,6 @@
 import { LanguageServicePlugin } from "@volar/language-service";
 import { URI } from "vscode-uri";
+
 import { MarkoVirtualCode } from "../../language";
 
 export const create = (): LanguageServicePlugin => {

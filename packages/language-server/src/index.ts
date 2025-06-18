@@ -5,8 +5,9 @@ import {
   loadTsdkByPath,
 } from "@volar/language-server/node";
 import { URI } from "vscode-uri";
-import { getLanguageServicePlugins } from "./plugins";
+
 import { addMarkoTypes, createMarkoLanguagePlugin } from "./language";
+import { getLanguageServicePlugins } from "./plugins";
 
 const connection = createConnection();
 const server = createServer(connection);

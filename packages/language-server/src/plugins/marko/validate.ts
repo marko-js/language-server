@@ -1,6 +1,7 @@
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver-protocol";
 import { DiagnosticType } from "@marko/babel-utils";
 import { Config } from "@marko/compiler";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver-protocol";
+
 import { MarkoVirtualCode } from "../../language";
 
 const markoErrorRegExp =

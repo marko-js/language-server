@@ -1,13 +1,14 @@
 import * as serverProtocol from "@volar/language-server/protocol";
 import {
-  LabsInfo,
   activateAutoInsertion,
   activateWriteVirtualFiles,
   createLabsInfo,
   getTsdk,
+  LabsInfo,
 } from "@volar/vscode";
 import * as vscode from "vscode";
 import * as lsp from "vscode-languageclient/node";
+
 import * as debug from "./features/debug";
 import * as syntax from "./features/syntax";
 
