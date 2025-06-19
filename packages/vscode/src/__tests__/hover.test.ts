@@ -16,7 +16,7 @@ describe("hover", () => {
         ),
       `Sets the color of an element's text
 
-(Edge 12, Firefox 1, Safari 1, Chrome 1, IE 3, Opera 3)
+![Baseline icon](...) _Widely available across major browsers (Baseline since 2015)_
 
 Syntax: &lt;color&gt;
 
@@ -34,5 +34,6 @@ async function hover(src: string) {
   );
   return hover.contents
     .map((it) => (typeof it === "string" ? it : it.value))
-    .join("\n");
+    .join("\n")
+    .replace(/data:[^)]*/g, "...");
 }

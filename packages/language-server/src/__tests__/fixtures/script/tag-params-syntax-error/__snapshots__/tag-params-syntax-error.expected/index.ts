@@ -57,6 +57,13 @@ export default new (
       stream(
         input: Marko.TemplateInput<Input>,
       ): ReadableStream<string> & NodeJS.ReadableStream;
+
+      
+      mount(
+        input: Marko.TemplateInput<Input>,
+        reference: Node,
+        position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
+      ): Marko.MountedTemplate<typeof input>;
       
   api: "class",
   _(): () => <__marko_internal_input extends unknown>(input: Marko.Directives & Input & Marko._.Relate<__marko_internal_input, Marko.Directives & Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>);
