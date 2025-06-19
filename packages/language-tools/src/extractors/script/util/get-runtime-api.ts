@@ -108,8 +108,6 @@ function detectAPIFromTag(parsed: Parsed, tag: Node.ParentTag): RuntimeAPI {
     case "const":
     case "debug":
     case "define":
-    case "html-script":
-    case "html-style":
     case "id":
     case "let":
     case "lifecycle":
