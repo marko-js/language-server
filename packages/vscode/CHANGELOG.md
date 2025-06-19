@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.25
+
+### Patch Changes
+
+- [#363](https://github.com/marko-js/language-server/pull/363) [`68fb674`](https://github.com/marko-js/language-server/commit/68fb674a50df815432606b697a7f1621f56631e1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade app dependencies.
+
 ## 1.5.24
 
 ### Patch Changes
