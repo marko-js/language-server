@@ -6,6 +6,7 @@ import { create as createTypeScriptServices } from "volar-service-typescript";
 import { URI } from "vscode-uri";
 
 import { MarkoVirtualCode } from "../../language";
+import { enhanceDiagnosticPositions } from "./diagnostic-enhancements";
 
 export const create = (
   ts: typeof import("typescript"),
@@ -39,40 +40,11 @@ export const create = (
                 sourceScript?.generated?.embeddedCodes.get("script");
 
               if (rootCode instanceof MarkoVirtualCode && scriptCode) {
-                return diagnostics.map((diagnostic) => {
-                  const scriptStartOffset = document.offsetAt(
-                    diagnostic.range.start,
-                  );
-                  const scriptEndOffset = document.offsetAt(
-                    diagnostic.range.end,
-                  );
-
-                  for (const mapping of scriptCode.mappings) {
-                    // If any of the mappings intersect with the diagnostic range,
-                    // we can assume that the diagnostic is for that mapping.
-                    //
-                    // This should ideally capture all mappings in the diagnostic range.
-                    const generatedStartOffset = mapping.generatedOffsets[0];
-                    const generatedEndOffset =
-                      generatedStartOffset + mapping.lengths[0];
-
-                    if (
-                      generatedStartOffset <= scriptEndOffset &&
-                      scriptStartOffset <= generatedEndOffset
-                    ) {
-                      const start = document.positionAt(
-                        mapping.generatedOffsets[0],
-                      );
-                      const end = document.positionAt(
-                        mapping.generatedOffsets[0] + mapping.lengths[0],
-                      );
-                      diagnostic.range.start = start;
-                      diagnostic.range.end = end;
-                      return diagnostic;
-                    }
-                  }
-                  return diagnostic;
-                });
+                return enhanceDiagnosticPositions(
+                  diagnostics,
+                  document,
+                  scriptCode.mappings,
+                );
               }
             },
           };

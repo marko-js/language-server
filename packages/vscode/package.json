@@ -1,7 +1,7 @@
 {
   "name": "polar-vscode",
   "description": "Language Tools for Marko built using Volar",
-  "version": "0.1.9",
+  "version": "0.2.4",
   "activationEvents": [
     "workspaceContains:**/*.marko"
   ],
