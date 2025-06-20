@@ -913,23 +913,20 @@ constructor(_?: Return) {}
               switch (value.type) {
                 case NodeType.AttrMethod:
                   this.#extractor
-                    .write("/*attribute-name-start*/")
                     .write('"')
                     .copy(defaultMapPosition) // TODO: see if this is working
                     .copy(name)
                     .write('"')
-                    .write("/*attribute-name-end*/")
                     .copy(value.typeParams);
                   this.#copyWithMutationsReplaced(value.params);
                   this.#copyWithMutationsReplaced(value.body);
                   break;
                 case NodeType.AttrValue:
                   this.#extractor
-                    .write("/*attribute-name-start*/")
                     .write('"')
                     .copy(defaultMapPosition)
                     .copy(name)
-                    .write('"/*attribute-name-end*/: (\n');
+                    .write('": (\n');
                   if (value.bound) {
                     const memberExpressionStart =
                       getBoundAttrMemberExpressionStartOffset(value);
@@ -1000,11 +997,7 @@ constructor(_?: Return) {}
                   break;
               }
             } else if (attr.args) {
-              this.#extractor
-                .write("/*attribute-name-start*/")
-                .write('"')
-                .copy(name)
-                .write('"/*attribute-name-end*/: ');
+              this.#extractor.write('"').copy(name).write('": ');
 
               if (
                 this.#api !== RuntimeAPI.tags &&
@@ -1063,11 +1056,9 @@ constructor(_?: Return) {}
             } else {
               this.#extractor
                 .copy(defaultMapPosition)
-                .write("/*attribute-name-start*/")
                 .write('"')
                 .copy(name)
                 .write('"')
-                .write("/*attribute-name-end*/")
                 .write(": ")
                 .write(modifierIndex === false ? "true" : '""');
             }
