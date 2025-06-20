@@ -63,6 +63,12 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input<FirstName, LastName>>,
   ): ReadableStream<string> & NodeJS.ReadableStream;
 
+  mount<FirstName extends string, LastName extends string>(
+    input: Marko.TemplateInput<Input<FirstName, LastName>>,
+    reference: Node,
+    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
+  ): Marko.MountedTemplate<typeof input>;
+
   api: "class";
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <FirstName extends string, LastName extends string>() => <

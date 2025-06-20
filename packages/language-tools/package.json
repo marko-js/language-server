@@ -7,19 +7,19 @@
     "@marko/compiler": "^5.28.4"
   },
   "dependencies": {
-    "@babel/parser": "^7.26.7",
+    "@babel/parser": "^7.27.5",
     "@luxass/strip-json-comments": "^1.4.0",
-    "htmljs-parser": "^5.5.3",
+    "htmljs-parser": "^5.5.4",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.26.2",
-    "@marko/compiler": "^5.39.11",
+    "@babel/code-frame": "^7.27.1",
+    "@marko/compiler": "^5.39.26",
     "@types/babel__code-frame": "^7.0.6",
-    "@typescript/vfs": "^1.6.0",
-    "marko": "^5.37.12",
-    "mitata": "^1.0.33",
-    "tsx": "^4.19.2"
+    "@typescript/vfs": "^1.6.1",
+    "marko": "^5.37.38",
+    "mitata": "^1.0.34",
+    "tsx": "^4.20.3"
   },
   "exports": {
     ".": {
