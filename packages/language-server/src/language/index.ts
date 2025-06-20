@@ -131,7 +131,7 @@ export class MarkoVirtualCode implements VirtualCode {
       this.markoAst,
       this.ts,
       this.tagLookup,
-      this.project,
+      this.project.translator,
     );
     this.embeddedCodes.push(...scripts);
 
