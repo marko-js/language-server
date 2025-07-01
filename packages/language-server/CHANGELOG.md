@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.24
+
+### Patch Changes
+
+- [#365](https://github.com/marko-js/language-server/pull/365) [`1fc5558`](https://github.com/marko-js/language-server/commit/1fc555848bbed07ca8c15967cbedd7433cca547b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update caches to be based on translator resolved path instead of compiler path.
+
+- Updated dependencies [[`1fc5558`](https://github.com/marko-js/language-server/commit/1fc555848bbed07ca8c15967cbedd7433cca547b)]:
+  - @marko/language-tools@2.5.23
+
 ## 1.4.23
 
 ### Patch Changes
