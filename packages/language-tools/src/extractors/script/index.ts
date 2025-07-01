@@ -1055,10 +1055,12 @@ constructor(_?: Return) {}
               }
             } else {
               this.#extractor
-                .write('"')
                 .copy(defaultMapPosition)
+                .write('"')
                 .copy(name)
-                .write(`": ${modifierIndex === false ? "true" : '""'}`);
+                .write('"')
+                .write(": ")
+                .write(modifierIndex === false ? "true" : '""');
             }
             break;
           }
