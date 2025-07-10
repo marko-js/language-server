@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.28
+
+### Patch Changes
+
+- [#370](https://github.com/marko-js/language-server/pull/370) [`985e4f1`](https://github.com/marko-js/language-server/commit/985e4f13c1bd17ab4beea4bb4146801004769d4d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typings for tag parameters.
+
 ## 1.5.27
 
 ### Patch Changes

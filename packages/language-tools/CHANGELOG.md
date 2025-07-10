@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.24
+
+### Patch Changes
+
+- [#370](https://github.com/marko-js/language-server/pull/370) [`985e4f1`](https://github.com/marko-js/language-server/commit/985e4f13c1bd17ab4beea4bb4146801004769d4d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typings for tag parameters.
+
 ## 2.5.23
 
 ### Patch Changes
