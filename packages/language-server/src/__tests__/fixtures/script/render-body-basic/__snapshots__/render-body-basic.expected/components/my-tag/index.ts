@@ -15,17 +15,7 @@ export { type Component };
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
   const __marko_internal_tag_1 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    value: ["hi"],
-  });
-  const __marko_internal_tag_2 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    value: ["hi"],
-  });
-  const __marko_internal_tag_3 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-    ["value"]: Marko._.tuple("hi"),
-  });
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()("hi");
   return;
 })();
 export default new (class Template extends Marko._.Template<{
