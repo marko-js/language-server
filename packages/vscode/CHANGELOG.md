@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.27
+
+### Patch Changes
+
+- [#367](https://github.com/marko-js/language-server/pull/367) [`889f266`](https://github.com/marko-js/language-server/commit/889f266c46def40bcb72769c4217e6b511d68ebb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix broken syntax highlighting when concise mode text content has empty newlines.
+
 ## 1.5.26
 
 ### Patch Changes
