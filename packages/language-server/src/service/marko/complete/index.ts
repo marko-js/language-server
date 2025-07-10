@@ -26,6 +26,7 @@ const handlers: Record<
   AttrName,
   AttrValue,
   Import,
+  Static: Import,
 };
 
 export const doComplete: Plugin["doComplete"] = async (doc, params) => {

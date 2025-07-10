@@ -3,12 +3,14 @@ import {
   getExt,
   isDefinitionFile,
   Processors,
+  Project,
 } from "@marko/language-tools";
 import path from "path";
 import type ts from "typescript/lib/tsserverlibrary";
 
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
+const importTagReg = /<([^>]+)>/;
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -151,7 +153,21 @@ export function patch(
 
       for (let i = 0; i < moduleLiterals.length; i++) {
         const moduleLiteral = moduleLiterals[i];
-        const moduleName = moduleLiteral.text;
+        let moduleName = moduleLiteral.text;
+
+        const tagNameMatch = importTagReg.exec(moduleName);
+        if (tagNameMatch) {
+          // Try to resolve `import Tag from "<tag>"` style imports.
+          const [, tagName] = tagNameMatch;
+          const tagDef = Project.getTagLookup(
+            path.dirname(containingFile),
+          ).getTag(tagName);
+          const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
+          if (tagFileName) {
+            moduleName = tagFileName;
+          }
+        }
+
         const processor =
           moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
         if (processor) {
