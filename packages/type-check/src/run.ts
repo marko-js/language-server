@@ -7,6 +7,7 @@ import {
   isDefinitionFile,
   type Location,
   Processors,
+  Project,
 } from "@marko/language-tools";
 import crypto from "crypto";
 import color from "kleur";
@@ -37,6 +38,7 @@ const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
   ? (fileName: string) => fileName
   : (fileName: string) => fileName.toLowerCase();
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
+const importTagReg = /<([^>]+)>/;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const isRemapExtensionReg = /\.ts$/;
 const isSourceMapExtensionReg = /\.map$/;
@@ -187,7 +189,21 @@ export default function run(opts: Options) {
 
         for (let i = 0; i < moduleLiterals.length; i++) {
           const moduleLiteral = moduleLiterals[i];
-          const moduleName = moduleLiteral.text;
+          let moduleName = moduleLiteral.text;
+
+          const tagNameMatch = importTagReg.exec(moduleName);
+          if (tagNameMatch) {
+            // Try to resolve `import Tag from "<tag>"` style imports.
+            const [, tagName] = tagNameMatch;
+            const tagDef = Project.getTagLookup(
+              path.dirname(containingFile),
+            ).getTag(tagName);
+            const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
+            if (tagFileName) {
+              moduleName = tagFileName;
+            }
+          }
+
           const processor =
             moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
           if (processor) {
