@@ -1244,26 +1244,43 @@ constructor(_?: Return) {}
   #writeTagInputObject(tag: Node.ParentTag) {
     if (!tag.params) this.#writeComments(tag);
 
+    const body = this.#processBody(tag);
     let hasInput = false;
-    this.#extractor.write("{\n");
+    let writeInputObj = true;
 
-    if (tag.args) {
+    if (
+      tag.args &&
+      (this.#api !== RuntimeAPI.class || !!this.#getDynamicTagExpression(tag))
+    ) {
       hasInput = true;
-      this.#extractor
-        .write("[")
-        .copy({
-          start: tag.args.start,
-          end: tag.args.start + 1,
-        })
-        .write('"value"')
-        .copy({
-          start: tag.args.end - 1,
-          end: tag.args.end,
-        })
-        .write(`]: ${varShared("tuple")}(`)
-        .copy(tag.args.value)
-        .write(")")
-        .write(",\n");
+      this.#extractor.copy(tag.args.value);
+
+      if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
+        this.#extractor.write(",\n{\n");
+      } else {
+        writeInputObj = false;
+      }
+    } else {
+      this.#extractor.write("{\n");
+
+      if (tag.args) {
+        hasInput = true;
+        this.#extractor
+          .write("[")
+          .copy({
+            start: tag.args.start,
+            end: tag.args.start + 1,
+          })
+          .write('"value"')
+          .copy({
+            start: tag.args.end - 1,
+            end: tag.args.end,
+          })
+          .write(`]: ${varShared("tuple")}(`)
+          .copy(tag.args.value)
+          .write(")")
+          .write(",\n");
+      }
     }
 
     if (this.#writeAttrs(tag)) {
@@ -1272,7 +1289,6 @@ constructor(_?: Return) {}
 
     const isScript = isTextOnlyScript(tag);
     let hasBodyContent = false;
-    let body: ProcessedBody | undefined;
 
     if (isScript) {
       this.#extractor.write("async value(){");
@@ -1281,15 +1297,12 @@ constructor(_?: Return) {}
         end: tag.body[tag.body.length - 1].end,
       });
       this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
-    } else {
-      body = this.#processBody(tag);
-      if (body) {
-        hasInput = true;
-        this.#writeAttrTags(body);
-        hasBodyContent = body.content !== undefined;
-      } else if (tag.close) {
-        hasBodyContent = true;
-      }
+    } else if (body) {
+      hasInput = true;
+      this.#writeAttrTags(body);
+      hasBodyContent = body.content !== undefined;
+    } else if (tag.close) {
+      hasBodyContent = true;
     }
 
     if (tag.params || hasBodyContent) {
@@ -1369,7 +1382,9 @@ constructor(_?: Return) {}
       this.#writeTagNameComment(tag);
     }
 
-    this.#extractor.write("\n}");
+    if (writeInputObj) {
+      this.#extractor.write("\n}");
+    }
   }
 
   #writeObjectKeys(keys: Iterable<string>) {

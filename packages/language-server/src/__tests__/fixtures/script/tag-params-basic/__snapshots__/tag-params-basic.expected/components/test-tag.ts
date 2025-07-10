@@ -15,17 +15,11 @@ export { type Component };
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
   const __marko_internal_tag_1 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    value: ["a", "b"],
-  });
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()("a", "b");
   const __marko_internal_tag_2 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    value: ["a", "c"],
-  });
+  Marko._.renderDynamicTag(__marko_internal_tag_2)()()("a", "c");
   const __marko_internal_tag_3 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-    value: ["a", "b", "c"],
-  });
+  Marko._.renderDynamicTag(__marko_internal_tag_3)()()("a", "b", "c");
   return;
 })();
 export default new (class Template extends Marko._.Template<{
