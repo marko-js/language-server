@@ -26,6 +26,7 @@
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f unix --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
+    "lint": "npm run build && eslint -f unix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --check --log-level=warn",
     "prepare": "husky & npm run -ws --if-present prepare",
     "release": "npm run build && changeset publish && npm run -ws --if-present release",
     "test": "npm run build && npm run -ws --if-present test",
