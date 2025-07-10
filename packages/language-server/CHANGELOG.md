@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.4.26
+
+### Patch Changes
+
+- [#372](https://github.com/marko-js/language-server/pull/372) [`bb1206e`](https://github.com/marko-js/language-server/commit/bb1206e8fa0ea1e3986fc4fecfe12999ee0fd92f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support resolving tag import shorthands in typescript files.
+
 ## 1.4.25
 
 ### Patch Changes
