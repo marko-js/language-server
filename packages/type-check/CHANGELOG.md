@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 2.0.0
+
+### Major Changes
+
+- [#374](https://github.com/marko-js/language-server/pull/374) [`ab7e60f`](https://github.com/marko-js/language-server/commit/ab7e60facddd1fc598e6f0dea3888ed0693605f6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve import tag shorthand regexp false positives.
+
 ## 1.3.25
 
 ### Patch Changes
