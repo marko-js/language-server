@@ -382,7 +382,7 @@
             {
               "comment": "Concise Marko html-comment tag",
               "begin": "^(\\s*)(?=html-comment\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-comment-block" },
@@ -392,7 +392,7 @@
             {
               "comment": "Concise style tag less",
               "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.less\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-less" },
@@ -402,7 +402,7 @@
             {
               "comment": "Concise style tag scss",
               "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.scss\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-scss" },
@@ -412,7 +412,7 @@
             {
               "comment": "Concise style tag js/ts",
               "begin": "^(\\s*)(?=(?:html-)?style\\b[^\\s]*\\.[tj]s\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-script-block" },
@@ -422,7 +422,7 @@
             {
               "comment": "Concise style tag",
               "begin": "^(\\s*)(?=(?:html-)?style\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block" },
@@ -432,7 +432,7 @@
             {
               "comment": "Concise script tag",
               "begin": "^(\\s*)(?=(?:html-)?script\\b)",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-script-block" },
@@ -442,7 +442,7 @@
             {
               "comment": "Normal concise tag",
               "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#])",
-              "while": "(?=^(?:[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#content-concise-mode" }

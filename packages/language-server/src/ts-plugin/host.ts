@@ -10,7 +10,7 @@ import type ts from "typescript/lib/tsserverlibrary";
 
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
-const importTagReg = /<([^>]+)>/;
+const importTagReg = /^<([^>]+)>$/;
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
