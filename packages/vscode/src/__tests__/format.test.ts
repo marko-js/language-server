@@ -28,8 +28,7 @@ describe("format", () => {
     multiple=lines
     and=this
     is=one
-    of=those
-/>
+    of=those/>
 
 `,
     );
