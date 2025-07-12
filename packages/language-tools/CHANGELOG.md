@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.25
+
+### Patch Changes
+
+- [#376](https://github.com/marko-js/language-server/pull/376) [`01c4053`](https://github.com/marko-js/language-server/commit/01c40539c1a86540736bf7bd33a051a56affe7fe) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bump package dependencies.
+
 ## 2.5.24
 
 ### Patch Changes
