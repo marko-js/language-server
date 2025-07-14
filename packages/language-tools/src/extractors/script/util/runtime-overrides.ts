@@ -1,13 +1,14 @@
 const RuntimeOverloads = new Map<string, (string | Replacement)[]>();
 const commentsReg = /\/\*(?:[^*]|\*[^/])*\*\//gm;
 const replaceTokensReg =
-  /\babstract\s+(\w+)|Marko\.(TemplateInput(?:<[^>]+>)?|Component)/gm;
+  /\babstract\s+(\w+)|Marko\.(TemplateInput(?:<[^>]+>)?|Component)|\b(Return)\b/gm;
 const overrideBlockReg =
   /\/\*[*\s]*@marko-overload-start[*\s]*\*\/([\s\S]+)\/\*[*\s]*@marko-overload-end[*\s]*\*\//g;
 
 enum Replacement {
   Generics,
   Input,
+  Return,
   Component,
 }
 
@@ -15,6 +16,7 @@ export function getRuntimeOverrides(
   runtimeTypes: string,
   generics: string,
   applyGenerics: string,
+  returnType: string,
 ) {
   let overloads = RuntimeOverloads.get(runtimeTypes);
 
@@ -29,12 +31,14 @@ export function getRuntimeOverrides(
       content = content.replace(commentsReg, ""); // remove all comments within the overloads.
 
       while ((replaceMatch = replaceTokensReg.exec(content))) {
-        const [, methodName, propertyName] = replaceMatch;
+        const [, methodName, propertyName, returnName] = replaceMatch;
         const curText = content.slice(lastIndex, replaceMatch.index);
         lastIndex = replaceTokensReg.lastIndex;
 
         if (methodName) {
           overloads.push(curText + methodName, Replacement.Generics);
+        } else if (returnName) {
+          overloads.push(curText, Replacement.Return);
         } else {
           overloads.push(
             curText,
@@ -60,6 +64,9 @@ export function getRuntimeOverrides(
         break;
       case Replacement.Input:
         result += appliedInput;
+        break;
+      case Replacement.Return:
+        result += returnType;
         break;
       case Replacement.Component:
         result += appliedComponent;

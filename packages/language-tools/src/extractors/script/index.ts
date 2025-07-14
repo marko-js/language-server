@@ -378,20 +378,24 @@ function ${templateName}() {\n`);
     const internalInput = varLocal("input");
     const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
+    const returnTypeStr = didReturn
+      ? `typeof ${
+          templateName + typeArgsStr
+        } extends () => infer Return ? Return : never`
+      : "void";
     const renderAndReturn = `(input: Marko.Directives & Input${typeArgsStr} & ${varShared(
       "Relate",
     )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope",
-    )}<${internalInput}, ${
-      didReturn
-        ? `typeof ${
-            templateName + typeArgsStr
-          } extends () => infer Return ? Return : never`
-        : "void"
-    }>)`;
+    )}<${internalInput}, ${returnTypeStr}>)`;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
-        ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
+        ? getRuntimeOverrides(
+            this.#runtimeTypes,
+            typeParamsStr,
+            typeArgsStr,
+            returnTypeStr,
+          )
         : ""
     }
   ${this.#api ? `api: "${this.#api}",` : ""}
