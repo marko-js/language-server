@@ -135,7 +135,7 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
-      export function renderTemplate<Name extends Marko.Template>(
+      export function renderTemplate<Name extends Marko.Template<any, any>>(
         template: Name,
       ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
@@ -328,7 +328,7 @@ declare global {
       // currently falls back to DefaultRenderer too eagerly.
       export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
-        : [Name] extends [Marko.Template]
+        : [Name] extends [Marko.Template<any, any>]
           ? TemplateRenderer<Name>
           : [Name] extends [string]
             ? NativeTagRenderer<Name>
