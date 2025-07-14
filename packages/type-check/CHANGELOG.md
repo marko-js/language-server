@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.0.2
+
+### Patch Changes
+
+- [#380](https://github.com/marko-js/language-server/pull/380) [`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where overwritten native tags were not getting the correct types.
+
+- Updated dependencies [[`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854)]:
+  - @marko/language-tools@2.5.27
+
 ## 2.0.1
 
 ### Patch Changes
