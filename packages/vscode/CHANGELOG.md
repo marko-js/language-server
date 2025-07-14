@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.2
+
+### Patch Changes
+
+- [#378](https://github.com/marko-js/language-server/pull/378) [`ef455c3`](https://github.com/marko-js/language-server/commit/ef455c3b1da6d2dbd1a315d5721cf166038ec758) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix return api overloads for tags api components.
+
 ## 2.0.1
 
 ### Patch Changes
