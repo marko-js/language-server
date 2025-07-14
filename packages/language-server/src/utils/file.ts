@@ -1,4 +1,4 @@
-import type { TaglibLookup } from "@marko/babel-utils";
+import type { TaglibLookup } from "@marko/compiler/babel-utils";
 import { parse, type Parsed, Project } from "@marko/language-tools";
 import path from "path";
 import type { TextDocument } from "vscode-languageserver-textdocument";

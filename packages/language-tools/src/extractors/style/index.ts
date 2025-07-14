@@ -1,4 +1,4 @@
-import type { TaglibLookup } from "@marko/babel-utils";
+import type { TaglibLookup } from "@marko/compiler/babel-utils";
 
 import { type Node, NodeType, type Parsed } from "../../parser";
 import { type Extracted, Extractor } from "../../util/extractor";

@@ -1,5 +1,5 @@
 import type * as t from "@babel/types";
-import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
+import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
 import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";
 
@@ -737,14 +737,12 @@ constructor(_?: Return) {}
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
-    const isHTML = def?.html;
-    const importPath = !isHTML
-      ? resolveTagImport(this.#filename, def)
-      : undefined;
+    const importPath = resolveTagImport(this.#filename, def);
+    const isHTML = !importPath && def?.html;
     let tagIdentifier: undefined | string;
     let isTemplate = false;
 
-    if (!isHTML && (!def || importPath)) {
+    if (!def || importPath) {
       const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
       const isMarkoFile = importPath?.endsWith(".marko");
 
