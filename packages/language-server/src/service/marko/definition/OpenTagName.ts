@@ -1,4 +1,4 @@
-import type { TagDefinition } from "@marko/babel-utils";
+import type { TagDefinition } from "@marko/compiler/babel-utils";
 import {
   getLines,
   getLocation,

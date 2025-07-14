@@ -1,5 +1,5 @@
-import { DiagnosticType } from "@marko/babel-utils";
 import type { Config } from "@marko/compiler";
+import { DiagnosticType } from "@marko/compiler/babel-utils";
 import { Project } from "@marko/language-tools";
 import path from "path";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";

@@ -3,6 +3,7 @@ import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 
 import { MarkoFile, processDoc } from "../../utils/file";
 import type { Plugin } from "../types";
+import { isHTML } from "./util/is-html";
 
 export const findDocumentSymbols: Plugin["findDocumentSymbols"] = async (doc) =>
   processDoc(doc, extractDocumentSymbols);
@@ -33,7 +34,7 @@ function extractDocumentSymbols({
               : node.nameText) || "<${...}>",
           kind:
             (node.nameText &&
-              lookup.getTag(node.nameText)?.html &&
+              isHTML(lookup.getTag(node.nameText)) &&
               SymbolKind.Property) ||
             SymbolKind.Class,
           location: {

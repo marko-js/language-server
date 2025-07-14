@@ -1,6 +1,6 @@
 import { strip as stripJSONComments } from "@luxass/strip-json-comments";
-import type { TaglibLookup } from "@marko/babel-utils";
 import type * as Compiler from "@marko/compiler";
+import type { TaglibLookup } from "@marko/compiler/babel-utils";
 import { createRequire } from "module";
 import path from "path";
 import type TS from "typescript/lib/tsserverlibrary";
