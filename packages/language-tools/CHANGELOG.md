@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.27
+
+### Patch Changes
+
+- [#380](https://github.com/marko-js/language-server/pull/380) [`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where overwritten native tags were not getting the correct types.
+
 ## 2.5.26
 
 ### Patch Changes
