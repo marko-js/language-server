@@ -12,6 +12,7 @@ const args = arg(
   {
     "--project": String,
     "--display": String,
+    "--generateTrace": String,
     "--help": Boolean,
     "--version": Boolean,
     "-p": "--project",
@@ -72,6 +73,7 @@ For more information, visit ${color.blue(
   );
 } else {
   const {
+    "--generateTrace": generateTrace,
     "--display": display = process.env.CI
       ? Display.condensed
       : Display.codeframe,
@@ -86,7 +88,7 @@ For more information, visit ${color.blue(
   }
 
   checkDisplay(display);
-  run({ project, display });
+  run({ generateTrace, project, display });
 }
 
 function checkDisplay(

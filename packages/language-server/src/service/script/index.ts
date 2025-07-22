@@ -55,6 +55,9 @@ const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
 const colorModifierReg = /\bcolor\b/;
 const localInternalsPrefix = "__marko_internal_";
+const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
+  ? (fileName: string) => fileName
+  : (fileName: string) => fileName.toLocaleLowerCase();
 const requiredTSCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
   moduleResolution: ts.ModuleResolutionKind.Bundler,
@@ -1008,10 +1011,6 @@ function convertCompletionItemKind(kind: ts.ScriptElementKind) {
 function getTSTriggerChar(char: string | undefined) {
   if (char && tsTriggerChars.has(char))
     return char as ts.CompletionsTriggerCharacter;
-}
-
-function getCanonicalFileName(fileName: string) {
-  return ts.sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
 }
 
 export { ScriptService as default };
