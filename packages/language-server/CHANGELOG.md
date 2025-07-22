@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.0
+
+### Minor Changes
+
+- [#382](https://github.com/marko-js/language-server/pull/382) [`c07193e`](https://github.com/marko-js/language-server/commit/c07193e935ea112b64a9da013efb6bb81e839279) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add generateTrace api.
+
 ## 2.0.3
 
 ### Patch Changes
