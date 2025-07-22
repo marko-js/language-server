@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.1
+
+### Patch Changes
+
+- [#384](https://github.com/marko-js/language-server/pull/384) [`5afb642`](https://github.com/marko-js/language-server/commit/5afb642ab5b154f48a1583f994675c0c1bf630c9) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Expose source/generated range helpers and use that when remapping generated traces in mtc.
+
+- Updated dependencies [[`5afb642`](https://github.com/marko-js/language-server/commit/5afb642ab5b154f48a1583f994675c0c1bf630c9)]:
+  - @marko/language-tools@2.5.28
+
 ## 2.1.0
 
 ### Minor Changes
