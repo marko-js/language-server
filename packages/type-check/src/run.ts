@@ -106,10 +106,16 @@ export default function run(opts: Options) {
         if (typeof fileName === "string") {
           const extracted = extractCache.get(getCanonicalFileName(fileName));
           if (extracted) {
+            const sourceRange = extracted.sourceRangeAt(args.pos, args.end);
+            if (sourceRange) {
+              args.pos = sourceRange.start;
+              args.end = sourceRange.end;
+            } else {
+              args.pos = args.end = undefined;
+            }
+
             (args as any).generatedPos = args.pos;
             (args as any).generatedEnd = args.end;
-            args.pos = extracted.sourceOffsetAt(args.pos);
-            args.end = extracted.sourceOffsetAt(args.end);
           }
         }
       }
