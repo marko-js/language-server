@@ -170,7 +170,7 @@ declare global {
       >(
         input: {
           of: Value | false | void | null;
-          by?: (item: Item, index: number) => string;
+          by?: ((item: Item, index: number) => string) | string;
         },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
