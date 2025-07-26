@@ -1,5 +1,57 @@
 # Change Log
 
+## 2.0.3
+
+### Patch Changes
+
+- [#380](https://github.com/marko-js/language-server/pull/380) [`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where overwritten native tags were not getting the correct types.
+
+## 2.0.2
+
+### Patch Changes
+
+- [#378](https://github.com/marko-js/language-server/pull/378) [`ef455c3`](https://github.com/marko-js/language-server/commit/ef455c3b1da6d2dbd1a315d5721cf166038ec758) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix return api overloads for tags api components.
+
+## 2.0.1
+
+### Patch Changes
+
+- [#376](https://github.com/marko-js/language-server/pull/376) [`01c4053`](https://github.com/marko-js/language-server/commit/01c40539c1a86540736bf7bd33a051a56affe7fe) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bump package dependencies.
+
+## 2.0.0
+
+### Major Changes
+
+- [#374](https://github.com/marko-js/language-server/pull/374) [`ab7e60f`](https://github.com/marko-js/language-server/commit/ab7e60facddd1fc598e6f0dea3888ed0693605f6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve import tag shorthand regexp false positives.
+
+### Patch Changes
+
+- [#374](https://github.com/marko-js/language-server/pull/374) [`ab7e60f`](https://github.com/marko-js/language-server/commit/ab7e60facddd1fc598e6f0dea3888ed0693605f6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix syntax highlighting of nested closing bracketed section in concise mode.
+
+## 1.5.29
+
+### Patch Changes
+
+- [#372](https://github.com/marko-js/language-server/pull/372) [`bb1206e`](https://github.com/marko-js/language-server/commit/bb1206e8fa0ea1e3986fc4fecfe12999ee0fd92f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support resolving tag import shorthands in typescript files.
+
+## 1.5.28
+
+### Patch Changes
+
+- [#370](https://github.com/marko-js/language-server/pull/370) [`985e4f1`](https://github.com/marko-js/language-server/commit/985e4f13c1bd17ab4beea4bb4146801004769d4d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typings for tag parameters.
+
+## 1.5.27
+
+### Patch Changes
+
+- [#367](https://github.com/marko-js/language-server/pull/367) [`889f266`](https://github.com/marko-js/language-server/commit/889f266c46def40bcb72769c4217e6b511d68ebb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix broken syntax highlighting when concise mode text content has empty newlines.
+
+## 1.5.26
+
+### Patch Changes
+
+- [#365](https://github.com/marko-js/language-server/pull/365) [`1fc5558`](https://github.com/marko-js/language-server/commit/1fc555848bbed07ca8c15967cbedd7433cca547b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update caches to be based on translator resolved path instead of compiler path.
+
 ## 1.5.25
 
 ### Patch Changes

@@ -17,6 +17,7 @@ export function provideCompletions(
     case NodeType.AttrName:
       return AttrName(node, doc, offset);
     case NodeType.Import:
+    case NodeType.Static:
       return Import(node, doc);
     case NodeType.Tag:
       return Tag(node, doc, offset);

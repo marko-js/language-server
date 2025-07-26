@@ -1,22 +1,20 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "1.4.23",
+  "version": "2.1.0",
   "bin": {
     "marko-language-server": "./bin.js"
   },
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/language-tools": "^2.5.22",
-    "@marko/babel-utils": "^6.6.3",
-    "@marko/compiler": "^5.39.26",
-    "htmljs-parser": "^5.5.4",
-    "marko": "^5.37.38",
-    "prettier": "^3.5.3",
-    "prettier-plugin-marko": "^3.1.12",
+    "@marko/language-tools": "^2.5.27",
+    "@marko/compiler": "^5.39.29",
+    "htmljs-parser": "^5.6.1",
+    "marko": "^5.37.41",
+    "prettier": "^3.6.2",
+    "prettier-plugin-marko": "^3.2.7",
     "relative-import-path": "^1.0.0",
-
     "typescript": "^5.8.3",
     "@volar/kit": "^2.4.14",
     "@volar/language-core": "^2.4.14",
@@ -30,7 +28,7 @@
     "volar-service-prettier": "^0.0.64",
     "volar-service-typescript": "^0.0.64",
     "volar-service-typescript-twoslash-queries": "^0.0.64",
-    "vscode-css-languageservice": "^6.3.6",
+    "vscode-css-languageservice": "^6.3.7",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.12",
     "vscode-uri": "^3.1.0",

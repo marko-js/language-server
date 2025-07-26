@@ -408,7 +408,9 @@ function resolveWritableVar(scope: Scope, name: string) {
   } while ((curScope = curScope.parent));
 }
 
-function* getIdentifiers(lVal: t.LVal): Generator<string, void> {
+function* getIdentifiers(
+  lVal: t.LVal | t.VoidPattern,
+): Generator<string, void> {
   switch (lVal.type) {
     case "Identifier":
       yield lVal.name;
@@ -441,7 +443,7 @@ function* getIdentifiers(lVal: t.LVal): Generator<string, void> {
 
 function* getVarIdentifiers(
   parsed: Parsed,
-  lVal: t.LVal,
+  lVal: t.LVal | t.VoidPattern,
   objectPath: string,
   sourceName?: string,
 ): Generator<{
@@ -694,7 +696,11 @@ function trackMutations(
   }
 }
 
-function trackShadows(node: t.LVal, scope: Scope, shadows: Set<string>) {
+function trackShadows(
+  node: t.LVal | t.VoidPattern,
+  scope: Scope,
+  shadows: Set<string>,
+) {
   for (const name of getIdentifiers(node)) {
     if (resolveWritableVar(scope, name)) {
       shadows.add(name);

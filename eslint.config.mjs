@@ -7,7 +7,7 @@ export default tseslint.config(
   {
     ignores: [
       ".nyc_output",
-      ".vscode*",
+      "**/.vscode*",
       "**/__snapshots__",
       "**/*dist/",
       "coverage",

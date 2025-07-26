@@ -1,6 +1,6 @@
 import "../utils/project-defaults";
 
-import { TaglibLookup } from "@marko/babel-utils";
+import { TaglibLookup } from "@marko/compiler/babel-utils";
 import { extractHTML, parse, Project } from "@marko/language-tools";
 import { Meta } from "@marko/language-tools/src/util/project";
 import {

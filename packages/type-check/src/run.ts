@@ -7,6 +7,7 @@ import {
   isDefinitionFile,
   type Location,
   Processors,
+  Project,
 } from "@marko/language-tools";
 import crypto from "crypto";
 import color from "kleur";
@@ -23,6 +24,7 @@ export interface Options {
   project?: string;
   display?: Display;
   emit?: boolean;
+  generateTrace?: string;
 }
 
 interface Report {
@@ -37,14 +39,15 @@ const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
   ? (fileName: string) => fileName
   : (fileName: string) => fileName.toLowerCase();
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
+const importTagReg = /^<([^>]+)>$/;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const isRemapExtensionReg = /\.ts$/;
 const isSourceMapExtensionReg = /\.map$/;
 const skipRemapExtensionsReg =
   /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
-const extractCache = new WeakMap<
-  ts.SourceFile,
+const extractCache = new Map<
+  string,
   ReturnType<Processors.Processor["extract"]>
 >();
 const requiredTSCompilerOptions: ts.CompilerOptions = {
@@ -64,8 +67,61 @@ export default function run(opts: Options) {
       findRootConfigFile("jsconfig.json"),
   } = opts;
 
-  if (!configFile)
+  if (!configFile) {
     throw new Error("Could not find tsconfig.json or jsconfig.json");
+  }
+
+  if (opts.generateTrace) {
+    (ts as any).startTracing?.(
+      "build",
+      path.resolve(opts.generateTrace),
+      configFile,
+    );
+    const tracing = (ts as any).tracing;
+    if (!tracing) {
+      throw new Error("generateTrace not available in TypeScript compiler.");
+    }
+
+    const { push } = tracing;
+    tracing.push = (
+      phase: unknown,
+      name: unknown,
+      args?: unknown,
+      separateBeginAndEnd?: unknown,
+    ) => {
+      if (
+        args &&
+        typeof args === "object" &&
+        "pos" in args &&
+        typeof args.pos === "number" &&
+        "end" in args &&
+        typeof args.end === "number"
+      ) {
+        const fileName =
+          "path" in args
+            ? args.path
+            : "fileName" in args
+              ? args.fileName
+              : undefined;
+        if (typeof fileName === "string") {
+          const extracted = extractCache.get(getCanonicalFileName(fileName));
+          if (extracted) {
+            const sourceRange = extracted.sourceRangeAt(args.pos, args.end);
+            if (sourceRange) {
+              args.pos = sourceRange.start;
+              args.end = sourceRange.end;
+            } else {
+              args.pos = args.end = undefined;
+            }
+
+            (args as any).generatedPos = args.pos;
+            (args as any).generatedEnd = args.end;
+          }
+        }
+      }
+      return push.call(tracing, phase, name, args, separateBeginAndEnd);
+    };
+  }
 
   const formatSettings = ts.getDefaultFormatCodeSettings(
     ts.sys.newLine,
@@ -187,7 +243,21 @@ export default function run(opts: Options) {
 
         for (let i = 0; i < moduleLiterals.length; i++) {
           const moduleLiteral = moduleLiterals[i];
-          const moduleName = moduleLiteral.text;
+          let moduleName = moduleLiteral.text;
+
+          const tagNameMatch = importTagReg.exec(moduleName);
+          if (tagNameMatch) {
+            // Try to resolve `import Tag from "<tag>"` style imports.
+            const [, tagName] = tagNameMatch;
+            const tagDef = Project.getTagLookup(
+              path.dirname(containingFile),
+            ).getTag(tagName);
+            const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
+            if (tagFileName) {
+              moduleName = tagFileName;
+            }
+          }
+
           const processor =
             moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
           if (processor) {
@@ -316,7 +386,7 @@ export default function run(opts: Options) {
               .createHash("md5")
               .update(extractedCode)
               .digest("hex");
-            extractCache.set(sourceFile, extracted);
+            extractCache.set(getCanonicalFileName(fileName), extracted);
             return sourceFile;
           }
 
@@ -417,7 +487,7 @@ export default function run(opts: Options) {
               }
 
               const extracted = extractCache.get(
-                program.getSourceFile(sourceFile.fileName)!,
+                getCanonicalFileName(sourceFile.fileName),
               )!;
               const printContext: Processors.PrintContext = {
                 extracted,
@@ -526,7 +596,9 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
     let loc: Location | void = undefined;
 
     if (diag.start !== undefined) {
-      const extracted = extractCache.get(diag.file);
+      const extracted = extractCache.get(
+        getCanonicalFileName(diag.file.fileName),
+      );
 
       if (extracted) {
         loc = extracted.sourceLocationAt(

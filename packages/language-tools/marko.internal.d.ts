@@ -135,7 +135,7 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
-      export function renderTemplate<Name extends Marko.Template>(
+      export function renderTemplate<Name extends Marko.Template<any, any>>(
         template: Name,
       ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
@@ -328,7 +328,7 @@ declare global {
       // currently falls back to DefaultRenderer too eagerly.
       export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
-        : [Name] extends [Marko.Template]
+        : [Name] extends [Marko.Template<any, any>]
           ? TemplateRenderer<Name>
           : [Name] extends [string]
             ? NativeTagRenderer<Name>
@@ -336,14 +336,11 @@ declare global {
               ? BodyRenderer<Name>
               : [Name] extends [
                     {
-                      [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue;
+                      [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
+                        AnyMarkoBody;
                     },
                   ]
-                ? [BodyValue] extends [AnyMarkoBody]
-                  ? BodyRenderer<BodyValue>
-                  : BaseRenderer<
-                      BodyContentInput<BodyParameters<Exclude<BodyValue, void>>>
-                    >
+                ? BodyRenderer<BodyValue>
                 : DefaultRenderer;
 
       export type TemplateRenderer<Template> = Template extends {
@@ -372,12 +369,8 @@ declare global {
       export interface BodyRenderer<Body extends AnyMarkoBody> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
-          input: Marko.Directives &
-            BodyContentInput<BodyParameters<Body>> &
-            Relate<
-              __marko_internal_input,
-              Marko.Directives & BodyContentInput<BodyParameters<Body>>
-            >,
+          ...args: BodyParamsWithDefault<Body> &
+            Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
           BodyReturnType<Body>
@@ -419,15 +412,12 @@ type ReturnAndScope<Scope, Return> = {
   scope: Scope;
 };
 
-type BodyContentInput<Args extends readonly unknown[]> = Args extends {
-  length: infer Length;
-}
-  ? number extends Length
-    ? { value?: Args }
-    : 0 extends Length
-      ? { value?: [] }
-      : { value: Args }
-  : never;
+type BodyParamsWithDefault<Body extends AnyMarkoBody> =
+  Body extends Marko.Body<infer Params, any>
+    ? Params extends []
+      ? [input?: Record<string, never>]
+      : Params
+    : never;
 
 type Scopes<Input> = [0] extends [1 & Input]
   ? never

@@ -1,5 +1,5 @@
 import type * as t from "@babel/types";
-import type { TagDefinition, TaglibLookup } from "@marko/babel-utils";
+import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
 import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";
 
@@ -378,20 +378,24 @@ function ${templateName}() {\n`);
     const internalInput = varLocal("input");
     const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
+    const returnTypeStr = didReturn
+      ? `typeof ${
+          templateName + typeArgsStr
+        } extends () => infer Return ? Return : never`
+      : "void";
     const renderAndReturn = `(input: Marko.Directives & Input${typeArgsStr} & ${varShared(
       "Relate",
     )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope",
-    )}<${internalInput}, ${
-      didReturn
-        ? `typeof ${
-            templateName + typeArgsStr
-          } extends () => infer Return ? Return : never`
-        : "void"
-    }>)`;
+    )}<${internalInput}, ${returnTypeStr}>)`;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
-        ? getRuntimeOverrides(this.#runtimeTypes, typeParamsStr, typeArgsStr)
+        ? getRuntimeOverrides(
+            this.#runtimeTypes,
+            typeParamsStr,
+            typeArgsStr,
+            returnTypeStr,
+          )
         : ""
     }
   ${this.#api ? `api: "${this.#api}",` : ""}
@@ -733,14 +737,12 @@ constructor(_?: Return) {}
     const tagName = tag.nameText;
     const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
-    const isHTML = def?.html;
-    const importPath = !isHTML
-      ? resolveTagImport(this.#filename, def)
-      : undefined;
+    const importPath = resolveTagImport(this.#filename, def);
+    const isHTML = !importPath && def?.html;
     let tagIdentifier: undefined | string;
     let isTemplate = false;
 
-    if (!isHTML && (!def || importPath)) {
+    if (!def || importPath) {
       const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
       const isMarkoFile = importPath?.endsWith(".marko");
 
@@ -1246,26 +1248,43 @@ constructor(_?: Return) {}
   #writeTagInputObject(tag: Node.ParentTag) {
     if (!tag.params) this.#writeComments(tag);
 
+    const body = this.#processBody(tag);
     let hasInput = false;
-    this.#extractor.write("{\n");
+    let writeInputObj = true;
 
-    if (tag.args) {
+    if (
+      tag.args &&
+      (this.#api !== RuntimeAPI.class || !!this.#getDynamicTagExpression(tag))
+    ) {
       hasInput = true;
-      this.#extractor
-        .write("[")
-        .copy({
-          start: tag.args.start,
-          end: tag.args.start + 1,
-        })
-        .write('"value"')
-        .copy({
-          start: tag.args.end - 1,
-          end: tag.args.end,
-        })
-        .write(`]: ${varShared("tuple")}(`)
-        .copy(tag.args.value)
-        .write(")")
-        .write(",\n");
+      this.#extractor.copy(tag.args.value);
+
+      if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
+        this.#extractor.write(",\n{\n");
+      } else {
+        writeInputObj = false;
+      }
+    } else {
+      this.#extractor.write("{\n");
+
+      if (tag.args) {
+        hasInput = true;
+        this.#extractor
+          .write("[")
+          .copy({
+            start: tag.args.start,
+            end: tag.args.start + 1,
+          })
+          .write('"value"')
+          .copy({
+            start: tag.args.end - 1,
+            end: tag.args.end,
+          })
+          .write(`]: ${varShared("tuple")}(`)
+          .copy(tag.args.value)
+          .write(")")
+          .write(",\n");
+      }
     }
 
     if (this.#writeAttrs(tag)) {
@@ -1274,7 +1293,6 @@ constructor(_?: Return) {}
 
     const isScript = isTextOnlyScript(tag);
     let hasBodyContent = false;
-    let body: ProcessedBody | undefined;
 
     if (isScript) {
       this.#extractor.write("async value(){");
@@ -1283,15 +1301,12 @@ constructor(_?: Return) {}
         end: tag.body[tag.body.length - 1].end,
       });
       this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
-    } else {
-      body = this.#processBody(tag);
-      if (body) {
-        hasInput = true;
-        this.#writeAttrTags(body);
-        hasBodyContent = body.content !== undefined;
-      } else if (tag.close) {
-        hasBodyContent = true;
-      }
+    } else if (body) {
+      hasInput = true;
+      this.#writeAttrTags(body);
+      hasBodyContent = body.content !== undefined;
+    } else if (tag.close) {
+      hasBodyContent = true;
     }
 
     if (tag.params || hasBodyContent) {
@@ -1371,7 +1386,9 @@ constructor(_?: Return) {}
       this.#writeTagNameComment(tag);
     }
 
-    this.#extractor.write("\n}");
+    if (writeInputObj) {
+      this.#extractor.write("\n}");
+    }
   }
 
   #writeObjectKeys(keys: Iterable<string>) {

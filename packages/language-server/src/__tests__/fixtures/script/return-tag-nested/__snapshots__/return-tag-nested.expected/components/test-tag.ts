@@ -15,9 +15,7 @@ export { type Component };
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
   const __marko_internal_tag_1 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    value: ["a"],
-  });
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()("a");
   return;
 })();
 export default new (class Template extends Marko._.Template<{

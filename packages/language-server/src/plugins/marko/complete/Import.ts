@@ -1,17 +1,23 @@
-import type { Node } from "@marko/language-tools";
+import { type Node, NodeType } from "@marko/language-tools";
 import { CompletionItem, TextEdit } from "vscode-languageserver";
 
 import { MarkoVirtualCode } from "../../../language";
 import getTagNameCompletion from "../util/get-tag-name-completion";
 
+const staticImportReg = /^\s*(?:static|client|server) import\b/;
 const importTagReg = /(['"])<((?:[^'"\\>]|\\.)*)>?\1/;
 
 export function Import(
-  node: Node.Import,
+  node: Node.Import | Node.Static,
   file: MarkoVirtualCode,
 ): CompletionItem[] | undefined {
   // check for import statement
   const value = file.markoAst.read(node);
+  if (node.type === NodeType.Static && !staticImportReg.test(value)) {
+    // Checks for `static import`, `client import` and `server import`.
+    return;
+  }
+
   const match = importTagReg.exec(value);
   if (match) {
     const [{ length }] = match;

@@ -1,6 +1,6 @@
 import { strip as stripJSONComments } from "@luxass/strip-json-comments";
-import type { TaglibLookup } from "@marko/babel-utils";
 import type * as Compiler from "@marko/compiler";
+import type { TaglibLookup } from "@marko/compiler/babel-utils";
 import { createRequire } from "module";
 import path from "path";
 import type TS from "typescript/lib/tsserverlibrary";
@@ -31,7 +31,7 @@ const defaultTypeLibs: Partial<TypeLibs> = {};
 let defaultMeta: Meta | undefined;
 const ignoreErrors = (_err: Error) => {};
 const metaByDir = new Map<string, Meta>();
-const metaByCompiler = new Map<string, Meta>();
+const metaByTranslator = new Map<string, Meta>();
 
 export function getCompiler(dir?: string) {
   return getMeta(dir).compiler;
@@ -184,7 +184,7 @@ export function clearCaches() {
     clearCacheForMeta(defaultMeta);
   }
 
-  for (const project of metaByCompiler.values()) {
+  for (const project of metaByTranslator.values()) {
     clearCacheForMeta(project);
   }
 }
@@ -241,22 +241,22 @@ function loadMeta(dir: string): Meta {
   let cached = metaByDir.get(dir);
   if (!cached) {
     const require = createRequire(path.join(dir, "_.js"));
-    const configPath: string = require.resolve("@marko/compiler/config");
-    cached = metaByCompiler.get(configPath);
-
+    const configPath = require.resolve("@marko/compiler/config");
+    const config = interopDefault(require(configPath)) as Compiler.Config;
+    const translatorPath = require.resolve(config.translator);
+    cached = metaByTranslator.get(translatorPath);
     if (!cached) {
       const compiler = require(path.dirname(configPath)) as typeof Compiler;
-      const config = interopDefault(require(configPath)) as Compiler.Config;
       cached = {
         compiler,
         config: {
           ...config,
           cache: new Map(),
-          translator: require(config.translator),
+          translator: require(translatorPath),
         },
       };
       compiler.configure(cached.config);
-      metaByCompiler.set(configPath, cached);
+      metaByTranslator.set(translatorPath, cached);
     }
 
     metaByDir.set(dir, cached);

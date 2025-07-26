@@ -1,4 +1,4 @@
-import { TaglibLookup } from "@marko/babel-utils";
+import { TaglibLookup } from "@marko/compiler/babel-utils";
 import { extractScript, parse, ScriptLang } from "@marko/language-tools";
 import { Meta } from "@marko/language-tools/src/util/project";
 import type { CodeMapping, VirtualCode } from "@volar/language-core";

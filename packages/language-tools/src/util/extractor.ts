@@ -104,14 +104,15 @@ export class Extracted {
     if (sourceOffset !== undefined) return this.parsed.positionAt(sourceOffset);
   }
 
+  sourceRangeAt(generatedStart: number, generatedEnd: number) {
+    return this.#generatedToSource.rangeAt(generatedStart, generatedEnd);
+  }
+
   sourceLocationAt(
     generatedStart: number,
     generatedEnd: number,
   ): Location | undefined {
-    const sourceRange = this.#generatedToSource.rangeAt(
-      generatedStart,
-      generatedEnd,
-    );
+    const sourceRange = this.sourceRangeAt(generatedStart, generatedEnd);
     if (sourceRange) {
       return this.parsed.locationAt(sourceRange);
     }
@@ -128,14 +129,15 @@ export class Extracted {
     }
   }
 
+  generatedRangeAt(sourceStart: number, sourceEnd: number) {
+    return this.#sourceToGenerated.rangeAt(sourceStart, sourceEnd);
+  }
+
   generatedLocationAt(
     sourceStart: number,
     sourceEnd: number,
   ): Location | undefined {
-    const generatedRange = this.#sourceToGenerated.rangeAt(
-      sourceStart,
-      sourceEnd,
-    );
+    const generatedRange = this.generatedRangeAt(sourceStart, sourceEnd);
     if (generatedRange) {
       return getLocation(
         this.#generatedLines,

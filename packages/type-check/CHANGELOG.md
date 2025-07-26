@@ -1,5 +1,68 @@
 # @marko/type-check
 
+## 2.1.1
+
+### Patch Changes
+
+- [#384](https://github.com/marko-js/language-server/pull/384) [`5afb642`](https://github.com/marko-js/language-server/commit/5afb642ab5b154f48a1583f994675c0c1bf630c9) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Expose source/generated range helpers and use that when remapping generated traces in mtc.
+
+- Updated dependencies [[`5afb642`](https://github.com/marko-js/language-server/commit/5afb642ab5b154f48a1583f994675c0c1bf630c9)]:
+  - @marko/language-tools@2.5.28
+
+## 2.1.0
+
+### Minor Changes
+
+- [#382](https://github.com/marko-js/language-server/pull/382) [`c07193e`](https://github.com/marko-js/language-server/commit/c07193e935ea112b64a9da013efb6bb81e839279) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add generateTrace api.
+
+## 2.0.2
+
+### Patch Changes
+
+- [#380](https://github.com/marko-js/language-server/pull/380) [`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue where overwritten native tags were not getting the correct types.
+
+- Updated dependencies [[`f3abd99`](https://github.com/marko-js/language-server/commit/f3abd992e17d005881b2cb6ff676582a3be3b854)]:
+  - @marko/language-tools@2.5.27
+
+## 2.0.1
+
+### Patch Changes
+
+- [#378](https://github.com/marko-js/language-server/pull/378) [`ef455c3`](https://github.com/marko-js/language-server/commit/ef455c3b1da6d2dbd1a315d5721cf166038ec758) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix return api overloads for tags api components.
+
+- Updated dependencies [[`ef455c3`](https://github.com/marko-js/language-server/commit/ef455c3b1da6d2dbd1a315d5721cf166038ec758)]:
+  - @marko/language-tools@2.5.26
+
+## 2.0.0
+
+### Major Changes
+
+- [#374](https://github.com/marko-js/language-server/pull/374) [`ab7e60f`](https://github.com/marko-js/language-server/commit/ab7e60facddd1fc598e6f0dea3888ed0693605f6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve import tag shorthand regexp false positives.
+
+## 1.3.25
+
+### Patch Changes
+
+- [#372](https://github.com/marko-js/language-server/pull/372) [`bb1206e`](https://github.com/marko-js/language-server/commit/bb1206e8fa0ea1e3986fc4fecfe12999ee0fd92f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support resolving tag import shorthands in typescript files.
+
+## 1.3.24
+
+### Patch Changes
+
+- [#370](https://github.com/marko-js/language-server/pull/370) [`985e4f1`](https://github.com/marko-js/language-server/commit/985e4f13c1bd17ab4beea4bb4146801004769d4d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve typings for tag parameters.
+
+- Updated dependencies [[`985e4f1`](https://github.com/marko-js/language-server/commit/985e4f13c1bd17ab4beea4bb4146801004769d4d)]:
+  - @marko/language-tools@2.5.24
+
+## 1.3.23
+
+### Patch Changes
+
+- [#365](https://github.com/marko-js/language-server/pull/365) [`1fc5558`](https://github.com/marko-js/language-server/commit/1fc555848bbed07ca8c15967cbedd7433cca547b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update caches to be based on translator resolved path instead of compiler path.
+
+- Updated dependencies [[`1fc5558`](https://github.com/marko-js/language-server/commit/1fc555848bbed07ca8c15967cbedd7433cca547b)]:
+  - @marko/language-tools@2.5.23
+
 ## 1.3.22
 
 ### Patch Changes
