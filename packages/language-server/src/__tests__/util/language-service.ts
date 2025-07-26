@@ -17,9 +17,11 @@ Project.setDefaultTypePaths({
 });
 
 export async function getLanguageServer() {
+  // Use the fixtures directory as the workspace root for proper type resolution
+  const fixturesDir = path.resolve(rootDir, "./__tests__/fixtures/");
   const compilerOptions: ts.CompilerOptions = {
     ...ts.getDefaultCompilerOptions(),
-    rootDir,
+    rootDir: fixturesDir,
     strict: true,
     skipLibCheck: true,
     noEmitOnError: true,
@@ -33,23 +35,13 @@ export async function getLanguageServer() {
   };
 
   if (!serverHandle) {
-    console.log("Starting language server");
-    console.log(" - bin, ", path.resolve("./bin.js"));
-    console.log(
-      " - Working Dir",
-      path.resolve(rootDir, "./__tests__/fixtures/"),
-    );
     serverHandle = startLanguageServer(path.resolve("./bin.js"));
-
     const tsdkPath = path.dirname(
       require.resolve("typescript/lib/typescript.js"),
     );
-    console.log(" - tsdkPath", tsdkPath);
-    await serverHandle.initialize(path.resolve("./"), {
-      typescript: {
-        tsdk: tsdkPath,
-        compilerOptions,
-      },
+    // Initialize the server with the fixtures directory as the root workspace
+    await serverHandle.initialize(fixturesDir, {
+      typescript: { tsdk: tsdkPath, compilerOptions },
     });
 
     // Ensure that our first test does not suffer from a TypeScript overhead
