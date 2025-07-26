@@ -14,7 +14,7 @@ await Promise.all([
     // since we're bundling typescript and it will look for them relative to the `__dirname` of the script.
     const tsLibDir = path.join(
       require.resolve("typescript/package.json"),
-      "../lib"
+      "../lib",
     );
     const [dir] = await Promise.all([
       fs.opendir(tsLibDir),
@@ -24,18 +24,18 @@ await Promise.all([
       if (entry.isFile() && /^lib\..*\.d\.ts$/.test(entry.name)) {
         await fs.copyFile(
           path.join(tsLibDir, entry.name),
-          path.join(distDir, entry.name)
+          path.join(distDir, entry.name),
         );
       }
     }
   })(),
   fs.copyFile(
     path.join(thisDir, "../language-tools/marko.internal.d.ts"),
-    path.join(distDir, "marko.internal.d.ts")
+    path.join(distDir, "marko.internal.d.ts"),
   ),
   fs.copyFile(
     path.join(require.resolve("marko/package.json"), "../index.d.ts"),
-    path.join(distDir, "marko.runtime.d.ts")
+    path.join(distDir, "marko.runtime.d.ts"),
   ),
   build({
     bundle: true,
@@ -65,10 +65,10 @@ await Promise.all([
       "@babel/preset-typescript",
     ],
     define: {
-      "import.meta.url": "_importMetaUrl"
+      "import.meta.url": "_importMetaUrl",
     },
     banner: {
-      js: "const _importMetaUrl = require('url').pathToFileURL(__filename);"
+      js: "const _importMetaUrl = require('url').pathToFileURL(__filename);",
     },
     plugins: [
       {
@@ -82,7 +82,17 @@ await Promise.all([
             path: path.join(
               require.resolve(pkg),
               "..",
-              require(pkg).module as string
+              require(pkg).module as string,
+            ),
+          }));
+
+          const htmlPkg = "vscode-html-languageservice/package.json";
+
+          build.onResolve({ filter: /^vscode-html-languageservice$/ }, () => ({
+            path: path.join(
+              require.resolve(htmlPkg),
+              "..",
+              require(htmlPkg).module as string,
             ),
           }));
         },
@@ -105,10 +115,10 @@ await Promise.all([
                 loader: "js",
                 contents: (await fs.readFile(args.path, "utf8")).replace(
                   'require.resolve ? require.resolve("./xhr-sync-worker.js") :',
-                  ""
+                  "",
                 ),
               };
-            }
+            },
           );
         },
       },

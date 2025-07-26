@@ -1,37 +1,27 @@
-import type { Extracted } from "@marko/language-tools";
-import { getExt } from "@marko/language-tools";
-import {
-  createFSBackedSystem,
-  createVirtualLanguageServiceHost,
-} from "@typescript/vfs";
+import { Project } from "@marko/language-tools";
+import { LanguageServerHandle, startLanguageServer } from "@volar/test-utils";
 import fs from "fs";
 import path from "path";
 import ts from "typescript";
+import * as protocol from "vscode-languageserver-protocol/node";
 
 const rootDir = process.cwd();
-const startPosition: ts.LineAndCharacter = {
-  line: 0,
-  character: 0,
-};
 
-export type Processors = Record<
-  string,
-  {
-    ext: ts.Extension;
-    kind: ts.ScriptKind;
-    extract(filename: string, code: string): Extracted;
-  }
->;
+let serverHandle: LanguageServerHandle | undefined;
 
-export function createLanguageService(
-  fsMap: Map<string, string>,
-  processors: Processors,
-) {
-  const getProcessor = (filename: string) =>
-    processors[getExt(filename)?.slice(1) || ""];
+Project.setDefaultTypePaths({
+  internalTypesFile: require.resolve(
+    "@marko/language-tools/marko.internal.d.ts",
+  ),
+  markoTypesFile: require.resolve("marko/index.d.ts"),
+});
+
+export async function getLanguageServer() {
+  // Use the fixtures directory as the workspace root for proper type resolution
+  const fixturesDir = path.resolve(rootDir, "./__tests__/fixtures/");
   const compilerOptions: ts.CompilerOptions = {
     ...ts.getDefaultCompilerOptions(),
-    rootDir,
+    rootDir: fixturesDir,
     strict: true,
     skipLibCheck: true,
     noEmitOnError: true,
@@ -41,132 +31,27 @@ export function createLanguageService(
     allowNonTsExtensions: true,
     module: ts.ModuleKind.ESNext,
     target: ts.ScriptTarget.ESNext,
-    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  };
-  const rootFiles = [...fsMap.keys()];
-  const sys = createFSBackedSystem(fsMap, rootDir, ts);
-
-  const { languageServiceHost: lsh } = createVirtualLanguageServiceHost(
-    sys,
-    rootFiles,
-    compilerOptions,
-    ts,
-  );
-
-  const ls = ts.createLanguageService(lsh);
-  const snapshotCache = new Map<string, [Extracted, ts.IScriptSnapshot]>();
-
-  /**
-   * Trick TypeScript into thinking Marko files are TS/JS files.
-   */
-  lsh.getScriptKind = (filename: string) => {
-    const processor = getProcessor(filename);
-    return processor ? processor.kind : ts.ScriptKind.TS;
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
   };
 
-  /**
-   * A script snapshot is an immutable string of text representing the contents of a file.
-   * We patch it so that Marko files instead return their extracted ts code.
-   */
-  const getScriptSnapshot = lsh.getScriptSnapshot!.bind(lsh);
-  lsh.getScriptSnapshot = (filename: string) => {
-    const processor = getProcessor(filename);
-    if (processor) {
-      let cached = snapshotCache.get(filename);
-      if (!cached) {
-        const extracted = processor.extract(
-          filename,
-          lsh.readFile(filename, "utf-8") || "",
-        );
-        snapshotCache.set(
-          filename,
-          (cached = [
-            extracted,
-            ts.ScriptSnapshot.fromString(extracted.toString()),
-          ]),
-        );
-      }
-
-      return cached[1];
-    }
-
-    return getScriptSnapshot(filename);
-  };
-
-  /**
-   * This ensures that any directory reads with specific file extensions also include Marko.
-   * It is used for example when completing the `from` property of the `import` statement.
-   */
-  const readDirectory = lsh.readDirectory!.bind(lsh);
-  const additionalExts = Object.keys(processors);
-  lsh.readDirectory = (path, extensions, exclude, include, depth) => {
-    return readDirectory(
-      path,
-      extensions?.concat(additionalExts),
-      exclude,
-      include,
-      depth,
+  if (!serverHandle) {
+    serverHandle = startLanguageServer(path.resolve("./bin.js"));
+    const tsdkPath = path.dirname(
+      require.resolve("typescript/lib/typescript.js"),
     );
-  };
+    // Initialize the server with the fixtures directory as the root workspace
+    await serverHandle.initialize(fixturesDir, {
+      typescript: { tsdk: tsdkPath, compilerOptions },
+    });
 
-  /**
-   * TypeScript doesn't know how to resolve `.marko` files.
-   * Below we first try to use TypeScripts normal resolution, and then fallback
-   * to seeing if a `.marko` file exists at the same location.
-   */
-  lsh.resolveModuleNames = (moduleNames, containingFile) => {
-    const resolvedModules: (
-      | ts.ResolvedModuleFull
-      | ts.ResolvedModule
-      | undefined
-    )[] = moduleNames.map<ts.ResolvedModule | undefined>(
-      (moduleName) =>
-        ts.resolveModuleName(moduleName, containingFile, compilerOptions, sys)
-          .resolvedModule,
+    // Ensure that our first test does not suffer from a TypeScript overhead
+    await serverHandle.sendCompletionRequest(
+      "file://doesnt-exists",
+      protocol.Position.create(0, 0),
     );
+  }
 
-    for (let i = resolvedModules.length; i--; ) {
-      if (!resolvedModules[i]) {
-        const moduleName = moduleNames[i];
-        const processor = moduleName[0] !== "*" && getProcessor(moduleName);
-        if (processor && moduleName[0] === ".") {
-          // For relative paths just see if it exists on disk.
-          const resolvedFileName = path.resolve(
-            containingFile,
-            "..",
-            moduleName,
-          );
-          if (lsh.fileExists(resolvedFileName)) {
-            resolvedModules[i] = {
-              resolvedFileName,
-              extension: processor.ext,
-              isExternalLibraryImport: false,
-            };
-          }
-        }
-      }
-    }
-
-    return resolvedModules;
-  };
-
-  /**
-   * Whenever TypeScript requests line/character info we return with the source
-   * file line/character if it exists.
-   */
-  const toLineColumnOffset = ls.toLineColumnOffset!;
-  ls.toLineColumnOffset = (fileName, pos) => {
-    if (pos === 0) return startPosition;
-
-    const extracted = snapshotCache.get(fileName)?.[0];
-    if (extracted) {
-      return extracted.sourcePositionAt(pos) || startPosition;
-    }
-
-    return toLineColumnOffset(fileName, pos);
-  };
-
-  return ls;
+  return serverHandle;
 }
 
 export function loadMarkoFiles(dir: string, all = new Set<string>()) {
