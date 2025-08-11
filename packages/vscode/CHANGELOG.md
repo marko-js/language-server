@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.4
+
+### Patch Changes
+
+- [#391](https://github.com/marko-js/language-server/pull/391) [`4a09275`](https://github.com/marko-js/language-server/commit/4a0927539002d0f8abe4b07b201ec0b9f9408920) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix multi level scope hoisting types.
+
 ## 2.0.3
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.2
+
+### Patch Changes
+
+- [#391](https://github.com/marko-js/language-server/pull/391) [`4a09275`](https://github.com/marko-js/language-server/commit/4a0927539002d0f8abe4b07b201ec0b9f9408920) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix multi level scope hoisting types.
+
+- Updated dependencies [[`9930a45`](https://github.com/marko-js/language-server/commit/9930a457c02601e09d3180ea0399cbc18c19446e), [`4a09275`](https://github.com/marko-js/language-server/commit/4a0927539002d0f8abe4b07b201ec0b9f9408920)]:
+  - @marko/language-tools@2.5.29
+
 ## 2.1.1
 
 ### Patch Changes
