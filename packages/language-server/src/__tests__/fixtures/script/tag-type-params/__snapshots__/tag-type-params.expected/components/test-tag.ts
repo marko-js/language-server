@@ -14,12 +14,13 @@ function __marko_internal_template<T, U>(this: void) {
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.noop({ component, state, out, input, $global, $signal });
   const __marko_internal_return = {
     return: Marko._.returnTag({
       value: 1 as unknown as U,
     }),
   };
+
+  Marko._.noop({ component, state, out, input, $global, $signal });
   return __marko_internal_return.return;
 }
 export default new (class Template extends Marko._.Template<{

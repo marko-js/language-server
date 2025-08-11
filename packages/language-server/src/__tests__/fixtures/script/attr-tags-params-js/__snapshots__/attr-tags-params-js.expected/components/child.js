@@ -23,6 +23,7 @@ export class Component extends Marko.Component {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
   );
+
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
