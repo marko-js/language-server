@@ -11,23 +11,24 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  Marko._.renderNativeTag("div")()()({
+    role: "region",
+    ["renderBody" /*div*/]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
+  Marko._.renderNativeTag("div")()()({
+    role: "region",
+    ["renderBody" /*div*/]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
+
   Marko._.noop({ component, state, out, input, $global, $signal });
-  Marko._.renderNativeTag("div")()()({
-    role: "region",
-    ["renderBody" /*div*/]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
-  });
-  Marko._.renderNativeTag("div")()()({
-    role: "region",
-    ["renderBody" /*div*/]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
-  });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

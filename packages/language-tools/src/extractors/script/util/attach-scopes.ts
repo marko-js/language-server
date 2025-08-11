@@ -121,6 +121,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
         break;
       }
 
+      curParent.hoists = true;
       if (curParent === programScope) {
         binding.hoisted = true;
         programScope.bindings![name] = {
@@ -136,11 +137,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
     }
 
     if (binding.hoisted) {
-      curParent = scope;
-      while (curParent && !curParent.hoists) {
-        curParent.hoists = true;
-        curParent = curParent.parent;
-      }
+      scope.hoists = true;
     }
   }
 
@@ -356,11 +353,11 @@ export function getHoists(node: Node.Program) {
   return result;
 }
 
-export function getHoistSources(node: Node.ParentNode) {
+export function getHoistSources(body: Node.ParentNode["body"]) {
   let result: Repeatable<string>;
 
-  if (node.body) {
-    const { bindings } = Scopes.get(node.body)!;
+  if (body) {
+    const { bindings } = Scopes.get(body)!;
 
     for (const key in bindings) {
       if (bindings[key].hoisted) {
