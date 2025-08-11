@@ -138,7 +138,6 @@ class HTMLExtractor {
     const valueString = this.#read(attr.value);
     const valueType = getAttributeValueType(valueString);
     if (valueType === undefined) return;
-
     switch (valueType) {
       case AttributeValueType.True:
         break;
