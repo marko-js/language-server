@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.5
+
+### Patch Changes
+
+- [#392](https://github.com/marko-js/language-server/pull/392) [`ca1a4b5`](https://github.com/marko-js/language-server/commit/ca1a4b54177d257340c7a453651589ac0df07d1a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve syntax highlighting, support more regexp engines.
+
+- [#392](https://github.com/marko-js/language-server/pull/392) [`ca1a4b5`](https://github.com/marko-js/language-server/commit/ca1a4b54177d257340c7a453651589ac0df07d1a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade deps.
+
 ## 2.0.4
 
 ### Patch Changes
