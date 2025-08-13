@@ -9,13 +9,13 @@
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
     "@marko/language-tools": "^2.5.29",
-    "@marko/compiler": "^5.39.29",
-    "htmljs-parser": "^5.6.1",
-    "marko": "^5.37.41",
+    "@marko/compiler": "^5.39.32",
+    "htmljs-parser": "^5.7.3",
+    "marko": "^5.37.43",
     "prettier": "^3.6.2",
-    "prettier-plugin-marko": "^3.2.7",
+    "prettier-plugin-marko": "^3.3.1",
     "relative-import-path": "^1.0.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "vscode-css-languageservice": "^6.3.7",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.12",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
-    "tsx": "^4.20.3"
+    "tsx": "^4.20.4"
   },
   "exports": {
     ".": {
