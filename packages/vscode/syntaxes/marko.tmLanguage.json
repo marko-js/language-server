@@ -105,7 +105,7 @@
           "name": "meta.marko-spread-attribute",
           "contentName": "source.ts",
           "begin": "(\\.\\.\\.)",
-          "end": "(?=[,;\\]]|/>|(?<=[^=])>|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^\\+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>])))",
+          "end": "(?=[,;\\]]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
           "patterns": [{ "include": "#javascript-expression" }],
           "beginCaptures": { "1": { "name": "keyword.operator.spread.marko" } }
         },
@@ -123,7 +123,7 @@
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
       "begin": "\\s*(:?=)\\s*",
-      "end": "(?=[,;\\]]|/>|(?<=[^=])>|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^\\+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>])))",
+      "end": "(?=[,;\\]]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
       "patterns": [{ "include": "#javascript-expression" }],
       "beginCaptures": { "1": { "patterns": [{ "include": "source.ts" }] } }
     },
@@ -202,6 +202,7 @@
     "concise-open-tag-content": {
       "comment": "Handles everything from the start of the tag name until the body content begins.",
       "patterns": [
+        { "include": "#invalid-close-tag" },
         { "include": "#tag-before-attrs" },
         { "include": "#concise-semi-eol" },
         {
@@ -661,6 +662,7 @@
     "open-tag-content": {
       "comment": "Matches everything within an open tag from tag name to the last attr.",
       "patterns": [
+        { "include": "#invalid-close-tag" },
         { "include": "#tag-before-attrs" },
         {
           "comment": "Attributes begin after the first space within the tag name",
@@ -756,7 +758,7 @@
             {
               "comment": "Match type",
               "begin": "\\s*(:)(?!=)",
-              "end": "(?=[,;\\](]|/>|(?<=[^=])>|(?<!(?:^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|=>|>{2,}|[^.]\\.|[^-]-|^\\s*\\+\\+|[^\\+]\\+{2}*\\+|[a-zA-Z0-9%).<\\]}]\\s*/|\\b(?<![.]\\s*)(?:await|async|class|function|keyof|new|typeof|void))\\s*)(?:\\n|[ \\t]+(?![\\n{+!~*%&^|?:]|[<>/=-]=|=>|>{2,}|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>])))",
+              "end": "(?=[,;\\](]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
               "patterns": [
                 { "include": "source.ts#type" },
                 { "include": "#javascript-expression" }
@@ -824,13 +826,13 @@
         {
           "comment": "Marko html-comment tag",
           "begin": "\\s*(<)(?=html-comment\\b)",
-          "end": "/>|(?<=</(?:html-comment)?>)",
+          "end": "/>|(?<=</>|</html-comment>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
-              "comment": "Style comment content",
+              "comment": "Comment tag body content",
               "begin": ">",
-              "end": "\\s*(</)(html-comment)?(>)",
+              "end": "\\s*(?:</>|</html-comment>)",
               "patterns": [{ "include": "#content-embedded-comment" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -851,8 +853,8 @@
         },
         {
           "comment": "HTML style tag with less",
-          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.less\\b)",
-          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
+          "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.less\\b)",
+          "end": "/>|(?<=</>|</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -880,8 +882,8 @@
         },
         {
           "comment": "HTML style tag with scss",
-          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.scss\\b)",
-          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
+          "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.scss\\b)",
+          "end": "/>|(?<=</>|</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -909,8 +911,8 @@
         },
         {
           "comment": "HTML style tag with js/ts",
-          "begin": "\\s*(<)(?=(?:html-)?style\\b[^\\s]*\\.[tj]s\\b)",
-          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
+          "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.[tj]s\\b)",
+          "end": "/>|(?<=</>|</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -938,8 +940,8 @@
         },
         {
           "comment": "HTML style tag",
-          "begin": "\\s*(<)(?=(?:html-)?style\\b)",
-          "end": "/>|(?<=</(?:(?:html-)?style)?>)",
+          "begin": "\\s*(<)(?=((?:html-)?style)\\b)",
+          "end": "/>|(?<=</>|</\\2>)",
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
           },
@@ -967,8 +969,8 @@
         },
         {
           "comment": "HTML script tag",
-          "begin": "\\s*(<)(?=(?:html-)?script\\b)",
-          "end": "/>|(?<=</(?:(?:html-)?script)?>)",
+          "begin": "\\s*(<)(?=((?:html-)?script)\\b)",
+          "end": "/>|(?<=</>|</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -996,8 +998,8 @@
         },
         {
           "comment": "HTML normal tag",
-          "begin": "\\s*(<)(?=[a-zA-Z0-9_$@.#])",
-          "end": "/>|(?<=</[a-zA-Z0-9_$:@.#-]*>)",
+          "begin": "\\s*(<)(?=[.#$]|([a-zA-Z0-9_$@]+))",
+          "end": "/>|(?<=</>|</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
