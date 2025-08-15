@@ -40,7 +40,7 @@ export { type Component };
   });
   //        ^?
   x;
-  const { x } = __marko_internal_rendered_1.scope;
+  const { x } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ x, component, state, out, input, $global, $signal });
   return;
 })();

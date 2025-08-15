@@ -14,7 +14,6 @@ export { type Component };
   Marko._.renderNativeTag("meta")()()({
     "http-equiv": "refresh",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

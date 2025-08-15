@@ -16,7 +16,6 @@ export { type Component };
     "aria-label": "my checkbox",
     "aria-checked": "sometimes",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

@@ -85,7 +85,7 @@ export { type Component };
   Marko._.noop({
     x,
   });
-  const { y } = __marko_internal_rendered_2.scope;
+  const { y } = Marko._.readScope(__marko_internal_rendered_2);
   Marko._.noop({ y, component, state, out, input, $global, $signal });
   return;
 })();

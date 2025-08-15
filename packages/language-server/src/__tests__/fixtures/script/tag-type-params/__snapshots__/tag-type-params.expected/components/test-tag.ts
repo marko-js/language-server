@@ -19,7 +19,6 @@ function __marko_internal_template<T, U>(this: void) {
       value: 1 as unknown as U,
     }),
   };
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return __marko_internal_return.return;
 }

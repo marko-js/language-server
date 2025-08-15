@@ -4,7 +4,7 @@
    97 |
    98 | <effect() {
 >  99 |   a;
-      |   ^ const a: 0 | undefined
+      |   ^ const a: never
   100 | //^?
   101 |   b;
   102 | //^?
@@ -15,7 +15,7 @@
    99 |   a;
   100 | //^?
 > 101 |   b;
-      |   ^ const b: 1 | undefined
+      |   ^ const b: never
   102 | //^?
   103 |   c;
   104 | //^?
@@ -26,7 +26,7 @@
   101 |   b;
   102 | //^?
 > 103 |   c;
-      |   ^ const c: 2 | undefined
+      |   ^ const c: never
   104 | //^?
   105 |   d;
   106 | //^?
@@ -37,7 +37,7 @@
   103 |   c;
   104 | //^?
 > 105 |   d;
-      |   ^ const d: 3 | undefined
+      |   ^ const d: never
   106 | //^?
   107 |   e;
   108 | //^?
@@ -48,7 +48,7 @@
   105 |   d;
   106 | //^?
 > 107 |   e;
-      |   ^ const e: 4 | undefined
+      |   ^ const e: never
   108 | //^?
   109 |   f;
   110 | //^?
@@ -59,7 +59,7 @@
   107 |   e;
   108 | //^?
 > 109 |   f;
-      |   ^ const f: 4 | undefined
+      |   ^ const f: never
   110 | //^?
   111 |   g;
   112 | //^?
@@ -70,7 +70,7 @@
   109 |   f;
   110 | //^?
 > 111 |   g;
-      |   ^ const g: 5 | 6
+      |   ^ const g: never
   112 | //^?
   113 |   h;
   114 | //^?
@@ -81,7 +81,7 @@
   111 |   g;
   112 | //^?
 > 113 |   h;
-      |   ^ const h: 7 | undefined
+      |   ^ const h: never
   114 | //^?
   115 |   i;
   116 | //^?
@@ -92,7 +92,7 @@
   113 |   h;
   114 | //^?
 > 115 |   i;
-      |   ^ const i: 8 | undefined
+      |   ^ const i: never
   116 | //^?
   117 | }/>
   118 |

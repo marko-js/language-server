@@ -30,7 +30,6 @@ export { type Component };
     valueChange: a.bChange,
   });
   const b = __marko_internal_rendered_2.return.value;
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

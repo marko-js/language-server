@@ -59,7 +59,6 @@ export { type Component };
     })(),
     /*h6*/
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

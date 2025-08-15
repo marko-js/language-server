@@ -81,7 +81,9 @@ export { type Component };
     j;
     //^?
   };
-  const { a, b, c, d, e, f, g, h, i, j } = __marko_internal_rendered_1.scope;
+  const { a, b, c, d, e, f, g, h, i, j } = Marko._.readScope(
+    __marko_internal_rendered_1,
+  );
   Marko._.noop({
     a,
     b,

@@ -78,7 +78,7 @@ export { type Component };
       };
     })(),
   });
-  const { x, y, promise } = __marko_internal_rendered_1.scope;
+  const { x, y, promise } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({
     x,
     y,

@@ -110,7 +110,7 @@ export { type Component };
       //^?
     },
   });
-  const { b, a, c } = __marko_internal_rendered_1.scope;
+  const { b, a, c } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ b, a, c, component, state, out, input, $global, $signal });
   return;
 })();

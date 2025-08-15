@@ -100,6 +100,23 @@ declare global {
       > &
         Record<any, never>;
 
+      export function readScope<Value>(
+        value: Value,
+      ): MergeScopes<
+        undefined extends Value
+          ? Value extends { scope: infer Scope }
+            ? [0] extends [1 & Scope]
+              ? never
+              : Partial<Scope>
+            : never
+          : Value extends { scope: infer Scope }
+            ? [0] extends [1 & Scope]
+              ? never
+              : Scope
+            : never
+      > &
+        Record<any, never>;
+
       export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
         Lookup extends readonly (infer Item)[]
           ? Item extends

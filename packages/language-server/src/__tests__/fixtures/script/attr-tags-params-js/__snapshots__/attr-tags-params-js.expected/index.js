@@ -96,7 +96,6 @@ export class Component extends Marko.Component {}
       ]),
     },
   );
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

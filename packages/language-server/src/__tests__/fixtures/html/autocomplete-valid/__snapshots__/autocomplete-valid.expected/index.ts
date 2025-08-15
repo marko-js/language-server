@@ -25,7 +25,6 @@ export { type Component };
     name: "name",
     autocomplete: "invalid-value",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

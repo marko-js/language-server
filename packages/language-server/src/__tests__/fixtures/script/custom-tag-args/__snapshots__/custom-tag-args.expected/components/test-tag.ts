@@ -16,7 +16,6 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     /*div*/
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

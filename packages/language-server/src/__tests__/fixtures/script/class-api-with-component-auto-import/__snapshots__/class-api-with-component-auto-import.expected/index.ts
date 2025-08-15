@@ -17,7 +17,6 @@ import type Component from "./component";
     onClick: component["strange-handler"],
   });
   console.log(component);
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

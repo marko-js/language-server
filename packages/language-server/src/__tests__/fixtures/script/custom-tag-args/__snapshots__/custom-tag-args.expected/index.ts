@@ -35,7 +35,6 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_4)()()({
     ["value"]: Marko._.tuple("hello!", 1, 2),
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

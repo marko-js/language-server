@@ -68,7 +68,6 @@ export { type Component };
   Marko._.renderNativeTag("img")()()({
     alt: "test",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

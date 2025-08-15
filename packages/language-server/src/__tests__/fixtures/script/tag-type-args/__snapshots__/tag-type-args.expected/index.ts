@@ -17,7 +17,6 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_1)<0>()<string>()({
     a: 1,
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
