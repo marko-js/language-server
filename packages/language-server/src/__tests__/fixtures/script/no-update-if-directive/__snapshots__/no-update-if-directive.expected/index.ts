@@ -17,7 +17,6 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     "no-update-if": "test",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

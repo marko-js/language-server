@@ -15,7 +15,6 @@ export { type Component };
   Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
     x: 1,
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

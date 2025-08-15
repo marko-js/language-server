@@ -20,7 +20,6 @@ function __marko_internal_template<T = string>(this: void) {
       value: input.value,
     }),
   };
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return __marko_internal_return.return;
 }

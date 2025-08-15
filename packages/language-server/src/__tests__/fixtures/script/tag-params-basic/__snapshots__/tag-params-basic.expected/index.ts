@@ -53,7 +53,7 @@ export { type Component };
     hoistedFromTestTag;
     //^?
   };
-  const { hoistedFromTestTag } = __marko_internal_rendered_1.scope;
+  const { hoistedFromTestTag } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({
     hoistedFromTestTag,
     component,

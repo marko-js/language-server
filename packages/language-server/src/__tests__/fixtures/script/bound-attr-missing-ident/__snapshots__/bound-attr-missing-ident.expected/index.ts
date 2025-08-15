@@ -23,7 +23,6 @@ export { type Component };
     },
   });
   const b = __marko_internal_rendered_1.return.value;
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

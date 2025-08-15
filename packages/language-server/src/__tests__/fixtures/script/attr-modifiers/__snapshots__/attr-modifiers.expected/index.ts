@@ -20,7 +20,6 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     class: "hi",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

@@ -64,7 +64,9 @@ export { type Component };
       //^?
     },
   });
-  const { hoistedFromStaticMember } = __marko_internal_rendered_1.scope;
+  const { hoistedFromStaticMember } = Marko._.readScope(
+    __marko_internal_rendered_1,
+  );
   Marko._.noop({
     hoistedFromStaticMember,
     component,

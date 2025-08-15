@@ -23,8 +23,7 @@ Marko._.renderNativeTag("div")()()({
 },
 
 });
-
-;Marko._.noop({ component, state, out, input, $global, $signal });
+Marko._.noop({ component, state, out, input, $global, $signal });
 return;
 })();
 export default new (

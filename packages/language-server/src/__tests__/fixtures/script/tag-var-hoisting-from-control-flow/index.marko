@@ -1,0 +1,20 @@
+<if(true)>
+  <const/a=["apples", "oranges"] as const/>
+  <const/b=["slice", "dice"] as const/>
+
+  <for|d| of=b>
+    <const/c=a.filter((e) => e.length)/>
+    ${d}
+//    ^?
+  </for>
+</if>
+
+
+-- ${() => {
+  a;
+//^?
+  b;
+//^?
+  c;
+//^?
+}}

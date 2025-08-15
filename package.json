@@ -5,7 +5,7 @@
     "@changesets/cli": "^2.29.5",
     "@eslint/js": "^9.33.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.2.1",
+    "@types/node": "^24.3.0",
     "esbuild": "^0.25.9",
     "eslint": "^9.33.0",
     "eslint-formatter-unix": "^8.40.0",

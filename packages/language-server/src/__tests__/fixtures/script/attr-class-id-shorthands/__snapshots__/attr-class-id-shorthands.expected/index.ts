@@ -101,7 +101,6 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_10)()()({
     class: Marko._.interpolated`${value}-test-${value}`,
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

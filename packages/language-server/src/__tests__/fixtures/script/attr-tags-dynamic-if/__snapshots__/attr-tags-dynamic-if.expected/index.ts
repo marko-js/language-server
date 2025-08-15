@@ -268,7 +268,7 @@ export { type Component };
     },
   });
   const { hoistedFromStaticMember, hoistedFromDynamicMember } =
-    __marko_internal_rendered_1.scope;
+    Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({
     hoistedFromStaticMember,
     hoistedFromDynamicMember,

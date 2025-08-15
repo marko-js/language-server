@@ -107,7 +107,7 @@ export { type Component };
     hoisted;
     //^?
   };
-  const { hoisted } = __marko_internal_rendered_1.scope;
+  const { hoisted } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ hoisted, component, state, out, input, $global, $signal });
   return;
 })();

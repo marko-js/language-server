@@ -349,15 +349,13 @@ function ${templateName}() {\n`);
     const hoists = getHoists(program);
 
     if (hoists) {
-      this.#extractor.write("const ");
-      this.#writeObjectKeys(hoists);
       this.#extractor.write(
-        " = " + this.#getBodyHoistScopeExpression(program.body)!,
+        `const { ${hoists.join(SEP_COMMA_SPACE)} } = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
       );
     }
 
     this.#extractor.write(
-      `\n;${varShared("noop")}({ ${hoists ? hoists.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api !== RuntimeAPI.tags ? "component, state, out, " : ""}input, $global, $signal });\n`,
+      `${varShared("noop")}({ ${hoists ? hoists.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api !== RuntimeAPI.tags ? "component, state, out, " : ""}input, $global, $signal });\n`,
     );
 
     if (didReturn) {
@@ -473,30 +471,16 @@ function ${templateName}() {\n`);
     returned: Range | string | undefined,
     body: Node.ParentNode["body"],
   ) {
-    const hoistSources = getHoistSources(body);
-    const hoistScopes = this.#getBodyHoistScopeExpression(body);
-    const hasHoists = !!(hoistScopes || hoistSources);
-    if (!returned && !hasHoists) {
+    const scopeExpr = this.#getScopeExpression(body);
+    if (!returned && !scopeExpr) {
       this.#extractor.write(`return ${varShared("voidReturn")};\n`);
       return;
     }
 
     this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
 
-    if (hasHoists) {
-      this.#extractor.write("[Marko._.scope] = ");
-      if (hoistSources) {
-        if (hoistScopes) {
-          this.#extractor.write(`{ ...${hoistScopes}, ...`);
-          this.#writeObjectKeys(hoistSources);
-          this.#extractor.write(" }");
-        } else {
-          this.#writeObjectKeys(hoistSources);
-        }
-      } else {
-        this.#extractor.write(hoistScopes!);
-      }
-      this.#extractor.write(";\n");
+    if (scopeExpr) {
+      this.#extractor.write(`[Marko._.scope] = ${scopeExpr};\n`);
     }
 
     this.#extractor.write(`declare return: Return;
@@ -557,13 +541,11 @@ constructor(_?: Return) {}
 
               const ifBody = this.#processBody(child);
               if (ifBody?.content) {
-                const localBindings = getHoistSources(child.body);
+                const scopeExpr = this.#getScopeExpression(child.body);
                 this.#writeChildren(child, ifBody.content, true);
 
-                if (localBindings) {
-                  this.#extractor.write("return {\nscope:");
-                  this.#writeObjectKeys(localBindings);
-                  this.#extractor.write("\n};\n");
+                if (scopeExpr) {
+                  this.#extractor.write(`return {\nscope: ${scopeExpr}\n};\n`);
                 }
               }
 
@@ -586,13 +568,13 @@ constructor(_?: Return) {}
 
                   const alternateBody = this.#processBody(node);
                   if (alternateBody?.content) {
-                    const localBindings = getHoistSources(node.body);
+                    const scopeExpr = this.#getScopeExpression(node.body);
                     this.#writeChildren(node, alternateBody.content, true);
 
-                    if (localBindings) {
-                      this.#extractor.write("return {\nscope:");
-                      this.#writeObjectKeys(localBindings);
-                      this.#extractor.write("\n};\n");
+                    if (scopeExpr) {
+                      this.#extractor.write(
+                        `return {\nscope: ${scopeExpr}\n};\n`,
+                      );
                     }
                   }
                 }
@@ -605,7 +587,7 @@ constructor(_?: Return) {}
               }
 
               if (renderId) {
-                this.#extractor.write("\n})()\n");
+                this.#extractor.write("\n})();\n");
               }
 
               break;
@@ -1392,16 +1374,6 @@ constructor(_?: Return) {}
     }
   }
 
-  #writeObjectKeys(keys: Iterable<string>) {
-    this.#extractor.write("{");
-
-    for (const key of keys) {
-      this.#extractor.write(key + SEP_COMMA_SPACE);
-    }
-
-    this.#extractor.write("}");
-  }
-
   #getCastedType(type: string) {
     return this.#scriptLang === ScriptLang.ts
       ? `${varShared("any")} as ${type}`
@@ -1772,7 +1744,7 @@ constructor(_?: Return) {}
 
   #getRenderId(tag: Node.ParentTag) {
     let renderId = this.#renderIds.get(tag);
-    if ((renderId === undefined && tag.var) || hasHoists(tag)) {
+    if (renderId === undefined && (tag.var || hasHoists(tag))) {
       renderId = this.#renderId++;
       this.#renderIds.set(tag, renderId);
     }
@@ -1780,18 +1752,24 @@ constructor(_?: Return) {}
     return renderId;
   }
 
+  #getScopeExpression(body: Node.ParentNode["body"]) {
+    const sources = getHoistSources(body);
+    const hoists = this.#getBodyHoistScopeExpression(body);
+    return sources
+      ? `{ ${hoists ? `...${hoists}, ` : ""}${sources.join(SEP_COMMA_SPACE)} }`
+      : hoists;
+  }
+
   #getBodyHoistScopeExpression(body: Node.ParentNode["body"]) {
     let hoistIds: Repeated<number> | undefined;
     if (body) {
       for (const child of body) {
-        if (child.type === NodeType.Tag) {
-          const renderId = this.#renderIds.get(child);
-          if (renderId !== undefined && hasHoists(child)) {
-            if (hoistIds) {
-              hoistIds.push(renderId);
-            } else {
-              hoistIds = [renderId];
-            }
+        if (child.type === NodeType.Tag && hasHoists(child)) {
+          const renderId = this.#getRenderId(child)!;
+          if (hoistIds) {
+            hoistIds.push(renderId);
+          } else {
+            hoistIds = [renderId];
           }
         }
       }
@@ -1799,7 +1777,7 @@ constructor(_?: Return) {}
 
     if (hoistIds) {
       if (hoistIds.length === 1) {
-        return `${varLocal("rendered_" + hoistIds[0])}.scope`;
+        return `${varShared("readScope")}(${varLocal("rendered_" + hoistIds[0])})`;
       }
 
       let result = `${varShared("readScopes")}({ `;

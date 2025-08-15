@@ -36,14 +36,14 @@ export { type Component };
       });
       return () => {
         return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = __marko_internal_rendered_2.scope;
+          [Marko._.scope] = Marko._.readScope(__marko_internal_rendered_2);
           declare return: Return;
           constructor(_?: Return) {}
         })();
       };
     })(),
   });
-  const { searchInput } = __marko_internal_rendered_1.scope;
+  const { searchInput } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ searchInput, component, state, out, input, $global, $signal });
   return;
 })();

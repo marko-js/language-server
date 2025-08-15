@@ -36,7 +36,6 @@ export { type Component };
       [/*@a*/ Symbol.iterator]: Marko._.any,
     },
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

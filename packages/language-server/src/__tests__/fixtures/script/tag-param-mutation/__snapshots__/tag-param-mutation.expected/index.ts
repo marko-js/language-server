@@ -84,7 +84,7 @@ export { type Component };
       };
     })(),
   });
-  const { inputId } = __marko_internal_rendered_2.scope;
+  const { inputId } = Marko._.readScope(__marko_internal_rendered_2);
   Marko._.noop({ inputId, component, state, out, input, $global, $signal });
   return;
 })();

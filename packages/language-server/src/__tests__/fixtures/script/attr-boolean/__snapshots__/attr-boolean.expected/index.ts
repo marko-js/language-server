@@ -16,7 +16,6 @@ export { type Component };
     disabled: true,
     checked: true,
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

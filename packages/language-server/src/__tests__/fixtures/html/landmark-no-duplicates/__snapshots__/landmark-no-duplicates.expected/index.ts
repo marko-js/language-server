@@ -35,7 +35,6 @@ export { type Component };
     title: "main 2",
     role: "main",
   });
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

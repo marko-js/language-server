@@ -146,7 +146,6 @@ function __marko_internal_template(this: void) {
       value: 1,
     }),
   };
-
   Marko._.noop({ component, state, out, input, $global, $signal });
   return __marko_internal_return.return;
 }
