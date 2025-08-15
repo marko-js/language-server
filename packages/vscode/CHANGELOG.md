@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.6
+
+### Patch Changes
+
+- [#395](https://github.com/marko-js/language-server/pull/395) [`5650739`](https://github.com/marko-js/language-server/commit/56507393b51303b4fab44bc58b4243bf206a4c54) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve scope hoisting types.
+
+- [#395](https://github.com/marko-js/language-server/pull/395) [`a2dcef2`](https://github.com/marko-js/language-server/commit/a2dcef201731e62c0e6ef9ce4c0c4d2134590b1b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid applying component class generics in generated tags api types.
+
 ## 2.0.5
 
 ### Patch Changes
