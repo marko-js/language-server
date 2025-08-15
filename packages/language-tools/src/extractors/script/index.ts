@@ -383,6 +383,7 @@ function ${templateName}() {\n`);
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(
+            this.#api,
             this.#runtimeTypes,
             typeParamsStr,
             typeArgsStr,

@@ -1,3 +1,5 @@
+import { RuntimeAPI } from "./get-runtime-api";
+
 const RuntimeOverloads = new Map<string, (string | Replacement)[]>();
 const commentsReg = /\/\*(?:[^*]|\*[^/])*\*\//gm;
 const replaceTokensReg =
@@ -13,6 +15,7 @@ enum Replacement {
 }
 
 export function getRuntimeOverrides(
+  api: RuntimeAPI,
   runtimeTypes: string,
   generics: string,
   applyGenerics: string,
@@ -55,7 +58,8 @@ export function getRuntimeOverrides(
 
   let result = "";
   const appliedInput = `Marko.TemplateInput<Input${applyGenerics}>`;
-  const appliedComponent = `Component${applyGenerics}`;
+  const appliedComponent =
+    api === RuntimeAPI.tags ? "never" : `Component${applyGenerics}`;
 
   for (const part of overloads) {
     switch (part) {
