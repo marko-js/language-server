@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.32
+
+### Patch Changes
+
+- [#398](https://github.com/marko-js/language-server/pull/398) [`70bb404`](https://github.com/marko-js/language-server/commit/70bb404acd0d5578543d7a4f96d585b5a372d6f2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix if tag scope hoisting.
+
 ## 2.5.31
 
 ### Patch Changes
