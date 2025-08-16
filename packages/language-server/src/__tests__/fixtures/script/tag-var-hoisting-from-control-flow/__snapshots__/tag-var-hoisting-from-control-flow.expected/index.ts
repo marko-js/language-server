@@ -12,30 +12,30 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_rendered_1 = (() => {
-    if (true) {
+    if ($global.foo) {
       const __marko_internal_tag_1 = Marko._.resolveTemplate(
         import("../../../components/const/index.marko"),
       );
-      const __marko_internal_rendered_3 = Marko._.renderTemplate(
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
         __marko_internal_tag_1,
       )()()({
         value: ["apples", "oranges"] as const,
       });
-      const a = __marko_internal_rendered_3.return.value;
+      const a = __marko_internal_rendered_2.return.value;
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("../../../components/const/index.marko"),
       );
-      const __marko_internal_rendered_4 = Marko._.renderTemplate(
+      const __marko_internal_rendered_3 = Marko._.renderTemplate(
         __marko_internal_tag_2,
       )()()({
         value: ["slice", "dice"] as const,
       });
-      const b = __marko_internal_rendered_4.return.value;
-      const __marko_internal_rendered_2 = Marko._.forOfTag(
+      const b = __marko_internal_rendered_3.return.value;
+      const __marko_internal_rendered_4 = Marko._.forOfTag(
         {
           /*for*/ of: b,
         },
-        (d) => {
+        (baz) => {
           const __marko_internal_tag_3 = Marko._.resolveTemplate(
             import("../../../components/const/index.marko"),
           );
@@ -45,7 +45,7 @@ export { type Component };
             value: a.filter((e) => e.length),
           });
           const c = __marko_internal_rendered_5.return.value;
-          d;
+          baz;
           return new (class MarkoReturn<Return = void> {
             [Marko._.scope] = { c };
             declare return: Return;
@@ -54,13 +54,42 @@ export { type Component };
         },
       );
       return {
-        scope: { ...Marko._.readScope(__marko_internal_rendered_2), a, b },
+        scope: { ...Marko._.readScope(__marko_internal_rendered_4), a, b },
       };
     } else {
       return undefined;
     }
   })();
-  //    ^?
+  const __marko_internal_rendered_6 = (() => {
+    //    ^?
+    if ($global.foo) {
+      const __marko_internal_tag_4 = Marko._.resolveTemplate(
+        import("../../../components/const/index.marko"),
+      );
+      const __marko_internal_rendered_7 = Marko._.renderTemplate(
+        __marko_internal_tag_4,
+      )()()({
+        value: { d: 1 } as const,
+      });
+      const { d } = __marko_internal_rendered_7.return.value;
+      return {
+        scope: { d },
+      };
+    } else {
+      const __marko_internal_tag_5 = Marko._.resolveTemplate(
+        import("../../../components/const/index.marko"),
+      );
+      const __marko_internal_rendered_8 = Marko._.renderTemplate(
+        __marko_internal_tag_5,
+      )()()({
+        value: { d: 2 } as const,
+      });
+      const { d } = __marko_internal_rendered_8.return.value;
+      return {
+        scope: { d },
+      };
+    }
+  })();
   () => {
     a;
     //^?
@@ -68,9 +97,14 @@ export { type Component };
     //^?
     c;
     //^?
+    d;
+    //^?
   };
-  const { a, b, c } = Marko._.readScope(__marko_internal_rendered_1);
-  Marko._.noop({ a, b, c, component, state, out, input, $global, $signal });
+  const { a, b, c, d } = Marko._.readScopes({
+    __marko_internal_rendered_1,
+    __marko_internal_rendered_6,
+  });
+  Marko._.noop({ a, b, c, d, component, state, out, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

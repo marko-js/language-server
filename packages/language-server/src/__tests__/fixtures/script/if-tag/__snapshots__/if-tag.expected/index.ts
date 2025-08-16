@@ -179,12 +179,12 @@ export { type Component };
         const __marko_internal_tag_11 = Marko._.resolveTemplate(
           import("../../../components/const/index.marko"),
         );
-        const __marko_internal_rendered_19 = Marko._.renderTemplate(
+        const __marko_internal_rendered_17 = Marko._.renderTemplate(
           __marko_internal_tag_11,
         )()()({
           value: 7 as const,
         });
-        const h = __marko_internal_rendered_19.return.value;
+        const h = __marko_internal_rendered_17.return.value;
         return {
           scope: { h },
         };
@@ -192,22 +192,16 @@ export { type Component };
         const __marko_internal_tag_12 = Marko._.resolveTemplate(
           import("../../../components/const/index.marko"),
         );
-        const __marko_internal_rendered_20 = Marko._.renderTemplate(
+        const __marko_internal_rendered_18 = Marko._.renderTemplate(
           __marko_internal_tag_12,
         )()()({
           value: 8 as const,
         });
-        const i = __marko_internal_rendered_20.return.value;
+        const i = __marko_internal_rendered_18.return.value;
         return {
           scope: { i },
         };
       }
-      return {
-        scope: Marko._.readScopes({
-          __marko_internal_rendered_17,
-          __marko_internal_rendered_18,
-        }),
-      };
     } else {
       return undefined;
     }
@@ -249,12 +243,9 @@ export { type Component };
   const { a, b, c, d, e, f, g, h, i } = Marko._.readScopes({
     __marko_internal_rendered_3,
     __marko_internal_rendered_5,
-    __marko_internal_rendered_21,
-    __marko_internal_rendered_22,
     __marko_internal_rendered_9,
     __marko_internal_rendered_11,
     __marko_internal_rendered_13,
-    __marko_internal_rendered_23,
     __marko_internal_rendered_16,
   });
   Marko._.noop({
