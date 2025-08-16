@@ -518,7 +518,11 @@ constructor(_?: Return) {}
                 renderId = this.#getRenderId(child);
                 if (!renderId && alternates) {
                   for (const { node } of alternates) {
-                    if ((renderId = this.#getRenderId(node))) break;
+                    if ((renderId = this.#getRenderId(node))) {
+                      this.#renderIds.set(child, renderId);
+                      this.#renderIds.delete(node);
+                      break;
+                    }
                   }
                 }
 
@@ -541,9 +545,9 @@ constructor(_?: Return) {}
 
               const ifBody = this.#processBody(child);
               if (ifBody?.content) {
-                const scopeExpr = this.#getScopeExpression(child.body);
                 this.#writeChildren(child, ifBody.content, true);
 
+                const scopeExpr = this.#getScopeExpression(child.body);
                 if (scopeExpr) {
                   this.#extractor.write(`return {\nscope: ${scopeExpr}\n};\n`);
                 }
@@ -568,9 +572,9 @@ constructor(_?: Return) {}
 
                   const alternateBody = this.#processBody(node);
                   if (alternateBody?.content) {
-                    const scopeExpr = this.#getScopeExpression(node.body);
                     this.#writeChildren(node, alternateBody.content, true);
 
+                    const scopeExpr = this.#getScopeExpression(node.body);
                     if (scopeExpr) {
                       this.#extractor.write(
                         `return {\nscope: ${scopeExpr}\n};\n`,
@@ -1744,7 +1748,7 @@ constructor(_?: Return) {}
 
   #getRenderId(tag: Node.ParentTag) {
     let renderId = this.#renderIds.get(tag);
-    if (renderId === undefined && (tag.var || hasHoists(tag))) {
+    if (!renderId && (tag.var || hasHoists(tag))) {
       renderId = this.#renderId++;
       this.#renderIds.set(tag, renderId);
     }
@@ -1764,8 +1768,9 @@ constructor(_?: Return) {}
     let hoistIds: Repeated<number> | undefined;
     if (body) {
       for (const child of body) {
-        if (child.type === NodeType.Tag && hasHoists(child)) {
-          const renderId = this.#getRenderId(child)!;
+        const renderId =
+          child.type === NodeType.Tag && this.#renderIds.get(child);
+        if (renderId && (!child.var || hasHoists(child))) {
           if (hoistIds) {
             hoistIds.push(renderId);
           } else {
