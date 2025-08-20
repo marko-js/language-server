@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.5
+
+### Patch Changes
+
+- [#400](https://github.com/marko-js/language-server/pull/400) [`41346af`](https://github.com/marko-js/language-server/commit/41346af504380f2b0ccf60939eef42b5b99fdf58) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade deps.
+
 ## 2.1.4
 
 ### Patch Changes
