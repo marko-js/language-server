@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.6
+
+### Patch Changes
+
+- [#402](https://github.com/marko-js/language-server/pull/402) [`1935f6d`](https://github.com/marko-js/language-server/commit/1935f6d720f2a9e5bd0d2832e0516959cbbf6340) Thanks [@kanashimia](https://github.com/kanashimia)! - Fix broken types in standalone language server
+
 ## 2.1.5
 
 ### Patch Changes
