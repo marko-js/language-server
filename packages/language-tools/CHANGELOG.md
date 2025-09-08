@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.33
+
+### Patch Changes
+
+- [#405](https://github.com/marko-js/language-server/pull/405) [`2e4c2d6`](https://github.com/marko-js/language-server/commit/2e4c2d6f4c4da7919bdb66c6702df5d4809b3279) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Allow falsy values for <return> tag
+
 ## 2.5.32
 
 ### Patch Changes
