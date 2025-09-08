@@ -170,7 +170,10 @@ declare global {
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
-        Input extends { value: unknown; valueChange?: (value: any) => void },
+        Input extends {
+          value: unknown;
+          valueChange?: ((value: any) => void) | false | null;
+        },
       >(input: Input): Input;
 
       export function forOfTag<
