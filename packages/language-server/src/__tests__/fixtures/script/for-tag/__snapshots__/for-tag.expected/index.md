@@ -186,11 +186,66 @@
 ```marko
   75 |
   76 | <effect() {
-> 77 |   hoistedFromForTo;
-     |   ^ const hoistedFromForTo: number
+> 77 |   hoistedFromForUntil;
+     |   ^ const hoistedFromForUntil: number
   78 | //^?
   79 | }/>
   80 |
+```
+
+### Ln 82, Col 5
+```marko
+  80 |
+  81 | <for|index| until=10>
+> 82 |   ${index}
+     |     ^ (parameter) index: number
+  83 | //  ^?
+  84 | </for>
+  85 |
+```
+
+### Ln 86, Col 16
+```marko
+  84 | </for>
+  85 |
+> 86 | <for until=10 by=(index) => `${index}`>
+     |                ^ (property) by?: ((index: number) => string) | undefined
+  87 | //             ^?
+  88 | </for>
+  89 |
+```
+
+### Ln 91, Col 5
+```marko
+  89 |
+  90 | <for|index| from=1 until=10>
+> 91 |   ${index}
+     |     ^ (parameter) index: number
+  92 | //  ^?
+  93 | </for>
+  94 |
+```
+
+### Ln 96, Col 5
+```marko
+  94 |
+  95 | <for|index| until=10 step=2>
+> 96 |   ${index}
+     |     ^ (parameter) index: number
+  97 | //  ^?
+  98 | </for>
+  99 |
+```
+
+### Ln 105, Col 3
+```marko
+  103 |
+  104 | <effect() {
+> 105 |   hoistedFromForUntil;
+      |   ^ const hoistedFromForUntil: number
+  106 | //^?
+  107 | }/>
+  108 |
 ```
 
 ## Diagnostics
@@ -205,25 +260,25 @@
   29 |   hoistedFromForOf;
 ```
 
-### Ln 81, Col 2
+### Ln 110, Col 2
 ```marko
-  79 | }/>
-  80 |
-> 81 | <for|index|>
-     |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { in: false | void | object | null; } | { of: false | void | readonly unknown[] | Iterable<unknown> | null; }) & { by?: ((...args: unknown[]) => string) | undefined; }'.
-  82 |   Should error
-  83 | </for>
-  84 |
+  108 |
+  109 |
+> 110 | <for|index|>
+      |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { from?: number | undefined; until: number; step?: number | undefined; } | { in: false | void | object | null; } | { ...; }) & { ...; }'.
+  111 |   Should error
+  112 | </for>
+  113 |
 ```
 
-### Ln 81, Col 6
+### Ln 110, Col 6
 ```marko
-  79 | }/>
-  80 |
-> 81 | <for|index|>
-     |      ^^^^^ 'index' is declared but its value is never read.
-  82 |   Should error
-  83 | </for>
-  84 |
+  108 |
+  109 |
+> 110 | <for|index|>
+      |      ^^^^^ 'index' is declared but its value is never read.
+  111 |   Should error
+  112 | </for>
+  113 |
 ```
 

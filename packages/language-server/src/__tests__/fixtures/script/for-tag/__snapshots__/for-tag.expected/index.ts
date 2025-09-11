@@ -237,7 +237,85 @@ export { type Component };
   const __marko_internal_tag_8 = Marko._.interpolated`effect`;
   Marko._.renderDynamicTag(__marko_internal_tag_8)()()({
     value() {
-      hoistedFromForTo;
+      hoistedFromForUntil;
+      //^?
+    },
+  });
+  Marko._.forUntilTag(
+    {
+      /*for*/ until: 10,
+    },
+    (index) => {
+      index;
+      return Marko._.voidReturn;
+    },
+  );
+  Marko._.forUntilTag(
+    {
+      /*for*/ until: 10,
+      by: (index) => `${index}`,
+    },
+    () =>
+      //  ^?
+
+      {
+        return Marko._.voidReturn;
+      },
+  );
+  Marko._.forUntilTag(
+    {
+      /*for*/ from: 1,
+      until: 10,
+    },
+    (
+      //             ^?
+      index,
+    ) => {
+      index;
+      return Marko._.voidReturn;
+    },
+  );
+  Marko._.forUntilTag(
+    {
+      /*for*/ until: 10,
+      step: 2,
+    },
+    (
+      //  ^?
+      index,
+    ) => {
+      index;
+      return Marko._.voidReturn;
+    },
+  );
+  const __marko_internal_rendered_9 = Marko._.forUntilTag(
+    {
+      /*for*/ until: 10,
+    },
+    (
+      //  ^?
+      index,
+    ) => {
+      const __marko_internal_tag_9 = Marko._.resolveTemplate(
+        import("../../../components/const/index.marko"),
+      );
+      const __marko_internal_rendered_10 = Marko._.renderTemplate(
+        __marko_internal_tag_9,
+      )()()({
+        value: index,
+      });
+      const hoistedFromForUntil = __marko_internal_rendered_10.return.value;
+      return new (class MarkoReturn<Return = void> {
+        [Marko._.scope] = { hoistedFromForUntil };
+        declare return: Return;
+        constructor(_?: Return) {}
+      })();
+    },
+  );
+  const __marko_internal_tag_10 = Marko._.interpolated`effect`;
+  Marko._.renderDynamicTag(__marko_internal_tag_10)()()({
+    value() {
+      hoistedFromForUntil;
       //^?
     },
   });
@@ -249,16 +327,22 @@ export { type Component };
       return Marko._.voidReturn;
     },
   );
-  const { hoistedFromForOf, hoistedFromForIn, hoistedFromForTo } =
-    Marko._.readScopes({
-      __marko_internal_rendered_2,
-      __marko_internal_rendered_5,
-      __marko_internal_rendered_7,
-    });
+  const {
+    hoistedFromForOf,
+    hoistedFromForIn,
+    hoistedFromForTo,
+    hoistedFromForUntil,
+  } = Marko._.readScopes({
+    __marko_internal_rendered_2,
+    __marko_internal_rendered_5,
+    __marko_internal_rendered_7,
+    __marko_internal_rendered_9,
+  });
   Marko._.noop({
     hoistedFromForOf,
     hoistedFromForIn,
     hoistedFromForTo,
+    hoistedFromForUntil,
     component,
     state,
     out,

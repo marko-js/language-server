@@ -74,9 +74,38 @@
 </for>
 
 <effect() {
-  hoistedFromForTo;
+  hoistedFromForUntil;
 //^?
 }/>
+
+<for|index| until=10>
+  ${index}
+//  ^?
+</for>
+
+<for until=10 by=(index) => `${index}`>
+//             ^?
+</for>
+
+<for|index| from=1 until=10>
+  ${index}
+//  ^?
+</for>
+
+<for|index| until=10 step=2>
+  ${index}
+//  ^?
+</for>
+
+<for|index| until=10>
+  <const/hoistedFromForUntil = index/>
+</for>
+
+<effect() {
+  hoistedFromForUntil;
+//^?
+}/>
+
 
 <for|index|>
   Should error

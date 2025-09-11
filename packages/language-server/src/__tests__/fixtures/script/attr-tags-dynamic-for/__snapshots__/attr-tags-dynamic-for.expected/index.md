@@ -174,7 +174,7 @@
 ```marko
   1 | <${custom}>
 > 2 |   <for>
-    |    ^^^ Argument of type '{}' is not assignable to parameter of type '{ of: false | void | readonly unknown[] | Iterable<unknown> | null; } | { in: object; } | { from?: number | undefined; to: number; step?: number | undefined; }'.
+    |    ^^^ Argument of type '{}' is not assignable to parameter of type '{ of: false | void | readonly unknown[] | Iterable<unknown> | null; } | { in: object; } | { from?: number | undefined; to: number; step?: number | undefined; } | { from?: number | undefined; until: number; step?: number | undefined; }'.
   3 |     <@a/>
   4 |   </for>
   5 | </>
