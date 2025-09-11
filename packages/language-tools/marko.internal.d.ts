@@ -224,11 +224,31 @@ declare global {
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
+      export function forUntilTag<
+        From extends void | number,
+        Until extends number,
+        Step extends void | number,
+        BodyContent extends Marko.Body<[index: number], void>,
+      >(
+        input: {
+          from?: From;
+          until: Until;
+          step?: Step;
+          by?: (index: number) => string;
+        },
+        content: BodyContent,
+      ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
+
       export function forTag<BodyContent extends AnyMarkoBody>(
         input: (
           | {
               from?: number;
               to: number;
+              step?: number;
+            }
+          | {
+              from?: number;
+              until: number;
               step?: number;
             }
           | {
@@ -301,6 +321,32 @@ declare global {
           : never;
       };
 
+      export function forUntilAttrTag<
+        From extends void | number,
+        Until extends number,
+        Step extends void | number,
+        const Return,
+      >(
+        input: {
+          from?: From;
+          until: Until;
+          step?: Step;
+        },
+        content: (index: number) => Return,
+      ): {
+        [Key in keyof Return]: Return[Key] extends
+          | readonly (infer Item)[]
+          | (infer Item extends Record<PropertyKey, any>)
+          ? number extends From | Until | Step
+            ? undefined | Marko.AttrTag<Item>
+            : Step extends 0
+              ? never
+              : [Until] extends [From extends void ? 0 : From]
+                ? undefined
+                : Marko.AttrTag<Item>
+          : never;
+      };
+
       export function forAttrTag<const Return>(
         input:
           | {
@@ -312,6 +358,11 @@ declare global {
           | {
               from?: number;
               to: number;
+              step?: number;
+            }
+          | {
+              from?: number;
+              until: number;
               step?: number;
             },
         content: (...args: unknown[]) => Return,

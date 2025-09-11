@@ -1889,6 +1889,7 @@ const enum ForTagType {
   of,
   in,
   to,
+  until,
 }
 function getForTagType(parsed: Parsed, tag: Node.Tag) {
   if (tag.attrs) {
@@ -1903,9 +1904,9 @@ function getForTagType(parsed: Parsed, tag: Node.Tag) {
         case "in":
           return ForTagType.in;
         case "to":
-        case "from":
-        case "step":
           return ForTagType.to;
+        case "until":
+          return ForTagType.until;
       }
     }
   }
@@ -1921,6 +1922,8 @@ function getForTagRuntime(parsed: Parsed, tag: Node.Tag) {
       return "forInTag";
     case ForTagType.to:
       return "forToTag";
+    case ForTagType.until:
+      return "forUntilTag";
     default:
       return "forTag";
   }
@@ -1934,6 +1937,8 @@ function getForAttrTagRuntime(parsed: Parsed, tag: Node.Tag) {
       return "forInAttrTag";
     case ForTagType.to:
       return "forToAttrTag";
+    case ForTagType.until:
+      return "forUntilAttrTag";
     default:
       return "forAttrTag";
   }

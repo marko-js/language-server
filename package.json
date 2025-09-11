@@ -30,6 +30,7 @@
     "prepare": "husky & npm run -ws --if-present prepare",
     "release": "npm run build && changeset publish && npm run -ws --if-present release",
     "test": "npm run build && npm run -ws --if-present test",
+    "update": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update",
     "version": "changeset version && npm i --package-lock-only"
   },
   "workspaces": [
