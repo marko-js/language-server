@@ -1,5 +1,13 @@
 # @marko/language-tools
 
+## 2.5.34
+
+### Patch Changes
+
+- [#410](https://github.com/marko-js/language-server/pull/410) [`d46a5ee`](https://github.com/marko-js/language-server/commit/d46a5eeb831b0a05aed662291c145615f7e93790) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issues with types after a bound attribute.
+
+- [#407](https://github.com/marko-js/language-server/pull/407) [`9f4ffe6`](https://github.com/marko-js/language-server/commit/9f4ffe6b04df6c3451a85c16b9ae8af9a4a0a2c7) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Add until attribute to for
+
 ## 2.5.33
 
 ### Patch Changes
