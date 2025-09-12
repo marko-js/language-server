@@ -16,7 +16,7 @@ import { Extractor } from "../../util/extractor";
 import type { Meta } from "../../util/project";
 import {
   crawlProgramScope,
-  getBoundAttrMemberExpressionStartOffset,
+  getBoundAttrRange,
   getHoists,
   getHoistSources,
   getMutatedVars,
@@ -912,21 +912,20 @@ constructor(_?: Return) {}
                   this.#copyWithMutationsReplaced(value.params);
                   this.#copyWithMutationsReplaced(value.body);
                   break;
-                case NodeType.AttrValue:
+                case NodeType.AttrValue: {
+                  const boundRange = value.bound && getBoundAttrRange(value);
                   this.#extractor
                     .write('"')
                     .copy(defaultMapPosition)
                     .copy(name)
                     .write('": (\n');
-                  if (value.bound) {
-                    const memberExpressionStart =
-                      getBoundAttrMemberExpressionStartOffset(value);
-
-                    if (memberExpressionStart === undefined) {
+                  if (boundRange) {
+                    if (!boundRange.member) {
                       // Should have bound to an identifier, so we inline a function to assign to it.
-                      const valueLiteral = this.#read(value.value);
+                      const valueLiteral = this.#read(boundRange.value);
                       this.#extractor
-                        .copy(value.value)
+                        .copy(boundRange.value)
+                        .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
@@ -937,48 +936,45 @@ constructor(_?: Return) {}
                               : ""
                           }`,
                         )
-                        .copy(value.value)
+                        .copy(boundRange.value)
                         .write(`= _${valueLiteral};\n}`);
-                    } else if (this.#code[memberExpressionStart] === "[") {
-                      // If we match a `[` was a computed member expression.
+                    } else if (boundRange.member.computed) {
                       // we ensure the string "Change" is appended to the end of the expression.
-                      const memberObjectRange = {
-                        start: value.value.start,
-                        end: memberExpressionStart + 1,
-                      };
-                      const memberPropertyRange = {
-                        start: memberObjectRange.end,
-                        end: value.value.end - 1,
-                      };
-                      const memberPropertyCloseRange = {
-                        start: memberPropertyRange.end,
-                        end: value.value.end,
-                      };
                       this.#extractor
-                        .copy(memberObjectRange)
-                        .copy(memberPropertyRange)
-                        .copy(memberPropertyCloseRange)
+                        .copy(boundRange.value)
+                        .copy({
+                          start: boundRange.value.end,
+                          end: boundRange.value.end + 1,
+                        })
+                        .copy(boundRange.member)
+                        .copy({
+                          start: boundRange.member.end,
+                          end: boundRange.member.end + 1,
+                        })
+                        .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
                         .write('Change": (\n')
-                        .copy(memberObjectRange)
-                        .write("\n`${\n")
-                        .copy(memberPropertyRange)
-                        .write("\n}Change`\n")
-                        .copy(memberPropertyCloseRange)
-                        .write("\n)");
+                        .copy(boundRange.value)
+                        .write("[`${\n")
+                        .copy(boundRange.member)
+                        .write("\n}Change`])");
                     } else {
+                      const memberRange = {
+                        start: boundRange.value.start,
+                        end: boundRange.member.end,
+                      };
                       // If we match here then we bound to a static member expression.
                       this.#extractor
-                        .copy(value.value)
+                        .copy(memberRange)
+                        .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
-                        .write('Change"')
-                        .write(": ")
-                        .copy(value.value)
-                        .write(`Change`);
+                        .write('Change": (\n')
+                        .copy(memberRange)
+                        .write("Change)");
                     }
                   } else {
                     this.#copyWithMutationsReplaced(value.value);
@@ -986,6 +982,7 @@ constructor(_?: Return) {}
                   }
 
                   break;
+                }
               }
             } else if (attr.args) {
               this.#extractor.write('"').copy(name).write('": ');

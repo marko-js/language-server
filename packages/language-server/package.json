@@ -9,9 +9,9 @@
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
     "@marko/language-tools": "^2.5.33",
-    "@marko/compiler": "^5.39.33",
+    "@marko/compiler": "^5.39.35",
     "htmljs-parser": "^5.7.4",
-    "marko": "^5.37.47",
+    "marko": "^5.37.55",
     "prettier": "^3.6.2",
     "prettier-plugin-marko": "^3.3.2",
     "relative-import-path": "^1.0.0",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
-    "tsx": "^4.20.4"
+    "tsx": "^4.20.5"
   },
   "exports": {
     ".": {
