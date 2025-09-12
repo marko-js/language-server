@@ -2,13 +2,12 @@ import { Project } from "@marko/language-tools";
 import fs from "fs";
 import snapshot from "mocha-snap";
 import path from "path";
-import { CancellationToken, Position } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { Position } from "vscode-languageserver";
 // import { bench, run } from "mitata";
-import { URI } from "vscode-uri";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
-import MarkoLangaugeService, { documents } from "../service";
 import { codeFrame } from "./util/code-frame";
+import { getLanguageServer } from "./util/language-service";
 
 Project.setDefaultTypePaths({
   internalTypesFile: require.resolve(
@@ -21,38 +20,33 @@ Project.setDefaultTypePaths({
 // const BENCHED = new Set<string>();
 const FIXTURE_DIR = path.join(__dirname, "fixtures");
 
+after(async () => {
+  const handle = await getLanguageServer();
+  await handle.shutdown();
+});
+
 for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
   const fixtureSubdir = path.join(FIXTURE_DIR, subdir);
 
   if (!fs.statSync(fixtureSubdir).isDirectory()) continue;
   for (const entry of fs.readdirSync(fixtureSubdir)) {
     it(entry, async () => {
+      const serverHandle = await getLanguageServer();
+
       const fixtureDir = path.join(fixtureSubdir, entry);
 
       for (const filename of loadMarkoFiles(fixtureDir)) {
-        const doc = documents.get(URI.file(filename).toString())!;
+        const doc = await serverHandle.openTextDocument(filename, "marko");
         const code = doc.getText();
-        const params = {
-          textDocument: {
-            uri: doc.uri,
-            languageId: doc.languageId,
-            version: doc.version,
-            text: code,
-          },
-        } as const;
-        documents.doOpen(params);
 
         let results = "";
 
         for (const position of getHovers(doc)) {
-          const hoverInfo = await MarkoLangaugeService.doHover(
-            doc,
-            {
-              position,
-              textDocument: doc,
-            },
-            CancellationToken.None,
+          const hoverInfo = await serverHandle.sendHoverRequest(
+            doc.uri,
+            position,
           );
+
           const loc = { start: position, end: position };
 
           let message = "";
@@ -87,9 +81,9 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
               language: string;
               content: string;
             }
-          | undefined = await MarkoLangaugeService.commands[
-          "$/showScriptOutput"
-        ](doc.uri);
+          | undefined = await serverHandle.sendExecuteCommandRequest(
+          "marko.debug.showScriptOutput",
+        );
         if (scriptOutput) {
           await snapshot(scriptOutput.content, {
             file: path.relative(
@@ -108,8 +102,8 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
               language: string;
               content: string;
             }
-          | undefined = await MarkoLangaugeService.commands["$/showHtmlOutput"](
-          doc.uri,
+          | undefined = await serverHandle.sendExecuteCommandRequest(
+          "marko.debug.showHtmlOutput",
         );
         if (htmlOutput) {
           await snapshot(htmlOutput.content, {
@@ -121,12 +115,23 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           });
         }
 
-        const errors = await MarkoLangaugeService.doValidate(doc);
-
-        if (errors && errors.length) {
+        const diagnosticReport =
+          await serverHandle.sendDocumentDiagnosticRequest(doc.uri);
+        if (
+          diagnosticReport.kind === "full" &&
+          diagnosticReport.items &&
+          diagnosticReport.items.length
+        ) {
           results += "## Diagnostics\n";
 
-          for (const error of errors) {
+          diagnosticReport.items.sort((a, b) => {
+            const lineDiff = a.range.start.line - b.range.start.line;
+            if (lineDiff === 0) {
+              return a.range.start.character - b.range.start.character;
+            }
+            return lineDiff;
+          });
+          for (const error of diagnosticReport.items) {
             const loc = {
               start: error.range.start,
               end: error.range.end,
@@ -137,7 +142,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           }
         }
 
-        documents.doClose(params);
+        await serverHandle.closeTextDocument(doc.uri);
 
         await snapshot(results, {
           file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),

@@ -1,32 +1,6 @@
-# Marko VSCode
+# Polar: Marko Language Tools
 
-Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/server)
-
-# Features
-
-- [x] Go To Definition
-- [x] Syntax HighLighting
-- [x] Autocompletion
-- [x] Tag Matching
-- [x] Error reporting
-- [ ] Linting
-- [x] Debugging
-
-# Demo
-
-## Go to Definition
-
-- Go To Tags
-
-![goToTag](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToTag.gif)
-
-- Custom Attribute Names
-
-![goToAttrName](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrName.gif)
-
-- Custom Handlers
-
-![goToAttrValue](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrValue.gif)
+Unofficial VS Code plugin for Marko forked from [@marko-js/language-server](https://github.com/marko-js/language-server) and modified to use [Volar.js](https://volarjs.dev/).
 
 # License
 

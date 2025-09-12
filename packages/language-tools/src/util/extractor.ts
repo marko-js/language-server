@@ -32,7 +32,7 @@ const emptyView = {
 export class Extractor {
   #parsed: Parsed;
   #generated = "";
-  #tokens: Token[] = [];
+  tokens: Token[] = [];
   constructor(parsed: Parsed) {
     this.#parsed = parsed;
   }
@@ -47,7 +47,7 @@ export class Extractor {
       if (typeof range === "string") {
         this.#generated += range;
       } else {
-        this.#tokens.push({
+        this.tokens.push({
           generatedStart: this.#generated.length,
           sourceStart: range.start,
           length: Math.min(this.#parsed.code.length, range.end) - range.start,
@@ -60,7 +60,7 @@ export class Extractor {
   }
 
   end() {
-    return new Extracted(this.#parsed, this.#generated, this.#tokens);
+    return new Extracted(this.#parsed, this.#generated, this.tokens);
   }
 }
 
@@ -69,11 +69,13 @@ export class Extracted {
   #sourceToGenerated: SourceToGeneratedView | typeof emptyView;
   #generatedToSource: GeneratedToSourceView | typeof emptyView;
   #cachedGeneratedLines: number[] | undefined;
+  tokens: Token[];
   constructor(
     public parsed: Parsed,
     generated: string,
     tokens: Token[],
   ) {
+    this.tokens = tokens;
     this.#generated = generated;
 
     if (tokens.length === 0) {
@@ -161,12 +163,12 @@ export class Extracted {
  * on the view type.
  */
 abstract class TokenView {
-  #tokens: Token[];
+  tokens: Token[];
   #last: number;
   abstract inStart(token: Token): number;
   abstract outStart(token: Token): number;
   constructor(tokens: Token[]) {
-    this.#tokens = tokens;
+    this.tokens = tokens;
     this.#last = tokens.length - 1;
   }
 
@@ -177,14 +179,14 @@ abstract class TokenView {
     while (min < max) {
       const mid = (1 + min + max) >>> 1;
 
-      if (this.inStart(this.#tokens[mid]) <= offset) {
+      if (this.inStart(this.tokens[mid]) <= offset) {
         min = mid;
       } else {
         max = mid - 1;
       }
     }
 
-    const token = this.#tokens[min];
+    const token = this.tokens[min];
     const index = offset - this.inStart(token);
     if (index >= 0 && index <= token.length) {
       return this.outStart(token) + index;
@@ -197,7 +199,7 @@ abstract class TokenView {
 
     while (min < max) {
       const mid = (min + max) >> 1;
-      const token = this.#tokens[mid];
+      const token = this.tokens[mid];
       const tokenInEnd = this.inStart(token) + token.length;
 
       if (tokenInEnd > inStart) {
@@ -207,7 +209,7 @@ abstract class TokenView {
       }
     }
 
-    const startToken = this.#tokens[max];
+    const startToken = this.tokens[max];
     const startTokenInStart = this.inStart(startToken);
     if (startTokenInStart >= inEnd) return;
 
@@ -215,7 +217,7 @@ abstract class TokenView {
 
     while (min < max) {
       const mid = (1 + min + max) >>> 1;
-      const token = this.#tokens[mid];
+      const token = this.tokens[mid];
       const tokenEnd = this.inStart(token) + token.length;
 
       if (tokenEnd <= inEnd) {
@@ -225,7 +227,7 @@ abstract class TokenView {
       }
     }
 
-    const endToken = this.#tokens[min];
+    const endToken = this.tokens[min];
     const endTokenInStart = this.inStart(endToken);
     const endTokenInEnd = endTokenInStart + endToken.length;
     if (endTokenInEnd < inStart) return;

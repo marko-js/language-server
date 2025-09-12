@@ -25,20 +25,24 @@
     ],
     "commands": [
       {
-        "command": "marko.showScriptOutput",
-        "title": "Marko: Debug: Show Extracted Script Output"
+        "command": "marko.debug.showScriptOutput",
+        "title": "Show Extracted Script Output",
+        "category": "Marko (Debug)"
       },
       {
-        "command": "marko.showHtmlOutput",
-        "title": "Marko: Debug: Show Extracted Static HTML Output"
+        "command": "marko.debug.showHtmlOutput",
+        "title": "Show Extracted Static HTML Output",
+        "category": "Marko (Debug)"
       },
       {
-        "command": "marko.formatToConciseMode",
-        "title": "Marko: Format: Force Concise Mode"
+        "command": "marko.actions.formatToConciseSyntax",
+        "title": "Format in Concise Mode",
+        "category": "Marko"
       },
       {
-        "command": "marko.formatToHtmlMode",
-        "title": "Marko: Format: Force Html Mode"
+        "command": "marko.actions.formatToHtmlSyntax",
+        "title": "Format in Html Mode",
+        "category": "Marko"
       }
     ],
     "typescriptServerPlugins": [
@@ -107,6 +111,8 @@
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.0",
+    "@volar/language-server": "^2.4.14",
+    "@volar/vscode": "^2.4.14",
     "ovsx": "^0.10.5",
     "tsx": "^4.20.4",
     "vscode-languageclient": "^9.0.1"
