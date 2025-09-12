@@ -70,9 +70,17 @@ type Bindings = { [name: string]: Binding };
 
 const ATTR_UNAMED = "value";
 const Scopes = new WeakMap<NonNullable<Node.ParentNode["body"]>, Scope>();
-const BoundAttrMemberExpressionStartOffsets = new WeakMap<
+const BoundAttrValueRange = new WeakMap<
   Node.AttrValue,
-  number
+  {
+    value: Range;
+    types: undefined | Range;
+    member:
+      | undefined
+      | (Range & {
+          computed: boolean;
+        });
+  }
 >();
 
 /**
@@ -259,38 +267,61 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                 case NodeType.AttrNamed: {
                   switch (attr.value?.type) {
                     case NodeType.AttrValue: {
-                      const parsedValue = scriptParser.expressionAt(
+                      let parsedValue = scriptParser.expressionAt(
                         attr.value.value.start,
                         read(attr.value.value),
                       );
 
                       if (parsedValue) {
-                        switch (parsedValue.type) {
-                          case "Identifier":
-                            if (attr.value.bound) {
-                              const binding = resolveWritableVar(
-                                parentScope,
-                                parsedValue.name,
+                        if (!attr.value.bound) {
+                          checkForMutations(parentScope, parsedValue);
+                        } else {
+                          let types: Range | undefined;
+                          if (
+                            parsedValue.type === "TSAsExpression" ||
+                            parsedValue.type === "TSSatisfiesExpression"
+                          ) {
+                            types = {
+                              start: parsedValue.expression.end! + 1,
+                              end: parsedValue.end!,
+                            };
+                            parsedValue = parsedValue.expression;
+                          }
+
+                          if (parsedValue.type === "Identifier") {
+                            const binding = resolveWritableVar(
+                              parentScope,
+                              parsedValue.name,
+                            );
+                            if (binding) {
+                              binding.mutated = true;
+                              (parentScope.mutatedBindings ||= new Set()).add(
+                                binding,
                               );
-                              if (binding) {
-                                binding.mutated = true;
-                                (parentScope.mutatedBindings ||= new Set()).add(
-                                  binding,
-                                );
-                              }
                             }
-                            break;
-                          case "MemberExpression":
-                            if (attr.value.bound) {
-                              BoundAttrMemberExpressionStartOffsets.set(
-                                attr.value,
-                                parsedValue.property.start! - 1,
-                              );
-                            }
-                            break;
-                          default:
-                            checkForMutations(parentScope, parsedValue);
-                            break;
+
+                            BoundAttrValueRange.set(attr.value, {
+                              types,
+                              value: {
+                                start: parsedValue.start!,
+                                end: parsedValue.end!,
+                              },
+                              member: undefined,
+                            });
+                          } else if (parsedValue.type === "MemberExpression") {
+                            BoundAttrValueRange.set(attr.value, {
+                              types,
+                              value: {
+                                start: parsedValue.start!,
+                                end: parsedValue.property.start! - 1,
+                              },
+                              member: {
+                                start: parsedValue.property.start!,
+                                end: parsedValue.property.end!,
+                                computed: parsedValue.computed,
+                              },
+                            });
+                          }
                         }
                       }
 
@@ -391,8 +422,8 @@ export function hasHoists(node: Node.ParentTag) {
   return node.body ? Scopes.get(node.body)!.hoists : false;
 }
 
-export function getBoundAttrMemberExpressionStartOffset(value: Node.AttrValue) {
-  return BoundAttrMemberExpressionStartOffsets.get(value);
+export function getBoundAttrRange(value: Node.AttrValue) {
+  return BoundAttrValueRange.get(value);
 }
 
 function resolveWritableVar(scope: Scope, name: string) {

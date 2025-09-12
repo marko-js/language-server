@@ -6,7 +6,7 @@
   "dependencies": {
     "@babel/code-frame": "^7.27.1",
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/language-tools": "^2.5.32",
+    "@marko/language-tools": "^2.5.33",
     "arg": "^5.0.2",
     "kleur": "^4.1.5",
     "typescript": "^5.9.2"
