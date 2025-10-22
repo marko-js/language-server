@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.7
+
+### Patch Changes
+
+- [#411](https://github.com/marko-js/language-server/pull/411) [`c0357a1`](https://github.com/marko-js/language-server/commit/c0357a1b22a6f7a70e6603699af82ff6139b94ba) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with d.marko generation for jsdoc Marko files with an external component file.
+
+- Updated dependencies [[`c0357a1`](https://github.com/marko-js/language-server/commit/c0357a1b22a6f7a70e6603699af82ff6139b94ba)]:
+  - @marko/language-tools@2.5.35
+
 ## 2.1.6
 
 ### Patch Changes
