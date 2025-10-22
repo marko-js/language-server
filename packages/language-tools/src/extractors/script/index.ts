@@ -276,9 +276,9 @@ class ScriptExtractor {
           );
         } else {
           this.#extractor.write(
-            `/** @typedef {import("${stripExt(
+            `/** @typedef {${varShared("resolveComponent")}(import("${stripExt(
               relativeImportPath(this.#filename, componentFileName),
-            )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : Marko.Component<Input${typeArgsStr}>} Component */\n`,
+            )}"))} Component */\n`,
           );
         }
       } else {
