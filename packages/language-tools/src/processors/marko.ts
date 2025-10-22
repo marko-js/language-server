@@ -293,14 +293,19 @@ export default {
     }
 
     function isExportComponentType(statement: ts.Statement) {
-      return (
-        ts.isExportDeclaration(statement) &&
-        statement.exportClause &&
-        ts.isNamedExports(statement.exportClause) &&
-        statement.exportClause.elements.length === 1 &&
-        ts.isIdentifier(statement.exportClause.elements[0].name) &&
-        statement.exportClause.elements[0].name.escapedText === "Component"
-      );
+      if (ts.isExportDeclaration(statement)) {
+        return (
+          statement.exportClause &&
+          ts.isNamedExports(statement.exportClause) &&
+          statement.exportClause.elements.length === 1 &&
+          ts.isIdentifier(statement.exportClause.elements[0].name) &&
+          statement.exportClause.elements[0].name.escapedText === "Component"
+        );
+      } else if (ts.isTypeAliasDeclaration(statement)) {
+        return statement.name.text === "Component";
+      }
+
+      return false;
     }
 
     function isVariableStatementForName(statement: ts.Statement, name: string) {
