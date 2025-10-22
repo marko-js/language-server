@@ -261,11 +261,7 @@ class ScriptExtractor {
         );
       } else {
         this.#extractor.write(
-          `/** @typedef {${
-            isExternalComponentFile
-              ? "Component['input']"
-              : "Record<string, unknown>"
-          }} Input */\n`,
+          `/** @typedef {Record<string, unknown>} Input */\n`,
         );
       }
     }
@@ -276,13 +272,13 @@ class ScriptExtractor {
           this.#extractor.write(
             `import type Component from "${stripExt(
               relativeImportPath(this.#filename, componentFileName),
-            )}";\n`,
+            )}";\nexport { type Component }\n`,
           );
         } else {
           this.#extractor.write(
             `/** @typedef {import("${stripExt(
               relativeImportPath(this.#filename, componentFileName),
-            )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : never} Component */\n`,
+            )}") extends infer Component ? Component extends { default: infer Component } ? Component : Component : Marko.Component<Input${typeArgsStr}>} Component */\n`,
           );
         }
       } else {
