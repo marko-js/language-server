@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.10
+
+### Patch Changes
+
+- [#413](https://github.com/marko-js/language-server/pull/413) [`1936e3c`](https://github.com/marko-js/language-server/commit/1936e3c1fe3c36fc8c1069a0cbb3a6744b60406b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure component.js file types are always a Marko.Component.
+
+- Updated dependencies [[`1936e3c`](https://github.com/marko-js/language-server/commit/1936e3c1fe3c36fc8c1069a0cbb3a6744b60406b)]:
+  - @marko/language-tools@2.5.36
+
 ## 2.1.9
 
 ### Patch Changes
