@@ -162,6 +162,15 @@ declare global {
       export function resolveTemplate<Template>(
         imported: Promise<{ default: Template }>,
       ): Template;
+      export function resolveComponent<Component>(
+        component: Component,
+      ): CheckNever<
+        (Component extends { default: infer Component }
+          ? Component
+          : Component) &
+          Marko.Component<unknown, unknown>,
+        Marko.Component<unknown, unknown>
+      >;
       export function fallbackTemplate<Tag, Template>(
         tag: Tag,
         fallback: Promise<{ default: Template }>,
@@ -621,7 +630,7 @@ type KnownRecordKeys<T> = keyof {
         : CheckNever<T[Key], never, Key>]: 0;
 };
 
-type CheckNever<T, If, Else> = [T] extends [never] ? If : Else;
+type CheckNever<T, If, Else = T> = [T] extends [never] ? If : Else;
 
 type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
   _: infer U,
