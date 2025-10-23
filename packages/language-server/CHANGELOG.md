@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.11
+
+### Patch Changes
+
+- [`9680503`](https://github.com/marko-js/language-server/commit/96805033325b3a73a8a53b01c249ee2085fe4bca) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bump language tools version.
+
 ## 2.1.10
 
 ### Patch Changes

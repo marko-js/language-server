@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "2.1.10",
+  "version": "2.1.11",
   "bin": {
     "marko-language-server": "./bin.js"
   },
