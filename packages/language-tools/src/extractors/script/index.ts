@@ -276,9 +276,9 @@ class ScriptExtractor {
           );
         } else {
           this.#extractor.write(
-            `/** @typedef {${varShared("resolveComponent")}(import("${stripExt(
+            `/** @typedef {${varShared("ResolveComponent")}<typeof import("${stripExt(
               relativeImportPath(this.#filename, componentFileName),
-            )}"))} Component */\n`,
+            )}")>} Component */\n`,
           );
         }
       } else {
