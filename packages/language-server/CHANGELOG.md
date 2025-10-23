@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.12
+
+### Patch Changes
+
+- [#418](https://github.com/marko-js/language-server/pull/418) [`67ae86c`](https://github.com/marko-js/language-server/commit/67ae86c463c23c79752ca839bd6dd93ff7884844) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure component file imports are always normalized.
+
+- Updated dependencies [[`67ae86c`](https://github.com/marko-js/language-server/commit/67ae86c463c23c79752ca839bd6dd93ff7884844)]:
+  - @marko/language-tools@2.5.38
+
 ## 2.1.11
 
 ### Patch Changes
