@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.37
+
+### Patch Changes
+
+- [#415](https://github.com/marko-js/language-server/pull/415) [`53d27e5`](https://github.com/marko-js/language-server/commit/53d27e5c37d3fb7f34c1bcc93fdcabe3dd2dee50) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve jsdoc component types.
+
 ## 2.5.36
 
 ### Patch Changes
