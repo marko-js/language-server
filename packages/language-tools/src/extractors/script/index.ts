@@ -270,9 +270,9 @@ class ScriptExtractor {
       if (isExternalComponentFile) {
         if (this.#scriptLang === ScriptLang.ts) {
           this.#extractor.write(
-            `import type Component from "${stripExt(
+            `export interface Component extends ${varShared("ResolveComponent")}<typeof import("${stripExt(
               relativeImportPath(this.#filename, componentFileName),
-            )}";\nexport { type Component }\n`,
+            )}")> {}\n`,
           );
         } else {
           this.#extractor.write(
