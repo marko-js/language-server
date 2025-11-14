@@ -268,18 +268,27 @@ class ScriptExtractor {
 
     if (this.#api !== RuntimeAPI.tags) {
       if (isExternalComponentFile) {
+        const componentImport = `"${stripExt(relativeImportPath(this.#filename, componentFileName))}"`;
         if (this.#scriptLang === ScriptLang.ts) {
-          this.#extractor.write(
-            `export interface Component extends ${varShared("ResolveComponent")}<typeof import("${stripExt(
-              relativeImportPath(this.#filename, componentFileName),
-            )}")> {}\n`,
-          );
+          if (typeArgsStr) {
+            this.#extractor.write(
+              `import type Component from ${componentImport};\nexport type { Component };\n`,
+            );
+          } else {
+            this.#extractor.write(
+              `export interface Component extends ${varShared("ResolveComponent")}<typeof import(${componentImport})> {}\n`,
+            );
+          }
         } else {
-          this.#extractor.write(
-            `/** @typedef {${varShared("ResolveComponent")}<typeof import("${stripExt(
-              relativeImportPath(this.#filename, componentFileName),
-            )}")>} Component */\n`,
-          );
+          if (typeArgsStr) {
+            this.#extractor.write(
+              `/** @import Component from ${componentImport} */\n`,
+            );
+          } else {
+            this.#extractor.write(
+              `/** @typedef {${varShared("ResolveComponent")}<typeof import(${componentImport})>} Component */\n`,
+            );
+          }
         }
       } else {
         const body = componentClassBody || " {}";
