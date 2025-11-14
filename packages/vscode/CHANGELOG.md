@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.14
+
+### Patch Changes
+
+- [#421](https://github.com/marko-js/language-server/pull/421) [`f201739`](https://github.com/marko-js/language-server/commit/f201739f703c8c3f314d6a2cdf3f1f1aa4471866) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with generics applied to external component files.
+
 ## 2.0.13
 
 ### Patch Changes
