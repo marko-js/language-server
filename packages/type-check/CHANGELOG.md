@@ -1,5 +1,16 @@
 # @marko/type-check
 
+## 2.1.12
+
+### Patch Changes
+
+- [#423](https://github.com/marko-js/language-server/pull/423) [`7f173d6`](https://github.com/marko-js/language-server/commit/7f173d6dc9369f7e2e9fed73500de10bf614e3ae) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Relax restrictions on rendering unknown templates.
+
+- [#423](https://github.com/marko-js/language-server/pull/423) [`7f173d6`](https://github.com/marko-js/language-server/commit/7f173d6dc9369f7e2e9fed73500de10bf614e3ae) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Only type check script tag body when in tags api.
+
+- Updated dependencies [[`7f173d6`](https://github.com/marko-js/language-server/commit/7f173d6dc9369f7e2e9fed73500de10bf614e3ae), [`7f173d6`](https://github.com/marko-js/language-server/commit/7f173d6dc9369f7e2e9fed73500de10bf614e3ae)]:
+  - @marko/language-tools@2.5.40
+
 ## 2.1.11
 
 ### Patch Changes
