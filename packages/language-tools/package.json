@@ -1,7 +1,7 @@
 {
   "name": "@marko/language-tools",
   "description": "Marko Language Tools",
-  "version": "2.5.39",
+  "version": "2.5.40",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "peerDependencies": {
     "@marko/compiler": "^5.28.4"
