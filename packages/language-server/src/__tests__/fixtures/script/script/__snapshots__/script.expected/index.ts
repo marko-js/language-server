@@ -43,7 +43,7 @@ export { type Component };
       });
       const promise = __marko_internal_rendered_4.return.value;
       Marko._.renderNativeTag("script")()()({
-        async value() {
+        async [Marko._.never]() {
           console.log(x);
           //              ^?
           console.log(y);

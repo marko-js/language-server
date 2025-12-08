@@ -152,7 +152,7 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
-      export function renderTemplate<Name extends Marko.Template<any, any>>(
+      export function renderTemplate<Name>(
         template: Name,
       ): TemplateRenderer<Name>;
       export function renderNativeTag<Name extends string>(
@@ -177,19 +177,19 @@ declare global {
       >(input: Input): Input;
 
       export function forOfTag<
-        Value extends Iterable,
+        Value,
         Item extends [0] extends [1 & Value]
           ? any
-          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+          : Value extends Iterable<infer Item>
             ? Item
             : never,
         BodyContent extends Marko.Body<
-          [item: Item, index: number, all: Value],
+          [item: Item, index: number, all: Exclude<Value, false | void | null>],
           void
         >,
       >(
         input: {
-          of: Value | false | void | null;
+          of: Value & (Iterable<unknown> | false | void | null);
           by?: ((item: Item, index: number) => string) | string;
         },
         content: BodyContent,
@@ -210,14 +210,14 @@ declare global {
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
       export function forToTag<
-        From extends void | number,
         To extends number,
+        From extends void | number,
         Step extends void | number,
         BodyContent extends Marko.Body<[index: number], void>,
       >(
         input: {
-          from?: From;
           to: To;
+          from?: From;
           step?: Step;
           by?: (index: number) => string;
         },
@@ -225,14 +225,14 @@ declare global {
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
       export function forUntilTag<
-        From extends void | number,
         Until extends number,
+        From extends void | number,
         Step extends void | number,
         BodyContent extends Marko.Body<[index: number], void>,
       >(
         input: {
-          from?: From;
           until: Until;
+          from?: From;
           step?: Step;
           by?: (index: number) => string;
         },
@@ -242,27 +242,27 @@ declare global {
       export function forTag<BodyContent extends AnyMarkoBody>(
         input: (
           | {
-              from?: number;
               to: number;
-              step?: number;
-            }
-          | {
               from?: number;
-              until: number;
               step?: number;
             }
           | {
-              in: object | false | void | null;
+              until: number;
+              from?: number;
+              step?: number;
             }
           | {
-              of: Iterable<unknown> | readonly unknown[] | false | void | null;
+              in: any;
             }
-        ) & { by?: (...args: unknown[]) => string },
+          | {
+              of: any;
+            }
+        ) & { by?: string | ((...args: unknown[]) => string) },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
       export function forOfAttrTag<
-        Value extends Iterable,
+        Value,
         Item extends [0] extends [1 & Value]
           ? any
           : Value extends readonly (infer Item)[] | Iterable<infer Item>
@@ -271,14 +271,18 @@ declare global {
         const Return,
       >(
         input: {
-          of: Value | false | void | null;
+          of: Value & (Iterable<unknown> | false | void | null);
         },
-        content: (value: Item, index: number, all: Value) => Return,
+        content: (
+          value: Item,
+          index: number,
+          all: Exclude<Value, false | void | null>,
+        ) => Return,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
           | (infer Item extends Record<PropertyKey, any>)
-          ? AttrTagByListSize<Value, Item>
+          ? AttrTagByListSize<Exclude<Value, false | void | null>, Item>
           : never;
       };
 
@@ -296,14 +300,14 @@ declare global {
       };
 
       export function forToAttrTag<
-        From extends void | number,
         To extends number,
+        From extends void | number,
         Step extends void | number,
         const Return,
       >(
         input: {
-          from?: From;
           to: To;
+          from?: From;
           step?: Step;
         },
         content: (index: number) => Return,
@@ -322,14 +326,14 @@ declare global {
       };
 
       export function forUntilAttrTag<
-        From extends void | number,
         Until extends number,
+        From extends void | number,
         Step extends void | number,
         const Return,
       >(
         input: {
-          from?: From;
           until: Until;
+          from?: From;
           step?: Step;
         },
         content: (index: number) => Return,
@@ -350,19 +354,19 @@ declare global {
       export function forAttrTag<const Return>(
         input:
           | {
-              of: Iterable<unknown> | readonly unknown[] | false | void | null;
+              of: Iterable<unknown> | false | void | null;
             }
           | {
-              in: object;
+              in: object | false | void | null;
             }
           | {
-              from?: number;
               to: number;
+              from?: number;
               step?: number;
             }
           | {
-              from?: number;
               until: number;
+              from?: number;
               step?: number;
             },
         content: (...args: unknown[]) => Return,
@@ -420,7 +424,7 @@ declare global {
         ? Renderer
         : Template extends Marko.Template<infer Input, infer Return>
           ? BaseRenderer<Input, Return>
-          : never;
+          : DefaultRenderer;
 
       export interface NativeTagRenderer<Name extends string> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
@@ -534,14 +538,6 @@ type FlatScopes<Input> = [0] extends [1 & Input]
 type MergeScopes<Scopes> = {
   [K in Scopes extends Scopes ? keyof Scopes : never]: Scopes extends Scopes
     ? Scopes[K & keyof Scopes]
-    : never;
-};
-
-type MergeOptionalScopes<Scopes> = {
-  [K in Scopes extends Scopes ? keyof Scopes : never]: Scopes extends Scopes
-    ? K extends keyof Scopes
-      ? Scopes[K]
-      : undefined
     : never;
 };
 

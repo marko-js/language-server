@@ -1284,7 +1284,9 @@ constructor(_?: Return) {}
     let hasBodyContent = false;
 
     if (isScript) {
-      this.#extractor.write("async value(){");
+      this.#extractor.write(
+        `async ${this.#api === RuntimeAPI.tags ? "value" : `[${varShared("never")}]`}(){`,
+      );
       this.#copyWithMutationsReplaced({
         start: tag.body[0].start,
         end: tag.body[tag.body.length - 1].end,
