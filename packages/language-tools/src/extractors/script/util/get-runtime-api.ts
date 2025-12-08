@@ -96,6 +96,10 @@ function detectAPIFromChild(parsed: Parsed, child: Node.ChildNode): RuntimeAPI {
 }
 
 function detectAPIFromTag(parsed: Parsed, tag: Node.ParentTag): RuntimeAPI {
+  if (tag.var) {
+    return RuntimeAPI.tags;
+  }
+
   switch (tag.nameText) {
     case "macro":
     case "include-text":
@@ -103,7 +107,6 @@ function detectAPIFromTag(parsed: Parsed, tag: Node.ParentTag): RuntimeAPI {
     case "init-components":
     case "await-reorderer":
     case "while":
-    case "module-code":
       return RuntimeAPI.class;
     case "const":
     case "debug":
@@ -113,11 +116,10 @@ function detectAPIFromTag(parsed: Parsed, tag: Node.ParentTag): RuntimeAPI {
     case "lifecycle":
     case "log":
     case "return":
+    case "html-script":
+    case "html-style":
+    case "try":
       return RuntimeAPI.tags;
-  }
-
-  if (tag.var) {
-    return RuntimeAPI.tags;
   }
 
   if (tag.attrs) {

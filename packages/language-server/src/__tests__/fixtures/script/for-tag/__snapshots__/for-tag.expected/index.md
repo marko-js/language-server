@@ -265,7 +265,7 @@
   108 |
   109 |
 > 110 | <for|index|>
-      |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ from?: number | undefined; to: number; step?: number | undefined; } | { from?: number | undefined; until: number; step?: number | undefined; } | { in: false | void | object | null; } | { ...; }) & { ...; }'.
+      |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ to: number; from?: number | undefined; step?: number | undefined; } | { until: number; from?: number | undefined; step?: number | undefined; } | { in: any; } | { of: any; }) & { by?: string | ((...args: unknown[]) => string) | undefined; }'.
   111 |   Should error
   112 | </for>
   113 |

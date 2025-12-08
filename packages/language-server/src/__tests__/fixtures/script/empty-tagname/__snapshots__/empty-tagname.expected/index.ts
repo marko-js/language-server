@@ -18,7 +18,7 @@ export { type Component };
   Marko._.renderNativeTag("script")()()(
     //      ^?
     {
-      async value() {
+      async [Marko._.never]() {
         const el = $el();
         //    ^?
       },
