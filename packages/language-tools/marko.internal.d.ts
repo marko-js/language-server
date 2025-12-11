@@ -38,13 +38,15 @@ declare global {
 
       export function contentFor<Name>(
         tag: Name,
-      ): Name extends { api: infer API }
-        ? API extends "tags"
-          ? "content"
-          : API extends "class"
-            ? "renderBody"
-            : DefaultBodyContentKey
-        : DefaultBodyContentKey;
+      ): [0] extends [1 & Name]
+        ? DefaultBodyContentKey
+        : Name extends { api: infer API }
+          ? API extends "tags"
+            ? "content"
+            : API extends "class"
+              ? "renderBody"
+              : DefaultBodyContentKey
+          : DefaultBodyContentKey;
 
       export const Template: new <Overrides = unknown>() => {
         [K in Exclude<

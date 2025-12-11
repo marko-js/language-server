@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.interpolated`blink`;
   Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    ["renderBody" /*blink*/]: (() => {
+    [Marko._.contentFor(__marko_internal_tag_1) /*blink*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

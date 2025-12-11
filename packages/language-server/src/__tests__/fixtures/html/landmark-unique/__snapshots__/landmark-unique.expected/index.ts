@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     role: "region",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -21,7 +21,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("div")()()({
     role: "region",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

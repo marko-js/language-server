@@ -11,9 +11,8 @@ import MarkoLangaugeService, { documents } from "../service";
 import { codeFrame } from "./util/code-frame";
 
 Project.setDefaultTypePaths({
-  internalTypesFile: require.resolve(
-    "@marko/language-tools/marko.internal.d.ts",
-  ),
+  internalTypesFile:
+    require.resolve("@marko/language-tools/marko.internal.d.ts"),
   markoTypesFile: require.resolve("marko/index.d.ts"),
 });
 

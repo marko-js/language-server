@@ -37,7 +37,7 @@ export { type Component };
     )([
       {
         x: 1,
-        ["renderBody" /*@item*/]: (() => {
+        [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };
@@ -45,7 +45,7 @@ export { type Component };
         [/*@item*/ Symbol.iterator]: Marko._.any,
       },
       {
-        ["renderBody" /*@item*/]: (() => {
+        [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };

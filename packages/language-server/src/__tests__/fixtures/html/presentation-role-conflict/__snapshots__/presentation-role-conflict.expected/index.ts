@@ -15,7 +15,7 @@ export { type Component };
     role: "none",
     id: "global-attr",
     "aria-hidden": "true",
-    ["renderBody" /*li*/]: (() => {
+    [Marko._.content /*li*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -24,7 +24,7 @@ export { type Component };
   Marko._.renderNativeTag("button")()()({
     id: "natively-focusable",
     role: "none",
-    ["renderBody" /*button*/]: (() => {
+    [Marko._.content /*button*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -34,7 +34,7 @@ export { type Component };
     role: "presentation",
     id: "tabindex",
     tabindex: "0",
-    ["renderBody" /*li*/]: (() => {
+    [Marko._.content /*li*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

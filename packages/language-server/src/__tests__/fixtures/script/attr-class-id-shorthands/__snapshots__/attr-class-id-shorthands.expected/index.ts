@@ -1,18 +1,13 @@
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
-export { type Component };
 (function (this: void) {
   const input = Marko._.any as Input;
-  const component = Marko._.any as Component;
-  const state = Marko._.state(component);
-  const out = Marko._.out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("../../../components/const/index.marko"),
+    import("@marko/runtime-tags/tags/const.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
     __marko_internal_tag_1,
@@ -101,7 +96,7 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_10)()()({
     class: Marko._.interpolated`${value}-test-${value}`,
   });
-  Marko._.noop({ component, state, out, input, $global, $signal });
+  Marko._.noop({ input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{
@@ -111,14 +106,14 @@ export default new (class Template extends Marko._.Template<{
       write: (chunk: string) => void;
       end: (chunk?: string) => void;
     },
-  ): Marko.Out<Component>;
+  ): Marko.Out<never>;
 
   render(
     input: Marko.TemplateInput<Input>,
-    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void,
-  ): Marko.Out<Component>;
+    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
+  ): Marko.Out<never>;
 
-  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<never>;
 
   renderToString(input: Marko.TemplateInput<Input>): string;
 
@@ -132,7 +127,7 @@ export default new (class Template extends Marko._.Template<{
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
   ): Marko.MountedTemplate<typeof input>;
 
-  api: "class";
+  api: "tags";
   _(): () => <__marko_internal_input extends unknown>(
     input: Marko.Directives &
       Input &

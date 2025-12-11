@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("label")()()({
     for: "input",
-    ["renderBody" /*label*/]: (() => {
+    [Marko._.content /*label*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

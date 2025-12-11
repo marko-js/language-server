@@ -26,7 +26,7 @@ export { type Component };
         // ^?
         {
           href: href,
-          ["renderBody" /*a*/]: (() => {
+          [Marko._.content /*a*/]: (() => {
             title;
             return () => {
               return Marko._.voidReturn;
@@ -40,7 +40,7 @@ export { type Component };
   Marko._.renderNativeTag("select")()()(
     // ^?
     {
-      ["renderBody" /*select*/]: (() => {
+      [Marko._.content /*select*/]: (() => {
         Marko._.forOfTag(
           {
             /*for*/ of: input.option,
@@ -50,7 +50,7 @@ export { type Component };
               // ^?
               {
                 value: value,
-                ["renderBody" /*option*/]: (() => {
+                [Marko._.content /*option*/]: (() => {
                   content;
                   return () => {
                     return Marko._.voidReturn;
@@ -86,7 +86,7 @@ export { type Component };
             // ^?
             ["option" /*@option*/]: {
               value: href,
-              ["renderBody" /*@option*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1) /*@option*/]: (() => {
                 // ^?
                 title;
                 return () => {
@@ -105,7 +105,7 @@ export { type Component };
             // ^?
             ["option" /*@option*/]: {
               value: value,
-              ["renderBody" /*@option*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1) /*@option*/]: (() => {
                 // ^?
                 content;
                 return () => {

@@ -25,7 +25,7 @@ export { type Component };
           return {
             //    ^?
             ["a" /*@a*/]: {
-              ["renderBody" /*@a*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1) /*@a*/]: (() => {
                 done;
                 //      ^?
                 if (i === 5) {
@@ -57,7 +57,7 @@ export { type Component };
           return {
             //          ^?
             ["a" /*@a*/]: {
-              ["renderBody" /*@a*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_2) /*@a*/]: (() => {
                 doubleIndex;
                 return () => {
                   return Marko._.voidReturn;

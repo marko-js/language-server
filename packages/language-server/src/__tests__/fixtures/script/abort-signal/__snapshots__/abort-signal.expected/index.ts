@@ -11,8 +11,10 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.interpolated`effect`;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+  const __marko_internal_tag_1 = Marko._.resolveTemplate(
+    import("@marko/runtime-tags/tags/effect.d.marko"),
+  );
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     value() {
       $signal.onabort = () => {
         // ^?
