@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.13
+
+### Patch Changes
+
+- [#425](https://github.com/marko-js/language-server/pull/425) [`6c4cbda`](https://github.com/marko-js/language-server/commit/6c4cbda7d170f7f9880c8be4ec22062ad6c85ac8) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve tags api interop support.
+
+- Updated dependencies [[`6c4cbda`](https://github.com/marko-js/language-server/commit/6c4cbda7d170f7f9880c8be4ec22062ad6c85ac8)]:
+  - @marko/language-tools@2.5.41
+
 ## 2.1.12
 
 ### Patch Changes
