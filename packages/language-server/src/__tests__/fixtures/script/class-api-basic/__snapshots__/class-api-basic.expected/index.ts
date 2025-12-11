@@ -55,10 +55,10 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     class: "mobiles__list",
     onClick: component.handleClick,
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       Marko._.renderNativeTag("p")()()({
         id: "p",
-        ["renderBody" /*p*/]: (() => {
+        [Marko._.content /*p*/]: (() => {
           year;
           return () => {
             return Marko._.voidReturn;
@@ -68,7 +68,7 @@ export { type Component };
       if (isSmartOnly) {
         Marko._.renderNativeTag("span")()()({
           class: "subnote",
-          ["renderBody" /*span*/]: (() => {
+          [Marko._.content /*span*/]: (() => {
             isSmartOnly;
             return () => {
               return Marko._.voidReturn;
@@ -78,7 +78,7 @@ export { type Component };
       }
       Marko._.renderNativeTag("span")()()({
         class: "subnote",
-        ["renderBody" /*span*/]: (() => {
+        [Marko._.content /*span*/]: (() => {
           type;
           return () => {
             return Marko._.voidReturn;
@@ -97,7 +97,7 @@ export { type Component };
         (mobile, i, all) => {
           Marko._.renderNativeTag("span")()()({
             id: i,
-            ["renderBody" /*span*/]: (() => {
+            [Marko._.content /*span*/]: (() => {
               mobile;
               i;
               all.length;
@@ -111,7 +111,7 @@ export { type Component };
       );
       Marko._.renderNativeTag("div")()()({
         class: Marko._.interpolated`container`,
-        ["renderBody" /*div*/]: (() => {
+        [Marko._.content /*div*/]: (() => {
           const __marko_internal_tag_1 = input.renderBody;
           Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
             /*input.renderBody*/
@@ -124,7 +124,7 @@ export { type Component };
       const __marko_internal_tag_2 = FancyButton;
       Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
         something: true,
-        ["renderBody" /*FancyButton*/]: (() => {
+        [Marko._.contentFor(__marko_internal_tag_2) /*FancyButton*/]: (() => {
           type;
           return () => {
             return Marko._.voidReturn;
@@ -132,7 +132,7 @@ export { type Component };
         })(),
       });
       Marko._.renderNativeTag("div")()()({
-        ["renderBody" /*div*/]: (() => {
+        [Marko._.content /*div*/]: (() => {
           ("<b>World</b>");
           return () => {
             return Marko._.voidReturn;
@@ -140,9 +140,9 @@ export { type Component };
         })(),
       });
       Marko._.renderNativeTag("div")()()({
-        ["renderBody" /*div*/]: (() => {
+        [Marko._.content /*div*/]: (() => {
           Marko._.renderNativeTag("code")()()({
-            ["renderBody" /*code*/]: (() => {
+            [Marko._.content /*code*/]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };

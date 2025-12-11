@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("label")()()({
     for: "one",
-    ["renderBody" /*label*/]: (() => {
+    [Marko._.content /*label*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -21,7 +21,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("label")()()({
     for: "one",
-    ["renderBody" /*label*/]: (() => {
+    [Marko._.content /*label*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -32,14 +32,14 @@ export { type Component };
   });
   Marko._.renderNativeTag("label")()()({
     for: "two",
-    ["renderBody" /*label*/]: (() => {
+    [Marko._.content /*label*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
   });
   Marko._.renderNativeTag("label")()()({
-    ["renderBody" /*label*/]: (() => {
+    [Marko._.content /*label*/]: (() => {
       Marko._.renderNativeTag("input")()()({
         id: "two",
       });

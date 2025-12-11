@@ -14,7 +14,7 @@ export { type Component };
   Marko._.renderNativeTag("p")()()({
     id: "fail1",
     style: "line-height: 1.5 !important;",
-    ["renderBody" /*p*/]: (() => {
+    [Marko._.content /*p*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -23,7 +23,7 @@ export { type Component };
   Marko._.renderNativeTag("p")()()({
     id: "fail2",
     style: "letter-spacing: 100em !important;",
-    ["renderBody" /*p*/]: (() => {
+    [Marko._.content /*p*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -32,7 +32,7 @@ export { type Component };
   Marko._.renderNativeTag("p")()()({
     id: "fail3",
     style: "word-spacing: -.4ch !important;",
-    ["renderBody" /*p*/]: (() => {
+    [Marko._.content /*p*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -42,7 +42,7 @@ export { type Component };
     id: "fail4",
     style:
       "word-spacing: 200%; letter-spacing: 50rem !important; line-height: 3;",
-    ["renderBody" /*p*/]: (() => {
+    [Marko._.content /*p*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

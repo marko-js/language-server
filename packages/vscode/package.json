@@ -106,9 +106,9 @@
     "@marko/language-server": "^2.1.14",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.6.0",
-    "ovsx": "^0.10.5",
-    "tsx": "^4.20.5",
+    "@vscode/vsce": "^3.7.1",
+    "ovsx": "^0.10.7",
+    "tsx": "^4.21.0",
     "vscode-languageclient": "^9.0.1"
   },
   "displayName": "Marko VSCode",

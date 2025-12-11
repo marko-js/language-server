@@ -1,18 +1,13 @@
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
-export { type Component };
 (function (this: void) {
   const input = Marko._.any as Input;
-  const component = Marko._.any as Component;
-  const state = Marko._.state(component);
-  const out = Marko._.out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("../../../components/let/index.marko"),
+    import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
     __marko_internal_tag_1,
@@ -21,7 +16,7 @@ export { type Component };
   });
   const show = __marko_internal_rendered_1.return.value;
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("../../../components/let/index.marko"),
+    import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_2 = Marko._.renderTemplate(
     __marko_internal_tag_2,
@@ -36,7 +31,7 @@ export { type Component };
   if (show) {
   }
   Marko._.renderNativeTag("div")()()({
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       if (undefined) {
       }
       return () => {
@@ -50,7 +45,7 @@ export { type Component };
   const __marko_internal_rendered_3 = (() => {
     if (show) {
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_4 = Marko._.renderTemplate(
         __marko_internal_tag_3,
@@ -68,7 +63,7 @@ export { type Component };
   const __marko_internal_rendered_5 = (() => {
     if (show) {
       const __marko_internal_tag_4 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_6 = Marko._.renderTemplate(
         __marko_internal_tag_4,
@@ -81,7 +76,7 @@ export { type Component };
       };
     } else if (showAlt) {
       const __marko_internal_tag_5 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_7 = Marko._.renderTemplate(
         __marko_internal_tag_5,
@@ -94,7 +89,7 @@ export { type Component };
       };
     } else {
       const __marko_internal_tag_6 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_8 = Marko._.renderTemplate(
         __marko_internal_tag_6,
@@ -111,7 +106,7 @@ export { type Component };
     if (show) {
     } else {
       const __marko_internal_tag_7 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_10 = Marko._.renderTemplate(
         __marko_internal_tag_7,
@@ -129,7 +124,7 @@ export { type Component };
     } else if (showAlt) {
     } else {
       const __marko_internal_tag_8 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_12 = Marko._.renderTemplate(
         __marko_internal_tag_8,
@@ -145,7 +140,7 @@ export { type Component };
   const __marko_internal_rendered_13 = (() => {
     if (show) {
       const __marko_internal_tag_9 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_14 = Marko._.renderTemplate(
         __marko_internal_tag_9,
@@ -158,7 +153,7 @@ export { type Component };
       };
     } else {
       const __marko_internal_tag_10 = Marko._.resolveTemplate(
-        import("../../../components/const/index.marko"),
+        import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_15 = Marko._.renderTemplate(
         __marko_internal_tag_10,
@@ -177,7 +172,7 @@ export { type Component };
       if (show) {
       } else if (showAlt) {
         const __marko_internal_tag_11 = Marko._.resolveTemplate(
-          import("../../../components/const/index.marko"),
+          import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_17 = Marko._.renderTemplate(
           __marko_internal_tag_11,
@@ -190,7 +185,7 @@ export { type Component };
         };
       } else {
         const __marko_internal_tag_12 = Marko._.resolveTemplate(
-          import("../../../components/const/index.marko"),
+          import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_18 = Marko._.renderTemplate(
           __marko_internal_tag_12,
@@ -217,8 +212,10 @@ export { type Component };
   }
   if ((show, y)) {
   }
-  const __marko_internal_tag_13 = Marko._.interpolated`effect`;
-  Marko._.renderDynamicTag(__marko_internal_tag_13)()()({
+  const __marko_internal_tag_13 = Marko._.resolveTemplate(
+    import("@marko/runtime-tags/tags/effect.d.marko"),
+  );
+  Marko._.renderTemplate(__marko_internal_tag_13)()()({
     value() {
       a;
       //^?
@@ -248,23 +245,7 @@ export { type Component };
     __marko_internal_rendered_13,
     __marko_internal_rendered_16,
   });
-  Marko._.noop({
-    a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g,
-    h,
-    i,
-    component,
-    state,
-    out,
-    input,
-    $global,
-    $signal,
-  });
+  Marko._.noop({ a, b, c, d, e, f, g, h, i, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{
@@ -274,14 +255,14 @@ export default new (class Template extends Marko._.Template<{
       write: (chunk: string) => void;
       end: (chunk?: string) => void;
     },
-  ): Marko.Out<Component>;
+  ): Marko.Out<never>;
 
   render(
     input: Marko.TemplateInput<Input>,
-    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void,
-  ): Marko.Out<Component>;
+    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
+  ): Marko.Out<never>;
 
-  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<never>;
 
   renderToString(input: Marko.TemplateInput<Input>): string;
 
@@ -295,7 +276,7 @@ export default new (class Template extends Marko._.Template<{
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
   ): Marko.MountedTemplate<typeof input>;
 
-  api: "class";
+  api: "tags";
   _(): () => <__marko_internal_input extends unknown>(
     input: Marko.Directives &
       Input &

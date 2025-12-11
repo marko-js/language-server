@@ -24,7 +24,7 @@
 ### Ln 1, Col 2
 ```marko
 > 1 | <test-tag|a|>
-    |  ^^^^^^^^ Type '(a: "a") => MarkoReturn<void>' is not assignable to type 'Body<["a"], { value: "a" | "b"; }>'.
+    |  ^^^^^^^^ Type of computed property's value is '(a: "a") => MarkoReturn<void>', which is not assignable to type 'Body<["a"], { value: "a" | "b"; }>'.
   Type 'MarkoReturn<void>' is not assignable to type 'MarkoReturn<{ value: "a" | "b"; }>'.
     Type 'void' is not assignable to type '{ value: "a" | "b"; }'.
   2 |   ${a}
@@ -37,7 +37,7 @@
   12 | </test-tag>
   13 |
 > 14 | <test-tag>
-     |  ^^^^^^^^ Type '() => MarkoReturn<{ value: "c"; }>' is not assignable to type 'Body<["a"], { value: "a" | "b"; }>'.
+     |  ^^^^^^^^ Type of computed property's value is '() => MarkoReturn<{ value: "c"; }>', which is not assignable to type 'Body<["a"], { value: "a" | "b"; }>'.
   Call signature return types 'MarkoReturn<{ value: "c"; }>' and 'MarkoReturn<{ value: "a" | "b"; }>' are incompatible.
     The types of 'return.value' are incompatible between these types.
       Type '"c"' is not assignable to type '"a" | "b"'.

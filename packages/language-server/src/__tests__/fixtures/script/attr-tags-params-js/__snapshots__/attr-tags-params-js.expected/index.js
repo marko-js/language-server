@@ -35,7 +35,7 @@ export class Component extends Marko.Component {}
         [/*@foo*/ Symbol.iterator]: Marko._.any,
       },
       {
-        ["renderBody" /*@foo*/]: (data) => {
+        [Marko._.contentFor(__marko_internal_tag_1) /*@foo*/]: (data) => {
           data;
           return Marko._.voidReturn;
         },
@@ -60,7 +60,7 @@ export class Component extends Marko.Component {}
           [/*@foo*/ Symbol.iterator]: Marko._.any,
         },
         {
-          ["renderBody" /*@foo*/]: (data) => {
+          [Marko._.contentFor(__marko_internal_tag_2) /*@foo*/]: (data) => {
             data;
             return Marko._.voidReturn;
           },
@@ -87,7 +87,7 @@ export class Component extends Marko.Component {}
           [/*@foo*/ Symbol.iterator]: Marko._.any,
         },
         {
-          ["renderBody" /*@foo*/]: (data) => {
+          [Marko._.contentFor(__marko_internal_tag_3) /*@foo*/]: (data) => {
             data;
             return Marko._.voidReturn;
           },

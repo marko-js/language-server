@@ -14,7 +14,7 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.renderNativeTag("div")()()({
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       input.message;
       return () => {
         return Marko._.voidReturn;

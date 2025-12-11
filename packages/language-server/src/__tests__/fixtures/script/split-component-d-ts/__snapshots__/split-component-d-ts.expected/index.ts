@@ -25,7 +25,7 @@ export { type Component };
     //            ^?          ^?
     {
       size: "large",
-      ["renderBody" /*regular-button*/]: (() => {
+      [Marko._.contentFor(__marko_internal_tag_2) /*regular-button*/]: (() => {
         return () => {
           return Marko._.voidReturn;
         };

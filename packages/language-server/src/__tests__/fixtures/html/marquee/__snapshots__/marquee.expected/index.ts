@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.interpolated`marquee`;
   Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    ["renderBody" /*marquee*/]: (() => {
+    [Marko._.contentFor(__marko_internal_tag_1) /*marquee*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

@@ -109,6 +109,8 @@ export function extractScript(opts: ExtractScriptOptions) {
 class ScriptExtractor {
   #code: string;
   #filename: string;
+  #api: RuntimeAPI;
+  #interop: boolean;
   #parsed: Parsed;
   #extractor: Extractor;
   #scriptParser: ScriptParser;
@@ -119,14 +121,20 @@ class ScriptExtractor {
   #scriptLang: ScriptLang;
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
-  #api: RuntimeAPI;
   #mutationOffsets: Repeatable<number>;
   #tagId = 1;
   #renderId = 1;
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
-    this.#filename = parsed.filename;
+    const { api, interop } = getRuntimeAPI(
+      opts.translator,
+      opts.lookup,
+      parsed,
+    );
     this.#code = parsed.code;
+    this.#filename = parsed.filename;
+    this.#api = api;
+    this.#interop = interop;
     this.#scriptLang = scriptLang;
     this.#parsed = parsed;
     this.#lookup = lookup;
@@ -135,7 +143,6 @@ class ScriptExtractor {
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
-    this.#api = getRuntimeAPI(opts.translator, parsed);
     this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
     this.#writeProgram(parsed.program);
   }
@@ -148,7 +155,7 @@ class ScriptExtractor {
     this.#writeCommentPragmas(program);
 
     const componentFileName =
-      this.#api !== RuntimeAPI.tags
+      this.#api === RuntimeAPI.class
         ? getComponentFilename(this.#filename)
         : undefined;
     const inputType = this.#getInputType(program);
@@ -266,7 +273,7 @@ class ScriptExtractor {
       }
     }
 
-    if (this.#api !== RuntimeAPI.tags) {
+    if (this.#api === RuntimeAPI.class) {
       if (isExternalComponentFile) {
         const componentImport = `"${stripExt(relativeImportPath(this.#filename, componentFileName))}"`;
         if (this.#scriptLang === ScriptLang.ts) {
@@ -333,7 +340,7 @@ function ${templateName}() {\n`);
 
     this.#extractor.write(`\
   const input = ${this.#getCastedType(`Input${typeArgsStr}`)};${
-    this.#api !== RuntimeAPI.tags
+    this.#api === RuntimeAPI.class
       ? `
   const component = ${this.#getCastedType(`Component${typeArgsStr}`)};
   const state = ${varShared("state")}(component);
@@ -360,7 +367,7 @@ function ${templateName}() {\n`);
     }
 
     this.#extractor.write(
-      `${varShared("noop")}({ ${hoists ? hoists.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api !== RuntimeAPI.tags ? "component, state, out, " : ""}input, $global, $signal });\n`,
+      `${varShared("noop")}({ ${hoists ? hoists.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
     );
 
     if (didReturn) {
@@ -394,7 +401,7 @@ function ${templateName}() {\n`);
           )
         : ""
     }
-  ${this.#api ? `api: "${this.#api}",` : ""}
+  ${this.#interop ? `api: "${this.#api}",` : ""}
   _${
     typeParamsStr
       ? `<${internalApply} = 1>(): ${internalApply} extends 0
@@ -993,7 +1000,7 @@ constructor(_?: Return) {}
               this.#extractor.write('"').copy(name).write('": ');
 
               if (
-                this.#api !== RuntimeAPI.tags &&
+                this.#api === RuntimeAPI.class &&
                 typeof name !== "string" &&
                 this.#read(name).startsWith("on")
               ) {
@@ -1243,7 +1250,7 @@ constructor(_?: Return) {}
 
     if (
       tag.args &&
-      (this.#api !== RuntimeAPI.class || !!this.#getDynamicTagExpression(tag))
+      (this.#api === RuntimeAPI.tags || !!this.#getDynamicTagExpression(tag))
     ) {
       hasInput = true;
       this.#extractor.copy(tag.args.value);
@@ -1303,27 +1310,20 @@ constructor(_?: Return) {}
     if (tag.params || hasBodyContent) {
       this.#extractor.write("[");
 
-      switch (this.#api) {
-        case RuntimeAPI.tags:
-          this.#extractor.write('"content"');
-          break;
-        case RuntimeAPI.class:
-          this.#extractor.write('"renderBody"');
-          break;
-        default: {
-          const tagId = this.#tagIds.get(
-            tag.type === NodeType.AttrTag ? tag.owner! : tag,
-          );
+      if (this.#interop) {
+        const tagId = this.#tagIds.get(
+          tag.type === NodeType.AttrTag ? tag.owner! : tag,
+        );
 
-          if (tagId) {
-            this.#extractor.write(
-              `${varShared("contentFor")}(${varLocal("tag_" + tagId)})`,
-            );
-          } else {
-            this.#extractor.write(varShared("content"));
-          }
-          break;
+        if (tagId) {
+          this.#extractor.write(
+            `${varShared("contentFor")}(${varLocal("tag_" + tagId)})`,
+          );
+        } else {
+          this.#extractor.write(varShared("content"));
         }
+      } else {
+        this.#extractor.write('"content"');
       }
 
       // Adds a comment containing the tag name inside the body content key

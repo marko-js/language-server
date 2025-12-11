@@ -1,14 +1,9 @@
 export interface Input<T, U> {
   data: T;
-  renderBody: Marko.Body<[T], U>;
+  content: Marko.Body<[T], U>;
 }
-abstract class Component<T, U> extends Marko.Component<Input<T, U>> {}
-export { type Component };
 function __marko_internal_template<T, U>(this: void) {
   const input = Marko._.any as Input<T, U>;
-  const component = Marko._.any as Component<T, U>;
-  const state = Marko._.state(component);
-  const out = Marko._.out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
@@ -19,7 +14,7 @@ function __marko_internal_template<T, U>(this: void) {
       value: 1 as unknown as U,
     }),
   };
-  Marko._.noop({ component, state, out, input, $global, $signal });
+  Marko._.noop({ input, $global, $signal });
   return __marko_internal_return.return;
 }
 export default new (class Template extends Marko._.Template<{
@@ -29,19 +24,16 @@ export default new (class Template extends Marko._.Template<{
       write: (chunk: string) => void;
       end: (chunk?: string) => void;
     },
-  ): Marko.Out<Component<T, U>>;
+  ): Marko.Out<never>;
 
   render<T, U>(
     input: Marko.TemplateInput<Input<T, U>>,
-    cb?: (
-      err: Error | null,
-      result: Marko.RenderResult<Component<T, U>>,
-    ) => void,
-  ): Marko.Out<Component<T, U>>;
+    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
+  ): Marko.Out<never>;
 
   renderSync<T, U>(
     input: Marko.TemplateInput<Input<T, U>>,
-  ): Marko.RenderResult<Component<T, U>>;
+  ): Marko.RenderResult<never>;
 
   renderToString<T, U>(input: Marko.TemplateInput<Input<T, U>>): string;
 
@@ -55,7 +47,7 @@ export default new (class Template extends Marko._.Template<{
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
   ): Marko.MountedTemplate<typeof input>;
 
-  api: "class";
+  api: "tags";
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <T, U>() => <__marko_internal_input extends unknown>(
         input: Marko.Directives &

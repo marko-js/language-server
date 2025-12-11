@@ -16,7 +16,7 @@ export { type Component };
   );
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     something: true,
-    ["renderBody" /*fancy-button*/]: (() => {
+    [Marko._.contentFor(__marko_internal_tag_1) /*fancy-button*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

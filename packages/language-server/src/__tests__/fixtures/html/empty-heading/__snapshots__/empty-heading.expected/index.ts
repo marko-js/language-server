@@ -12,7 +12,7 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.renderNativeTag("h1")()()({
-    ["renderBody" /*h1*/]: (() => {
+    [Marko._.content /*h1*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -20,7 +20,7 @@ export { type Component };
     /*h1*/
   });
   Marko._.renderNativeTag("h2")()()({
-    ["renderBody" /*h2*/]: (() => {
+    [Marko._.content /*h2*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -28,7 +28,7 @@ export { type Component };
     /*h2*/
   });
   Marko._.renderNativeTag("h3")()()({
-    ["renderBody" /*h3*/]: (() => {
+    [Marko._.content /*h3*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -36,7 +36,7 @@ export { type Component };
     /*h3*/
   });
   Marko._.renderNativeTag("h4")()()({
-    ["renderBody" /*h4*/]: (() => {
+    [Marko._.content /*h4*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -44,7 +44,7 @@ export { type Component };
     /*h4*/
   });
   Marko._.renderNativeTag("h5")()()({
-    ["renderBody" /*h5*/]: (() => {
+    [Marko._.content /*h5*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -52,7 +52,7 @@ export { type Component };
     /*h5*/
   });
   Marko._.renderNativeTag("h6")()()({
-    ["renderBody" /*h6*/]: (() => {
+    [Marko._.content /*h6*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

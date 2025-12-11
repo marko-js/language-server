@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("map")()()({
     name: "Map",
-    ["renderBody" /*map*/]: (() => {
+    [Marko._.content /*map*/]: (() => {
       Marko._.renderNativeTag("area")()()({
         shape: "rect",
         href: "image-map",
@@ -28,7 +28,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("a")()()({
     href: "ebay.com",
-    ["renderBody" /*a*/]: (() => {
+    [Marko._.content /*a*/]: (() => {
       Marko._.renderNativeTag("img")()()({
         src: "ebay-logo.png",
         alt: "eBay",
@@ -43,7 +43,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("object")()()({
     id: "object",
-    ["renderBody" /*object*/]: (() => {
+    [Marko._.content /*object*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -51,7 +51,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("div")()()({
     role: "img",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -59,7 +59,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("svg")()()({
     role: "img",
-    ["renderBody" /*svg*/]: (() => {
+    [Marko._.content /*svg*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

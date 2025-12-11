@@ -13,11 +13,11 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     "aria-hidden": "true",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       Marko._.renderNativeTag("a")()()({
         href: "/",
         style: "position:absolute; top:-999em",
-        ["renderBody" /*a*/]: (() => {
+        [Marko._.content /*a*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };
@@ -30,7 +30,7 @@ export { type Component };
   });
   Marko._.renderNativeTag("div")()()({
     "aria-hidden": "true",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       Marko._.renderNativeTag("input")()()({
         "aria-disabled": "true",
       });
@@ -41,12 +41,12 @@ export { type Component };
   });
   Marko._.renderNativeTag("div")()()({
     "aria-hidden": "true",
-    ["renderBody" /*div*/]: (() => {
+    [Marko._.content /*div*/]: (() => {
       Marko._.renderNativeTag("div")()()({
         "aria-hidden": "false",
-        ["renderBody" /*div*/]: (() => {
+        [Marko._.content /*div*/]: (() => {
           Marko._.renderNativeTag("button")()()({
-            ["renderBody" /*button*/]: (() => {
+            [Marko._.content /*button*/]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };
@@ -65,7 +65,7 @@ export { type Component };
   Marko._.renderNativeTag("p")()()({
     tabindex: "0",
     "aria-hidden": "true",
-    ["renderBody" /*p*/]: (() => {
+    [Marko._.content /*p*/]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -73,16 +73,16 @@ export { type Component };
   });
   Marko._.renderNativeTag("details")()()({
     "aria-hidden": "true",
-    ["renderBody" /*details*/]: (() => {
+    [Marko._.content /*details*/]: (() => {
       Marko._.renderNativeTag("summary")()()({
-        ["renderBody" /*summary*/]: (() => {
+        [Marko._.content /*summary*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };
         })(),
       });
       Marko._.renderNativeTag("p")()()({
-        ["renderBody" /*p*/]: (() => {
+        [Marko._.content /*p*/]: (() => {
           return () => {
             return Marko._.voidReturn;
           };

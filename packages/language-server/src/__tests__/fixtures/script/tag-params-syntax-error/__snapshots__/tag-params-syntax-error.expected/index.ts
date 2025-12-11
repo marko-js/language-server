@@ -15,7 +15,7 @@ const __marko_internal_tag_1 = (
 custom
 );
 Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-["renderBody"/*custom*/]: ((
+[Marko._.contentFor(__marko_internal_tag_1)/*custom*/]: ((
 a, %b
 ) => {
 return Marko._.voidReturn;

@@ -19,7 +19,7 @@ export { type Component };
       //      ^?    ^?
       return 1;
     },
-    ["renderBody" /*loader*/]: (data) => {
+    [Marko._.contentFor(__marko_internal_tag_1) /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
   });
@@ -31,7 +31,7 @@ export { type Component };
       //      ^?    ^?
       return "hi" as const;
     },
-    ["renderBody" /*loader*/]: (data) => {
+    [Marko._.contentFor(__marko_internal_tag_2) /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
   });
@@ -39,7 +39,7 @@ export { type Component };
     import("./components/loader.marko"),
   );
   Marko._.renderTemplate(__marko_internal_tag_3)()()({
-    ["renderBody" /*loader*/]: (data) => {
+    [Marko._.contentFor(__marko_internal_tag_3) /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },
     /*loader*/
