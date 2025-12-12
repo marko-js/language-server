@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.17
+
+### Patch Changes
+
+- [#428](https://github.com/marko-js/language-server/pull/428) [`62fa7dd`](https://github.com/marko-js/language-server/commit/62fa7dde1be962c54bcf20e71ae5f77f724ab277) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix syntax highlighting grammar for empty closing tags when used in shiki.
+
 ## 2.0.16
 
 ### Patch Changes
