@@ -854,7 +854,7 @@
         {
           "comment": "HTML style tag with less",
           "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.less\\b)",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -883,7 +883,7 @@
         {
           "comment": "HTML style tag with scss",
           "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.scss\\b)",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -912,7 +912,7 @@
         {
           "comment": "HTML style tag with js/ts",
           "begin": "\\s*(<)(?=((?:html-)?style)\\b[^\\s]*\\.[tj]s\\b)",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -941,7 +941,7 @@
         {
           "comment": "HTML style tag",
           "begin": "\\s*(<)(?=((?:html-)?style)\\b)",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "beginCaptures": {
             "1": { "name": "punctuation.definition.tag.begin.marko" }
           },
@@ -970,7 +970,7 @@
         {
           "comment": "HTML script tag",
           "begin": "\\s*(<)(?=((?:html-)?script)\\b)",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
@@ -999,13 +999,13 @@
         {
           "comment": "HTML normal tag",
           "begin": "\\s*(<)(?=[.#$]|([a-zA-Z0-9_$@-]+))",
-          "end": "/>|(?<=</>|</\\2>)",
+          "end": "/>|(?<=</>)|(?<=</\\2>)",
           "patterns": [
             { "include": "#open-tag-content" },
             {
               "comment": "Body content",
               "begin": ">",
-              "end": "\\s*(</)([a-zA-Z0-9_$:@.#-]+)?(.*?)(>)",
+              "end": "\\s*(</)([a-zA-Z0-9_$:@.#-]+)?([^>]*)(>)",
               "patterns": [{ "include": "#content-html-mode" }],
               "beginCaptures": {
                 "0": { "name": "punctuation.definition.tag.end.marko" }
@@ -1124,7 +1124,7 @@
     },
     "invalid-close-tag": {
       "name": "invalid.illegal.character-not-allowed-here.marko",
-      "begin": "\\s*</.*?",
+      "begin": "\\s*</[^>]*",
       "end": ">"
     }
   }
