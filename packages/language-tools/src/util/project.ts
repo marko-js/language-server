@@ -241,7 +241,15 @@ function loadMeta(dir: string): Meta {
   let cached = metaByDir.get(dir);
   if (!cached) {
     const require = createRequire(path.join(dir, "_.js"));
-    const configPath = require.resolve("@marko/compiler/config");
+    const configPath = (() => {
+      try {
+        return require.resolve("@marko/compiler/config");
+      } catch {
+        return createRequire(require.resolve("marko/package.json")).resolve(
+          "@marko/compiler/config",
+        );
+      }
+    })();
     const config = interopDefault(require(configPath)) as Compiler.Config;
     const translatorPath = require.resolve(config.translator);
     cached = metaByTranslator.get(translatorPath);
