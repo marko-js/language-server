@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.16
+
+### Patch Changes
+
+- [#431](https://github.com/marko-js/language-server/pull/431) [`b47d633`](https://github.com/marko-js/language-server/commit/b47d63314b8e627cd9bebed459e00a94c93a9327) Thanks [@LuLaValva](https://github.com/LuLaValva)! - pnpm support when @marko/compiler is a transitive dependency
+
+- Updated dependencies [[`b47d633`](https://github.com/marko-js/language-server/commit/b47d63314b8e627cd9bebed459e00a94c93a9327)]:
+  - @marko/language-tools@2.5.42
+
 ## 2.1.15
 
 ### Patch Changes
