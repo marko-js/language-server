@@ -25,6 +25,16 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
+      export type Hoisted<T> = T & Iterable<T>;
+
+      export function hoist<T>(hoist: () => T): {
+        [K in keyof T]: Exclude<T[K], undefined> extends infer V extends (
+          ...args: any[]
+        ) => any
+          ? V & Iterable<V>
+          : never;
+      };
+
       export function attrTagNames<Tag>(
         tag: Tag,
         fn: (input: AttrTagNames<Marko.Input<Tag>>) => void,

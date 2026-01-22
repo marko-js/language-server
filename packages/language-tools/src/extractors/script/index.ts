@@ -16,6 +16,7 @@ import { Extractor } from "../../util/extractor";
 import type { Meta } from "../../util/project";
 import {
   crawlProgramScope,
+  forEachTagVar,
   getBoundAttrRange,
   getHoists,
   getHoistSources,
@@ -124,6 +125,7 @@ class ScriptExtractor {
   #mutationOffsets: Repeatable<number>;
   #tagId = 1;
   #renderId = 1;
+  #pendingCloseBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
     const { api, interop } = getRuntimeAPI(
@@ -354,16 +356,42 @@ function ${templateName}() {\n`);
   );\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
+    const hoists = getHoists(program);
+    let rootHoists = "";
+
+    if (body?.content) {
+      for (const child of body.content) {
+        if (child.type === NodeType.Tag && child.var) {
+          forEachTagVar(child, (name) => {
+            rootHoists += `${name},`;
+          });
+        }
+      }
+    }
+
+    if (hoists || rootHoists) {
+      this.#extractor.write(
+        `const { ${rootHoists}${(hoists || []).join(SEP_COMMA_SPACE)} } = Marko._.hoist(() => ${varLocal("hoists")});\n`,
+      );
+    }
 
     if (body?.content) {
       this.#writeChildren(program, body.content);
+      this.#writeCloseBrackets();
     }
-    const hoists = getHoists(program);
 
-    if (hoists) {
-      this.#extractor.write(
-        `const { ${hoists.join(SEP_COMMA_SPACE)} } = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
-      );
+    if (hoists || rootHoists) {
+      const bodyHoists = this.#getBodyHoistScopeExpression(program.body);
+      if (bodyHoists) {
+        if (rootHoists) {
+          rootHoists = `{...${bodyHoists}, ${rootHoists}}`;
+        } else {
+          rootHoists = bodyHoists;
+        }
+      } else {
+        rootHoists = `{${rootHoists}}`;
+      }
+      this.#extractor.write(`const ${varLocal("hoists")} = ${rootHoists};\n`);
     }
 
     this.#extractor.write(
@@ -508,6 +536,7 @@ constructor(_?: Return) {}
     children: Node.ChildNode[],
     skipRenderId = false,
   ) {
+    this.#pendingCloseBrackets.push(0);
     const last = children.length - 1;
     let returnTag: Node.Tag | undefined;
     let i = 0;
@@ -540,7 +569,7 @@ constructor(_?: Return) {}
 
                 if (renderId) {
                   this.#extractor.write(
-                    `const ${varLocal("rendered_" + renderId)} = (() => {\n`,
+                    `var ${varLocal("rendered_" + renderId)} = (() => {\n`,
                   );
                 }
               }
@@ -563,6 +592,8 @@ constructor(_?: Return) {}
                 if (scopeExpr) {
                   this.#extractor.write(`return {\nscope: ${scopeExpr}\n};\n`);
                 }
+
+                this.#writeCloseBrackets();
               }
 
               let needsAlternate = true;
@@ -613,7 +644,7 @@ constructor(_?: Return) {}
 
               if (renderId) {
                 this.#extractor.write(
-                  `const ${varLocal("rendered_" + renderId)} = `,
+                  `var ${varLocal("rendered_" + renderId)} = `,
                 );
               }
 
@@ -642,6 +673,10 @@ constructor(_?: Return) {}
 
               this.#writeReturn(undefined, body?.content && child.body);
 
+              if (body?.content) {
+                this.#writeCloseBrackets();
+              }
+
               this.#extractor.write("\n});\n");
 
               break;
@@ -661,6 +696,7 @@ constructor(_?: Return) {}
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
                 this.#writeChildren(child, body.content);
+                this.#writeCloseBrackets();
               }
 
               this.#extractor.write("\n}\n");
@@ -781,7 +817,7 @@ constructor(_?: Return) {}
     }
 
     if (renderId) {
-      this.#extractor.write(`const ${varLocal("rendered_" + renderId)} = `);
+      this.#extractor.write(`var ${varLocal("rendered_" + renderId)} = `);
     }
 
     if (isHTML) {
@@ -808,11 +844,19 @@ constructor(_?: Return) {}
     this.#extractor.write(");\n");
 
     if (renderId && tag.var) {
-      this.#extractor.write(`const `);
+      this.#extractor.write(`{const `);
+      this.#pendingCloseBrackets[this.#pendingCloseBrackets.length - 1]++;
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
         ` = ${varLocal("rendered_" + renderId)}.return.${ATTR_UNAMED};\n`,
       );
+    }
+  }
+
+  #writeCloseBrackets() {
+    const pendingBrackets = this.#pendingCloseBrackets.pop();
+    if (pendingBrackets) {
+      this.#extractor.write("}".repeat(pendingBrackets));
     }
   }
 
@@ -1357,6 +1401,10 @@ constructor(_?: Return) {}
         tag.body,
       );
 
+      if (body?.content) {
+        this.#writeCloseBrackets();
+      }
+
       if (tag.params) {
         this.#extractor.write("})");
       } else {
@@ -1619,6 +1667,7 @@ constructor(_?: Return) {}
       this.#extractor.write("}");
 
       if (body.content) {
+        this.#writeCloseBrackets();
         this.#extractor.write(";\n})()");
       }
     } else {

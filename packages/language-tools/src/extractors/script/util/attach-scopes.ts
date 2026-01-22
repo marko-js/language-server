@@ -384,6 +384,20 @@ export function getHoists(node: Node.Program) {
   return result;
 }
 
+export function forEachTagVar(tag: Node.Tag, cb: (name: string) => void) {
+  const scope = Scopes.get(
+    tag.parent.body as NonNullable<Node.ParentNode["body"]>,
+  );
+  if (scope?.bindings) {
+    for (const key in scope.bindings) {
+      const binding = scope.bindings[key];
+      if (binding.type === BindingType.var && binding.node === tag) {
+        cb(key);
+      }
+    }
+  }
+}
+
 export function getHoistSources(body: Node.ParentNode["body"]) {
   let result: Repeatable<string>;
 
