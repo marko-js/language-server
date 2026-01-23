@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.17
+
+### Patch Changes
+
+- [#433](https://github.com/marko-js/language-server/pull/433) [`9ba6f1c`](https://github.com/marko-js/language-server/commit/9ba6f1cc0baed5a27489e4927ee0c4a1ae4bf8e4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Align hoisted tag variable types with marko 6 runtime.
+
+- Updated dependencies [[`9ba6f1c`](https://github.com/marko-js/language-server/commit/9ba6f1cc0baed5a27489e4927ee0c4a1ae4bf8e4)]:
+  - @marko/language-tools@2.5.43
+
 ## 2.1.16
 
 ### Patch Changes
