@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const size = Marko._.hoist(() => __marko_internal_hoist__size);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
@@ -14,28 +15,31 @@ export interface Input {}
   )()()({
     value: 1,
   });
-  const size = __marko_internal_rendered_1.return.value;
-  const __marko_internal_tag_2 = Marko._.interpolated`h${size}`;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    [Marko._.contentFor(__marko_internal_tag_2) /*h${size}*/]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
-  });
-  const __marko_internal_tag_3 = "hello";
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-    [Marko._.contentFor(__marko_internal_tag_3) /*"hello"*/]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
-  });
-  const __marko_internal_tag_4 = Marko._.interpolated`${"hello"}-world`;
-  Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
-    /*${"hello"}-world*/
-  });
-  Marko._.noop({ input, $global, $signal });
+  {
+    const size = __marko_internal_rendered_1.return.value;
+    const __marko_internal_tag_2 = Marko._.interpolated`h${size}`;
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+      [Marko._.contentFor(__marko_internal_tag_2) /*h${size}*/]: (() => {
+        return () => {
+          return Marko._.voidReturn;
+        };
+      })(),
+    });
+    const __marko_internal_tag_3 = "hello";
+    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+      [Marko._.contentFor(__marko_internal_tag_3) /*"hello"*/]: (() => {
+        return () => {
+          return Marko._.voidReturn;
+        };
+      })(),
+    });
+    const __marko_internal_tag_4 = Marko._.interpolated`${"hello"}-world`;
+    Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+      /*${"hello"}-world*/
+    });
+    var __marko_internal_hoist__size = size;
+  }
+  Marko._.noop({ size, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

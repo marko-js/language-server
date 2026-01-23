@@ -2,7 +2,7 @@
 ### Ln 7, Col 9
 ```marko
    5 | <div>
-   6 |   <let/x=1/>
+   6 |   <let/x=() => 1/>
 >  7 |   ${new Thing()}
      |         ^ any
    8 | //      ^?
@@ -15,7 +15,7 @@
    7 |   ${new Thing()}
    8 | //      ^?
 >  9 |   ${x}
-     |     ^ const x: number
+     |     ^ const x: () => 1
   10 | //  ^?
   11 |   ${input.name}
   12 | //        ^?
@@ -37,7 +37,7 @@
   13 | </div>
   14 |
 > 15 | -- ${x}
-     |      ^ const x: number
+     |      ^ const x: (() => 1) & Iterable<() => 1>
   16 | //   ^?
 ```
 
@@ -45,29 +45,11 @@
 ### Ln 7, Col 9
 ```marko
    5 | <div>
-   6 |   <let/x=1/>
+   6 |   <let/x=() => 1/>
 >  7 |   ${new Thing()}
      |         ^^^^^ Cannot find name 'Thing'.
    8 | //      ^?
    9 |   ${x}
   10 | //  ^?
-```
-
-### Ln 15, Col 6
-```marko
-  13 | </div>
-  14 |
-> 15 | -- ${x}
-     |      ^ Block-scoped variable 'x' used before its declaration.
-  16 | //   ^?
-```
-
-### Ln 15, Col 6
-```marko
-  13 | </div>
-  14 |
-> 15 | -- ${x}
-     |      ^ Variable 'x' is used before being assigned.
-  16 | //   ^?
 ```
 

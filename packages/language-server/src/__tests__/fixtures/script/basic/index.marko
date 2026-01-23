@@ -3,7 +3,7 @@ export interface Input<T extends string> {
 }
 
 <div>
-  <let/x=1/>
+  <let/x=() => 1/>
   ${new Thing()}
 //      ^?
   ${x}

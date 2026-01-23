@@ -6,7 +6,7 @@
 > 3 |     <@comment#b>
     |       ^ (property) "@comment": Marko.AttrTag<Comment> | undefined
   4 | //    ^?
-  5 |       <let/b = "b" as const/>
+  5 |       <let/b = () => "b" as const/>
   6 |     </@comment>
 ```
 
@@ -15,7 +15,7 @@
   13 |
   14 | <effect() {
 > 15 |   a;
-     |   ^ const a: "a"
+     |   ^ const a: (() => "a") & Iterable<() => "a">
   16 | //^?
   17 |   b;
   18 | //^?
@@ -26,7 +26,7 @@
   15 |   a;
   16 | //^?
 > 17 |   b;
-     |   ^ const b: "b"
+     |   ^ const b: (() => "b") & Iterable<() => "b">
   18 | //^?
   19 |   c;
   20 | //^?
@@ -37,7 +37,7 @@
   17 |   b;
   18 | //^?
 > 19 |   c;
-     |   ^ const c: "c"
+     |   ^ const c: (() => "c") & Iterable<() => "c">
   20 | //^?
   21 | }/>
 ```

@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
@@ -14,173 +15,176 @@ export interface Input {}
   )()()({
     value: "",
   });
-  const x = __marko_internal_rendered_1.return.value;
-  Marko._.renderNativeTag("div")()()({
-    onClick() {
-      __marko_internal_return.mutate.x = "Hello!";
+  {
+    const x = __marko_internal_rendered_1.return.value;
+    Marko._.renderNativeTag("div")()()({
+      onClick() {
+        __marko_internal_return.mutate.x = "Hello!";
 
-      {
-        let x = 1;
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        let { x } = { x: 1 };
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        let { y: x } = { y: 1 };
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        let {
-          y: {},
-          ...x
-        } = { y: 1, x: 2 };
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        let [x] = [1];
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        let [, ...x] = [1];
-        x = "Hello!";
-        console.log(x);
-      }
-
-      {
-        for (let x = 0; x < 10; x++) {
+        {
+          let x = 1;
           x = "Hello!";
           console.log(x);
         }
-      }
 
-      {
-        for (let x of [1, 2, 3]) {
+        {
+          let { x } = { x: 1 };
           x = "Hello!";
           console.log(x);
         }
-      }
 
-      {
-        for (let x in { a: 1, b: 2, c: 3 }) {
+        {
+          let { y: x } = { y: 1 };
           x = "Hello!";
           console.log(x);
         }
-      }
 
-      testA(1);
-      function testA(x: number) {
-        x = "Hello!";
-        console.log(x);
-      }
-
-      (function testB(x: number) {
-        x = "Hello!";
-        console.log(x);
-      })(1);
-
-      ((x: number) => {
-        x = "Hello!";
-        console.log(x);
-      })(1);
-
-      ({
-        testC(x: number) {
-          x = "Hello!";
-          console.log(x);
-        },
-      });
-
-      class TestD {
-        testD(x: number) {
-          x = "Hello!";
-          this.#testE(1);
-          console.log(x);
-        }
-        #testE(x: number) {
+        {
+          let {
+            y: {},
+            ...x
+          } = { y: 1, x: 2 };
           x = "Hello!";
           console.log(x);
         }
-      }
 
-      new TestD().testD(1);
+        {
+          let [x] = [1];
+          x = "Hello!";
+          console.log(x);
+        }
 
-      {
-        class x {
+        {
+          let [, ...x] = [1];
+          x = "Hello!";
+          console.log(x);
+        }
+
+        {
+          for (let x = 0; x < 10; x++) {
+            x = "Hello!";
+            console.log(x);
+          }
+        }
+
+        {
+          for (let x of [1, 2, 3]) {
+            x = "Hello!";
+            console.log(x);
+          }
+        }
+
+        {
+          for (let x in { a: 1, b: 2, c: 3 }) {
+            x = "Hello!";
+            console.log(x);
+          }
+        }
+
+        testA(1);
+        function testA(x: number) {
+          x = "Hello!";
+          console.log(x);
+        }
+
+        (function testB(x: number) {
+          x = "Hello!";
+          console.log(x);
+        })(1);
+
+        ((x: number) => {
+          x = "Hello!";
+          console.log(x);
+        })(1);
+
+        ({
+          testC(x: number) {
+            x = "Hello!";
+            console.log(x);
+          },
+        });
+
+        class TestD {
+          testD(x: number) {
+            x = "Hello!";
+            this.#testE(1);
+            console.log(x);
+          }
+          #testE(x: number) {
+            x = "Hello!";
+            console.log(x);
+          }
+        }
+
+        new TestD().testD(1);
+
+        {
+          class x {
+            constructor() {
+              x = "Hello!";
+            }
+          }
+          new x();
+          x = "Hello!";
+        }
+
+        (class x {
           constructor() {
             x = "Hello!";
           }
-        }
-        new x();
-        x = "Hello!";
-      }
+        });
 
-      (class x {
-        constructor() {
+        (class {
+          constructor() {
+            __marko_internal_return.mutate.x = "Hello!";
+          }
+        });
+
+        (() => {
+          function x() {
+            x = "Hello!";
+          }
+
           x = "Hello!";
-        }
-      });
+          x();
+        })();
 
-      (class {
-        constructor() {
+        try {
           __marko_internal_return.mutate.x = "Hello!";
-        }
-      });
-
-      (() => {
-        function x() {
+        } catch (x) {
           x = "Hello!";
+          console.log(x);
         }
 
-        x = "Hello!";
-        x();
-      })();
+        try {
+          __marko_internal_return.mutate.x = "Hello!";
+        } catch {
+          __marko_internal_return.mutate.x = "Hello!";
+          console.log(x);
+        }
 
-      try {
-        __marko_internal_return.mutate.x = "Hello!";
-      } catch (x) {
-        x = "Hello!";
-        console.log(x);
-      }
+        {
+          let a: { x: number } | undefined = { x: 1 };
 
-      try {
-        __marko_internal_return.mutate.x = "Hello!";
-      } catch {
-        __marko_internal_return.mutate.x = "Hello!";
-        console.log(x);
-      }
+          a.x = 2;
+          a.x++;
+          console.log(a.x);
 
-      {
-        let a: { x: number } | undefined = { x: 1 };
-
-        a.x = 2;
-        a.x++;
-        console.log(a.x);
-
-        a = undefined;
-      }
-    },
-  });
-  const __marko_internal_return = {
-    mutate: Marko._.mutable([
-      ["x", "value", __marko_internal_rendered_1.return],
-    ] as const),
-  };
-  Marko._.noop({
-    x,
-  });
-  Marko._.noop({ input, $global, $signal });
+          a = undefined;
+        }
+      },
+    });
+    var __marko_internal_return = {
+      mutate: Marko._.mutable([
+        ["x", "value", __marko_internal_rendered_1.return],
+      ] as const),
+    };
+    Marko._.noop({
+      x,
+    });
+    var __marko_internal_hoist__x = x;
+  }
+  Marko._.noop({ x, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

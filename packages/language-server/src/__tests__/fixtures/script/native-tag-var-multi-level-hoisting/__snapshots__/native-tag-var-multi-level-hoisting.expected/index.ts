@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const searchInput = Marko._.hoist(() => __marko_internal_hoist__searchInput);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
     [Marko._.content /*div*/]: (() => {
       const __marko_internal_rendered_2 = Marko._.renderNativeTag("div")()()({
@@ -19,14 +20,16 @@ export interface Input {}
           )()()({
             type: "search",
           });
-          const searchInput = __marko_internal_rendered_3.return.value;
-          return () => {
-            return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { searchInput };
-              declare return: Return;
-              constructor(_?: Return) {}
-            })();
-          };
+          {
+            const searchInput = __marko_internal_rendered_3.return.value;
+            return () => {
+              return new (class MarkoReturn<Return = void> {
+                [Marko._.scope] = { searchInput };
+                declare return: Return;
+                constructor(_?: Return) {}
+              })();
+            };
+          }
         })(),
       });
       return () => {
@@ -38,7 +41,9 @@ export interface Input {}
       };
     })(),
   });
-  const { searchInput } = Marko._.readScope(__marko_internal_rendered_1);
+  var { searchInput: __marko_internal_hoist__searchInput } = Marko._.readScope(
+    __marko_internal_rendered_1,
+  );
   Marko._.noop({ searchInput, input, $global, $signal });
   return;
 })();

@@ -49,7 +49,7 @@ export interface ParamBinding {
   type: BindingType.param;
   name: string;
   node: Node.ParentNode;
-  scope: TagScope;
+  scope: Scope;
   hoisted: false;
 }
 
@@ -99,14 +99,11 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
   };
 
   programScope.bindings.input = {
-    type: BindingType.var,
+    type: BindingType.param,
     name: "input",
     node: program,
     scope: programScope,
     hoisted: false,
-    mutated: false,
-    sourceName: undefined,
-    objectPath: undefined,
   };
 
   visit(program.body, programScope);
@@ -114,8 +111,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
 
   for (const binding of potentialHoists) {
     const { scope, name } = binding as VarBinding;
-    const parentScope = scope.parent;
-    let curParent = parentScope;
+    let curParent = scope.parent;
 
     while (curParent) {
       const parentBinding = curParent.bindings?.[name];
@@ -129,7 +125,6 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
         break;
       }
 
-      curParent.hoists = true;
       if (curParent === programScope) {
         binding.hoisted = true;
         programScope.bindings![name] = {
@@ -146,6 +141,11 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
 
     if (binding.hoisted) {
       scope.hoists = true;
+      curParent = scope.parent;
+      while (curParent && !curParent.hoists && curParent !== programScope) {
+        curParent.hoists = true;
+        curParent = curParent.parent;
+      }
     }
   }
 
@@ -367,21 +367,41 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
   }
 }
 
-export function getHoists(node: Node.Program) {
+export function getProgramBindings(node: Node.Program) {
   const { bindings } = Scopes.get(node.body)!;
-  let result: Repeatable<string>;
+  let hoists: Repeatable<string>;
+  let vars: Repeatable<string>;
 
   for (const key in bindings) {
-    if (bindings[key].type === BindingType.hoisted) {
-      if (result) {
-        result.push(key);
-      } else {
-        result = [key];
-      }
+    switch (bindings[key].type) {
+      case BindingType.hoisted:
+        if (hoists) {
+          hoists.push(key);
+        } else {
+          hoists = [key];
+        }
+        break;
+      case BindingType.var:
+        if (vars) {
+          vars.push(key);
+        } else {
+          vars = [key];
+        }
+        break;
     }
   }
 
-  return result;
+  if (hoists || vars) {
+    return {
+      all: (vars
+        ? hoists
+          ? [...vars, ...hoists]
+          : vars
+        : hoists) as Repeated<string>,
+      vars,
+      hoists,
+    };
+  }
 }
 
 export function getHoistSources(body: Node.ParentNode["body"]) {

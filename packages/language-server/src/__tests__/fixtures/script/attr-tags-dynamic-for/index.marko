@@ -43,7 +43,7 @@
 <${custom}>
   <for|item| of=list>
     <@a>
-      <const/{ value: hoistedFromForOf } = item/>
+      <const/hoistedFromForOf() { return item.value }>
     </@a>
   </for>
 </>
@@ -67,7 +67,7 @@
 <${custom}>
   <for|key| in=record>
     <@a>
-      <const/hoistedFromForIn = key/>
+      <const/hoistedFromForIn() { return key }/>
     </@a>
   </for>
 </>
@@ -108,7 +108,7 @@
 <${custom}>
   <for|index| to=10>
     <@a>
-      <const/hoistedFromForTo = index/>
+      <const/hoistedFromForTo() { return index }/>
     </@a>
   </for>
 </>

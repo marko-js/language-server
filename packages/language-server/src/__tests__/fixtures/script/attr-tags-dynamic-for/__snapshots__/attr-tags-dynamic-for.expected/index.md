@@ -77,7 +77,7 @@
   50 |
   51 | <effect() {
 > 52 |   hoistedFromForOf;
-     |   ^ const hoistedFromForOf: 1 | 2 | 3
+     |   ^ const hoistedFromForOf: (() => 1 | 2 | 3) & Iterable<() => 1 | 2 | 3>
   53 | //^?
   54 | }/>
   55 |
@@ -110,7 +110,7 @@
   74 |
   75 | <effect() {
 > 76 |   hoistedFromForIn;
-     |   ^ const hoistedFromForIn: "a" | "b"
+     |   ^ const hoistedFromForIn: (() => "a" | "b") & Iterable<() => "a" | "b">
   77 | //^?
   78 | }/>
   79 |
@@ -154,7 +154,7 @@
   115 |
   116 | <effect() {
 > 117 |   hoistedFromForTo;
-      |   ^ const hoistedFromForTo: number
+      |   ^ const hoistedFromForTo: (() => number) & Iterable<() => number>
   118 | //^?
   119 | }/>
   120 |
@@ -221,7 +221,7 @@
      |    ^^^^^^ Cannot find name 'custom'.
   44 |   <for|item| of=list>
   45 |     <@a>
-  46 |       <const/{ value: hoistedFromForOf } = item/>
+  46 |       <const/hoistedFromForOf() { return item.value }>
 ```
 
 ### Ln 58, Col 4
@@ -243,7 +243,7 @@
      |    ^^^^^^ Cannot find name 'custom'.
   68 |   <for|key| in=record>
   69 |     <@a>
-  70 |       <const/hoistedFromForIn = key/>
+  70 |       <const/hoistedFromForIn() { return key }/>
 ```
 
 ### Ln 80, Col 4
@@ -287,6 +287,6 @@
       |    ^^^^^^ Cannot find name 'custom'.
   109 |   <for|index| to=10>
   110 |     <@a>
-  111 |       <const/hoistedFromForTo = index/>
+  111 |       <const/hoistedFromForTo() { return index }/>
 ```
 

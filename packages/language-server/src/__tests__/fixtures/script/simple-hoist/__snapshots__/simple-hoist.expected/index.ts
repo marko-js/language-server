@@ -6,6 +6,8 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const x = Marko._.hoist(() => __marko_internal_hoist__x);
+  const el = Marko._.hoist(() => __marko_internal_hoist__el);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
     [Marko._.content /*div*/]: (() => {
       const __marko_internal_tag_1 = Marko._.resolveTemplate(
@@ -16,10 +18,12 @@ export interface Input {}
       )()()({
         value: 1,
       });
-      const x = __marko_internal_rendered_2.return.value;
-      x;
-      const __marko_internal_rendered_3 = Marko._.renderNativeTag("button")()()(
-        {
+      {
+        const x = __marko_internal_rendered_2.return.value;
+        x;
+        const __marko_internal_rendered_3 = Marko._.renderNativeTag(
+          "button",
+        )()()({
           onClick() {
             __marko_internal_return.mutate.x = 2;
             __marko_internal_return.mutate.x++;
@@ -30,24 +34,26 @@ export interface Input {}
               return Marko._.voidReturn;
             };
           })(),
-        },
-      );
-      const el = __marko_internal_rendered_3.return.value;
-      const __marko_internal_return = {
-        mutate: Marko._.mutable([
-          ["x", "value", __marko_internal_rendered_2.return],
-        ] as const),
-      };
-      Marko._.noop({
-        x,
-      });
-      return () => {
-        return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = { x, el };
-          declare return: Return;
-          constructor(_?: Return) {}
-        })();
-      };
+        });
+        {
+          const el = __marko_internal_rendered_3.return.value;
+          var __marko_internal_return = {
+            mutate: Marko._.mutable([
+              ["x", "value", __marko_internal_rendered_2.return],
+            ] as const),
+          };
+          Marko._.noop({
+            x,
+          });
+          return () => {
+            return new (class MarkoReturn<Return = void> {
+              [Marko._.scope] = { x, el };
+              declare return: Return;
+              constructor(_?: Return) {}
+            })();
+          };
+        }
+      }
     })(),
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -59,8 +65,8 @@ export interface Input {}
       //            ^?
     },
   });
-  x;
-  const { x, el } = Marko._.readScope(__marko_internal_rendered_1);
+  var { x: __marko_internal_hoist__x, el: __marko_internal_hoist__el } =
+    Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ x, el, input, $global, $signal });
   return;
 })();
@@ -99,4 +105,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//   ^?

@@ -2,12 +2,12 @@
   <@comment#a>
     <@comment#b>
 //    ^?
-      <let/b = "b" as const/>
+      <let/b = () => "b" as const/>
     </@comment>
-    <let/a = "a" as const/>
+    <let/a = () => "a" as const/>
   </@comment>
   <@comment#c>
-    <let/c = "c" as const/>
+    <let/c = () => "c" as const/>
   </@comment>
 </comments>
 

@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const hoisted = Marko._.hoist(() => __marko_internal_hoist__hoisted);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
@@ -21,7 +22,7 @@ export interface Input {}
   Marko._.renderTemplate(__marko_internal_tag_2)()()({
     //  ^?
     [Marko._.contentFor(__marko_internal_tag_2) /*test-tag*/]: (a) => {
-      const __marko_internal_return = {
+      var __marko_internal_return = {
         return: Marko._.returnTag({
           value: a,
         }),
@@ -37,7 +38,7 @@ export interface Input {}
   );
   Marko._.renderTemplate(__marko_internal_tag_3)()()({
     [Marko._.contentFor(__marko_internal_tag_3) /*test-tag*/]: (() => {
-      const __marko_internal_return = {
+      var __marko_internal_return = {
         return: Marko._.returnTag({
           value: "b" as const,
         }),
@@ -55,7 +56,7 @@ export interface Input {}
   );
   Marko._.renderTemplate(__marko_internal_tag_4)()()({
     [Marko._.contentFor(__marko_internal_tag_4) /*test-tag*/]: (() => {
-      const __marko_internal_return = {
+      var __marko_internal_return = {
         return: Marko._.returnTag({
           value: "c" as const,
         }),
@@ -81,28 +82,32 @@ export interface Input {}
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
         __marko_internal_tag_6,
       )()()({
-        value: 1 as const,
+        value: () => 1 as const,
       });
-      const hoisted = __marko_internal_rendered_2.return.value;
-      const __marko_internal_return = {
-        return: Marko._.returnTag({
-          value: "b" as const,
-        }),
-      };
-      return () => {
-        return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = { hoisted };
-          declare return: Return;
-          constructor(_?: Return) {}
-        })(__marko_internal_return.return);
-      };
+      {
+        const hoisted = __marko_internal_rendered_2.return.value;
+        var __marko_internal_return = {
+          return: Marko._.returnTag({
+            value: "b" as const,
+          }),
+        };
+        return () => {
+          return new (class MarkoReturn<Return = void> {
+            [Marko._.scope] = { hoisted };
+            declare return: Return;
+            constructor(_?: Return) {}
+          })(__marko_internal_return.return);
+        };
+      }
     })(),
   });
   () => {
     hoisted;
     //^?
   };
-  const { hoisted } = Marko._.readScope(__marko_internal_rendered_1);
+  var { hoisted: __marko_internal_hoist__hoisted } = Marko._.readScope(
+    __marko_internal_rendered_1,
+  );
   Marko._.noop({ hoisted, input, $global, $signal });
   return;
 })();

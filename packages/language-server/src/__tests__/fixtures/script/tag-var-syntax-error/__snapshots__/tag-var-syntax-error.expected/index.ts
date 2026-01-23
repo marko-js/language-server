@@ -16,8 +16,8 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 ),
 
 });
-const { %x } = __marko_internal_rendered_1.return.value;
-Marko._.noop({ input, $global, $signal });
+{const { %x } = __marko_internal_rendered_1.return.value;
+}Marko._.noop({ input, $global, $signal });
 return;
 })();
 export default new (

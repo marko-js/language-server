@@ -6,6 +6,9 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const hoistedFromStaticMember = Marko._.hoist(
+    () => __marko_internal_hoist__hoistedFromStaticMember,
+  );
   const __marko_internal_tag_1 = custom;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@b"];
@@ -37,17 +40,19 @@ export interface Input {}
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
           __marko_internal_tag_2,
         )()()({
-          value: 1 as const,
+          value: () => 1 as const,
         });
-        const hoistedFromStaticMember =
-          __marko_internal_rendered_2.return.value;
-        return () => {
-          return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { hoistedFromStaticMember };
-            declare return: Return;
-            constructor(_?: Return) {}
-          })();
-        };
+        {
+          const hoistedFromStaticMember =
+            __marko_internal_rendered_2.return.value;
+          return () => {
+            return new (class MarkoReturn<Return = void> {
+              [Marko._.scope] = { hoistedFromStaticMember };
+              declare return: Return;
+              constructor(_?: Return) {}
+            })();
+          };
+        }
       })(),
       [/*@a*/ Symbol.iterator]: Marko._.any,
     },
@@ -61,9 +66,9 @@ export interface Input {}
       //^?
     },
   });
-  const { hoistedFromStaticMember } = Marko._.readScope(
-    __marko_internal_rendered_1,
-  );
+  var {
+    hoistedFromStaticMember: __marko_internal_hoist__hoistedFromStaticMember,
+  } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ hoistedFromStaticMember, input, $global, $signal });
   return;
 })();

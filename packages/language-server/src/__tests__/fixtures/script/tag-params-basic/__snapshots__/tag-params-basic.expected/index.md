@@ -46,7 +46,7 @@
 >  7 | <test-tag|a|>
      |           ^ (parameter) a: "a"
    8 | //        ^?
-   9 |   <const/hoistedFromTestTag = a/>
+   9 |   <const/hoistedFromTestTag = () => a/>
   10 | </test-tag>
 ```
 
@@ -55,7 +55,7 @@
   11 |
   12 | -- ${() => {
 > 13 |   hoistedFromTestTag
-     |   ^ const hoistedFromTestTag: "a"
+     |   ^ const hoistedFromTestTag: (() => "a") & Iterable<() => "a">
   14 | //^?
   15 | }}
   16 |

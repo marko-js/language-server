@@ -4,7 +4,7 @@
   91 |
   92 | <effect() {
 > 93 |   hoistedFromStaticMember;
-     |   ^ const hoistedFromStaticMember: 1
+     |   ^ const hoistedFromStaticMember: (() => 1) & Iterable<() => 1>
   94 | //^?
   95 |   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
   96 | //^?
@@ -15,7 +15,7 @@
   93 |   hoistedFromStaticMember;
   94 | //^?
 > 95 |   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
-     |   ^ const hoistedFromDynamicMember: 2
+     |   ^ const hoistedFromDynamicMember: (() => 2) & Iterable<() => 2>
   96 | //^?
   97 | }/>
   98 |
@@ -118,6 +118,6 @@
      |    ^^^^^^ Cannot find name 'custom'.
   73 |   // hi
   74 |   <@a b=1>
-  75 |     <const/hoistedFromStaticMember = 1 as const/>
+  75 |     <const/hoistedFromStaticMember = () => 1 as const/>
 ```
 

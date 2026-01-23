@@ -25,6 +25,12 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
+      export function hoist<T, U = T>(
+        value: () => T,
+      ): T extends (...args: any[]) => any
+        ? (T | (U extends undefined ? () => undefined : never)) & Iterable<T>
+        : never;
+
       export function attrTagNames<Tag>(
         tag: Tag,
         fn: (input: AttrTagNames<Marko.Input<Tag>>) => void,

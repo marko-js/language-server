@@ -6,6 +6,8 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const a = Marko._.hoist(() => __marko_internal_hoist__a);
+  const b = Marko._.hoist(() => __marko_internal_hoist__b);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
@@ -14,28 +16,34 @@ export interface Input {}
   )()()({
     value: 1,
   });
-  const a = __marko_internal_rendered_1.return.value;
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/let.d.marko"),
-  );
-  const __marko_internal_rendered_2 = Marko._.renderTemplate(
-    __marko_internal_tag_2,
-  )()()({
-    value: a,
-    valueChange(_a) {
-      __marko_internal_return.mutate.a = _a;
-    },
-  });
-  const b = __marko_internal_rendered_2.return.value;
-  const __marko_internal_return = {
-    mutate: Marko._.mutable([
-      ["a", "value", __marko_internal_rendered_1.return],
-    ] as const),
-  };
-  Marko._.noop({
-    a,
-  });
-  Marko._.noop({ input, $global, $signal });
+  {
+    const a = __marko_internal_rendered_1.return.value;
+    const __marko_internal_tag_2 = Marko._.resolveTemplate(
+      import("@marko/runtime-tags/tags/let.d.marko"),
+    );
+    const __marko_internal_rendered_2 = Marko._.renderTemplate(
+      __marko_internal_tag_2,
+    )()()({
+      value: a,
+      valueChange(_a) {
+        __marko_internal_return.mutate.a = _a;
+      },
+    });
+    {
+      const b = __marko_internal_rendered_2.return.value;
+      var __marko_internal_return = {
+        mutate: Marko._.mutable([
+          ["a", "value", __marko_internal_rendered_1.return],
+        ] as const),
+      };
+      Marko._.noop({
+        a,
+      });
+      var __marko_internal_hoist__a = a;
+      var __marko_internal_hoist__b = b;
+    }
+  }
+  Marko._.noop({ a, b, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

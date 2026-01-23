@@ -27,12 +27,3 @@
   4 | //   ^?   ^?
 ```
 
-### Ln 3, Col 6
-```marko
-  1 | <const/a = 1/>
-  2 |
-> 3 | <let/b := a/>
-    |      ^ 'b' is declared but its value is never read.
-  4 | //   ^?   ^?
-```
-
