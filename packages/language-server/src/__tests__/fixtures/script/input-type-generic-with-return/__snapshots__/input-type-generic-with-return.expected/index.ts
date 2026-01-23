@@ -10,7 +10,7 @@ function __marko_internal_template<T = string>(this: void) {
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_return = {
+  var __marko_internal_return = {
     return: Marko._.returnTag({
       value: input.value,
     }),

@@ -32,13 +32,3 @@
   4 | //   ^?   ^?
 ```
 
-### Ln 3, Col 6
-```marko
-  1 | <let/a = { b: 1, bChange(v: 1) {} }/>
-  2 |
-> 3 | <let/b := a["b"] as 1/>
-    |      ^ 'b' is declared but its value is never read.
-  4 | //   ^?   ^?
-  5 |
-```
-

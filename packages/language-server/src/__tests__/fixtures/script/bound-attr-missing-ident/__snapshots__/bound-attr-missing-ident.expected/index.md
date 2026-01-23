@@ -28,10 +28,3 @@
   2 | //   ^?   ^?
 ```
 
-### Ln 1, Col 6
-```marko
-> 1 | <let/b := a/>
-    |      ^ 'b' is declared but its value is never read.
-  2 | //   ^?   ^?
-```
-

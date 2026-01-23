@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const b = Marko._.hoist(() => __marko_internal_hoist__b);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
@@ -17,8 +18,11 @@ export interface Input {}
       a = _a;
     },
   });
-  const b = __marko_internal_rendered_1.return.value;
-  Marko._.noop({ input, $global, $signal });
+  {
+    const b = __marko_internal_rendered_1.return.value;
+    var __marko_internal_hoist__b = b;
+  }
+  Marko._.noop({ b, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

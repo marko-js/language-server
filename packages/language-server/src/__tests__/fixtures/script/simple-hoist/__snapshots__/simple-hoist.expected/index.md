@@ -10,34 +10,7 @@
   17 |
 ```
 
-### Ln 18, Col 6
-```marko
-  16 | }/>
-  17 |
-> 18 | -- ${x}
-     |      ^ const x: number
-  19 | //   ^?
-```
-
 ## Diagnostics
-### Ln 18, Col 6
-```marko
-  16 | }/>
-  17 |
-> 18 | -- ${x}
-     |      ^ Block-scoped variable 'x' used before its declaration.
-  19 | //   ^?
-```
-
-### Ln 18, Col 6
-```marko
-  16 | }/>
-  17 |
-> 18 | -- ${x}
-     |      ^ Variable 'x' is used before being assigned.
-  19 | //   ^?
-```
-
 ### Ln 4, Col 4
 ```marko
   2 |   <let/x=1/>

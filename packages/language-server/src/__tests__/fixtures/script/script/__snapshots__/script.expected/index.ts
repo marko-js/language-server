@@ -8,6 +8,9 @@ export interface Input<T extends string> {
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const x = Marko._.hoist(() => __marko_internal_hoist__x);
+  const y = Marko._.hoist(() => __marko_internal_hoist__y);
+  const promise = Marko._.hoist(() => __marko_internal_hoist__promise);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
     [Marko._.content /*div*/]: (() => {
       const __marko_internal_tag_1 = Marko._.resolveTemplate(
@@ -18,65 +21,75 @@ export interface Input<T extends string> {
       )()()({
         value: 1,
       });
-      const x = __marko_internal_rendered_2.return.value;
-      const __marko_internal_tag_2 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/const.d.marko"),
-      );
-      const __marko_internal_rendered_3 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
-      )()()({
-        value: "hi",
-      });
-      const y = __marko_internal_rendered_3.return.value;
-      const __marko_internal_tag_3 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/const.d.marko"),
-      );
-      const __marko_internal_rendered_4 = Marko._.renderTemplate(
-        __marko_internal_tag_3,
-      )()()({
-        value: Promise.resolve("world"),
-      });
-      const promise = __marko_internal_rendered_4.return.value;
-      const __marko_internal_tag_4 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/script.d.marko"),
-      );
-      Marko._.renderTemplate(__marko_internal_tag_4)()()({
-        async value() {
-          console.log(x);
-          //              ^?
-          console.log(y);
-          //              ^?
-          console.log(input.name);
-          //                    ^?
+      {
+        const x = __marko_internal_rendered_2.return.value;
+        const __marko_internal_tag_2 = Marko._.resolveTemplate(
+          import("@marko/runtime-tags/tags/const.d.marko"),
+        );
+        const __marko_internal_rendered_3 = Marko._.renderTemplate(
+          __marko_internal_tag_2,
+        )()()({
+          value: "hi",
+        });
+        {
+          const y = __marko_internal_rendered_3.return.value;
+          const __marko_internal_tag_3 = Marko._.resolveTemplate(
+            import("@marko/runtime-tags/tags/const.d.marko"),
+          );
+          const __marko_internal_rendered_4 = Marko._.renderTemplate(
+            __marko_internal_tag_3,
+          )()()({
+            value: Promise.resolve("world"),
+          });
+          {
+            const promise = __marko_internal_rendered_4.return.value;
+            const __marko_internal_tag_4 = Marko._.resolveTemplate(
+              import("@marko/runtime-tags/tags/script.d.marko"),
+            );
+            Marko._.renderTemplate(__marko_internal_tag_4)()()({
+              async value() {
+                console.log(x);
+                //              ^?
+                console.log(y);
+                //              ^?
+                console.log(input.name);
+                //                    ^?
 
-          const resolved = await promise;
-          console.log(resolved);
-          //          ^?
-          __marko_internal_return.mutate.x = 2;
-          __marko_internal_return.mutate.y = "bye";
-        },
-        /*script*/
-      });
-      const __marko_internal_return = {
-        mutate: Marko._.mutable([
-          ["x", "value", __marko_internal_rendered_2.return],
-          ["y", "value", __marko_internal_rendered_3.return],
-        ] as const),
-      };
-      Marko._.noop({
-        x,
-        y,
-      });
-      return () => {
-        return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = { x, y, promise };
-          declare return: Return;
-          constructor(_?: Return) {}
-        })();
-      };
+                const resolved = await promise;
+                console.log(resolved);
+                //          ^?
+                __marko_internal_return.mutate.x = 2;
+                __marko_internal_return.mutate.y = "bye";
+              },
+              /*script*/
+            });
+            var __marko_internal_return = {
+              mutate: Marko._.mutable([
+                ["x", "value", __marko_internal_rendered_2.return],
+                ["y", "value", __marko_internal_rendered_3.return],
+              ] as const),
+            };
+            Marko._.noop({
+              x,
+              y,
+            });
+            return () => {
+              return new (class MarkoReturn<Return = void> {
+                [Marko._.scope] = { x, y, promise };
+                declare return: Return;
+                constructor(_?: Return) {}
+              })();
+            };
+          }
+        }
+      }
     })(),
   });
-  const { x, y, promise } = Marko._.readScope(__marko_internal_rendered_1);
+  var {
+    x: __marko_internal_hoist__x,
+    y: __marko_internal_hoist__y,
+    promise: __marko_internal_hoist__promise,
+  } = Marko._.readScope(__marko_internal_rendered_1);
   Marko._.noop({ x, y, promise, input, $global, $signal });
   return;
 })();

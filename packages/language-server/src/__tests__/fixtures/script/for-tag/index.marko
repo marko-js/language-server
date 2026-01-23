@@ -20,7 +20,7 @@
 </for>
 
 <for|item| of=list>
-  <const/{ value: hoistedFromForOf } = item/>
+  <const/hoistedFromForOf = () => item.value/>
 </for>
 
 <for|item| of=list></for>
@@ -42,7 +42,7 @@
 </for>
 
 <for|key| in=record>
-  <const/hoistedFromForIn = key/>
+  <const/hoistedFromForIn = () => key/>
 </for>
 
 <effect() {
@@ -70,7 +70,7 @@
 </for>
 
 <for|index| to=10>
-  <const/hoistedFromForTo = index/>
+  <const/hoistedFromForTo = () => index/>
 </for>
 
 <effect() {
@@ -98,7 +98,7 @@
 </for>
 
 <for|index| until=10>
-  <const/hoistedFromForUntil = index/>
+  <const/hoistedFromForUntil = () => index/>
 </for>
 
 <effect() {

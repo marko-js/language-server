@@ -6,6 +6,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
@@ -14,80 +15,83 @@ export interface Input {}
   )()()({
     value: 1,
   });
-  const x = __marko_internal_rendered_1.return.value;
-  Marko._.renderNativeTag("div")()()({
-    "data-function"() {
-      __marko_internal_return.mutate.x++;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function"(y = __marko_internal_return.mutate.x++) {
-      y;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function": () => {
-      __marko_internal_return.mutate.x++;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function": (y = __marko_internal_return.mutate.x++) => {
-      y;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function": function () {
-      __marko_internal_return.mutate.x++;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function": function (y = __marko_internal_return.mutate.x++) {
-      y;
-    },
-  });
-  Marko._.renderNativeTag("div")()()({
-    "data-function"() {
-      function testA() {
+  {
+    const x = __marko_internal_rendered_1.return.value;
+    Marko._.renderNativeTag("div")()()({
+      "data-function"() {
         __marko_internal_return.mutate.x++;
-      }
-
-      function testB(y = __marko_internal_return.mutate.x++) {
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function"(y = __marko_internal_return.mutate.x++) {
         y;
-      }
-
-      class TestC {
-        constructor() {
-          this.#privateMethodA;
-          this.#privateMethodB;
-        }
-        methodA() {
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function": () => {
+        __marko_internal_return.mutate.x++;
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function": (y = __marko_internal_return.mutate.x++) => {
+        y;
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function": function () {
+        __marko_internal_return.mutate.x++;
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function": function (y = __marko_internal_return.mutate.x++) {
+        y;
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      "data-function"() {
+        function testA() {
           __marko_internal_return.mutate.x++;
         }
-        methodB(y = __marko_internal_return.mutate.x++) {
-          y;
-        }
-        #privateMethodA() {
-          __marko_internal_return.mutate.x++;
-        }
-        #privateMethodB(y = __marko_internal_return.mutate.x++) {
-          y;
-        }
-      }
 
-      testA;
-      testB;
-      TestC;
-    },
-  });
-  const __marko_internal_return = {
-    mutate: Marko._.mutable([
-      ["x", "value", __marko_internal_rendered_1.return],
-    ] as const),
-  };
-  Marko._.noop({
-    x,
-  });
-  Marko._.noop({ input, $global, $signal });
+        function testB(y = __marko_internal_return.mutate.x++) {
+          y;
+        }
+
+        class TestC {
+          constructor() {
+            this.#privateMethodA;
+            this.#privateMethodB;
+          }
+          methodA() {
+            __marko_internal_return.mutate.x++;
+          }
+          methodB(y = __marko_internal_return.mutate.x++) {
+            y;
+          }
+          #privateMethodA() {
+            __marko_internal_return.mutate.x++;
+          }
+          #privateMethodB(y = __marko_internal_return.mutate.x++) {
+            y;
+          }
+        }
+
+        testA;
+        testB;
+        TestC;
+      },
+    });
+    var __marko_internal_return = {
+      mutate: Marko._.mutable([
+        ["x", "value", __marko_internal_rendered_1.return],
+      ] as const),
+    };
+    Marko._.noop({
+      x,
+    });
+    var __marko_internal_hoist__x = x;
+  }
+  Marko._.noop({ x, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

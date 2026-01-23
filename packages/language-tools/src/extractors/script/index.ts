@@ -17,9 +17,9 @@ import type { Meta } from "../../util/project";
 import {
   crawlProgramScope,
   getBoundAttrRange,
-  getHoists,
   getHoistSources,
   getMutatedVars,
+  getProgramBindings,
   hasHoists,
   isMutatedVar,
 } from "./util/attach-scopes";
@@ -124,6 +124,7 @@ class ScriptExtractor {
   #mutationOffsets: Repeatable<number>;
   #tagId = 1;
   #renderId = 1;
+  #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
     const { api, interop } = getRuntimeAPI(
@@ -354,20 +355,40 @@ function ${templateName}() {\n`);
   );\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
+    const bindings = getProgramBindings(program);
+
+    if (bindings) {
+      for (const name of bindings.all) {
+        this.#extractor.write(
+          `const ${name} = ${varShared("hoist")}(() => ${varLocal(`hoist__${name}`)});\n`,
+        );
+      }
+    }
 
     if (body?.content) {
       this.#writeChildren(program, body.content);
-    }
-    const hoists = getHoists(program);
 
-    if (hoists) {
-      this.#extractor.write(
-        `const { ${hoists.join(SEP_COMMA_SPACE)} } = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
-      );
+      if (bindings) {
+        if (bindings.vars) {
+          for (const name of bindings.vars) {
+            this.#extractor.write(
+              `var ${varLocal(`hoist__${name}`)} = ${name};\n`,
+            );
+          }
+        }
+
+        if (bindings.hoists) {
+          this.#extractor.write(
+            `var {${bindings.hoists.map((name) => `${name}: ${varLocal(`hoist__${name}`)}`).join(SEP_COMMA_SPACE)}} = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
+          );
+        }
+      }
+
+      this.#endChildren();
     }
 
     this.#extractor.write(
-      `${varShared("noop")}({ ${hoists ? hoists.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
+      `${varShared("noop")}({ ${bindings ? bindings.all.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
     );
 
     if (didReturn) {
@@ -492,7 +513,7 @@ function ${templateName}() {\n`);
     this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
 
     if (scopeExpr) {
-      this.#extractor.write(`[Marko._.scope] = ${scopeExpr};\n`);
+      this.#extractor.write(`[${varShared("scope")}] = ${scopeExpr};\n`);
     }
 
     this.#extractor.write(`declare return: Return;
@@ -511,6 +532,7 @@ constructor(_?: Return) {}
     const last = children.length - 1;
     let returnTag: Node.Tag | undefined;
     let i = 0;
+    this.#closeBrackets.push(0);
 
     while (i <= last) {
       const child = children[i++];
@@ -563,6 +585,8 @@ constructor(_?: Return) {}
                 if (scopeExpr) {
                   this.#extractor.write(`return {\nscope: ${scopeExpr}\n};\n`);
                 }
+
+                this.#endChildren();
               }
 
               let needsAlternate = true;
@@ -592,6 +616,8 @@ constructor(_?: Return) {}
                         `return {\nscope: ${scopeExpr}\n};\n`,
                       );
                     }
+
+                    this.#endChildren();
                   }
                 }
               }
@@ -642,6 +668,10 @@ constructor(_?: Return) {}
 
               this.#writeReturn(undefined, body?.content && child.body);
 
+              if (body?.content) {
+                this.#endChildren();
+              }
+
               this.#extractor.write("\n});\n");
 
               break;
@@ -661,6 +691,7 @@ constructor(_?: Return) {}
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
                 this.#writeChildren(child, body.content);
+                this.#endChildren();
               }
 
               this.#extractor.write("\n}\n");
@@ -684,7 +715,7 @@ constructor(_?: Return) {}
     const mutatedVars = getMutatedVars(parent);
 
     if (returnTag || mutatedVars) {
-      this.#extractor.write(`const ${varLocal("return")} = {\n`);
+      this.#extractor.write(`var ${varLocal("return")} = {\n`);
 
       if (returnTag) {
         this.#extractor.write(`return: ${varShared("returnTag")}(`);
@@ -808,11 +839,19 @@ constructor(_?: Return) {}
     this.#extractor.write(");\n");
 
     if (renderId && tag.var) {
-      this.#extractor.write(`const `);
+      this.#extractor.write(`{const `);
+      this.#closeBrackets[this.#closeBrackets.length - 1]++;
       this.#copyWithMutationsReplaced(tag.var.value);
       this.#extractor.write(
         ` = ${varLocal("rendered_" + renderId)}.return.${ATTR_UNAMED};\n`,
       );
+    }
+  }
+
+  #endChildren() {
+    const pendingBrackets = this.#closeBrackets.pop();
+    if (pendingBrackets) {
+      this.#extractor.write("}".repeat(pendingBrackets));
     }
   }
 
@@ -1357,6 +1396,10 @@ constructor(_?: Return) {}
         tag.body,
       );
 
+      if (body?.content) {
+        this.#endChildren();
+      }
+
       if (tag.params) {
         this.#extractor.write("})");
       } else {
@@ -1619,6 +1662,7 @@ constructor(_?: Return) {}
       this.#extractor.write("}");
 
       if (body.content) {
+        this.#endChildren();
         this.#extractor.write(";\n})()");
       }
     } else {
