@@ -1,4 +1,7 @@
-export interface Input {}
+export interface Input {
+  value: any;
+  valueChange: any;
+}
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;
@@ -6,26 +9,7 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const b = Marko._.hoist(() => __marko_internal_hoist__b);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/let.d.marko"),
-  );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
-  )()()({
-    value: a,
-    valueChange(
-      // @ts-ignore
-      _a,
-    ) {
-      a = _a;
-    },
-  });
-  {
-    const b = __marko_internal_rendered_1.return.value;
-    var __marko_internal_hoist__b = b;
-  }
-  Marko._.noop({ b, input, $global, $signal });
+  Marko._.noop({ input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{
@@ -63,4 +47,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//   ^?   ^?
