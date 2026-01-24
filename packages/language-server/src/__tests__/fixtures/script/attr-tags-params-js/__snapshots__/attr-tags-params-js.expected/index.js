@@ -12,7 +12,7 @@ export class Component extends Marko.Component {}
   const input = /** @type {Input} */ (Marko._.any);
   const component = /** @type {Component} */ (Marko._.any);
   const state = Marko._.state(component);
-  const out = Marko._.out;
+  const out = /** @type {Marko.Out} */ (Marko._.any);
   const $signal = /** @type {AbortSignal} */ (Marko._.any);
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
