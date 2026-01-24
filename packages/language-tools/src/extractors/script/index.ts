@@ -981,7 +981,7 @@ constructor(_?: Return) {}
                         .copy(defaultMapPosition)
                         .copy(name)
                         .write(
-                          `Change"(_${valueLiteral}) {\n${
+                          `Change"(\n// @ts-ignore\n_${valueLiteral}) {\n${
                             isMutatedVar(tag.parent, valueLiteral)
                               ? `${varLocal("return")}.mutate.`
                               : ""

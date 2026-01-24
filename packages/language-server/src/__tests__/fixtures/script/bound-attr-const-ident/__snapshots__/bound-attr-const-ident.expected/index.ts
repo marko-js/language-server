@@ -25,7 +25,10 @@ export interface Input {}
       __marko_internal_tag_2,
     )()()({
       value: a,
-      valueChange(_a) {
+      valueChange(
+        // @ts-ignore
+        _a,
+      ) {
         __marko_internal_return.mutate.a = _a;
       },
     });
