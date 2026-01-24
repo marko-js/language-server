@@ -35,7 +35,7 @@
   14 |
   15 | <button onClick() {
 > 16 |   inputId;
-     |      ^ const inputId: never
+     |      ^ const inputId: any
   17 |   // ^?
   18 | }>Body to prevent a11y error</button>
 ```

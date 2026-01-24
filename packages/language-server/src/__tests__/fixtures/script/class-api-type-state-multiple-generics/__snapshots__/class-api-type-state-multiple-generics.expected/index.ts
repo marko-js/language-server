@@ -24,7 +24,7 @@ export { type Component };
   const input = Marko._.any as Input<FirstName, LastName>;
   const component = Marko._.any as Component<FirstName, LastName>;
   const state = Marko._.state(component);
-  const out = Marko._.out;
+  const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.

@@ -17,7 +17,6 @@ declare global {
     namespace _ {
       export const voidReturn: MarkoReturn<void>;
       export const scope: unique symbol;
-      export const out: Marko.Out;
       export const never: never;
       export const any: any;
 
@@ -105,8 +104,7 @@ declare global {
                 : never
             : never;
         }[keyof Rendered]
-      > &
-        Record<any, never>;
+      >;
 
       export function readScope<Value>(
         value: Value,
@@ -122,8 +120,7 @@ declare global {
               ? never
               : Scope
             : never
-      > &
-        Record<any, never>;
+      >;
 
       export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
         Lookup extends readonly (infer Item)[]
@@ -513,10 +510,6 @@ type BodyParamsWithDefault<Body extends AnyMarkoBody> =
       : Params
     : never;
 
-type Scopes<Input> = [0] extends [1 & Input]
-  ? never
-  : MergeScopes<FlatScopes<Input>>;
-
 type ComponentEventHandlers<Component extends Marko.Component> = {
   [K in Exclude<
     keyof Component,
@@ -527,7 +520,7 @@ type ComponentEventHandlers<Component extends Marko.Component> = {
   >]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
-type FlatScopes<Input> = [0] extends [1 & Input]
+type Scopes<Input> = [0] extends [1 & Input]
   ? never
   :
       | (Input[("content" | "renderBody") & keyof Input] extends infer Prop
@@ -539,7 +532,7 @@ type FlatScopes<Input> = [0] extends [1 & Input]
           ? Prop extends { [Symbol.iterator]: any }
             ? Prop extends readonly any[]
               ? never
-              : FlatScopes<Prop>
+              : Scopes<Prop>
             : never
           : never);
 

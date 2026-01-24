@@ -345,7 +345,7 @@ function ${templateName}() {\n`);
       ? `
   const component = ${this.#getCastedType(`Component${typeArgsStr}`)};
   const state = ${varShared("state")}(component);
-  const out = ${varShared("out")};`
+  const out = ${this.#getCastedType("Marko.Out")};`
       : ""
   }
   const $signal = ${this.#getCastedType("AbortSignal")};
