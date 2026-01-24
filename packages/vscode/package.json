@@ -1,7 +1,7 @@
 {
   "name": "marko-vscode",
   "description": "Marko Syntax Highlighting, Pretty-printing, TypeScript, IntelliSense, and more",
-  "version": "2.0.19",
+  "version": "2.0.20",
   "activationEvents": [
     "workspaceContains:**/*.marko"
   ],
@@ -103,7 +103,7 @@
     }
   },
   "devDependencies": {
-    "@marko/language-server": "^2.1.17",
+    "@marko/language-server": "^2.1.18",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.1",

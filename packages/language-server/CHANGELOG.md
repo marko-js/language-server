@@ -1,5 +1,18 @@
 # Change Log
 
+## 2.1.18
+
+### Patch Changes
+
+- [#435](https://github.com/marko-js/language-server/pull/435) [`4ed10bd`](https://github.com/marko-js/language-server/commit/4ed10bdf53ba01540577ab5017520784fbcc04d5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Avoid using Marko.Out as a type unless class api.
+
+- [#435](https://github.com/marko-js/language-server/pull/435) [`4ed10bd`](https://github.com/marko-js/language-server/commit/4ed10bdf53ba01540577ab5017520784fbcc04d5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve scope hoisting types.
+
+- [#435](https://github.com/marko-js/language-server/pull/435) [`26be418`](https://github.com/marko-js/language-server/commit/26be418cf6775ed17e3cf6166416f66c1b514ed2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ignore change handler param types when defined as non function.
+
+- Updated dependencies [[`4ed10bd`](https://github.com/marko-js/language-server/commit/4ed10bdf53ba01540577ab5017520784fbcc04d5), [`4ed10bd`](https://github.com/marko-js/language-server/commit/4ed10bdf53ba01540577ab5017520784fbcc04d5), [`26be418`](https://github.com/marko-js/language-server/commit/26be418cf6775ed17e3cf6166416f66c1b514ed2)]:
+  - @marko/language-tools@2.5.44
+
 ## 2.1.17
 
 ### Patch Changes
