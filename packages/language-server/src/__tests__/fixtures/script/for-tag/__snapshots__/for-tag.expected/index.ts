@@ -79,11 +79,11 @@ export interface Input {}
         //               ^?    ^?
         item,
       ) => {
-        const __marko_internal_tag_2 = Marko._.resolveTemplate(
+        const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
+          __marko_internal_tag_3,
         )()()({
           value: () => item.value,
         });
@@ -105,25 +105,25 @@ export interface Input {}
         return Marko._.voidReturn;
       },
     );
-    const __marko_internal_tag_3 = Marko._.resolveTemplate(
+    const __marko_internal_tag_4 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/effect.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_3)()()({
+    Marko._.renderTemplate(__marko_internal_tag_4)()()({
       value() {
         hoistedFromForOf;
         //^?
       },
     });
-    const __marko_internal_tag_4 = Marko._.resolveTemplate(
+    const __marko_internal_tag_5 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/let.d.marko"),
     );
-    const __marko_internal_rendered_4 = Marko._.renderTemplate(
-      __marko_internal_tag_4,
+    const __marko_internal_rendered_5 = Marko._.renderTemplate(
+      __marko_internal_tag_5,
     )()()({
       value: { a: 1, b: 2 } as const,
     });
     {
-      const record = __marko_internal_rendered_4.return.value;
+      const record = __marko_internal_rendered_5.return.value;
       Marko._.forInTag(
         {
           /*for*/ in: record,
@@ -146,7 +146,7 @@ export interface Input {}
             return Marko._.voidReturn;
           },
       );
-      const __marko_internal_rendered_5 = Marko._.forInTag(
+      const __marko_internal_rendered_6 = Marko._.forInTag(
         {
           /*for*/ in: record,
         },
@@ -154,16 +154,16 @@ export interface Input {}
           //                 ^?     ^?
           key,
         ) => {
-          const __marko_internal_tag_5 = Marko._.resolveTemplate(
+          const __marko_internal_tag_7 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_6 = Marko._.renderTemplate(
-            __marko_internal_tag_5,
+          const __marko_internal_rendered_7 = Marko._.renderTemplate(
+            __marko_internal_tag_7,
           )()()({
             value: () => key,
           });
           {
-            const hoistedFromForIn = __marko_internal_rendered_6.return.value;
+            const hoistedFromForIn = __marko_internal_rendered_7.return.value;
             return new (class MarkoReturn<Return = void> {
               [Marko._.scope] = { hoistedFromForIn };
               declare return: Return;
@@ -172,10 +172,10 @@ export interface Input {}
           }
         },
       );
-      const __marko_internal_tag_6 = Marko._.resolveTemplate(
+      const __marko_internal_tag_8 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_6)()()({
+      Marko._.renderTemplate(__marko_internal_tag_8)()()({
         value() {
           hoistedFromForIn;
           //^?
@@ -228,7 +228,7 @@ export interface Input {}
           return Marko._.voidReturn;
         },
       );
-      const __marko_internal_rendered_7 = Marko._.forToTag(
+      const __marko_internal_rendered_9 = Marko._.forToTag(
         {
           /*for*/ to: 10,
         },
@@ -236,16 +236,16 @@ export interface Input {}
           //  ^?
           index,
         ) => {
-          const __marko_internal_tag_7 = Marko._.resolveTemplate(
+          const __marko_internal_tag_10 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_8 = Marko._.renderTemplate(
-            __marko_internal_tag_7,
+          const __marko_internal_rendered_10 = Marko._.renderTemplate(
+            __marko_internal_tag_10,
           )()()({
             value: () => index,
           });
           {
-            const hoistedFromForTo = __marko_internal_rendered_8.return.value;
+            const hoistedFromForTo = __marko_internal_rendered_10.return.value;
             return new (class MarkoReturn<Return = void> {
               [Marko._.scope] = { hoistedFromForTo };
               declare return: Return;
@@ -254,10 +254,10 @@ export interface Input {}
           }
         },
       );
-      const __marko_internal_tag_8 = Marko._.resolveTemplate(
+      const __marko_internal_tag_11 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_8)()()({
+      Marko._.renderTemplate(__marko_internal_tag_11)()()({
         value() {
           hoistedFromForUntil;
           //^?
@@ -310,7 +310,7 @@ export interface Input {}
           return Marko._.voidReturn;
         },
       );
-      const __marko_internal_rendered_9 = Marko._.forUntilTag(
+      const __marko_internal_rendered_12 = Marko._.forUntilTag(
         {
           /*for*/ until: 10,
         },
@@ -318,17 +318,17 @@ export interface Input {}
           //  ^?
           index,
         ) => {
-          const __marko_internal_tag_9 = Marko._.resolveTemplate(
+          const __marko_internal_tag_13 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_10 = Marko._.renderTemplate(
-            __marko_internal_tag_9,
+          const __marko_internal_rendered_13 = Marko._.renderTemplate(
+            __marko_internal_tag_13,
           )()()({
             value: () => index,
           });
           {
             const hoistedFromForUntil =
-              __marko_internal_rendered_10.return.value;
+              __marko_internal_rendered_13.return.value;
             return new (class MarkoReturn<Return = void> {
               [Marko._.scope] = { hoistedFromForUntil };
               declare return: Return;
@@ -337,10 +337,10 @@ export interface Input {}
           }
         },
       );
-      const __marko_internal_tag_10 = Marko._.resolveTemplate(
+      const __marko_internal_tag_14 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_10)()()({
+      Marko._.renderTemplate(__marko_internal_tag_14)()()({
         value() {
           hoistedFromForUntil;
           //^?
@@ -363,9 +363,9 @@ export interface Input {}
         hoistedFromForUntil: __marko_internal_hoist__hoistedFromForUntil,
       } = Marko._.readScopes({
         __marko_internal_rendered_2,
-        __marko_internal_rendered_5,
-        __marko_internal_rendered_7,
+        __marko_internal_rendered_6,
         __marko_internal_rendered_9,
+        __marko_internal_rendered_12,
       });
     }
   }

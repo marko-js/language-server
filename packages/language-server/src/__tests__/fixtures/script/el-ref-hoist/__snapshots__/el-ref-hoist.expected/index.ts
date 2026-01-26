@@ -23,10 +23,10 @@ export interface Input {}
     });
     {
       const $el = __marko_internal_rendered_2.return.value;
-      const __marko_internal_tag_2 = Marko._.resolveTemplate(
+      const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/script.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_2)()()(
+      Marko._.renderTemplate(__marko_internal_tag_3)()()(
         // ^?
         {
           async value() {

@@ -13,40 +13,50 @@ export interface Input<T extends string> {
   const promise = Marko._.hoist(() => __marko_internal_hoist__promise);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
     [Marko._.content /*div*/]: (() => {
-      const __marko_internal_tag_1 = Marko._.resolveTemplate(
+      const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_1,
+        __marko_internal_tag_2,
       )()()({
         value: 1,
       });
       {
         const x = __marko_internal_rendered_2.return.value;
-        const __marko_internal_tag_2 = Marko._.resolveTemplate(
+        const __marko_internal_change__x = Marko._.change(
+          "x",
+          "value",
+          __marko_internal_rendered_2.return,
+        );
+        const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
+          __marko_internal_tag_3,
         )()()({
           value: "hi",
         });
         {
           const y = __marko_internal_rendered_3.return.value;
-          const __marko_internal_tag_3 = Marko._.resolveTemplate(
+          const __marko_internal_change__y = Marko._.change(
+            "y",
+            "value",
+            __marko_internal_rendered_3.return,
+          );
+          const __marko_internal_tag_4 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_3,
+            __marko_internal_tag_4,
           )()()({
             value: Promise.resolve("world"),
           });
           {
             const promise = __marko_internal_rendered_4.return.value;
-            const __marko_internal_tag_4 = Marko._.resolveTemplate(
+            const __marko_internal_tag_5 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/script.d.marko"),
             );
-            Marko._.renderTemplate(__marko_internal_tag_4)()()({
+            Marko._.renderTemplate(__marko_internal_tag_5)()()({
               async value() {
                 console.log(x);
                 //              ^?
@@ -58,20 +68,10 @@ export interface Input<T extends string> {
                 const resolved = await promise;
                 console.log(resolved);
                 //          ^?
-                __marko_internal_return.mutate.x = 2;
-                __marko_internal_return.mutate.y = "bye";
+                __marko_internal_change__x.x = 2;
+                __marko_internal_change__y.y = "bye";
               },
               /*script*/
-            });
-            var __marko_internal_return = {
-              mutate: Marko._.mutable([
-                ["x", "value", __marko_internal_rendered_2.return],
-                ["y", "value", __marko_internal_rendered_3.return],
-              ] as const),
-            };
-            Marko._.noop({
-              x,
-              y,
             });
             return () => {
               return new (class MarkoReturn<Return = void> {

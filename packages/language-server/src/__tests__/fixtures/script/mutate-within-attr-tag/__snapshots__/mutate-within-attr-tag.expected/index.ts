@@ -6,36 +6,37 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const result = Marko._.hoist(() => __marko_internal_hoist__result);
+  const count = Marko._.hoist(() => __marko_internal_hoist__count);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
+    import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
     __marko_internal_tag_1,
   )()()({
-    data: 1 as const,
-    [Marko._.contentFor(__marko_internal_tag_1) /*test-tag*/]: <A,>(
-      data: A,
-    ) => {
-      var __marko_internal_return = Marko._.returnTag(
-        //                         ^?
-        {
-          value: { result: data },
-        },
-      );
-      return new (class MarkoReturn<Return = void> {
-        declare return: Return;
-        constructor(_?: Return) {}
-      })(__marko_internal_return);
-    },
+    value: 1,
   });
   {
-    const result = __marko_internal_rendered_1.return.value;
-    //                  ^?
-    result;
-    var __marko_internal_hoist__result = result;
+    const count = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__count = Marko._.change(
+      "count",
+      "value",
+      __marko_internal_rendered_1.return,
+    );
+    const __marko_internal_tag_2 = Marko._.interpolated`foo`;
+    Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+      input["@nested"];
+    });
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+      ["nested" /*@nested*/]: {
+        onClick() {
+          __marko_internal_change__count.count++;
+        },
+        [/*@nested*/ Symbol.iterator]: Marko._.any,
+      },
+    });
+    var __marko_internal_hoist__count = count;
   }
-  Marko._.noop({ result, input, $global, $signal });
+  Marko._.noop({ count, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{
@@ -73,4 +74,4 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//   ^?
+// ^?

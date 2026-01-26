@@ -18,6 +18,11 @@ export interface Input {}
   });
   {
     const a = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__a = Marko._.change(
+      "a",
+      "value",
+      __marko_internal_rendered_1.return,
+    );
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/let.d.marko"),
     );
@@ -29,30 +34,25 @@ export interface Input {}
         // @ts-ignore
         _a,
       ) {
-        __marko_internal_return.mutate.a = _a;
+        __marko_internal_change__a.a = _a;
       },
     });
     {
       const b = __marko_internal_rendered_2.return.value;
+      const __marko_internal_change__b = Marko._.change(
+        "b",
+        "value",
+        __marko_internal_rendered_2.return,
+      );
       Marko._.renderNativeTag("div")()()(
         //   ^?   ^?
         {
           onClick() {
-            __marko_internal_return.mutate.a++;
-            __marko_internal_return.mutate.b++;
+            __marko_internal_change__a.a++;
+            __marko_internal_change__b.b++;
           },
         },
       );
-      var __marko_internal_return = {
-        mutate: Marko._.mutable([
-          ["a", "value", __marko_internal_rendered_1.return],
-          ["b", "value", __marko_internal_rendered_2.return],
-        ] as const),
-      };
-      Marko._.noop({
-        a,
-        b,
-      });
       var __marko_internal_hoist__a = a;
       var __marko_internal_hoist__b = b;
     }

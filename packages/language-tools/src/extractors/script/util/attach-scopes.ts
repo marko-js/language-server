@@ -22,14 +22,12 @@ export interface ProgramScope {
   parent: undefined;
   hoists: false;
   bindings: Bindings;
-  mutatedBindings: undefined | Set<VarBinding>;
 }
 
 export interface TagScope {
   parent: Scope;
   hoists: boolean;
   bindings: undefined | Bindings;
-  mutatedBindings: undefined | Set<VarBinding>;
 }
 
 export type Binding = VarBinding | ParamBinding | HoistedBinding;
@@ -66,6 +64,11 @@ export enum BindingType {
   hoisted,
 }
 
+export interface Mutation {
+  start: number;
+  binding: VarBinding;
+}
+
 type Bindings = { [name: string]: Binding };
 
 const ATTR_UNAMED = "value";
@@ -88,14 +91,13 @@ const BoundAttrValueRange = new WeakMap<
  */
 export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
   const { program, read } = parsed;
-  const mutations: number[] = [];
+  const mutations: Mutation[] = [];
   const potentialHoists: VarBinding[] = [];
   const nodesToCheckForMutations = new Map<Scope, Repeated<t.Node>>();
   const programScope: ProgramScope = {
     parent: undefined,
     hoists: false,
     bindings: {},
-    mutatedBindings: undefined,
   };
 
   programScope.bindings.input = {
@@ -156,7 +158,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
   }
 
   if (mutations.length) {
-    return mutations.sort((a, b) => a - b) as Repeated<number>;
+    return mutations.sort(byStart) as Repeated<Mutation>;
   }
 
   function visit(body: Node.ChildNode[], parentScope: Scope) {
@@ -206,7 +208,6 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
               parent: parentScope,
               hoists: false,
               bindings: {},
-              mutatedBindings: undefined,
             };
 
             if (child.params) {
@@ -295,9 +296,6 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                             );
                             if (binding) {
                               binding.mutated = true;
-                              (parentScope.mutatedBindings ||= new Set()).add(
-                                binding,
-                              );
                             }
 
                             BoundAttrValueRange.set(attr.value, {
@@ -404,6 +402,28 @@ export function getProgramBindings(node: Node.Program) {
   }
 }
 
+export function getMutatedVars(tag: Node.Tag) {
+  const { bindings } = Scopes.get(tag.parent.body!)!;
+  let vars: Repeatable<VarBinding>;
+
+  for (const key in bindings) {
+    const binding = bindings[key];
+    if (
+      binding.type == BindingType.var &&
+      binding.node === tag &&
+      binding.mutated
+    ) {
+      if (vars) {
+        vars.push(binding);
+      } else {
+        vars = [binding];
+      }
+    }
+  }
+
+  return vars;
+}
+
 export function getHoistSources(body: Node.ParentNode["body"]) {
   let result: Repeatable<string>;
 
@@ -424,21 +444,12 @@ export function getHoistSources(body: Node.ParentNode["body"]) {
   return result;
 }
 
-export function getMutatedVars(node: Node.ParentNode) {
-  return Scopes.get(node.body!)!.mutatedBindings;
-}
-
 export function isMutatedVar(node: Node.ParentNode, name: string) {
-  const { mutatedBindings } = Scopes.get(node.body!)!;
-  if (mutatedBindings) {
-    for (const binding of mutatedBindings) {
-      if (binding.name === name) return true;
-    }
-  }
-  return false;
+  const binding = Scopes.get(node.body!)!.bindings?.[name];
+  return binding?.type === BindingType.var && binding.mutated;
 }
 
-export function hasHoists(node: Node.ParentTag) {
+export function hasHoists(node: Node.Tag) {
   return node.body ? Scopes.get(node.body)!.hoists : false;
 }
 
@@ -564,7 +575,7 @@ function* getVarIdentifiers(
 function trackMutationsInClosures(
   root: t.Node,
   scope: Scope,
-  mutations: number[],
+  mutations: Mutation[],
 ) {
   traverse(root, (node) => {
     switch (node.type) {
@@ -586,7 +597,7 @@ function trackMutationsInClosures(
 function trackMutations(
   node: t.Node | null | void,
   scope: Scope,
-  mutations: number[],
+  mutations: Mutation[],
   parentBlock: t.Node,
   parentBlockShadows: Set<string>,
   parentBlockMutations: t.Identifier[],
@@ -733,12 +744,11 @@ function trackMutations(
 
   if (block !== parentBlock && blockMutations.length) {
     for (const { name, start } of blockMutations) {
-      if (blockShadows.has(name)) continue;
+      if (start == null || blockShadows.has(name)) continue;
       const binding = resolveWritableVar(scope, name);
       if (binding) {
         binding.mutated = true;
-        mutations.push(start!);
-        (scope.mutatedBindings ||= new Set()).add(binding);
+        mutations.push({ start, binding });
       }
     }
   }
@@ -776,4 +786,8 @@ function traverse(
       traverse(child, enter);
     }
   }
+}
+
+function byStart(a: { start: number }, b: { start: number }) {
+  return a.start - b.start;
 }

@@ -18,9 +18,14 @@ export interface Input {}
   });
   {
     const x = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__x = Marko._.change(
+      "x",
+      "value",
+      __marko_internal_rendered_1.return,
+    );
     Marko._.renderNativeTag("button")()()({
       onClick() {
-        __marko_internal_return.mutate.x++;
+        __marko_internal_change__x.x++;
         //^?
       },
       [Marko._.content /*button*/]: (() => {
@@ -44,11 +49,16 @@ export interface Input {}
         });
         {
           const y = __marko_internal_rendered_3.return.value;
+          const __marko_internal_change__y = Marko._.change(
+            "y",
+            "value",
+            __marko_internal_rendered_3.return,
+          );
           Marko._.renderNativeTag("button")()()({
             onClick() {
-              __marko_internal_return.mutate.x++;
+              __marko_internal_change__x.x++;
               //  ^?
-              __marko_internal_return.mutate.y = "goodbye";
+              __marko_internal_change__y.y = "goodbye";
               //  ^?
             },
             [Marko._.content /*button*/]: (() => {
@@ -56,16 +66,6 @@ export interface Input {}
                 return Marko._.voidReturn;
               };
             })(),
-          });
-          var __marko_internal_return = {
-            mutate: Marko._.mutable([
-              ["x", "value", __marko_internal_rendered_1.return],
-              ["y", "value", __marko_internal_rendered_3.return],
-            ] as const),
-          };
-          Marko._.noop({
-            x,
-            y,
           });
           return () => {
             return new (class MarkoReturn<Return = void> {
@@ -76,14 +76,6 @@ export interface Input {}
           };
         }
       })(),
-    });
-    var __marko_internal_return = {
-      mutate: Marko._.mutable([
-        ["x", "value", __marko_internal_rendered_1.return],
-      ] as const),
-    };
-    Marko._.noop({
-      x,
     });
     var __marko_internal_hoist__x = x;
     var { y: __marko_internal_hoist__y } = Marko._.readScope(

@@ -17,43 +17,48 @@ export interface Input {}
   });
   {
     const x = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__x = Marko._.change(
+      "x",
+      "value",
+      __marko_internal_rendered_1.return,
+    );
     Marko._.renderNativeTag("div")()()({
       "data-function"() {
-        __marko_internal_return.mutate.x++;
+        __marko_internal_change__x.x++;
       },
     });
     Marko._.renderNativeTag("div")()()({
-      "data-function"(y = __marko_internal_return.mutate.x++) {
+      "data-function"(y = __marko_internal_change__x.x++) {
         y;
       },
     });
     Marko._.renderNativeTag("div")()()({
       "data-function": () => {
-        __marko_internal_return.mutate.x++;
+        __marko_internal_change__x.x++;
       },
     });
     Marko._.renderNativeTag("div")()()({
-      "data-function": (y = __marko_internal_return.mutate.x++) => {
+      "data-function": (y = __marko_internal_change__x.x++) => {
         y;
       },
     });
     Marko._.renderNativeTag("div")()()({
       "data-function": function () {
-        __marko_internal_return.mutate.x++;
+        __marko_internal_change__x.x++;
       },
     });
     Marko._.renderNativeTag("div")()()({
-      "data-function": function (y = __marko_internal_return.mutate.x++) {
+      "data-function": function (y = __marko_internal_change__x.x++) {
         y;
       },
     });
     Marko._.renderNativeTag("div")()()({
       "data-function"() {
         function testA() {
-          __marko_internal_return.mutate.x++;
+          __marko_internal_change__x.x++;
         }
 
-        function testB(y = __marko_internal_return.mutate.x++) {
+        function testB(y = __marko_internal_change__x.x++) {
           y;
         }
 
@@ -63,15 +68,15 @@ export interface Input {}
             this.#privateMethodB;
           }
           methodA() {
-            __marko_internal_return.mutate.x++;
+            __marko_internal_change__x.x++;
           }
-          methodB(y = __marko_internal_return.mutate.x++) {
+          methodB(y = __marko_internal_change__x.x++) {
             y;
           }
           #privateMethodA() {
-            __marko_internal_return.mutate.x++;
+            __marko_internal_change__x.x++;
           }
-          #privateMethodB(y = __marko_internal_return.mutate.x++) {
+          #privateMethodB(y = __marko_internal_change__x.x++) {
             y;
           }
         }
@@ -80,14 +85,6 @@ export interface Input {}
         testB;
         TestC;
       },
-    });
-    var __marko_internal_return = {
-      mutate: Marko._.mutable([
-        ["x", "value", __marko_internal_rendered_1.return],
-      ] as const),
-    };
-    Marko._.noop({
-      x,
     });
     var __marko_internal_hoist__x = x;
   }
