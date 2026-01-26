@@ -445,8 +445,18 @@ export function getHoistSources(body: Node.ParentNode["body"]) {
 }
 
 export function isMutatedVar(node: Node.ParentNode, name: string) {
-  const binding = Scopes.get(node.body!)!.bindings?.[name];
-  return binding?.type === BindingType.var && binding.mutated;
+  let scope = Scopes.get(node.body!);
+
+  while (scope) {
+    const binding = scope.bindings?.[name];
+    if (binding?.type === BindingType.var && binding.mutated) {
+      return true;
+    }
+
+    scope = scope.parent;
+  }
+
+  return false;
 }
 
 export function hasHoists(node: Node.Tag) {
