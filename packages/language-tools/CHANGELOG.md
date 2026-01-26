@@ -1,5 +1,13 @@
 # @marko/language-tools
 
+## 2.5.45
+
+### Patch Changes
+
+- [#437](https://github.com/marko-js/language-server/pull/437) [`de8c189`](https://github.com/marko-js/language-server/commit/de8c189f75e1a8b3f9b271872730b56061890a8d) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve tag var mutation codegen to be separate from scope handling which fixes an issue where some tags change handlers were not being output.
+
+- [#437](https://github.com/marko-js/language-server/pull/437) [`91da58b`](https://github.com/marko-js/language-server/commit/91da58b17cbe0ce95dc169985060be2153c5cab4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Optimize native tag var codegen.
+
 ## 2.5.44
 
 ### Patch Changes
