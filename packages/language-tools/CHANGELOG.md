@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.46
+
+### Patch Changes
+
+- [#439](https://github.com/marko-js/language-server/pull/439) [`7ac4f33`](https://github.com/marko-js/language-server/commit/7ac4f3326d57a783b88ecd2230b08d17380d648f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with identifier bound attributes in a nested scope.
+
 ## 2.5.45
 
 ### Patch Changes
