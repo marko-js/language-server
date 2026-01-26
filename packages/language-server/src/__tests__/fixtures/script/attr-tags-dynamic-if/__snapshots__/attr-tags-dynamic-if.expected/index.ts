@@ -188,7 +188,7 @@ export interface Input {}
     input["@b"];
     input["@b"];
   });
-  const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
+  const __marko_internal_rendered_9 = Marko._.renderDynamicTag(
     __marko_internal_tag_9,
   )()()({
     x: 1,
@@ -201,14 +201,14 @@ export interface Input {}
             const __marko_internal_tag_10 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
-            const __marko_internal_rendered_2 = Marko._.renderTemplate(
+            const __marko_internal_rendered_10 = Marko._.renderTemplate(
               __marko_internal_tag_10,
             )()()({
               value: () => 1 as const,
             });
             {
               const hoistedFromStaticMember =
-                __marko_internal_rendered_2.return.value;
+                __marko_internal_rendered_10.return.value;
               return () => {
                 return new (class MarkoReturn<Return = void> {
                   [Marko._.scope] = { hoistedFromStaticMember };
@@ -232,14 +232,14 @@ export interface Input {}
                 const __marko_internal_tag_11 = Marko._.resolveTemplate(
                   import("@marko/runtime-tags/tags/const.d.marko"),
                 );
-                const __marko_internal_rendered_3 = Marko._.renderTemplate(
+                const __marko_internal_rendered_11 = Marko._.renderTemplate(
                   __marko_internal_tag_11,
                 )()()({
                   value: () => 2 as const,
                 });
                 {
                   const hoistedFromDynamicMember =
-                    __marko_internal_rendered_3.return.value;
+                    __marko_internal_rendered_11.return.value;
                   return () => {
                     return new (class MarkoReturn<Return = void> {
                       [Marko._.scope] = { hoistedFromDynamicMember };
@@ -277,7 +277,7 @@ export interface Input {}
   var {
     hoistedFromStaticMember: __marko_internal_hoist__hoistedFromStaticMember,
     hoistedFromDynamicMember: __marko_internal_hoist__hoistedFromDynamicMember,
-  } = Marko._.readScope(__marko_internal_rendered_1);
+  } = Marko._.readScope(__marko_internal_rendered_9);
   Marko._.noop({
     hoistedFromStaticMember,
     hoistedFromDynamicMember,

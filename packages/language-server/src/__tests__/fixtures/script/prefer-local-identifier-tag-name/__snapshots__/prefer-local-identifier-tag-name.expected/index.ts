@@ -38,13 +38,13 @@ export interface Input {}
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
-        const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        const __marko_internal_rendered_4 = Marko._.renderTemplate(
           __marko_internal_tag_4,
         )()()({
           value: CustomTagB,
         });
         {
-          const TestTagA = __marko_internal_rendered_2.return.value;
+          const TestTagA = __marko_internal_rendered_4.return.value;
           const __marko_internal_tag_5 = Marko._.fallbackTemplate(
             TestTagA,
             import("./components/TestTagA.marko"),

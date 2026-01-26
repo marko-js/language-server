@@ -10,24 +10,29 @@ export interface Input {}
   const el = Marko._.hoist(() => __marko_internal_hoist__el);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
     [Marko._.content /*div*/]: (() => {
-      const __marko_internal_tag_1 = Marko._.resolveTemplate(
+      const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_1,
+        __marko_internal_tag_2,
       )()()({
         value: 1,
       });
       {
         const x = __marko_internal_rendered_2.return.value;
+        const __marko_internal_change__x = Marko._.change(
+          "x",
+          "value",
+          __marko_internal_rendered_2.return,
+        );
         x;
         const __marko_internal_rendered_3 = Marko._.renderNativeTag(
           "button",
         )()()({
           onClick() {
-            __marko_internal_return.mutate.x = 2;
-            __marko_internal_return.mutate.x++;
-            ++__marko_internal_return.mutate.x;
+            __marko_internal_change__x.x = 2;
+            __marko_internal_change__x.x++;
+            ++__marko_internal_change__x.x;
           },
           [Marko._.content /*button*/]: (() => {
             return () => {
@@ -37,14 +42,6 @@ export interface Input {}
         });
         {
           const el = __marko_internal_rendered_3.return.value;
-          var __marko_internal_return = {
-            mutate: Marko._.mutable([
-              ["x", "value", __marko_internal_rendered_2.return],
-            ] as const),
-          };
-          Marko._.noop({
-            x,
-          });
           return () => {
             return new (class MarkoReturn<Return = void> {
               [Marko._.scope] = { x, el };
@@ -56,10 +53,10 @@ export interface Input {}
       }
     })(),
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
+  const __marko_internal_tag_4 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_4)()()({
     value() {
       console.log(el());
       //            ^?

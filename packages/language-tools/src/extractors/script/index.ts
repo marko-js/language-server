@@ -22,6 +22,7 @@ import {
   getProgramBindings,
   hasHoists,
   isMutatedVar,
+  type Mutation,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
 import { getRuntimeAPI, RuntimeAPI } from "./util/get-runtime-api";
@@ -49,6 +50,9 @@ const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z0-9_$]+$/;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
+const TAG_ID = new WeakMap<Node.Tag, number>();
+const RENDER_VAR = new WeakMap<Node.Tag, string>();
+const TEMPLATE_VAR = new WeakMap<Node.Tag, string>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
 
@@ -116,14 +120,11 @@ class ScriptExtractor {
   #scriptParser: ScriptParser;
   #read: Parsed["read"];
   #lookup: TaglibLookup;
-  #tagIds = new Map<Node.ParentTag, number>();
-  #renderIds = new Map<Node.ParentTag, number>();
   #scriptLang: ScriptLang;
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
-  #mutationOffsets: Repeatable<number>;
+  #mutations: Repeatable<Mutation>;
   #tagId = 1;
-  #renderId = 1;
   #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
@@ -144,7 +145,7 @@ class ScriptExtractor {
     this.#extractor = new Extractor(parsed);
     this.#scriptParser = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
-    this.#mutationOffsets = crawlProgramScope(this.#parsed, this.#scriptParser);
+    this.#mutations = crawlProgramScope(this.#parsed, this.#scriptParser);
     this.#writeProgram(parsed.program);
   }
 
@@ -366,7 +367,7 @@ function ${templateName}() {\n`);
     }
 
     if (body?.content) {
-      this.#writeChildren(program, body.content);
+      this.#writeChildren(body.content);
 
       if (bindings) {
         if (bindings.vars) {
@@ -392,7 +393,7 @@ function ${templateName}() {\n`);
     );
 
     if (didReturn) {
-      this.#extractor.write(`return ${varLocal("return")}.return;\n}\n`);
+      this.#extractor.write(`return ${varLocal("return")};\n}\n`);
     } else {
       this.#extractor.write("return;\n})();\n");
     }
@@ -524,11 +525,7 @@ constructor(_?: Return) {}
     this.#extractor.write(");\n");
   }
 
-  #writeChildren(
-    parent: Node.ParentNode,
-    children: Node.ChildNode[],
-    skipRenderId = false,
-  ) {
+  #writeChildren(children: Node.ChildNode[], skipRenderId = false) {
     const last = children.length - 1;
     let returnTag: Node.Tag | undefined;
     let i = 0;
@@ -546,23 +543,21 @@ constructor(_?: Return) {}
               // @ts-expect-error we know we are in an If Tag
               declare const child: IfTag;
               const alternates = IF_TAG_ALTERNATES.get(child);
-              let renderId: number | undefined;
+              let didHoist = false;
 
               if (!skipRenderId) {
-                renderId = this.#getRenderId(child);
-                if (!renderId && alternates) {
+                didHoist = hasHoists(child);
+                if (!didHoist && alternates) {
                   for (const { node } of alternates) {
-                    if ((renderId = this.#getRenderId(node))) {
-                      this.#renderIds.set(child, renderId);
-                      this.#renderIds.delete(node);
+                    if ((didHoist = hasHoists(node))) {
                       break;
                     }
                   }
                 }
 
-                if (renderId) {
+                if (didHoist) {
                   this.#extractor.write(
-                    `const ${varLocal("rendered_" + renderId)} = (() => {\n`,
+                    `const ${this.#getRenderVar(child, true)} = (() => {\n`,
                   );
                 }
               }
@@ -579,7 +574,7 @@ constructor(_?: Return) {}
 
               const ifBody = this.#processBody(child);
               if (ifBody?.content) {
-                this.#writeChildren(child, ifBody.content, true);
+                this.#writeChildren(ifBody.content, true);
 
                 const scopeExpr = this.#getScopeExpression(child.body);
                 if (scopeExpr) {
@@ -608,7 +603,7 @@ constructor(_?: Return) {}
 
                   const alternateBody = this.#processBody(node);
                   if (alternateBody?.content) {
-                    this.#writeChildren(node, alternateBody.content, true);
+                    this.#writeChildren(alternateBody.content, true);
 
                     const scopeExpr = this.#getScopeExpression(node.body);
                     if (scopeExpr) {
@@ -622,24 +617,22 @@ constructor(_?: Return) {}
                 }
               }
 
-              if (needsAlternate && renderId) {
+              if (needsAlternate && didHoist) {
                 this.#extractor.write("\n} else {\nreturn undefined;\n}\n");
               } else {
                 this.#extractor.write("\n}\n");
               }
 
-              if (renderId) {
+              if (didHoist) {
                 this.#extractor.write("\n})();\n");
               }
 
               break;
             }
             case "for": {
-              const renderId = this.#getRenderId(child);
-
-              if (renderId) {
+              if (hasHoists(child)) {
                 this.#extractor.write(
-                  `const ${varLocal("rendered_" + renderId)} = `,
+                  `const ${this.#getRenderVar(child, true)} = `,
                 );
               }
 
@@ -663,7 +656,7 @@ constructor(_?: Return) {}
               const body = this.#processBody(child);
 
               if (body?.content) {
-                this.#writeChildren(child, body.content);
+                this.#writeChildren(body.content);
               }
 
               this.#writeReturn(undefined, body?.content && child.body);
@@ -690,7 +683,7 @@ constructor(_?: Return) {}
               if (body?.content) {
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
-                this.#writeChildren(child, body.content);
+                this.#writeChildren(body.content);
                 this.#endChildren();
               }
 
@@ -712,54 +705,12 @@ constructor(_?: Return) {}
       }
     }
 
-    const mutatedVars = getMutatedVars(parent);
-
-    if (returnTag || mutatedVars) {
-      this.#extractor.write(`var ${varLocal("return")} = {\n`);
-
-      if (returnTag) {
-        this.#extractor.write(`return: ${varShared("returnTag")}(`);
-        this.#writeTagInputObject(returnTag);
-        this.#extractor.write(")");
-
-        if (mutatedVars) {
-          this.#extractor.write(",\n");
-        }
-      }
-
-      if (mutatedVars) {
-        this.#extractor.write(`mutate: ${varShared("mutable")}([\n`);
-        for (const binding of mutatedVars) {
-          this.#extractor.write(
-            `${
-              // TODO use a different format to avoid const annotation.
-              this.#scriptLang === ScriptLang.js ? "/** @type {const} */" : ""
-            }[${
-              JSON.stringify(binding.name) +
-              (binding.sourceName && binding.sourceName !== binding.name
-                ? `, ${JSON.stringify(binding.sourceName)}`
-                : "")
-            }, ${varLocal(
-              "rendered_" + this.#getRenderId(binding.node as Node.ParentTag),
-            )}.return${binding.objectPath || ""}]${SEP_COMMA_NEW_LINE}`,
-          );
-        }
-        this.#extractor.write(
-          `]${this.#scriptLang === ScriptLang.ts ? " as const" : ""})`,
-        );
-      }
-
-      this.#extractor.write("\n};\n");
-
-      if (mutatedVars) {
-        // Write out a read of all mutated vars to avoid them being seen
-        // as unread if there are only writes.
-        this.#extractor.write(`${varShared("noop")}({\n`);
-        for (const binding of mutatedVars) {
-          this.#extractor.write(binding.name + SEP_COMMA_NEW_LINE);
-        }
-        this.#extractor.write("});\n");
-      }
+    if (returnTag) {
+      this.#extractor.write(
+        `var ${varLocal("return")} = ${varShared("returnTag")}(`,
+      );
+      this.#writeTagInputObject(returnTag);
+      this.#extractor.write(");\n");
     }
 
     return returnTag !== undefined;
@@ -767,20 +718,20 @@ constructor(_?: Return) {}
 
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
-    const renderId = this.#getRenderId(tag);
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const importPath = resolveTagImport(this.#filename, def);
     const isHTML = !importPath && def?.html;
-    let tagIdentifier: undefined | string;
     let isTemplate = false;
+    let renderVar: undefined | string;
+    let templateVar: undefined | string;
 
     if (!def || importPath) {
       const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
       const isMarkoFile = importPath?.endsWith(".marko");
 
       if (isIdentifier || isMarkoFile || !importPath) {
-        tagIdentifier = varLocal("tag_" + this.#ensureTagId(tag));
-        this.#extractor.write(`const ${tagIdentifier} = (\n`);
+        templateVar = this.#getTemplateVar(tag, true);
+        this.#extractor.write(`const ${templateVar} = (\n`);
 
         if (isIdentifier) {
           if (importPath) {
@@ -801,18 +752,19 @@ constructor(_?: Return) {}
 
         this.#extractor.write("\n);\n");
       } else {
-        tagIdentifier = varShared("missingTag");
+        templateVar = varShared("missingTag");
       }
 
       const attrTagTree = this.#getAttrTagTree(tag);
       if (attrTagTree) {
-        this.#writeAttrTagTree(attrTagTree, tagIdentifier);
+        this.#writeAttrTagTree(attrTagTree, templateVar);
         this.#extractor.write(";\n");
       }
     }
 
-    if (renderId) {
-      this.#extractor.write(`const ${varLocal("rendered_" + renderId)} = `);
+    if (tag.var || hasHoists(tag)) {
+      renderVar = this.#getRenderVar(tag, true);
+      this.#extractor.write(`const ${renderVar} = `);
     }
 
     if (isHTML) {
@@ -820,9 +772,9 @@ constructor(_?: Return) {}
         .write(`${varShared("renderNativeTag")}("`)
         .copy(isEmptyRange(tag.name) ? tagName : tag.name)
         .write('")');
-    } else if (tagIdentifier) {
+    } else if (templateVar) {
       this.#extractor.write(
-        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${tagIdentifier})`,
+        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar})`,
       );
     } else {
       this.#extractor.write(varShared("missingTag"));
@@ -838,13 +790,25 @@ constructor(_?: Return) {}
 
     this.#extractor.write(");\n");
 
-    if (renderId && tag.var) {
+    if (renderVar && tag.var) {
       this.#extractor.write(`{const `);
       this.#closeBrackets[this.#closeBrackets.length - 1]++;
       this.#copyWithMutationsReplaced(tag.var.value);
-      this.#extractor.write(
-        ` = ${varLocal("rendered_" + renderId)}.return.${ATTR_UNAMED};\n`,
-      );
+      this.#extractor.write(` = ${renderVar!}.return.${ATTR_UNAMED};\n`);
+
+      const mutatedVars = getMutatedVars(tag);
+      if (mutatedVars) {
+        for (const binding of mutatedVars) {
+          this.#extractor.write(
+            `const ${varLocal(`change__${binding.name}`)} = ${varShared("change")}(${
+              JSON.stringify(binding.name) +
+              (binding.sourceName && binding.sourceName !== binding.name
+                ? `, ${JSON.stringify(binding.sourceName)}`
+                : "")
+            }, ${renderVar}.return${binding.objectPath || ""});\n`,
+          );
+        }
+      }
     }
   }
 
@@ -983,7 +947,7 @@ constructor(_?: Return) {}
                         .write(
                           `Change"(\n// @ts-ignore\n_${valueLiteral}) {\n${
                             isMutatedVar(tag.parent, valueLiteral)
-                              ? `${varLocal("return")}.mutate.`
+                              ? varLocal(`change__${valueLiteral}.`)
                               : ""
                           }`,
                         )
@@ -1163,8 +1127,8 @@ constructor(_?: Return) {}
       this.#extractor.write("]: ");
 
       if (isRepeated) {
-        const tagId = this.#tagIds.get(firstAttrTag.owner!);
-        if (tagId) {
+        const templateVar = this.#getTemplateVar(firstAttrTag.owner!);
+        if (templateVar) {
           let accessor = `"${name}"`;
           let curTag = firstAttrTag.parent;
           while (curTag) {
@@ -1178,7 +1142,7 @@ constructor(_?: Return) {}
           }
 
           this.#extractor.write(
-            `${varShared("attrTagFor")}(${varLocal("tag_" + tagId)},${accessor})([`,
+            `${varShared("attrTagFor")}(${templateVar},${accessor})([`,
           );
         } else {
           this.#extractor.write(`${varShared("attrTag")}([`);
@@ -1350,14 +1314,11 @@ constructor(_?: Return) {}
       this.#extractor.write("[");
 
       if (this.#interop) {
-        const tagId = this.#tagIds.get(
+        const templateVar = this.#getTemplateVar(
           tag.type === NodeType.AttrTag ? tag.owner! : tag,
         );
-
-        if (tagId) {
-          this.#extractor.write(
-            `${varShared("contentFor")}(${varLocal("tag_" + tagId)})`,
-          );
+        if (templateVar) {
+          this.#extractor.write(`${varShared("contentFor")}(${templateVar})`);
         } else {
           this.#extractor.write(varShared("content"));
         }
@@ -1384,17 +1345,14 @@ constructor(_?: Return) {}
       let didReturn = false;
 
       if (body?.content) {
-        didReturn = this.#writeChildren(tag, body.content);
+        didReturn = this.#writeChildren(body.content);
       }
 
       if (!tag.params) {
         this.#extractor.write(`return () => {\n`);
       }
 
-      this.#writeReturn(
-        didReturn ? `${varLocal("return")}.return` : undefined,
-        tag.body,
-      );
+      this.#writeReturn(didReturn ? varLocal("return") : undefined, tag.body);
 
       if (body?.content) {
         this.#endChildren();
@@ -1432,7 +1390,7 @@ constructor(_?: Return) {}
   }
 
   #copyWithMutationsReplaced(range: Range) {
-    const mutations = this.#mutationOffsets;
+    const mutations = this.#mutations;
     if (!mutations) return this.#extractor.copy(range);
 
     const len = mutations.length;
@@ -1447,16 +1405,15 @@ constructor(_?: Return) {}
       while (minIndex < maxIndex) {
         const midIndex = (minIndex + maxIndex) >>> 1;
 
-        if (mutations[midIndex] >= curOffset) {
+        if (mutations[midIndex].start >= curOffset) {
           maxIndex = midIndex;
         } else {
           minIndex = midIndex + 1;
         }
       }
 
-      const nextOffset = maxIndex === len ? range.end : mutations[maxIndex];
-
-      if (nextOffset >= range.end) {
+      const mutation = maxIndex !== len && mutations[maxIndex];
+      if (!mutation || mutation.start >= range.end) {
         // We didn't find any more mutations.
         this.#extractor.copy({
           start: curOffset,
@@ -1466,11 +1423,11 @@ constructor(_?: Return) {}
       }
 
       // Copy the content before the mutation.
-      this.#extractor.copy({ start: curOffset, end: nextOffset });
+      this.#extractor.copy({ start: curOffset, end: mutation.start });
       // splice in mutation prefix.
-      this.#extractor.write(`${varLocal("return")}.mutate.`);
+      this.#extractor.write(`${varLocal(`change__${mutation.binding.name}`)}.`);
 
-      curOffset = nextOffset;
+      curOffset = mutation.start;
       minIndex = maxIndex + 1;
       // eslint-disable-next-line no-constant-condition
     } while (true);
@@ -1654,7 +1611,7 @@ constructor(_?: Return) {}
     if (body) {
       if (body.content) {
         this.#extractor.write("(() => {\n");
-        this.#writeChildren(tag, body.content);
+        this.#writeChildren(body.content);
         this.#extractor.write("return ");
       }
       this.#extractor.write("{\n");
@@ -1794,14 +1751,36 @@ constructor(_?: Return) {}
     }
   }
 
-  #getRenderId(tag: Node.ParentTag) {
-    let renderId = this.#renderIds.get(tag);
-    if (!renderId && (tag.var || hasHoists(tag))) {
-      renderId = this.#renderId++;
-      this.#renderIds.set(tag, renderId);
+  #getRenderVar(tag: Node.Tag, declared: true): string;
+  #getRenderVar(tag: Node.Tag): string | undefined;
+  #getRenderVar(tag: Node.Tag, declared = false) {
+    let id = RENDER_VAR.get(tag);
+    if (!id && declared) {
+      RENDER_VAR.set(tag, (id = varLocal("rendered_" + this.#getTagId(tag))));
     }
 
-    return renderId;
+    return id;
+  }
+
+  #getTemplateVar(tag: Node.Tag, declared: true): string;
+  #getTemplateVar(tag: Node.Tag): string | undefined;
+  #getTemplateVar(tag: Node.Tag, declared = false) {
+    let id = TEMPLATE_VAR.get(tag);
+    if (!id && declared) {
+      TEMPLATE_VAR.set(tag, (id = varLocal("tag_" + this.#getTagId(tag))));
+    }
+
+    return id;
+  }
+
+  #getTagId(tag: Node.Tag) {
+    let id = TAG_ID.get(tag);
+    if (id === undefined) {
+      id = this.#tagId++;
+      TAG_ID.set(tag, id);
+    }
+
+    return id;
   }
 
   #getScopeExpression(body: Node.ParentNode["body"]) {
@@ -1813,45 +1792,29 @@ constructor(_?: Return) {}
   }
 
   #getBodyHoistScopeExpression(body: Node.ParentNode["body"]) {
-    let hoistIds: Repeated<number> | undefined;
+    let hoistVars: Repeated<string> | undefined;
     if (body) {
       for (const child of body) {
-        const renderId =
-          child.type === NodeType.Tag && this.#renderIds.get(child);
-        if (renderId && (!child.var || hasHoists(child))) {
-          if (hoistIds) {
-            hoistIds.push(renderId);
-          } else {
-            hoistIds = [renderId];
+        if (child.type === NodeType.Tag) {
+          const renderVar = this.#getRenderVar(child);
+          if (renderVar && (!child.var || hasHoists(child))) {
+            if (hoistVars) {
+              hoistVars.push(renderVar);
+            } else {
+              hoistVars = [renderVar];
+            }
           }
         }
       }
     }
 
-    if (hoistIds) {
-      if (hoistIds.length === 1) {
-        return `${varShared("readScope")}(${varLocal("rendered_" + hoistIds[0])})`;
+    if (hoistVars) {
+      if (hoistVars.length === 1) {
+        return `${varShared("readScope")}(${hoistVars[0]})`;
       }
 
-      let result = `${varShared("readScopes")}({ `;
-      let sep = "";
-      for (const renderId of hoistIds) {
-        result += sep + `${varLocal("rendered_" + renderId)}`;
-        sep = SEP_COMMA_SPACE;
-      }
-      return result + " })";
+      return `${varShared("readScopes")}({ ${hoistVars.join(SEP_COMMA_SPACE)} })`;
     }
-  }
-
-  #ensureTagId(tag: Node.ParentTag) {
-    // Reuses ids from renderId but unconditional.
-    let tagId = this.#tagIds.get(tag);
-    if (!tagId) {
-      tagId = this.#tagId++;
-      this.#tagIds.set(tag, tagId);
-    }
-
-    return tagId;
   }
 
   #getNamedAttrModifierIndex(attr: Node.AttrNamed) {

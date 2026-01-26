@@ -122,19 +122,21 @@ declare global {
             : never
       >;
 
-      export function mutable<Lookup>(lookup: Lookup): UnionToIntersection<
-        Lookup extends readonly (infer Item)[]
-          ? Item extends
-              | readonly [infer LocalName extends string, infer Data]
-              | readonly [infer LocalName, infer SourceName, infer Data]
-            ? Data extends {
-                [K in `${SourceName extends string
-                  ? SourceName
-                  : LocalName}Change`]: (value: infer V, ...args: any[]) => any;
-              }
-              ? { [K in LocalName]: V }
-              : { readonly [K in LocalName]: unknown }
-            : never
+      export function change<const Item>(...item: Item): UnionToIntersection<
+        Item extends
+          | readonly [infer LocalName extends string, infer Data]
+          | readonly [
+              infer LocalName extends string,
+              infer SourceName,
+              infer Data,
+            ]
+          ? Data extends {
+              [K in `${SourceName extends string
+                ? SourceName
+                : LocalName}Change`]: (value: infer V, ...args: any[]) => any;
+            }
+            ? { [K in LocalName]: V }
+            : { readonly [K in LocalName]: unknown }
           : never
       >;
 

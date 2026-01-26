@@ -17,26 +17,22 @@ function __marko_internal_template(this: void) {
   });
   {
     const value = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__value = Marko._.change(
+      "value",
+      __marko_internal_rendered_1.return,
+    );
     Marko._.renderNativeTag("button")()()({
       onClick() {
-        __marko_internal_return.mutate.value++;
+        __marko_internal_change__value.value++;
       },
     });
-    var __marko_internal_return = {
-      return: Marko._.returnTag({
-        value: value,
-      }),
-      mutate: Marko._.mutable([
-        ["value", __marko_internal_rendered_1.return],
-      ] as const),
-    };
-    Marko._.noop({
-      value,
+    var __marko_internal_return = Marko._.returnTag({
+      value: value,
     });
     var __marko_internal_hoist__value = value;
   }
   Marko._.noop({ value, input, $global, $signal });
-  return __marko_internal_return.return;
+  return __marko_internal_return;
 }
 export default new (class Template extends Marko._.Template<{
   render(

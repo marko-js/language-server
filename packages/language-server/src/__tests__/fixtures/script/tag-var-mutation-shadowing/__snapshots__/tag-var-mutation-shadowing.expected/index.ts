@@ -17,9 +17,14 @@ export interface Input {}
   });
   {
     const x = __marko_internal_rendered_1.return.value;
+    const __marko_internal_change__x = Marko._.change(
+      "x",
+      "value",
+      __marko_internal_rendered_1.return,
+    );
     Marko._.renderNativeTag("div")()()({
       onClick() {
-        __marko_internal_return.mutate.x = "Hello!";
+        __marko_internal_change__x.x = "Hello!";
 
         {
           let x = 1;
@@ -136,7 +141,7 @@ export interface Input {}
 
         (class {
           constructor() {
-            __marko_internal_return.mutate.x = "Hello!";
+            __marko_internal_change__x.x = "Hello!";
           }
         });
 
@@ -150,16 +155,16 @@ export interface Input {}
         })();
 
         try {
-          __marko_internal_return.mutate.x = "Hello!";
+          __marko_internal_change__x.x = "Hello!";
         } catch (x) {
           x = "Hello!";
           console.log(x);
         }
 
         try {
-          __marko_internal_return.mutate.x = "Hello!";
+          __marko_internal_change__x.x = "Hello!";
         } catch {
-          __marko_internal_return.mutate.x = "Hello!";
+          __marko_internal_change__x.x = "Hello!";
           console.log(x);
         }
 
@@ -173,14 +178,6 @@ export interface Input {}
           a = undefined;
         }
       },
-    });
-    var __marko_internal_return = {
-      mutate: Marko._.mutable([
-        ["x", "value", __marko_internal_rendered_1.return],
-      ] as const),
-    };
-    Marko._.noop({
-      x,
     });
     var __marko_internal_hoist__x = x;
   }

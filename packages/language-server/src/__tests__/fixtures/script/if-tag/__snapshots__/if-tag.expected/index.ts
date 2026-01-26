@@ -57,11 +57,11 @@ export interface Input {}
       }
       const __marko_internal_rendered_3 = (() => {
         if (show) {
-          const __marko_internal_tag_3 = Marko._.resolveTemplate(
+          const __marko_internal_tag_4 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_3,
+            __marko_internal_tag_4,
           )()()({
             value: () => 0 as const,
           });
@@ -77,11 +77,11 @@ export interface Input {}
       })();
       const __marko_internal_rendered_5 = (() => {
         if (show) {
-          const __marko_internal_tag_4 = Marko._.resolveTemplate(
+          const __marko_internal_tag_6 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_6 = Marko._.renderTemplate(
-            __marko_internal_tag_4,
+            __marko_internal_tag_6,
           )()()({
             value: () => 1 as const,
           });
@@ -92,11 +92,11 @@ export interface Input {}
             };
           }
         } else if (showAlt) {
-          const __marko_internal_tag_5 = Marko._.resolveTemplate(
+          const __marko_internal_tag_7 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_7 = Marko._.renderTemplate(
-            __marko_internal_tag_5,
+            __marko_internal_tag_7,
           )()()({
             value: () => 2 as const,
           });
@@ -107,11 +107,11 @@ export interface Input {}
             };
           }
         } else {
-          const __marko_internal_tag_6 = Marko._.resolveTemplate(
+          const __marko_internal_tag_8 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_8 = Marko._.renderTemplate(
-            __marko_internal_tag_6,
+            __marko_internal_tag_8,
           )()()({
             value: () => 3 as const,
           });
@@ -126,11 +126,11 @@ export interface Input {}
       const __marko_internal_rendered_9 = (() => {
         if (show) {
         } else {
-          const __marko_internal_tag_7 = Marko._.resolveTemplate(
+          const __marko_internal_tag_10 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_10 = Marko._.renderTemplate(
-            __marko_internal_tag_7,
+            __marko_internal_tag_10,
           )()()({
             value: () => 4 as const,
           });
@@ -146,11 +146,11 @@ export interface Input {}
         if (show) {
         } else if (showAlt) {
         } else {
-          const __marko_internal_tag_8 = Marko._.resolveTemplate(
+          const __marko_internal_tag_12 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_12 = Marko._.renderTemplate(
-            __marko_internal_tag_8,
+            __marko_internal_tag_12,
           )()()({
             value: () => 4 as const,
           });
@@ -164,11 +164,11 @@ export interface Input {}
       })();
       const __marko_internal_rendered_13 = (() => {
         if (show) {
-          const __marko_internal_tag_9 = Marko._.resolveTemplate(
+          const __marko_internal_tag_14 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_14 = Marko._.renderTemplate(
-            __marko_internal_tag_9,
+            __marko_internal_tag_14,
           )()()({
             value: () => 5 as const,
           });
@@ -179,11 +179,11 @@ export interface Input {}
             };
           }
         } else {
-          const __marko_internal_tag_10 = Marko._.resolveTemplate(
+          const __marko_internal_tag_15 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_15 = Marko._.renderTemplate(
-            __marko_internal_tag_10,
+            __marko_internal_tag_15,
           )()()({
             value: () => 6 as const,
           });
@@ -200,11 +200,11 @@ export interface Input {}
         } else if (showAlt) {
           if (show) {
           } else if (showAlt) {
-            const __marko_internal_tag_11 = Marko._.resolveTemplate(
+            const __marko_internal_tag_17 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
             const __marko_internal_rendered_17 = Marko._.renderTemplate(
-              __marko_internal_tag_11,
+              __marko_internal_tag_17,
             )()()({
               value: () => 7 as const,
             });
@@ -215,11 +215,11 @@ export interface Input {}
               };
             }
           } else {
-            const __marko_internal_tag_12 = Marko._.resolveTemplate(
+            const __marko_internal_tag_18 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
             const __marko_internal_rendered_18 = Marko._.renderTemplate(
-              __marko_internal_tag_12,
+              __marko_internal_tag_18,
             )()()({
               value: () => 8 as const,
             });
@@ -245,10 +245,10 @@ export interface Input {}
       }
       if ((show, y)) {
       }
-      const __marko_internal_tag_13 = Marko._.resolveTemplate(
+      const __marko_internal_tag_19 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_13)()()({
+      Marko._.renderTemplate(__marko_internal_tag_19)()()({
         value() {
           a;
           //^?
