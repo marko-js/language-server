@@ -7,15 +7,15 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const $el = Marko._.hoist(() => __marko_internal_hoist__$el);
-  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")()()({
     class: Marko._.interpolated`hello`,
   });
   {
-    const $el = __marko_internal_rendered_1.return.value;
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
+    const $el = Marko._.el("div");
+    const __marko_internal_tag_1 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/script.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_2)()()(
+    Marko._.renderTemplate(__marko_internal_tag_1)()()(
       //      ^?
       {
         async value() {

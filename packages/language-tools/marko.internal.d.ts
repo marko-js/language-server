@@ -41,6 +41,10 @@ declare global {
 
       export const content: DefaultBodyContentKey;
 
+      export function el<Name extends string>(
+        name: Name,
+      ): Marko.NativeTags[Name]["return"]["value"];
+
       export function contentFor<Name>(
         tag: Name,
       ): [0] extends [1 & Name]
