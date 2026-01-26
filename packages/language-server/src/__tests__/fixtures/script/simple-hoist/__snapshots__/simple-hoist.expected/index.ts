@@ -26,9 +26,7 @@ export interface Input {}
           __marko_internal_rendered_2.return,
         );
         x;
-        const __marko_internal_rendered_3 = Marko._.renderNativeTag(
-          "button",
-        )()()({
+        Marko._.renderNativeTag("button")()()({
           onClick() {
             __marko_internal_change__x.x = 2;
             __marko_internal_change__x.x++;
@@ -41,7 +39,7 @@ export interface Input {}
           })(),
         });
         {
-          const el = __marko_internal_rendered_3.return.value;
+          const el = Marko._.el("button");
           return () => {
             return new (class MarkoReturn<Return = void> {
               [Marko._.scope] = { x, el };
@@ -53,10 +51,10 @@ export interface Input {}
       }
     })(),
   });
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
+  const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_4)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3)()()({
     value() {
       console.log(el());
       //            ^?

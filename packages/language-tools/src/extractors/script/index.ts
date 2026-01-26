@@ -762,7 +762,7 @@ constructor(_?: Return) {}
       }
     }
 
-    if (tag.var || hasHoists(tag)) {
+    if ((!isHTML && tag.var) || hasHoists(tag)) {
       renderVar = this.#getRenderVar(tag, true);
       this.#extractor.write(`const ${renderVar} = `);
     }
@@ -787,27 +787,31 @@ constructor(_?: Return) {}
     }
 
     this.#writeTagInputObject(tag);
-
     this.#extractor.write(");\n");
 
-    if (renderVar && tag.var) {
+    if (tag.var) {
       this.#extractor.write(`{const `);
       this.#closeBrackets[this.#closeBrackets.length - 1]++;
-      this.#copyWithMutationsReplaced(tag.var.value);
-      this.#extractor.write(` = ${renderVar!}.return.${ATTR_UNAMED};\n`);
-
-      const mutatedVars = getMutatedVars(tag);
-      if (mutatedVars) {
-        for (const binding of mutatedVars) {
-          this.#extractor.write(
-            `const ${varLocal(`change__${binding.name}`)} = ${varShared("change")}(${
-              JSON.stringify(binding.name) +
-              (binding.sourceName && binding.sourceName !== binding.name
-                ? `, ${JSON.stringify(binding.sourceName)}`
-                : "")
-            }, ${renderVar}.return${binding.objectPath || ""});\n`,
-          );
+      if (renderVar) {
+        const mutatedVars = getMutatedVars(tag);
+        this.#copyWithMutationsReplaced(tag.var.value);
+        this.#extractor.write(` = ${renderVar}.return.${ATTR_UNAMED};\n`);
+        if (mutatedVars) {
+          for (const binding of mutatedVars) {
+            this.#extractor.write(
+              `const ${varLocal(`change__${binding.name}`)} = ${varShared("change")}(${
+                JSON.stringify(binding.name) +
+                (binding.sourceName && binding.sourceName !== binding.name
+                  ? `, ${JSON.stringify(binding.sourceName)}`
+                  : "")
+              }, ${renderVar}.return${binding.objectPath || ""});\n`,
+            );
+          }
         }
+      } else if (isHTML) {
+        this.#extractor
+          .copy(tag.var.value)
+          .write(` = ${varShared("el")}(${JSON.stringify(def.name)});\n`);
       }
     }
   }

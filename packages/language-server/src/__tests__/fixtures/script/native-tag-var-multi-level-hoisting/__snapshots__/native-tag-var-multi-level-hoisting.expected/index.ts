@@ -15,13 +15,11 @@ export interface Input {}
           // ^?
         },
         [Marko._.content /*div*/]: (() => {
-          const __marko_internal_rendered_3 = Marko._.renderNativeTag(
-            "input",
-          )()()({
+          Marko._.renderNativeTag("input")()()({
             type: "search",
           });
           {
-            const searchInput = __marko_internal_rendered_3.return.value;
+            const searchInput = Marko._.el("input");
             return () => {
               return new (class MarkoReturn<Return = void> {
                 [Marko._.scope] = { searchInput };
