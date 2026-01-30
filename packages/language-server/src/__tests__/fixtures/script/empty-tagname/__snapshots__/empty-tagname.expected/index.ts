@@ -13,7 +13,7 @@ export interface Input {}
   {
     const $el = Marko._.el("div");
     const __marko_internal_tag_1 = Marko._.resolveTemplate(
-      import("@marko/runtime-tags/tags/script.d.marko"),
+      import("marko/src/core-tags/core/script.d.marko"),
     );
     Marko._.renderTemplate(__marko_internal_tag_1)()()(
       //      ^?

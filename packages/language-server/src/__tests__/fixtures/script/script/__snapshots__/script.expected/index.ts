@@ -54,7 +54,7 @@ export interface Input<T extends string> {
           {
             const promise = __marko_internal_rendered_4.return.value;
             const __marko_internal_tag_5 = Marko._.resolveTemplate(
-              import("@marko/runtime-tags/tags/script.d.marko"),
+              import("marko/src/core-tags/core/script.d.marko"),
             );
             Marko._.renderTemplate(__marko_internal_tag_5)()()({
               async value() {

@@ -4,7 +4,7 @@
   11 |
   12 | <effect() {
 > 13 |   hoistedFromStaticMember;
-     |   ^ const hoistedFromStaticMember: (() => 1) & Iterable<() => 1>
+     |   ^ const hoistedFromStaticMember: (() => 1) & Iterable<1>
   14 | //^?
   15 | }/>
   16 |
