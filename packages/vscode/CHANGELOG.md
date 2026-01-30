@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.23
+
+### Patch Changes
+
+- [#442](https://github.com/marko-js/language-server/pull/442) [`38f9374`](https://github.com/marko-js/language-server/commit/38f937470c8bd2f4aacfc0b62c3ecc549d9eb40f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Hoist types from control flow now do not cause the return type of the hoist to be undefined.
+
+- [#442](https://github.com/marko-js/language-server/pull/442) [`38f9374`](https://github.com/marko-js/language-server/commit/38f937470c8bd2f4aacfc0b62c3ecc549d9eb40f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Align hoist types to match latest Marko 6.
+
 ## 2.0.22
 
 ### Patch Changes
