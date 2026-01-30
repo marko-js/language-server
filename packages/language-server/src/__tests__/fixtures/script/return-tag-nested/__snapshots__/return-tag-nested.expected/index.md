@@ -14,7 +14,7 @@
   22 |
   23 | -- ${() => {
 > 24 |   hoisted;
-     |   ^ const hoisted: (() => 1) & Iterable<() => 1>
+     |   ^ const hoisted: (() => 1) & Iterable<1>
   25 | //^?
   26 | }}
   27 |

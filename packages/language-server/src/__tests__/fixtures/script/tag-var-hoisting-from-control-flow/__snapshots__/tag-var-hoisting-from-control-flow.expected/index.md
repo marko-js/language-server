@@ -58,7 +58,7 @@
   24 |   b;
   25 | //^?
 > 26 |   c;
-     |   ^ const c: ((() => ("apples" | "oranges")[]) | (() => undefined)) & Iterable<() => ("apples" | "oranges")[]>
+     |   ^ const c: (() => ("apples" | "oranges")[]) & Iterable<("apples" | "oranges")[]>
   27 | //^?
   28 |   d;
   29 | //^?
@@ -69,7 +69,7 @@
   26 |   c;
   27 | //^?
 > 28 |   d;
-     |   ^ const d: ((() => 1) & Iterable<() => 1>) | ((() => 2) & Iterable<() => 2>)
+     |   ^ const d: ((() => 1) & Iterable<1>) | ((() => 2) & Iterable<2>)
   29 | //^?
   30 | }}
   31 |

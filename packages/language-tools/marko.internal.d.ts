@@ -24,11 +24,16 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
-      export function hoist<T, U = T>(
+      export function hoist<T>(
         value: () => T,
-      ): T extends (...args: any[]) => any
-        ? (T | (U extends undefined ? () => undefined : never)) & Iterable<T>
-        : never;
+      ): T extends () => infer R ? T & Iterable<R> : never;
+      // TODO: hoist should really be the below implementation which accounts for hoisting from unknown
+      // sections causing the getter to return undefined. Right now the type says it always has a value.
+      // export function hoist<T, U = T>(
+      //   value: () => T,
+      // ): T extends () => infer R
+      //   ? (T | (U extends undefined ? () => undefined : never)) & Iterable<R>
+      //   : never;
 
       export function attrTagNames<Tag>(
         tag: Tag,

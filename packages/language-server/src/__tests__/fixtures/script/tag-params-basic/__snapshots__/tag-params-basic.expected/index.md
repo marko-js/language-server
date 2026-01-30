@@ -55,7 +55,7 @@
   11 |
   12 | -- ${() => {
 > 13 |   hoistedFromTestTag
-     |   ^ const hoistedFromTestTag: (() => "a") & Iterable<() => "a">
+     |   ^ const hoistedFromTestTag: (() => "a") & Iterable<"a">
   14 | //^?
   15 | }}
   16 |

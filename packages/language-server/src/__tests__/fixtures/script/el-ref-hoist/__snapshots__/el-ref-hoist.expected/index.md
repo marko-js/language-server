@@ -25,7 +25,7 @@
   5 |   $el;  
   6 |   //^?
 > 7 |   $hoistedEl;
-    |     ^ const $hoistedEl: (() => HTMLDivElement) & Iterable<() => HTMLDivElement>
+    |     ^ const $hoistedEl: (() => HTMLDivElement) & Iterable<HTMLDivElement>
   8 |   //^?
   9 |
 ```

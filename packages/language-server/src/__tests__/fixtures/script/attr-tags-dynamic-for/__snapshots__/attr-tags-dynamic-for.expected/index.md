@@ -77,7 +77,7 @@
   50 |
   51 | <effect() {
 > 52 |   hoistedFromForOf;
-     |   ^ const hoistedFromForOf: (() => 1 | 2 | 3) & Iterable<() => 1 | 2 | 3>
+     |   ^ const hoistedFromForOf: (() => 1 | 2 | 3) & Iterable<1 | 2 | 3>
   53 | //^?
   54 | }/>
   55 |
@@ -110,7 +110,7 @@
   74 |
   75 | <effect() {
 > 76 |   hoistedFromForIn;
-     |   ^ const hoistedFromForIn: (() => "a" | "b") & Iterable<() => "a" | "b">
+     |   ^ const hoistedFromForIn: (() => "a" | "b") & Iterable<"a" | "b">
   77 | //^?
   78 | }/>
   79 |
@@ -154,7 +154,7 @@
   115 |
   116 | <effect() {
 > 117 |   hoistedFromForTo;
-      |   ^ const hoistedFromForTo: (() => number) & Iterable<() => number>
+      |   ^ const hoistedFromForTo: (() => number) & Iterable<number>
   118 | //^?
   119 | }/>
   120 |
