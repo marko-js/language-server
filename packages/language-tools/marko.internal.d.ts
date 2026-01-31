@@ -37,7 +37,7 @@ declare global {
 
       export function attrTagNames<Tag>(
         tag: Tag,
-        fn: (input: AttrTagNames<Marko.Input<Tag>>) => void,
+        fn: (input: AttrTagNames<InputFor<Tag>>) => void,
       ): void;
       export function nestedAttrTagNames<Input>(
         input: Input,
@@ -50,17 +50,7 @@ declare global {
         name: Name,
       ): Marko.NativeTags[Name]["return"]["value"];
 
-      export function contentFor<Name>(
-        tag: Name,
-      ): [0] extends [1 & Name]
-        ? DefaultBodyContentKey
-        : Name extends { api: infer API }
-          ? API extends "tags"
-            ? "content"
-            : API extends "class"
-              ? "renderBody"
-              : DefaultBodyContentKey
-          : DefaultBodyContentKey;
+      export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
       export const Template: new <Overrides = unknown>() => {
         [K in Exclude<
@@ -184,7 +174,7 @@ declare global {
         tag: Tag,
         fallback: Promise<{ default: Template }>,
       ): [0] extends [1 & Tag] ? Template : Tag;
-      export function input<Name>(tag: Name): Marko.Input<Name>;
+      export function input<Name>(tag: Name): InputFor<Name>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -408,16 +398,16 @@ declare global {
         ...path: Path
       ): <
         Name extends string,
-        AttrTags extends [0] extends [1 & Tag]
+        AttrTags extends readonly ([0] extends [1 & Tag]
           ? Record<Name, Marko.AttrTag<unknown>>
           : Record<
               Name,
-              Tag extends Marko.Input<infer Input>
+              Tag extends InputFor<infer Input>
                 ? [0] extends [1 & Input]
                   ? Marko.AttrTag<unknown>
                   : AttrTagValue<Input, Path>
                 : Marko.AttrTag<unknown>
-            >[],
+            >)[],
       >(
         name: Name,
         ...attrTags: AttrTags
@@ -471,8 +461,8 @@ declare global {
           ...args: BodyParamsWithDefault<Body> &
             Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
         ) => ReturnAndScope<
-          Scopes<__marko_internal_input>,
-          BodyReturnType<Body>
+          Scopes<__marko_internal_input extends [infer Input] ? Input : never>,
+          Body extends Marko.Body<any, infer Return> ? Return : never
         >;
       }
 
@@ -673,5 +663,42 @@ type DefaultBodyContentKey = keyof Exclude<
   Marko.Renderable,
   Marko.Template<any, any> | Marko.Body<any, any> | string
 >;
+
+type ContentFor<Name> = [0] extends [1 & Name]
+  ? DefaultBodyContentKey
+  : Name extends { api: infer API }
+    ? API extends "tags"
+      ? "content"
+      : API extends "class"
+        ? "renderBody"
+        : DefaultBodyContentKey
+    : DefaultBodyContentKey;
+
+type InputFor<Name> = 0 extends 1 & Name
+  ? any
+  : Name extends string
+    ? Name extends keyof Marko.NativeTags
+      ? Marko.NativeTags[Name]["input"]
+      : Record<string, unknown>
+    : Name extends
+          | Marko.Template<infer Input, any>
+          | { _(): () => (input: infer Input) => any }
+      ? Input
+      : Name extends
+            | Marko.Body<infer Args, any>
+            | Record<
+                DefaultBodyContentKey,
+                undefined | null | false | Marko.Body<infer Args, any>
+              >
+        ? Args extends {
+            length: infer Length;
+          }
+          ? number extends Length
+            ? Args[0] | undefined
+            : 0 extends Length
+              ? undefined
+              : Args[0]
+          : never
+        : never;
 
 export {};
