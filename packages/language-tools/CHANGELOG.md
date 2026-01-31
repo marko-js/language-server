@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.48
+
+### Patch Changes
+
+- [#444](https://github.com/marko-js/language-server/pull/444) [`2337baa`](https://github.com/marko-js/language-server/commit/2337baa2d1e15e3c85e9f07025c746d6d4f16a73) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve attr tag types.
+
 ## 2.5.47
 
 ### Patch Changes
