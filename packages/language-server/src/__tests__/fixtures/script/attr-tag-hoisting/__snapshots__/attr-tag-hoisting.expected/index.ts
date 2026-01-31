@@ -6,72 +6,71 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const hoistedFromStaticMember = Marko._.hoist(
-    () => __marko_internal_hoist__hoistedFromStaticMember,
-  );
-  const __marko_internal_tag_1 = custom;
+  const nested = Marko._.hoist(() => __marko_internal_hoist__nested);
+  const __marko_internal_tag_1 = Marko._.interpolated`foo`;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
-    input["@b"];
-    input["@b"];
-    input["@a"];
+    input["@section"];
+    input["@section"];
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
     __marko_internal_tag_1,
   )()()({
-    ["b" /*@b*/]: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
-      "b",
+    ["section" /*@section*/]: Marko._.attrTagFor(
+      __marko_internal_tag_1,
+      "section",
+    )(
+      "section",
       {
-        ["b" /*@b*/]: {
-          [/*@b*/ Symbol.iterator]: Marko._.any,
-          /*@b*/
+        ["section" /*@section*/]: {
+          [Marko._.contentFor(__marko_internal_tag_1) /*@section*/]: (() => {
+            const __marko_internal_tag_2 = Marko._.resolveTemplate(
+              import("@marko/runtime-tags/tags/const.d.marko"),
+            );
+            const __marko_internal_rendered_2 = Marko._.renderTemplate(
+              __marko_internal_tag_2,
+            )()()({
+              value: () => 1,
+            });
+            {
+              const nested = __marko_internal_rendered_2.return.value;
+              return () => {
+                return new (class MarkoReturn<Return = void> {
+                  [Marko._.scope] = { nested };
+                  declare return: Return;
+                  constructor(_?: Return) {}
+                })();
+              };
+            }
+          })(),
+          [/*@section*/ Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["b" /*@b*/]: {
-          c: 2,
-          [/*@b*/ Symbol.iterator]: Marko._.any,
+        ["section" /*@section*/]: {
+          [Marko._.contentFor(__marko_internal_tag_1) /*@section*/]: (() => {
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+          [/*@section*/ Symbol.iterator]: Marko._.any,
         },
       },
     ),
-    ["a" /*@a*/]: {
-      b: 1,
-      [Marko._.contentFor(__marko_internal_tag_1) /*@a*/]: (() => {
-        const __marko_internal_tag_2 = Marko._.resolveTemplate(
-          import("@marko/runtime-tags/tags/const.d.marko"),
-        );
-        const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
-        )()()({
-          value: () => 1 as const,
-        });
-        {
-          const hoistedFromStaticMember =
-            __marko_internal_rendered_2.return.value;
-          return () => {
-            return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { hoistedFromStaticMember };
-              declare return: Return;
-              constructor(_?: Return) {}
-            })();
-          };
-        }
-      })(),
-      [/*@a*/ Symbol.iterator]: Marko._.any,
-    },
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/effect.d.marko"),
+    import("marko/src/core-tags/core/script.d.marko"),
   );
   Marko._.renderTemplate(__marko_internal_tag_3)()()({
-    value() {
-      hoistedFromStaticMember;
-      //^?
+    async value() {
+      nested;
+      // ^?
     },
+    /*script*/
   });
-  var {
-    hoistedFromStaticMember: __marko_internal_hoist__hoistedFromStaticMember,
-  } = Marko._.readScope(__marko_internal_rendered_1);
-  Marko._.noop({ hoistedFromStaticMember, input, $global, $signal });
+  var { nested: __marko_internal_hoist__nested } = Marko._.readScope(
+    __marko_internal_rendered_1,
+  );
+  Marko._.noop({ nested, input, $global, $signal });
   return;
 })();
 export default new (class Template extends Marko._.Template<{

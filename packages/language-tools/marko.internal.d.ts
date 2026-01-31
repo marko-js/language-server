@@ -131,7 +131,9 @@ declare global {
             : never
       >;
 
-      export function change<const Item>(...item: Item): UnionToIntersection<
+      export function change<const Item extends readonly unknown[]>(
+        ...item: Item
+      ): UnionToIntersection<
         Item extends
           | readonly [infer LocalName extends string, infer Data]
           | readonly [
@@ -397,23 +399,29 @@ declare global {
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
       ): MergeAttrTags<Attrs>;
-      export function attrTag<AttrTag>(attrTags: AttrTag[]): AttrTag;
+      export function attrTag<
+        Name extends string,
+        AttrTags extends readonly { [K in Name]: unknown }[],
+      >(name: Name, ...attrTags: AttrTags): AttrTagsToAttrTag<Name, AttrTags>;
       export function attrTagFor<Tag, Path extends readonly string[]>(
         tag: Tag,
         ...path: Path
       ): <
-        AttrTag extends [0] extends [1 & Tag]
-          ? Marko.AttrTag<unknown>
-          : Marko.Input<Tag> extends infer Input
-            ? [0] extends [1 & Input]
-              ? Marko.AttrTag<unknown>
-              : AttrTagValue<Marko.Input<Tag>, Path>
-            : Marko.AttrTag<unknown>,
+        Name extends string,
+        AttrTags extends Record<
+          Name,
+          [0] extends [1 & Tag]
+            ? Marko.AttrTag<unknown>
+            : Marko.Input<Tag> extends infer Input
+              ? [0] extends [1 & Input]
+                ? Marko.AttrTag<unknown>
+                : AttrTagValue<Marko.Input<Tag>, Path>
+              : Marko.AttrTag<unknown>
+        >[],
       >(
-        attrTags: AttrTag[],
-      ) => AttrTag extends Marko.AttrTag<infer Input>
-        ? Marko.AttrTag<Input>
-        : any;
+        name: Name,
+        ...attrTags: AttrTags
+      ) => AttrTagsToAttrTag<Name, AttrTags>;
 
       // TODO: this could be improved.
       // currently falls back to DefaultRenderer too eagerly.
@@ -584,6 +592,17 @@ type MergeAttrTagValue<A, B> = A extends readonly (infer AType)[]
     : B extends void
       ? A
       : A | B;
+
+type AttrTagsToAttrTag<
+  Name extends string,
+  AttrTags extends readonly unknown[],
+> = AttrTags[number] extends infer AttrTag
+  ? AttrTag extends { [K in Name]: Marko.AttrTag<infer Input> }
+    ? [0] extends [1 & Input]
+      ? never
+      : Marko.AttrTag<Input>
+    : never
+  : never;
 
 type AttrTagByListSize<T, Item> = T extends
   | readonly [any, ...any[]]

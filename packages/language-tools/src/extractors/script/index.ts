@@ -1146,20 +1146,28 @@ constructor(_?: Return) {}
           }
 
           this.#extractor.write(
-            `${varShared("attrTagFor")}(${templateVar},${accessor})([`,
+            `${varShared("attrTagFor")}(${templateVar},${accessor})(`,
           );
         } else {
-          this.#extractor.write(`${varShared("attrTag")}([`);
+          this.#extractor.write(`${varShared("attrTag")}(`);
         }
-      }
 
-      for (const childNode of attrTag) {
-        this.#writeTagInputObject(childNode);
-        this.#extractor.write(SEP_COMMA_NEW_LINE);
-      }
+        this.#extractor.write(`"${name}",`);
 
-      if (isRepeated) {
-        this.#extractor.write(`])${SEP_COMMA_NEW_LINE}`);
+        for (const childNode of attrTag) {
+          this.#extractor.write(`{["${name}"`);
+          this.#writeTagNameComment(childNode);
+          this.#extractor.write("]: ");
+          this.#writeTagInputObject(childNode);
+          this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
+        }
+
+        this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
+      } else {
+        for (const childNode of attrTag) {
+          this.#writeTagInputObject(childNode);
+          this.#extractor.write(SEP_COMMA_NEW_LINE);
+        }
       }
     }
   }

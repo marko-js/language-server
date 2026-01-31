@@ -35,28 +35,33 @@ export { type Component };
             __marko_internal_tag_1,
             "row",
             "cell",
-          )([
-            // ^?
+          )(
+            "cell",
             {
-              [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
-                row.foo;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [/*@cell*/ Symbol.iterator]: Marko._.any,
+              // ^?
+              ["cell" /*@cell*/]: {
+                [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
+                  row.foo;
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [/*@cell*/ Symbol.iterator]: Marko._.any,
+              },
             },
-            // ^?     ^?
             {
-              [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
-                row.bar;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [/*@cell*/ Symbol.iterator]: Marko._.any,
+              // ^?     ^?
+              ["cell" /*@cell*/]: {
+                [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
+                  row.bar;
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [/*@cell*/ Symbol.iterator]: Marko._.any,
+              },
             },
-          ]),
+          ),
           [/*@row*/ Symbol.iterator]: Marko._.any,
         },
       }),
@@ -86,28 +91,33 @@ export { type Component };
             __marko_internal_tag_2,
             "row",
             "cell",
-          )([
-            // ^?
+          )(
+            "cell",
             {
-              [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
-                row.foo;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [/*@cell*/ Symbol.iterator]: Marko._.any,
+              // ^?
+              ["cell" /*@cell*/]: {
+                [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
+                  row.foo;
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [/*@cell*/ Symbol.iterator]: Marko._.any,
+              },
             },
-            // ^?     ^?
             {
-              [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
-                row.bar;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [/*@cell*/ Symbol.iterator]: Marko._.any,
+              // ^?     ^?
+              ["cell" /*@cell*/]: {
+                [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
+                  row.bar;
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [/*@cell*/ Symbol.iterator]: Marko._.any,
+              },
             },
-          ]),
+          ),
           [/*@row*/ Symbol.iterator]: Marko._.any,
         },
       }),

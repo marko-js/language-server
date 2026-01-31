@@ -26,22 +26,24 @@ export class Component extends Marko.Component {}
     input["@foo"];
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ["foo" /*@foo*/]: Marko._.attrTagFor(
-      __marko_internal_tag_1,
+    ["foo" /*@foo*/]: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
       "foo",
-    )([
       {
-        bar: true,
-        [/*@foo*/ Symbol.iterator]: Marko._.any,
-      },
-      {
-        [Marko._.contentFor(__marko_internal_tag_1) /*@foo*/]: (data) => {
-          data;
-          return Marko._.voidReturn;
+        ["foo" /*@foo*/]: {
+          bar: true,
+          [/*@foo*/ Symbol.iterator]: Marko._.any,
         },
-        [/*@foo*/ Symbol.iterator]: Marko._.any,
       },
-    ]),
+      {
+        ["foo" /*@foo*/]: {
+          [Marko._.contentFor(__marko_internal_tag_1) /*@foo*/]: (data) => {
+            data;
+            return Marko._.voidReturn;
+          },
+          [/*@foo*/ Symbol.iterator]: Marko._.any,
+        },
+      },
+    ),
   });
   const __marko_internal_tag_2 = Child;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
@@ -51,22 +53,24 @@ export class Component extends Marko.Component {}
   Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
     //^?
     {
-      ["foo" /*@foo*/]: Marko._.attrTagFor(
-        __marko_internal_tag_2,
+      ["foo" /*@foo*/]: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
         "foo",
-      )([
         {
-          bar: true,
-          [/*@foo*/ Symbol.iterator]: Marko._.any,
-        },
-        {
-          [Marko._.contentFor(__marko_internal_tag_2) /*@foo*/]: (data) => {
-            data;
-            return Marko._.voidReturn;
+          ["foo" /*@foo*/]: {
+            bar: true,
+            [/*@foo*/ Symbol.iterator]: Marko._.any,
           },
-          [/*@foo*/ Symbol.iterator]: Marko._.any,
         },
-      ]),
+        {
+          ["foo" /*@foo*/]: {
+            [Marko._.contentFor(__marko_internal_tag_2) /*@foo*/]: (data) => {
+              data;
+              return Marko._.voidReturn;
+            },
+            [/*@foo*/ Symbol.iterator]: Marko._.any,
+          },
+        },
+      ),
     },
   );
   const __marko_internal_tag_3 = true && Child;
@@ -78,22 +82,24 @@ export class Component extends Marko.Component {}
     //^?
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
-      ["foo" /*@foo*/]: Marko._.attrTagFor(
-        __marko_internal_tag_3,
+      ["foo" /*@foo*/]: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
         "foo",
-      )([
         {
-          bar: true,
-          [/*@foo*/ Symbol.iterator]: Marko._.any,
-        },
-        {
-          [Marko._.contentFor(__marko_internal_tag_3) /*@foo*/]: (data) => {
-            data;
-            return Marko._.voidReturn;
+          ["foo" /*@foo*/]: {
+            bar: true,
+            [/*@foo*/ Symbol.iterator]: Marko._.any,
           },
-          [/*@foo*/ Symbol.iterator]: Marko._.any,
         },
-      ]),
+        {
+          ["foo" /*@foo*/]: {
+            [Marko._.contentFor(__marko_internal_tag_3) /*@foo*/]: (data) => {
+              data;
+              return Marko._.voidReturn;
+            },
+            [/*@foo*/ Symbol.iterator]: Marko._.any,
+          },
+        },
+      ),
     },
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
