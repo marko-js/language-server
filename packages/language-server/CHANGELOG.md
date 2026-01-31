@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.24
+
+### Patch Changes
+
+- [#448](https://github.com/marko-js/language-server/pull/448) [`d90cea6`](https://github.com/marko-js/language-server/commit/d90cea6f268ad5af7e8157b2c83e6a73910e7650) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix define tag tag var hoisting and other type issues.
+
+- Updated dependencies [[`d90cea6`](https://github.com/marko-js/language-server/commit/d90cea6f268ad5af7e8157b2c83e6a73910e7650)]:
+  - @marko/language-tools@2.5.50
+
 ## 2.1.23
 
 ### Patch Changes
