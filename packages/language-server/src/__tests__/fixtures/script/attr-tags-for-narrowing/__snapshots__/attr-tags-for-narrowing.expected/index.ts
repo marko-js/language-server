@@ -41,17 +41,22 @@ export { type Component };
           ["item" /*@item*/]: Marko._.attrTagFor(
             __marko_internal_tag_1,
             "item",
-          )([
+          )(
+            "item",
             {
-              size: "small",
-              [/*@item*/ Symbol.iterator]: Marko._.any,
+              ["item" /*@item*/]: {
+                size: "small",
+                [/*@item*/ Symbol.iterator]: Marko._.any,
+              },
             },
-            // ^?
             {
-              size: "huge",
-              [/*@item*/ Symbol.iterator]: Marko._.any,
+              // ^?
+              ["item" /*@item*/]: {
+                size: "huge",
+                [/*@item*/ Symbol.iterator]: Marko._.any,
+              },
             },
-          ]),
+          ),
         }),
       ),
     ),

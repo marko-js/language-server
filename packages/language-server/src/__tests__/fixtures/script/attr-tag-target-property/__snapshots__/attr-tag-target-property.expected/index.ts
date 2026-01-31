@@ -31,28 +31,30 @@ export { type Component };
     input["@item"];
   });
   Marko._.renderTemplate(__marko_internal_tag_2)()()({
-    ["items" /*@item*/]: Marko._.attrTagFor(
-      __marko_internal_tag_2,
+    ["items" /*@item*/]: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
       "items",
-    )([
       {
-        x: 1,
-        [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
-        [/*@item*/ Symbol.iterator]: Marko._.any,
+        ["items" /*@item*/]: {
+          x: 1,
+          [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+          [/*@item*/ Symbol.iterator]: Marko._.any,
+        },
       },
       {
-        [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
-        [/*@item*/ Symbol.iterator]: Marko._.any,
+        ["items" /*@item*/]: {
+          [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+          [/*@item*/ Symbol.iterator]: Marko._.any,
+        },
       },
-    ]),
+    ),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
