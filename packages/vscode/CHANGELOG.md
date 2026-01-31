@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.25
+
+### Patch Changes
+
+- [`a857d7f`](https://github.com/marko-js/language-server/commit/a857d7fe5a4e98e14e5ee23004364480c2a1a24f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix attr tag typing when tag has any type.
+
 ## 2.0.24
 
 ### Patch Changes

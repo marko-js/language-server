@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.21
+
+### Patch Changes
+
+- [`a857d7f`](https://github.com/marko-js/language-server/commit/a857d7fe5a4e98e14e5ee23004364480c2a1a24f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix attr tag typing when tag has any type.
+
+- Updated dependencies [[`a857d7f`](https://github.com/marko-js/language-server/commit/a857d7fe5a4e98e14e5ee23004364480c2a1a24f)]:
+  - @marko/language-tools@2.5.49
+
 ## 2.1.20
 
 ### Patch Changes
