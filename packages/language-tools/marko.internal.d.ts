@@ -408,16 +408,16 @@ declare global {
         ...path: Path
       ): <
         Name extends string,
-        AttrTags extends Record<
-          Name,
-          [0] extends [1 & Tag]
-            ? Marko.AttrTag<unknown>
-            : Marko.Input<Tag> extends infer Input
-              ? [0] extends [1 & Input]
-                ? Marko.AttrTag<unknown>
-                : AttrTagValue<Marko.Input<Tag>, Path>
-              : Marko.AttrTag<unknown>
-        >[],
+        AttrTags extends [0] extends [1 & Tag]
+          ? Record<Name, Marko.AttrTag<unknown>>
+          : Record<
+              Name,
+              Tag extends Marko.Input<infer Input>
+                ? [0] extends [1 & Input]
+                  ? Marko.AttrTag<unknown>
+                  : AttrTagValue<Input, Path>
+                : Marko.AttrTag<unknown>
+            >[],
       >(
         name: Name,
         ...attrTags: AttrTags
