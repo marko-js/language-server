@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.24
+
+### Patch Changes
+
+- [#454](https://github.com/marko-js/language-server/pull/454) [`8a76656`](https://github.com/marko-js/language-server/commit/8a766561410e88f472f981aae162218ffd26dae2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Align reading own tag variables within body content with the Marko 6 runtime. (Fixes a regression with recursive define tag types).
+
+- Updated dependencies [[`8a76656`](https://github.com/marko-js/language-server/commit/8a766561410e88f472f981aae162218ffd26dae2)]:
+  - @marko/language-tools@2.5.52
+
 ## 2.1.23
 
 ### Patch Changes
