@@ -113,7 +113,9 @@ export { type Component };
         class: Marko._.interpolated`container`,
         [Marko._.content /*div*/]: (() => {
           const __marko_internal_tag_1 = input.renderBody;
-          Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+          Marko._.renderDynamicTag(
+            __marko_internal_tag_1 /*input.renderBody*/,
+          )()()({
             /*input.renderBody*/
           });
           return () => {
@@ -122,7 +124,7 @@ export { type Component };
         })(),
       });
       const __marko_internal_tag_2 = FancyButton;
-      Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+      Marko._.renderDynamicTag(__marko_internal_tag_2 /*FancyButton*/)()()({
         something: true,
         [Marko._.contentFor(__marko_internal_tag_2) /*FancyButton*/]: (() => {
           type;
@@ -154,11 +156,11 @@ export { type Component };
         })(),
       });
       const __marko_internal_tag_3 = Missing;
-      Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+      Marko._.renderDynamicTag(__marko_internal_tag_3 /*Missing*/)()()({
         /*Missing*/
       });
       const __marko_internal_tag_4 = Marko._.interpolated`complex-missing`;
-      Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+      Marko._.renderDynamicTag(__marko_internal_tag_4 /*complex-missing*/)()()({
         /*complex-missing*/
       });
       return () => {

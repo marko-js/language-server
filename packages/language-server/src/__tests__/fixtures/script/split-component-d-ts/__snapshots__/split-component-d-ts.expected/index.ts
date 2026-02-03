@@ -14,14 +14,14 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/fancy-button/index.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*fancy-button*/)()()({
     color: "red",
     fanciness: 5,
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/regular-button/index.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_2)()()(
+  Marko._.renderTemplate(__marko_internal_tag_2 /*regular-button*/)()()(
     //            ^?          ^?
     {
       size: "large",

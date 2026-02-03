@@ -16,7 +16,7 @@ export interface Input {}
         import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
+        __marko_internal_tag_2 /*const*/,
       )()()({
         value: ["apples", "oranges"] as const,
       });
@@ -26,7 +26,7 @@ export interface Input {}
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3,
+          __marko_internal_tag_3 /*const*/,
         )()()(
           // ^?
           {
@@ -47,7 +47,7 @@ export interface Input {}
                 import("@marko/runtime-tags/tags/const.d.marko"),
               );
               const __marko_internal_rendered_5 = Marko._.renderTemplate(
-                __marko_internal_tag_5,
+                __marko_internal_tag_5 /*const*/,
               )()()({
                 value: () => a.filter((e) => e.length),
               });
@@ -78,7 +78,7 @@ export interface Input {}
         import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_7 = Marko._.renderTemplate(
-        __marko_internal_tag_7,
+        __marko_internal_tag_7 /*const*/,
       )()()({
         value: { d: () => 1 } as const,
       });
@@ -93,7 +93,7 @@ export interface Input {}
         import("@marko/runtime-tags/tags/const.d.marko"),
       );
       const __marko_internal_rendered_8 = Marko._.renderTemplate(
-        __marko_internal_tag_8,
+        __marko_internal_tag_8 /*const*/,
       )()()({
         value: { d: () => 2 } as const,
       });

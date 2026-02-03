@@ -20,7 +20,7 @@ export { type Component };
       input["@b"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*list*/)()()({
     ["a" /*@a*/]: {
       ...Marko._.forOfAttrTag(
         {

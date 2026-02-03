@@ -12,7 +12,7 @@ export interface Input {}
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*const*/,
   )()()({
     value: $el,
   });
@@ -26,7 +26,7 @@ export interface Input {}
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("marko/src/core-tags/core/script.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_2)()()(
+      Marko._.renderTemplate(__marko_internal_tag_2 /*script*/)()()(
         // ^?
         {
           async value() {

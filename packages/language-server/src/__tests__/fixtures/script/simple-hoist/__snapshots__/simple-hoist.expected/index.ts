@@ -14,7 +14,7 @@ export interface Input {}
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
+        __marko_internal_tag_2 /*let*/,
       )()()({
         value: 1,
       });
@@ -54,7 +54,7 @@ export interface Input {}
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3 /*effect*/)()()({
     value() {
       console.log(el());
       //            ^?

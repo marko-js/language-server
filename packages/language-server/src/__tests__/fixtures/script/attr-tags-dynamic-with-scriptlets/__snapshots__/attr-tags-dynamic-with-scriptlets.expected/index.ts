@@ -17,7 +17,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*custom*/)()()({
     ...(!done
       ? (() => {
           //        ^?
@@ -45,7 +45,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
     ...Marko._.forToAttrTag(
       {
         /*for*/ from: 1,
@@ -74,7 +74,7 @@ export { type Component };
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_3 /*custom*/)()()(
     //      ^?
     {
       x: 1,

@@ -14,7 +14,7 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)<0>()<string>()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*test-tag*/)<0>()<string>()({
     a: 1,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

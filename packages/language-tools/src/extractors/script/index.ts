@@ -774,8 +774,10 @@ constructor(_?: Return) {}
         .write('")');
     } else if (templateVar) {
       this.#extractor.write(
-        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar})`,
+        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar}`,
       );
+      this.#writeTagNameComment(tag);
+      this.#extractor.write(")");
     } else {
       this.#extractor.write(varShared("missingTag"));
     }

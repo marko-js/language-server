@@ -14,25 +14,25 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*test-tag*/)()()({
     ["value"]: Marko._.tuple({ value: "hello!" }),
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2 /*test-tag*/)()()({
     ["value"]: Marko._.tuple("hello!"),
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3 /*test-tag*/)()()({
     ["value"]: Marko._.tuple("hello!", 1),
   });
   const __marko_internal_tag_4 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_4)()()({
+  Marko._.renderTemplate(__marko_internal_tag_4 /*test-tag*/)()()({
     ["value"]: Marko._.tuple("hello!", 1, 2),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

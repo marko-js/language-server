@@ -74,7 +74,7 @@ export { type Component };
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()(
+  Marko._.renderTemplate(__marko_internal_tag_1 /*my-select*/)()()(
     // ^?
     {
       ...Marko._.mergeAttrTags(

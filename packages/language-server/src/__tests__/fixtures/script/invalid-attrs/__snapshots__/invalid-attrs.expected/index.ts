@@ -14,7 +14,7 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/fancy-button/index.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*fancy-button*/)()()({
     something: true,
     [Marko._.contentFor(__marko_internal_tag_1) /*fancy-button*/]: (() => {
       return () => {

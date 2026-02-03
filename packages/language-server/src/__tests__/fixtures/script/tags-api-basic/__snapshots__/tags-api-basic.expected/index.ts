@@ -29,7 +29,7 @@ function __marko_internal_template(this: void) {
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*const*/,
   )()()({
     value: input,
   });
@@ -96,7 +96,9 @@ function __marko_internal_template(this: void) {
             class: Marko._.interpolated`container`,
             [Marko._.content /*div*/]: (() => {
               const __marko_internal_tag_2 = renderBody;
-              Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+              Marko._.renderDynamicTag(
+                __marko_internal_tag_2 /*renderBody*/,
+              )()()({
                 /*renderBody*/
               });
               return () => {
@@ -106,7 +108,7 @@ function __marko_internal_template(this: void) {
           },
         );
         const __marko_internal_tag_3 = FancyButton;
-        Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+        Marko._.renderDynamicTag(__marko_internal_tag_3 /*FancyButton*/)()()({
           something: true,
           [Marko._.contentFor(__marko_internal_tag_3) /*FancyButton*/]: (() => {
             type;

@@ -13,7 +13,7 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = Template;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*Template*/)()()({
     /*Template*/
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

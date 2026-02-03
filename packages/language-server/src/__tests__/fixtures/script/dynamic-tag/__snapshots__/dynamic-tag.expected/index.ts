@@ -11,14 +11,14 @@ export interface Input {}
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*let*/,
   )()()({
     value: 1,
   });
   {
     const size = __marko_internal_rendered_1.return.value;
     const __marko_internal_tag_2 = Marko._.interpolated`h${size}`;
-    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_2 /*h${size}*/)()()({
       [Marko._.contentFor(__marko_internal_tag_2) /*h${size}*/]: (() => {
         return () => {
           return Marko._.voidReturn;
@@ -26,7 +26,7 @@ export interface Input {}
       })(),
     });
     const __marko_internal_tag_3 = "hello";
-    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_3 /*"hello"*/)()()({
       [Marko._.contentFor(__marko_internal_tag_3) /*"hello"*/]: (() => {
         return () => {
           return Marko._.voidReturn;
@@ -34,7 +34,7 @@ export interface Input {}
       })(),
     });
     const __marko_internal_tag_4 = Marko._.interpolated`${"hello"}-world`;
-    Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_4 /*${"hello"}-world*/)()()({
       /*${"hello"}-world*/
     });
     var __marko_internal_hoist__size = size;

@@ -12,7 +12,7 @@ export interface Input {}
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*let*/,
   )()()({
     value: "bar",
   });
@@ -26,7 +26,7 @@ export interface Input {}
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("./components/test-tag.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    Marko._.renderTemplate(__marko_internal_tag_2 /*test-tag*/)()()({
       //  ^?
       [Marko._.contentFor(__marko_internal_tag_2) /*test-tag*/]: (val) => {
         Marko._.renderNativeTag("button")()()({
@@ -53,7 +53,7 @@ export interface Input {}
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
         const __marko_internal_rendered_4 = Marko._.renderTemplate(
-          __marko_internal_tag_4,
+          __marko_internal_tag_4 /*let*/,
         )()()({
           value: "",
         });
