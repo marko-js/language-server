@@ -14,13 +14,13 @@ export interface Input<T extends string> {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2 /*let*/,
-      )()()({
-        value: () => 1,
-      });
       {
-        const x = __marko_internal_rendered_2.return.value;
+        const x = Marko._.returned(() => __marko_internal_rendered_2);
+        const __marko_internal_rendered_2 = Marko._.renderTemplate(
+          __marko_internal_tag_2 /*let*/,
+        )()()({
+          value: () => 1,
+        });
         new Thing();
         //      ^?
         x;

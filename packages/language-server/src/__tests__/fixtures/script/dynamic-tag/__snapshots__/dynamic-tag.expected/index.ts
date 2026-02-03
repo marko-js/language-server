@@ -10,13 +10,13 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*let*/,
-  )()()({
-    value: 1,
-  });
   {
-    const size = __marko_internal_rendered_1.return.value;
+    const size = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*let*/,
+    )()()({
+      value: 1,
+    });
     const __marko_internal_tag_2 = Marko._.interpolated`h${size}`;
     Marko._.renderDynamicTag(__marko_internal_tag_2 /*h${size}*/)()()({
       [Marko._.contentFor(__marko_internal_tag_2) /*h${size}*/]: (() => {

@@ -20,23 +20,23 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*let*/,
-  )()()({
-    value: true,
-  });
   {
-    const show = __marko_internal_rendered_1.return.value;
+    const show = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*let*/,
+    )()()({
+      value: true,
+    });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/let.d.marko"),
     );
-    const __marko_internal_rendered_2 = Marko._.renderTemplate(
-      __marko_internal_tag_2 /*let*/,
-    )()()({
-      value: false,
-    });
     {
-      const showAlt = __marko_internal_rendered_2.return.value;
+      const showAlt = Marko._.returned(() => __marko_internal_rendered_2);
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_2 /*let*/,
+      )()()({
+        value: false,
+      });
       if (undefined) {
       }
       if (show) {
@@ -60,13 +60,13 @@ export interface Input {}
           const __marko_internal_tag_4 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4 /*const*/,
-          )()()({
-            value: () => 0 as const,
-          });
           {
-            const a = __marko_internal_rendered_4.return.value;
+            const a = Marko._.returned(() => __marko_internal_rendered_4);
+            const __marko_internal_rendered_4 = Marko._.renderTemplate(
+              __marko_internal_tag_4 /*const*/,
+            )()()({
+              value: () => 0 as const,
+            });
             return {
               scope: { a },
             };
@@ -80,13 +80,13 @@ export interface Input {}
           const __marko_internal_tag_6 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_6 = Marko._.renderTemplate(
-            __marko_internal_tag_6 /*const*/,
-          )()()({
-            value: () => 1 as const,
-          });
           {
-            const b = __marko_internal_rendered_6.return.value;
+            const b = Marko._.returned(() => __marko_internal_rendered_6);
+            const __marko_internal_rendered_6 = Marko._.renderTemplate(
+              __marko_internal_tag_6 /*const*/,
+            )()()({
+              value: () => 1 as const,
+            });
             return {
               scope: { b },
             };
@@ -95,13 +95,13 @@ export interface Input {}
           const __marko_internal_tag_7 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_7 = Marko._.renderTemplate(
-            __marko_internal_tag_7 /*const*/,
-          )()()({
-            value: () => 2 as const,
-          });
           {
-            const c = __marko_internal_rendered_7.return.value;
+            const c = Marko._.returned(() => __marko_internal_rendered_7);
+            const __marko_internal_rendered_7 = Marko._.renderTemplate(
+              __marko_internal_tag_7 /*const*/,
+            )()()({
+              value: () => 2 as const,
+            });
             return {
               scope: { c },
             };
@@ -110,13 +110,13 @@ export interface Input {}
           const __marko_internal_tag_8 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_8 = Marko._.renderTemplate(
-            __marko_internal_tag_8 /*const*/,
-          )()()({
-            value: () => 3 as const,
-          });
           {
-            const d = __marko_internal_rendered_8.return.value;
+            const d = Marko._.returned(() => __marko_internal_rendered_8);
+            const __marko_internal_rendered_8 = Marko._.renderTemplate(
+              __marko_internal_tag_8 /*const*/,
+            )()()({
+              value: () => 3 as const,
+            });
             return {
               scope: { d },
             };
@@ -129,13 +129,13 @@ export interface Input {}
           const __marko_internal_tag_10 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_10 = Marko._.renderTemplate(
-            __marko_internal_tag_10 /*const*/,
-          )()()({
-            value: () => 4 as const,
-          });
           {
-            const e = __marko_internal_rendered_10.return.value;
+            const e = Marko._.returned(() => __marko_internal_rendered_10);
+            const __marko_internal_rendered_10 = Marko._.renderTemplate(
+              __marko_internal_tag_10 /*const*/,
+            )()()({
+              value: () => 4 as const,
+            });
             return {
               scope: { e },
             };
@@ -149,13 +149,13 @@ export interface Input {}
           const __marko_internal_tag_12 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_12 = Marko._.renderTemplate(
-            __marko_internal_tag_12 /*const*/,
-          )()()({
-            value: () => 4 as const,
-          });
           {
-            const f = __marko_internal_rendered_12.return.value;
+            const f = Marko._.returned(() => __marko_internal_rendered_12);
+            const __marko_internal_rendered_12 = Marko._.renderTemplate(
+              __marko_internal_tag_12 /*const*/,
+            )()()({
+              value: () => 4 as const,
+            });
             return {
               scope: { f },
             };
@@ -167,13 +167,13 @@ export interface Input {}
           const __marko_internal_tag_14 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_14 = Marko._.renderTemplate(
-            __marko_internal_tag_14 /*const*/,
-          )()()({
-            value: () => 5 as const,
-          });
           {
-            const g = __marko_internal_rendered_14.return.value;
+            const g = Marko._.returned(() => __marko_internal_rendered_14);
+            const __marko_internal_rendered_14 = Marko._.renderTemplate(
+              __marko_internal_tag_14 /*const*/,
+            )()()({
+              value: () => 5 as const,
+            });
             return {
               scope: { g },
             };
@@ -182,13 +182,13 @@ export interface Input {}
           const __marko_internal_tag_15 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_15 = Marko._.renderTemplate(
-            __marko_internal_tag_15 /*const*/,
-          )()()({
-            value: () => 6 as const,
-          });
           {
-            const g = __marko_internal_rendered_15.return.value;
+            const g = Marko._.returned(() => __marko_internal_rendered_15);
+            const __marko_internal_rendered_15 = Marko._.renderTemplate(
+              __marko_internal_tag_15 /*const*/,
+            )()()({
+              value: () => 6 as const,
+            });
             return {
               scope: { g },
             };
@@ -203,13 +203,13 @@ export interface Input {}
             const __marko_internal_tag_17 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
-            const __marko_internal_rendered_17 = Marko._.renderTemplate(
-              __marko_internal_tag_17 /*const*/,
-            )()()({
-              value: () => 7 as const,
-            });
             {
-              const h = __marko_internal_rendered_17.return.value;
+              const h = Marko._.returned(() => __marko_internal_rendered_17);
+              const __marko_internal_rendered_17 = Marko._.renderTemplate(
+                __marko_internal_tag_17 /*const*/,
+              )()()({
+                value: () => 7 as const,
+              });
               return {
                 scope: { h },
               };
@@ -218,13 +218,13 @@ export interface Input {}
             const __marko_internal_tag_18 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
-            const __marko_internal_rendered_18 = Marko._.renderTemplate(
-              __marko_internal_tag_18 /*const*/,
-            )()()({
-              value: () => 8 as const,
-            });
             {
-              const i = __marko_internal_rendered_18.return.value;
+              const i = Marko._.returned(() => __marko_internal_rendered_18);
+              const __marko_internal_rendered_18 = Marko._.renderTemplate(
+                __marko_internal_tag_18 /*const*/,
+              )()()({
+                value: () => 8 as const,
+              });
               return {
                 scope: { i },
               };

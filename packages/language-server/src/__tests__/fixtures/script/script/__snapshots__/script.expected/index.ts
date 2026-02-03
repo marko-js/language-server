@@ -16,13 +16,13 @@ export interface Input<T extends string> {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2 /*let*/,
-      )()()({
-        value: 1,
-      });
       {
-        const x = __marko_internal_rendered_2.return.value;
+        const x = Marko._.returned(() => __marko_internal_rendered_2);
+        const __marko_internal_rendered_2 = Marko._.renderTemplate(
+          __marko_internal_tag_2 /*let*/,
+        )()()({
+          value: 1,
+        });
         const __marko_internal_change__x = Marko._.change(
           "x",
           "value",
@@ -31,13 +31,13 @@ export interface Input<T extends string> {
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
-        const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3 /*const*/,
-        )()()({
-          value: "hi",
-        });
         {
-          const y = __marko_internal_rendered_3.return.value;
+          const y = Marko._.returned(() => __marko_internal_rendered_3);
+          const __marko_internal_rendered_3 = Marko._.renderTemplate(
+            __marko_internal_tag_3 /*const*/,
+          )()()({
+            value: "hi",
+          });
           const __marko_internal_change__y = Marko._.change(
             "y",
             "value",
@@ -46,13 +46,13 @@ export interface Input<T extends string> {
           const __marko_internal_tag_4 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
-          const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4 /*const*/,
-          )()()({
-            value: Promise.resolve("world"),
-          });
           {
-            const promise = __marko_internal_rendered_4.return.value;
+            const promise = Marko._.returned(() => __marko_internal_rendered_4);
+            const __marko_internal_rendered_4 = Marko._.renderTemplate(
+              __marko_internal_tag_4 /*const*/,
+            )()()({
+              value: Promise.resolve("world"),
+            });
             const __marko_internal_tag_5 = Marko._.resolveTemplate(
               import("marko/src/core-tags/core/script.d.marko"),
             );

@@ -9,6 +9,7 @@ export interface Input {}
 const __marko_internal_tag_1 = (
 Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko"))
 );
+{const { %x } = Marko._.returned(() => __marko_internal_rendered_1);
 const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1/*let*/)()()(// Should be resistant to syntax errors.
 {
  "value": (
@@ -16,7 +17,6 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 ),
 
 });
-{const { %x } = __marko_internal_rendered_1.return.value;
 }Marko._.noop({ input, $global, $signal });
 return;
 })();

@@ -721,6 +721,8 @@ constructor(_?: Return) {}
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const importPath = resolveTagImport(this.#filename, def);
     const isHTML = !importPath && def?.html;
+    const needsHoist = hasHoists(tag);
+    const mutatedVars = tag.var && !isHTML && getMutatedVars(tag);
     let isTemplate = false;
     let renderVar: undefined | string;
     let templateVar: undefined | string;
@@ -762,8 +764,25 @@ constructor(_?: Return) {}
       }
     }
 
-    if ((!isHTML && tag.var) || hasHoists(tag)) {
+    if (needsHoist || tag.var) {
       renderVar = this.#getRenderVar(tag, true);
+
+      if (tag.var) {
+        this.#closeBrackets[this.#closeBrackets.length - 1]++;
+        this.#extractor.write("{const ");
+
+        if (isHTML) {
+          this.#extractor
+            .copy(tag.var.value)
+            .write(` = ${varShared("el")}(${JSON.stringify(def.name)});\n`);
+        } else {
+          this.#copyWithMutationsReplaced(tag.var.value);
+          this.#extractor.write(
+            ` = ${varShared("returned")}(() => ${renderVar});\n`,
+          );
+        }
+      }
+
       this.#extractor.write(`const ${renderVar} = `);
     }
 
@@ -791,29 +810,16 @@ constructor(_?: Return) {}
     this.#writeTagInputObject(tag);
     this.#extractor.write(");\n");
 
-    if (tag.var) {
-      this.#extractor.write(`{const `);
-      this.#closeBrackets[this.#closeBrackets.length - 1]++;
-      if (renderVar) {
-        const mutatedVars = getMutatedVars(tag);
-        this.#copyWithMutationsReplaced(tag.var.value);
-        this.#extractor.write(` = ${renderVar}.return.${ATTR_UNAMED};\n`);
-        if (mutatedVars) {
-          for (const binding of mutatedVars) {
-            this.#extractor.write(
-              `const ${varLocal(`change__${binding.name}`)} = ${varShared("change")}(${
-                JSON.stringify(binding.name) +
-                (binding.sourceName && binding.sourceName !== binding.name
-                  ? `, ${JSON.stringify(binding.sourceName)}`
-                  : "")
-              }, ${renderVar}.return${binding.objectPath || ""});\n`,
-            );
-          }
-        }
-      } else if (isHTML) {
-        this.#extractor
-          .copy(tag.var.value)
-          .write(` = ${varShared("el")}(${JSON.stringify(def.name)});\n`);
+    if (mutatedVars) {
+      for (const binding of mutatedVars) {
+        this.#extractor.write(
+          `const ${varLocal(`change__${binding.name}`)} = ${varShared("change")}(${
+            JSON.stringify(binding.name) +
+            (binding.sourceName && binding.sourceName !== binding.name
+              ? `, ${JSON.stringify(binding.sourceName)}`
+              : "")
+          }, ${renderVar}.return${binding.objectPath || ""});\n`,
+        );
       }
     }
   }

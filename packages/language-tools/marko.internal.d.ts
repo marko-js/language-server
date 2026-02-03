@@ -24,6 +24,10 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
+      export function returned<T>(
+        rendered: () => T,
+      ): T extends { return: { value: infer Returned } } ? Returned : never;
+
       export function hoist<T>(
         value: () => T,
       ): T extends () => infer R ? T & Iterable<R> : never;

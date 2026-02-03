@@ -11,22 +11,22 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*const*/,
-  )()()({
-    value: $el,
-  });
   {
-    const $hoistedEl = __marko_internal_rendered_1.return.value;
-    Marko._.renderNativeTag("div")()()({
-      /*div*/
+    const $hoistedEl = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*const*/,
+    )()()({
+      value: $el,
     });
     {
       const $el = Marko._.el("div");
-      const __marko_internal_tag_2 = Marko._.resolveTemplate(
+      const __marko_internal_rendered_2 = Marko._.renderNativeTag("div")()()({
+        /*div*/
+      });
+      const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("marko/src/core-tags/core/script.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_2 /*script*/)()()(
+      Marko._.renderTemplate(__marko_internal_tag_3 /*script*/)()()(
         // ^?
         {
           async value() {
