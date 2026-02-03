@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.25
+
+### Patch Changes
+
+- [#452](https://github.com/marko-js/language-server/pull/452) [`14a5679`](https://github.com/marko-js/language-server/commit/14a5679365cff2918eb6828c567dcea562261e51) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Ensure render level errors map back to tag names.
+
+- Updated dependencies [[`14a5679`](https://github.com/marko-js/language-server/commit/14a5679365cff2918eb6828c567dcea562261e51)]:
+  - @marko/language-tools@2.5.51
+
 ## 2.1.24
 
 ### Patch Changes
