@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.27
+
+### Patch Changes
+
+- [#450](https://github.com/marko-js/language-server/pull/450) [`1a79f9b`](https://github.com/marko-js/language-server/commit/1a79f9b6b7d28bc1942ac6e4b5dd674615380f06) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix some syntax highlighting edge cases around tag name boundaries.
+
 ## 2.0.26
 
 ### Patch Changes
