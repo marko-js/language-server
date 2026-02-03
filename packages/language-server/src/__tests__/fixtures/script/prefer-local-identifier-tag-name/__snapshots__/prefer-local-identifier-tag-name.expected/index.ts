@@ -12,13 +12,13 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*const*/,
-  )()()({
-    value: CustomTagA,
-  });
   {
-    const TestTagA = __marko_internal_rendered_1.return.value;
+    const TestTagA = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*const*/,
+    )()()({
+      value: CustomTagA,
+    });
     const __marko_internal_tag_2 = Marko._.fallbackTemplate(
       TestTagA,
       import("./components/TestTagA.marko"),
@@ -38,13 +38,13 @@ export interface Input {}
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
-        const __marko_internal_rendered_4 = Marko._.renderTemplate(
-          __marko_internal_tag_4 /*const*/,
-        )()()({
-          value: CustomTagB,
-        });
         {
-          const TestTagA = __marko_internal_rendered_4.return.value;
+          const TestTagA = Marko._.returned(() => __marko_internal_rendered_4);
+          const __marko_internal_rendered_4 = Marko._.renderTemplate(
+            __marko_internal_tag_4 /*const*/,
+          )()()({
+            value: CustomTagB,
+          });
           const __marko_internal_tag_5 = Marko._.fallbackTemplate(
             TestTagA,
             import("./components/TestTagA.marko"),

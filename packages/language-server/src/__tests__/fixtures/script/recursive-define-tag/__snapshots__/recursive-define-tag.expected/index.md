@@ -17,7 +17,9 @@
   10 |         // ^?
   11 |   <for|{ children }| of=children>
 > 12 |     <Section children=children/>
-     |        ^ const Section: never
+     |        ^ const Section: {
+    content: ({ children }: Help) => MarkoReturn<void>;
+}
   13 |     // ^?
   14 |   </for>
   15 | </define>
@@ -34,18 +36,5 @@
   19 |   // ^?
   20 | </for>
   21 |
-```
-
-## Diagnostics
-### Ln 12, Col 6
-```marko
-  10 |         // ^?
-  11 |   <for|{ children }| of=children>
-> 12 |     <Section children=children/>
-     |      ^^^^^^^ This expression is not callable.
-  Type 'never' has no call signatures.
-  13 |     // ^?
-  14 |   </for>
-  15 | </define>
 ```
 

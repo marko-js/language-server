@@ -11,13 +11,13 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*let*/,
-  )()()({
-    value: 1,
-  });
   {
-    const x = __marko_internal_rendered_1.return.value;
+    const x = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*let*/,
+    )()()({
+      value: 1,
+    });
     const __marko_internal_change__x = Marko._.change(
       "x",
       "value",
@@ -42,13 +42,13 @@ export interface Input {}
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
-        const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3 /*let*/,
-        )()()({
-          value: "hello",
-        });
         {
-          const y = __marko_internal_rendered_3.return.value;
+          const y = Marko._.returned(() => __marko_internal_rendered_3);
+          const __marko_internal_rendered_3 = Marko._.renderTemplate(
+            __marko_internal_tag_3 /*let*/,
+          )()()({
+            value: "hello",
+          });
           const __marko_internal_change__y = Marko._.change(
             "y",
             "value",

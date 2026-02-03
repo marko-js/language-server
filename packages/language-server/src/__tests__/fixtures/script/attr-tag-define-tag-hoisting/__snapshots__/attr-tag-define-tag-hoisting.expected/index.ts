@@ -11,21 +11,21 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/define.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*define*/,
-  )()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: (input: {
-      section: Marko.AttrTag<{ content: Marko.Body }>;
-    }) => {
-      const __marko_internal_tag_2 = input.section;
-      Marko._.renderDynamicTag(__marko_internal_tag_2 /*input.section*/)()()({
-        /*input.section*/
-      });
-      return Marko._.voidReturn;
-    },
-  });
   {
-    const Foo = __marko_internal_rendered_1.return.value;
+    const Foo = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*define*/,
+    )()()({
+      [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: (input: {
+        section: Marko.AttrTag<{ content: Marko.Body }>;
+      }) => {
+        const __marko_internal_tag_2 = input.section;
+        Marko._.renderDynamicTag(__marko_internal_tag_2 /*input.section*/)()()({
+          /*input.section*/
+        });
+        return Marko._.voidReturn;
+      },
+    });
     const __marko_internal_tag_3 = Foo;
     Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
       input["@section"];
@@ -45,13 +45,15 @@ export interface Input {}
               const __marko_internal_tag_4 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/const.d.marko"),
               );
-              const __marko_internal_rendered_4 = Marko._.renderTemplate(
-                __marko_internal_tag_4 /*const*/,
-              )()()({
-                value: () => 1,
-              });
               {
-                const nested = __marko_internal_rendered_4.return.value;
+                const nested = Marko._.returned(
+                  () => __marko_internal_rendered_4,
+                );
+                const __marko_internal_rendered_4 = Marko._.renderTemplate(
+                  __marko_internal_tag_4 /*const*/,
+                )()()({
+                  value: () => 1,
+                });
                 return () => {
                   return new (class MarkoReturn<Return = void> {
                     [Marko._.scope] = { nested };

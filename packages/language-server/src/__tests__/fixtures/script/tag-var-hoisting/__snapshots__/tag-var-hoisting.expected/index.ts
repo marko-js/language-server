@@ -21,22 +21,6 @@ export interface Input {}
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2 /*let*/,
-      )()()({
-        value: {
-          a: 1,
-          b: "hello!",
-          c: undefined,
-          nested: {
-            d: 2,
-            dChange(v: number) {},
-          },
-          "some-alias": 3,
-          computed: 4,
-          other: true,
-        } as const,
-      });
       {
         const {
           a,
@@ -46,17 +30,35 @@ export interface Input {}
           "some-alias": e,
           ["computed"]: f,
           ...g
-        } = __marko_internal_rendered_2.return.value;
+        } = Marko._.returned(() => __marko_internal_rendered_2);
+        const __marko_internal_rendered_2 = Marko._.renderTemplate(
+          __marko_internal_tag_2 /*let*/,
+        )()()({
+          value: {
+            a: 1,
+            b: "hello!",
+            c: undefined,
+            nested: {
+              d: 2,
+              dChange(v: number) {},
+            },
+            "some-alias": 3,
+            computed: 4,
+            other: true,
+          } as const,
+        });
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
-        const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3 /*let*/,
-        )()()({
-          value: [1, 2, 3, 4, 5] as const,
-        });
         {
-          const [h, i, , ...j] = __marko_internal_rendered_3.return.value;
+          const [h, i, , ...j] = Marko._.returned(
+            () => __marko_internal_rendered_3,
+          );
+          const __marko_internal_rendered_3 = Marko._.renderTemplate(
+            __marko_internal_tag_3 /*let*/,
+          )()()({
+            value: [1, 2, 3, 4, 5] as const,
+          });
           () => {
             a;
             //^?

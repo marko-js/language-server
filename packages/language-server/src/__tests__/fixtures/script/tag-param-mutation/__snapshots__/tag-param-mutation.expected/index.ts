@@ -11,13 +11,13 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*let*/,
-  )()()({
-    value: "bar",
-  });
   {
-    const string = __marko_internal_rendered_1.return.value;
+    const string = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*let*/,
+    )()()({
+      value: "bar",
+    });
     const __marko_internal_change__string = Marko._.change(
       "string",
       "value",
@@ -52,13 +52,13 @@ export interface Input {}
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
-        const __marko_internal_rendered_4 = Marko._.renderTemplate(
-          __marko_internal_tag_4 /*let*/,
-        )()()({
-          value: "",
-        });
         {
-          const inputId = __marko_internal_rendered_4.return.value;
+          const inputId = Marko._.returned(() => __marko_internal_rendered_4);
+          const __marko_internal_rendered_4 = Marko._.renderTemplate(
+            __marko_internal_tag_4 /*let*/,
+          )()()({
+            value: "",
+          });
           Marko._.renderNativeTag("input")()()({
             id: inputId,
           });

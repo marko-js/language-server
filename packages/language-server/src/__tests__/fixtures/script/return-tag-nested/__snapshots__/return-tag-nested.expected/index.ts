@@ -73,13 +73,13 @@ export interface Input {}
       const __marko_internal_tag_6 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
-      const __marko_internal_rendered_6 = Marko._.renderTemplate(
-        __marko_internal_tag_6 /*let*/,
-      )()()({
-        value: () => 1 as const,
-      });
       {
-        const hoisted = __marko_internal_rendered_6.return.value;
+        const hoisted = Marko._.returned(() => __marko_internal_rendered_6);
+        const __marko_internal_rendered_6 = Marko._.renderTemplate(
+          __marko_internal_tag_6 /*let*/,
+        )()()({
+          value: () => 1 as const,
+        });
         var __marko_internal_return = Marko._.returnTag({
           value: "b" as const,
         });

@@ -15,32 +15,32 @@ export interface Input {
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/define.d.marko"),
   );
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*define*/,
-  )()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: ({
-      children = [],
-    }: Help) => {
-      Marko._.forOfTag(
-        {
-          /*for*/ of: children,
-        },
-        (
-          // ^?
-          { children },
-        ) => {
-          const __marko_internal_tag_2 = Section;
-          Marko._.renderDynamicTag(__marko_internal_tag_2 /*Section*/)()()({
-            children: children,
-          });
-          return Marko._.voidReturn;
-        },
-      );
-      return Marko._.voidReturn;
-    },
-  });
   {
-    const Section = __marko_internal_rendered_1.return.value;
+    const Section = Marko._.returned(() => __marko_internal_rendered_1);
+    const __marko_internal_rendered_1 = Marko._.renderTemplate(
+      __marko_internal_tag_1 /*define*/,
+    )()()({
+      [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: ({
+        children = [],
+      }: Help) => {
+        Marko._.forOfTag(
+          {
+            /*for*/ of: children,
+          },
+          (
+            // ^?
+            { children },
+          ) => {
+            const __marko_internal_tag_2 = Section;
+            Marko._.renderDynamicTag(__marko_internal_tag_2 /*Section*/)()()({
+              children: children,
+            });
+            return Marko._.voidReturn;
+          },
+        );
+        return Marko._.voidReturn;
+      },
+    });
     Marko._.forOfTag(
       {
         /*for*/ of: input.value,

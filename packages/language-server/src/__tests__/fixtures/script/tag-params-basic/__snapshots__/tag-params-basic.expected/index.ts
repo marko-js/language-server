@@ -31,16 +31,18 @@ export interface Input {}
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),
       );
-      const __marko_internal_rendered_3 = Marko._.renderTemplate(
-        __marko_internal_tag_3 /*const*/,
-      )()()(
-        //        ^?
-        {
-          value: () => a,
-        },
-      );
       {
-        const hoistedFromTestTag = __marko_internal_rendered_3.return.value;
+        const hoistedFromTestTag = Marko._.returned(
+          () => __marko_internal_rendered_3,
+        );
+        const __marko_internal_rendered_3 = Marko._.renderTemplate(
+          __marko_internal_tag_3 /*const*/,
+        )()()(
+          //        ^?
+          {
+            value: () => a,
+          },
+        );
         return new (class MarkoReturn<Return = void> {
           [Marko._.scope] = { hoistedFromTestTag };
           declare return: Return;

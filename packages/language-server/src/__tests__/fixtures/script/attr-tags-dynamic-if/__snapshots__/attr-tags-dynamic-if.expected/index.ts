@@ -201,14 +201,15 @@ export interface Input {}
             const __marko_internal_tag_10 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
-            const __marko_internal_rendered_10 = Marko._.renderTemplate(
-              __marko_internal_tag_10 /*const*/,
-            )()()({
-              value: () => 1 as const,
-            });
             {
-              const hoistedFromStaticMember =
-                __marko_internal_rendered_10.return.value;
+              const hoistedFromStaticMember = Marko._.returned(
+                () => __marko_internal_rendered_10,
+              );
+              const __marko_internal_rendered_10 = Marko._.renderTemplate(
+                __marko_internal_tag_10 /*const*/,
+              )()()({
+                value: () => 1 as const,
+              });
               return () => {
                 return new (class MarkoReturn<Return = void> {
                   [Marko._.scope] = { hoistedFromStaticMember };
@@ -232,14 +233,15 @@ export interface Input {}
                 const __marko_internal_tag_11 = Marko._.resolveTemplate(
                   import("@marko/runtime-tags/tags/const.d.marko"),
                 );
-                const __marko_internal_rendered_11 = Marko._.renderTemplate(
-                  __marko_internal_tag_11 /*const*/,
-                )()()({
-                  value: () => 2 as const,
-                });
                 {
-                  const hoistedFromDynamicMember =
-                    __marko_internal_rendered_11.return.value;
+                  const hoistedFromDynamicMember = Marko._.returned(
+                    () => __marko_internal_rendered_11,
+                  );
+                  const __marko_internal_rendered_11 = Marko._.renderTemplate(
+                    __marko_internal_tag_11 /*const*/,
+                  )()()({
+                    value: () => 2 as const,
+                  });
                   return () => {
                     return new (class MarkoReturn<Return = void> {
                       [Marko._.scope] = { hoistedFromDynamicMember };
