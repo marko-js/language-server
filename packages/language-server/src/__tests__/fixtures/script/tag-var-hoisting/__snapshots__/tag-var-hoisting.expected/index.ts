@@ -22,7 +22,7 @@ export interface Input {}
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
+        __marko_internal_tag_2 /*let*/,
       )()()({
         value: {
           a: 1,
@@ -51,7 +51,7 @@ export interface Input {}
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3,
+          __marko_internal_tag_3 /*let*/,
         )()()({
           value: [1, 2, 3, 4, 5] as const,
         });

@@ -13,7 +13,7 @@ export interface Input {}
     import("@marko/runtime-tags/tags/const.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*const*/,
   )()()({
     value: CustomTagA,
   });
@@ -23,14 +23,14 @@ export interface Input {}
       TestTagA,
       import("./components/TestTagA.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_2 /*TestTagA*/)()()({
       a: "hello",
     });
     const __marko_internal_tag_3 = Marko._.fallbackTemplate(
       TestTagB,
       import("./components/TestTagB.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_3 /*TestTagB*/)()()({
       b: "hello",
     });
     Marko._.renderNativeTag("div")()()({
@@ -39,7 +39,7 @@ export interface Input {}
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_4 = Marko._.renderTemplate(
-          __marko_internal_tag_4,
+          __marko_internal_tag_4 /*const*/,
         )()()({
           value: CustomTagB,
         });
@@ -49,7 +49,7 @@ export interface Input {}
             TestTagA,
             import("./components/TestTagA.marko"),
           );
-          Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
+          Marko._.renderDynamicTag(__marko_internal_tag_5 /*TestTagA*/)()()({
             a: "hello",
           });
           return () => {
@@ -62,7 +62,7 @@ export interface Input {}
       TestTagA,
       import("./components/TestTagA.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_6)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_6 /*TestTagA*/)()()({
       a: "hello",
     });
     var __marko_internal_hoist__TestTagA = TestTagA;

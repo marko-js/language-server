@@ -13,7 +13,7 @@ export interface Input {}
     input["@section"];
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*foo*/,
   )()()({
     ["section" /*@section*/]: Marko._.attrTagFor(
       __marko_internal_tag_1,
@@ -27,7 +27,7 @@ export interface Input {}
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
             const __marko_internal_rendered_2 = Marko._.renderTemplate(
-              __marko_internal_tag_2,
+              __marko_internal_tag_2 /*const*/,
             )()()({
               value: () => 1,
             });
@@ -60,7 +60,7 @@ export interface Input {}
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("marko/src/core-tags/core/script.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3 /*script*/)()()({
     async value() {
       nested;
       // ^?

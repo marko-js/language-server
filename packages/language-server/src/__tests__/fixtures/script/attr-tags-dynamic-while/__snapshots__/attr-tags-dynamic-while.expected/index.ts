@@ -16,7 +16,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*custom*/)()()({
     ...(++i < 10
       ? {
           //         ^?
@@ -39,7 +39,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
     ...(!done
       ? {
           //        ^?
@@ -63,7 +63,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_3 /*custom*/)()()({
     ...(undefined
       ? {
           ["a" /*@a*/]: {

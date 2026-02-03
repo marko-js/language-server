@@ -17,7 +17,7 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*test-tag*/)()()({
     ["items" /*@item*/]: {
       x: 1,
       [/*@item*/ Symbol.iterator]: Marko._.any,
@@ -30,7 +30,7 @@ export { type Component };
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2 /*test-tag*/)()()({
     ["items" /*@item*/]: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
       "items",
       {

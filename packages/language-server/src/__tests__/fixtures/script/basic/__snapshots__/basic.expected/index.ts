@@ -15,7 +15,7 @@ export interface Input<T extends string> {
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
+        __marko_internal_tag_2 /*let*/,
       )()()({
         value: () => 1,
       });

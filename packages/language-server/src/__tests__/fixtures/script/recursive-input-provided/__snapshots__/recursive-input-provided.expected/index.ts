@@ -15,7 +15,7 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/comments.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*comments*/)()()({
     comments: [] as Comment[],
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

@@ -20,7 +20,7 @@ export interface Input {}
     });
   });
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*comments*/,
   )()()({
     ["comment" /*@comment*/]: Marko._.attrTagFor(
       __marko_internal_tag_1,
@@ -37,7 +37,7 @@ export interface Input {}
                 import("@marko/runtime-tags/tags/let.d.marko"),
               );
               const __marko_internal_rendered_2 = Marko._.renderTemplate(
-                __marko_internal_tag_2,
+                __marko_internal_tag_2 /*let*/,
               )()()(
                 //    ^?
                 {
@@ -62,7 +62,7 @@ export interface Input {}
               import("@marko/runtime-tags/tags/let.d.marko"),
             );
             const __marko_internal_rendered_3 = Marko._.renderTemplate(
-              __marko_internal_tag_3,
+              __marko_internal_tag_3 /*let*/,
             )()()({
               value: () => "a" as const,
             });
@@ -88,7 +88,7 @@ export interface Input {}
               import("@marko/runtime-tags/tags/let.d.marko"),
             );
             const __marko_internal_rendered_4 = Marko._.renderTemplate(
-              __marko_internal_tag_4,
+              __marko_internal_tag_4 /*let*/,
             )()()({
               value: () => "c" as const,
             });
@@ -111,7 +111,7 @@ export interface Input {}
   const __marko_internal_tag_5 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_5)()()({
+  Marko._.renderTemplate(__marko_internal_tag_5 /*effect*/)()()({
     value() {
       a;
       //^?

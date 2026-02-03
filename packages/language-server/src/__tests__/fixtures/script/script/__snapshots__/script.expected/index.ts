@@ -17,7 +17,7 @@ export interface Input<T extends string> {
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_tag_2,
+        __marko_internal_tag_2 /*let*/,
       )()()({
         value: 1,
       });
@@ -32,7 +32,7 @@ export interface Input<T extends string> {
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3,
+          __marko_internal_tag_3 /*const*/,
         )()()({
           value: "hi",
         });
@@ -47,7 +47,7 @@ export interface Input<T extends string> {
             import("@marko/runtime-tags/tags/const.d.marko"),
           );
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4,
+            __marko_internal_tag_4 /*const*/,
           )()()({
             value: Promise.resolve("world"),
           });
@@ -56,7 +56,7 @@ export interface Input<T extends string> {
             const __marko_internal_tag_5 = Marko._.resolveTemplate(
               import("marko/src/core-tags/core/script.d.marko"),
             );
-            Marko._.renderTemplate(__marko_internal_tag_5)()()({
+            Marko._.renderTemplate(__marko_internal_tag_5 /*script*/)()()({
               async value() {
                 console.log(x);
                 //              ^?

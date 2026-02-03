@@ -14,11 +14,21 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()("a", "b");
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*input.renderBody*/)()()(
+    "a",
+    "b",
+  );
   const __marko_internal_tag_2 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()("a", "c");
+  Marko._.renderDynamicTag(__marko_internal_tag_2 /*input.renderBody*/)()()(
+    "a",
+    "c",
+  );
   const __marko_internal_tag_3 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()("a", "b", "c");
+  Marko._.renderDynamicTag(__marko_internal_tag_3 /*input.renderBody*/)()()(
+    "a",
+    "b",
+    "c",
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

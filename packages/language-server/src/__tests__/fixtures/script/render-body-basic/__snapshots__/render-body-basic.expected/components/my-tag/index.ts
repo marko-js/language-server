@@ -14,7 +14,9 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = input.renderBody;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()("hi");
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*input.renderBody*/)()()(
+    "hi",
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

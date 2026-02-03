@@ -16,7 +16,7 @@ export interface Input {}
     input["@a"];
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*custom*/,
   )()()({
     ["b" /*@b*/]: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
       "b",
@@ -40,7 +40,7 @@ export interface Input {}
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
+          __marko_internal_tag_2 /*const*/,
         )()()({
           value: () => 1 as const,
         });
@@ -62,7 +62,7 @@ export interface Input {}
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3 /*effect*/)()()({
     value() {
       hoistedFromStaticMember;
       //^?

@@ -13,7 +13,7 @@ export interface Input {}
     import("@marko/runtime-tags/tags/let.d.marko"),
   );
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_tag_1 /*let*/,
   )()()({
     value: false,
   });
@@ -24,7 +24,7 @@ export interface Input {}
       input["@header"];
       input["@footer"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
       ...Marko._.mergeAttrTags(
         {
           ["header" /*@header*/]: {

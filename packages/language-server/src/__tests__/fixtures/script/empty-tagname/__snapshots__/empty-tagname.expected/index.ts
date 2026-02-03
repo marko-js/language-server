@@ -15,7 +15,7 @@ export interface Input {}
     const __marko_internal_tag_1 = Marko._.resolveTemplate(
       import("marko/src/core-tags/core/script.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_1)()()(
+    Marko._.renderTemplate(__marko_internal_tag_1 /*script*/)()()(
       //      ^?
       {
         async value() {

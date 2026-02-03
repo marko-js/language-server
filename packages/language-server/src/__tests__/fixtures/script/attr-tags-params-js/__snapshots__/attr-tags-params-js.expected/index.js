@@ -25,7 +25,7 @@ export class Component extends Marko.Component {}
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*child*/)()()({
     ["foo" /*@foo*/]: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
       "foo",
       {
@@ -50,7 +50,7 @@ export class Component extends Marko.Component {}
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_2 /*Child*/)()()(
     //^?
     {
       ["foo" /*@foo*/]: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
@@ -78,7 +78,7 @@ export class Component extends Marko.Component {}
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_3 /*true && Child*/)()()(
     //^?
     // This errors for now, because `typeof (some + expression)` is not allowed
     {

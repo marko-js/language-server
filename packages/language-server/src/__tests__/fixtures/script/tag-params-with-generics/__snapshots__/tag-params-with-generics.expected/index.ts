@@ -14,7 +14,7 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*loader*/)()()({
     value() {
       //      ^?    ^?
       return 1;
@@ -26,7 +26,7 @@ export { type Component };
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2 /*loader*/)()()({
     value() {
       //      ^?    ^?
       return "hi" as const;
@@ -38,7 +38,7 @@ export { type Component };
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3 /*loader*/)()()({
     [Marko._.contentFor(__marko_internal_tag_3) /*loader*/]: (data) => {
       return Marko._.voidReturn;
     },

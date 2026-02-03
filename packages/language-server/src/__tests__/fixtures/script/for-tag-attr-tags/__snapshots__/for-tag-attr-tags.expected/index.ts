@@ -21,7 +21,7 @@ export { type Component };
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*my-table*/)()()({
     ...Marko._.forOfAttrTag(
       {
         /*for*/ of: [
@@ -77,7 +77,7 @@ export { type Component };
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2 /*my-table*/)()()({
     ...Marko._.forOfAttrTag(
       {
         /*for*/ of: [

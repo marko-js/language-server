@@ -19,7 +19,7 @@ export { type Component };
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1 /*list*/)()()({
     ...Marko._.mergeAttrTags(
       Marko._.forOfAttrTag(
         {

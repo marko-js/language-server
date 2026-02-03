@@ -18,7 +18,7 @@ export interface Input {}
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1 /*custom*/)()()({
     x: 1,
     ...(x
       ? {
@@ -33,7 +33,7 @@ export interface Input {}
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
     x: 1,
     ...(x
       ? {}
@@ -49,7 +49,7 @@ export interface Input {}
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_3 /*custom*/)()()({
     x: 1,
     ...(x
       ? {
@@ -72,7 +72,7 @@ export interface Input {}
     input["@c"];
     input["@d"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_4 /*custom*/)()()({
     x: 1,
     ...(x
       ? {
@@ -107,7 +107,7 @@ export interface Input {}
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_5 /*custom*/)()()({
     x: 1,
     ...(x
       ? {
@@ -129,7 +129,7 @@ export interface Input {}
   Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_6)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_6 /*custom*/)()()({
     x: 1,
     ...(x
       ? {
@@ -144,7 +144,7 @@ export interface Input {}
   Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_7)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_7 /*custom*/)()()({
     x: 1,
     ...(undefined
       ? {
@@ -160,7 +160,7 @@ export interface Input {}
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_8)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_8 /*custom*/)()()({
     x: 1,
     ...Marko._.mergeAttrTags(
       x
@@ -189,7 +189,7 @@ export interface Input {}
     input["@b"];
   });
   const __marko_internal_rendered_9 = Marko._.renderDynamicTag(
-    __marko_internal_tag_9,
+    __marko_internal_tag_9 /*custom*/,
   )()()({
     x: 1,
     ...Marko._.mergeAttrTags(
@@ -202,7 +202,7 @@ export interface Input {}
               import("@marko/runtime-tags/tags/const.d.marko"),
             );
             const __marko_internal_rendered_10 = Marko._.renderTemplate(
-              __marko_internal_tag_10,
+              __marko_internal_tag_10 /*const*/,
             )()()({
               value: () => 1 as const,
             });
@@ -233,7 +233,7 @@ export interface Input {}
                   import("@marko/runtime-tags/tags/const.d.marko"),
                 );
                 const __marko_internal_rendered_11 = Marko._.renderTemplate(
-                  __marko_internal_tag_11,
+                  __marko_internal_tag_11 /*const*/,
                 )()()({
                   value: () => 2 as const,
                 });
@@ -266,7 +266,7 @@ export interface Input {}
   const __marko_internal_tag_12 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_12)()()({
+  Marko._.renderTemplate(__marko_internal_tag_12 /*effect*/)()()({
     value() {
       hoistedFromStaticMember;
       //^?
