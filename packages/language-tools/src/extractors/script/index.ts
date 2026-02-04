@@ -783,7 +783,9 @@ constructor(_?: Return) {}
         }
       }
 
-      this.#extractor.write(`const ${renderVar} = `);
+      if (needsHoist || !isHTML) {
+        this.#extractor.write(`const ${renderVar} = `);
+      }
     }
 
     if (isHTML) {

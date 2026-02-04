@@ -17,9 +17,7 @@ export interface Input {}
         [Marko._.content /*div*/]: (() => {
           {
             const searchInput = Marko._.el("input");
-            const __marko_internal_rendered_3 = Marko._.renderNativeTag(
-              "input",
-            )()()({
+            Marko._.renderNativeTag("input")()()({
               type: "search",
             });
             return () => {
