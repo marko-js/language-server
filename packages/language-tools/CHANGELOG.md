@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.53
+
+### Patch Changes
+
+- [#456](https://github.com/marko-js/language-server/pull/456) [`0750620`](https://github.com/marko-js/language-server/commit/0750620d26299d6e765aea3bb9d2838d3c2a6bda) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix issue with outputting unnecessary const for native tag codegen.
+
 ## 2.5.52
 
 ### Patch Changes
