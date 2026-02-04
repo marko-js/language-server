@@ -9,7 +9,7 @@ export interface Input {}
   const $el = Marko._.hoist(() => __marko_internal_hoist__$el);
   {
     const $el = Marko._.el("div");
-    const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")()()({
       class: Marko._.interpolated`hello`,
     });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(

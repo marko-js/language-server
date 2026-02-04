@@ -28,9 +28,7 @@ export interface Input {}
         x;
         {
           const el = Marko._.el("button");
-          const __marko_internal_rendered_3 = Marko._.renderNativeTag(
-            "button",
-          )()()({
+          Marko._.renderNativeTag("button")()()({
             onClick() {
               __marko_internal_change__x.x = 2;
               __marko_internal_change__x.x++;
