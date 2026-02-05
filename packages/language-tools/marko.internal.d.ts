@@ -402,7 +402,7 @@ declare global {
         ...path: Path
       ): <
         Name extends string,
-        AttrTags extends readonly ([0] extends [1 & Tag]
+        const AttrTags extends readonly ([0] extends [1 & Tag]
           ? Record<Name, Marko.AttrTag<unknown>>
           : Record<
               Name,
