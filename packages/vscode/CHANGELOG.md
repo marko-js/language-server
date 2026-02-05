@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.31
+
+### Patch Changes
+
+- [#458](https://github.com/marko-js/language-server/pull/458) [`c5d7722`](https://github.com/marko-js/language-server/commit/c5d77221bd4b2bd7de40b3fa6bf358e134f45642) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Type narrowing fix for attribute tags
+
 ## 2.0.30
 
 ### Patch Changes

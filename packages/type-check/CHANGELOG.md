@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 2.1.26
+
+### Patch Changes
+
+- [#458](https://github.com/marko-js/language-server/pull/458) [`c5d7722`](https://github.com/marko-js/language-server/commit/c5d77221bd4b2bd7de40b3fa6bf358e134f45642) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Type narrowing fix for attribute tags
+
+- Updated dependencies [[`c5d7722`](https://github.com/marko-js/language-server/commit/c5d77221bd4b2bd7de40b3fa6bf358e134f45642)]:
+  - @marko/language-tools@2.5.54
+
 ## 2.1.25
 
 ### Patch Changes
