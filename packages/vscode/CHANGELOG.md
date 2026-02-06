@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.33
+
+### Patch Changes
+
+- [#462](https://github.com/marko-js/language-server/pull/462) [`957bef1`](https://github.com/marko-js/language-server/commit/957bef1429cf710cc857dcd3b573285f5480bee2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Optimize prettier build
+
 ## 2.0.32
 
 ### Patch Changes
