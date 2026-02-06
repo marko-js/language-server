@@ -112,6 +112,22 @@ await Promise.all([
           );
         },
       },
+      {
+        name: "prettier-optimize",
+        setup(build) {
+          build.onLoad(
+            { filter: /\/prettier\/plugins\/.*$/ },
+            async (args) => {
+              if (!/\/(babel|estree|postcss|typescript)\.m?js$/.test(args.path)) {
+                return {
+                  contents: "",
+                  loader: "js"
+                }
+              }
+            }
+          );
+        },
+      },
     ],
   }).then(async (result) => {
     if (isProd) {
