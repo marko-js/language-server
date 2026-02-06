@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.32
+
+### Patch Changes
+
+- [#460](https://github.com/marko-js/language-server/pull/460) [`0072196`](https://github.com/marko-js/language-server/commit/0072196d58e1fc414212c9f719547d039adc1fae) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade marko, remove babel references.
+
 ## 2.0.31
 
 ### Patch Changes
