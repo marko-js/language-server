@@ -1,7 +1,7 @@
 // TODO:
 // * Add a `--watch` option?
 
-import { codeFrameColumns } from "@babel/code-frame";
+import { codeFrameColumns } from "@marko/compiler/internal/babel";
 import {
   getExt,
   isDefinitionFile,

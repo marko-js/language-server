@@ -3,21 +3,16 @@
   "description": "Marko Language Tools",
   "version": "2.5.54",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
-  "peerDependencies": {
-    "@marko/compiler": "^5.28.4"
-  },
   "dependencies": {
-    "@babel/parser": "^7.28.6",
+    "@marko/compiler": "^5.39.53",
     "@luxass/strip-json-comments": "^1.4.0",
     "htmljs-parser": "^5.7.4",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.28.6",
-    "@marko/compiler": "^5.39.49",
     "@types/babel__code-frame": "^7.27.0",
     "@typescript/vfs": "^1.6.2",
-    "marko": "^5.38.18",
+    "marko": "^5.38.21",
     "mitata": "^1.0.34",
     "tsx": "^4.21.0"
   },
