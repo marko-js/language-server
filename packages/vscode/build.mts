@@ -62,7 +62,7 @@ await Promise.all([
       "fast-glob",
       "tsx",
       "canvas",
-      "@babel/preset-typescript",
+      "browserslist"
     ],
     define: {
       "import.meta.url": "_importMetaUrl"

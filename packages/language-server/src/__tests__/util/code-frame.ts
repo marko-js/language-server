@@ -1,4 +1,4 @@
-import { codeFrameColumns } from "@babel/code-frame";
+import { codeFrameColumns } from "@marko/compiler/internal/babel";
 import type { Location, Position } from "htmljs-parser";
 
 export function codeFrame(code: string, message: string, loc: Location) {

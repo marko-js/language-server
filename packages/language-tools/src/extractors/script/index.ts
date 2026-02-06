@@ -1,4 +1,4 @@
-import type * as t from "@babel/types";
+import type { types as t } from "@marko/compiler";
 import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
 import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";

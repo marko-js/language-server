@@ -1,4 +1,4 @@
-import * as t from "@babel/types";
+import { types as t } from "@marko/compiler";
 
 import {
   type Node,
@@ -71,6 +71,7 @@ export interface Mutation {
 
 type Bindings = { [name: string]: Binding };
 
+const VISITOR_KEYS = (t as any).VISITOR_KEYS;
 const ATTR_UNAMED = "value";
 const Scopes = new WeakMap<NonNullable<Node.ParentNode["body"]>, Scope>();
 const BoundAttrValueRange = new WeakMap<
@@ -726,7 +727,7 @@ function trackMutations(
       break;
   }
 
-  for (const key of t.VISITOR_KEYS[node.type]) {
+  for (const key of VISITOR_KEYS[node.type]) {
     const child = (node as any)[key] as void | null | t.Node | t.Node[];
 
     if (Array.isArray(child)) {
@@ -785,7 +786,7 @@ function traverse(
 ): void {
   if (!node) return;
   if (enter(node)) return;
-  for (const key of t.VISITOR_KEYS[node.type]) {
+  for (const key of VISITOR_KEYS[node.type]) {
     const child = (node as any)[key] as void | null | t.Node | t.Node[];
 
     if (Array.isArray(child)) {

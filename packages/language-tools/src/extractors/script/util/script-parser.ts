@@ -1,17 +1,12 @@
+import type { types as t } from "@marko/compiler";
 import {
   parse as parseStatement,
   parseExpression,
-  ParserOptions,
-} from "@babel/parser";
-import type * as t from "@babel/types";
+} from "@marko/compiler/internal/babel";
 
 import type { Parsed } from "../../../parser";
 
-const plugins: ParserOptions["plugins"] = [
-  "exportDefaultFrom",
-  "importAssertions",
-  "typescript",
-];
+const plugins: any[] = ["exportDefaultFrom", "importAssertions", "typescript"];
 
 export class ScriptParser {
   #parsed: Parsed;
