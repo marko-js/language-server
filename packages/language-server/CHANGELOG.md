@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.29
+
+### Patch Changes
+
+- [#465](https://github.com/marko-js/language-server/pull/465) [`d3aa173`](https://github.com/marko-js/language-server/commit/d3aa1733f4fa4263efc822efc1d0b611041893da) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Bound values with types
+
+- Updated dependencies [[`d3aa173`](https://github.com/marko-js/language-server/commit/d3aa1733f4fa4263efc822efc1d0b611041893da)]:
+  - @marko/language-tools@2.5.56
+
 ## 2.1.28
 
 ### Patch Changes
