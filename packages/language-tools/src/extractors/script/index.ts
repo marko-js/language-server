@@ -954,6 +954,7 @@ constructor(_?: Return) {}
                       const valueLiteral = this.#read(boundRange.value);
                       this.#extractor
                         .copy(boundRange.value)
+                        .write(" ")
                         .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
