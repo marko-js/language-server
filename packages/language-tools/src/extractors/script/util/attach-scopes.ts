@@ -72,7 +72,7 @@ export interface Mutation {
 type Bindings = { [name: string]: Binding };
 
 const VISITOR_KEYS = (t as any).VISITOR_KEYS;
-const ATTR_UNAMED = "value";
+const ATTR_UNNAMED = "value";
 const Scopes = new WeakMap<NonNullable<Node.ParentNode["body"]>, Scope>();
 const BoundAttrValueRange = new WeakMap<
   Node.AttrValue,
@@ -185,7 +185,7 @@ export function crawlProgramScope(parsed: Parsed, scriptParser: ScriptParser) {
                 parsed,
                 lVal,
                 "",
-                ATTR_UNAMED,
+                ATTR_UNNAMED,
               )) {
                 const { name, objectPath, sourceName } = id;
                 const binding: VarBinding = (parentScope.bindings[name] = {

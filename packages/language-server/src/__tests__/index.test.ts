@@ -7,7 +7,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 // import { bench, run } from "mitata";
 import { URI } from "vscode-uri";
 
-import MarkoLangaugeService, { documents } from "../service";
+import MarkoLanguageService, { documents } from "../service";
 import { codeFrame } from "./util/code-frame";
 
 Project.setDefaultTypePaths({
@@ -44,7 +44,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
         let results = "";
 
         for (const position of getHovers(doc)) {
-          const hoverInfo = await MarkoLangaugeService.doHover(
+          const hoverInfo = await MarkoLanguageService.doHover(
             doc,
             {
               position,
@@ -86,7 +86,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
               language: string;
               content: string;
             }
-          | undefined = await MarkoLangaugeService.commands[
+          | undefined = await MarkoLanguageService.commands[
           "$/showScriptOutput"
         ](doc.uri);
         if (scriptOutput) {
@@ -107,7 +107,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
               language: string;
               content: string;
             }
-          | undefined = await MarkoLangaugeService.commands["$/showHtmlOutput"](
+          | undefined = await MarkoLanguageService.commands["$/showHtmlOutput"](
           doc.uri,
         );
         if (htmlOutput) {
@@ -120,7 +120,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           });
         }
 
-        const errors = await MarkoLangaugeService.doValidate(doc);
+        const errors = await MarkoLanguageService.doValidate(doc);
 
         if (errors && errors.length) {
           results += "## Diagnostics\n";

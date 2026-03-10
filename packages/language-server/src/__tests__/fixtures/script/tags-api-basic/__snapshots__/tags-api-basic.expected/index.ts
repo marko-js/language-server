@@ -50,7 +50,7 @@ function __marko_internal_template(this: void) {
         });
         if (isSmartOnly) {
           Marko._.renderNativeTag("span")()()({
-            class: "subnote",
+            class: "sub-note",
             [Marko._.content /*span*/]: (() => {
               isSmartOnly;
               return () => {
@@ -60,7 +60,7 @@ function __marko_internal_template(this: void) {
           });
         }
         Marko._.renderNativeTag("span")()()({
-          class: "subnote",
+          class: "sub-note",
           [Marko._.content /*span*/]: (() => {
             type;
             return () => {
