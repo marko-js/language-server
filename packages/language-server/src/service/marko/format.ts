@@ -1,11 +1,10 @@
-import { Project } from "@marko/language-tools";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
 import { CancellationToken, TextEdit } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { START_POSITION } from "../../utils/constants";
-import { getFSDir, getFSPath } from "../../utils/file";
+import { getFSPath } from "../../utils/file";
 import { displayError } from "../../utils/messages";
 import type { Plugin } from "../types";
 
@@ -21,7 +20,6 @@ export async function formatDocument(
   cancel?: CancellationToken,
 ) {
   try {
-    const dir = getFSDir(doc);
     const filepath = getFSPath(doc);
     const text = doc.getText();
     const options: prettier.Options = {
@@ -39,8 +37,6 @@ export async function formatDocument(
             .catch(() => null)
         : null),
     };
-
-    markoPrettier.setCompiler(Project.getCompiler(dir), Project.getConfig(dir));
 
     if (cancel?.isCancellationRequested) return;
 
