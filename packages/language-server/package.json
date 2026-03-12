@@ -1,14 +1,14 @@
 {
   "name": "@marko/language-server",
   "description": "Marko Language Server",
-  "version": "2.1.29",
+  "version": "2.1.30",
   "bin": {
     "marko-language-server": "./bin.js"
   },
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/language-tools": "^2.5.56",
+    "@marko/language-tools": "^2.5.57",
     "@marko/compiler": "^5.39.61",
     "htmljs-parser": "^5.10.2",
     "marko": "^5.38.31",

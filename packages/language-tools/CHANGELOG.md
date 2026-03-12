@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.57
+
+### Patch Changes
+
+- [#468](https://github.com/marko-js/language-server/pull/468) [`2572019`](https://github.com/marko-js/language-server/commit/2572019c8a89c606a4504cd5a43dbdf02fe6995a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support bound attribute modifier syntax.
+
 ## 2.5.56
 
 ### Patch Changes
