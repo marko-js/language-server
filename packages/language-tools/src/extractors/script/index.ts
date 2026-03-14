@@ -916,17 +916,17 @@ constructor(_?: Return) {}
           case NodeType.AttrNamed: {
             const isDefault = isEmptyRange(attr.name);
             const value = attr.value;
-            const modifierIndex =
-              !isDefault &&
-              (!value || value.type === NodeType.AttrValue) &&
-              this.#getNamedAttrModifierIndex(attr);
+            const modifier =
+              !value || value.type === NodeType.AttrValue
+                ? this.#getNamedAttrModifier(attr)
+                : undefined;
             // This is printed before the object key so that we can use the
             // position of the default attribute even though there is no actual name in the source.
             const defaultMapPosition = isDefault ? attr.name : undefined;
             let name: string | Range = isDefault ? ATTR_UNNAMED : attr.name;
 
-            if (modifierIndex !== false) {
-              name = { start: attr.name.start, end: modifierIndex };
+            if (modifier) {
+              name = { start: attr.name.start, end: modifier.start - 1 };
             }
 
             if (value) {
@@ -960,14 +960,16 @@ constructor(_?: Return) {}
                         .copy(defaultMapPosition)
                         .copy(name)
                         .write(
-                          `Change"(\n// @ts-ignore\n_${valueLiteral}) {\n${
+                          `Change"(\n// @ts-ignore\n_${valueLiteral}\n) {\n${
                             isMutatedVar(tag.parent, valueLiteral)
                               ? varLocal(`change__${valueLiteral}.`)
                               : ""
                           }`,
                         )
                         .copy(boundRange.value)
-                        .write(`= _${valueLiteral};\n}`);
+                        .write("= ")
+                        .copy(modifier)
+                        .write(`(_${valueLiteral});\n}`);
                     } else if (boundRange.member.computed) {
                       // we ensure the string "Change" is appended to the end of the expression.
                       this.#extractor
@@ -985,11 +987,29 @@ constructor(_?: Return) {}
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
-                        .write('Change": (\n')
-                        .copy(boundRange.value)
-                        .write("[`${\n")
-                        .copy(boundRange.member)
-                        .write("\n}Change`])");
+                        .write('Change": (\n');
+
+                      if (modifier) {
+                        this.#extractor
+                          .copy(boundRange.value)
+                          .write("[`${\n")
+                          .copy(boundRange.member)
+                          .write("\n}Change`] && ((\n// @ts-ignore\n_\n)=>{\n")
+                          .copy(boundRange.value)
+                          .write("[`${\n")
+                          .copy(boundRange.member)
+                          .write("\n}Change`](")
+                          .copy(modifier)
+                          .write("(_));\n})");
+                      } else {
+                        this.#extractor
+                          .copy(boundRange.value)
+                          .write("[`${\n")
+                          .copy(boundRange.member)
+                          .write("\n}Change`]");
+                      }
+
+                      this.#extractor.write(")");
                     } else {
                       const memberRange = {
                         start: boundRange.value.start,
@@ -1002,9 +1022,21 @@ constructor(_?: Return) {}
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
                         .copy(defaultMapPosition)
                         .copy(name)
-                        .write('Change": (\n')
-                        .copy(memberRange)
-                        .write("Change)");
+                        .write('Change": (\n');
+
+                      if (modifier) {
+                        this.#extractor
+                          .copy(memberRange)
+                          .write("Change && ((\n// @ts-ignore\n_\n)=>{\n")
+                          .copy(memberRange)
+                          .write("Change(")
+                          .copy(modifier)
+                          .write("(_));\n})");
+                      } else {
+                        this.#extractor.copy(memberRange).write("Change");
+                      }
+
+                      this.#extractor.write(")");
                     }
                   } else {
                     this.#copyWithMutationsReplaced(value.value);
@@ -1076,7 +1108,7 @@ constructor(_?: Return) {}
                 .write('"')
                 .copy(defaultMapPosition)
                 .copy(name)
-                .write(`": ${modifierIndex === false ? "true" : '""'}`);
+                .write(`": ${modifier ? '""' : "true"}`);
             }
             break;
           }
@@ -1840,14 +1872,12 @@ constructor(_?: Return) {}
     }
   }
 
-  #getNamedAttrModifierIndex(attr: Node.AttrNamed) {
-    const start = attr.name.start + 1;
-    const end = attr.name.end - 1;
-    for (let i = end; i-- > start; ) {
-      if (this.#code.charAt(i) === ":") return i;
+  #getNamedAttrModifier(attr: Node.AttrNamed) {
+    const start = attr.name.start;
+    const end = attr.name.end;
+    for (let i = end - 1; i-- > start; ) {
+      if (this.#code.charAt(i) === ":") return { start: i + 1, end };
     }
-
-    return false;
   }
 
   #getAttrTagName(tag: Node.AttrTag) {

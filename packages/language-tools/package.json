@@ -1,18 +1,18 @@
 {
   "name": "@marko/language-tools",
   "description": "Marko Language Tools",
-  "version": "2.5.56",
+  "version": "2.5.57",
   "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
   "dependencies": {
-    "@marko/compiler": "^5.39.53",
+    "@marko/compiler": "^5.39.61",
     "@luxass/strip-json-comments": "^1.4.0",
-    "htmljs-parser": "^5.7.4",
+    "htmljs-parser": "^5.10.2",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
-    "@typescript/vfs": "^1.6.2",
-    "marko": "^5.38.21",
+    "@typescript/vfs": "^1.6.4",
+    "marko": "^5.38.31",
     "mitata": "^1.0.34",
     "tsx": "^4.21.0"
   },

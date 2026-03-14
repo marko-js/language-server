@@ -20,7 +20,7 @@ describe("hover", () => {
 
 Syntax: &lt;color&gt;
 
-[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/color)`,
+[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/color)`,
     );
   });
 });
