@@ -1,7 +1,7 @@
 ## Hovers
 ### Ln 31, Col 29
 ```marko
-  29 |     <span class="subnote">phoneType: ${type}</span>
+  29 |     <span class="sub-note">phoneType: ${type}</span>
   30 |
 > 31 |     <for|mobile, i, all| of=mobileList>
      |                             ^ const mobileList: Mobile[]

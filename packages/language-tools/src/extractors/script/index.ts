@@ -37,7 +37,7 @@ const SEP_COMMA_SPACE = ", ";
 const SEP_COMMA_NEW_LINE = ",\n";
 const VAR_LOCAL_PREFIX = "__marko_internal_";
 const VAR_SHARED_PREFIX = `Marko._.`;
-const ATTR_UNAMED = "value";
+const ATTR_UNNAMED = "value";
 const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
@@ -567,7 +567,7 @@ constructor(_?: Return) {}
                 .write("if (")
                 .copy(
                   this.#getRangeWithoutTrailingComma(child.args?.value) ||
-                    this.#getAttrValue(child, ATTR_UNAMED) ||
+                    this.#getAttrValue(child, ATTR_UNNAMED) ||
                     "undefined",
                 )
                 .write(") {\n");
@@ -923,7 +923,7 @@ constructor(_?: Return) {}
             // This is printed before the object key so that we can use the
             // position of the default attribute even though there is no actual name in the source.
             const defaultMapPosition = isDefault ? attr.name : undefined;
-            let name: string | Range = isDefault ? ATTR_UNAMED : attr.name;
+            let name: string | Range = isDefault ? ATTR_UNNAMED : attr.name;
 
             if (modifier) {
               name = { start: attr.name.start, end: modifier.start - 1 };
@@ -1068,10 +1068,10 @@ constructor(_?: Return) {}
                   );
 
                   if (isValidProperty) {
-                    const propertNameStart = stringLiteralStart + 1;
+                    const propertyNameStart = stringLiteralStart + 1;
                     this.#extractor.write("component.").copy({
-                      start: propertNameStart,
-                      end: propertNameStart + stringLiteralValue.length,
+                      start: propertyNameStart,
+                      end: propertyNameStart + stringLiteralValue.length,
                     });
                   } else {
                     this.#extractor
@@ -1232,7 +1232,7 @@ constructor(_?: Return) {}
             .write("((\n")
             .copy(
               this.#getRangeWithoutTrailingComma(tag.args?.value) ||
-                this.#getAttrValue(tag, ATTR_UNAMED) ||
+                this.#getAttrValue(tag, ATTR_UNNAMED) ||
                 "undefined",
             )
             .write("\n) ? ");
@@ -1570,7 +1570,7 @@ constructor(_?: Return) {}
                           condition:
                             this.#getRangeWithoutTrailingComma(
                               nextChild.args?.value,
-                            ) || this.#getAttrValue(nextChild, ATTR_UNAMED),
+                            ) || this.#getAttrValue(nextChild, ATTR_UNNAMED),
                           node: nextChild as IfTagAlternate["node"],
                         };
 
@@ -1687,7 +1687,7 @@ constructor(_?: Return) {}
       for (const attr of tag.attrs) {
         if (
           isValueAttribute(attr) &&
-          (this.#read(attr.name) || ATTR_UNAMED) === name
+          (this.#read(attr.name) || ATTR_UNNAMED) === name
         ) {
           return attr.value.value;
         }

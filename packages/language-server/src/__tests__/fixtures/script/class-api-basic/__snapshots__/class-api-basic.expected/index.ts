@@ -67,7 +67,7 @@ export { type Component };
       });
       if (isSmartOnly) {
         Marko._.renderNativeTag("span")()()({
-          class: "subnote",
+          class: "sub-note",
           [Marko._.content /*span*/]: (() => {
             isSmartOnly;
             return () => {
@@ -77,7 +77,7 @@ export { type Component };
         });
       }
       Marko._.renderNativeTag("span")()()({
-        class: "subnote",
+        class: "sub-note",
         [Marko._.content /*span*/]: (() => {
           type;
           return () => {

@@ -168,7 +168,7 @@ export default {
             isExportComponentType(statement) || // skips the generated `export { type Component }`.
             isImportComponentType(statement) || // skips the generated `import type Component from "..."`.
             isExportEmptyInputType(statement) || // skips empty exported Input, eg `export type Input = {}` or `export interface Input {}`.
-            isExportInputTypeAsComponentInput(statement) || // skips outputing `export type Input = Component["input"]` since it's inferred.
+            isExportInputTypeAsComponentInput(statement) || // skips outputting `export type Input = Component["input"]` since it's inferred.
             (defaultExportId && // If the `export default` was an identifier, we also remove the variable that declared the identifier.
               isVariableStatementForName(statement, defaultExportId))
           ) {
