@@ -83,7 +83,6 @@ type AttrTagTree = {
 // TODO: completions within attr whitespace should not include quotes.
 // TODO: handle top level attribute tags.
 // TODO: css modules
-// TODO: should support member expression tag vars.
 // TODO: support #style directive with custom extension, eg `#style.less=""`.
 
 // SUPER LATER TODOS:
@@ -117,7 +116,7 @@ class ScriptExtractor {
   #interop: boolean;
   #parsed: Parsed;
   #extractor: Extractor;
-  #scriptParser: ScriptParser;
+  #ast: ScriptParser;
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #scriptLang: ScriptLang;
@@ -143,9 +142,9 @@ class ScriptExtractor {
     this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
-    this.#scriptParser = new ScriptParser(parsed);
+    this.#ast = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
-    this.#mutations = crawlProgramScope(this.#parsed, this.#scriptParser);
+    this.#mutations = crawlProgramScope(this.#parsed, this.#ast);
     this.#writeProgram(parsed.program);
   }
 
@@ -1739,11 +1738,15 @@ constructor(_?: Return) {}
   #getTSInputType(program: Node.Program) {
     for (const node of program.static) {
       if (node.type === NodeType.Export) {
-        const start = node.start + "export ".length;
-        if (this.#testAtIndex(REG_INPUT_TYPE, start)) {
-          const [inputType] = this.#scriptParser.statementAt<
-            t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
-          >(start, this.#read({ start, end: node.end }));
+        if (this.#testAtIndex(REG_INPUT_TYPE, node.start + "export ".length)) {
+          const exported = this.#ast.export(node) as
+            | undefined
+            | t.ExportNamedDeclaration;
+          const inputType = exported?.declaration as
+            | t.TSInterfaceDeclaration
+            | t.TSTypeAliasDeclaration
+            | null
+            | undefined;
 
           return {
             typeParameters: inputType?.typeParameters?.params.map((param) => {
