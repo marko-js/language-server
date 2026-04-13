@@ -513,7 +513,9 @@ function ${templateName}() {\n`);
     this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
 
     if (scopeExpr) {
-      this.#extractor.write(`[${varShared("scope")}] = ${scopeExpr};\n`);
+      this.#extractor.write(
+        `readonly [${varShared("scope")}] = ${scopeExpr};\n`,
+      );
     }
 
     this.#extractor.write(`declare return: Return;
@@ -1132,7 +1134,10 @@ constructor(_?: Return) {}
     return hasAttrs;
   }
 
-  #writeAttrTags({ staticAttrTags, dynamicAttrTagParents }: ProcessedBody) {
+  #writeAttrTags(
+    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
+    constraintExpr?: string,
+  ) {
     let wasMerge = false;
 
     if (dynamicAttrTagParents) {
@@ -1154,7 +1159,7 @@ constructor(_?: Return) {}
     }
 
     if (dynamicAttrTagParents) {
-      this.#writeDynamicAttrTagParents(dynamicAttrTagParents);
+      this.#writeDynamicAttrTagParents(dynamicAttrTagParents, constraintExpr);
       if (wasMerge) this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
     }
   }
@@ -1175,20 +1180,8 @@ constructor(_?: Return) {}
       if (isRepeated) {
         const templateVar = this.#getTemplateVar(firstAttrTag.owner!);
         if (templateVar) {
-          let accessor = `"${name}"`;
-          let curTag = firstAttrTag.parent;
-          while (curTag) {
-            if (curTag.type === NodeType.AttrTag) {
-              accessor = `"${this.#getAttrTagName(curTag)}",${accessor}`;
-            } else if (!isControlFlowTag(curTag)) {
-              break;
-            }
-
-            curTag = curTag.parent as Node.ParentTag;
-          }
-
           this.#extractor.write(
-            `${varShared("attrTagFor")}(${templateVar},${accessor})(`,
+            `${varShared("attrTagFor")}(${templateVar},${this.#getAttrTagPath(firstAttrTag)})(`,
           );
         } else {
           this.#extractor.write(`${varShared("attrTag")}(`);
@@ -1219,6 +1212,7 @@ constructor(_?: Return) {}
       ProcessedBody["dynamicAttrTagParents"],
       undefined
     >,
+    constraintExpr?: string,
   ) {
     for (const tag of dynamicAttrTagParents) {
       switch (tag.nameText) {
@@ -1275,8 +1269,12 @@ constructor(_?: Return) {}
             .write("(\n")
             .copy(tag.params?.value)
             .write("\n) => (");
-          this.#writeDynamicAttrTagBody(tag);
-          this.#extractor.write("))");
+          this.#writeDynamicAttrTagBody(tag, constraintExpr);
+          this.#extractor.write(")");
+          if (constraintExpr) {
+            this.#extractor.write(`,${constraintExpr}`);
+          }
+          this.#extractor.write(")");
           break;
         }
         case "while": {
@@ -1358,7 +1356,7 @@ constructor(_?: Return) {}
       this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
     } else if (body) {
       hasInput = true;
-      this.#writeAttrTags(body);
+      this.#writeAttrTags(body, this.#getTagInputType(tag));
       hasBodyContent = body.content !== undefined;
     } else if (tag.close) {
       hasBodyContent = true;
@@ -1660,7 +1658,7 @@ constructor(_?: Return) {}
     }
   }
 
-  #writeDynamicAttrTagBody(tag: Node.ControlFlowTag) {
+  #writeDynamicAttrTagBody(tag: Node.ControlFlowTag, constraintExpr?: string) {
     const body = this.#processBody(tag);
     if (body) {
       if (body.content) {
@@ -1669,7 +1667,7 @@ constructor(_?: Return) {}
         this.#extractor.write("return ");
       }
       this.#extractor.write("{\n");
-      this.#writeAttrTags(body);
+      this.#writeAttrTags(body, constraintExpr);
       this.#extractor.write("}");
 
       if (body.content) {
@@ -1889,6 +1887,33 @@ constructor(_?: Return) {}
       this.#lookup.getTag(nameText)?.targetProperty ||
       nameText.slice(nameText.lastIndexOf(":") + 1)
     );
+  }
+
+  #getAttrTagPath(tag: Node.AttrTag): string {
+    let path = `"${this.#getAttrTagName(tag)}"`;
+    let curTag = tag.parent;
+    while (curTag) {
+      if (curTag.type === NodeType.AttrTag) {
+        path = `"${this.#getAttrTagName(curTag)}",${path}`;
+      } else if (!isControlFlowTag(curTag as Node.Tag)) {
+        break;
+      }
+      curTag = curTag.parent as Node.ParentTag;
+    }
+    return path;
+  }
+
+  #getTagInputType(tag: Node.ParentTag): string | undefined {
+    if (tag.type === NodeType.AttrTag) {
+      if (!tag.owner) return;
+      const templateVar = this.#getTemplateVar(tag.owner);
+      if (!templateVar) return;
+      return `${varShared("inputForAttr")}(${templateVar},${this.#getAttrTagPath(tag)})`;
+    }
+
+    const templateVar = this.#getTemplateVar(tag);
+    if (!templateVar) return;
+    return `${varShared("input")}(${templateVar})`;
   }
 
   #writeAttrTagTree(tree: AttrTagTree, valueExpression: string, nested?: true) {

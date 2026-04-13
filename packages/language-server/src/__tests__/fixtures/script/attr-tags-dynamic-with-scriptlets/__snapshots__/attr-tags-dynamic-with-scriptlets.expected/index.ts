@@ -67,6 +67,7 @@ export { type Component };
             },
           };
         })(),
+      Marko._.input(__marko_internal_tag_2),
     ),
   });
   const __marko_internal_tag_3 = custom;

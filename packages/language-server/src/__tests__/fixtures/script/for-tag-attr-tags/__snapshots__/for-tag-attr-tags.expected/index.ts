@@ -65,6 +65,7 @@ export { type Component };
           [/*@row*/ Symbol.iterator]: Marko._.any,
         },
       }),
+      Marko._.input(__marko_internal_tag_1),
     ),
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -121,6 +122,7 @@ export { type Component };
           [/*@row*/ Symbol.iterator]: Marko._.any,
         },
       }),
+      Marko._.input(__marko_internal_tag_2),
     ),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

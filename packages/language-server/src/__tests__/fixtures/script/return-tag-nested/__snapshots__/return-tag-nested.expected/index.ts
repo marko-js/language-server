@@ -85,7 +85,7 @@ export interface Input {}
         });
         return () => {
           return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { hoisted };
+            readonly [Marko._.scope] = { hoisted };
             declare return: Return;
             constructor(_?: Return) {}
           })(__marko_internal_return);

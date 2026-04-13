@@ -16,7 +16,7 @@ declare global {
      */
     namespace _ {
       export const voidReturn = new (class Void {
-        [Marko._.scope] = Marko._.never;
+        readonly [Marko._.scope] = Marko._.never;
         declare return: void;
       })();
       export const scope: unique symbol;
@@ -182,6 +182,10 @@ declare global {
         fallback: Promise<{ default: Template }>,
       ): [0] extends [1 & Tag] ? Template : Tag;
       export function input<Name>(tag: Name): InputFor<Name>;
+      export function inputForAttr<
+        Name,
+        Path extends readonly [string, ...string[]],
+      >(tag: Name, ...path: Path): AttrTagValue<InputFor<Name>, Path>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -283,7 +287,8 @@ declare global {
           : Value extends readonly (infer Item)[] | Iterable<infer Item>
             ? Item
             : never,
-        const Return,
+        const Return extends Partial<Constraint>,
+        Constraint = unknown,
       >(
         input: {
           of: Value & (Iterable<unknown> | false | void | null);
@@ -293,6 +298,7 @@ declare global {
           index: number,
           all: Exclude<Value, false | void | null>,
         ) => Return,
+        constraint?: Constraint,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -301,11 +307,16 @@ declare global {
           : never;
       };
 
-      export function forInAttrTag<Value extends object, const Return>(
+      export function forInAttrTag<
+        Value extends object,
+        const Return extends Partial<Constraint>,
+        Constraint = unknown,
+      >(
         input: {
           in: Value | false | void | null;
         },
         content: (key: keyof Value, value: Value[keyof Value]) => Return,
+        constraint?: Constraint,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -318,7 +329,8 @@ declare global {
         To extends number,
         From extends void | number,
         Step extends void | number,
-        const Return,
+        const Return extends Partial<Constraint>,
+        Constraint = unknown,
       >(
         input: {
           to: To;
@@ -326,6 +338,7 @@ declare global {
           step?: Step;
         },
         content: (index: number) => Return,
+        constraint?: Constraint,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -344,7 +357,8 @@ declare global {
         Until extends number,
         From extends void | number,
         Step extends void | number,
-        const Return,
+        const Return extends Partial<Constraint>,
+        Constraint = unknown,
       >(
         input: {
           until: Until;
@@ -352,6 +366,7 @@ declare global {
           step?: Step;
         },
         content: (index: number) => Return,
+        constraint?: Constraint,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -366,7 +381,10 @@ declare global {
           : never;
       };
 
-      export function forAttrTag<const Return>(
+      export function forAttrTag<
+        const Return extends Partial<Constraint>,
+        Constraint = unknown,
+      >(
         input:
           | {
               of: Iterable<unknown> | false | void | null;
@@ -385,6 +403,7 @@ declare global {
               step?: number;
             },
         content: (...args: unknown[]) => Return,
+        constraint?: Constraint,
       ): {
         [Key in keyof Return]: Return[Key] extends
           | readonly (infer Item)[]
@@ -392,57 +411,6 @@ declare global {
           ? undefined | Marko.AttrTag<Item>
           : never;
       };
-
-      export function forOfParams<
-        Value,
-        Item extends [0] extends [1 & Value]
-          ? any
-          : Value extends readonly (infer Item)[] | Iterable<infer Item>
-            ? Item
-            : never,
-      >(input: {
-        of: Value & (Iterable<unknown> | false | void | null);
-      }): [
-        value: Item,
-        index: number,
-        all: Exclude<Value, false | void | null>,
-      ];
-
-      export function forInParams<Value extends object>(input: {
-        in: Value | false | void | null;
-      }): [key: keyof Value, value: Value[keyof Value]];
-
-      export function forToParams(input: {
-        to: number;
-        from?: number;
-        step?: number;
-      }): [index: number];
-
-      export function forUntilParams(input: {
-        until: number;
-        from?: number;
-        step?: number;
-      }): [index: number];
-
-      export function forParams(
-        input:
-          | {
-              of: Iterable<unknown> | false | void | null;
-            }
-          | {
-              in: object | false | void | null;
-            }
-          | {
-              to: number;
-              from?: number;
-              step?: number;
-            }
-          | {
-              until: number;
-              from?: number;
-              step?: number;
-            },
-      ): unknown[];
 
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs

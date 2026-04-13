@@ -48,7 +48,7 @@ export interface Input {}
                 );
                 return () => {
                   return new (class MarkoReturn<Return = void> {
-                    [Marko._.scope] = { b };
+                    readonly [Marko._.scope] = { b };
                     declare return: Return;
                     constructor(_?: Return) {}
                   })();
@@ -70,7 +70,7 @@ export interface Input {}
               });
               return () => {
                 return new (class MarkoReturn<Return = void> {
-                  [Marko._.scope] = { a };
+                  readonly [Marko._.scope] = { a };
                   declare return: Return;
                   constructor(_?: Return) {}
                 })();
@@ -96,7 +96,7 @@ export interface Input {}
               });
               return () => {
                 return new (class MarkoReturn<Return = void> {
-                  [Marko._.scope] = { c };
+                  readonly [Marko._.scope] = { c };
                   declare return: Return;
                   constructor(_?: Return) {}
                 })();

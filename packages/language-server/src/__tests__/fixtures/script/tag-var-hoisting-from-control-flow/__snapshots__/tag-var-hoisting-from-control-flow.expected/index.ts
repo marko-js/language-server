@@ -55,7 +55,7 @@ export interface Input {}
                 });
                 baz;
                 return new (class MarkoReturn<Return = void> {
-                  [Marko._.scope] = { c };
+                  readonly [Marko._.scope] = { c };
                   declare return: Return;
                   constructor(_?: Return) {}
                 })();
