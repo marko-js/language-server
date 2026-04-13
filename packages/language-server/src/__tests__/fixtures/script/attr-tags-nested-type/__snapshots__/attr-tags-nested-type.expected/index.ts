@@ -32,6 +32,7 @@ export { type Component };
             [/*@b*/ Symbol.iterator]: Marko._.any,
           },
         }),
+        Marko._.inputForAttr(__marko_internal_tag_1, "a"),
       ),
       [/*@a*/ Symbol.iterator]: Marko._.any,
     },

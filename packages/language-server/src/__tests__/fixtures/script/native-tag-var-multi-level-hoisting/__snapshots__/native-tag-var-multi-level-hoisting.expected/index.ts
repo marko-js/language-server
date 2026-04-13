@@ -22,7 +22,7 @@ export interface Input {}
             });
             return () => {
               return new (class MarkoReturn<Return = void> {
-                [Marko._.scope] = { searchInput };
+                readonly [Marko._.scope] = { searchInput };
                 declare return: Return;
                 constructor(_?: Return) {}
               })();
@@ -32,7 +32,9 @@ export interface Input {}
       });
       return () => {
         return new (class MarkoReturn<Return = void> {
-          [Marko._.scope] = Marko._.readScope(__marko_internal_rendered_2);
+          readonly [Marko._.scope] = Marko._.readScope(
+            __marko_internal_rendered_2,
+          );
           declare return: Return;
           constructor(_?: Return) {}
         })();

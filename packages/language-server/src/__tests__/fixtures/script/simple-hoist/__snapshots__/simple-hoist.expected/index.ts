@@ -42,7 +42,7 @@ export interface Input {}
           });
           return () => {
             return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { x, el };
+              readonly [Marko._.scope] = { x, el };
               declare return: Return;
               constructor(_?: Return) {}
             })();

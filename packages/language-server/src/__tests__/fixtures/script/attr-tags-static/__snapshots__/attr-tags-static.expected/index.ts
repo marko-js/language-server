@@ -50,7 +50,7 @@ export interface Input {}
           });
           return () => {
             return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { hoistedFromStaticMember };
+              readonly [Marko._.scope] = { hoistedFromStaticMember };
               declare return: Return;
               constructor(_?: Return) {}
             })();

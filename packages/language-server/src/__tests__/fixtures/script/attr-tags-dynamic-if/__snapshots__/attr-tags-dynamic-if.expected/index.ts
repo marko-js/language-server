@@ -212,7 +212,7 @@ export interface Input {}
               });
               return () => {
                 return new (class MarkoReturn<Return = void> {
-                  [Marko._.scope] = { hoistedFromStaticMember };
+                  readonly [Marko._.scope] = { hoistedFromStaticMember };
                   declare return: Return;
                   constructor(_?: Return) {}
                 })();
@@ -244,7 +244,7 @@ export interface Input {}
                   });
                   return () => {
                     return new (class MarkoReturn<Return = void> {
-                      [Marko._.scope] = { hoistedFromDynamicMember };
+                      readonly [Marko._.scope] = { hoistedFromDynamicMember };
                       declare return: Return;
                       constructor(_?: Return) {}
                     })();

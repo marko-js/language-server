@@ -92,7 +92,7 @@ export interface Input {}
             value: () => item.value,
           });
           return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { hoistedFromForOf };
+            readonly [Marko._.scope] = { hoistedFromForOf };
             declare return: Return;
             constructor(_?: Return) {}
           })();
@@ -169,7 +169,7 @@ export interface Input {}
               value: () => key,
             });
             return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { hoistedFromForIn };
+              readonly [Marko._.scope] = { hoistedFromForIn };
               declare return: Return;
               constructor(_?: Return) {}
             })();
@@ -253,7 +253,7 @@ export interface Input {}
               value: () => index,
             });
             return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { hoistedFromForTo };
+              readonly [Marko._.scope] = { hoistedFromForTo };
               declare return: Return;
               constructor(_?: Return) {}
             })();
@@ -337,7 +337,7 @@ export interface Input {}
               value: () => index,
             });
             return new (class MarkoReturn<Return = void> {
-              [Marko._.scope] = { hoistedFromForUntil };
+              readonly [Marko._.scope] = { hoistedFromForUntil };
               declare return: Return;
               constructor(_?: Return) {}
             })();

@@ -28,7 +28,7 @@ export interface Input<T extends string> {
         input.name;
         return () => {
           return new (class MarkoReturn<Return = void> {
-            [Marko._.scope] = { x };
+            readonly [Marko._.scope] = { x };
             declare return: Return;
             constructor(_?: Return) {}
           })();

@@ -32,6 +32,7 @@ export interface Input {}
           /*@a*/
         },
       }),
+      Marko._.input(__marko_internal_tag_1),
     ),
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -69,6 +70,7 @@ export interface Input {}
             /*@a*/
           },
         }),
+        Marko._.input(__marko_internal_tag_3),
       ),
     });
     const __marko_internal_tag_4 = custom;
@@ -93,6 +95,7 @@ export interface Input {}
             [/*@a*/ Symbol.iterator]: Marko._.any,
           },
         }),
+        Marko._.input(__marko_internal_tag_4),
       ),
     });
     const __marko_internal_tag_5 = custom;
@@ -128,6 +131,7 @@ export interface Input {}
               [/*@b*/ Symbol.iterator]: Marko._.any,
             },
           }),
+          Marko._.input(__marko_internal_tag_5),
         ),
       },
     );
@@ -163,7 +167,7 @@ export interface Input {}
                   });
                   return () => {
                     return new (class MarkoReturn<Return = void> {
-                      [Marko._.scope] = { hoistedFromForOf };
+                      readonly [Marko._.scope] = { hoistedFromForOf };
                       declare return: Return;
                       constructor(_?: Return) {}
                     })();
@@ -173,6 +177,7 @@ export interface Input {}
               [/*@a*/ Symbol.iterator]: Marko._.any,
             },
           }),
+          Marko._.input(__marko_internal_tag_6),
         ),
       },
     );
@@ -216,6 +221,7 @@ export interface Input {}
               [/*@a*/ Symbol.iterator]: Marko._.any,
             },
           }),
+          Marko._.input(__marko_internal_tag_10),
         ),
       });
       const __marko_internal_tag_11 = custom;
@@ -250,7 +256,7 @@ export interface Input {}
                     });
                     return () => {
                       return new (class MarkoReturn<Return = void> {
-                        [Marko._.scope] = { hoistedFromForIn };
+                        readonly [Marko._.scope] = { hoistedFromForIn };
                         declare return: Return;
                         constructor(_?: Return) {}
                       })();
@@ -260,6 +266,7 @@ export interface Input {}
                 [/*@a*/ Symbol.iterator]: Marko._.any,
               },
             }),
+            Marko._.input(__marko_internal_tag_11),
           ),
         },
       );
@@ -292,6 +299,7 @@ export interface Input {}
               [/*@a*/ Symbol.iterator]: Marko._.any,
             },
           }),
+          Marko._.input(__marko_internal_tag_14),
         ),
       });
       const __marko_internal_tag_15 = custom;
@@ -317,6 +325,7 @@ export interface Input {}
                 [/*@a*/ Symbol.iterator]: Marko._.any,
               },
             }),
+            Marko._.input(__marko_internal_tag_15),
           ),
         },
       );
@@ -343,6 +352,7 @@ export interface Input {}
                 [/*@a*/ Symbol.iterator]: Marko._.any,
               },
             }),
+            Marko._.input(__marko_internal_tag_16),
           ),
         },
       );
@@ -378,7 +388,7 @@ export interface Input {}
                     });
                     return () => {
                       return new (class MarkoReturn<Return = void> {
-                        [Marko._.scope] = { hoistedFromForTo };
+                        readonly [Marko._.scope] = { hoistedFromForTo };
                         declare return: Return;
                         constructor(_?: Return) {}
                       })();
@@ -388,6 +398,7 @@ export interface Input {}
                 [/*@a*/ Symbol.iterator]: Marko._.any,
               },
             }),
+            Marko._.input(__marko_internal_tag_17),
           ),
         },
       );

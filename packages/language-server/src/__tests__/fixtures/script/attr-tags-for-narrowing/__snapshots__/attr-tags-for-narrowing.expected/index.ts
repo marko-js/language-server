@@ -31,6 +31,7 @@ export { type Component };
             [/*@item*/ Symbol.iterator]: Marko._.any,
           },
         }),
+        Marko._.input(__marko_internal_tag_1),
       ),
       Marko._.forOfAttrTag(
         {
@@ -58,6 +59,7 @@ export { type Component };
             },
           ),
         }),
+        Marko._.input(__marko_internal_tag_1),
       ),
     ),
   });

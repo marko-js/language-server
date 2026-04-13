@@ -75,7 +75,7 @@ export interface Input<T extends string> {
             });
             return () => {
               return new (class MarkoReturn<Return = void> {
-                [Marko._.scope] = { x, y, promise };
+                readonly [Marko._.scope] = { x, y, promise };
                 declare return: Return;
                 constructor(_?: Return) {}
               })();
