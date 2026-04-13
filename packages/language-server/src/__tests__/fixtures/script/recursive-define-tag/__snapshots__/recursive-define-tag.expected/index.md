@@ -5,7 +5,7 @@
    8 |
 >  9 | <define/Section|{ children = []}: Help|>
      |            ^ const Section: {
-    content: ({ children }: Help) => MarkoReturn<void>;
+    content: ({ children }: Help) => Void;
 }
   10 |         // ^?
   11 |   <for|{ children }| of=children>
@@ -18,7 +18,7 @@
   11 |   <for|{ children }| of=children>
 > 12 |     <Section children=children/>
      |        ^ const Section: {
-    content: ({ children }: Help) => MarkoReturn<void>;
+    content: ({ children }: Help) => Void;
 }
   13 |     // ^?
   14 |   </for>
@@ -31,7 +31,7 @@
   17 | <for|help| of=input.value>
 > 18 |   <Section ...help/>
      |      ^ const Section: {
-    content: ({ children }: Help) => MarkoReturn<void>;
+    content: ({ children }: Help) => Void;
 }
   19 |   // ^?
   20 | </for>

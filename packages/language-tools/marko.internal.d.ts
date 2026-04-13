@@ -15,7 +15,10 @@ declare global {
      * Do not use or you will be fired.
      */
     namespace _ {
-      export const voidReturn: MarkoReturn<void>;
+      export const voidReturn = new (class Void {
+        [Marko._.scope] = Marko._.never;
+        declare return: void;
+      })();
       export const scope: unique symbol;
       export const never: never;
       export const any: any;
@@ -389,6 +392,57 @@ declare global {
           ? undefined | Marko.AttrTag<Item>
           : never;
       };
+
+      export function forOfParams<
+        Value,
+        Item extends [0] extends [1 & Value]
+          ? any
+          : Value extends readonly (infer Item)[] | Iterable<infer Item>
+            ? Item
+            : never,
+      >(input: {
+        of: Value & (Iterable<unknown> | false | void | null);
+      }): [
+        value: Item,
+        index: number,
+        all: Exclude<Value, false | void | null>,
+      ];
+
+      export function forInParams<Value extends object>(input: {
+        in: Value | false | void | null;
+      }): [key: keyof Value, value: Value[keyof Value]];
+
+      export function forToParams(input: {
+        to: number;
+        from?: number;
+        step?: number;
+      }): [index: number];
+
+      export function forUntilParams(input: {
+        until: number;
+        from?: number;
+        step?: number;
+      }): [index: number];
+
+      export function forParams(
+        input:
+          | {
+              of: Iterable<unknown> | false | void | null;
+            }
+          | {
+              in: object | false | void | null;
+            }
+          | {
+              to: number;
+              from?: number;
+              step?: number;
+            }
+          | {
+              until: number;
+              from?: number;
+              step?: number;
+            },
+      ): unknown[];
 
       export function mergeAttrTags<Attrs extends readonly any[]>(
         ...attrs: Attrs
