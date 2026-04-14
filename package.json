@@ -23,14 +23,14 @@
   },
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production npm run -ws build",
+    "build": "NODE_ENV=production npm run --ws build",
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f unix --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
     "lint": "npm run build && eslint -f unix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --check --log-level=warn && cspell \"**/*.{md,ts,marko}\"",
-    "prepare": "husky & npm run -ws --if-present prepare",
-    "release": "npm run build && changeset publish && npm run -ws --if-present release",
-    "test": "npm run build && npm run -ws --if-present test",
+    "prepare": "husky & npm run --ws --if-present prepare",
+    "release": "npm run build && changeset publish && npm run --ws --if-present release",
+    "test": "npm run build && npm run --ws --if-present test",
     "test:server": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update",
     "version": "changeset version && npm i --package-lock-only"
   },
