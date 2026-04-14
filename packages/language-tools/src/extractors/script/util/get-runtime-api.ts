@@ -1,6 +1,6 @@
 import type { TaglibLookup } from "@marko/compiler/babel-utils";
 
-import { Node, NodeType, Parsed } from "../../../parser";
+import { type Node, NodeType, type Parsed } from "../../../parser";
 
 export type RuntimeAPI = (typeof RuntimeAPI)[keyof typeof RuntimeAPI];
 export const RuntimeAPI = {

@@ -1,4 +1,4 @@
-import { Node, NodeType } from "../parser";
+import { type Node, NodeType } from "../parser";
 
 export function getNodeAtOffset(
   offset: number,

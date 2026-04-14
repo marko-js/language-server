@@ -1,7 +1,7 @@
 import { type Node, NodeType } from "@marko/language-tools";
 import { SymbolInformation, SymbolKind } from "vscode-languageserver";
 
-import { MarkoFile, processDoc } from "../../utils/file";
+import { type MarkoFile, processDoc } from "../../utils/file";
 import type { Plugin } from "../types";
 import { isHTML } from "./util/is-html";
 

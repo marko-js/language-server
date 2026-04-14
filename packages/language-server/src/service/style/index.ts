@@ -13,7 +13,7 @@ import {
   Diagnostic,
   DocumentHighlight,
   DocumentLink,
-  InitializeParams,
+  type InitializeParams,
   InsertReplaceEdit,
   Location,
   Range,

@@ -3,10 +3,10 @@ import { types as t } from "@marko/compiler";
 import {
   type Node,
   NodeType,
-  Parsed,
+  type Parsed,
   type Range,
-  Repeatable,
-  Repeated,
+  type Repeatable,
+  type Repeated,
 } from "../../../parser";
 import { ScriptParser } from "./script-parser";
 

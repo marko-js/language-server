@@ -4,7 +4,7 @@ import { Project } from "@marko/language-tools";
 import { inspect, isDeepStrictEqual } from "util";
 import {
   createConnection,
-  DefinitionLink,
+  type DefinitionLink,
   Diagnostic,
   ProposedFeatures,
   TextDocumentSyncKind,
