@@ -16,7 +16,7 @@ await build({
           ({ path }) => ({
             path,
             external: true,
-          })
+          }),
         );
       },
     },

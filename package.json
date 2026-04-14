@@ -1,40 +1,44 @@
 {
   "name": "marko-language-server-repo",
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "@ci:build": "npm run build",
+    "@ci:lint": "npm run lint",
+    "@ci:release": "npm run build && changeset publish && npm run --ws --if-present release && npm ci",
+    "@ci:test": "npm test",
+    "@ci:version": "npm run build && npm run format && changeset version && npm i --package-lock-only",
+    "build": "tsc -b && NODE_ENV=production npm run --ws build",
+    "build:dev": "tsx ./packages/vscode/build.mts",
+    "change": "changeset add",
+    "format": "eslint --fix .; prettier . --write --log-level=warn",
+    "lint": "eslint . && prettier . --check --log-level=warn && cspell --quiet",
+    "prepare": "husky & npm run --ws --if-present prepare",
+    "test": "npm run build && npm run --ws --if-present test",
+    "test:server": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.30.0",
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
-    "cspell": "^9.7.0",
-    "@types/node": "^25.5.0",
-    "esbuild": "^0.27.4",
-    "eslint": "^9.39.2",
-    "eslint-formatter-unix": "^9.0.1",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "@types/node": "^25.6.0",
+    "cspell": "^10.0.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.2.0",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
     "fast-glob": "^3.3.3",
+    "globals": "^17.5.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.3",
+    "lint-staged": "^16.4.0",
     "mocha": "^11.7.5",
     "mocha-snap": "^5.0.1",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
+    "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.0"
-  },
-  "private": true,
-  "scripts": {
-    "build": "tsc -b && NODE_ENV=production npm run --ws build",
-    "build:dev": "tsx ./packages/vscode/build.mts",
-    "change": "npm exec changeset add",
-    "format": "npm run build && eslint -f unix --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",
-    "lint": "npm run build && eslint -f unix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --check --log-level=warn && cspell \"**/*.{md,ts,marko}\"",
-    "prepare": "husky & npm run --ws --if-present prepare",
-    "release": "npm run build && changeset publish && npm run --ws --if-present release",
-    "test": "npm run build && npm run --ws --if-present test",
-    "test:server": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update",
-    "version": "changeset version && npm i --package-lock-only"
-  },
-  "workspaces": [
-    "./packages/*"
-  ]
+    "typescript-eslint": "^8.58.2"
+  }
 }

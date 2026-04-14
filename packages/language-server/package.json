@@ -1,44 +1,7 @@
 {
   "name": "@marko/language-server",
-  "description": "Marko Language Server",
   "version": "2.1.31",
-  "bin": {
-    "marko-language-server": "./bin.js"
-  },
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
-  "dependencies": {
-    "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/language-tools": "^2.5.58",
-    "@marko/compiler": "^5.39.61",
-    "htmljs-parser": "^5.10.2",
-    "marko": "^5.38.31",
-    "prettier": "^3.8.1",
-    "prettier-plugin-marko": "^4.0.8",
-    "relative-import-path": "^1.0.0",
-    "typescript": "^5.9.3",
-    "vscode-css-languageservice": "^6.3.10",
-    "vscode-languageserver": "^9.0.1",
-    "vscode-languageserver-textdocument": "^1.0.12",
-    "vscode-uri": "^3.1.0",
-    "axe-core": "^4.11.1",
-    "jsdom": "^26.1.0"
-  },
-  "devDependencies": {
-    "@types/jsdom": "28.0.0",
-    "tsx": "^4.21.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "!**/__tests__",
-    "!**/*.tsbuildinfo"
-  ],
-  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/language-server/README.md",
+  "description": "Marko Language Server",
   "keywords": [
     "autocomplete",
     "intellisense",
@@ -46,16 +9,53 @@
     "marko",
     "server"
   ],
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/language-server/README.md",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=bug-report.yml",
   "repository": {
     "type": "git",
     "url": "https://github.com/marko-js/language-server/tree/main/packages/language-server"
   },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "bin": {
+    "marko-language-server": "./bin.js"
+  },
+  "files": [
+    "dist",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo"
+  ],
   "scripts": {
     "build": "tsx build.mts",
     "test": "mocha './src/**/__tests__/*.test.ts'",
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
+  },
+  "dependencies": {
+    "@luxass/strip-json-comments": "^1.4.0",
+    "@marko/compiler": "^5.39.63",
+    "@marko/language-tools": "^2.5.58",
+    "axe-core": "^4.11.3",
+    "htmljs-parser": "^5.10.2",
+    "jsdom": "^26.1.0",
+    "marko": "^5.38.35",
+    "prettier": "^3.8.2",
+    "prettier-plugin-marko": "^4.0.9",
+    "relative-import-path": "^1.0.0",
+    "typescript": "^5.9.3",
+    "vscode-css-languageservice": "^6.3.10",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "vscode-uri": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/jsdom": "28.0.1",
+    "tsx": "^4.21.0"
   }
 }

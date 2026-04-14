@@ -1,22 +1,7 @@
 {
   "name": "@marko/type-check",
-  "description": "A CLI to type check Marko projects",
   "version": "2.1.30",
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
-  "dependencies": {
-    "@marko/compiler": "^5.39.61",
-    "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/language-tools": "^2.5.58",
-    "arg": "^5.0.2",
-    "kleur": "^4.1.5",
-    "typescript": "^5.9.3"
-  },
-  "files": [
-    "dist",
-    "!**/__tests__",
-    "!**/*.tsbuildinfo"
-  ],
-  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/type-check/README.md",
+  "description": "A CLI to type check Marko projects",
   "keywords": [
     "type-check",
     "marko",
@@ -24,16 +9,31 @@
     "typescript",
     "tools"
   ],
+  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/type-check/README.md",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=bug-report.yml",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/language-server/tree/main/packages/type-check"
+  },
   "license": "MIT",
   "bin": {
     "marko-type-check": "dist/cli.js",
     "mtc": "dist/cli.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marko-js/language-server/tree/main/packages/type-check"
-  },
+  "files": [
+    "dist",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo"
+  ],
   "scripts": {
     "build": "tsx build.mts"
+  },
+  "dependencies": {
+    "@luxass/strip-json-comments": "^1.4.0",
+    "@marko/compiler": "^5.39.63",
+    "@marko/language-tools": "^2.5.58",
+    "arg": "^5.0.2",
+    "kleur": "^4.1.5",
+    "typescript": "^5.9.3"
   }
 }
