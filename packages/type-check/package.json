@@ -1,6 +1,6 @@
 {
   "name": "@marko/type-check",
-  "version": "2.1.30",
+  "version": "3.0.0",
   "description": "A CLI to type check Marko projects",
   "keywords": [
     "type-check",
