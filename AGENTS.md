@@ -31,7 +31,7 @@ The vscode build is the most complex: it bundles 4 entry points (including tests
 
 ## Test
 
-**Build is always required before testing.** `npm test` at root runs `npm run build && npm run -ws --if-present test`.
+**Build is always required before testing.** `npm test` at root runs `npm run build && npm run --ws --if-present test`.
 
 Only two packages have tests:
 
