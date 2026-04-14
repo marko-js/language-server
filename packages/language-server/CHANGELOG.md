@@ -1,5 +1,16 @@
 # Change Log
 
+## 2.1.31
+
+### Patch Changes
+
+- [#474](https://github.com/marko-js/language-server/pull/474) [`f988d10`](https://github.com/marko-js/language-server/commit/f988d10b6940ca8b85c2b535d71f258d9d5a4609) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Improve dynamic attribute tag typings.
+
+- [#472](https://github.com/marko-js/language-server/pull/472) [`df74e9c`](https://github.com/marko-js/language-server/commit/df74e9c6d9abb7407311e33717191243667585a1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor language tooling around script parsing and scope tracking to allow for caching.
+
+- Updated dependencies [[`f988d10`](https://github.com/marko-js/language-server/commit/f988d10b6940ca8b85c2b535d71f258d9d5a4609), [`df74e9c`](https://github.com/marko-js/language-server/commit/df74e9c6d9abb7407311e33717191243667585a1)]:
+  - @marko/language-tools@2.5.58
+
 ## 2.1.30
 
 ### Patch Changes
