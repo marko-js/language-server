@@ -2,7 +2,7 @@ import {
   type Extracted,
   extractScript,
   type Location,
-  Node,
+  type Node,
   NodeType,
   type Parsed,
   Project,
@@ -16,7 +16,7 @@ import {
   CompletionItem,
   CompletionItemKind,
   CompletionItemTag,
-  DefinitionLink,
+  type DefinitionLink,
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
@@ -27,7 +27,7 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
-import { ExtractedSnapshot, patch } from "../../ts-plugin/host";
+import { type ExtractedSnapshot, patch } from "../../ts-plugin/host";
 import { START_LOCATION } from "../../utils/constants";
 import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
 import * as documents from "../../utils/text-documents";

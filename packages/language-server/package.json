@@ -54,7 +54,7 @@
     "url": "https://github.com/marko-js/language-server/tree/main/packages/language-server"
   },
   "scripts": {
-    "build": "tsc -b && tsx build.mts",
+    "build": "tsx build.mts",
     "test": "mocha './src/**/__tests__/*.test.ts'",
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
   }

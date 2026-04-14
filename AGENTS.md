@@ -13,7 +13,7 @@ Monorepo for the Marko Language Server and related tooling. Four npm workspaces 
 
 ## Build
 
-Every package builds with `tsc -b && tsx build.mts`. TypeScript emits **only `.d.ts` files** (`emitDeclarationOnly: true`); esbuild produces the actual JS bundles.
+TypeScript emits **only `.d.ts` files** (`emitDeclarationOnly: true`); esbuild (and package build scripts) produce the actual JS bundles.
 
 **Build order matters** due to project references:
 

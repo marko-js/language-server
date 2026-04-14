@@ -23,7 +23,7 @@
   },
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production npm run --ws build",
+    "build": "tsc -b && NODE_ENV=production npm run --ws build",
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "npm exec changeset add",
     "format": "npm run build && eslint -f unix --fix . && prettier \"./**/*{.ts,.js,.json,.md,.yml,rc}\" --write",

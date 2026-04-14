@@ -1,4 +1,4 @@
-import { type Node, NodeType, Repeated } from "../../../parser";
+import { type Node, NodeType, type Repeated } from "../../../parser";
 
 export function isTextOnlyScript(tag: Node.ParentTag): tag is Node.Tag & {
   nameText: "script";

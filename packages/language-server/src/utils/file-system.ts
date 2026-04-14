@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import { type FileStat, FileType } from "vscode-css-languageservice";
 
-export { FileStat, FileType };
+export { type FileStat, FileType };
 export default {
   stat,
   readDirectory,

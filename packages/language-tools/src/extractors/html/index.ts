@@ -1,4 +1,4 @@
-import { type Node, NodeType, Parsed, Range } from "../../parser";
+import { type Node, NodeType, type Parsed, type Range } from "../../parser";
 import { Extractor } from "../../util/extractor";
 import {
   AttributeValueType,

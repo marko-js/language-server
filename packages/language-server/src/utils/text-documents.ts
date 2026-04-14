@@ -1,9 +1,9 @@
 import fs from "fs";
 import {
-  DidChangeTextDocumentParams,
-  DidChangeWatchedFilesParams,
-  DidCloseTextDocumentParams,
-  DidOpenTextDocumentParams,
+  type DidChangeTextDocumentParams,
+  type DidChangeWatchedFilesParams,
+  type DidCloseTextDocumentParams,
+  type DidOpenTextDocumentParams,
   FileChangeType,
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";

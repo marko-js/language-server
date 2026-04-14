@@ -4,7 +4,7 @@ import { doComplete } from "./complete";
 import { findDefinition } from "./definition";
 import { findDocumentLinks } from "./document-links";
 import { findDocumentSymbols } from "./document-symbols";
-import { format, formatDocument, FormatOptions } from "./format";
+import { format, formatDocument, type FormatOptions } from "./format";
 import { doHover } from "./hover";
 import { doValidate } from "./validate";
 
