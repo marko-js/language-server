@@ -6,21 +6,28 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Use node
+      - name: Install node
+        id: node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: lts/*
           cache: npm
-      - name: Install dependencies
+      - name: Install packages (node@${{ steps.node.outputs.node-version }})
         run: npm ci
-      - name: Format Code
-        run: npm run lint
+      - name: Run build
+        run: npm run @ci:build
+      - name: Run lint
+        run: npm run @ci:lint
   test:
     runs-on: ubuntu-latest
     name: "test: node@${{ matrix.node }}"
@@ -31,18 +38,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Use node@${{ matrix.node }}
+      - name: Install node
+        id: node
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-      - name: Install dependencies
+      - name: Install packages (node@${{ steps.node.outputs.node-version }})
         run: npm ci
       - name: Run tests
-        run: xvfb-run -a npm test
+        run: xvfb-run -a npm run @ci:test
   release:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: [build, test]
     if: "${{ github.repository_owner == 'marko-js' && github.event_name == 'push' }}"
     permissions:
       id-token: write
@@ -51,19 +59,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Use node
+      - name: Install node
+        id: node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: lts/*
           cache: npm
-      - name: Install dependencies
+      - name: Install packages (node@${{ steps.node.outputs.node-version }})
         run: npm ci
-      - name: Release
-        id: changesets
+      - name: Run release
         uses: changesets/action@v1
         with:
-          version: npm run version
-          publish: npm run release
+          version: npm run @ci:version
+          publish: npm run @ci:release
           commit: "[ci] release"
           title: "[ci] release"
         env:

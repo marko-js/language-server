@@ -1,4 +1,4 @@
 {
-  "description": "This is not a real module, it just re-uses our dist.",
-  "name": "marko-ts-plugin"
+  "name": "marko-ts-plugin",
+  "description": "This is not a real module, it just re-uses our dist."
 }

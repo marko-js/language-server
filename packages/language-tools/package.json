@@ -1,35 +1,7 @@
 {
   "name": "@marko/language-tools",
-  "description": "Marko Language Tools",
   "version": "2.5.58",
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
-  "dependencies": {
-    "@marko/compiler": "^5.39.61",
-    "@luxass/strip-json-comments": "^1.4.0",
-    "htmljs-parser": "^5.10.2",
-    "relative-import-path": "^1.0.0"
-  },
-  "devDependencies": {
-    "@types/babel__code-frame": "^7.27.0",
-    "@typescript/vfs": "^1.6.4",
-    "marko": "^5.38.31",
-    "mitata": "^1.0.34",
-    "tsx": "^4.21.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.js"
-    },
-    "./marko.internal.d.ts": "./marko.internal.d.ts"
-  },
-  "files": [
-    "dist",
-    "!**/__tests__",
-    "!**/*.tsbuildinfo",
-    "marko.internal.d.ts"
-  ],
-  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/language-tools/README.md",
+  "description": "Marko Language Tools",
   "keywords": [
     "analysis",
     "analyze",
@@ -37,15 +9,43 @@
     "marko",
     "tools"
   ],
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/language-tools/README.md",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=bug-report.yml",
   "repository": {
     "type": "git",
     "url": "https://github.com/marko-js/language-server/tree/main/packages/language-tools"
   },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    },
+    "./marko.internal.d.ts": "./marko.internal.d.ts"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo",
+    "marko.internal.d.ts"
+  ],
   "scripts": {
     "bench": "BENCH=1 mocha './src/**/__tests__/*.test.ts'",
     "build": "tsx build.mts"
+  },
+  "dependencies": {
+    "@luxass/strip-json-comments": "^1.4.0",
+    "@marko/compiler": "^5.39.63",
+    "htmljs-parser": "^5.10.2",
+    "relative-import-path": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/babel__code-frame": "^7.27.0",
+    "@typescript/vfs": "^1.6.4",
+    "marko": "^5.38.35",
+    "mitata": "^1.0.34",
+    "tsx": "^4.21.0"
   }
 }

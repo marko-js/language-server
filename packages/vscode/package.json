@@ -1,26 +1,31 @@
 {
   "name": "marko-vscode",
-  "description": "Marko Syntax Highlighting, Pretty-printing, TypeScript, IntelliSense, and more",
+  "displayName": "Marko VSCode",
   "version": "2.0.36",
-  "activationEvents": [
-    "workspaceContains:**/*.marko"
-  ],
-  "bugs": "https://github.com/marko-js/language-server/issues/new?template=Bug_report.md",
+  "private": true,
+  "description": "Marko Syntax Highlighting, Pretty-printing, TypeScript, IntelliSense, and more",
   "categories": [
     "Programming Languages"
   ],
+  "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=bug-report.yml",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/language-server/tree/main/clients/vscode/"
+  },
+  "license": "MIT",
+  "publisher": "Marko-JS",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsx build.mts",
+    "prepare": "mkdir -p ./node_modules; cp -r ./modules/* ./node_modules/",
+    "release": "tsx release.mts",
+    "test": "tsx test.mts"
+  },
   "contributes": {
-    "languages": [
+    "breakpoints": [
       {
-        "id": "marko",
-        "aliases": [
-          "Marko",
-          "marko"
-        ],
-        "extensions": [
-          ".marko"
-        ],
-        "configuration": "./marko.configuration.json"
+        "language": "marko"
       }
     ],
     "commands": [
@@ -41,17 +46,28 @@
         "title": "Marko: Format: Force Html Mode"
       }
     ],
-    "typescriptServerPlugins": [
-      {
-        "name": "marko-ts-plugin",
-        "enableForWorkspaceTypeScriptVersions": true
+    "configuration": {
+      "type": "object",
+      "title": "Marko",
+      "properties": {
+        "marko.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VSCode and the language server."
+        }
       }
-    ],
-    "breakpoints": [
-      {
-        "language": "marko"
+    },
+    "configurationDefaults": {
+      "[marko]": {
+        "editor.defaultFormatter": "Marko-JS.marko-vscode"
       }
-    ],
+    },
     "grammars": [
       {
         "language": "marko",
@@ -79,56 +95,40 @@
         }
       }
     ],
-    "configuration": {
-      "type": "object",
-      "title": "Marko",
-      "properties": {
-        "marko.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VSCode and the language server."
-        }
+    "languages": [
+      {
+        "id": "marko",
+        "aliases": [
+          "Marko",
+          "marko"
+        ],
+        "extensions": [
+          ".marko"
+        ],
+        "configuration": "./marko.configuration.json"
       }
-    },
-    "configurationDefaults": {
-      "[marko]": {
-        "editor.defaultFormatter": "Marko-JS.marko-vscode"
+    ],
+    "typescriptServerPlugins": [
+      {
+        "name": "marko-ts-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
       }
-    }
+    ]
   },
+  "activationEvents": [
+    "workspaceContains:**/*.marko"
+  ],
   "devDependencies": {
     "@marko/language-server": "^2.1.31",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.1",
-    "ovsx": "^0.10.9",
+    "ovsx": "^0.10.11",
     "tsx": "^4.21.0",
     "vscode-languageclient": "^9.0.1"
   },
-  "displayName": "Marko VSCode",
   "engines": {
     "vscode": "^1.80.0"
   },
-  "homepage": "https://github.com/marko-js/language-server/tree/main/clients/vscode/README.md",
-  "icon": "img/marko.png",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "private": true,
-  "publisher": "Marko-JS",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marko-js/language-server/tree/main/clients/vscode/"
-  },
-  "scripts": {
-    "build": "tsx build.mts",
-    "release": "tsx release.mts",
-    "test": "tsx test.mts",
-    "prepare": "mkdir -p ./node_modules; cp -r ./modules/* ./node_modules/"
-  }
+  "icon": "img/marko.png"
 }

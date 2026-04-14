@@ -57,6 +57,6 @@
     "Webstorm"
   ],
   "ignoreRegExpList": [],
-  "files": ["*", "src/**/*"],
-  "ignorePaths": ["dist", "**/CHANGELOG.md"]
+  "files": ["**/*.{md,ts,marko}"],
+  "ignorePaths": ["**/dist", "**/node_modules", "**/CHANGELOG.md"]
 }

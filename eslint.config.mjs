@@ -1,21 +1,15 @@
 import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import sortImportPlugin from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   {
-    ignores: [
-      ".nyc_output",
-      "**/.vscode*",
-      "**/__snapshots__",
-      "**/*dist/",
-      "coverage",
-      "node_modules",
-    ],
+    ignores: [".vscode", "coverage", "**/dist", "**/__snapshots__"],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   {
     languageOptions: {
       globals: {
@@ -38,6 +32,7 @@ export default tseslint.config(
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "no-useless-assignment": "off",
       "simple-import-sort/exports": "error",
       "simple-import-sort/imports": "error",
     },

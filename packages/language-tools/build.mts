@@ -15,7 +15,7 @@ const opts: BuildOptions = {
           ({ path }) => ({
             path,
             external: true,
-          })
+          }),
         );
       },
     },
