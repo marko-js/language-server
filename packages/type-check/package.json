@@ -29,7 +29,7 @@
     "build": "tsx build.mts"
   },
   "dependencies": {
-    "@luxass/strip-json-comments": "^1.4.0",
+    "@luxass/strip-json-comments": "^2.0.1",
     "@marko/compiler": "^5.39.63",
     "@marko/language-tools": "^2.5.58",
     "arg": "^5.0.2",

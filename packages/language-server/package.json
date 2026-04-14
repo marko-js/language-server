@@ -38,7 +38,7 @@
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
   },
   "dependencies": {
-    "@luxass/strip-json-comments": "^1.4.0",
+    "@luxass/strip-json-comments": "^2.0.1",
     "@marko/compiler": "^5.39.63",
     "@marko/language-tools": "^2.5.58",
     "axe-core": "^4.11.3",
