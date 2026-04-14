@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.0
+
+### Major Changes
+
+- [#480](https://github.com/marko-js/language-server/pull/480) [`9b1bc18`](https://github.com/marko-js/language-server/commit/9b1bc18f9f29927f5e503f75d539a40b504b5a9a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade to typescript 6.
+
 ## 2.0.36
 
 ### Patch Changes
