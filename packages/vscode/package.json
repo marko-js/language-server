@@ -122,7 +122,7 @@
     "@marko/language-server": "^3.0.0",
     "@types/vscode": "^1.116.0",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.9.0",
+    "@vscode/vsce": "^3.9.1",
     "ovsx": "^0.10.11",
     "tsx": "^4.21.0",
     "vscode-languageclient": "^9.0.1"
