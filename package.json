@@ -21,13 +21,13 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.6.0",
-    "@changesets/cli": "^2.30.0",
+    "@changesets/cli": "^2.31.0",
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.6.0",
     "cspell": "^10.0.0",
     "esbuild": "^0.28.0",
-    "eslint": "^10.2.0",
+    "eslint": "^10.2.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "fast-glob": "^3.3.3",
     "globals": "^17.5.0",
@@ -39,6 +39,6 @@
     "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.58.2"
+    "typescript-eslint": "^8.59.0"
   }
 }
