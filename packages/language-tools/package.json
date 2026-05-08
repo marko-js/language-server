@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
     "@typescript/vfs": "^1.6.4",
-    "marko": "^5.38.36",
+    "marko": "^5.38.39",
     "mitata": "^1.0.34",
     "tsx": "^4.21.0"
   }
