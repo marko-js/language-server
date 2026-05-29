@@ -20,25 +20,25 @@
     "test:server": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.1",
     "cspell": "^10.0.0",
     "esbuild": "^0.28.0",
-    "eslint": "^10.2.1",
+    "eslint": "^10.4.0",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "fast-glob": "^3.3.3",
-    "globals": "^17.5.0",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "mocha": "^11.7.5",
+    "mocha": "^11.7.6",
     "mocha-snap": "^5.0.1",
     "prettier": "^3.8.3",
     "prettier-plugin-packagejson": "^3.0.2",
-    "tsx": "^4.21.0",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.0"
+    "typescript-eslint": "^8.60.0"
   }
 }
