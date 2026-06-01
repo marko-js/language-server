@@ -439,24 +439,24 @@ declare global {
         ...attrTags: AttrTags
       ) => AttrTagsToAttrTag<Name, AttrTags>;
 
-      // TODO: this could be improved.
-      // currently falls back to DefaultRenderer too eagerly.
       export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
-        : [Name] extends [Marko.Template<any, any>]
-          ? TemplateRenderer<Name>
-          : [Name] extends [string]
-            ? NativeTagRenderer<Name>
-            : [Name] extends [AnyMarkoBody]
-              ? BodyRenderer<Name>
-              : [Name] extends [
-                    {
-                      [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
-                        AnyMarkoBody;
-                    },
-                  ]
-                ? BodyRenderer<BodyValue>
-                : DefaultRenderer;
+        : [Name] extends [Marko.Template<any, any> | string]
+          ? {
+              (): () => <Input extends Marko.Input<Name>>(
+                input: Marko.Directives & Input,
+              ) => ReturnAndScope<Scopes<Input>, Marko.Return<Name>>;
+            }
+          : [Name] extends [AnyMarkoBody]
+            ? BodyRenderer<Name>
+            : [Name] extends [
+                  {
+                    [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
+                      AnyMarkoBody;
+                  },
+                ]
+              ? BodyRenderer<BodyValue>
+              : DefaultRenderer;
 
       export type TemplateRenderer<Template> = Template extends {
         _: infer Renderer;

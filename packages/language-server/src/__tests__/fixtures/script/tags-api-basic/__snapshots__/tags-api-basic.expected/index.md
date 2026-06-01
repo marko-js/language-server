@@ -97,12 +97,12 @@
   36 |
 ```
 
-### Ln 40, Col 18
+### Ln 40, Col 28
 ```marko
   38 |         <${renderBody}/>
   39 |     </div>
-> 40 |     <FancyButton something=true>${type}</FancyButton>
-     |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
+> 40 |     <FancyButton no-update something=true>${type}</FancyButton>
+     |                            ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
   41 |     <div>Hello $!{"<b>World</b>"}</div>
   42 |     <div>Placeholder example: <code>\${someValue}</code></div>
   43 | </div>

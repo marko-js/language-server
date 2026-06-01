@@ -109,6 +109,7 @@ function __marko_internal_template(this: void) {
         );
         const __marko_internal_tag_3 = FancyButton;
         Marko._.renderDynamicTag(__marko_internal_tag_3 /*FancyButton*/)()()({
+          "no-update": true,
           something: true,
           [Marko._.contentFor(__marko_internal_tag_3) /*FancyButton*/]: (() => {
             type;
