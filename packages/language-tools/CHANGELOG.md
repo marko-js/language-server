@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.59
+
+### Patch Changes
+
+- [#495](https://github.com/marko-js/language-server/pull/495) [`5e05dff`](https://github.com/marko-js/language-server/commit/5e05dffdf0d521cf456b7ba27598c98dc6575185) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Prefer intersection for dynamic tag input types to improve type checking performance.
+
 ## 2.5.58
 
 ### Patch Changes
