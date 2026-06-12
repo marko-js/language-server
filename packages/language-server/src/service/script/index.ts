@@ -4,6 +4,7 @@ import {
   type Location,
   type Node,
   NodeType,
+  normalizePath,
   type Parsed,
   Project,
   ScriptLang,
@@ -170,7 +171,7 @@ const ScriptService: Partial<Plugin> = {
         if (source[0] === ".") {
           source = path.resolve(fileName, "..", source);
         }
-        detail = relativeImportPath(fileName, source);
+        detail = relativeImportPath(fileName, normalizePath(source));
         // De-prioritize auto-imported completions.
         sortText = `\uffff${sortText}`;
       } else if (completion.sourceDisplay) {
@@ -778,12 +779,13 @@ function getTSProject(docFsPath: string): TSProject {
       },
 
       getScriptSnapshot(filename) {
-        let snapshot = snapshotCache.get(filename);
+        const cacheKey = normalizePath(filename);
+        let snapshot = snapshotCache.get(cacheKey);
         if (!snapshot) {
           const doc = documents.get(filenameToURI(filename));
           if (!doc) return;
           snapshot = ts.ScriptSnapshot.fromString(doc.getText());
-          snapshotCache.set(filename, snapshot);
+          snapshotCache.set(cacheKey, snapshot);
         }
 
         return snapshot;

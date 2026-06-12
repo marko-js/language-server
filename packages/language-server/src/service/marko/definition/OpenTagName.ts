@@ -40,7 +40,7 @@ export function OpenTagName({
     return;
   }
 
-  if (/\/marko(?:-tag)?\.json$/.test(tagEntryFile)) {
+  if (/[\\/]marko(?:-tag)?\.json$/.test(tagEntryFile)) {
     const tagDefSource = fs.readFileSync(tagEntryFile, "utf-8");
     const match =
       RegExpBuilder`/"(?:<${tag.nameText}>|${tag.nameText})"\s*:\s*[^\r\n,]+/g`.exec(

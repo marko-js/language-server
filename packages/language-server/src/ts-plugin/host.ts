@@ -2,6 +2,7 @@ import {
   type Extracted,
   getExt,
   isDefinitionFile,
+  normalizePath,
   Processors,
   Project,
 } from "@marko/language-tools";
@@ -82,7 +83,8 @@ export function patch(
   host.getScriptSnapshot = (fileName: string) => {
     const processor = getProcessor(fileName);
     if (processor) {
-      let cached = extractCache.get(fileName);
+      const cacheKey = normalizePath(fileName);
+      let cached = extractCache.get(cacheKey);
 
       if (!cached) {
         const code = host.readFile(fileName, "utf-8") || "";
@@ -95,7 +97,7 @@ export function patch(
         }
 
         trackFile(fileName);
-        extractCache.set(fileName, cached);
+        extractCache.set(cacheKey, cached);
       }
 
       return cached.snapshot;

@@ -1,6 +1,7 @@
 import { createParser, type Range, type Ranges, TagType } from "htmljs-parser";
 
 import { getNodeAtOffset } from "./util/get-node-at-offset";
+import { normalizePath } from "./util/normalize-path";
 
 const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
 
@@ -311,7 +312,7 @@ export function parse(code: string, filename = "index.marko") {
     locationAt: parser.locationAt,
     positionAt: parser.positionAt,
     nodeAt: (offset: number) => getNodeAtOffset(offset, program),
-    filename,
+    filename: normalizePath(filename),
     program,
     code,
   };

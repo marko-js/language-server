@@ -6,4 +6,5 @@ export * as Processors from "./processors";
 export { type Extracted } from "./util/extractor";
 export { getExt } from "./util/get-ext";
 export { isDefinitionFile } from "./util/is-definition-file";
+export { normalizePath } from "./util/normalize-path";
 export * as Project from "./util/project";

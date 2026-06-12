@@ -137,6 +137,7 @@ export function AttrName({
 
 function isExternalModule(file: string) {
   return (
-    /[/\\]node_modules[/\\]/.test(file) || !/^(?:[A-Za-z]:\\|[./\\])/.test(file)
+    /[/\\]node_modules[/\\]/.test(file) ||
+    !/^(?:[A-Za-z]:[\\/]|[./\\])/.test(file)
   );
 }
