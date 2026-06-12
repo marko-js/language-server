@@ -13,6 +13,7 @@ import {
   type Repeated,
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
+import { normalizePath } from "../../util/normalize-path";
 import type { Meta } from "../../util/project";
 import {
   crawlProgramScope,
@@ -2065,7 +2066,10 @@ function isValueAttribute(
 function resolveTagImport(from: string, def: TagDefinition | undefined) {
   const filename = resolveTagFile(def);
   if (filename) {
-    return from ? relativeImportPath(from, filename) : filename;
+    // `from` is parsed.filename which is already normalized, but the taglib
+    // provided path must use native separators too or relativeImportPath
+    // falls back to returning the absolute path.
+    return from ? relativeImportPath(from, normalizePath(filename)) : filename;
   }
 }
 

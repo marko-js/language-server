@@ -1,12 +1,17 @@
 import "../utils/project-defaults";
 
-import { type Extracted, Processors, Project } from "@marko/language-tools";
+import {
+  type Extracted,
+  normalizePath,
+  Processors,
+  Project,
+} from "@marko/language-tools";
 import type ts from "typescript/lib/tsserverlibrary";
 
 import { START_POSITION } from "../utils/constants";
 import { type ExtractedSnapshot, patch } from "./host";
 
-const markoTaglibFilesReg = /[\\/]marko(?:-tag)\.json$/;
+const markoTaglibFilesReg = /[\\/]marko(?:-tag)?\.json$/;
 const getStartLineCharacter = () => START_POSITION;
 // TODO: improve the import name for Marko components.
 
@@ -78,7 +83,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
               Project.clearCaches();
             }
 
-            extractCache.delete(info.fileName);
+            extractCache.delete(normalizePath(info.fileName));
             return onSourceFileChanged(info, eventKind);
           };
         }
@@ -93,7 +98,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         ls.toLineColumnOffset = (fileName, pos) => {
           if (pos === 0) return START_POSITION;
 
-          const extracted = extractCache.get(fileName);
+          const extracted = extractCache.get(normalizePath(fileName));
           if (extracted) {
             return extracted.sourcePositionAt(pos) || START_POSITION;
           }
@@ -110,7 +115,9 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
           for (const symbol of symbols) {
             let definition: ts.ReferencedSymbolDefinitionInfo | undefined =
               symbol.definition;
-            const defExtracted = extractCache.get(definition.fileName);
+            const defExtracted = extractCache.get(
+              normalizePath(definition.fileName),
+            );
 
             if (defExtracted) {
               definition = mapTextSpans(defExtracted, definition);
@@ -119,7 +126,9 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
 
             const references: ts.ReferencedSymbolEntry[] = [];
             for (const reference of symbol.references) {
-              const refExtracted = extractCache.get(reference.fileName);
+              const refExtracted = extractCache.get(
+                normalizePath(reference.fileName),
+              );
               if (refExtracted) {
                 const updated = mapTextSpans(refExtracted, reference);
                 if (updated) references.push(updated);
@@ -156,7 +165,7 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
 
           const result: ts.RenameLocation[] = [];
           for (const rename of renames) {
-            const extracted = extractCache.get(rename.fileName);
+            const extracted = extractCache.get(normalizePath(rename.fileName));
             if (extracted) {
               const updated = mapTextSpans(extracted, rename);
               if (updated) result.push(updated);

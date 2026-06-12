@@ -29,11 +29,11 @@ export default function getTagNameCompletion({
   let label = tag.isNestedTag ? `@${tag.name}` : tag.name;
   const fileForTag = tag.template || tag.renderer || tag.filePath;
   const fileURIForTag = URI.file(fileForTag).toString();
-  const nodeModuleMatch = /\/node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(
-    fileForTag,
-  );
+  const nodeModuleMatch =
+    /[\\/]node_modules[\\/]((?:@[^\\/]+[\\/])?[^\\/]+)/.exec(fileForTag);
 
-  const nodeModuleName = nodeModuleMatch && nodeModuleMatch[1];
+  const nodeModuleName =
+    nodeModuleMatch && nodeModuleMatch[1].replace(/\\/g, "/");
   const isCoreTag =
     /^@?marko[/-]/.test(tag.taglibId || tag.filePath) ||
     nodeModuleName === "marko";

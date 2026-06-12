@@ -18,9 +18,7 @@ export default {
       ? host.getCurrentDirectory()
       : ts.sys.getCurrentDirectory();
     const defaultScriptLang =
-      configFile && /tsconfig/g.test(configFile)
-        ? ScriptLang.ts
-        : ScriptLang.js;
+      configFile && /tsconfig/.test(configFile) ? ScriptLang.ts : ScriptLang.js;
     const runtimeTypes = Project.getTypeLibs(currentDirectory, ts, host);
     const rootNames = [
       runtimeTypes.internalTypesFile,
@@ -104,8 +102,8 @@ export default {
           : ts.ScriptKind.JS;
       },
       extract(fileName, code) {
-        const dir = path.dirname(fileName);
         const parsed = parse(code, fileName);
+        const dir = path.dirname(parsed.filename);
         return extractScript({
           ts,
           parsed,
