@@ -1,5 +1,13 @@
 # @marko/language-tools
 
+## 2.5.60
+
+### Patch Changes
+
+- [#500](https://github.com/marko-js/language-server/pull/500) [`4be96c5`](https://github.com/marko-js/language-server/commit/4be96c5b0b894e943170fae387318d43fec511e4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix several smaller Windows path handling issues: auto import completion details no longer show absolute paths, go to definition for tags declared in a `marko.json` now jumps to the tag's entry, and tags discovered from npm packages show their package documentation again. Also fix taglib cache invalidation not firing for `marko.json` changes (only `marko-tag.json`) and a stateful regex that could flip the default script language between projects.
+
+- [#500](https://github.com/marko-js/language-server/pull/500) [`4be96c5`](https://github.com/marko-js/language-server/commit/4be96c5b0b894e943170fae387318d43fec511e4) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix incorrect diagnostic and mapping positions on Windows. File paths are now canonicalized to native separators before script extraction so the generated code (which embeds relative import paths for custom tags) is identical regardless of how the file name was spelled, and extracted snapshot caches now use canonicalized keys so cache eviction works when TypeScript and the file system disagree on path separators.
+
 ## 2.5.59
 
 ### Patch Changes
