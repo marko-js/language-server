@@ -6,7 +6,13 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig(
   {
-    ignores: [".vscode", "coverage", "**/dist", "**/__snapshots__"],
+    ignores: [
+      ".vscode",
+      "**/.vscode-test",
+      "coverage",
+      "**/dist",
+      "**/__snapshots__",
+    ],
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,

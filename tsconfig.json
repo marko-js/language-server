@@ -3,6 +3,7 @@
   "references": [
     { "path": "./packages/language-tools" },
     { "path": "./packages/language-server" },
+    { "path": "./packages/ts-plugin" },
     { "path": "./packages/type-check" },
     { "path": "./packages/vscode" }
   ]

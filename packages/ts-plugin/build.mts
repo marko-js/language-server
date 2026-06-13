@@ -1,4 +1,4 @@
-import { analyzeMetafile, build } from "esbuild";
+import { build } from "esbuild";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -18,29 +18,14 @@ await build({
   minify: isProd,
   sourcesContent: false,
   absWorkingDir: thisDir,
-  metafile: true,
   format: "cjs",
   outdir: "dist",
+  outbase: "src",
   platform: "node",
   target: ["node16"],
   sourcemap: "linked",
-  entryPoints: [
-    { in: "src/index.ts", out: "index" },
-    { in: "src/server.ts", out: "server" },
-    // The TypeScript Server plugin is the shared @marko/ts-plugin entry; it is
-    // bundled into dist/ts-plugin.js and exposed via modules/marko-ts-plugin.
-    { in: "../ts-plugin/src/index.ts", out: "ts-plugin" },
-    { in: "src/__tests__/index.ts", out: "__tests__/index" },
-  ],
-  external: [
-    "vscode",
-    "mocha",
-    "mocha-snap",
-    "fast-glob",
-    "tsx",
-    "canvas",
-    "browserslist",
-  ],
+  entryPoints: ["src/index.ts"],
+  external: ["canvas", "browserslist"],
   define: {
     "import.meta.url": "_importMetaUrl",
   },
@@ -48,8 +33,4 @@ await build({
     js: "const _importMetaUrl = require('url').pathToFileURL(__filename);",
   },
   plugins: markoBundlePlugins,
-}).then(async (result) => {
-  if (isProd) {
-    console.log(await analyzeMetafile(result.metafile));
-  }
 });
