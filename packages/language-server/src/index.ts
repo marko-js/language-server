@@ -182,7 +182,7 @@ connection.onDocumentColor(async (params, cancel) => {
       documents.get(params.textDocument.uri)!,
       params,
       cancel,
-    )) || null
+    )) || []
   );
 });
 
@@ -192,7 +192,7 @@ connection.onColorPresentation(async (params, cancel) => {
       documents.get(params.textDocument.uri)!,
       params,
       cancel,
-    )) || null
+    )) || []
   );
 });
 
