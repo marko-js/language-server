@@ -1761,6 +1761,17 @@ constructor(_?: Return) {}
             }),
           };
         }
+      } else if (node.type === NodeType.Import) {
+        // A type imported into the module scope, eg `import { Input }` or
+        // `import type { Input }` (also covers default/aliased imports).
+        const imported = this.#ast.import(node);
+        if (imported) {
+          for (const specifier of imported.specifiers) {
+            if (specifier.local.name === "Input") {
+              return { typeParameters: undefined };
+            }
+          }
+        }
       }
     }
   }
