@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.4
+
+### Patch Changes
+
+- [#509](https://github.com/marko-js/language-server/pull/509) [`6b399d0`](https://github.com/marko-js/language-server/commit/6b399d0dccba6cea7c390ef47e35c04d52f6bf1b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bump vscode version.
+
 ## 3.0.3
 
 ### Patch Changes
