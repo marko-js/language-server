@@ -128,7 +128,7 @@
     "vscode-languageclient": "^9.0.1"
   },
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.116.0"
   },
   "icon": "img/marko.png"
 }
