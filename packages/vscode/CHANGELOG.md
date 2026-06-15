@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.3
+
+### Patch Changes
+
+- [#507](https://github.com/marko-js/language-server/pull/507) [`3401932`](https://github.com/marko-js/language-server/commit/3401932f256c3e564e1249316a067b4600f709cc) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Detect the `Input` type when it is imported into the module scope (eg `import { Input } from "..."` or `import type { Input } from "..."`) instead of only an inline `interface`/`type` declaration.
+
 ## 3.0.2
 
 ### Patch Changes
