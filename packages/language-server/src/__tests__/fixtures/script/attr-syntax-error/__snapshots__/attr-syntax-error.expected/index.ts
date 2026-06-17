@@ -12,13 +12,13 @@ export { type Component }
     (Marko._.error, Marko._.any as MarkoRun.Context)
   );
 Marko._.renderNativeTag("div")()()({
- "data-x": (
+"data-x": (
 #2
 ),
 
 });
 Marko._.renderNativeTag("div")()()({
- "onClick"(a, %b){
+"onClick"(a, %b){
   console.log(#hello!);
 },
 

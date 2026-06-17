@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("body")()()({
     "aria-hidden": "true",
-    [Marko._.content /*body*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

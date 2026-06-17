@@ -16,26 +16,25 @@ export interface Input {}
     input["@a"];
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
-    __marko_internal_tag_1 /*custom*/,
+    __marko_internal_tag_1,
   )()()({
-    ["b" /*@b*/]: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
+    ["b"]: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
       "b",
       {
-        ["b" /*@b*/]: {
-          [/*@b*/ Symbol.iterator]: Marko._.any,
-          /*@b*/
+        ["b"]: {
+          [Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["b" /*@b*/]: {
+        ["b"]: {
           c: 2,
-          [/*@b*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       },
     ),
-    ["a" /*@a*/]: {
+    ["a"]: {
       b: 1,
-      [Marko._.contentFor(__marko_internal_tag_1) /*@a*/]: (() => {
+      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
         const __marko_internal_tag_2 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
@@ -44,7 +43,7 @@ export interface Input {}
             () => __marko_internal_rendered_2,
           );
           const __marko_internal_rendered_2 = Marko._.renderTemplate(
-            __marko_internal_tag_2 /*const*/,
+            __marko_internal_tag_2,
           )()()({
             value: () => 1 as const,
           });
@@ -57,13 +56,13 @@ export interface Input {}
           };
         }
       })(),
-      [/*@a*/ Symbol.iterator]: Marko._.any,
+      [Symbol.iterator]: Marko._.any,
     },
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3 /*effect*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_3)()()({
     value() {
       hoistedFromStaticMember;
       //^?

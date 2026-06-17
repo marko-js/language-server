@@ -20,21 +20,21 @@ export { type Component };
       input["@b"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*list*/)()()({
-    ["a" /*@a*/]: {
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    ["a"]: {
       ...Marko._.forOfAttrTag(
         {
-          /*for*/ of: [1, 2, 3],
+          of: [1, 2, 3],
         },
         () => ({
-          ["b" /*@b*/]: {
+          ["b"]: {
             size: "small",
-            [/*@b*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }),
         Marko._.inputForAttr(__marko_internal_tag_1, "a"),
       ),
-      [/*@a*/ Symbol.iterator]: Marko._.any,
+      [Symbol.iterator]: Marko._.any,
     },
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

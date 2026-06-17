@@ -13,7 +13,7 @@ export interface Input {}
   {
     const count = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: 1,
     });
@@ -26,12 +26,12 @@ export interface Input {}
     Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
       input["@nested"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2 /*foo*/)()()({
-      ["nested" /*@nested*/]: {
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+      ["nested"]: {
         onClick() {
           __marko_internal_change__count.count++;
         },
-        [/*@nested*/ Symbol.iterator]: Marko._.any,
+        [Symbol.iterator]: Marko._.any,
       },
     });
     var __marko_internal_hoist__count = count;

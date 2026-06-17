@@ -14,8 +14,8 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/my-tag/index.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1 /*my-tag*/)()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*my-tag*/]: (name) => {
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    [Marko._.contentFor(__marko_internal_tag_1)]: (name) => {
       //      ^?
       name;
       return Marko._.voidReturn;

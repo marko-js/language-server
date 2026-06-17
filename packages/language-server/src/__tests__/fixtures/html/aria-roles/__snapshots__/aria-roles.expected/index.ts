@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     role: "fake-role",
-    [Marko._.content /*div*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

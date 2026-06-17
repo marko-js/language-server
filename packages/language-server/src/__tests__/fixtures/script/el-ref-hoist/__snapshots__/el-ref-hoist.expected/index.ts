@@ -12,7 +12,7 @@ const __marko_internal_tag_1 = (
 Marko._.resolveTemplate(import("@marko/runtime-tags/tags/const.d.marko"))
 );
 {const $hoistedEl = Marko._.returned(() => __marko_internal_rendered_1);
-const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1/*const*/)()()({
+const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1)()()({
 "value": (
 $el
 ),
@@ -20,18 +20,18 @@ $el
 });
 {const $el = Marko._.el("div");
 Marko._.renderNativeTag("div")()()({
-/*div*/
+
 });
 const __marko_internal_tag_3 = (
 Marko._.resolveTemplate(import("marko/src/core-tags/core/script.d.marko"))
 );
-Marko._.renderTemplate(__marko_internal_tag_3/*script*/)()()(// ^?
+Marko._.renderTemplate(__marko_internal_tag_3)()()(// ^?
 {
- async value(){$el;  
+async value(){$el;  
   //^?
   $hoistedEl;
   //^?},
-/*script*/
+
 });
 var __marko_internal_hoist__$hoistedEl = $hoistedEl;
 var __marko_internal_hoist__$el = $el;

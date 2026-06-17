@@ -15,14 +15,13 @@ export interface Input {}
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("marko/src/core-tags/core/script.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_2 /*script*/)()()(
+    Marko._.renderTemplate(__marko_internal_tag_2)()()(
       //      ^?
       {
         async value() {
           const el = $el();
           //    ^?
         },
-        /*script*/
       },
     );
     var __marko_internal_hoist__$el = $el;

@@ -18,21 +18,21 @@ export interface Input {
   {
     const Section = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*define*/,
+      __marko_internal_tag_1,
     )()()({
-      [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: ({
+      [Marko._.contentFor(__marko_internal_tag_1)]: ({
         children = [],
       }: Help) => {
         Marko._.forOfTag(
           {
-            /*for*/ of: children,
+            of: children,
           },
           (
             // ^?
             { children },
           ) => {
             const __marko_internal_tag_2 = Section;
-            Marko._.renderDynamicTag(__marko_internal_tag_2 /*Section*/)()()({
+            Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
               children: children,
             });
             return Marko._.voidReturn;
@@ -43,14 +43,14 @@ export interface Input {
     });
     Marko._.forOfTag(
       {
-        /*for*/ of: input.value,
+        of: input.value,
       },
       (
         // ^?
         help,
       ) => {
         const __marko_internal_tag_3 = Section;
-        Marko._.renderDynamicTag(__marko_internal_tag_3 /*Section*/)()()({
+        Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
           ...help,
         });
         return Marko._.voidReturn;

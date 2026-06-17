@@ -14,11 +14,11 @@ export { type Component };
   Marko._.renderNativeTag("html")()()({
     lang: "en",
     xml: "es",
-    [Marko._.content /*html*/]: (() => {
+    [Marko._.content]: (() => {
       Marko._.renderNativeTag("head")()()({
-        [Marko._.content /*head*/]: (() => {
+        [Marko._.content]: (() => {
           Marko._.renderNativeTag("title")()()({
-            [Marko._.content /*title*/]: (() => {
+            [Marko._.content]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };

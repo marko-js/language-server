@@ -13,12 +13,10 @@ export interface Input {}
   {
     const result = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*test-tag*/,
+      __marko_internal_tag_1,
     )()()({
       data: 1 as const,
-      [Marko._.contentFor(__marko_internal_tag_1) /*test-tag*/]: <A,>(
-        data: A,
-      ) => {
+      [Marko._.contentFor(__marko_internal_tag_1)]: <A,>(data: A) => {
         var __marko_internal_return = Marko._.returnTag(
           //                         ^?
           {

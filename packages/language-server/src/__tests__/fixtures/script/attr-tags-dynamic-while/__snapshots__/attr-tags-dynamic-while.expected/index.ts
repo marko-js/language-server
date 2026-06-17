@@ -16,18 +16,18 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1 /*custom*/)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
     ...(++i < 10
       ? {
           //         ^?
-          ["a" /*@a*/]: {
-            [Marko._.contentFor(__marko_internal_tag_1) /*@a*/]: (() => {
+          ["a"]: {
+            [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
               i;
               return () => {
                 return Marko._.voidReturn;
               };
             })(),
-            [/*@a*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }
       : {}),
@@ -39,12 +39,12 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
     ...(!done
       ? {
           //        ^?
-          ["a" /*@a*/]: {
-            [Marko._.contentFor(__marko_internal_tag_2) /*@a*/]: (() => {
+          ["a"]: {
+            [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
               done;
               //      ^?
               if (++i === 5) {
@@ -54,7 +54,7 @@ export { type Component };
                 return Marko._.voidReturn;
               };
             })(),
-            [/*@a*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }
       : {}),
@@ -63,16 +63,16 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3 /*custom*/)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
     ...(undefined
       ? {
-          ["a" /*@a*/]: {
-            [Marko._.contentFor(__marko_internal_tag_3) /*@a*/]: (() => {
+          ["a"]: {
+            [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };
             })(),
-            [/*@a*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }
       : {}),

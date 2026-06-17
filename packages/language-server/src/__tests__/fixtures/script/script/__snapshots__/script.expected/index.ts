@@ -12,14 +12,14 @@ export interface Input<T extends string> {
   const y = Marko._.hoist(() => __marko_internal_hoist__y);
   const promise = Marko._.hoist(() => __marko_internal_hoist__promise);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
-    [Marko._.content /*div*/]: (() => {
+    [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
       {
         const x = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2 /*let*/,
+          __marko_internal_tag_2,
         )()()({
           value: 1,
         });
@@ -34,7 +34,7 @@ export interface Input<T extends string> {
         {
           const y = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3 /*const*/,
+            __marko_internal_tag_3,
           )()()({
             value: "hi",
           });
@@ -49,14 +49,14 @@ export interface Input<T extends string> {
           {
             const promise = Marko._.returned(() => __marko_internal_rendered_4);
             const __marko_internal_rendered_4 = Marko._.renderTemplate(
-              __marko_internal_tag_4 /*const*/,
+              __marko_internal_tag_4,
             )()()({
               value: Promise.resolve("world"),
             });
             const __marko_internal_tag_5 = Marko._.resolveTemplate(
               import("marko/src/core-tags/core/script.d.marko"),
             );
-            Marko._.renderTemplate(__marko_internal_tag_5 /*script*/)()()({
+            Marko._.renderTemplate(__marko_internal_tag_5)()()({
               async value() {
                 console.log(x);
                 //              ^?
@@ -71,7 +71,6 @@ export interface Input<T extends string> {
                 __marko_internal_change__x.x = 2;
                 __marko_internal_change__y.y = "bye";
               },
-              /*script*/
             });
             return () => {
               return new (class MarkoReturn<Return = void> {

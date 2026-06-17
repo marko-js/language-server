@@ -12,8 +12,8 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = Marko._.interpolated`blink`;
-  Marko._.renderDynamicTag(__marko_internal_tag_1 /*blink*/)()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*blink*/]: (() => {
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+    [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

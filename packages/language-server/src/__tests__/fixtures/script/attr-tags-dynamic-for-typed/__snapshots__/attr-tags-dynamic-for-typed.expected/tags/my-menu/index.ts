@@ -18,11 +18,11 @@ export interface Input {
   );
   Marko._.forOfTag(
     {
-      /*for*/ of: input.menuitem,
+      of: input.menuitem,
     },
     (item) => {
       const __marko_internal_tag_1 = item.content;
-      Marko._.renderDynamicTag(__marko_internal_tag_1 /*item.content*/)()()({
+      Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
         foo: "foo",
       });
       return Marko._.voidReturn;

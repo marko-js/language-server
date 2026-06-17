@@ -13,10 +13,8 @@ export interface Input {}
   {
     const y = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*oneOrTwo*/,
-    )()()({
-      /*oneOrTwo*/
-    });
+      __marko_internal_tag_1,
+    )()()({});
     var __marko_internal_hoist__y = y;
   }
   Marko._.noop({ y, input, $global, $signal });

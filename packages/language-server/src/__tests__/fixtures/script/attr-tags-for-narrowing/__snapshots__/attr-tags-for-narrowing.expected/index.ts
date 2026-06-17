@@ -19,42 +19,39 @@ export { type Component };
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*list*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     ...Marko._.mergeAttrTags(
       Marko._.forOfAttrTag(
         {
-          /*for*/ of: [1, 2, 3],
+          of: [1, 2, 3],
         },
         () => ({
-          ["item" /*@item*/]: {
+          ["item"]: {
             size: "small",
-            [/*@item*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }),
         Marko._.input(__marko_internal_tag_1),
       ),
       Marko._.forOfAttrTag(
         {
-          /*for*/ of: [1, 2, 3],
+          of: [1, 2, 3],
         },
         // ^?
         () => ({
-          ["item" /*@item*/]: Marko._.attrTagFor(
-            __marko_internal_tag_1,
-            "item",
-          )(
+          ["item"]: Marko._.attrTagFor(__marko_internal_tag_1, "item")(
             "item",
             {
-              ["item" /*@item*/]: {
+              ["item"]: {
                 size: "small",
-                [/*@item*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
             {
               // ^?
-              ["item" /*@item*/]: {
+              ["item"]: {
                 size: "huge",
-                [/*@item*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ),

@@ -14,8 +14,8 @@ export { type Component }
 const __marko_internal_tag_1 = (
 custom
 );
-Marko._.renderDynamicTag(__marko_internal_tag_1/*custom*/)()()({
-[Marko._.contentFor(__marko_internal_tag_1)/*custom*/]: ((
+Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+[Marko._.contentFor(__marko_internal_tag_1)]: ((
 a, %b
 ) => {
 return Marko._.voidReturn;

@@ -17,7 +17,7 @@ export interface Input {}
   const i = Marko._.hoist(() => __marko_internal_hoist__i);
   const j = Marko._.hoist(() => __marko_internal_hoist__j);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
-    [Marko._.content /*div*/]: (() => {
+    [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
       );
@@ -32,7 +32,7 @@ export interface Input {}
           ...g
         } = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2 /*let*/,
+          __marko_internal_tag_2,
         )()()({
           value: {
             a: 1,
@@ -55,7 +55,7 @@ export interface Input {}
             () => __marko_internal_rendered_3,
           );
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3 /*let*/,
+            __marko_internal_tag_3,
           )()()({
             value: [1, 2, 3, 4, 5] as const,
           });

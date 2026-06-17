@@ -20,20 +20,18 @@ export interface Input {
   );
   Marko._.forOfTag(
     {
-      /*for*/ of: input.section,
+      of: input.section,
     },
     (section) => {
       Marko._.forOfTag(
         {
-          /*for*/ of: section.item,
+          of: section.item,
         },
         (item) => {
           const __marko_internal_tag_1 = item.content;
-          Marko._.renderDynamicTag(__marko_internal_tag_1 /*item.content*/)()()(
-            {
-              label: "label",
-            },
-          );
+          Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+            label: "label",
+          });
           return Marko._.voidReturn;
         },
       );

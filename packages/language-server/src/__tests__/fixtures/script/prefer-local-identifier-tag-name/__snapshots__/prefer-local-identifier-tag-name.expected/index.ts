@@ -15,7 +15,7 @@ export interface Input {}
   {
     const TestTagA = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*const*/,
+      __marko_internal_tag_1,
     )()()({
       value: CustomTagA,
     });
@@ -23,25 +23,25 @@ export interface Input {}
       TestTagA,
       import("./components/TestTagA.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_2 /*TestTagA*/)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
       a: "hello",
     });
     const __marko_internal_tag_3 = Marko._.fallbackTemplate(
       TestTagB,
       import("./components/TestTagB.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_3 /*TestTagB*/)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
       b: "hello",
     });
     Marko._.renderNativeTag("div")()()({
-      [Marko._.content /*div*/]: (() => {
+      [Marko._.content]: (() => {
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         );
         {
           const TestTagA = Marko._.returned(() => __marko_internal_rendered_4);
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4 /*const*/,
+            __marko_internal_tag_4,
           )()()({
             value: CustomTagB,
           });
@@ -49,7 +49,7 @@ export interface Input {}
             TestTagA,
             import("./components/TestTagA.marko"),
           );
-          Marko._.renderDynamicTag(__marko_internal_tag_5 /*TestTagA*/)()()({
+          Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
             a: "hello",
           });
           return () => {
@@ -62,7 +62,7 @@ export interface Input {}
       TestTagA,
       import("./components/TestTagA.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_6 /*TestTagA*/)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_6)()()({
       a: "hello",
     });
     var __marko_internal_hoist__TestTagA = TestTagA;

@@ -26,7 +26,7 @@ export interface Input {}
   {
     const list = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: [
         {
@@ -42,7 +42,7 @@ export interface Input {}
     });
     Marko._.forOfTag(
       {
-        /*for*/ of: list,
+        of: list,
       },
       () => {
         return Marko._.voidReturn;
@@ -50,7 +50,7 @@ export interface Input {}
     );
     Marko._.forOfTag(
       {
-        /*for*/ of: list,
+        of: list,
       },
       (item, index, all) => {
         item;
@@ -61,7 +61,7 @@ export interface Input {}
     );
     Marko._.forOfTag(
       {
-        /*for*/ of: list,
+        of: list,
         by: (item, index) => `${item}-${index}`,
       },
       () =>
@@ -73,7 +73,7 @@ export interface Input {}
     );
     const __marko_internal_rendered_2 = Marko._.forOfTag(
       {
-        /*for*/ of: list,
+        of: list,
       },
       (
         //               ^?    ^?
@@ -87,7 +87,7 @@ export interface Input {}
             () => __marko_internal_rendered_3,
           );
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3 /*const*/,
+            __marko_internal_tag_3,
           )()()({
             value: () => item.value,
           });
@@ -101,7 +101,7 @@ export interface Input {}
     );
     Marko._.forOfTag(
       {
-        /*for*/ of: list,
+        of: list,
       },
       (item) => {
         return Marko._.voidReturn;
@@ -110,7 +110,7 @@ export interface Input {}
     const __marko_internal_tag_4 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/effect.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_4 /*effect*/)()()({
+    Marko._.renderTemplate(__marko_internal_tag_4)()()({
       value() {
         hoistedFromForOf;
         //^?
@@ -122,13 +122,13 @@ export interface Input {}
     {
       const record = Marko._.returned(() => __marko_internal_rendered_5);
       const __marko_internal_rendered_5 = Marko._.renderTemplate(
-        __marko_internal_tag_5 /*let*/,
+        __marko_internal_tag_5,
       )()()({
         value: { a: 1, b: 2 } as const,
       });
       Marko._.forInTag(
         {
-          /*for*/ in: record,
+          in: record,
         },
         (key, value) => {
           key;
@@ -138,7 +138,7 @@ export interface Input {}
       );
       Marko._.forInTag(
         {
-          /*for*/ in: record,
+          in: record,
           by: (value, key) => `${value}-${key}`,
         },
         () =>
@@ -150,7 +150,7 @@ export interface Input {}
       );
       const __marko_internal_rendered_6 = Marko._.forInTag(
         {
-          /*for*/ in: record,
+          in: record,
         },
         (
           //                 ^?     ^?
@@ -164,7 +164,7 @@ export interface Input {}
               () => __marko_internal_rendered_7,
             );
             const __marko_internal_rendered_7 = Marko._.renderTemplate(
-              __marko_internal_tag_7 /*const*/,
+              __marko_internal_tag_7,
             )()()({
               value: () => key,
             });
@@ -179,7 +179,7 @@ export interface Input {}
       const __marko_internal_tag_8 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_8 /*effect*/)()()({
+      Marko._.renderTemplate(__marko_internal_tag_8)()()({
         value() {
           hoistedFromForIn;
           //^?
@@ -187,7 +187,7 @@ export interface Input {}
       });
       Marko._.forToTag(
         {
-          /*for*/ to: 10,
+          to: 10,
         },
         (index) => {
           index;
@@ -196,7 +196,7 @@ export interface Input {}
       );
       Marko._.forToTag(
         {
-          /*for*/ to: 10,
+          to: 10,
           by: (index) => `${index}`,
         },
         () =>
@@ -208,7 +208,7 @@ export interface Input {}
       );
       Marko._.forToTag(
         {
-          /*for*/ from: 1,
+          from: 1,
           to: 10,
         },
         (
@@ -221,7 +221,7 @@ export interface Input {}
       );
       Marko._.forToTag(
         {
-          /*for*/ to: 10,
+          to: 10,
           step: 2,
         },
         (
@@ -234,7 +234,7 @@ export interface Input {}
       );
       const __marko_internal_rendered_9 = Marko._.forToTag(
         {
-          /*for*/ to: 10,
+          to: 10,
         },
         (
           //  ^?
@@ -248,7 +248,7 @@ export interface Input {}
               () => __marko_internal_rendered_10,
             );
             const __marko_internal_rendered_10 = Marko._.renderTemplate(
-              __marko_internal_tag_10 /*const*/,
+              __marko_internal_tag_10,
             )()()({
               value: () => index,
             });
@@ -263,7 +263,7 @@ export interface Input {}
       const __marko_internal_tag_11 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_11 /*effect*/)()()({
+      Marko._.renderTemplate(__marko_internal_tag_11)()()({
         value() {
           hoistedFromForUntil;
           //^?
@@ -271,7 +271,7 @@ export interface Input {}
       });
       Marko._.forUntilTag(
         {
-          /*for*/ until: 10,
+          until: 10,
         },
         (index) => {
           index;
@@ -280,7 +280,7 @@ export interface Input {}
       );
       Marko._.forUntilTag(
         {
-          /*for*/ until: 10,
+          until: 10,
           by: (index) => `${index}`,
         },
         () =>
@@ -292,7 +292,7 @@ export interface Input {}
       );
       Marko._.forUntilTag(
         {
-          /*for*/ from: 1,
+          from: 1,
           until: 10,
         },
         (
@@ -305,7 +305,7 @@ export interface Input {}
       );
       Marko._.forUntilTag(
         {
-          /*for*/ until: 10,
+          until: 10,
           step: 2,
         },
         (
@@ -318,7 +318,7 @@ export interface Input {}
       );
       const __marko_internal_rendered_12 = Marko._.forUntilTag(
         {
-          /*for*/ until: 10,
+          until: 10,
         },
         (
           //  ^?
@@ -332,7 +332,7 @@ export interface Input {}
               () => __marko_internal_rendered_13,
             );
             const __marko_internal_rendered_13 = Marko._.renderTemplate(
-              __marko_internal_tag_13 /*const*/,
+              __marko_internal_tag_13,
             )()()({
               value: () => index,
             });
@@ -347,20 +347,15 @@ export interface Input {}
       const __marko_internal_tag_14 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
       );
-      Marko._.renderTemplate(__marko_internal_tag_14 /*effect*/)()()({
+      Marko._.renderTemplate(__marko_internal_tag_14)()()({
         value() {
           hoistedFromForUntil;
           //^?
         },
       });
-      Marko._.forTag(
-        {
-          /*for*/
-        },
-        (index) => {
-          return Marko._.voidReturn;
-        },
-      );
+      Marko._.forTag({}, (index) => {
+        return Marko._.voidReturn;
+      });
       var __marko_internal_hoist__list = list;
       var __marko_internal_hoist__record = record;
       var {

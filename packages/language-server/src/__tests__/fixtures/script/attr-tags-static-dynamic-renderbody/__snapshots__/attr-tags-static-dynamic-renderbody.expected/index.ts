@@ -15,7 +15,7 @@ export interface Input {}
   {
     const someCondition = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: false,
     });
@@ -24,37 +24,36 @@ export interface Input {}
       input["@header"];
       input["@footer"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
       ...Marko._.mergeAttrTags(
         {
-          ["header" /*@header*/]: {
-            [Marko._.contentFor(__marko_internal_tag_2) /*@header*/]: (() => {
+          ["header"]: {
+            [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };
             })(),
-            [/*@header*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         },
         someCondition
           ? {
               //^?
-              ["footer" /*@footer*/]: {
-                [Marko._.contentFor(__marko_internal_tag_2) /*@footer*/]:
-                  (() => {
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
-                  })(),
-                [/*@footer*/ Symbol.iterator]: Marko._.any,
+              ["footer"]: {
+                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [Symbol.iterator]: Marko._.any,
               },
             }
           : {},
       ),
-      [Marko._.contentFor(__marko_internal_tag_2) /*custom*/]: (() => {
+      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
         Marko._.forOfTag(
           {
-            /*for*/ of: [1],
+            of: [1],
           },
           (x) => {
             x;

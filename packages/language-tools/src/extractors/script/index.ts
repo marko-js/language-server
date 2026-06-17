@@ -42,8 +42,7 @@ const ATTR_UNNAMED = "value";
 const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
 const REG_BLOCK = /\s*{/y;
 const REG_NEW_LINE = /^|(\r?\n)/g;
-const REG_ATTR_ARG_LITERAL =
-  /(?<=\s*)(["'])((?:[^"'\\]|\\.|(?!\1))*)\1\s*([,)])/my;
+const REG_ATTR_ARG_LITERAL = /(["'])((?:\\.|(?!\1)[^\\])*)\1\s*([,)])/y;
 const REG_TAG_IMPORT = /(?<=(['"]))<([^'">]+)>(?=\1)/;
 const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
@@ -191,6 +190,7 @@ class ScriptExtractor {
             if (templatePath) {
               const [{ length }] = tagImportMatch;
               const fromStart = node.start + tagImportMatch.index;
+              const fromEnd = fromStart + length;
               this.#extractor
                 .copy({
                   start: node.start,
@@ -198,7 +198,7 @@ class ScriptExtractor {
                 })
                 .write(templatePath)
                 .copy({
-                  start: fromStart + length,
+                  start: fromEnd,
                   end: node.end,
                 })
                 .write("\n");
@@ -359,10 +359,13 @@ function ${templateName}() {\n`);
     const bindings = getProgramBindings(program);
 
     if (bindings) {
-      for (const name of bindings.all) {
-        this.#extractor.write(
-          `const ${name} = ${varShared("hoist")}(() => ${varLocal(`hoist__${name}`)});\n`,
-        );
+      for (const binding of bindings.all) {
+        this.#extractor
+          .write("const ")
+          .copy(binding.sources)
+          .write(
+            ` = ${varShared("hoist")}(() => ${varLocal(`hoist__${binding.name}`)});\n`,
+          );
       }
     }
 
@@ -371,16 +374,24 @@ function ${templateName}() {\n`);
 
       if (bindings) {
         if (bindings.vars) {
-          for (const name of bindings.vars) {
-            this.#extractor.write(
-              `var ${varLocal(`hoist__${name}`)} = ${name};\n`,
-            );
+          for (const binding of bindings.vars) {
+            this.#extractor
+              .write(`var ${varLocal(`hoist__${binding.name}`)} = `)
+              .copy(binding.sources[0])
+              .write(";\n");
           }
         }
 
         if (bindings.hoists) {
           this.#extractor.write(
-            `var {${bindings.hoists.map((name) => `${name}: ${varLocal(`hoist__${name}`)}`).join(SEP_COMMA_SPACE)}} = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
+            `var {${bindings.hoists
+              .map(
+                (binding) =>
+                  `${binding.name}: ${varLocal(`hoist__${binding.name}`)}`,
+              )
+              .join(
+                SEP_COMMA_SPACE,
+              )}} = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
           );
         }
       }
@@ -389,7 +400,12 @@ function ${templateName}() {\n`);
     }
 
     this.#extractor.write(
-      `${varShared("noop")}({ ${bindings ? bindings.all.join(SEP_COMMA_SPACE) + SEP_COMMA_SPACE : ""}${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
+      `${varShared("noop")}({ ${
+        bindings
+          ? bindings.all.map((binding) => binding.name).join(SEP_COMMA_SPACE) +
+            SEP_COMMA_SPACE
+          : ""
+      }${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
     );
 
     if (didReturn) {
@@ -436,14 +452,13 @@ function ${templateName}() {\n`);
   }
 }>`;
 
-    this.#extractor.copy(START_OF_FILE);
-
+    this.#extractor.write(`export default new `).anchor(START_OF_FILE);
     if (this.#scriptLang === ScriptLang.ts) {
-      this.#extractor.write(`export default new (
+      this.#extractor.write(`(
   class Template extends ${templateOverrideClass} {}
 );\n`);
     } else {
-      this.#extractor.write(`export default new (
+      this.#extractor.write(`(
   /**
    * @extends {${removeNewLines(templateOverrideClass)}}
    */
@@ -505,23 +520,42 @@ function ${templateName}() {\n`);
     returned: Range | string | undefined,
     body: Node.ParentNode["body"],
   ) {
-    const scopeExpr = this.#getScopeExpression(body);
-    if (!returned && !scopeExpr) {
+    const hasScope = this.#hasScopeExpression(body);
+    if (!returned && !hasScope) {
       this.#extractor.write(`return ${varShared("voidReturn")};\n`);
       return;
     }
 
-    this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
+    if (this.#scriptLang === ScriptLang.ts) {
+      this.#extractor.write(`return new (class MarkoReturn<Return = void> {\n`);
 
-    if (scopeExpr) {
-      this.#extractor.write(
-        `readonly [${varShared("scope")}] = ${scopeExpr};\n`,
-      );
-    }
+      if (hasScope) {
+        this.#extractor.write(`readonly [${varShared("scope")}] = `);
+        this.#writeScopeExpression(body);
+        this.#extractor.write(";\n");
+      }
 
-    this.#extractor.write(`declare return: Return;
+      this.#extractor.write(`declare return: Return;
 constructor(_?: Return) {}
 })(\n`);
+    } else {
+      this.#extractor.write(`return new (/**
+* @template [Return=void]
+*/
+class MarkoReturn {\n`);
+
+      if (hasScope) {
+        this.#extractor.write(`[${varShared("scope")}] = `);
+        this.#writeScopeExpression(body);
+        this.#extractor.write(";\n");
+      }
+
+      this.#extractor.write(`/** @type {Return} */
+return;
+/** @param {Return} [_] */
+constructor(_) {}
+})(\n`);
+    }
 
     this.#extractor.copy(returned);
     this.#extractor.write(");\n");
@@ -578,9 +612,10 @@ constructor(_?: Return) {}
               if (ifBody?.content) {
                 this.#writeChildren(ifBody.content, true);
 
-                const scopeExpr = this.#getScopeExpression(child.body);
-                if (scopeExpr) {
-                  this.#extractor.write(`return {\nscope: ${scopeExpr}\n};\n`);
+                if (this.#hasScopeExpression(child.body)) {
+                  this.#extractor.write("return {\nscope: ");
+                  this.#writeScopeExpression(child.body);
+                  this.#extractor.write("\n};\n");
                 }
 
                 this.#endChildren();
@@ -607,11 +642,10 @@ constructor(_?: Return) {}
                   if (alternateBody?.content) {
                     this.#writeChildren(alternateBody.content, true);
 
-                    const scopeExpr = this.#getScopeExpression(node.body);
-                    if (scopeExpr) {
-                      this.#extractor.write(
-                        `return {\nscope: ${scopeExpr}\n};\n`,
-                      );
+                    if (this.#hasScopeExpression(node.body)) {
+                      this.#extractor.write("return {\nscope: ");
+                      this.#writeScopeExpression(node.body);
+                      this.#extractor.write("\n};\n");
                     }
 
                     this.#endChildren();
@@ -638,10 +672,11 @@ constructor(_?: Return) {}
                 );
               }
 
-              this.#extractor.write(
-                `${varShared(getForTagRuntime(this.#parsed, child))}({\n`,
-              );
-              this.#writeTagNameComment(child);
+              this.#extractor
+                .write(
+                  `${varShared(getForTagRuntime(this.#parsed, child))}({\n`,
+                )
+                .anchor(child.name);
               this.#writeAttrs(child);
               this.#extractor
                 .write("\n}" + SEP_COMMA_NEW_LINE)
@@ -796,11 +831,12 @@ constructor(_?: Return) {}
         .copy(isEmptyRange(tag.name) ? tagName : tag.name)
         .write('")');
     } else if (templateVar) {
-      this.#extractor.write(
-        `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar}`,
-      );
-      this.#writeTagNameComment(tag);
-      this.#extractor.write(")");
+      this.#extractor
+        .write(
+          `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar}`,
+        )
+        .anchor(tag.name)
+        .write(")");
     } else {
       this.#extractor.write(varShared("missingTag"));
     }
@@ -847,13 +883,6 @@ constructor(_?: Return) {}
     }
   }
 
-  #writeTagNameComment(tag: Node.ParentTag) {
-    this.#extractor
-      .write("/*")
-      .copy(this.#getDynamicTagExpression(tag) || tag.name)
-      .write("*/");
-  }
-
   #writePlaceholder(placeholder: Node.Placeholder) {
     this.#writeComments(placeholder);
     this.#extractor.write("(").copy(placeholder.value).write(");\n");
@@ -893,22 +922,10 @@ constructor(_?: Return) {}
       this.#extractor.write("`" + SEP_COMMA_NEW_LINE);
     }
 
-    let attrWhitespaceStart = Math.max(
-      tag.name.end,
-      tag.shorthandId?.end ?? -1,
-      tag.shorthandClassNames?.[tag.shorthandClassNames.length - 1]?.end ?? -1,
-      tag.var?.end ?? -1,
-      tag.args?.end ?? -1,
-      tag.params?.end ?? -1,
-    );
-
     if (tag.attrs) {
       hasAttrs = true;
 
       for (const attr of tag.attrs) {
-        this.#copyWhitespaceWithin(attrWhitespaceStart, attr.start);
-        attrWhitespaceStart = attr.end;
-
         switch (attr.type) {
           case NodeType.AttrSpread:
             this.#extractor.write(`...(\n`);
@@ -936,7 +953,7 @@ constructor(_?: Return) {}
                 case NodeType.AttrMethod:
                   this.#extractor
                     .write('"')
-                    .copy(defaultMapPosition) // TODO: see if this is working
+                    .anchor(defaultMapPosition)
                     .copy(name)
                     .write('"')
                     .copy(value.typeParams);
@@ -947,7 +964,7 @@ constructor(_?: Return) {}
                   const boundRange = value.bound && getBoundAttrRange(value);
                   this.#extractor
                     .write('"')
-                    .copy(defaultMapPosition)
+                    .anchor(defaultMapPosition)
                     .copy(name)
                     .write('": (\n');
                   if (boundRange) {
@@ -959,7 +976,7 @@ constructor(_?: Return) {}
                         .write(" ")
                         .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
-                        .copy(defaultMapPosition)
+                        .anchor(defaultMapPosition)
                         .copy(name)
                         .write(
                           `Change"(\n// @ts-ignore\n_${valueLiteral}\n) {\n${
@@ -987,7 +1004,7 @@ constructor(_?: Return) {}
                         })
                         .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
-                        .copy(defaultMapPosition)
+                        .anchor(defaultMapPosition)
                         .copy(name)
                         .write('Change": (\n');
 
@@ -1022,7 +1039,7 @@ constructor(_?: Return) {}
                         .copy(memberRange)
                         .copy(boundRange.types)
                         .write(`\n)${SEP_COMMA_NEW_LINE}"`)
-                        .copy(defaultMapPosition)
+                        .anchor(defaultMapPosition)
                         .copy(name)
                         .write('Change": (\n');
 
@@ -1108,7 +1125,7 @@ constructor(_?: Return) {}
             } else {
               this.#extractor
                 .write('"')
-                .copy(defaultMapPosition)
+                .anchor(defaultMapPosition)
                 .copy(name)
                 .write(`": ${modifier ? '""' : "true"}`);
             }
@@ -1119,18 +1136,6 @@ constructor(_?: Return) {}
         this.#extractor.write(SEP_COMMA_NEW_LINE);
       }
     }
-
-    this.#copyWhitespaceWithin(
-      attrWhitespaceStart,
-      tag.open.end -
-        (tag.concise
-          ? this.#code[tag.open.end] === ";"
-            ? 1
-            : 0
-          : tag.selfClosed
-            ? 2
-            : 1),
-    );
 
     return hasAttrs;
   }
@@ -1174,9 +1179,10 @@ constructor(_?: Return) {}
       const [firstAttrTag] = attrTag;
       const name = this.#getAttrTagName(firstAttrTag);
 
-      this.#extractor.write(`["${name}"`);
-      this.#writeTagNameComment(firstAttrTag);
-      this.#extractor.write("]: ");
+      this.#extractor
+        .write(`["`)
+        .anchor(firstAttrTag.name)
+        .write(`${name}"]: `);
 
       if (isRepeated) {
         const templateVar = this.#getTemplateVar(firstAttrTag.owner!);
@@ -1191,9 +1197,10 @@ constructor(_?: Return) {}
         this.#extractor.write(`"${name}",`);
 
         for (const childNode of attrTag) {
-          this.#extractor.write(`{["${name}"`);
-          this.#writeTagNameComment(childNode);
-          this.#extractor.write("]: ");
+          this.#extractor
+            .write(`{["`)
+            .anchor(childNode.name)
+            .write(`${name}"]: `);
           this.#writeTagInputObject(childNode);
           this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
         }
@@ -1258,10 +1265,9 @@ constructor(_?: Return) {}
           break;
         }
         case "for": {
-          this.#extractor.write(
-            `${varShared(getForAttrTagRuntime(this.#parsed, tag))}({\n`,
-          );
-          this.#writeTagNameComment(tag);
+          this.#extractor
+            .write(`${varShared(getForAttrTagRuntime(this.#parsed, tag))}({\n`)
+            .anchor(tag.name);
           this.#writeAttrs(tag);
           this.#extractor.write("\n}, \n");
           this.#writeComments(tag);
@@ -1364,7 +1370,7 @@ constructor(_?: Return) {}
     }
 
     if (tag.params || hasBodyContent) {
-      this.#extractor.write("[");
+      this.#extractor.write("[").anchor(tag.name);
 
       if (this.#interop) {
         const templateVar = this.#getTemplateVar(
@@ -1379,10 +1385,6 @@ constructor(_?: Return) {}
         this.#extractor.write('"content"');
       }
 
-      // Adds a comment containing the tag name inside the body content key
-      // this causes any errors which are just for the body content
-      // to show on the tag.
-      this.#writeTagNameComment(tag);
       this.#extractor.write("]: ");
 
       if (tag.params) {
@@ -1422,13 +1424,13 @@ constructor(_?: Return) {}
 
     if (tag.type === NodeType.AttrTag) {
       this.#extractor
-        .write("[/*")
-        .copy(tag.name)
-        .write(`*/Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`);
+        .write("[")
+        .anchor(tag.name)
+        .write(`Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`);
     }
 
     if (!hasInput) {
-      this.#writeTagNameComment(tag);
+      this.#extractor.anchor(tag.name);
     }
 
     if (writeInputObj) {
@@ -1484,29 +1486,6 @@ constructor(_?: Return) {}
       minIndex = maxIndex + 1;
       // eslint-disable-next-line no-constant-condition
     } while (true);
-  }
-
-  #copyWhitespaceWithin(start: number, end: number) {
-    const code = this.#code;
-    const max = Math.min(end, code.length);
-    let lastPos = start;
-    let pos = start;
-
-    while (pos < max) {
-      if (!isWhitespaceCode(code.charCodeAt(pos))) {
-        lastPos = pos + 1;
-        if (pos > lastPos) {
-          this.#extractor.copy({ start: lastPos, end: pos });
-        }
-        return;
-      }
-
-      pos++;
-    }
-
-    if (pos > lastPos) {
-      this.#extractor.copy({ start: lastPos, end: pos });
-    }
   }
 
   #processBody(parent: Node.ParentNode): ProcessedBody | undefined {
@@ -1786,8 +1765,6 @@ constructor(_?: Return) {}
 
   #getJSDocInputTypeFromNodes(nodes: Node.AnyNode[]) {
     for (const node of nodes) {
-      const code = this.#read(node);
-      code;
       const info = this.#getJSDocInputTypeFromNode(node);
       if (info) return info;
     }
@@ -1851,12 +1828,28 @@ constructor(_?: Return) {}
     return id;
   }
 
-  #getScopeExpression(body: Node.ParentNode["body"]) {
+  #hasScopeExpression(body: Node.ParentNode["body"]) {
+    return !!(getHoistSources(body) || this.#getBodyHoistScopeExpression(body));
+  }
+
+  #writeScopeExpression(body: Node.ParentNode["body"]) {
     const sources = getHoistSources(body);
     const hoists = this.#getBodyHoistScopeExpression(body);
-    return sources
-      ? `{ ${hoists ? `...${hoists}, ` : ""}${sources.join(SEP_COMMA_SPACE)} }`
-      : hoists;
+
+    if (!sources) {
+      if (hoists) this.#extractor.write(hoists);
+      return;
+    }
+
+    this.#extractor.write(`{ ${hoists ? `...${hoists}, ` : ""}`);
+
+    let sep = SEP_EMPTY;
+    for (const binding of sources) {
+      this.#extractor.write(sep).copy(binding.range);
+      sep = SEP_COMMA_SPACE;
+    }
+
+    this.#extractor.write(" }");
   }
 
   #getBodyHoistScopeExpression(body: Node.ParentNode["body"]) {

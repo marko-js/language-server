@@ -17,10 +17,10 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*test-tag*/)()()({
-    ["items" /*@item*/]: {
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    ["items"]: {
       x: 1,
-      [/*@item*/ Symbol.iterator]: Marko._.any,
+      [Symbol.iterator]: Marko._.any,
     },
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -30,28 +30,28 @@ export { type Component };
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2 /*test-tag*/)()()({
-    ["items" /*@item*/]: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    ["items"]: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
       "items",
       {
-        ["items" /*@item*/]: {
+        ["items"]: {
           x: 1,
-          [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
+          [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
             return () => {
               return Marko._.voidReturn;
             };
           })(),
-          [/*@item*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["items" /*@item*/]: {
-          [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: (() => {
+        ["items"]: {
+          [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
             return () => {
               return Marko._.voidReturn;
             };
           })(),
-          [/*@item*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       },
     ),

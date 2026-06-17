@@ -14,7 +14,7 @@ export interface Input {}
   {
     const x = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: 1,
     });
@@ -28,7 +28,7 @@ export interface Input {}
         __marko_internal_change__x.x++;
         //^?
       },
-      [Marko._.content /*button*/]: (() => {
+      [Marko._.content]: (() => {
         return () => {
           return Marko._.voidReturn;
         };
@@ -36,16 +36,16 @@ export interface Input {}
     });
     const __marko_internal_tag_2 = Marko._.interpolated`foo`;
     const __marko_internal_rendered_2 = Marko._.renderDynamicTag(
-      __marko_internal_tag_2 /*foo*/,
+      __marko_internal_tag_2,
     )()()({
-      [Marko._.contentFor(__marko_internal_tag_2) /*foo*/]: (() => {
+      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
         );
         {
           const y = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3 /*let*/,
+            __marko_internal_tag_3,
           )()()({
             value: "hello",
           });
@@ -61,7 +61,7 @@ export interface Input {}
               __marko_internal_change__y.y = "goodbye";
               //  ^?
             },
-            [Marko._.content /*button*/]: (() => {
+            [Marko._.content]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };

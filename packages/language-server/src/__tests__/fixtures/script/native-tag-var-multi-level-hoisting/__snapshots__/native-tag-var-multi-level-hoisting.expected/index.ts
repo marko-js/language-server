@@ -8,13 +8,13 @@ export interface Input {}
   );
   const searchInput = Marko._.hoist(() => __marko_internal_hoist__searchInput);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
-    [Marko._.content /*div*/]: (() => {
+    [Marko._.content]: (() => {
       const __marko_internal_rendered_2 = Marko._.renderNativeTag("div")()()({
         onClick() {
           searchInput().focus();
           // ^?
         },
-        [Marko._.content /*div*/]: (() => {
+        [Marko._.content]: (() => {
           {
             const searchInput = Marko._.el("input");
             Marko._.renderNativeTag("input")()()({

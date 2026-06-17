@@ -14,7 +14,7 @@ export { type Component };
   Marko._.renderNativeTag("a")()()({
     href: "google.com",
     accesskey: "g",
-    [Marko._.content /*a*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
@@ -23,7 +23,7 @@ export { type Component };
   Marko._.renderNativeTag("a")()()({
     href: "github.com",
     accesskey: "g",
-    [Marko._.content /*a*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

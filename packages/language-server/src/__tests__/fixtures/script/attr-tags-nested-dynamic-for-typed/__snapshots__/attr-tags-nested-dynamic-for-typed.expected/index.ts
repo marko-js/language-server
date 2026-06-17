@@ -20,19 +20,17 @@ export { type Component };
       input["@item"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*my-layout*/)()()({
-    ["section" /*@section*/]: {
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    ["section"]: {
       ...Marko._.forOfAttrTag(
         {
-          /*for*/ of: ["a", "b", "c"],
+          of: ["a", "b", "c"],
         },
         (name) => ({
-          ["item" /*@item*/]: {
-            [Marko._.contentFor(__marko_internal_tag_1) /*@item*/]: ({
-              label,
-            }) => {
+          ["item"]: {
+            [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
               Marko._.renderNativeTag("div")()()({
-                [Marko._.content /*div*/]: (() => {
+                [Marko._.content]: (() => {
                   name;
                   label;
                   return () => {
@@ -42,12 +40,12 @@ export { type Component };
               });
               return Marko._.voidReturn;
             },
-            [/*@item*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         }),
         Marko._.inputForAttr(__marko_internal_tag_1, "section"),
       ),
-      [/*@section*/ Symbol.iterator]: Marko._.any,
+      [Symbol.iterator]: Marko._.any,
     },
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -59,16 +57,14 @@ export { type Component };
       input["@item"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_2 /*my-layout*/)()()(
+  Marko._.renderTemplate(__marko_internal_tag_2)()()(
     //                     ^?
     {
-      ["section" /*@section*/]: {
-        ["item" /*@item*/]: {
-          [Marko._.contentFor(__marko_internal_tag_2) /*@item*/]: ({
-            label,
-          }) => {
+      ["section"]: {
+        ["item"]: {
+          [Marko._.contentFor(__marko_internal_tag_2)]: ({ label }) => {
             Marko._.renderNativeTag("div")()()({
-              [Marko._.content /*div*/]: (() => {
+              [Marko._.content]: (() => {
                 label;
                 return () => {
                   return Marko._.voidReturn;
@@ -77,9 +73,9 @@ export { type Component };
             });
             return Marko._.voidReturn;
           },
-          [/*@item*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
-        [/*@section*/ Symbol.iterator]: Marko._.any,
+        [Symbol.iterator]: Marko._.any,
       },
     },
   );

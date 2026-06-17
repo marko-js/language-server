@@ -14,13 +14,11 @@ export interface Input {}
   {
     const Foo = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*define*/,
+      __marko_internal_tag_1,
     )()()({
-      [Marko._.contentFor(__marko_internal_tag_1) /*define*/]: (input: any) => {
+      [Marko._.contentFor(__marko_internal_tag_1)]: (input: any) => {
         const __marko_internal_tag_2 = input.section;
-        Marko._.renderDynamicTag(__marko_internal_tag_2 /*input.section*/)()()({
-          /*input.section*/
-        });
+        Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
         return Marko._.voidReturn;
       },
     });
@@ -30,16 +28,13 @@ export interface Input {}
       input["@section"];
     });
     const __marko_internal_rendered_3 = Marko._.renderDynamicTag(
-      __marko_internal_tag_3 /*Foo*/,
+      __marko_internal_tag_3,
     )()()({
-      ["section" /*@section*/]: Marko._.attrTagFor(
-        __marko_internal_tag_3,
-        "section",
-      )(
+      ["section"]: Marko._.attrTagFor(__marko_internal_tag_3, "section")(
         "section",
         {
-          ["section" /*@section*/]: {
-            [Marko._.contentFor(__marko_internal_tag_3) /*@section*/]: (() => {
+          ["section"]: {
+            [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               const __marko_internal_tag_4 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/const.d.marko"),
               );
@@ -48,7 +43,7 @@ export interface Input {}
                   () => __marko_internal_rendered_4,
                 );
                 const __marko_internal_rendered_4 = Marko._.renderTemplate(
-                  __marko_internal_tag_4 /*const*/,
+                  __marko_internal_tag_4,
                 )()()({
                   value: () => 1,
                 });
@@ -61,17 +56,17 @@ export interface Input {}
                 };
               }
             })(),
-            [/*@section*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         },
         {
-          ["section" /*@section*/]: {
-            [Marko._.contentFor(__marko_internal_tag_3) /*@section*/]: (() => {
+          ["section"]: {
+            [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               return () => {
                 return Marko._.voidReturn;
               };
             })(),
-            [/*@section*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
         },
       ),
@@ -79,12 +74,11 @@ export interface Input {}
     const __marko_internal_tag_5 = Marko._.resolveTemplate(
       import("marko/src/core-tags/core/script.d.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_5 /*script*/)()()({
+    Marko._.renderTemplate(__marko_internal_tag_5)()()({
       async value() {
         nested;
         // ^?
       },
-      /*script*/
     });
     var __marko_internal_hoist__Foo = Foo;
     var { nested: __marko_internal_hoist__nested } = Marko._.readScope(

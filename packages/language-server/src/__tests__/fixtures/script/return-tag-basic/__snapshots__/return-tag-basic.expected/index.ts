@@ -13,7 +13,7 @@ function __marko_internal_template(this: void) {
   {
     const value = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: 1,
     });

@@ -87,11 +87,10 @@ export function extractStyle(opts: ExtractStyleOptions) {
                 name === "#style" ||
                 (name === "style" &&
                   node.nameText &&
-                  name === "style" &&
                   lookup.getTag(node.nameText)?.html)
               ) {
                 // Add inline "style" attribute.
-                getExtractor("css")
+                getExtractor(".css")
                   .write(":root{")
                   .copy({
                     start: attr.value.value.start + 1,
