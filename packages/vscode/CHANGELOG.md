@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.5
+
+### Patch Changes
+
+- [`0753651`](https://github.com/marko-js/language-server/commit/0753651af3c06b79eb4b28e4bea4162e93108513) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade language tools.
+
 ## 3.0.4
 
 ### Patch Changes
