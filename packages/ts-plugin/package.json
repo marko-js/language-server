@@ -28,8 +28,8 @@
   "devDependencies": {
     "@marko/language-server": "^3.0.4",
     "@marko/language-tools": "^2.5.62",
-    "marko": "^5.38.36",
-    "tsx": "^4.21.0",
+    "marko": "^5.39.7",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
 }
