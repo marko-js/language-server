@@ -1,5 +1,21 @@
 # @marko/language-tools
 
+## 2.5.62
+
+### Patch Changes
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix return type extraction when outputting jsdoc.
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix mutaton tracking when a for loop is used without a variable declaration.
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor script extractor to allow for multi in/out source mapping. This allows for hoisted tag variables from multiple sources to all be sourcemapped correctly.
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix scope mutation tracking when assigning with a destructure pattern.
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix overlapping mappings in extractor now always leading to consistent tokens. This was a problem for eg default values which sometimes linked to the value attribute instead of the literal value expression.
+
+- [#512](https://github.com/marko-js/language-server/pull/512) [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refactor extractor to have "anchor" feature which allows mapping back arbitrary code points from the typescript to arbitrary source code. Previously we relied on injected comment mapping and whitespace copying which was both brittle and noisy.
+
 ## 2.5.61
 
 ### Patch Changes

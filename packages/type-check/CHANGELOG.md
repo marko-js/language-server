@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 3.0.4
+
+### Patch Changes
+
+- [`0753651`](https://github.com/marko-js/language-server/commit/0753651af3c06b79eb4b28e4bea4162e93108513) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade language tools.
+
+- Updated dependencies [[`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1), [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1), [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1), [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1), [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1), [`35a1050`](https://github.com/marko-js/language-server/commit/35a10509b84a0ae9efddfde2903446f2c50b8de1)]:
+  - @marko/language-tools@2.5.62
+
 ## 3.0.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.2
+
+### Patch Changes
+
+- [`0753651`](https://github.com/marko-js/language-server/commit/0753651af3c06b79eb4b28e4bea4162e93108513) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade language tools.
+
 ## 3.1.1
 
 ### Patch Changes
