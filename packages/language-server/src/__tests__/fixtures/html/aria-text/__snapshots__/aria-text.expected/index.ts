@@ -13,10 +13,8 @@ export { type Component };
   );
   Marko._.renderNativeTag("p")()()({
     role: "text",
-    [Marko._.content /*p*/]: (() => {
-      Marko._.renderNativeTag("button")()()({
-        /*button*/
-      });
+    [Marko._.content]: (() => {
+      Marko._.renderNativeTag("button")()()({});
       return () => {
         return Marko._.voidReturn;
       };

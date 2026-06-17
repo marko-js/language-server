@@ -11,9 +11,7 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.missingTag()()({
-    /*test-tag*/
-  });
+  Marko._.missingTag()()({});
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

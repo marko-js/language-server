@@ -20,26 +20,23 @@ export interface Input {}
     });
   });
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1 /*comments*/,
+    __marko_internal_tag_1,
   )()()({
-    ["comment" /*@comment*/]: Marko._.attrTagFor(
-      __marko_internal_tag_1,
-      "comment",
-    )(
+    ["comment"]: Marko._.attrTagFor(__marko_internal_tag_1, "comment")(
       "comment",
       {
-        ["comment" /*@comment*/]: {
+        ["comment"]: {
           id: Marko._.interpolated`a`,
-          ["comment" /*@comment*/]: {
+          ["comment"]: {
             id: Marko._.interpolated`b`,
-            [Marko._.contentFor(__marko_internal_tag_1) /*@comment*/]: (() => {
+            [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
               const __marko_internal_tag_2 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/let.d.marko"),
               );
               {
                 const b = Marko._.returned(() => __marko_internal_rendered_2);
                 const __marko_internal_rendered_2 = Marko._.renderTemplate(
-                  __marko_internal_tag_2 /*let*/,
+                  __marko_internal_tag_2,
                 )()()(
                   //    ^?
                   {
@@ -55,16 +52,16 @@ export interface Input {}
                 };
               }
             })(),
-            [/*@comment*/ Symbol.iterator]: Marko._.any,
+            [Symbol.iterator]: Marko._.any,
           },
-          [Marko._.contentFor(__marko_internal_tag_1) /*@comment*/]: (() => {
+          [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
             const __marko_internal_tag_3 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/let.d.marko"),
             );
             {
               const a = Marko._.returned(() => __marko_internal_rendered_3);
               const __marko_internal_rendered_3 = Marko._.renderTemplate(
-                __marko_internal_tag_3 /*let*/,
+                __marko_internal_tag_3,
               )()()({
                 value: () => "a" as const,
               });
@@ -77,20 +74,20 @@ export interface Input {}
               };
             }
           })(),
-          [/*@comment*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["comment" /*@comment*/]: {
+        ["comment"]: {
           id: Marko._.interpolated`c`,
-          [Marko._.contentFor(__marko_internal_tag_1) /*@comment*/]: (() => {
+          [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
             const __marko_internal_tag_4 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/let.d.marko"),
             );
             {
               const c = Marko._.returned(() => __marko_internal_rendered_4);
               const __marko_internal_rendered_4 = Marko._.renderTemplate(
-                __marko_internal_tag_4 /*let*/,
+                __marko_internal_tag_4,
               )()()({
                 value: () => "c" as const,
               });
@@ -103,7 +100,7 @@ export interface Input {}
               };
             }
           })(),
-          [/*@comment*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       },
     ),
@@ -111,7 +108,7 @@ export interface Input {}
   const __marko_internal_tag_5 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_5 /*effect*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_5)()()({
     value() {
       a;
       //^?

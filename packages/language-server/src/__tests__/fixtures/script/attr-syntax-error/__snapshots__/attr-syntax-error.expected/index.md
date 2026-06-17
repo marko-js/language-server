@@ -10,6 +10,15 @@
   6 |
 ```
 
+### Ln 5, Col 2
+```marko
+  3 | <div onClick(a, %b) {
+  4 |   console.log(#hello!);
+> 5 | }/>
+    |  ^ Declaration or statement expected.
+  6 |
+```
+
 ### Ln 1, Col 14
 ```marko
 > 1 | <div data-x=#2/>
@@ -19,23 +28,23 @@
   4 |   console.log(#hello!);
 ```
 
-### Ln 3, Col 5
+### Ln 3, Col 6
 ```marko
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |     ^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+    |      ^^^^^^^^^^ The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
   4 |   console.log(#hello!);
   5 | }/>
   6 |
 ```
 
-### Ln 3, Col 5
+### Ln 3, Col 6
 ```marko
   1 | <div data-x=#2/>
   2 |
 > 3 | <div onClick(a, %b) {
-    |     ^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Directives & Div'.
+    |      ^^^^^^^^^^^^^ Argument of type 'number' is not assignable to parameter of type 'Directives & Div'.
   Type 'number' is not assignable to type 'Div'.
   4 |   console.log(#hello!);
   5 | }/>

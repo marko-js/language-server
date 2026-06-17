@@ -10,9 +10,9 @@ const __marko_internal_tag_1 = (
 Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko"))
 );
 {const { %x } = Marko._.returned(() => __marko_internal_rendered_1);
-const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1/*let*/)()()(// Should be resistant to syntax errors.
+const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1)()()(// Should be resistant to syntax errors.
 {
- "value": (
+"value": (
 1
 ),
 

@@ -12,8 +12,8 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = Marko._.interpolated`marquee`;
-  Marko._.renderDynamicTag(__marko_internal_tag_1 /*marquee*/)()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*marquee*/]: (() => {
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
+    [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

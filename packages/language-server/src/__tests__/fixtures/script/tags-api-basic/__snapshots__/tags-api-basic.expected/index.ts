@@ -32,16 +32,16 @@ function __marko_internal_template(this: void) {
     const { year, isSmartOnly, type, mobileList, renderBody } =
       Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*const*/,
+      __marko_internal_tag_1,
     )()()({
       value: input,
     });
     Marko._.renderNativeTag("div")()()({
       class: "mobiles__list",
-      [Marko._.content /*div*/]: (() => {
+      [Marko._.content]: (() => {
         Marko._.renderNativeTag("p")()()({
           id: "p",
-          [Marko._.content /*p*/]: (() => {
+          [Marko._.content]: (() => {
             year;
             return () => {
               return Marko._.voidReturn;
@@ -51,7 +51,7 @@ function __marko_internal_template(this: void) {
         if (isSmartOnly) {
           Marko._.renderNativeTag("span")()()({
             class: "sub-note",
-            [Marko._.content /*span*/]: (() => {
+            [Marko._.content]: (() => {
               isSmartOnly;
               return () => {
                 return Marko._.voidReturn;
@@ -61,7 +61,7 @@ function __marko_internal_template(this: void) {
         }
         Marko._.renderNativeTag("span")()()({
           class: "sub-note",
-          [Marko._.content /*span*/]: (() => {
+          [Marko._.content]: (() => {
             type;
             return () => {
               return Marko._.voidReturn;
@@ -70,14 +70,14 @@ function __marko_internal_template(this: void) {
         });
         Marko._.forOfTag(
           {
-            /*for*/ of: mobileList,
+            of: mobileList,
           },
           (mobile, i, all) => {
             Marko._.renderNativeTag("span")()()(
               //                          ^?
               {
                 id: i,
-                [Marko._.content /*span*/]: (() => {
+                [Marko._.content]: (() => {
                   mobile;
                   i;
                   all.length;
@@ -94,13 +94,9 @@ function __marko_internal_template(this: void) {
           //                 ^?        ^?
           {
             class: Marko._.interpolated`container`,
-            [Marko._.content /*div*/]: (() => {
+            [Marko._.content]: (() => {
               const __marko_internal_tag_2 = renderBody;
-              Marko._.renderDynamicTag(
-                __marko_internal_tag_2 /*renderBody*/,
-              )()()({
-                /*renderBody*/
-              });
+              Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
               return () => {
                 return Marko._.voidReturn;
               };
@@ -108,10 +104,10 @@ function __marko_internal_template(this: void) {
           },
         );
         const __marko_internal_tag_3 = FancyButton;
-        Marko._.renderDynamicTag(__marko_internal_tag_3 /*FancyButton*/)()()({
+        Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
           "no-update": true,
           something: true,
-          [Marko._.contentFor(__marko_internal_tag_3) /*FancyButton*/]: (() => {
+          [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
             type;
             return () => {
               return Marko._.voidReturn;
@@ -119,7 +115,7 @@ function __marko_internal_template(this: void) {
           })(),
         });
         Marko._.renderNativeTag("div")()()({
-          [Marko._.content /*div*/]: (() => {
+          [Marko._.content]: (() => {
             ("<b>World</b>");
             return () => {
               return Marko._.voidReturn;
@@ -127,9 +123,9 @@ function __marko_internal_template(this: void) {
           })(),
         });
         Marko._.renderNativeTag("div")()()({
-          [Marko._.content /*div*/]: (() => {
+          [Marko._.content]: (() => {
             Marko._.renderNativeTag("code")()()({
-              [Marko._.content /*code*/]: (() => {
+              [Marko._.content]: (() => {
                 return () => {
                   return Marko._.voidReturn;
                 };

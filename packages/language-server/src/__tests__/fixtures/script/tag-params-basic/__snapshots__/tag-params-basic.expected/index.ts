@@ -12,8 +12,8 @@ export interface Input {}
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1 /*test-tag*/)()()({
-    [Marko._.contentFor(__marko_internal_tag_1) /*test-tag*/]: (a, b) => {
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    [Marko._.contentFor(__marko_internal_tag_1)]: (a, b) => {
       //        ^? ^?
       a;
       b;
@@ -24,10 +24,10 @@ export interface Input {}
     import("./components/test-tag.marko"),
   );
   const __marko_internal_rendered_2 = Marko._.renderTemplate(
-    __marko_internal_tag_2 /*test-tag*/,
+    __marko_internal_tag_2,
   )()()({
     //  ^?   ^?
-    [Marko._.contentFor(__marko_internal_tag_2) /*test-tag*/]: (a) => {
+    [Marko._.contentFor(__marko_internal_tag_2)]: (a) => {
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),
       );
@@ -36,7 +36,7 @@ export interface Input {}
           () => __marko_internal_rendered_3,
         );
         const __marko_internal_rendered_3 = Marko._.renderTemplate(
-          __marko_internal_tag_3 /*const*/,
+          __marko_internal_tag_3,
         )()()(
           //        ^?
           {

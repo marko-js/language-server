@@ -18,7 +18,7 @@ export interface Input {}
       {
         const a = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2 /*const*/,
+          __marko_internal_tag_2,
         )()()({
           value: ["apples", "oranges"] as const,
         });
@@ -28,7 +28,7 @@ export interface Input {}
         {
           const b = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3 /*const*/,
+            __marko_internal_tag_3,
           )()()(
             // ^?
             {
@@ -37,7 +37,7 @@ export interface Input {}
           );
           const __marko_internal_rendered_4 = Marko._.forOfTag(
             {
-              /*for*/ of: b,
+              of: b,
             },
             (
               // ^?
@@ -49,7 +49,7 @@ export interface Input {}
               {
                 const c = Marko._.returned(() => __marko_internal_rendered_5);
                 const __marko_internal_rendered_5 = Marko._.renderTemplate(
-                  __marko_internal_tag_5 /*const*/,
+                  __marko_internal_tag_5,
                 )()()({
                   value: () => a.filter((e) => e.length),
                 });
@@ -80,7 +80,7 @@ export interface Input {}
       {
         const { d } = Marko._.returned(() => __marko_internal_rendered_7);
         const __marko_internal_rendered_7 = Marko._.renderTemplate(
-          __marko_internal_tag_7 /*const*/,
+          __marko_internal_tag_7,
         )()()({
           value: { d: () => 1 } as const,
         });
@@ -95,7 +95,7 @@ export interface Input {}
       {
         const { d } = Marko._.returned(() => __marko_internal_rendered_8);
         const __marko_internal_rendered_8 = Marko._.renderTemplate(
-          __marko_internal_tag_8 /*const*/,
+          __marko_internal_tag_8,
         )()()({
           value: { d: () => 2 } as const,
         });

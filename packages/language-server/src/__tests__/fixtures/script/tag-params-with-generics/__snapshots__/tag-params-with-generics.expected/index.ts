@@ -14,35 +14,34 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_1 /*loader*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     value() {
       //      ^?    ^?
       return 1;
     },
-    [Marko._.contentFor(__marko_internal_tag_1) /*loader*/]: (data) => {
+    [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
       return Marko._.voidReturn;
     },
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_2 /*loader*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
     value() {
       //      ^?    ^?
       return "hi" as const;
     },
-    [Marko._.contentFor(__marko_internal_tag_2) /*loader*/]: (data) => {
+    [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
       return Marko._.voidReturn;
     },
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("./components/loader.marko"),
   );
-  Marko._.renderTemplate(__marko_internal_tag_3 /*loader*/)()()({
-    [Marko._.contentFor(__marko_internal_tag_3) /*loader*/]: (data) => {
+  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+    [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
       return Marko._.voidReturn;
     },
-    /*loader*/
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;

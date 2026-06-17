@@ -14,7 +14,7 @@ export interface Input {}
   {
     const string = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1 /*let*/,
+      __marko_internal_tag_1,
     )()()({
       value: "bar",
     });
@@ -26,14 +26,14 @@ export interface Input {}
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("./components/test-tag.marko"),
     );
-    Marko._.renderTemplate(__marko_internal_tag_2 /*test-tag*/)()()({
+    Marko._.renderTemplate(__marko_internal_tag_2)()()({
       //  ^?
-      [Marko._.contentFor(__marko_internal_tag_2) /*test-tag*/]: (val) => {
+      [Marko._.contentFor(__marko_internal_tag_2)]: (val) => {
         Marko._.renderNativeTag("button")()()({
           onClick() {
             __marko_internal_change__string.string = val;
           },
-          [Marko._.content /*button*/]: (() => {
+          [Marko._.content]: (() => {
             //   ^?      ^?
             val;
             return () => {
@@ -46,7 +46,7 @@ export interface Input {}
     });
     const __marko_internal_rendered_3 = Marko._.forOfTag(
       {
-        /*for*/ of: [],
+        of: [],
       },
       (_unused) => {
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
@@ -55,7 +55,7 @@ export interface Input {}
         {
           const inputId = Marko._.returned(() => __marko_internal_rendered_4);
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4 /*let*/,
+            __marko_internal_tag_4,
           )()()({
             value: "",
           });
@@ -75,7 +75,7 @@ export interface Input {}
         inputId;
         // ^?
       },
-      [Marko._.content /*button*/]: (() => {
+      [Marko._.content]: (() => {
         return () => {
           return Marko._.voidReturn;
         };

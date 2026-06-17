@@ -17,15 +17,15 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1 /*custom*/)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
     ...(!done
       ? (() => {
           //        ^?
           i++;
           return {
             //    ^?
-            ["a" /*@a*/]: {
-              [Marko._.contentFor(__marko_internal_tag_1) /*@a*/]: (() => {
+            ["a"]: {
+              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 done;
                 //      ^?
                 if (i === 5) {
@@ -35,7 +35,7 @@ export { type Component };
                   return Marko._.voidReturn;
                 };
               })(),
-              [/*@a*/ Symbol.iterator]: Marko._.any,
+              [Symbol.iterator]: Marko._.any,
             },
           };
         })()
@@ -45,10 +45,10 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2 /*custom*/)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
     ...Marko._.forToAttrTag(
       {
-        /*for*/ from: 1,
+        from: 1,
         to: 10,
       },
       (index) =>
@@ -56,14 +56,14 @@ export { type Component };
           const doubleIndex = index * 2;
           return {
             //          ^?
-            ["a" /*@a*/]: {
-              [Marko._.contentFor(__marko_internal_tag_2) /*@a*/]: (() => {
+            ["a"]: {
+              [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                 doubleIndex;
                 return () => {
                   return Marko._.voidReturn;
                 };
               })(),
-              [/*@a*/ Symbol.iterator]: Marko._.any,
+              [Symbol.iterator]: Marko._.any,
             },
           };
         })(),
@@ -75,7 +75,7 @@ export { type Component };
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3 /*custom*/)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
     //      ^?
     {
       x: 1,
@@ -84,9 +84,9 @@ export { type Component };
             const a = 1 as const;
             return {
               //          ^?
-              ["a" /*@a*/]: {
+              ["a"]: {
                 a: a,
-                [/*@a*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             };
           })()
@@ -94,9 +94,9 @@ export { type Component };
             const b = 2 as const;
             return {
               //          ^?
-              ["b" /*@b*/]: {
+              ["b"]: {
                 b: b,
-                [/*@b*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             };
           })()),

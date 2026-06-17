@@ -21,48 +21,44 @@ export { type Component };
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*my-table*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     ...Marko._.forOfAttrTag(
       {
-        /*for*/ of: [
+        of: [
           { foo: "a", bar: "b" },
           { foo: "c", bar: "d" },
         ],
       },
       (row) => ({
-        ["row" /*@row*/]: {
-          ["cell" /*@cell*/]: Marko._.attrTagFor(
-            __marko_internal_tag_1,
-            "row",
-            "cell",
-          )(
+        ["row"]: {
+          ["cell"]: Marko._.attrTagFor(__marko_internal_tag_1, "row", "cell")(
             "cell",
             {
               // ^?
-              ["cell" /*@cell*/]: {
-                [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
+              ["cell"]: {
+                [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   row.foo;
                   return () => {
                     return Marko._.voidReturn;
                   };
                 })(),
-                [/*@cell*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
             {
               // ^?     ^?
-              ["cell" /*@cell*/]: {
-                [Marko._.contentFor(__marko_internal_tag_1) /*@cell*/]: (() => {
+              ["cell"]: {
+                [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   row.bar;
                   return () => {
                     return Marko._.voidReturn;
                   };
                 })(),
-                [/*@cell*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ),
-          [/*@row*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       }),
       Marko._.input(__marko_internal_tag_1),
@@ -78,48 +74,44 @@ export { type Component };
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_2 /*my-table*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
     ...Marko._.forOfAttrTag(
       {
-        /*for*/ of: [
+        of: [
           { foo: "a", bar: "b" },
           { foo: "c", bar: "d" },
         ] as const,
       },
       (row) => ({
-        ["row" /*@row*/]: {
-          ["cell" /*@cell*/]: Marko._.attrTagFor(
-            __marko_internal_tag_2,
-            "row",
-            "cell",
-          )(
+        ["row"]: {
+          ["cell"]: Marko._.attrTagFor(__marko_internal_tag_2, "row", "cell")(
             "cell",
             {
               // ^?
-              ["cell" /*@cell*/]: {
-                [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
+              ["cell"]: {
+                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   row.foo;
                   return () => {
                     return Marko._.voidReturn;
                   };
                 })(),
-                [/*@cell*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
             {
               // ^?     ^?
-              ["cell" /*@cell*/]: {
-                [Marko._.contentFor(__marko_internal_tag_2) /*@cell*/]: (() => {
+              ["cell"]: {
+                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   row.bar;
                   return () => {
                     return Marko._.voidReturn;
                   };
                 })(),
-                [/*@cell*/ Symbol.iterator]: Marko._.any,
+                [Symbol.iterator]: Marko._.any,
               },
             },
           ),
-          [/*@row*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       }),
       Marko._.input(__marko_internal_tag_2),

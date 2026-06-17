@@ -14,7 +14,7 @@ export { type Component };
   Marko._.renderNativeTag("button")()()({
     role: "heading",
     "aria-level": "3",
-    [Marko._.content /*button*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };

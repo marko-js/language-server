@@ -12,9 +12,7 @@ export interface Input<T> {
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const __marko_internal_tag_1 = input.then;
-  Marko._.renderDynamicTag(__marko_internal_tag_1 /*input.then*/)()()(
-    input.value,
-  );
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()(input.value);
   Marko._.noop({ input, $global, $signal });
   return;
 })();

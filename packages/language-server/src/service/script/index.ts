@@ -21,7 +21,10 @@ import {
   Diagnostic,
   DiagnosticSeverity,
   DiagnosticTag,
+  type DocumentHighlight,
+  DocumentHighlightKind,
   InsertTextFormat,
+  type Location as LSPLocation,
   type Range,
   TextEdit,
 } from "vscode-languageserver";
@@ -329,34 +332,61 @@ const ScriptService: Partial<Plugin> = {
       const defDoc = documents.get(targetUri);
       if (!defDoc) continue;
 
-      let link: DefinitionLink | undefined;
+      const links: DefinitionLink[] = [];
 
       if (markoFileReg.test(targetUri)) {
         const extracted = processScript(defDoc, project);
-        const targetSelectionRange =
-          sourceLocationAtTextSpan(extracted, def.textSpan) || START_LOCATION;
-        const targetRange =
-          (def.contextSpan &&
-            sourceLocationAtTextSpan(extracted, def.contextSpan)) ||
-          START_LOCATION;
-        link = {
-          targetUri,
-          targetRange,
-          targetSelectionRange,
-          originSelectionRange,
-        };
+        const sourceRanges = extracted.sourceRangesAt(
+          def.textSpan.start,
+          def.textSpan.start + def.textSpan.length,
+        );
+
+        if (sourceRanges.length) {
+          const contextRange =
+            def.contextSpan &&
+            extracted.sourceRangeAt(
+              def.contextSpan.start,
+              def.contextSpan.start + def.contextSpan.length,
+            );
+
+          for (const sourceRange of sourceRanges) {
+            const targetSelectionRange =
+              extracted.parsed.locationAt(sourceRange);
+            links.push({
+              targetUri,
+              targetRange:
+                contextRange &&
+                contextRange.start <= sourceRange.start &&
+                sourceRange.end <= contextRange.end
+                  ? extracted.parsed.locationAt(contextRange)
+                  : targetSelectionRange,
+              targetSelectionRange,
+              originSelectionRange,
+            });
+          }
+        } else {
+          links.push({
+            targetUri,
+            targetRange:
+              (def.contextSpan &&
+                sourceLocationAtTextSpan(extracted, def.contextSpan)) ||
+              START_LOCATION,
+            targetSelectionRange: START_LOCATION,
+            originSelectionRange,
+          });
+        }
       } else {
-        link = {
+        links.push({
           targetUri,
           targetRange: def.contextSpan
             ? docLocationAtTextSpan(defDoc, def.contextSpan)
             : START_LOCATION,
           targetSelectionRange: docLocationAtTextSpan(defDoc, def.textSpan),
           originSelectionRange,
-        };
+        });
       }
 
-      if (link) {
+      for (const link of links) {
         if (result) {
           if (Array.isArray(result)) {
             result.push(link);
@@ -370,6 +400,84 @@ const ScriptService: Partial<Plugin> = {
     }
 
     return result;
+  },
+  findReferences(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffsets = extracted.generatedOffsetsAt(sourceOffset);
+    if (!generatedOffsets.length) return;
+
+    const includeDeclaration = params.context?.includeDeclaration ?? true;
+    const result: LSPLocation[] = [];
+    const seen = new Set<string>();
+
+    for (const generatedOffset of generatedOffsets) {
+      const symbols = project.service.findReferences(fileName, generatedOffset);
+      if (!symbols) continue;
+
+      for (const symbol of symbols) {
+        for (const entry of symbol.references) {
+          if (!includeDeclaration && entry.isDefinition) continue;
+          forEachSourceLocation(project, entry, (uri, range) => {
+            const key = `${uri}:${rangeKey(range)}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            result.push({ uri, range });
+          });
+        }
+      }
+    }
+
+    return result.length ? result : undefined;
+  },
+  findDocumentHighlights(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
+    const sourceOffset = doc.offsetAt(params.position);
+    const generatedOffsets = extracted.generatedOffsetsAt(sourceOffset);
+    if (!generatedOffsets.length) return;
+
+    const result: DocumentHighlight[] = [];
+    const seen = new Set<string>();
+
+    for (const generatedOffset of generatedOffsets) {
+      const highlights = project.service.getDocumentHighlights(
+        fileName,
+        generatedOffset,
+        [fileName],
+      );
+      if (!highlights) continue;
+
+      for (const { highlightSpans } of highlights) {
+        for (const span of highlightSpans) {
+          for (const sourceRange of extracted.sourceRangesAt(
+            span.textSpan.start,
+            span.textSpan.start + span.textSpan.length,
+          )) {
+            const range = extracted.parsed.locationAt(sourceRange);
+            const key = rangeKey(range);
+            if (seen.has(key)) continue;
+            seen.add(key);
+            result.push({
+              range,
+              kind:
+                span.kind === ts.HighlightSpanKind.writtenReference
+                  ? DocumentHighlightKind.Write
+                  : DocumentHighlightKind.Read,
+            });
+          }
+        }
+      }
+    }
+
+    return result.length ? result : undefined;
   },
   doHover(doc, params) {
     const fileName = getFSPath(doc);
@@ -417,53 +525,37 @@ const ScriptService: Partial<Plugin> = {
     const project = getTSProject(fileName);
     const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
-    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
-    if (generatedOffset === undefined) return;
-
-    const renameLocations = project.service.findRenameLocations(
-      fileName,
-      generatedOffset,
-      false,
-      false,
-      false,
-    );
-
-    if (!renameLocations) return;
+    const generatedOffsets = extracted.generatedOffsetsAt(sourceOffset);
+    if (!generatedOffsets.length) return;
 
     const changes: { [uri: string]: TextEdit[] } = {};
+    const seenEdits = new Set<string>();
+    let hasChanges = false;
 
-    for (const rename of renameLocations) {
-      const renameURI = filenameToURI(rename.fileName);
-      const renameDoc = documents.get(renameURI);
-      let edit: TextEdit | undefined;
-      if (!renameDoc) continue;
-      if (markoFileReg.test(renameURI)) {
-        const extracted = processScript(renameDoc, project);
-        const sourceRange = sourceLocationAtTextSpan(
-          extracted,
-          rename.textSpan,
-        );
-        if (sourceRange) {
-          edit = {
-            newText: params.newName,
-            range: sourceRange,
-          };
-        }
-      } else {
-        edit = {
-          newText: params.newName,
-          range: docLocationAtTextSpan(renameDoc, rename.textSpan),
-        };
-      }
+    for (const generatedOffset of generatedOffsets) {
+      const renameLocations = project.service.findRenameLocations(
+        fileName,
+        generatedOffset,
+        false,
+        false,
+        false,
+      );
 
-      if (edit) {
-        if (changes[renameURI]) {
-          changes[renameURI].push(edit);
-        } else {
-          changes[renameURI] = [edit];
-        }
+      if (!renameLocations) continue;
+
+      for (const rename of renameLocations) {
+        forEachSourceLocation(project, rename, (uri, range) => {
+          const key = `${uri}:${rangeKey(range)}`;
+          if (seenEdits.has(key)) return;
+          seenEdits.add(key);
+          hasChanges = true;
+
+          (changes[uri] ||= []).push({ newText: params.newName, range });
+        });
       }
     }
+
+    if (!hasChanges) return;
 
     return {
       changes,
@@ -585,6 +677,32 @@ function docLocationAtTextSpan(
     start: doc.positionAt(start),
     end: doc.positionAt(start + length),
   };
+}
+
+function rangeKey({ start, end }: Range) {
+  return `${start.line}:${start.character}:${end.line}:${end.character}`;
+}
+
+function forEachSourceLocation(
+  project: TSProject,
+  { fileName, textSpan }: ts.DocumentSpan,
+  cb: (uri: string, range: Range) => void,
+) {
+  const uri = filenameToURI(fileName);
+  const targetDoc = documents.get(uri);
+  if (!targetDoc) return;
+
+  if (markoFileReg.test(uri)) {
+    const extracted = processScript(targetDoc, project);
+    for (const sourceRange of extracted.sourceRangesAt(
+      textSpan.start,
+      textSpan.start + textSpan.length,
+    )) {
+      cb(uri, extracted.parsed.locationAt(sourceRange));
+    }
+  } else {
+    cb(uri, docLocationAtTextSpan(targetDoc, textSpan));
+  }
 }
 
 function getTSConfigFile(fileName: string) {

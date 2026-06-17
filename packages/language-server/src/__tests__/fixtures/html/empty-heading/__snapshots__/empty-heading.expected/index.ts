@@ -12,52 +12,46 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   Marko._.renderNativeTag("h1")()()({
-    [Marko._.content /*h1*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h1*/
   });
   Marko._.renderNativeTag("h2")()()({
-    [Marko._.content /*h2*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h2*/
   });
   Marko._.renderNativeTag("h3")()()({
-    [Marko._.content /*h3*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h3*/
   });
   Marko._.renderNativeTag("h4")()()({
-    [Marko._.content /*h4*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h4*/
   });
   Marko._.renderNativeTag("h5")()()({
-    [Marko._.content /*h5*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h5*/
   });
   Marko._.renderNativeTag("h6")()()({
-    [Marko._.content /*h6*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
     })(),
-    /*h6*/
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;

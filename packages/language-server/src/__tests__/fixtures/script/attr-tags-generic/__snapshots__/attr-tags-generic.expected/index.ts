@@ -17,15 +17,15 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@then"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*foo*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     value: 1 as const,
-    ["then" /*@then*/]: {
-      [Marko._.contentFor(__marko_internal_tag_1) /*@then*/]: (foo) => {
+    ["then"]: {
+      [Marko._.contentFor(__marko_internal_tag_1)]: (foo) => {
         //   ^?
         foo;
         return Marko._.voidReturn;
       },
-      [/*@then*/ Symbol.iterator]: Marko._.any,
+      [Symbol.iterator]: Marko._.any,
     },
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -34,22 +34,22 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@then"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2 /*foo*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
     value: 1 as const,
     ...Marko._.forOfAttrTag(
       {
-        /*for*/ of: [1],
+        of: [1],
       },
       (i) => ({
-        ["then" /*@then*/]: {
-          [Marko._.contentFor(__marko_internal_tag_2) /*@then*/]: (foo) => {
+        ["then"]: {
+          [Marko._.contentFor(__marko_internal_tag_2)]: (foo) => {
             //   ^?
             i;
             //^?
             foo;
             return Marko._.voidReturn;
           },
-          [/*@then*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       }),
       Marko._.input(__marko_internal_tag_2),

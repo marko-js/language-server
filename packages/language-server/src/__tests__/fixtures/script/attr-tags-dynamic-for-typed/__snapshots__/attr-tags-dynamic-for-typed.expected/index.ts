@@ -17,18 +17,16 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@menuitem"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*my-menu*/)()()({
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
     ...Marko._.forOfAttrTag(
       {
-        /*for*/ of: ["a", "b", "c"],
+        of: ["a", "b", "c"],
       },
       (name) => ({
-        ["menuitem" /*@menuitem*/]: {
-          [Marko._.contentFor(__marko_internal_tag_1) /*@menuitem*/]: ({
-            foo,
-          }) => {
+        ["menuitem"]: {
+          [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
             Marko._.renderNativeTag("div")()()({
-              [Marko._.content /*div*/]: (() => {
+              [Marko._.content]: (() => {
                 name;
                 foo;
                 return () => {
@@ -38,7 +36,7 @@ export { type Component };
             });
             return Marko._.voidReturn;
           },
-          [/*@menuitem*/ Symbol.iterator]: Marko._.any,
+          [Symbol.iterator]: Marko._.any,
         },
       }),
       Marko._.input(__marko_internal_tag_1),
@@ -50,15 +48,13 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@menuitem"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2 /*my-menu*/)()()(
+  Marko._.renderTemplate(__marko_internal_tag_2)()()(
     //                   ^?
     {
-      ["menuitem" /*@menuitem*/]: {
-        [Marko._.contentFor(__marko_internal_tag_2) /*@menuitem*/]: ({
-          foo,
-        }) => {
+      ["menuitem"]: {
+        [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
           Marko._.renderNativeTag("div")()()({
-            [Marko._.content /*div*/]: (() => {
+            [Marko._.content]: (() => {
               foo;
               return () => {
                 return Marko._.voidReturn;
@@ -67,7 +63,7 @@ export { type Component };
           });
           return Marko._.voidReturn;
         },
-        [/*@menuitem*/ Symbol.iterator]: Marko._.any,
+        [Symbol.iterator]: Marko._.any,
       },
     },
   );

@@ -19,14 +19,14 @@ export { type Component };
   );
   Marko._.forOfTag(
     {
-      /*for*/ of: input.tab,
+      of: input.tab,
     },
     ({ href, title }) => {
       Marko._.renderNativeTag("a")()()(
         // ^?
         {
           href: href,
-          [Marko._.content /*a*/]: (() => {
+          [Marko._.content]: (() => {
             title;
             return () => {
               return Marko._.voidReturn;
@@ -40,17 +40,17 @@ export { type Component };
   Marko._.renderNativeTag("select")()()(
     // ^?
     {
-      [Marko._.content /*select*/]: (() => {
+      [Marko._.content]: (() => {
         Marko._.forOfTag(
           {
-            /*for*/ of: input.option,
+            of: input.option,
           },
           ({ value, content }) => {
             Marko._.renderNativeTag("option")()()(
               // ^?
               {
                 value: value,
-                [Marko._.content /*option*/]: (() => {
+                [Marko._.content]: (() => {
                   content;
                   return () => {
                     return Marko._.voidReturn;
@@ -74,46 +74,46 @@ export { type Component };
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1 /*my-select*/)()()(
+  Marko._.renderTemplate(__marko_internal_tag_1)()()(
     // ^?
     {
       ...Marko._.mergeAttrTags(
         Marko._.forOfAttrTag(
           {
-            /*for*/ of: input.tab,
+            of: input.tab,
           },
           ({ href, title }) => ({
             // ^?
-            ["option" /*@option*/]: {
+            ["option"]: {
               value: href,
-              [Marko._.contentFor(__marko_internal_tag_1) /*@option*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 // ^?
                 title;
                 return () => {
                   return Marko._.voidReturn;
                 };
               })(),
-              [/*@option*/ Symbol.iterator]: Marko._.any,
+              [Symbol.iterator]: Marko._.any,
             },
           }),
           Marko._.input(__marko_internal_tag_1),
         ),
         Marko._.forOfAttrTag(
           {
-            /*for*/ of: input.option,
+            of: input.option,
           },
           ({ value, content }) => ({
             // ^?
-            ["option" /*@option*/]: {
+            ["option"]: {
               value: value,
-              [Marko._.contentFor(__marko_internal_tag_1) /*@option*/]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 // ^?
                 content;
                 return () => {
                   return Marko._.voidReturn;
                 };
               })(),
-              [/*@option*/ Symbol.iterator]: Marko._.any,
+              [Symbol.iterator]: Marko._.any,
             },
           }),
           Marko._.input(__marko_internal_tag_1),

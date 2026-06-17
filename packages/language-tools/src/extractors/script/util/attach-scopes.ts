@@ -33,6 +33,7 @@ export interface VarBinding {
   scope: Scope;
   hoisted: boolean;
   mutated: boolean;
+  range: Range;
   sourceName: string | undefined;
   objectPath: string | undefined;
 }
@@ -89,6 +90,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
   const mutations: Mutation[] = [];
   const potentialHoists: VarBinding[] = [];
   const potentialMutations = new Map<Scope, Repeated<t.Node>>();
+  const analyzeMutations = hasTagVars(program.body);
   const programScope: ProgramScope = {
     parent: undefined,
     hoists: false,
@@ -179,7 +181,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
                 "",
                 ATTR_UNNAMED,
               )) {
-                const { name, objectPath, sourceName } = id;
+                const { name, range, objectPath, sourceName } = id;
                 const binding: VarBinding = (parentScope.bindings[name] = {
                   type: BindingType.var,
                   name,
@@ -187,6 +189,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
                   scope: parentScope,
                   hoisted: false,
                   mutated: false,
+                  range,
                   objectPath,
                   sourceName,
                 });
@@ -203,7 +206,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
               bindings: {},
             };
 
-            if (child.params) {
+            if (analyzeMutations && child.params) {
               bodyScope.bindings ??= {};
 
               const parsedParams = ast.tagParams(child.params);
@@ -224,7 +227,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
               }
             }
 
-            const scriptBody = ast.scriptBody(child);
+            const scriptBody = analyzeMutations && ast.scriptBody(child);
             if (scriptBody) {
               const nodes = potentialMutations.get(parentScope);
               if (nodes) {
@@ -244,12 +247,16 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
             for (const attr of child.attrs) {
               switch (attr.type) {
                 case NodeType.AttrSpread: {
-                  checkForMutations(parentScope, ast.attrSpread(attr));
+                  if (analyzeMutations) {
+                    checkForMutations(parentScope, ast.attrSpread(attr));
+                  }
                   break;
                 }
                 case NodeType.AttrNamed: {
                   switch (attr.value?.type) {
                     case NodeType.AttrValue: {
+                      if (!analyzeMutations && !attr.value.bound) break;
+
                       let parsedValue = ast.attrValue(attr.value);
 
                       if (parsedValue) {
@@ -306,10 +313,12 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
                     }
 
                     case NodeType.AttrMethod: {
-                      checkForMutations(
-                        parentScope,
-                        ast.attrMethod(attr.value),
-                      );
+                      if (analyzeMutations) {
+                        checkForMutations(
+                          parentScope,
+                          ast.attrMethod(attr.value),
+                        );
+                      }
                       break;
                     }
                   }
@@ -353,27 +362,43 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
   }
 }
 
+export interface ProgramBinding {
+  name: string;
+  sources: Repeated<Range>;
+}
+
 export function getProgramBindings(node: Node.Program) {
   const { bindings } = Scopes.get(node.body)!;
-  let hoists: Repeatable<string>;
-  let vars: Repeatable<string>;
+  let hoists: Repeatable<ProgramBinding>;
+  let vars: Repeatable<ProgramBinding>;
 
   for (const key in bindings) {
-    switch (bindings[key].type) {
-      case BindingType.hoisted:
+    const binding = bindings[key];
+    switch (binding.type) {
+      case BindingType.hoisted: {
+        const hoist: ProgramBinding = {
+          name: key,
+          sources: binding.bindings.map((it) => it.range) as Repeated<Range>,
+        };
         if (hoists) {
-          hoists.push(key);
+          hoists.push(hoist);
         } else {
-          hoists = [key];
+          hoists = [hoist];
         }
         break;
-      case BindingType.var:
+      }
+      case BindingType.var: {
+        const tagVar: ProgramBinding = {
+          name: key,
+          sources: [binding.range],
+        };
         if (vars) {
-          vars.push(key);
+          vars.push(tagVar);
         } else {
-          vars = [key];
+          vars = [tagVar];
         }
         break;
+      }
     }
   }
 
@@ -383,7 +408,7 @@ export function getProgramBindings(node: Node.Program) {
         ? hoists
           ? [...vars, ...hoists]
           : vars
-        : hoists) as Repeated<string>,
+        : hoists) as Repeated<ProgramBinding>,
       vars,
       hoists,
     };
@@ -413,17 +438,18 @@ export function getMutatedVars(tag: Node.Tag) {
 }
 
 export function getHoistSources(body: Node.ParentNode["body"]) {
-  let result: Repeatable<string>;
+  let result: Repeatable<VarBinding>;
 
   if (body) {
     const { bindings } = Scopes.get(body)!;
 
     for (const key in bindings) {
-      if (bindings[key].hoisted) {
+      const binding = bindings[key];
+      if (binding.hoisted) {
         if (result) {
-          result.push(key);
+          result.push(binding as VarBinding);
         } else {
-          result = [key];
+          result = [binding as VarBinding];
         }
       }
     }
@@ -433,18 +459,9 @@ export function getHoistSources(body: Node.ParentNode["body"]) {
 }
 
 export function isMutatedVar(node: Node.ParentNode, name: string) {
-  let scope = Scopes.get(node.body!);
-
-  while (scope) {
-    const binding = scope.bindings?.[name];
-    if (binding?.type === BindingType.var && binding.mutated) {
-      return true;
-    }
-
-    scope = scope.parent;
-  }
-
-  return false;
+  const scope = Scopes.get(node.body!);
+  const binding = scope && resolveWritableVar(scope, name);
+  return binding ? binding.mutated : false;
 }
 
 export function hasHoists(node: Node.Tag) {
@@ -455,12 +472,32 @@ export function getBoundAttrRange(value: Node.AttrValue) {
   return BoundAttrValueRange.get(value);
 }
 
+function hasTagVars(body: Node.ParentNode["body"]): boolean {
+  if (body) {
+    for (const child of body) {
+      switch (child.type) {
+        case NodeType.Tag:
+        case NodeType.AttrTag:
+          if (child.var || hasTagVars(child.body)) {
+            return true;
+          }
+          break;
+      }
+    }
+  }
+
+  return false;
+}
+
 function resolveWritableVar(scope: Scope, name: string) {
   let curScope: Scope | undefined = scope;
   do {
     const binding = curScope.bindings?.[name];
-    if (binding?.type === BindingType.var && binding.sourceName !== undefined) {
-      return binding;
+    if (binding) {
+      return binding.type === BindingType.var &&
+        binding.sourceName !== undefined
+        ? binding
+        : undefined;
     }
   } while ((curScope = curScope.parent));
 }
@@ -468,16 +505,22 @@ function resolveWritableVar(scope: Scope, name: string) {
 function* getIdentifiers(
   lVal: t.LVal | t.VoidPattern,
 ): Generator<string, void> {
+  for (const id of getIdentifierNodes(lVal)) {
+    yield id.name;
+  }
+}
+
+function* getIdentifierNodes(lVal: t.Node): Generator<t.Identifier, void> {
   switch (lVal.type) {
     case "Identifier":
-      yield lVal.name;
+      yield lVal;
       break;
     case "ObjectPattern":
       for (const prop of lVal.properties) {
         if (prop.type === "RestElement") {
-          yield* getIdentifiers(prop.argument);
+          yield* getIdentifierNodes(prop.argument);
         } else {
-          yield* getIdentifiers(prop.value as t.LVal);
+          yield* getIdentifierNodes(prop.value);
         }
       }
       break;
@@ -485,15 +528,15 @@ function* getIdentifiers(
       for (const element of lVal.elements) {
         if (element) {
           if (element.type === "RestElement") {
-            yield* getIdentifiers(element.argument);
+            yield* getIdentifierNodes(element.argument);
           } else {
-            yield* getIdentifiers(element);
+            yield* getIdentifierNodes(element);
           }
         }
       }
       break;
     case "AssignmentPattern":
-      yield* getIdentifiers(lVal.left);
+      yield* getIdentifierNodes(lVal.left);
       break;
   }
 }
@@ -505,6 +548,7 @@ function* getVarIdentifiers(
   sourceName?: string,
 ): Generator<{
   name: string;
+  range: Range;
   objectPath: string;
   sourceName: string | undefined;
 }> {
@@ -512,6 +556,7 @@ function* getVarIdentifiers(
     case "Identifier":
       yield {
         name: lVal.name,
+        range: { start: lVal.start!, end: lVal.start! + lVal.name.length },
         objectPath,
         sourceName,
       };
@@ -589,9 +634,18 @@ function trackMutations(
         blockMutations = [];
       }
       break;
-    case "ForStatement":
     case "ForInStatement":
     case "ForOfStatement":
+      if (node.left.type !== "VariableDeclaration") {
+        for (const id of getIdentifierNodes(node.left)) {
+          parentBlockMutations.push(id);
+        }
+      }
+
+      blockShadows = new Set(blockShadows);
+      blockMutations = [];
+      break;
+    case "ForStatement":
       blockShadows = new Set(blockShadows);
       blockMutations = [];
       break;
@@ -629,7 +683,9 @@ function trackMutations(
 
       break;
     case "FunctionDeclaration":
-      trackShadows(node.id!, scope, parentBlockShadows);
+      if (node.id) {
+        trackShadows(node.id, scope, parentBlockShadows);
+      }
 
       blockShadows = new Set(blockShadows);
       blockMutations = [];
@@ -677,6 +733,10 @@ function trackMutations(
     case "AssignmentExpression":
       if (node.left.type === "Identifier") {
         parentBlockMutations.push(node.left);
+      } else {
+        for (const id of getIdentifierNodes(node.left)) {
+          parentBlockMutations.push(id);
+        }
       }
       break;
   }

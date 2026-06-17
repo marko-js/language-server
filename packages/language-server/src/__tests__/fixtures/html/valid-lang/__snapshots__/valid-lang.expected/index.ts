@@ -13,7 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("p")()()({
     lang: "invalid",
-    [Marko._.content /*p*/]: (() => {
+    [Marko._.content]: (() => {
       return () => {
         return Marko._.voidReturn;
       };
