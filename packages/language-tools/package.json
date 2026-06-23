@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/compiler": "^5.39.63",
-    "htmljs-parser": "^5.10.2",
+    "@marko/compiler": "^5.39.66",
+    "htmljs-parser": "^5.11.0",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
@@ -46,6 +46,6 @@
     "@typescript/vfs": "^1.6.4",
     "marko": "^5.38.36",
     "mitata": "^1.0.34",
-    "tsx": "^4.21.0"
+    "tsx": "^4.22.4"
   }
 }
