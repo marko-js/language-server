@@ -20,6 +20,8 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 }Marko._.noop({ input, $global, $signal });
 return;
 })();
+const __marko_internal_api = "tags";
+export { __marko_internal_api as "~api" };
 export default new (
   class Template extends Marko._.Template<{
       
@@ -60,7 +62,7 @@ export default new (
         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
       ): Marko.MountedTemplate<typeof input>;
       
-  api: "tags",
+  api: typeof __marko_internal_api,
   _(): () => <__marko_internal_input extends unknown>(input: Marko.Directives & Input & Marko._.Relate<__marko_internal_input, Marko.Directives & Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>);
 }> {}
 );

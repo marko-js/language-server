@@ -34,6 +34,8 @@ export { type Component };
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
+const __marko_internal_api = "class";
+export { __marko_internal_api as "~api" };
 export default new (class Template extends Marko._.Template<{
   render<FirstName extends string, LastName extends string>(
     input: Marko.TemplateInput<Input<FirstName, LastName>>,
@@ -69,7 +71,7 @@ export default new (class Template extends Marko._.Template<{
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
   ): Marko.MountedTemplate<typeof input>;
 
-  api: "class";
+  api: typeof __marko_internal_api;
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <FirstName extends string, LastName extends string>() => <
         __marko_internal_input extends unknown,

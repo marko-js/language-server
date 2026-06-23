@@ -428,6 +428,7 @@ function ${templateName}() {\n`);
     )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope",
     )}<${internalInput}, ${returnTypeStr}>)`;
+    const apiVar = varLocal("api");
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(
@@ -439,7 +440,7 @@ function ${templateName}() {\n`);
           )
         : ""
     }
-  ${this.#interop ? `api: "${this.#api}",` : ""}
+  ${this.#interop ? `api: typeof ${apiVar},` : ""}
   _${
     typeParamsStr
       ? `<${internalApply} = 1>(): ${internalApply} extends 0
@@ -451,6 +452,21 @@ function ${templateName}() {\n`);
       : `(): () => <${internalInputWithExtends}>${renderAndReturn};`
   }
 }>`;
+
+    if (this.#interop) {
+      // Expose the resolved runtime api as a standalone export so tooling can
+      // read it via `import { "~api" as API } from "./template.marko"` without
+      // pulling in `Input` (and the circular dependencies it can cause) the way
+      // reading the default export's `api` property would. The default export's
+      // `api` property is derived from this same `const` (via `typeof`) so the
+      // literal is only written in one place. A plain `const` (rather than a
+      // type-only `declare`) is used so the same output is valid for both the
+      // `.ts` and `.js` extractions; it still surfaces the api as a
+      // `"tags"`/`"class"` string literal.
+      this.#extractor.write(
+        `const ${apiVar} = "${this.#api}";\nexport { ${apiVar} as "~api" };\n`,
+      );
+    }
 
     this.#extractor.write(`export default new `).anchor(START_OF_FILE);
     if (this.#scriptLang === ScriptLang.ts) {

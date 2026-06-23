@@ -92,6 +92,8 @@ export interface Input<T extends string> {
   Marko._.noop({ x, y, promise, input, $global, $signal });
   return;
 })();
+const __marko_internal_api = "tags";
+export { __marko_internal_api as "~api" };
 export default new (class Template extends Marko._.Template<{
   render<T extends string>(
     input: Marko.TemplateInput<Input<T>>,
@@ -124,7 +126,7 @@ export default new (class Template extends Marko._.Template<{
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
   ): Marko.MountedTemplate<typeof input>;
 
-  api: "tags";
+  api: typeof __marko_internal_api;
   _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
     ? <T extends string>() => <__marko_internal_input extends unknown>(
         input: Marko.Directives &
