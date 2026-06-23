@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.5.63
+
+### Patch Changes
+
+- [#520](https://github.com/marko-js/language-server/pull/520) [`e986bcb`](https://github.com/marko-js/language-server/commit/e986bcb324fba6b9c19589a3f4578edb7ba6ddd9) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Expose a template's resolved runtime api as a `"~api"` export so tooling can read whether a template uses the `tags` or `class` api (e.g. `import { "~api" as API } from "./template.marko"`) without importing `Input` and the circular dependencies that can cause.
+
 ## 2.5.62
 
 ### Patch Changes
