@@ -12,6 +12,7 @@ import {
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import service from "./service";
+import { markoCodeActionKinds } from "./service/marko/code-actions";
 import { clearMarkoCacheForFile } from "./utils/file";
 import setupMessages from "./utils/messages";
 import * as documents from "./utils/text-documents";
@@ -49,7 +50,10 @@ connection.onInitialize(async (params) => {
       definitionProvider: true,
       hoverProvider: true,
       renameProvider: true,
-      codeActionProvider: true,
+      codeActionProvider: {
+        resolveProvider: true,
+        codeActionKinds: markoCodeActionKinds,
+      },
       referencesProvider: true,
       documentLinkProvider: { resolveProvider: false },
       colorProvider: true,
@@ -224,6 +228,10 @@ connection.onCodeAction(async (params, cancel) => {
       cancel,
     )) || null
   );
+});
+
+connection.onCodeActionResolve(async (action, cancel) => {
+  return (await service.doCodeActionResolve(action, cancel)) || action;
 });
 
 connection.onDocumentFormatting(async (params, cancel) => {

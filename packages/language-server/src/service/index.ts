@@ -294,6 +294,17 @@ const service: Plugin = {
 
     return actions;
   },
+  async doCodeActionResolve(action, cancel) {
+    for (const plugin of plugins) {
+      try {
+        const result = await plugin.doCodeActionResolve?.(action, cancel);
+        if (cancel.isCancellationRequested) return;
+        if (result) return result;
+      } catch {
+        // ignore
+      }
+    }
+  },
   async doValidate(doc) {
     const results = await Promise.allSettled(
       plugins.map((plugin) => plugin.doValidate?.(doc)),

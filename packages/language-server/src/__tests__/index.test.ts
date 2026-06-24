@@ -1,13 +1,26 @@
+import assert from "node:assert/strict";
+
+import type { Diagnostic as CompilerDiagnostic } from "@marko/compiler/babel-utils";
 import { Project } from "@marko/language-tools";
 import fs from "fs";
 import snapshot from "mocha-snap";
 import path from "path";
-import { CancellationToken, Position } from "vscode-languageserver";
+import {
+  CancellationToken,
+  Command,
+  type InitializeParams,
+  Position,
+} from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 // import { bench, run } from "mitata";
 import { URI } from "vscode-uri";
 
 import MarkoLanguageService, { documents } from "../service";
+import MarkoPlugin from "../service/marko";
+import {
+  collectBatchFixes,
+  getFixCandidates,
+} from "../service/marko/code-actions";
 import { codeFrame } from "./util/code-frame";
 
 Project.setDefaultTypePaths({
@@ -15,6 +28,14 @@ Project.setDefaultTypePaths({
     require.resolve("@marko/language-tools/marko.internal.d.ts"),
   markoTypesFile: require.resolve("marko/index.d.ts"),
 });
+
+// Advertise client-side code action resolve support so fixes are exercised
+// through the lazy resolve path (`doCodeActions` -> `doCodeActionResolve`).
+MarkoPlugin.initialize?.({
+  capabilities: {
+    textDocument: { codeAction: { resolveSupport: { properties: ["edit"] } } },
+  },
+} as InitializeParams);
 
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
@@ -136,6 +157,36 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           }
         }
 
+        const codeActions = await MarkoLanguageService.doCodeActions(
+          doc,
+          {
+            textDocument: { uri: doc.uri },
+            range: {
+              start: doc.positionAt(0),
+              end: doc.positionAt(code.length),
+            },
+            context: { diagnostics: errors || [] },
+          },
+          CancellationToken.None,
+        );
+
+        let codeActionResults = "";
+        for (const action of codeActions || []) {
+          if (Command.is(action)) continue;
+          const resolved =
+            (await MarkoLanguageService.doCodeActionResolve(
+              action,
+              CancellationToken.None,
+            )) || action;
+          const edits = resolved.edit?.changes?.[doc.uri] || [];
+          const fixed = TextDocument.applyEdits(doc, edits);
+          codeActionResults += `### ${resolved.title}\n\`\`\`marko\n${fixed}\n\`\`\`\n\n`;
+        }
+
+        if (codeActionResults) {
+          results += `## Code Actions\n${codeActionResults}`;
+        }
+
         documents.doClose(params);
 
         await snapshot(results, {
@@ -154,6 +205,94 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
 //     await run();
 //   });
 // }
+
+describe("code action kind filtering", () => {
+  const file = path.join(FIXTURE_DIR, "code-action", "fix-all", "index.marko");
+  const uri = URI.file(file).toString();
+  const content = fs.readFileSync(file, "utf-8");
+  const doc = TextDocument.create(uri, "marko", 1, content);
+  const range = {
+    start: { line: 0, character: 0 },
+    end: doc.positionAt(content.length),
+  };
+
+  const kindsFor = async (only?: string[]) => {
+    const actions = await MarkoLanguageService.doCodeActions(
+      doc,
+      { textDocument: { uri }, range, context: { diagnostics: [], only } },
+      CancellationToken.None,
+    );
+    return (actions || []).map((action) =>
+      Command.is(action) ? "command" : action.kind,
+    );
+  };
+
+  it("offers both quick fixes and fix-all when unfiltered", async () => {
+    const kinds = await kindsFor();
+    assert.ok(kinds.includes("quickfix"), "expected quick fixes");
+    assert.ok(kinds.includes("source.fixAll.marko"), "expected a fix-all");
+  });
+
+  it("offers only quick fixes when `quickfix` is requested", async () => {
+    const kinds = await kindsFor(["quickfix"]);
+    assert.ok(kinds.length > 0);
+    assert.ok(kinds.every((kind) => kind === "quickfix"));
+  });
+
+  it("offers only fix-all when `source.fixAll` is requested", async () => {
+    // A generic `source.fixAll` request matches our `source.fixAll.marko`
+    // action via kind hierarchy -- this is what VS Code's "Fix All" uses.
+    assert.deepEqual(await kindsFor(["source.fixAll"]), [
+      "source.fixAll.marko",
+    ]);
+  });
+});
+
+describe("diagnostic fix prompts", () => {
+  // A compiler fix is either an automatic function fix (`true`) or an
+  // interactive `confirm`/`select` prompt. None ship in marko 5 yet, so the
+  // prompt mapping is verified here against synthetic diagnostics.
+  const diag = (fix: unknown, label = "msg") =>
+    ({ type: "deprecation", label, loc: false, fix }) as CompilerDiagnostic;
+
+  it("maps an automatic function fix to a single preferred quick fix", () => {
+    assert.deepEqual(getFixCandidates(diag(true, "Use input")), [
+      { title: "Use input", value: undefined, isPreferred: true },
+    ]);
+  });
+
+  it("maps a confirm prompt to a single non-preferred 'yes' action", () => {
+    const fix = { type: "confirm", message: "Convert?", initialValue: false };
+    assert.deepEqual(getFixCandidates(diag(fix)), [
+      { title: "Convert?", value: true, isPreferred: false },
+    ]);
+  });
+
+  it("maps a select prompt to one non-preferred action per option", () => {
+    const fix = {
+      type: "select",
+      message: "Pick",
+      options: [{ value: "a", label: "Option A" }, { value: "b" }],
+      initialValue: "a",
+    };
+    assert.deepEqual(getFixCandidates(diag(fix)), [
+      { title: "Pick: Option A", value: "a", isPreferred: false },
+      { title: "Pick: b", value: "b", isPreferred: false },
+    ]);
+  });
+
+  it("batches only automatic function fixes into 'fix all'", () => {
+    const fixes = collectBatchFixes([
+      diag(true),
+      diag({ type: "confirm", message: "x", initialValue: true }),
+      diag({ type: "select", message: "y", options: [{ value: "a" }] }),
+      diag(true),
+      diag(false),
+    ]);
+    // Indices 0 and 3 (the function fixes); prompts and non-fixes are excluded.
+    assert.deepEqual([...fixes.keys()], [0, 3]);
+  });
+});
 
 function* getHovers(doc: TextDocument): Generator<Position> {
   for (const { index } of doc.getText().matchAll(/\^\?/g)) {

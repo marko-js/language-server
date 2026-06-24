@@ -51,6 +51,10 @@ export type Plugin = {
   doHover: Handler<HoverParams, Hover>;
   doRename: Handler<RenameParams, WorkspaceEdit>;
   doCodeActions: Handler<CodeActionParams, (Command | CodeAction)[]>;
+  doCodeActionResolve: (
+    action: CodeAction,
+    token: CancellationToken,
+  ) => Result<CodeAction>;
   findDefinition: Handler<
     DefinitionParams,
     Location | LocationLink | (Location | LocationLink)[]
