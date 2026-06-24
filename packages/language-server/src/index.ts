@@ -49,7 +49,7 @@ connection.onInitialize(async (params) => {
       documentFormattingProvider: true,
       definitionProvider: true,
       hoverProvider: true,
-      renameProvider: true,
+      renameProvider: { prepareProvider: true },
       codeActionProvider: {
         resolveProvider: true,
         codeActionKinds: markoCodeActionKinds,
@@ -203,6 +203,16 @@ connection.onColorPresentation(async (params, cancel) => {
 connection.onHover(async (params, cancel) => {
   return (
     (await service.doHover(
+      documents.get(params.textDocument.uri)!,
+      params,
+      cancel,
+    )) || null
+  );
+});
+
+connection.onPrepareRename(async (params, cancel) => {
+  return (
+    (await service.prepareRename(
       documents.get(params.textDocument.uri)!,
       params,
       cancel,

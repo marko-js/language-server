@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 
 import type { Diagnostic as CompilerDiagnostic } from "@marko/compiler/babel-utils";
-import { Project } from "@marko/language-tools";
+import { extractCSSModule, Project } from "@marko/language-tools";
 import fs from "fs";
 import snapshot from "mocha-snap";
 import path from "path";
@@ -194,6 +194,19 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           dir: fixtureDir,
         });
       }
+
+      // Snapshot the virtual TypeScript produced for any CSS module in the
+      // fixture so the extractor output is covered directly.
+      for (const filename of loadStyleModuleFiles(fixtureDir)) {
+        const extracted = extractCSSModule({
+          code: fs.readFileSync(filename, "utf-8"),
+          fileName: filename,
+        });
+        await snapshot(extracted.toString(), {
+          file: path.relative(fixtureDir, `${filename}.ts`),
+          dir: fixtureDir,
+        });
+      }
     });
   }
 }
@@ -314,6 +327,21 @@ export function* loadMarkoFiles(dir: string): Generator<string> {
       }
     } else if (stat.isDirectory() && entry !== "__snapshots__") {
       yield* loadMarkoFiles(file);
+    }
+  }
+}
+
+const STYLE_MODULE_REG = /\.module\.(?:css|scss|less)$/;
+function* loadStyleModuleFiles(dir: string): Generator<string> {
+  for (const entry of fs.readdirSync(dir)) {
+    const file = path.join(dir, entry);
+    const stat = fs.statSync(file);
+    if (stat.isFile()) {
+      if (STYLE_MODULE_REG.test(file)) {
+        yield file;
+      }
+    } else if (stat.isDirectory() && entry !== "__snapshots__") {
+      yield* loadStyleModuleFiles(file);
     }
   }
 }

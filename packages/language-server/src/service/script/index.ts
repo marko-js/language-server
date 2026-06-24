@@ -6,6 +6,7 @@ import {
   NodeType,
   normalizePath,
   type Parsed,
+  Processors,
   Project,
   ScriptLang,
 } from "@marko/language-tools";
@@ -33,7 +34,12 @@ import { URI } from "vscode-uri";
 
 import { type ExtractedSnapshot, patch } from "../../ts-plugin/host";
 import { START_LOCATION } from "../../utils/constants";
-import { getFSPath, getMarkoFile, processDoc } from "../../utils/file";
+import {
+  getFSPath,
+  getMarkoFile,
+  type MarkoFile,
+  processDoc,
+} from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import * as workspace from "../../utils/workspace";
 import type { Plugin } from "../types";
@@ -43,7 +49,7 @@ import printJSDocTag from "./util/print-jsdoc-tag";
 const IGNORE_DIAG_REG =
   /^(?:(?:Expression|Identifier|['"][^\w]['"]) expected|Invalid character)\b/i;
 
-interface TSProject {
+export interface TSProject {
   rootDir: string;
   host: ts.LanguageServiceHost;
   service: ts.LanguageService;
@@ -312,6 +318,17 @@ const ScriptService: Partial<Plugin> = {
     const project = getTSProject(fileName);
     const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
+
+    // A class/id inside a `<style/var>` block has no real definition (it is
+    // one), so navigate to its usages like a standalone CSS module.
+    if (isInStyleModuleBlock(getMarkoFile(doc), sourceOffset)) {
+      return findStyleModuleUsages(
+        project,
+        fileName,
+        extracted.generatedOffsetsAt(sourceOffset),
+      );
+    }
+
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
     if (generatedOffset === undefined) return;
 
@@ -333,9 +350,9 @@ const ScriptService: Partial<Plugin> = {
       if (!defDoc) continue;
 
       const links: DefinitionLink[] = [];
+      const extracted = getTargetExtracted(project, def.fileName, defDoc);
 
-      if (markoFileReg.test(targetUri)) {
-        const extracted = processScript(defDoc, project);
+      if (extracted) {
         const sourceRanges = extracted.sourceRangesAt(
           def.textSpan.start,
           def.textSpan.start + def.textSpan.length,
@@ -518,6 +535,26 @@ const ScriptService: Partial<Plugin> = {
       contents,
     };
   },
+  prepareRename(doc, params) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
+    const project = getTSProject(fileName);
+    const extracted = processScript(doc, project);
+    const generatedOffsets = extracted.generatedOffsetsAt(
+      doc.offsetAt(params.position),
+    );
+
+    for (const generatedOffset of generatedOffsets) {
+      const info = project.service.getRenameInfo(fileName, generatedOffset, {});
+      if (info.canRename) {
+        // Select exactly the range we will edit, so eg a CSS module class is
+        // renamed without its leading `.`/`#`.
+        const range = sourceLocationAtTextSpan(extracted, info.triggerSpan);
+        if (range) return range;
+      }
+    }
+  },
   doRename(doc, params) {
     const fileName = getFSPath(doc);
     if (!fileName) return;
@@ -697,8 +734,8 @@ function forEachSourceLocation(
   const targetDoc = documents.get(uri);
   if (!targetDoc) return;
 
-  if (markoFileReg.test(uri)) {
-    const extracted = processScript(targetDoc, project);
+  const extracted = getTargetExtracted(project, fileName, targetDoc);
+  if (extracted) {
     for (const sourceRange of extracted.sourceRangesAt(
       textSpan.start,
       textSpan.start + textSpan.length,
@@ -708,6 +745,76 @@ function forEachSourceLocation(
   } else {
     cb(uri, docLocationAtTextSpan(targetDoc, textSpan));
   }
+}
+
+/**
+ * The {@link Extracted} mapping for a target file, so generated TS locations
+ * map back to source. Marko files use the marko cache; other processed files
+ * (eg `.module.css`) use the TS host's extract cache.
+ */
+function getTargetExtracted(
+  project: TSProject,
+  fileName: string,
+  doc: TextDocument,
+) {
+  if (markoFileReg.test(fileName)) {
+    return processScript(doc, project);
+  }
+
+  if (Processors.has(fileName)) {
+    // A failed extraction caches a snapshot-only placeholder (see the TS host);
+    // only return a real source-mapped extract so callers can map locations.
+    const cached = extractCache.get(normalizePath(fileName));
+    if (cached && "sourceRangesAt" in cached) return cached;
+  }
+}
+
+/**
+ * The non-declaration usages of a CSS module class/id, used to navigate from a
+ * `<style/var>` selector to its Marko/TS uses.
+ */
+function findStyleModuleUsages(
+  project: TSProject,
+  fileName: string,
+  generatedOffsets: number[],
+) {
+  const result: LSPLocation[] = [];
+  const seen = new Set<string>();
+
+  for (const generatedOffset of generatedOffsets) {
+    const symbols = project.service.findReferences(fileName, generatedOffset);
+    if (!symbols) continue;
+
+    for (const symbol of symbols) {
+      for (const entry of symbol.references) {
+        if (entry.isDefinition) continue;
+        forEachSourceLocation(project, entry, (uri, range) => {
+          const key = `${uri}:${rangeKey(range)}`;
+          if (seen.has(key)) return;
+          seen.add(key);
+          result.push({ uri, range });
+        });
+      }
+    }
+  }
+
+  return result.length ? result : undefined;
+}
+
+/** Whether the offset is inside a `<style/var>` (CSS module) block. */
+function isInStyleModuleBlock({ parsed }: MarkoFile, offset: number) {
+  let node: Node.AnyNode | undefined = parsed.nodeAt(offset);
+  while (node) {
+    if (node.type === NodeType.Tag && node.nameText === "style" && node.var) {
+      // The tag's own `var` resolves through normal TS definition lookup; only
+      // selector content inside the block navigates to its usages.
+      const { start, end } = node.var.value;
+      return offset < start || offset >= end;
+    }
+    node = node.parent;
+  }
+
+  return false;
 }
 
 function getTSConfigFile(fileName: string) {
@@ -736,7 +843,7 @@ function getTSConfigFile(fileName: string) {
   return configFile;
 }
 
-function getTSProject(docFsPath: string): TSProject {
+export function getTSProject(docFsPath: string): TSProject {
   let configFile: string | undefined;
   let markoScriptLang = ScriptLang.js;
 

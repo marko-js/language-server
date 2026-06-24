@@ -12,6 +12,7 @@ import type ts from "typescript/lib/tsserverlibrary";
 const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
 const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const importTagReg = /^<([^>]+)>$/;
+const markoFileReg = /\.marko$/i;
 
 export interface ExtractedSnapshot extends Extracted {
   snapshot: ts.IScriptSnapshot;
@@ -170,8 +171,20 @@ export function patch(
           }
         }
 
-        const processor =
+        let processor =
           moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
+        // A CSS module only resolves to Marko's virtual typing when imported
+        // from a Marko file. Elsewhere (eg a plain `.ts` file) we defer to the
+        // user's own resolution -- an ambient `*.module.css` declaration, a
+        // generated `.d.ts`, or another TS plugin -- so we never override an
+        // existing CSS module setup.
+        if (
+          processor &&
+          Processors.isCSSModule(moduleName) &&
+          !markoFileReg.test(containingFile)
+        ) {
+          processor = undefined;
+        }
         if (processor) {
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
@@ -273,7 +286,7 @@ export function patch(
   return host;
 
   function getProcessor(fileName: string) {
-    const ext = getExt(fileName);
+    const ext = Processors.getProcessorExtension(fileName);
     return ext ? processors[ext] : undefined;
   }
 }

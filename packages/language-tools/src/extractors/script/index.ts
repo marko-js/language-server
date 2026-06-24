@@ -13,8 +13,10 @@ import {
   type Repeated,
 } from "../../parser";
 import { Extractor } from "../../util/extractor";
+import { findStyleSelectors } from "../../util/find-style-selectors";
 import { normalizePath } from "../../util/normalize-path";
 import type { Meta } from "../../util/project";
+import { writeStyleModuleType } from "../css-module";
 import {
   crawlProgramScope,
   getBoundAttrRange,
@@ -824,7 +826,13 @@ constructor(_) {}
         this.#closeBrackets[this.#closeBrackets.length - 1]++;
         this.#extractor.write("{const ");
 
-        if (isHTML) {
+        if (tagName === "style") {
+          // `<style/foo>` is a CSS module; type its var as an object of the
+          // embedded stylesheet's class/id names.
+          this.#extractor.copy(tag.var.value).write(" = ");
+          this.#writeStyleModuleVar(tag);
+          this.#extractor.write(";\n");
+        } else if (isHTML) {
           this.#extractor
             .copy(tag.var.value)
             .write(` = ${varShared("el")}(${JSON.stringify(def.name)});\n`);
@@ -878,6 +886,43 @@ constructor(_) {}
         );
       }
     }
+  }
+
+  /** Types a `<style/foo>` CSS module var as an object of its class/id names. */
+  #writeStyleModuleVar(tag: Node.Tag) {
+    const selectors = this.#getStyleModuleSelectors(tag);
+    if (this.#scriptLang === ScriptLang.ts) {
+      this.#extractor.write(`${varShared("any")} as `);
+      writeStyleModuleType(this.#extractor, selectors);
+    } else {
+      this.#extractor.write("/** @type {");
+      writeStyleModuleType(this.#extractor, selectors);
+      this.#extractor.write(`} */(${varShared("any")})`);
+    }
+  }
+
+  #getStyleModuleSelectors(tag: Node.Tag) {
+    const result = new Map<string, Range[]>();
+    if (tag.body) {
+      for (const child of tag.body) {
+        if (child.type === NodeType.Text) {
+          const found = findStyleSelectors(
+            this.#code.slice(child.start, child.end),
+            child.start,
+          );
+          for (const [name, ranges] of found) {
+            const existing = result.get(name);
+            if (existing) {
+              existing.push(...ranges);
+            } else {
+              result.set(name, ranges);
+            }
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   #endChildren() {

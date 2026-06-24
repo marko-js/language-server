@@ -119,7 +119,18 @@ const service: Plugin = {
     let references: Location[] | undefined;
     for (const result of results) {
       if (result.status !== "fulfilled" || !result.value) continue;
-      references = (references || []).concat(result.value);
+      for (const ref of result.value) {
+        references ||= [];
+        // Drop a reference overlapping one from an earlier plugin (eg a CSS
+        // module class found by both the script and style plugins).
+        if (
+          !references.some(
+            (it) => it.uri === ref.uri && rangesOverlap(it.range, ref.range),
+          )
+        ) {
+          references.push(ref);
+        }
+      }
     }
 
     return references;
@@ -228,6 +239,17 @@ const service: Plugin = {
 
     return hovers;
   },
+  async prepareRename(doc, params, cancel) {
+    for (const plugin of plugins) {
+      try {
+        const result = await plugin.prepareRename?.(doc, params, cancel);
+        if (cancel.isCancellationRequested) return;
+        if (result) return result;
+      } catch {
+        // ignore
+      }
+    }
+  },
   async doRename(doc, params, cancel) {
     const results = await Promise.allSettled(
       plugins.map((plugin) => plugin.doRename?.(doc, params, cancel)),
@@ -242,16 +264,17 @@ const service: Plugin = {
       if (result.status !== "fulfilled" || !result.value) continue;
       const { value } = result;
       if (value.changes) {
-        if (changes) {
-          changes = { ...changes };
+        changes ||= {};
 
-          for (const uri in value.changes) {
-            changes[uri] = changes[uri]
-              ? changes[uri].concat(value.changes[uri])
-              : value.changes[uri];
+        for (const uri in value.changes) {
+          const existing = (changes[uri] ||= []);
+          for (const edit of value.changes[uri]) {
+            // Drop an edit overlapping one from an earlier plugin, which would
+            // otherwise corrupt the rename.
+            if (!existing.some((it) => rangesOverlap(it.range, edit.range))) {
+              existing.push(edit);
+            }
           }
-        } else {
-          changes = value.changes;
         }
       }
 
@@ -320,6 +343,15 @@ const service: Plugin = {
   },
   format: MarkoPlugin.format!,
 };
+
+function positionBefore(a: Range["start"], b: Range["start"]) {
+  return a.line < b.line || (a.line === b.line && a.character < b.character);
+}
+
+/** Whether two ranges overlap (ie two plugins reported the same token). */
+function rangesOverlap(a: Range, b: Range) {
+  return positionBefore(a.start, b.end) && positionBefore(b.start, a.end);
+}
 
 function maxRange(a: Range | undefined, b: Range | undefined) {
   if (!a) return b;
