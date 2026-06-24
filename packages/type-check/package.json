@@ -1,6 +1,6 @@
 {
   "name": "@marko/type-check",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "A CLI to type check Marko projects",
   "keywords": [
     "type-check",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
     "@marko/compiler": "^5.39.66",
-    "@marko/language-tools": "^2.5.63",
+    "@marko/language-tools": "^2.5.64",
     "arg": "^5.0.2",
     "kleur": "^4.1.5",
     "typescript": "^6.0.3"
