@@ -1,15 +1,46 @@
 import type { Config } from "@marko/compiler";
-import { DiagnosticType } from "@marko/compiler/babel-utils";
+import {
+  type Diagnostic as CompilerDiagnostic,
+  DiagnosticType,
+} from "@marko/compiler/babel-utils";
 import { Project } from "@marko/language-tools";
 import path from "path";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import { getFSPath } from "../../utils/file";
 import type { Plugin } from "../types";
 
+/**
+ * The result of compiling a document for diagnostics: either the compiler's
+ * diagnostics or the error thrown while trying to compile it.
+ */
+export type MarkoDiagnosticsResult =
+  | { diagnostics: CompilerDiagnostic[]; error?: undefined }
+  | { diagnostics?: undefined; error: unknown };
+
+/**
+ * Caches the compiler diagnostics per document version so that `doValidate` and
+ * the code action provider can share a single compile instead of compiling the
+ * same document twice.
+ */
+const diagnosticsCache = new WeakMap<
+  TextDocument,
+  { version: number; result: MarkoDiagnosticsResult }
+>();
+
 const markoErrorRegExp =
   /^(.+?)\.marko(?:\((\d+)(?:\s*,\s*(\d+))?\))?: (.*)$/gm;
-const compilerConfig: Config = {
+
+/**
+ * Shared compiler config used to surface diagnostics. Runs through the
+ * `migrate` output (the latest stage diagnostic fixes can be registered in)
+ * with error recovery so that all recoverable diagnostics are returned on
+ * `meta.diagnostics` instead of being thrown. The code action provider reuses
+ * this same config so the diagnostics (and their indices) line up exactly with
+ * what is reported here.
+ */
+export const compilerConfig: Config = {
   code: false,
   output: "migrate",
   sourceMaps: false,
@@ -28,60 +59,78 @@ const compilerConfig: Config = {
   },
 };
 
-export const doValidate: Plugin["doValidate"] = (doc) => {
-  const filename = getFSPath(doc);
-  const diagnostics: Diagnostic[] = [];
+/**
+ * Compiles the document for diagnostics, caching the result per document
+ * version. Both `doValidate` and the code action provider call this so the
+ * document is only compiled once per change.
+ */
+export function getMarkoDiagnostics(doc: TextDocument): MarkoDiagnosticsResult {
+  const cached = diagnosticsCache.get(doc);
+  if (cached && cached.version === doc.version) return cached.result;
 
+  const filename = getFSPath(doc);
+  let result: MarkoDiagnosticsResult;
   try {
     const { meta } = Project.getCompiler(
       filename && path.dirname(filename),
     ).compileSync(doc.getText(), filename || "untitled.marko", compilerConfig);
+    result = { diagnostics: meta.diagnostics };
+  } catch (error) {
+    result = { error };
+  }
 
-    if (meta.diagnostics) {
-      for (const diag of meta.diagnostics) {
-        const range = diag.loc
-          ? {
-              start: {
-                line: diag.loc.start.line - 1,
-                character: diag.loc.start.column,
-              },
-              end: {
-                line: diag.loc.end.line - 1,
-                character: diag.loc.end.column,
-              },
-            }
-          : {
-              start: { line: 0, character: 0 },
-              end: { line: 0, character: 0 },
-            };
+  diagnosticsCache.set(doc, { version: doc.version, result });
+  return result;
+}
 
-        let severity: DiagnosticSeverity | undefined;
+export const doValidate: Plugin["doValidate"] = (doc) => {
+  const diagnostics: Diagnostic[] = [];
+  const result = getMarkoDiagnostics(doc);
 
-        switch (diag.type) {
-          case DiagnosticType.Warning:
-          case DiagnosticType.Deprecation:
-            severity = DiagnosticSeverity.Warning;
-            break;
-          case DiagnosticType.Suggestion:
-            severity = DiagnosticSeverity.Hint;
-            break;
-          default:
-            severity = DiagnosticSeverity.Error;
-            break;
-        }
+  if (result.diagnostics) {
+    for (const diag of result.diagnostics) {
+      const range = diag.loc
+        ? {
+            start: {
+              line: diag.loc.start.line - 1,
+              character: diag.loc.start.column,
+            },
+            end: {
+              line: diag.loc.end.line - 1,
+              character: diag.loc.end.column,
+            },
+          }
+        : {
+            start: { line: 0, character: 0 },
+            end: { line: 0, character: 0 },
+          };
 
-        diagnostics.push({
-          range,
-          source: "marko",
-          code: undefined,
-          tags: undefined,
-          severity,
-          message: diag.label,
-        });
+      let severity: DiagnosticSeverity | undefined;
+
+      switch (diag.type) {
+        case DiagnosticType.Warning:
+        case DiagnosticType.Deprecation:
+          severity = DiagnosticSeverity.Warning;
+          break;
+        case DiagnosticType.Suggestion:
+          severity = DiagnosticSeverity.Hint;
+          break;
+        default:
+          severity = DiagnosticSeverity.Error;
+          break;
       }
+
+      diagnostics.push({
+        range,
+        source: "marko",
+        code: undefined,
+        tags: undefined,
+        severity,
+        message: diag.label,
+      });
     }
-  } catch (err) {
-    addDiagnosticsForError(err, diagnostics);
+  } else {
+    addDiagnosticsForError(result.error, diagnostics);
   }
 
   return diagnostics;

@@ -1,5 +1,6 @@
 import * as documents from "../../utils/text-documents";
 import type { Plugin } from "../types";
+import { doCodeActionResolve, doCodeActions, initialize } from "./code-actions";
 import { doComplete } from "./complete";
 import { findDefinition } from "./definition";
 import { findDocumentLinks } from "./document-links";
@@ -9,9 +10,12 @@ import { doHover } from "./hover";
 import { doValidate } from "./validate";
 
 export default {
+  initialize,
   doComplete,
   doValidate,
   doHover,
+  doCodeActions,
+  doCodeActionResolve,
   findDefinition,
   findDocumentLinks,
   findDocumentSymbols,
