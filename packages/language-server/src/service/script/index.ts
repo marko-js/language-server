@@ -585,7 +585,12 @@ const ScriptService: Partial<Plugin> = {
 
     function addDiag(tsDiag: ts.Diagnostic) {
       const diag = convertDiag(extracted, tsDiag);
-      if (diag && !IGNORE_DIAG_REG.test(diag.message)) {
+      if (
+        diag &&
+        !IGNORE_DIAG_REG.test(
+          typeof diag.message === "string" ? diag.message : diag.message.value,
+        )
+      ) {
         if (results) {
           results.push(diag);
         } else {

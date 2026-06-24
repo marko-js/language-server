@@ -121,11 +121,11 @@
   "devDependencies": {
     "@marko/language-server": "^3.0.4",
     "@types/vscode": "^1.116.0",
-    "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.9.1",
-    "ovsx": "^0.10.11",
-    "tsx": "^4.21.0",
-    "vscode-languageclient": "^9.0.1"
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "ovsx": "^1.0.2",
+    "tsx": "^4.22.4",
+    "vscode-languageclient": "^10.0.1"
   },
   "engines": {
     "vscode": "^1.116.0"

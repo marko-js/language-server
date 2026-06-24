@@ -4,7 +4,7 @@
   1 | <let/x=1/>
   2 |
 > 3 | <div data-function() {
-    |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'string | number | true | AttrMissing'.
+    |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'true | AttrStringOrNumber'.
   4 |   x++;
   5 | }/>
   6 |
@@ -15,7 +15,7 @@
    5 | }/>
    6 |
 >  7 | <div data-function(y = x++) {
-     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'true | AttrStringOrNumber'.
    8 |   y;
    9 | }/>
   10 |
@@ -26,7 +26,7 @@
    9 | }/>
   10 |
 > 11 | <div data-function=() => {
-     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'true | AttrStringOrNumber'.
   12 |   x++;
   13 | }/>
   14 |
@@ -37,7 +37,7 @@
   13 | }/>
   14 |
 > 15 | <div data-function=(y = x++) => {
-     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'true | AttrStringOrNumber'.
   16 |   y;
   17 | }/>
   18 |
@@ -48,7 +48,7 @@
   17 | }/>
   18 |
 > 19 | <div data-function=function () {
-     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'true | AttrStringOrNumber'.
   20 |   x++;
   21 | }/>
   22 |
@@ -59,7 +59,7 @@
   21 | }/>
   22 |
 > 23 | <div data-function=function (y = x++) {
-     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '(y?: number) => void' is not assignable to type 'true | AttrStringOrNumber'.
   24 |   y;
   25 | }/>
   26 |
@@ -70,7 +70,7 @@
   25 | }/>
   26 |
 > 27 | <div data-function() {
-     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'string | number | true | AttrMissing'.
+     |      ^^^^^^^^^^^^^ Type '() => void' is not assignable to type 'true | AttrStringOrNumber'.
   28 |   function testA() {
   29 |     x++;
   30 |   }

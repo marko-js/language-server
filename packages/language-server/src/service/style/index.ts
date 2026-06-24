@@ -322,7 +322,8 @@ const StyleSheetService: Partial<Plugin> = {
         for (const change of result.documentChanges) {
           if (TextDocumentEdit.is(change)) {
             if (change.textDocument.uri === doc.uri) {
-              change.edits = getSourceEdits(style, change.edits) || [];
+              change.edits =
+                getSourceEdits(style, change.edits as TextEdit[]) || [];
             }
           }
         }

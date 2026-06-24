@@ -55,10 +55,18 @@ export async function activate(ctx: ExtensionContext) {
   // Create the language client and start the client.
   client = new LanguageClient("marko", "Marko", serverOptions, clientOptions);
 
-  client.onNotification("showError", window.showErrorMessage);
-  client.onNotification("showWarning", window.showWarningMessage);
-  client.onNotification("showInformation", window.showInformationMessage);
-  client.onNotification("executeCommand", commands.executeCommand);
+  client.onNotification("showError", (msg: string) => {
+    void window.showErrorMessage(msg);
+  });
+  client.onNotification("showWarning", (msg: string) => {
+    void window.showWarningMessage(msg);
+  });
+  client.onNotification("showInformation", (msg: string) => {
+    void window.showInformationMessage(msg);
+  });
+  client.onNotification("executeCommand", (cmd: string) => {
+    void commands.executeCommand(cmd);
+  });
 
   ctx.subscriptions.push(
     commands.registerCommand("marko.showScriptOutput", async () => {

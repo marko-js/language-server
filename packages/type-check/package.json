@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/compiler": "^5.39.63",
-    "@marko/language-tools": "^2.5.62",
+    "@marko/compiler": "^5.39.66",
+    "@marko/language-tools": "^2.5.63",
     "arg": "^5.0.2",
     "kleur": "^4.1.5",
     "typescript": "^6.0.3"
