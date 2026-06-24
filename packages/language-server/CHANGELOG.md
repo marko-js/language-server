@@ -1,5 +1,14 @@
 # Change Log
 
+## 3.0.5
+
+### Patch Changes
+
+- [`8570e73`](https://github.com/marko-js/language-server/commit/8570e73b357851c2c6ddf66c251249a60db3933e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade dependencies.
+
+- Updated dependencies [[`8570e73`](https://github.com/marko-js/language-server/commit/8570e73b357851c2c6ddf66c251249a60db3933e)]:
+  - @marko/language-tools@2.5.64
+
 ## 3.0.4
 
 ### Patch Changes
