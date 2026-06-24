@@ -12,7 +12,7 @@ const skipRemapExtensionsReg =
   /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
 export default {
-  extension: ".marko",
+  extensions: [".marko"],
   create({ ts, host, configFile }) {
     const currentDirectory = host.getCurrentDirectory
       ? host.getCurrentDirectory()

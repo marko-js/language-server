@@ -3,10 +3,21 @@ import {
   getLocation,
   getPosition,
   type Location,
-  type Parsed,
   type Position,
   type Range,
 } from "../parser";
+
+/**
+ * The minimal source an {@link Extractor} needs to maintain a source mapping.
+ * A Marko `Parsed` satisfies it, as does any other parsed source (eg a CSS
+ * module).
+ */
+export interface ExtractorSource {
+  code: string;
+  filename: string;
+  positionAt(offset: number): Position;
+  locationAt(range: Range): Location;
+}
 
 const enum Mapping {
   full,
@@ -42,10 +53,10 @@ const emptyView = {
  * Utility to build up generate code from source ranges while maintaining a source mapping.
  */
 export class Extractor {
-  #parsed: Parsed;
+  #parsed: ExtractorSource;
   #generated = "";
   #tokens: Token[] = [];
-  constructor(parsed: Parsed) {
+  constructor(parsed: ExtractorSource) {
     this.#parsed = parsed;
   }
 
@@ -122,7 +133,7 @@ export class Extracted {
   #generatedToSource: GeneratedToSourceView | typeof emptyView | undefined;
   #cachedGeneratedLines: number[] | undefined;
   constructor(
-    public parsed: Parsed,
+    public parsed: ExtractorSource,
     generated: string,
     tokens: Token[],
   ) {

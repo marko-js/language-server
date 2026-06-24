@@ -1,0 +1,20 @@
+.button {
+  color: blue;
+}
+
+/* A second rule for the same class still maps to a single export. */
+.button:hover {
+  color: navy;
+}
+
+.primaryButton {
+  font-weight: bold;
+}
+
+.label {
+  color: gray;
+}
+
+#main {
+  padding: 0;
+}

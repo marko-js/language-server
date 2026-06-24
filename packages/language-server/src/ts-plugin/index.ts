@@ -22,9 +22,11 @@ export interface InitOptions {
 export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
   return {
     getExternalFiles(project) {
+      // Marko files are always processed; CSS modules are only pulled into the
+      // program when a Marko file imports one, so we don't add them globally.
       return project
         .getFileNames(false, true)
-        .filter((it) => Processors.has(it));
+        .filter((it) => Processors.has(it) && !Processors.isCSSModule(it));
     },
     create(info) {
       const {

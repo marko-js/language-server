@@ -106,7 +106,13 @@ const StyleSheetService: Partial<Plugin> = {
 
       if (result) {
         const sourceRange = getSourceRange(style, result.range);
-        if (sourceRange) {
+        // Skip a definition that points back at the cursor (eg the CSS service
+        // treats an `#id` selector as its own definition), which is noise next
+        // to the real target.
+        if (
+          sourceRange &&
+          !rangeContainsPosition(sourceRange, params.position)
+        ) {
           return {
             range: sourceRange,
             uri: doc.uri,
@@ -293,6 +299,27 @@ const StyleSheetService: Partial<Plugin> = {
           return result;
         }
       }
+    }
+  },
+  prepareRename(doc, params) {
+    const sourceOffset = doc.offsetAt(params.position);
+    for (const style of processStyle(doc)) {
+      // Find the first stylesheet data that contains the offset.
+      const generatedPos = style.extracted.generatedPositionAt(sourceOffset);
+      if (generatedPos === undefined) continue;
+
+      const range = style.service.prepareRename(
+        style.virtualDoc,
+        generatedPos,
+        style.parsed,
+      );
+
+      if (range) {
+        const sourceRange = getSourceRange(style, range);
+        if (sourceRange) return sourceRange;
+      }
+
+      return;
     }
   },
   async doRename(doc, params) {
@@ -485,4 +512,15 @@ function getGeneratedRange(
 
 function isTextEdit(edit: TextEdit | InsertReplaceEdit): edit is TextEdit {
   return (edit as TextEdit).range !== undefined;
+}
+
+function rangeContainsPosition({ start, end }: Range, pos: Range["start"]) {
+  const afterStart =
+    pos.line > start.line ||
+    (pos.line === start.line && pos.character >= start.character);
+  const beforeEnd =
+    pos.line < end.line ||
+    // LSP ranges are end-exclusive, so a caret at `end` is outside the range.
+    (pos.line === end.line && pos.character < end.character);
+  return afterStart && beforeEnd;
 }

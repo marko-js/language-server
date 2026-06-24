@@ -24,6 +24,8 @@ import type {
   InitializeParams,
   Location,
   LocationLink,
+  PrepareRenameParams,
+  Range,
   ReferenceParams,
   RenameParams,
   SymbolInformation,
@@ -49,6 +51,10 @@ export type Plugin = {
   ) => Result<CompletionItem>;
   doValidate: (doc: TextDocument) => Result<Diagnostic[]>;
   doHover: Handler<HoverParams, Hover>;
+  prepareRename: Handler<
+    PrepareRenameParams,
+    Range | { range: Range; placeholder: string }
+  >;
   doRename: Handler<RenameParams, WorkspaceEdit>;
   doCodeActions: Handler<CodeActionParams, (Command | CodeAction)[]>;
   doCodeActionResolve: (

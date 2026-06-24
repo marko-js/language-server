@@ -1,3 +1,4 @@
+export * from "./extractors/css-module";
 export * from "./extractors/html";
 export * from "./extractors/script";
 export * from "./extractors/style";

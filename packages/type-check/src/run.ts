@@ -442,7 +442,35 @@ export default function run(opts: Options) {
               // source location.
               if (isSourceMapExtensionReg.test(fileName)) return;
               const [sourceFile] = sourceFiles!;
-              const processorExt = getExt(sourceFile.fileName)!;
+              const processorExt = Processors.getProcessorExtension(
+                sourceFile.fileName,
+              )!;
+              const extracted = extractCache.get(
+                getCanonicalFileName(sourceFile.fileName),
+              )!;
+              const printContext: Processors.PrintContext = {
+                extracted,
+                printer,
+                typeChecker,
+                sourceFile,
+                formatSettings: report.formatSettings,
+              };
+
+              // Compound extensions (eg `.module.css`) keep TypeScript's
+              // natural `foo.module.css.d.ts` name and only emit the `.d.ts`.
+              if (processorExt.indexOf(".", 1) !== -1) {
+                if (!fileName.endsWith(ts.Extension.Dts)) return;
+                _writeFile(
+                  fileName,
+                  processor.printTypes(printContext).code,
+                  writeByteOrderMark,
+                  onError,
+                  sourceFiles,
+                  data,
+                );
+                return;
+              }
+
               const inDtsExt = processorExt + ts.Extension.Dts;
               const inJsExt = processorExt + ts.Extension.Js;
               const inExt = fileName.endsWith(inDtsExt)
@@ -486,17 +514,6 @@ export default function run(opts: Options) {
                   processorExt;
               }
 
-              const extracted = extractCache.get(
-                getCanonicalFileName(sourceFile.fileName),
-              )!;
-              const printContext: Processors.PrintContext = {
-                extracted,
-                printer,
-                typeChecker,
-                sourceFile,
-                formatSettings: report.formatSettings,
-              };
-
               _writeFile(
                 outFileName,
                 isDts
@@ -539,7 +556,7 @@ export default function run(opts: Options) {
     host: solutionHost,
   });
   const getProcessor = (fileName: string) => {
-    const ext = getExt(fileName);
+    const ext = Processors.getProcessorExtension(fileName);
     return ext ? processors[ext] : undefined;
   };
 
