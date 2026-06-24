@@ -1,0 +1,31 @@
+diff --git a/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js b/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
+index cbf82b1..bda2edb 100644
+--- a/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
++++ b/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
+@@ -28,8 +28,6 @@ const { parseJSONFromBytes } = require("../helpers/json");
+ const { asciiCaseInsensitiveMatch } = require("../helpers/strings");
+ const { serializeEntryList } = require("./multipart-form-data");
+ 
+-const syncWorkerFile = require.resolve("./xhr-sync-worker.js");
+-
+ // TODO: simplify after dropping Node.js v20 support
+ function trimUint8Array(arr, newSize) {
+   if (arr.buffer.transfer) {
+@@ -41,14 +39,9 @@ function trimUint8Array(arr, newSize) {
+ let syncWorker = null;
+ 
+ function getSyncWorker() {
+-  if (!syncWorker) {
+-    syncWorker = new Worker(syncWorkerFile);
+-    syncWorker.unref();
+-    syncWorker.on("exit", () => {
+-      syncWorker = null;
+-    });
+-  }
+-  return syncWorker;
++  // Synchronous XHR relies on a bundled worker asset and is unused by the Marko
++  // language server; remove it so the module bundles without that asset.
++  throw new Error("jsdom: synchronous XMLHttpRequest is not supported.");
+ }
+ 
+ const SYNC_WORKER_TIMEOUT_MS = 2 * 60 * 1000;

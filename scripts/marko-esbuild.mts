@@ -71,17 +71,44 @@ export const markoBundlePlugins: Plugin[] = [
     },
   },
   {
-    name: "jsdom-fix",
+    name: "jsdom-default-stylesheet-inline",
     setup(build) {
+      // jsdom reads its default UA stylesheet from a sibling .css asset via
+      // `fs.readFileSync(path.resolve(__dirname, ...))` when computed-style.js
+      // loads. esbuild bundles only JS, so that asset is missing next to the
+      // output bundle and the read throws, crashing the server on startup. The
+      // stylesheet is load-bearing (axe relies on computed styles), so inline
+      // its contents at build time rather than dropping it.
+      //
+      // jsdom's other bundling hazards (the sync-XHR worker and css-tree's
+      // createRequire JSON loads) are removed/rewritten in patches/ instead.
       build.onLoad(
-        { filter: /\/jsdom\/.*\/XMLHttpRequest-impl\.js$/ },
-        async (args) => ({
-          loader: "js",
-          contents: (await fs.readFile(args.path, "utf8")).replace(
-            'require.resolve ? require.resolve("./xhr-sync-worker.js") :',
-            "",
-          ),
-        }),
+        { filter: /\/jsdom\/.*\/css\/helpers\/computed-style\.js$/ },
+        async (args) => {
+          const source = await fs.readFile(args.path, "utf8");
+          const css = await fs.readFile(
+            path.resolve(
+              path.dirname(args.path),
+              "../../../browser/default-stylesheet.css",
+            ),
+            "utf8",
+          );
+          const readCall =
+            /fs\.readFileSync\(\s*path\.resolve\(__dirname,[^)]*\),\s*\{[^}]*\}\s*\)/;
+          if (!readCall.test(source)) {
+            // Fail loudly rather than silently shipping a bundle that crashes at
+            // runtime, e.g. if a jsdom upgrade changes how the stylesheet loads.
+            throw new Error(
+              `jsdom-default-stylesheet-inline: stylesheet read not found in ${args.path}; the jsdom internals changed and this workaround is stale.`,
+            );
+          }
+          return {
+            loader: "js",
+            // a function replacement avoids `$`-token interpretation in the
+            // injected JSON string (e.g. if the stylesheet contains `$&`).
+            contents: source.replace(readCall, () => JSON.stringify(css)),
+          };
+        },
       );
     },
   },

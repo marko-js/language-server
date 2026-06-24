@@ -1,0 +1,42 @@
+diff --git a/node_modules/css-tree/lib/data-patch.js b/node_modules/css-tree/lib/data-patch.js
+index cd49cbe..386e2d6 100644
+--- a/node_modules/css-tree/lib/data-patch.js
++++ b/node_modules/css-tree/lib/data-patch.js
+@@ -1,6 +1,3 @@
+-import { createRequire } from 'module';
+-
+-const require = createRequire(import.meta.url);
+-const patch = require('../data/patch.json');
++import patch from '../data/patch.json' with { type: 'json' };
+ 
+ export default patch;
+diff --git a/node_modules/css-tree/lib/data.js b/node_modules/css-tree/lib/data.js
+index 162fa20..247ecc5 100755
+--- a/node_modules/css-tree/lib/data.js
++++ b/node_modules/css-tree/lib/data.js
+@@ -1,10 +1,7 @@
+-import { createRequire } from 'module';
+ import patch from './data-patch.js';
+-
+-const require = createRequire(import.meta.url);
+-const mdnAtrules = require('mdn-data/css/at-rules.json');
+-const mdnProperties = require('mdn-data/css/properties.json');
+-const mdnSyntaxes = require('mdn-data/css/syntaxes.json');
++import mdnAtrules from 'mdn-data/css/at-rules.json' with { type: 'json' };
++import mdnProperties from 'mdn-data/css/properties.json' with { type: 'json' };
++import mdnSyntaxes from 'mdn-data/css/syntaxes.json' with { type: 'json' };
+ 
+ const hasOwn = Object.hasOwn || ((object, property) => Object.prototype.hasOwnProperty.call(object, property));
+ const extendSyntax = /^\s*\|\s*/;
+diff --git a/node_modules/css-tree/lib/version.js b/node_modules/css-tree/lib/version.js
+index dde3a83..6426ea1 100644
+--- a/node_modules/css-tree/lib/version.js
++++ b/node_modules/css-tree/lib/version.js
+@@ -1,5 +1,3 @@
+-import { createRequire } from 'module';
++import pkg from '../package.json' with { type: 'json' };
+ 
+-const require = createRequire(import.meta.url);
+-
+-export const { version } = require('../package.json');
++export const { version } = pkg;
