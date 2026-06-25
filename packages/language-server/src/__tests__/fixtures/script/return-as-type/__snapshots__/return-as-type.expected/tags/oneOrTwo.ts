@@ -38,7 +38,7 @@ function __marko_internal_template(this: void) {
 }
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-export default new (class Template extends Marko._.Template<{
+const OneOrTwo = new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -76,4 +76,5 @@ export default new (class Template extends Marko._.Template<{
     typeof __marko_internal_template extends () => infer Return ? Return : never
   >;
 }> {})();
+export default OneOrTwo;
 // ^?
