@@ -80,9 +80,11 @@ export function AttrName({
     let snippet = attr.name;
 
     if (attr.enum) {
-      // TODO: We should use the following, but vscode has a regression with multi choice snippets form the language server.
-      // snippet += `="\${1|${attr.enum.join()}|}"$0`;
-      snippet += `="$1"$0`;
+      // Offer the allowed values as a snippet choice (a pick-list). Empty
+      // values are dropped since a choice element cannot be empty; fall back to
+      // a plain tabstop when nothing is left to choose from.
+      const choices = attr.enum.filter(Boolean).map(escapeSnippetChoice);
+      snippet += choices.length ? `="\${1|${choices.join()}|}"$0` : `="$1"$0`;
     } else {
       switch (type) {
         case "string":
@@ -133,6 +135,12 @@ export function AttrName({
   });
 
   return completions;
+}
+
+// Escapes the characters that are significant within a `${1|...|}` snippet
+// choice element: `\` (escape), `,` (separator) and `|` (terminator).
+function escapeSnippetChoice(value: string) {
+  return value.replace(/[\\,|]/g, "\\$&");
 }
 
 function isExternalModule(file: string) {

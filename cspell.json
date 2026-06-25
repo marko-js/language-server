@@ -9,6 +9,7 @@
     "brailleroledescription",
     "codegen",
     "Commentable",
+    "contenteditable",
     "contentinfo",
     "Contentinfo",
     "describedby",
