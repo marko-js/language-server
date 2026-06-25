@@ -1,5 +1,27 @@
 # Change Log
 
+## 3.1.0
+
+### Minor Changes
+
+- [#527](https://github.com/marko-js/language-server/pull/527) [`e72de5b`](https://github.com/marko-js/language-server/commit/e72de5ba7b6d5478bf6bf62c9400fe2f9c06cbe3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add CSS module support (`*.module.css`, `*.module.scss`, `*.module.less`).
+
+  Importing a CSS module from a `.marko` file now produces a virtual TypeScript module typed from the stylesheet's class and id selectors. This enables completion, hover, go-to-definition, find-references and rename for the imported class/id names, and surfaces type errors for names that do not exist. `@marko/type-check` (`mtc`) checks the same usage and emits the conventional `foo.module.css.d.ts` declaration. In editors, Marko only resolves `*.module.css` imports for `.marko` files — imports in plain `.ts`/`.tsx` files fall through to normal TypeScript resolution (which picks up that emitted declaration, or whatever CSS-modules setup you already use), so Marko never hijacks resolution for non-Marko files.
+
+  Marko's embedded CSS module blocks (`<style/styles>`, including `<style.scss/styles>` etc.) are typed the same way: the tag variable becomes an object of the block's class/id names instead of an `HTMLStyleElement`, so `styles.foo` is type-checked and its references/renames stay in sync with the selectors in the `<style>` block.
+
+- [#525](https://github.com/marko-js/language-server/pull/525) [`e9e0dbd`](https://github.com/marko-js/language-server/commit/e9e0dbdff302a7562978d5a55b1c5c1e99037e88) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Surface Marko compiler diagnostic fixes as in-editor code actions. Compiler plugins can attach a `fix` to a diagnostic (an in-place AST edit, e.g. the `data` -> `input` migration), and the language server now offers these as:
+
+  - per-diagnostic `quickfix` actions, and
+  - a batched `source.fixAll.marko` source action that applies every auto-fixable issue in a single compile pass — so it plugs into VS Code's "Fix All" command and `editor.codeActionsOnSave`.
+
+  Applying a fix re-runs the compiler asking it to apply the relevant fix(es), reprints the result, formats it with prettier, and produces a minimal text edit so the rest of the document is left untouched. Edits are resolved lazily via `codeAction/resolve` (when the client supports it) and the diagnostics compile is shared with validation, so nothing extra is compiled until a fix is actually used.
+
+### Patch Changes
+
+- Updated dependencies [[`e72de5b`](https://github.com/marko-js/language-server/commit/e72de5ba7b6d5478bf6bf62c9400fe2f9c06cbe3)]:
+  - @marko/language-tools@2.6.0
+
 ## 3.0.5
 
 ### Patch Changes
