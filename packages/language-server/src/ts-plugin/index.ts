@@ -6,6 +6,7 @@ import {
   Processors,
   Project,
 } from "@marko/language-tools";
+import path from "path";
 import type ts from "typescript/lib/tsserverlibrary";
 
 import { START_POSITION } from "../utils/constants";
@@ -34,6 +35,10 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
         languageService: ls,
         languageServiceHost: lsh,
       } = info;
+
+      if (!projectUsesMarko(ts, lsh)) {
+        return ls;
+      }
 
       try {
         const { projectService: ps } = tsProject;
@@ -185,6 +190,30 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
       return ls;
     },
   };
+}
+
+function projectUsesMarko(
+  ts: typeof import("typescript/lib/tsserverlibrary"),
+  host: ts.LanguageServiceHost,
+) {
+  try {
+    for (const fileName of host.getScriptFileNames()) {
+      if (/\.marko$/.test(fileName)) {
+        return true;
+      }
+    }
+
+    return Boolean(
+      ts.resolveModuleName(
+        "marko",
+        path.join(host.getCurrentDirectory(), "_.ts"),
+        { moduleResolution: ts.ModuleResolutionKind.Bundler },
+        host,
+      ).resolvedModule,
+    );
+  } catch {
+    return true;
+  }
 }
 
 function mapTextSpans<
