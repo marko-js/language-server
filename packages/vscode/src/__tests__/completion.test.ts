@@ -29,7 +29,7 @@ describe("completion", () => {
     await snap.inline(
       () => suggest("<div aria-liv█>"),
       `
-<div aria-live="">
+<div aria-live="off">
 `,
     );
   });
