@@ -28,6 +28,7 @@ import {
   type Mutation,
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
+import { getComponentName } from "./util/get-component-name";
 import { getRuntimeAPI, RuntimeAPI } from "./util/get-runtime-api";
 import { isTextOnlyScript } from "./util/is-text-only-script";
 import getJSDocInputType from "./util/jsdoc-input-type";
@@ -470,7 +471,20 @@ function ${templateName}() {\n`);
       );
     }
 
-    this.#extractor.write(`export default new `).anchor(START_OF_FILE);
+    // Naming the default export's binding lets TypeScript offer a clean
+    // `import MyButton` for auto-imports instead of the file-derived
+    // `MyButtonMarko`. Only auto-discoverable tags get a name, and only when it
+    // is not already referenced in the source — a cheap conservative check that
+    // keeps the anonymous default export rather than risk a redeclaration.
+    const componentName = getComponentName(this.#filename);
+    const exportName =
+      componentName && !this.#code.includes(componentName)
+        ? componentName
+        : undefined;
+
+    this.#extractor
+      .write(exportName ? `const ${exportName} = new ` : `export default new `)
+      .anchor(START_OF_FILE);
     if (this.#scriptLang === ScriptLang.ts) {
       this.#extractor.write(`(
   class Template extends ${templateOverrideClass} {}
@@ -482,6 +496,9 @@ function ${templateName}() {\n`);
    */
   class Template extends ${templateBaseClass} {}
 );\n`);
+    }
+    if (exportName) {
+      this.#extractor.write(`export default ${exportName};\n`);
     }
 
     this.#writeComments(program);
