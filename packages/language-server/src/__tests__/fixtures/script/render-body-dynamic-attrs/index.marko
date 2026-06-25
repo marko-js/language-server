@@ -1,0 +1,13 @@
+// Regression test for https://github.com/marko-js/language-server/issues/270
+// For a dynamic `<${body}>` whose single param is an object, the attribute form
+// and the argument form must be equivalent: both pass the input object straight
+// through as the body's first parameter (with no `{ value: [...] }` wrapping).
+export interface Input {
+  renderBody: Marko.Body<[{ foo: string }]>;
+}
+
+<${input.renderBody} foo="bar" />
+<${input.renderBody}({ foo: "bar" }) />
+
+<${input.renderBody} foo=123 />
+<${input.renderBody}({ foo: 123 }) />
