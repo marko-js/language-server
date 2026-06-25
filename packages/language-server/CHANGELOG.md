@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.2.0
+
+### Minor Changes
+
+- [#528](https://github.com/marko-js/language-server/pull/528) [`a27cf25`](https://github.com/marko-js/language-server/commit/a27cf25c34eb12bc085d531497c83682407056c6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Complete enum attribute values as a snippet choice. Attributes with a fixed set of allowed values (e.g. `dir`, `contenteditable`, `enterkeyhint`) now insert a pick-list of those values instead of an empty `=""`.
+
 ## 3.1.0
 
 ### Minor Changes
