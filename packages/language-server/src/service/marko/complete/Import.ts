@@ -5,7 +5,9 @@ import getTagNameCompletion from "../util/get-tag-name-completion";
 import type { CompletionMeta, CompletionResult } from ".";
 
 const staticImportReg = /^\s*(?:static|client|server) import\b/;
-const importTagReg = /(['"])<((?:[^'"\\>]|\\.)*)>?\1/;
+// Captures the quote, the shorthand tag name, and whether the closing `>` is
+// already present (eg `"<foo>"`, or a half-typed `"<fo`).
+const importTagReg = /(['"])<((?:[^'"\\>]|\\.)*)(>?)\1/;
 
 export function Import({
   node,
@@ -18,41 +20,42 @@ export function Import({
   }
 
   const match = importTagReg.exec(value);
-  if (match) {
-    const [{ length }] = match;
-    const fromStart = node.start + match.index;
-    const range = parsed.locationAt({
-      start: fromStart + 1,
-      end: fromStart + length - 1,
-    });
+  if (!match) return;
 
-    const result: CompletionItem[] = [];
+  const [, , name, close] = match;
+  // Complete just the tag name slot (between `<` and `>`) so it filters and
+  // sorts exactly like an open tag name, and append the closing `>` only when
+  // the user has not typed it yet so the shorthand stays valid.
+  const nameStart = node.start + match.index + 2; // skip the opening quote and `<`
+  const range = parsed.locationAt({
+    start: nameStart,
+    end: nameStart + name.length,
+  });
+  const suffix = close ? "" : ">";
 
-    for (const tag of lookup.getTagsSorted()) {
-      if (
-        (tag.template || tag.renderer) &&
-        !(
-          tag.html ||
-          tag.parser ||
-          tag.translator ||
-          tag.isNestedTag ||
-          tag.name === "*" ||
-          tag.parseOptions?.statement ||
-          /^@?marko[/-]/.test(tag.taglibId) ||
-          (tag.name[0] === "_" && /[\\/]node_modules[\\/]/.test(tag.filePath))
-        )
-      ) {
-        const completion = getTagNameCompletion({
-          tag,
-          importer: filename,
-        });
+  const result: CompletionItem[] = [];
 
-        completion.label = `<${completion.label}>`;
-        completion.textEdit = TextEdit.replace(range, completion.label);
-        result.push(completion);
-      }
+  for (const tag of lookup.getTagsSorted()) {
+    if (
+      (tag.template || tag.renderer) &&
+      !(
+        tag.html ||
+        tag.parser ||
+        tag.translator ||
+        tag.isNestedTag ||
+        tag.name === "*" ||
+        tag.parseOptions?.statement ||
+        /^@?marko[/-]/.test(tag.taglibId) ||
+        (tag.name[0] === "_" && /[\\/]node_modules[\\/]/.test(tag.filePath))
+      )
+    ) {
+      const completion = getTagNameCompletion({ tag, importer: filename });
+      // Prioritize over TypeScript's module specifier completions.
+      completion.sortText = `0${completion.label}`;
+      completion.textEdit = TextEdit.replace(range, completion.label + suffix);
+      result.push(completion);
     }
-
-    return result;
   }
+
+  return result;
 }
