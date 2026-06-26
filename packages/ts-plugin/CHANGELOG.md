@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.4
+
+### Patch Changes
+
+- [#532](https://github.com/marko-js/language-server/pull/532) [`2b7a1ba`](https://github.com/marko-js/language-server/commit/2b7a1badf817175d9873c8eaed0d36e75426ef56) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Stop the TypeScript Server plugin from interfering with other plugins (such as Vue's) in projects that don't use Marko. Because the plugin is injected into the editor's shared TypeScript Server for every workspace, it previously patched the shared language service host even where no Marko files exist, which broke diagnostics, go-to-definition, and rename in `.vue` files. It now stays inert unless the project actually uses Marko.
+
 ## 3.1.3
 
 ### Patch Changes

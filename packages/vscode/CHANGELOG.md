@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.1.1
+
+### Patch Changes
+
+- [#536](https://github.com/marko-js/language-server/pull/536) [`8ee8644`](https://github.com/marko-js/language-server/commit/8ee8644a9f9b397d3daf430bd773eb2f4f65c44a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add a "Marko: Restart Marko and TS Servers" command, and list the built-in "TypeScript: Reload Project" command in the Command Palette for `.marko` files.
+
 ## 3.1.0
 
 ### Minor Changes
