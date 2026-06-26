@@ -136,6 +136,22 @@ export async function activate(ctx: ExtensionContext) {
     }),
   );
 
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.restartServer", async () => {
+      const restartMarko = (async () => {
+        if (client.isRunning()) {
+          await client.stop();
+        }
+        await client.start();
+      })();
+
+      await Promise.all([
+        restartMarko,
+        commands.executeCommand("typescript.restartTsServer"),
+      ]);
+    }),
+  );
+
   // Start the client. This will also launch the server
   await client.start();
 }
