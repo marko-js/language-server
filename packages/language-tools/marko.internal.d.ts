@@ -75,6 +75,8 @@ declare global {
         ...exprs: (string | number | void | null | false)[]
       ): string;
 
+      export function mergeClasses<T>(...values: NoInfer<T>[]): T;
+
       export function state<Component>(
         component: Component,
       ): Component extends {
