@@ -1,9 +1,14 @@
 import {
   commands,
+  type Disposable,
   type ExtensionContext,
+  type LanguageConfiguration,
+  languages,
   Position,
   Range,
+  SyntaxTokenType,
   TextEdit,
+  type TextEditor,
   ViewColumn,
   window,
   workspace,
@@ -136,8 +141,70 @@ export async function activate(ctx: ExtensionContext) {
     }),
   );
 
+  ctx.subscriptions.push(...setupTagParamsPipeAutoClosing());
+
   // Start the client. This will also launch the server
   await client.start();
+}
+
+// The Marko language configuration auto-closes `|` so that typing the start of
+// a tag's params (eg `<for|item|>`) inserts the matching pipe. Inside the
+// params, though, a `|` is usually a TS union operator (eg `<my-tag|x: A | B|>`)
+// and auto-closing it is just in the way. There's no way to express this with
+// the static `notIn` token scopes, so instead we ask the server whether the
+// cursor is inside tag params and toggle the `|` pair off while it is.
+function setupTagParamsPipeAutoClosing(): Disposable[] {
+  // Mirrors `marko.configuration.json` minus the `|` auto-closing pair.
+  const stringOrComment = [SyntaxTokenType.String, SyntaxTokenType.Comment];
+  const autoClosingPairsWithoutPipe: LanguageConfiguration["autoClosingPairs"] =
+    [
+      { open: "{", close: "}" },
+      { open: "[", close: "]" },
+      { open: "(", close: ")" },
+      { open: "'", close: "'", notIn: stringOrComment },
+      { open: '"', close: '"', notIn: stringOrComment },
+      { open: "`", close: "`", notIn: stringOrComment },
+      { open: "<!--", close: "-->", notIn: stringOrComment },
+      { open: "/**", close: " */", notIn: stringOrComment },
+    ];
+
+  let pipeOverride: Disposable | undefined;
+  const setPipeAutoClosingDisabled = (disabled: boolean) => {
+    if (disabled === !!pipeOverride) return;
+    if (disabled) {
+      pipeOverride = languages.setLanguageConfiguration("marko", {
+        autoClosingPairs: autoClosingPairsWithoutPipe,
+      });
+    } else {
+      pipeOverride!.dispose();
+      pipeOverride = undefined;
+    }
+  };
+
+  const refresh = async (editor: TextEditor | undefined) => {
+    if (editor?.document.languageId !== "marko") return;
+    const { active } = editor.selection;
+    try {
+      const inTagParams = await client.sendRequest<boolean>("$/inTagParams", {
+        textDocument: { uri: editor.document.uri.toString() },
+        position: { line: active.line, character: active.character },
+      });
+      // Only apply if this is still the focused editor by the time we respond.
+      if (editor === window.activeTextEditor) {
+        setPipeAutoClosingDisabled(inTagParams);
+      }
+    } catch {
+      // Server not ready or request canceled; keep the current state.
+    }
+  };
+
+  return [
+    window.onDidChangeActiveTextEditor(refresh),
+    window.onDidChangeTextEditorSelection((e) => {
+      if (e.textEditor === window.activeTextEditor) void refresh(e.textEditor);
+    }),
+    { dispose: () => pipeOverride?.dispose() },
+  ];
 }
 
 export function deactivate(): Thenable<void> | void {
