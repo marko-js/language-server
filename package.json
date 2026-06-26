@@ -28,7 +28,7 @@
     "@changesets/cli": "^2.31.0",
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.0.0",
+    "@types/node": "^26.0.1",
     "cspell": "^10.0.1",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
