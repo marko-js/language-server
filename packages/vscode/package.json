@@ -44,6 +44,10 @@
       {
         "command": "marko.formatToHtmlMode",
         "title": "Marko: Format: Force Html Mode"
+      },
+      {
+        "command": "marko.restartServer",
+        "title": "Marko: Restart Marko and TS Servers"
       }
     ],
     "configuration": {
@@ -108,6 +112,14 @@
         "configuration": "./marko.configuration.json"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "typescript.reloadProjects",
+          "when": "editorLangId == marko"
+        }
+      ]
+    },
     "typescriptServerPlugins": [
       {
         "name": "marko-ts-plugin",
