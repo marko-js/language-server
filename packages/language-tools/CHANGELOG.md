@@ -1,5 +1,13 @@
 # @marko/language-tools
 
+## 2.6.1
+
+### Patch Changes
+
+- [#530](https://github.com/marko-js/language-server/pull/530) [`1091b69`](https://github.com/marko-js/language-server/commit/1091b69cd8f95be3aae35560ac0d48ae8c70dc52) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Name the default export of auto-discoverable Marko components (files under a `components`/`tags` directory) after the tag, so auto-imports read `import MyButton from "..."` instead of TypeScript's file-derived `MyButtonMarko` (and `Foo` instead of `index` for `foo/index.marko`).
+
+- [#534](https://github.com/marko-js/language-server/pull/534) [`6450d18`](https://github.com/marko-js/language-server/commit/6450d1855d519922eaf48d91a7cda90afaac4183) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Merge a tag's shorthand class names (`.foo`) with a literal `class` attribute (eg `<button.btn class="foo"/>`) the same way Marko does at compile time, instead of emitting two `class` keys. This removes the spurious "An object literal cannot have multiple properties with the same name" TypeScript error while still type-checking the `class` attribute value against the tag's `class` type.
+
 ## 2.6.0
 
 ### Minor Changes
