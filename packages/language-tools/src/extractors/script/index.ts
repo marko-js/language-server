@@ -984,10 +984,18 @@ constructor(_) {}
         .write("`" + SEP_COMMA_NEW_LINE);
     }
 
+    const mergedClassAttr = tag.shorthandClassNames
+      ? this.#getMergeableClassAttr(tag.attrs)
+      : undefined;
+
     if (tag.shorthandClassNames) {
       let sep = SEP_EMPTY;
       hasAttrs = true;
-      this.#extractor.write(`class: ${varShared("interpolated")}\``);
+      this.#extractor.write(
+        mergedClassAttr
+          ? `class: ${varShared("mergeClasses")}(${varShared("interpolated")}\``
+          : `class: ${varShared("interpolated")}\``,
+      );
 
       for (const shorthandClassName of tag.shorthandClassNames) {
         this.#extractor.write(sep).copy({
@@ -997,13 +1005,22 @@ constructor(_) {}
         sep = SEP_SPACE;
       }
 
-      this.#extractor.write("`" + SEP_COMMA_NEW_LINE);
+      this.#extractor.write("`");
+
+      if (mergedClassAttr) {
+        this.#extractor.write(", (\n");
+        this.#copyWithMutationsReplaced(mergedClassAttr.value.value);
+        this.#extractor.write("\n))");
+      }
+
+      this.#extractor.write(SEP_COMMA_NEW_LINE);
     }
 
     if (tag.attrs) {
       hasAttrs = true;
 
       for (const attr of tag.attrs) {
+        if (attr === mergedClassAttr) continue;
         switch (attr.type) {
           case NodeType.AttrSpread:
             this.#extractor.write(`...(\n`);
@@ -1961,6 +1978,24 @@ constructor(_) {}
     const end = attr.name.end;
     for (let i = end - 1; i-- > start; ) {
       if (this.#code.charAt(i) === ":") return { start: i + 1, end };
+    }
+  }
+
+  #getMergeableClassAttr(
+    attrs: Repeatable<Node.AttrNode>,
+  ): (Node.AttrNamed & { value: Node.AttrValue }) | undefined {
+    if (attrs) {
+      for (const attr of attrs) {
+        if (
+          attr.type === NodeType.AttrNamed &&
+          !attr.args &&
+          attr.value?.type === NodeType.AttrValue &&
+          !attr.value.bound &&
+          this.#read(attr.name) === "class"
+        ) {
+          return attr as Node.AttrNamed & { value: Node.AttrValue };
+        }
+      }
     }
   }
 
