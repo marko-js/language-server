@@ -15,8 +15,9 @@ Project.setDefaultTypePaths({
 const FIXTURE_DIR = path.join(__dirname, "fixtures");
 
 // Opens a `█`-marked source as an in-memory document and asks the server
-// whether the marker sits inside tag params (where `|` is a TS union operator).
-function inTagParams(name: string, marked: string) {
+// whether typing `|` at the marker would start a tag's params (the only place
+// the `|` pair should auto-close).
+function canOpenTagParams(name: string, marked: string) {
   const offset = marked.indexOf("█");
   assert.notEqual(offset, -1, "expected a `█` cursor marker in the source");
   const text = marked.replace("█", "");
@@ -25,32 +26,66 @@ function inTagParams(name: string, marked: string) {
     textDocument: { uri, languageId: "marko", version: 1, text },
   });
   const position = documents.get(uri)!.positionAt(offset);
-  return MarkoLanguageService.commands["$/inTagParams"]({
+  return MarkoLanguageService.commands["$/canOpenTagParams"]({
     textDocument: { uri },
     position,
   }) as boolean;
 }
 
-describe("inTagParams command", () => {
-  it("is true inside a tag params type annotation", () => {
+describe("canOpenTagParams command", () => {
+  it("is true right after a tag name", () => {
     assert.equal(
-      inTagParams("pipe-params.marko", "<my-tag|value: string █|/>\n"),
+      canOpenTagParams("pipe-after-name.marko", "<my-tag█/>\n"),
       true,
     );
   });
 
-  it("is true inside tag type args", () => {
+  it("is true after a tag name's type args", () => {
     assert.equal(
-      inTagParams("pipe-type-args.marko", "<my-tag<A █>|x|/>\n"),
+      canOpenTagParams("pipe-after-type-args.marko", "<my-tag<A>█/>\n"),
       true,
     );
   });
 
-  it("is false where the params would open (so `|` still auto-closes)", () => {
-    assert.equal(inTagParams("pipe-open.marko", "<my-tag█/>\n"), false);
+  it("is true after a tag var", () => {
+    assert.equal(
+      canOpenTagParams("pipe-after-var.marko", "<my-tag/foo█/>\n"),
+      true,
+    );
+  });
+
+  it("is true in the gap before an attribute", () => {
+    assert.equal(
+      canOpenTagParams("pipe-before-attr.marko", "<my-tag █class/>\n"),
+      true,
+    );
+  });
+
+  it("is false inside an existing params list", () => {
+    assert.equal(
+      canOpenTagParams("pipe-in-params.marko", "<my-tag|value: A █|/>\n"),
+      false,
+    );
+  });
+
+  it("is false inside tag type args", () => {
+    assert.equal(
+      canOpenTagParams("pipe-in-type-args.marko", "<my-tag<A █| B>|x|/>\n"),
+      false,
+    );
+  });
+
+  it("is false inside an attribute value", () => {
+    assert.equal(
+      canOpenTagParams("pipe-in-attr.marko", '<my-tag class="x█"/>\n'),
+      false,
+    );
   });
 
   it("is false in tag body text", () => {
-    assert.equal(inTagParams("pipe-body.marko", "<div>hel█lo</div>\n"), false);
+    assert.equal(
+      canOpenTagParams("pipe-body.marko", "<div>hel█lo</div>\n"),
+      false,
+    );
   });
 });

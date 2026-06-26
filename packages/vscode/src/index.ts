@@ -147,33 +147,32 @@ export async function activate(ctx: ExtensionContext) {
   await client.start();
 }
 
-// The Marko language configuration auto-closes `|` so that typing the start of
-// a tag's params (eg `<for|item|>`) inserts the matching pipe. Inside the
-// params, though, a `|` is usually a TS union operator (eg `<my-tag|x: A | B|>`)
-// and auto-closing it is just in the way. There's no way to express this with
-// the static `notIn` token scopes, so instead we ask the server whether the
-// cursor is inside tag params and toggle the `|` pair off while it is.
+// `|` should only auto-close when typing the start of a tag's params (eg
+// `<for█>` -> `<for|item|>`), never in params, attributes, bodies, etc. The
+// static `marko.configuration.json` therefore leaves the `|` pair out, and we
+// add it back only while the server reports the cursor is at a spot where
+// params can start. There's no static `notIn` scope that can express this.
 function setupTagParamsPipeAutoClosing(): Disposable[] {
-  // Mirrors `marko.configuration.json` minus the `|` auto-closing pair.
   const stringOrComment = [SyntaxTokenType.String, SyntaxTokenType.Comment];
-  const autoClosingPairsWithoutPipe: LanguageConfiguration["autoClosingPairs"] =
-    [
-      { open: "{", close: "}" },
-      { open: "[", close: "]" },
-      { open: "(", close: ")" },
-      { open: "'", close: "'", notIn: stringOrComment },
-      { open: '"', close: '"', notIn: stringOrComment },
-      { open: "`", close: "`", notIn: stringOrComment },
-      { open: "<!--", close: "-->", notIn: stringOrComment },
-      { open: "/**", close: " */", notIn: stringOrComment },
-    ];
+  // Mirrors `marko.configuration.json`'s `autoClosingPairs` plus the `|` pair.
+  const autoClosingPairsWithPipe: LanguageConfiguration["autoClosingPairs"] = [
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
+    { open: "|", close: "|" },
+    { open: "'", close: "'", notIn: stringOrComment },
+    { open: '"', close: '"', notIn: stringOrComment },
+    { open: "`", close: "`", notIn: stringOrComment },
+    { open: "<!--", close: "-->", notIn: stringOrComment },
+    { open: "/**", close: " */", notIn: stringOrComment },
+  ];
 
   let pipeOverride: Disposable | undefined;
-  const setPipeAutoClosingDisabled = (disabled: boolean) => {
-    if (disabled === !!pipeOverride) return;
-    if (disabled) {
+  const setPipeAutoClosingEnabled = (enabled: boolean) => {
+    if (enabled === !!pipeOverride) return;
+    if (enabled) {
       pipeOverride = languages.setLanguageConfiguration("marko", {
-        autoClosingPairs: autoClosingPairsWithoutPipe,
+        autoClosingPairs: autoClosingPairsWithPipe,
       });
     } else {
       pipeOverride!.dispose();
@@ -185,13 +184,16 @@ function setupTagParamsPipeAutoClosing(): Disposable[] {
     if (editor?.document.languageId !== "marko") return;
     const { active } = editor.selection;
     try {
-      const inTagParams = await client.sendRequest<boolean>("$/inTagParams", {
-        textDocument: { uri: editor.document.uri.toString() },
-        position: { line: active.line, character: active.character },
-      });
+      const canOpenTagParams = await client.sendRequest<boolean>(
+        "$/canOpenTagParams",
+        {
+          textDocument: { uri: editor.document.uri.toString() },
+          position: { line: active.line, character: active.character },
+        },
+      );
       // Only apply if this is still the focused editor by the time we respond.
       if (editor === window.activeTextEditor) {
-        setPipeAutoClosingDisabled(inTagParams);
+        setPipeAutoClosingEnabled(canOpenTagParams);
       }
     } catch {
       // Server not ready or request canceled; keep the current state.

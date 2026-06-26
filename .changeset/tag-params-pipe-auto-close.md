@@ -3,4 +3,4 @@
 "marko-vscode": patch
 ---
 
-Stop auto-closing the `|` pair while the cursor is inside a tag's TS-type regions (its params, type params or type args), where a `|` is a union operator (eg `<my-tag|value: A | B|>`) rather than the start of tag params. The `|` pair still auto-closes everywhere else, so typing the start of tag params keeps inserting the matching pipe.
+Only auto-close the `|` pair when typing the start of a tag's params (eg `<for█>` becomes `<for|item|>`). It no longer auto-closes anywhere else — inside the params themselves (where a `|` is a TS union operator, eg `<my-tag|x: A | B|>`), in type args, attributes or tag bodies — so a stray `|` is no longer inserted while writing those.
