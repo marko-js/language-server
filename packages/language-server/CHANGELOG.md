@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.2.2
+
+### Patch Changes
+
+- [#539](https://github.com/marko-js/language-server/pull/539) [`68fea3b`](https://github.com/marko-js/language-server/commit/68fea3bc99e0a3958db33d1073bf664d055090fa) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add "Show Compiled DOM/HTML Output" debug commands to view the JavaScript a Marko template compiles to for the `dom` or `html` target (always esm).
+
 ## 3.2.1
 
 ### Patch Changes
