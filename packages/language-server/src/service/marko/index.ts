@@ -1,6 +1,7 @@
 import * as documents from "../../utils/text-documents";
 import type { Plugin } from "../types";
 import { doCodeActionResolve, doCodeActions, initialize } from "./code-actions";
+import { compileDocument, type CompiledOutputTarget } from "./compile";
 import { doComplete } from "./complete";
 import { findDefinition } from "./definition";
 import { findDocumentLinks } from "./document-links";
@@ -31,6 +32,17 @@ export default {
       const doc = documents.get(docURI)!;
       const formatted = await formatDocument(doc, options);
       return formatted;
+    },
+    "$/showCompiledOutput": async ({
+      uri,
+      output,
+    }: {
+      uri: string;
+      output: CompiledOutputTarget;
+    }) => {
+      const doc = documents.get(uri);
+      if (doc?.languageId !== "marko") return;
+      return compileDocument(doc, output);
     },
   },
 } as Partial<Plugin>;

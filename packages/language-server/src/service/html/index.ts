@@ -23,7 +23,7 @@ const HTMLService: Partial<Plugin> = {
   commands: {
     "$/showHtmlOutput": async (uri: string) => {
       const doc = get(uri);
-      if (!doc) return;
+      if (doc?.languageId !== "marko") return;
 
       const { extracted } = extract(doc);
 

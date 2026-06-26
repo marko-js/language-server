@@ -69,59 +69,43 @@ export async function activate(ctx: ExtensionContext) {
   });
 
   ctx.subscriptions.push(
-    commands.registerCommand("marko.showScriptOutput", async () => {
-      if (!window.activeTextEditor) {
-        window.showErrorMessage(
-          "You must have an open Marko file to view the script output for.",
-        );
-        return;
-      }
-
-      const result = await client.sendRequest<
-        { language: string; content: string } | undefined
-      >("$/showScriptOutput", window.activeTextEditor.document.uri.toString());
-
-      if (result) {
-        await window.showTextDocument(
-          await workspace.openTextDocument(result),
-          {
-            preview: true,
-            viewColumn: ViewColumn.Beside,
-          },
-        );
-      } else {
-        window.showErrorMessage("Unable to extract script for Marko document.");
-      }
-    }),
+    commands.registerCommand("marko.showScriptOutput", () =>
+      showOutput(
+        "$/showScriptOutput",
+        (uri) => uri,
+        "Unable to extract script for Marko document.",
+      ),
+    ),
   );
 
   ctx.subscriptions.push(
-    commands.registerCommand("marko.showHtmlOutput", async () => {
-      if (!window.activeTextEditor) {
-        window.showErrorMessage(
-          "You must have an open Marko file to view the static HTML output for.",
-        );
-        return;
-      }
+    commands.registerCommand("marko.showHtmlOutput", () =>
+      showOutput(
+        "$/showHtmlOutput",
+        (uri) => uri,
+        "Unable to extract static HTML for Marko document.",
+      ),
+    ),
+  );
 
-      const result = await client.sendRequest<
-        { language: string; content: string } | undefined
-      >("$/showHtmlOutput", window.activeTextEditor.document.uri.toString());
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.showCompiledDomOutput", () =>
+      showOutput(
+        "$/showCompiledOutput",
+        (uri) => ({ uri, output: "dom" }),
+        "Unable to compile DOM output for Marko document.",
+      ),
+    ),
+  );
 
-      if (result) {
-        await window.showTextDocument(
-          await workspace.openTextDocument(result),
-          {
-            preview: true,
-            viewColumn: ViewColumn.Beside,
-          },
-        );
-      } else {
-        window.showErrorMessage(
-          "Unable to extract static HTML for Marko document.",
-        );
-      }
-    }),
+  ctx.subscriptions.push(
+    commands.registerCommand("marko.showCompiledHtmlOutput", () =>
+      showOutput(
+        "$/showCompiledOutput",
+        (uri) => ({ uri, output: "html" }),
+        "Unable to compile HTML output for Marko document.",
+      ),
+    ),
   );
 
   ctx.subscriptions.push(
@@ -162,6 +146,33 @@ export function deactivate(): Thenable<void> | void {
   }
 
   return client.stop();
+}
+
+async function showOutput(
+  request: string,
+  getParams: (uri: string) => unknown,
+  unavailableMessage: string,
+) {
+  const editor = window.activeTextEditor;
+  if (editor?.document.languageId !== "marko") {
+    window.showErrorMessage(
+      "You must have an open Marko file to view its output.",
+    );
+    return;
+  }
+
+  const result = await client.sendRequest<
+    { language: string; content: string } | undefined
+  >(request, getParams(editor.document.uri.toString()));
+
+  if (result) {
+    await window.showTextDocument(await workspace.openTextDocument(result), {
+      preview: true,
+      viewColumn: ViewColumn.Beside,
+    });
+  } else {
+    window.showErrorMessage(unavailableMessage);
+  }
 }
 
 async function formatForced(mode: "concise" | "html") {

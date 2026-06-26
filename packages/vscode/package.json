@@ -38,6 +38,14 @@
         "title": "Marko: Debug: Show Extracted Static HTML Output"
       },
       {
+        "command": "marko.showCompiledDomOutput",
+        "title": "Marko: Debug: Show Compiled DOM Output"
+      },
+      {
+        "command": "marko.showCompiledHtmlOutput",
+        "title": "Marko: Debug: Show Compiled HTML Output"
+      },
+      {
         "command": "marko.formatToConciseMode",
         "title": "Marko: Format: Force Concise Mode"
       },
