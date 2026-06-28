@@ -14,47 +14,33 @@ import { doHover } from "./hover";
 import { doValidate } from "./validate";
 
 /**
- * Whether `offset` is at a spot in a tag's open tag where typing `|` would
- * start its params. Params come after the tag name, its shorthands, type
- * params/args and var, and before any args or attributes, so the cursor has to
- * be past the former and outside the (interiors of the) latter.
+ * Whether typing `|` at `offset` would start `tag`'s params: inside the open
+ * tag, past the name/shorthands/type params/args/var, and outside any existing
+ * params, args or attribute (where `|` is an operator or attribute text).
  */
 function tagParamsCanStartAt(
   offset: number,
   tag: Node.Tag | Node.AttrTag,
 ): boolean {
   const { open } = tag;
-  // Must be within the open tag (`<name ...>`), not its body.
   if (offset <= open.start || offset >= open.end) return false;
 
   let headEnd = tag.name.end;
-  for (const part of [tag.shorthandId, tag.typeArgs, tag.typeParams, tag.var]) {
+  for (const part of [
+    tag.shorthandId,
+    tag.typeArgs,
+    tag.typeParams,
+    tag.var,
+    ...(tag.shorthandClassNames || []),
+  ]) {
     if (part && part.end > headEnd) headEnd = part.end;
-  }
-  if (tag.shorthandClassNames) {
-    for (const className of tag.shorthandClassNames) {
-      if (className.end > headEnd) headEnd = className.end;
-    }
   }
   if (offset < headEnd) return false;
 
-  // Not inside an existing params/args list or an attribute, where `|` is a
-  // TS/JS operator or attribute text rather than the start of params.
-  if (insideInterior(offset, tag.params)) return false;
-  if (insideInterior(offset, tag.args)) return false;
-  if (tag.attrs) {
-    for (const attr of tag.attrs) {
-      if (insideInterior(offset, attr)) return false;
-    }
+  for (const range of [tag.params, tag.args, ...(tag.attrs || [])]) {
+    if (range && offset > range.start && offset < range.end) return false;
   }
   return true;
-}
-
-function insideInterior(
-  offset: number,
-  range: { start: number; end: number } | undefined,
-): boolean {
-  return range !== undefined && offset > range.start && offset < range.end;
 }
 
 export default {

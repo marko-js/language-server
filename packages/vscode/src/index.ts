@@ -148,10 +148,9 @@ export async function activate(ctx: ExtensionContext) {
 }
 
 // `|` should only auto-close when typing the start of a tag's params (eg
-// `<for█>` -> `<for|item|>`), never in params, attributes, bodies, etc. The
-// static `marko.configuration.json` therefore leaves the `|` pair out, and we
-// add it back only while the server reports the cursor is at a spot where
-// params can start. There's no static `notIn` scope that can express this.
+// `<for█>` -> `<for|item|>`). The static config leaves the `|` pair out and we
+// add it back only where the server says params can start — no `notIn` token
+// scope can express that.
 function setupTagParamsPipeAutoClosing(): Disposable[] {
   const stringOrComment = [SyntaxTokenType.String, SyntaxTokenType.Comment];
   // Mirrors `marko.configuration.json`'s `autoClosingPairs` plus the `|` pair.
