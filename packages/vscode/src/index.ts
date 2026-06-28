@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import {
   commands,
   type Disposable,
@@ -6,7 +7,6 @@ import {
   languages,
   Position,
   Range,
-  SyntaxTokenType,
   TextEdit,
   type TextEditor,
   ViewColumn,
@@ -141,7 +141,7 @@ export async function activate(ctx: ExtensionContext) {
     }),
   );
 
-  ctx.subscriptions.push(...setupTagParamsPipeAutoClosing());
+  ctx.subscriptions.push(...setupTagParamsPipeAutoClosing(ctx));
 
   // Start the client. This will also launch the server
   await client.start();
@@ -151,19 +151,17 @@ export async function activate(ctx: ExtensionContext) {
 // `<for█>` -> `<for|item|>`). The static config leaves the `|` pair out and we
 // add it back only where the server says params can start — no `notIn` token
 // scope can express that.
-function setupTagParamsPipeAutoClosing(): Disposable[] {
-  const stringOrComment = [SyntaxTokenType.String, SyntaxTokenType.Comment];
-  // Mirrors `marko.configuration.json`'s `autoClosingPairs` plus the `|` pair.
+function setupTagParamsPipeAutoClosing(ctx: ExtensionContext): Disposable[] {
+  // Reuse the static `autoClosingPairs` (which omits `|`) so the list lives in
+  // one place, and add the `|` pair back. It only ever applies at a tag's
+  // params-start position, which is never inside a string/comment, so the base
+  // pairs' `notIn` scopes are irrelevant here and dropped.
+  const { autoClosingPairs } = JSON.parse(
+    readFileSync(ctx.asAbsolutePath("marko.configuration.json"), "utf8"),
+  ) as { autoClosingPairs: { open: string; close: string }[] };
   const autoClosingPairsWithPipe: LanguageConfiguration["autoClosingPairs"] = [
-    { open: "{", close: "}" },
-    { open: "[", close: "]" },
-    { open: "(", close: ")" },
+    ...autoClosingPairs.map(({ open, close }) => ({ open, close })),
     { open: "|", close: "|" },
-    { open: "'", close: "'", notIn: stringOrComment },
-    { open: '"', close: '"', notIn: stringOrComment },
-    { open: "`", close: "`", notIn: stringOrComment },
-    { open: "<!--", close: "-->", notIn: stringOrComment },
-    { open: "/**", close: " */", notIn: stringOrComment },
   ];
 
   let pipeOverride: Disposable | undefined;
