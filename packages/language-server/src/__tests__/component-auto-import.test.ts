@@ -111,6 +111,18 @@ describe("marko component default export naming", () => {
     );
   });
 
+  it("strips bracket variant suffixes from the identifier", async () => {
+    // Some frameworks place variant files under `tags/` or `components/` with a
+    // bracketed suffix, e.g. `my-button[variant].marko`. The bracket must not
+    // survive into the generated identifier: before the fix, `REG_WORD_START`
+    // left a trailing `]`, producing `const MyButtonVariant] = new (`, which
+    // TypeScript cannot parse (TS1005/TS1134/TS1389).
+    const out = await defaultExport("tags/my-button[variant].marko");
+    assert.doesNotMatch(out, /\]/, "identifier must not contain `]`");
+    assert.match(out, /const MyButtonVariant = new \(/);
+    assert.match(out, /export default MyButtonVariant;/);
+  });
+
   it("offers a clean `import MyComponent` auto-import", async () => {
     const { uris, dispose } = openAll({
       "components/my-component.marko": "<div/>\n",
