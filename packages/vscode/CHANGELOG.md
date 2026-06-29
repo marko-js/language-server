@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.1.3
+
+### Patch Changes
+
+- [#541](https://github.com/marko-js/language-server/pull/541) [`6d688b7`](https://github.com/marko-js/language-server/commit/6d688b7860d36f80a69a343843f4c8892689ac80) Thanks [@vwong](https://github.com/vwong)! - Fix `getComponentName` leaving a trailing `]` in the generated identifier when a component file has a bracketed variant suffix (e.g. `my-button[variant].marko`). The stray `]` produced invalid TypeScript (`const MyButtonVariant] = new …`) which caused TS1005/TS1134/TS1389 parse errors.
+
 ## 3.1.2
 
 ### Patch Changes
