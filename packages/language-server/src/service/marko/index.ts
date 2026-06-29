@@ -23,7 +23,11 @@ function tagParamsCanStartAt(
   tag: Node.Tag | Node.AttrTag,
 ): boolean {
   const { open } = tag;
-  if (offset <= open.start || offset >= open.end) return false;
+  // An html tag's `open.end` is just past the `>`, already in the body; a
+  // concise tag has no `>`, so its `open.end` is the params-start spot itself.
+  if (offset <= open.start || offset >= open.end + (tag.concise ? 1 : 0)) {
+    return false;
+  }
 
   let headEnd = tag.name.end;
   for (const part of [

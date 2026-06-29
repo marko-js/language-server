@@ -41,6 +41,15 @@ const cases: [expected: boolean, where: string, source: string][] = [
   [false, "inside tag type args", "<my-tag<A █| B>|x|/>"],
   [false, "inside an attribute value", '<my-tag class="x█"/>'],
   [false, "in tag body text", "<div>hel█lo</div>"],
+  [true, "after a concise tag name", "div█"],
+  [true, "after a concise shorthand class", "div.foo█"],
+  [false, "inside concise tag params", "div|item█|"],
+  [false, "in concise tag body text", "div -- hel█lo"],
+  [
+    false,
+    "inside an export interface",
+    "export interface Input {\n  a: A █| B;\n}",
+  ],
 ];
 
 describe("canOpenTagParams command", () => {
