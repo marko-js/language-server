@@ -1,9 +1,14 @@
+import { readFileSync } from "fs";
 import {
   commands,
+  type Disposable,
   type ExtensionContext,
+  type LanguageConfiguration,
+  languages,
   Position,
   Range,
   TextEdit,
+  type TextEditor,
   ViewColumn,
   window,
   workspace,
@@ -136,8 +141,67 @@ export async function activate(ctx: ExtensionContext) {
     }),
   );
 
+  ctx.subscriptions.push(...setupTagParamsPipeAutoClosing(ctx));
+
   // Start the client. This will also launch the server
   await client.start();
+}
+
+// `|` should only auto-close when typing the start of a tag's params (eg
+// `<for█>` -> `<for|item|>`). The static config leaves the `|` pair out and we
+// add it back only where the server says params can start — no `notIn` token
+// scope can express that.
+function setupTagParamsPipeAutoClosing(ctx: ExtensionContext): Disposable[] {
+  // Reuse the static `autoClosingPairs` (which omits `|`, but keeps its `notIn`
+  // scopes) so the list lives in one place, and add the `|` pair back.
+  const { autoClosingPairs } = JSON.parse(
+    readFileSync(ctx.asAbsolutePath("marko.configuration.json"), "utf8"),
+  ) as {
+    autoClosingPairs: NonNullable<LanguageConfiguration["autoClosingPairs"]>;
+  };
+  const autoClosingPairsWithPipe = autoClosingPairs.concat({
+    open: "|",
+    close: "|",
+  });
+
+  let pipeOverride: Disposable | undefined;
+  const setPipeAutoClosingEnabled = (enabled: boolean) => {
+    if (enabled === !!pipeOverride) return;
+    pipeOverride?.dispose();
+    pipeOverride = enabled
+      ? languages.setLanguageConfiguration("marko", {
+          autoClosingPairs: autoClosingPairsWithPipe,
+        })
+      : undefined;
+  };
+
+  const refresh = async (editor: TextEditor | undefined) => {
+    if (editor?.document.languageId !== "marko") return;
+    const { active } = editor.selection;
+    try {
+      const canOpenTagParams = await client.sendRequest<boolean>(
+        "$/canOpenTagParams",
+        {
+          textDocument: { uri: editor.document.uri.toString() },
+          position: { line: active.line, character: active.character },
+        },
+      );
+      // Only apply if this is still the focused editor by the time we respond.
+      if (editor === window.activeTextEditor) {
+        setPipeAutoClosingEnabled(canOpenTagParams);
+      }
+    } catch {
+      // Server not ready or request canceled; keep the current state.
+    }
+  };
+
+  return [
+    window.onDidChangeActiveTextEditor(refresh),
+    window.onDidChangeTextEditorSelection((e) => {
+      if (e.textEditor === window.activeTextEditor) void refresh(e.textEditor);
+    }),
+    { dispose: () => pipeOverride?.dispose() },
+  ];
 }
 
 export function deactivate(): Thenable<void> | void {
