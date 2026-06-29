@@ -167,14 +167,12 @@ function setupTagParamsPipeAutoClosing(ctx: ExtensionContext): Disposable[] {
   let pipeOverride: Disposable | undefined;
   const setPipeAutoClosingEnabled = (enabled: boolean) => {
     if (enabled === !!pipeOverride) return;
-    if (enabled) {
-      pipeOverride = languages.setLanguageConfiguration("marko", {
-        autoClosingPairs: autoClosingPairsWithPipe,
-      });
-    } else {
-      pipeOverride!.dispose();
-      pipeOverride = undefined;
-    }
+    pipeOverride?.dispose();
+    pipeOverride = enabled
+      ? languages.setLanguageConfiguration("marko", {
+          autoClosingPairs: autoClosingPairsWithPipe,
+        })
+      : undefined;
   };
 
   const refresh = async (editor: TextEditor | undefined) => {

@@ -81,10 +81,8 @@ export default {
       if (doc?.languageId !== "marko") return;
       return compileDocument(doc, output);
     },
-    // Reports whether typing `|` at a position would start a tag's params (eg
-    // `<for█>` -> `<for|item|>`). This is the only place we want the `|` pair
-    // to auto-close; the client uses it to enable that pair there and nowhere
-    // else (not in params, attributes, bodies, etc).
+    // Whether typing `|` at a position would start a tag's params; the client
+    // uses this to enable the `|` auto-close pair there and nowhere else.
     "$/canOpenTagParams": ({
       textDocument,
       position,
