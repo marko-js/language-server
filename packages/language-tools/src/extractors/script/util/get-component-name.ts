@@ -24,9 +24,9 @@ export function getComponentName(filePath: string): string | undefined {
   const match = REG_DISCOVERABLE_TAG.exec(filePath);
   if (!match) return;
 
-  const name = match[1].replace(REG_WORD_START, (_, char) =>
-    char.toUpperCase(),
-  );
+  const name = match[1]
+    .replace(REG_WORD_START, (_, char) => char.toUpperCase())
+    .replace(/[^\p{L}\p{N}]/gu, "");
 
   // Skip naming when it would not be a valid identifier (eg `3d-view`).
   return /^\p{L}/u.test(name) ? name : undefined;
