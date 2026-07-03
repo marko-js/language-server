@@ -6,6 +6,7 @@ import {
   createConnection,
   type DefinitionLink,
   Diagnostic,
+  DidChangeWatchedFilesNotification,
   ProposedFeatures,
   TextDocumentSyncKind,
 } from "vscode-languageserver/node";
@@ -29,6 +30,15 @@ if (
 const connection = createConnection(ProposedFeatures.all);
 const prevDiags = new WeakMap<TextDocument, Diagnostic[]>();
 let diagnosticTimeout: ReturnType<typeof setTimeout> | undefined;
+let canRegisterFileWatchers = false;
+
+// On-disk changes to these files affect Marko intellisense (imported
+// components, TS modules, styles, tag definitions, tsconfig, and dependency
+// manifests). VS Code's client watches them via `synchronize.fileEvents`, but
+// other clients (e.g. Zed) only send `didChangeWatchedFiles` for watchers the
+// server registers itself — so register them to keep caches in sync everywhere.
+const WATCHED_FILES_GLOB =
+  "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}";
 
 console.log = (...args: unknown[]) => {
   connection.console.log(args.map((v) => inspect(v)).join(" "));
@@ -40,6 +50,9 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 connection.onInitialize(async (params) => {
+  canRegisterFileWatchers = Boolean(
+    params.capabilities.workspace?.didChangeWatchedFiles?.dynamicRegistration,
+  );
   setupMessages(connection);
   await service.initialize(params);
 
@@ -85,6 +98,17 @@ connection.onInitialize(async (params) => {
       },
     },
   };
+});
+
+connection.onInitialized(() => {
+  // Ask spec-compliant clients that don't watch files on the server's behalf
+  // (e.g. Zed) to notify us of on-disk changes to Marko-relevant files. VS Code
+  // already watches these via its client-side `synchronize.fileEvents`.
+  if (canRegisterFileWatchers) {
+    void connection.client.register(DidChangeWatchedFilesNotification.type, {
+      watchers: [{ globPattern: WATCHED_FILES_GLOB }],
+    });
+  }
 });
 
 workspace.setup(connection);
