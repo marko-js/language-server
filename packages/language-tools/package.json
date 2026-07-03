@@ -38,7 +38,7 @@
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
     "@marko/compiler": "^5.39.66",
-    "htmljs-parser": "^5.11.0",
+    "htmljs-parser": "^5.12.1",
     "relative-import-path": "^1.0.0"
   },
   "devDependencies": {
