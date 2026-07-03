@@ -29,7 +29,7 @@
     "@marko/language-server": "^3.2.3",
     "@marko/language-tools": "^2.6.2",
     "marko": "^5.39.11",
-    "tsx": "^4.22.4",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3"
   }
 }
