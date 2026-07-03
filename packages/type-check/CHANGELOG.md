@@ -1,5 +1,14 @@
 # @marko/type-check
 
+## 3.1.2
+
+### Patch Changes
+
+- [#547](https://github.com/marko-js/language-server/pull/547) [`58e58ef`](https://github.com/marko-js/language-server/commit/58e58ef96578334c2251812933cab8f674031bb2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Upgrade `htmljs-parser` to `^5.12.1`, which fixes a parse error where a `<`/`>` comparison inside a `static`/`server`/`client` function with a return-type annotation was treated as a generic bracket, swallowing the rest of the template (e.g. breaking "Show Extracted Script Output").
+
+- Updated dependencies [[`58e58ef`](https://github.com/marko-js/language-server/commit/58e58ef96578334c2251812933cab8f674031bb2)]:
+  - @marko/language-tools@2.6.3
+
 ## 3.1.1
 
 ### Patch Changes
