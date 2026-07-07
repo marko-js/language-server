@@ -1,6 +1,6 @@
 {
   "name": "@marko/language-server",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "Marko Language Server",
   "keywords": [
     "autocomplete",

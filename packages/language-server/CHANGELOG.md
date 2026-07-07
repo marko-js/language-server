@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.2.5
+
+### Patch Changes
+
+- [#546](https://github.com/marko-js/language-server/pull/546) [`9686aae`](https://github.com/marko-js/language-server/commit/9686aaef8651e1905c4fb59c941c4ff069ae19d8) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Register file watchers with the client so on-disk changes to Marko-relevant files (imported components, TS modules, styles, tag definitions, tsconfig, and dependency manifests) invalidate the server's caches. Previously only VS Code — which watches these files client-side — stayed in sync; editors like Zed left intellisense stale until the server restarted.
+
 ## 3.2.4
 
 ### Patch Changes
