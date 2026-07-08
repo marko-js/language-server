@@ -1,0 +1,9 @@
+export interface Input {
+  start: string;
+  content?: Marko.Body;
+}
+
+<let/theme=input.start/>
+<context=theme>
+  <${input.content}/>
+</context>

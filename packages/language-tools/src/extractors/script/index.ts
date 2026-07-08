@@ -326,9 +326,11 @@ class ScriptExtractor {
     }
 
     const didReturn = !!getReturnTag(program);
-    const templateName = didReturn ? varLocal("template") : "";
+    const didProvide = !!this.#getContextProvideTag(program);
+    const namedTemplateFn = didReturn || didProvide;
+    const templateName = namedTemplateFn ? varLocal("template") : "";
 
-    if (!didReturn) {
+    if (!namedTemplateFn) {
       this.#extractor.write("(");
     }
 
@@ -411,7 +413,15 @@ function ${templateName}() {\n`);
       }${this.#api === RuntimeAPI.class ? "component, state, out, " : ""}input, $global, $signal });\n`,
     );
 
-    if (didReturn) {
+    if (didProvide) {
+      // Threads the provided `<context>` value's type out through the
+      // template's return type (see `withContext`/`contextTag`).
+      this.#extractor.write(
+        `return ${varShared("withContext")}(${varLocal("context")}, ${
+          didReturn ? varLocal("return") : "undefined"
+        });\n}\n`,
+      );
+    } else if (didReturn) {
       this.#extractor.write(`return ${varLocal("return")};\n}\n`);
     } else {
       this.#extractor.write("return;\n})();\n");
@@ -421,7 +431,7 @@ function ${templateName}() {\n`);
     const internalInput = varLocal("input");
     const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
-    const returnTypeStr = didReturn
+    const returnTypeStr = namedTemplateFn
       ? `typeof ${
           templateName + typeArgsStr
         } extends () => infer Return ? Return : never`
@@ -610,6 +620,9 @@ constructor(_) {}
             case "return":
               returnTag = child;
               break;
+            case "context":
+              if (!this.#writeContextTag(child)) this.#writeTag(child);
+              break;
             case "if": {
               // @ts-expect-error we know we are in an If Tag
               declare const child: IfTag;
@@ -786,6 +799,110 @@ constructor(_) {}
     }
 
     return returnTag !== undefined;
+  }
+
+  // `<context>`: a provide (`<context=value>`) captures the provided value's
+  // type into a hoisted var the template's return threads out; a consume
+  // (`<context/x from="...">`) types its variable off the resolved provider.
+  #writeContextTag(tag: Node.Tag): boolean {
+    const fromValue = this.#getAttrValue(tag, "from");
+
+    if (fromValue) {
+      if (!tag.var || hasHoists(tag)) return false;
+      const match = /^(['"])(.*)\1$/.exec(this.#read(fromValue).trim());
+      let importPath: string | undefined;
+
+      if (match) {
+        const request = match[2];
+        const tagMatch = /^<(.*)>$/.exec(request);
+        importPath = tagMatch
+          ? resolveTagImport(this.#filename, this.#lookup.getTag(tagMatch[1]))
+          : request[0] === "." && request.endsWith(".marko")
+            ? request
+            : undefined;
+      }
+
+      this.#writeComments(tag);
+      this.#closeBrackets[this.#closeBrackets.length - 1]++;
+      this.#extractor.write("{const ");
+      this.#extractor.copy(tag.var.value);
+      this.#extractor.write(
+        ` = ${
+          importPath
+            ? `${varShared("contextTag")}(() => ${varShared(
+                "renderTemplate",
+              )}(${varShared(
+                "resolveTemplate",
+              )}(import("${importPath}")))()()(${varShared("any")}))`
+            : varShared("any")
+        };\n`,
+      );
+
+      const mutatedVars = getMutatedVars(tag);
+      if (mutatedVars) {
+        for (const binding of mutatedVars) {
+          // Same shape the generic tag-var path emits; the change data is
+          // synthesized so assignments type against the provided value.
+          this.#extractor.write(
+            `const ${varLocal(`change__${binding.name}`)} = ${varShared(
+              "change",
+            )}(${JSON.stringify(binding.name)}, { ${
+              binding.name
+            }Change: (value = ${binding.name}) => {} });\n`,
+          );
+        }
+      }
+
+      return true;
+    }
+
+    if (!this.#getAttrValue(tag, ATTR_UNNAMED) || tag.var) return false;
+
+    this.#writeComments(tag);
+    // A thunk so the capture's type survives conditional/nested provide
+    // sites; a consumed context is guaranteed present (missing is a runtime
+    // error), so extraction unwraps to exactly the provided type.
+    this.#extractor.write(`var ${varLocal("context")} = () => (\n`);
+    this.#extractor.copy(this.#getAttrValue(tag, ATTR_UNNAMED)!);
+    this.#extractor.write("\n);\n");
+
+    const valueChange = this.#getAttrValue(tag, "valueChange");
+    if (valueChange) {
+      this.#extractor.write(`${varShared("noop")}(\n`);
+      this.#extractor.copy(valueChange);
+      this.#extractor.write("\n);\n");
+    }
+
+    const body = this.#processBody(tag);
+    if (body?.content) {
+      this.#extractor.write("{\n");
+      this.#writeChildren(body.content);
+      this.#endChildren();
+      this.#extractor.write("\n}\n");
+    }
+
+    return true;
+  }
+
+  #getContextProvideTag(parent: Node.ParentNode): Node.Tag | undefined {
+    if (parent.body) {
+      for (const child of parent.body) {
+        if (child.type === NodeType.Tag || child.type === NodeType.AttrTag) {
+          if (
+            child.type === NodeType.Tag &&
+            child.nameText === "context" &&
+            !this.#getAttrValue(child, "from") &&
+            this.#getAttrValue(child, ATTR_UNNAMED) &&
+            !child.var
+          ) {
+            return child;
+          }
+
+          const nested = this.#getContextProvideTag(child);
+          if (nested) return nested;
+        }
+      }
+    }
   }
 
   #writeTag(tag: Node.Tag) {
