@@ -41,6 +41,7 @@ import {
   processDoc,
 } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
+import { system } from "../../utils/ts-system";
 import * as workspace from "../../utils/workspace";
 import type { Plugin } from "../types";
 import printJSDocTag from "./util/print-jsdoc-tag";
@@ -65,9 +66,15 @@ const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
 const colorModifierReg = /\bcolor\b/;
 const localInternalsPrefix = "__marko_internal_";
-const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
-  ? (fileName: string) => fileName
-  : (fileName: string) => fileName.toLocaleLowerCase();
+// `system` is read at call time, not captured: on the browser build it is
+// installed (via `setSystem`) after this module is first evaluated, so this must
+// reflect the current system rather than the initial value. When it is not yet
+// available, fall back to case-sensitive (the virtual disk).
+function getCanonicalFileName(fileName: string) {
+  return system?.useCaseSensitiveFileNames === false
+    ? fileName.toLocaleLowerCase()
+    : fileName;
+}
 const requiredTSCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
   moduleResolution: ts.ModuleResolutionKind.Bundler,
@@ -834,8 +841,8 @@ function getTSConfigFile(fileName: string) {
 
   if (!configFile) {
     configFile =
-      ts.findConfigFile(fileName, ts.sys.fileExists, "tsconfig.json") ||
-      ts.findConfigFile(fileName, ts.sys.fileExists, "jsconfig.json");
+      ts.findConfigFile(fileName, system.fileExists, "tsconfig.json") ||
+      ts.findConfigFile(fileName, system.fileExists, "jsconfig.json");
   }
 
   configFileCache.set(docFsDir, configFile);
@@ -876,9 +883,9 @@ export function getTSProject(docFsPath: string): TSProject {
 
   const { fileNames, options, projectReferences } =
     ts.parseJsonConfigFileContent(
-      (configFile && ts.readConfigFile(configFile, ts.sys.readFile).config) ||
+      (configFile && ts.readConfigFile(configFile, system.readFile).config) ||
         defaultTSConfig,
-      ts.sys,
+      system,
       basePath,
       requiredTSCompilerOptions,
       configFile,
@@ -895,7 +902,7 @@ export function getTSProject(docFsPath: string): TSProject {
 
   const tsPkgFile =
     configFile &&
-    ts.resolveModuleName("typescript/package.json", configFile, options, ts.sys)
+    ts.resolveModuleName("typescript/package.json", configFile, options, system)
       .resolvedModule?.resolvedFileName;
   const defaultLibFile = path.join(
     tsPkgFile ? path.join(tsPkgFile, "../lib") : __dirname,
@@ -915,11 +922,11 @@ export function getTSProject(docFsPath: string): TSProject {
     resolutionCache,
     {
       getNewLine() {
-        return ts.sys.newLine;
+        return system.newLine;
       },
 
       useCaseSensitiveFileNames() {
-        return ts.sys.useCaseSensitiveFileNames;
+        return system.useCaseSensitiveFileNames;
       },
 
       getCompilationSettings() {
@@ -962,7 +969,7 @@ export function getTSProject(docFsPath: string): TSProject {
         });
       },
 
-      readDirectory: ts.sys.readDirectory,
+      readDirectory: system.readDirectory,
 
       readFile: (filename) => documents.get(filenameToURI(filename))?.getText(),
 
