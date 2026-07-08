@@ -61,6 +61,14 @@ const extractCache = new Map<string, ExtractedSnapshot>();
 const snapshotCache = new Map<string, ts.IScriptSnapshot>();
 const insertModuleStatementLocCache = new WeakMap<Extracted, Location>();
 const markoFileReg = /\.marko$/;
+// Plain (non-Marko) script files: `.ts`/`.tsx`/`.js`/`.jsx` and their
+// `.mjs`/`.cjs`/`.mts`/`.cts` variants. These are already part of the
+// TypeScript program (the language-service host serves their real text), so
+// unlike `.marko` files they need no extraction -- source offsets map to the
+// language service one-to-one. An embedder without a native TypeScript service
+// (eg the in-browser playground) relies on this to get diagnostics, hover and
+// completion for standalone script files.
+const plainScriptReg = /\.[cm]?[jt]sx?$/i;
 const tsTriggerChars = new Set([".", '"', "'", "`", "/", "@", "<", "#", " "]);
 const optionalModifierReg = /\boptional\b/;
 const deprecatedModifierReg = /\bdeprecated\b/;
@@ -153,6 +161,34 @@ const ScriptService: Partial<Plugin> = {
     if (!fileName) return;
 
     const project = getTSProject(fileName);
+    const preferences = {
+      ...(await getPreferences(project.markoScriptLang)),
+      ...params.context,
+      triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
+    };
+
+    // Plain script file: query the language service at the source offset and
+    // map replacement ranges back one-to-one.
+    if (plainScriptReg.test(fileName)) {
+      const offset = doc.offsetAt(params.position);
+      const completions = project.service.getCompletionsAtPosition(
+        fileName,
+        offset,
+        preferences,
+      );
+      if (!completions?.entries.length) return;
+
+      const result: CompletionItem[] = [];
+      for (const completion of completions.entries) {
+        const item = buildCompletionItem(completion, fileName, offset, (span) =>
+          docLocationAtTextSpan(doc, span),
+        );
+        if (item) result.push(item);
+      }
+
+      return { isIncomplete: true, items: result };
+    }
+
     const extracted = processScript(doc, project);
     const sourceOffset = doc.offsetAt(params.position);
     const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
@@ -161,95 +197,20 @@ const ScriptService: Partial<Plugin> = {
     const completions = project.service.getCompletionsAtPosition(
       fileName,
       generatedOffset,
-      {
-        ...(await getPreferences(project.markoScriptLang)),
-        ...params.context,
-        triggerCharacter: getTSTriggerChar(params.context?.triggerCharacter),
-      },
+      preferences,
     );
     if (!completions?.entries.length) return;
 
     const result: CompletionItem[] = [];
 
     for (const completion of completions.entries) {
-      let { name: label, insertText, sortText } = completion;
-      if (label.startsWith(localInternalsPrefix)) continue;
-
-      const { replacementSpan } = completion;
-      let textEdit: CompletionItem["textEdit"];
-      let detail: CompletionItem["detail"];
-      let kind: CompletionItem["kind"];
-      let tags: CompletionItem["tags"];
-      let labelDetails: CompletionItem["labelDetails"];
-      let source = completion.source;
-
-      if (source && completion.hasAction) {
-        if (source[0] === ".") {
-          source = path.resolve(fileName, "..", source);
-        }
-        detail = relativeImportPath(fileName, normalizePath(source));
-        // De-prioritize auto-imported completions.
-        sortText = `\uffff${sortText}`;
-      } else if (completion.sourceDisplay) {
-        const description = ts.displayPartsToString(completion.sourceDisplay);
-        if (description !== label) {
-          labelDetails = { description };
-        }
-      }
-
-      if (completion.kindModifiers) {
-        if (optionalModifierReg.test(completion.kindModifiers)) {
-          insertText = label;
-          label += "?";
-        }
-
-        if (deprecatedModifierReg.test(completion.kindModifiers)) {
-          tags = [CompletionItemTag.Deprecated];
-        }
-
-        if (colorModifierReg.test(completion.kindModifiers)) {
-          kind = CompletionItemKind.Color;
-        }
-      }
-
-      if (replacementSpan) {
-        const sourceRange = sourceLocationAtTextSpan(
-          extracted,
-          replacementSpan,
-        );
-
-        if (sourceRange) {
-          textEdit = {
-            range: sourceRange,
-            newText: insertText || label,
-          };
-        } else {
-          continue;
-        }
-      }
-
-      result.push({
-        tags,
-        label,
-        detail,
-        textEdit,
-        sortText,
-        insertText,
-        labelDetails,
-        filterText: insertText,
-        preselect: completion.isRecommended || undefined,
-        kind: kind || convertCompletionItemKind(completion.kind),
-        insertTextFormat: completion.isSnippet
-          ? InsertTextFormat.Snippet
-          : undefined,
-        data: completion.data && {
-          originalData: completion.data,
-          originalName: completion.name,
-          originalSource: source,
-          generatedOffset,
-          fileName,
-        },
-      });
+      const item = buildCompletionItem(
+        completion,
+        fileName,
+        generatedOffset,
+        (span) => sourceLocationAtTextSpan(extracted, span),
+      );
+      if (item) result.push(item);
     }
 
     return {
@@ -278,9 +239,28 @@ const ScriptService: Partial<Plugin> = {
 
     if (!detail?.codeActions) return;
 
-    const extracted = processScript(doc, project);
     const textEdits: CompletionItem["additionalTextEdits"] =
       (item.additionalTextEdits = item.additionalTextEdits || []);
+
+    // Plain script file: code-action edits (eg an auto-import) target real
+    // offsets in the file, so map them one-to-one.
+    if (plainScriptReg.test(fileName)) {
+      for (const action of detail.codeActions) {
+        for (const change of action.changes) {
+          if (change.fileName !== fileName) continue;
+          for (const { span, newText } of change.textChanges) {
+            textEdits.push({
+              newText,
+              range: docLocationAtTextSpan(doc, span),
+            });
+          }
+        }
+      }
+
+      return item;
+    }
+
+    const extracted = processScript(doc, project);
 
     for (const action of detail.codeActions) {
       for (const change of action.changes) {
@@ -508,9 +488,17 @@ const ScriptService: Partial<Plugin> = {
     if (!fileName) return;
 
     const project = getTSProject(fileName);
-    const extracted = processScript(doc, project);
+    const isPlain = plainScriptReg.test(fileName);
     const sourceOffset = doc.offsetAt(params.position);
-    const generatedOffset = extracted.generatedOffsetAt(sourceOffset);
+
+    let generatedOffset: number | undefined;
+    let extracted: Extracted | undefined;
+    if (isPlain) {
+      generatedOffset = sourceOffset;
+    } else {
+      extracted = processScript(doc, project);
+      generatedOffset = extracted.generatedOffsetAt(sourceOffset);
+    }
     if (generatedOffset === undefined) return;
 
     const quickInfo = project.service.getQuickInfoAtPosition(
@@ -519,7 +507,9 @@ const ScriptService: Partial<Plugin> = {
     );
     if (!quickInfo) return;
 
-    const sourceRange = sourceLocationAtTextSpan(extracted, quickInfo.textSpan);
+    const sourceRange = extracted
+      ? sourceLocationAtTextSpan(extracted, quickInfo.textSpan)
+      : docLocationAtTextSpan(doc, quickInfo.textSpan);
     if (!sourceRange) return;
 
     let contents = "";
@@ -610,7 +600,16 @@ const ScriptService: Partial<Plugin> = {
     if (!fileName) return;
 
     const project = getTSProject(fileName);
-    const extracted = processScript(doc, project);
+    // A plain script file maps one-to-one; a Marko file maps through its
+    // extracted TS. In the Marko case some TS syntax errors are dropped because
+    // the Marko compiler reports them itself -- for a real script file those are
+    // genuine and kept.
+    const extracted = plainScriptReg.test(fileName)
+      ? undefined
+      : processScript(doc, project);
+    const mapSpan = extracted
+      ? (span: ts.TextSpan) => sourceLocationAtTextSpan(extracted, span)
+      : (span: ts.TextSpan) => docLocationAtTextSpan(doc, span);
 
     let results: Diagnostic[] | undefined;
     for (const tsDiag of project.service.getSuggestionDiagnostics(fileName)) {
@@ -628,12 +627,15 @@ const ScriptService: Partial<Plugin> = {
     return results;
 
     function addDiag(tsDiag: ts.Diagnostic) {
-      const diag = convertDiag(extracted, tsDiag);
+      const diag = convertDiag(mapSpan, tsDiag);
       if (
         diag &&
-        !IGNORE_DIAG_REG.test(
-          typeof diag.message === "string" ? diag.message : diag.message.value,
-        )
+        (!extracted ||
+          !IGNORE_DIAG_REG.test(
+            typeof diag.message === "string"
+              ? diag.message
+              : diag.message.value,
+          ))
       ) {
         if (results) {
           results.push(diag);
@@ -660,6 +662,92 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
         ?.markoTypesCode,
     });
   });
+}
+
+/**
+ * Convert a TypeScript completion entry into an LSP {@link CompletionItem}.
+ * `mapReplacementSpan` maps a replacement span from the language-service
+ * document (the extracted TS for a Marko file, or the file itself for a plain
+ * script) back to a source range; a completion whose span cannot be mapped is
+ * dropped.
+ */
+function buildCompletionItem(
+  completion: ts.CompletionEntry,
+  fileName: string,
+  generatedOffset: number,
+  mapReplacementSpan: (span: ts.TextSpan) => Range | undefined,
+): CompletionItem | undefined {
+  let { name: label, insertText, sortText } = completion;
+  if (label.startsWith(localInternalsPrefix)) return;
+
+  const { replacementSpan } = completion;
+  let textEdit: CompletionItem["textEdit"];
+  let detail: CompletionItem["detail"];
+  let kind: CompletionItem["kind"];
+  let tags: CompletionItem["tags"];
+  let labelDetails: CompletionItem["labelDetails"];
+  let source = completion.source;
+
+  if (source && completion.hasAction) {
+    if (source[0] === ".") {
+      source = path.resolve(fileName, "..", source);
+    }
+    detail = relativeImportPath(fileName, normalizePath(source));
+    // De-prioritize auto-imported completions.
+    sortText = `￿${sortText}`;
+  } else if (completion.sourceDisplay) {
+    const description = ts.displayPartsToString(completion.sourceDisplay);
+    if (description !== label) {
+      labelDetails = { description };
+    }
+  }
+
+  if (completion.kindModifiers) {
+    if (optionalModifierReg.test(completion.kindModifiers)) {
+      insertText = label;
+      label += "?";
+    }
+
+    if (deprecatedModifierReg.test(completion.kindModifiers)) {
+      tags = [CompletionItemTag.Deprecated];
+    }
+
+    if (colorModifierReg.test(completion.kindModifiers)) {
+      kind = CompletionItemKind.Color;
+    }
+  }
+
+  if (replacementSpan) {
+    const sourceRange = mapReplacementSpan(replacementSpan);
+    if (!sourceRange) return;
+    textEdit = {
+      range: sourceRange,
+      newText: insertText || label,
+    };
+  }
+
+  return {
+    tags,
+    label,
+    detail,
+    textEdit,
+    sortText,
+    insertText,
+    labelDetails,
+    filterText: insertText,
+    preselect: completion.isRecommended || undefined,
+    kind: kind || convertCompletionItemKind(completion.kind),
+    insertTextFormat: completion.isSnippet
+      ? InsertTextFormat.Snippet
+      : undefined,
+    data: completion.data && {
+      originalData: completion.data,
+      originalName: completion.name,
+      originalSource: source,
+      generatedOffset,
+      fileName,
+    },
+  };
 }
 
 function getInsertModuleStatementOffset(parsed: Parsed) {
@@ -1123,13 +1211,13 @@ function printDocumentation(
 }
 
 function convertDiag(
-  extracted: Extracted,
+  mapSpan: (span: ts.TextSpan) => Range | undefined,
   tsDiag: ts.Diagnostic,
 ): Diagnostic | undefined {
   const sourceRange =
     tsDiag.start === undefined
       ? START_LOCATION
-      : sourceLocationAtTextSpan(extracted, tsDiag as ts.TextSpan);
+      : mapSpan(tsDiag as ts.TextSpan);
 
   if (sourceRange) {
     return {
