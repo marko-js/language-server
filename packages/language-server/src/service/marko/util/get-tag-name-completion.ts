@@ -47,7 +47,9 @@ export default function getTagNameCompletion({
         : nodeModuleName
           ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
           : `Custom Marko tag discovered from:\n\n[${
-              importer ? path.relative(importer, fileForTag) : fileForTag
+              importer
+                ? path.relative(path.dirname(importer), fileForTag)
+                : fileForTag
             }](${fileURIForTag})`,
   };
 
