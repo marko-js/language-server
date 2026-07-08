@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.2
+
+### Patch Changes
+
+- [#556](https://github.com/marko-js/language-server/pull/556) [`58c250b`](https://github.com/marko-js/language-server/commit/58c250b5c193586b0ccdefa9aa3f030d58687e91) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix the path in a custom tag's "discovered from" hover, which was computed against the importing file instead of its directory. A sibling `counter.marko` showed as `../counter.marko`; it now reads `counter.marko`.
+
 ## 3.3.1
 
 ### Patch Changes
