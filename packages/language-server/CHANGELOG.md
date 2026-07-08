@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.1
+
+### Patch Changes
+
+- [#554](https://github.com/marko-js/language-server/pull/554) [`155a554`](https://github.com/marko-js/language-server/commit/155a554354d66d777848f77d6093013b8bcd2860) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Handle standalone `.ts`/`.js` files in the script service. A non-Marko script file was previously run through Marko extraction, so its diagnostics, hover and completion were dropped or mispositioned. Plain script files are now mapped one-to-one to the TypeScript language service, letting an embedder without a native TypeScript service (eg the in-browser playground) get language features for them.
+
 ## 3.3.0
 
 ### Minor Changes
