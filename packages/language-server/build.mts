@@ -15,7 +15,7 @@ const opts: BuildOptions = {
   platform: "node",
   target: ["node20"],
   sourcemap: "linked",
-  entryPoints: ["src/index.ts"],
+  entryPoints: ["src/index.ts", "src/browser.ts"],
   absWorkingDir: thisDir,
   plugins: [
     {

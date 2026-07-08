@@ -22,6 +22,19 @@ export function onFileChange(handler: FileChangeHandler) {
   fileChangeHandlers.add(handler);
 }
 
+/**
+ * Seed a document that exists "on disk" but is not open in an editor (eg the
+ * bundled `lib.*.d.ts` and Marko type definitions on the browser build). Unlike
+ * `doOpen`, it does not mark the document open, so it is not validated or
+ * treated as a project root.
+ */
+export function preload(uri: string, languageId: string, text: string) {
+  if (!docs.has(uri)) {
+    docs.set(uri, TextDocument.create(uri, languageId, 0, text));
+    fileExists.set(uri, true);
+  }
+}
+
 export function getAllOpen() {
   return openDocs;
 }
