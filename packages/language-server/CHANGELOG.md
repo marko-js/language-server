@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.0
+
+### Minor Changes
+
+- [#552](https://github.com/marko-js/language-server/pull/552) [`acbe5ed`](https://github.com/marko-js/language-server/commit/acbe5eddd881f849f6b411b6b6f080c5fccbaac5) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Add `@marko/language-server/browser`, a browser-consumable entry that exposes the embedded services (Marko + TypeScript + CSS) and the seams a non-Node host must fill, so the language server can run in a Web Worker (eg the markojs.com playground).
+
 ## 3.2.5
 
 ### Patch Changes
