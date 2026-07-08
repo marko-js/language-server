@@ -44,23 +44,23 @@
   },
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/compiler": "^5.39.66",
+    "@marko/compiler": "^5.40.1",
     "@marko/language-tools": "^2.6.3",
     "axe-core": "^4.12.1",
     "htmljs-parser": "^5.12.1",
     "jsdom": "^29.1.1",
     "marko": "^5.39.11",
-    "prettier": "^3.8.4",
-    "prettier-plugin-marko": "^4.0.9",
+    "prettier": "^3.9.4",
+    "prettier-plugin-marko": "^4.0.10",
     "relative-import-path": "^1.0.0",
     "typescript": "^6.0.3",
     "vscode-css-languageservice": "^6.3.10",
-    "vscode-languageserver": "^10.0.1",
+    "vscode-languageserver": "^10.1.0",
     "vscode-languageserver-textdocument": "^1.0.12",
     "vscode-uri": "^3.1.0"
   },
   "devDependencies": {
     "@types/jsdom": "28.0.3",
-    "tsx": "^4.22.4"
+    "tsx": "^4.23.0"
   }
 }
