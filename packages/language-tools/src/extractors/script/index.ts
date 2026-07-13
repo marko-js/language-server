@@ -1,5 +1,6 @@
 import type { types as t } from "@marko/compiler";
 import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
+import path from "path";
 import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";
 
@@ -52,6 +53,7 @@ const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
 const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z0-9_$]+$/;
+const REG_NODE_MODULES = /[\\/]node_modules[\\/]/;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const TAG_ID = new WeakMap<Node.Tag, number>();
 const RENDER_VAR = new WeakMap<Node.Tag, string>();
@@ -2182,12 +2184,42 @@ function isValueAttribute(
 
 function resolveTagImport(from: string, def: TagDefinition | undefined) {
   const filename = resolveTagFile(def);
-  if (filename) {
-    // `from` is parsed.filename which is already normalized, but the taglib
-    // provided path must use native separators too or relativeImportPath
-    // falls back to returning the absolute path.
-    return from ? relativeImportPath(from, normalizePath(filename)) : filename;
-  }
+  if (!def || !filename) return;
+  if (!from) return filename;
+
+  // `from` is parsed.filename which is already normalized, but the taglib
+  // provided path must use native separators too or relativeImportPath
+  // falls back to returning the absolute path.
+  const to = normalizePath(filename);
+  return packageImportPath(from, def, to) || relativeImportPath(from, to);
+}
+
+/**
+ * A tag installed into `node_modules` is imported through the name its package was
+ * resolved by, since its path is a realpath which may not be importable at all.
+ */
+function packageImportPath(from: string, def: TagDefinition, filename: string) {
+  const { packageName, packageRoot } = def;
+  if (!packageName || !packageRoot || !REG_NODE_MODULES.test(filename)) return;
+
+  // Within the package we stay relative, both because it always resolves and
+  // because a self reference would only work if the package exports the tag.
+  if (!isWithin(packageRoot, filename) || isWithin(packageRoot, from)) return;
+
+  const subPath = path.relative(packageRoot, filename);
+  return `${packageName}/${subPath.split(path.sep).join("/")}`;
+}
+
+function isWithin(dir: string, filename: string) {
+  const rel = path.relative(dir, filename);
+  // `path.relative` walks out of the dir with `..`, or returns an absolute path
+  // when it cannot relate the two at all, eg across windows drives.
+  return (
+    !!rel &&
+    rel !== ".." &&
+    !rel.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(rel)
+  );
 }
 
 function resolveTagFile(def: TagDefinition | undefined): string | undefined {
