@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.6.4
+
+### Patch Changes
+
+- [#559](https://github.com/marko-js/language-server/pull/559) [`68b0ebe`](https://github.com/marko-js/language-server/commit/68b0ebe1ae69d2f5be65b1ad8ce450818df7f98e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Import tags from installed packages by the name their taglib was resolved through, fixing the types for tags installed into a virtual store (eg pnpm).
+
 ## 2.6.3
 
 ### Patch Changes
