@@ -107,3 +107,7 @@ Uses `@changesets/cli` for versioning and releases:
 - `dist/` is the build output directory for all packages (gitignored)
 - `package-lock.json` is the lockfile (npm workspaces, not yarn/pnpm)
 - Node 22+ required for development (CI tests on 22 and 24)
+
+## Agent feedback
+
+Anything actionable but out of scope for the current task — a suspected bug, cleanup, a perf/size win, tooling friction, or code that was confusing — must be recorded in [`agent-feedback/`](agent-feedback/README.md) before finishing. Don't silently drop it, and don't fix it inside an unrelated diff.
