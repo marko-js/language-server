@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.7
+
+### Patch Changes
+
+- [#566](https://github.com/marko-js/language-server/pull/566) [`e193905`](https://github.com/marko-js/language-server/commit/e1939050cc5ba6a4a77014c91fa7bc1194458938) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update `@marko/compiler`, `marko`, and `prettier-plugin-marko` to their latest releases.
+
 ## 3.1.6
 
 ### Patch Changes
