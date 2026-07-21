@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.1.5
+
+### Patch Changes
+
+- [#544](https://github.com/marko-js/language-server/pull/544) [`3dde8ac`](https://github.com/marko-js/language-server/commit/3dde8ac90b9fde5de7879206744e10a485a89a3f) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Stop auto-closing the `|` pair. It's a tag-params delimiter, but it more often shows up as an operator (eg a TS union `x: A | B` in tag params), where auto-closing inserted a stray `|`. Bracket matching and wrapping a selection in `|` are unaffected.
+
+- [#566](https://github.com/marko-js/language-server/pull/566) [`e193905`](https://github.com/marko-js/language-server/commit/e1939050cc5ba6a4a77014c91fa7bc1194458938) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update `@marko/compiler`, `marko`, and `prettier-plugin-marko` to their latest releases.
+
 ## 3.1.4
 
 ### Patch Changes
