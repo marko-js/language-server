@@ -1,3 +1,7 @@
 # Suspected Bugs
 
 Out-of-scope defects noticed while working on something else. Format and rules: [README.md](README.md).
+
+- The `@marko/language-server` snapshot tests are not reproducible from the manifests alone: a fresh dependency resolution (delete lockfile + reinstall) picks up marko 5.39.25 / `@marko/runtime-tags` 6.3.16 and two fixtures fail against the committed snapshots — `attr-tags-params-js` and `for-tag` (in `packages/language-server/src/__tests__/fixtures/script/`). The previous `package-lock.json` masked this because it pinned marko 5.39.11 / runtime-tags 6.1.17 even though the manifests require `marko@^5.39.24` (the lock was stale relative to the ranges). Note marko 5.39.24 is worse still: with it, ~40 fixtures fail (attr-tag hoisting/bound-attr diagnostics like "Argument of type '{ section: never; }' is not assignable to parameter of type 'never'"); 5.39.25 fixed most of that upstream. The two remaining snapshot mismatches should be investigated against current marko and either fixed upstream or snapshotted.
+
+- The `marko-vscode` extension tests (`pnpm --filter marko-vscode run test`, VS Code Insiders via `@vscode/test-electron`) fail 7 of 17 locally (`tag name`, `open tag close`, `attr name`, `attr modifier`, `css prop`, `empty tag`, `multi line attrs` — all completion-related, in `packages/vscode/src/__tests__`) identically under both the old npm setup and pnpm, so the failures track the current VS Code Insiders build rather than the dependency layout.

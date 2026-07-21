@@ -2,7 +2,7 @@
 
 ## Repo overview
 
-Monorepo for the Marko Language Server and related tooling. Four npm workspaces under `packages/`:
+Monorepo for the Marko Language Server and related tooling. Four pnpm workspaces under `packages/`:
 
 | Package           | Published as                                | Purpose                                                     |
 | ----------------- | ------------------------------------------- | ----------------------------------------------------------- |
@@ -24,14 +24,14 @@ language-tools -> type-check
 
 Commands:
 
-- `npm run build` -- production build of all packages (sets `NODE_ENV=production`)
-- `npm run build:dev` -- builds only the vscode extension (inlines language-tools from source, self-contained for dev)
+- `pnpm run build` -- production build of all packages (sets `NODE_ENV=production`)
+- `pnpm run build:dev` -- builds only the vscode extension (inlines language-tools from source, self-contained for dev)
 
 The vscode build is the most complex: it bundles 4 entry points (including tests), copies TypeScript `lib.*.d.ts` files into `dist/`, patches jsdom/prettier internals, and minifies in production.
 
 ## Test
 
-**Build is always required before testing.** `npm test` at root runs `npm run build && npm run --ws --if-present test`.
+**Build is always required before testing.** `pnpm test` at root runs `pnpm run build && pnpm -r --if-present run test`.
 
 Only two packages have tests:
 
@@ -39,13 +39,13 @@ Only two packages have tests:
 
 ```sh
 # Run tests (build first)
-npm run test -w @marko/language-server
+pnpm --filter @marko/language-server run test
 
 # Update snapshots
-npm run test -w @marko/language-server -- --update
+pnpm --filter @marko/language-server run test:update
 
 # Shortcut: build deps + run with --update
-npm run test:server
+pnpm run test:server
 ```
 
 - Fixture-based: directories under `src/__tests__/fixtures/` contain `.marko` files
@@ -57,7 +57,7 @@ npm run test:server
 ### vscode (@vscode/test-electron)
 
 ```sh
-npm run test -w marko-vscode
+pnpm --filter marko-vscode run test
 ```
 
 - Launches VS Code Insiders (downloaded automatically)
@@ -68,13 +68,13 @@ npm run test -w marko-vscode
 ### language-tools (bench only)
 
 ```sh
-npm run bench -w @marko/language-tools   # BENCH=1 mocha ...
+pnpm --filter @marko/language-tools run bench   # BENCH=1 mocha ...
 ```
 
 ## Lint and format
 
-`npm run lint` runs build first, then: eslint -> prettier (check) -> cspell.
-`npm run format` runs build first, then: eslint --fix -> prettier --write.
+`pnpm run lint` runs build first, then: eslint -> prettier (check) -> cspell.
+`pnpm run format` runs build first, then: eslint --fix -> prettier --write.
 
 Key lint rules:
 
@@ -87,8 +87,8 @@ Pre-commit hook (husky + lint-staged): runs `eslint --fix` + `prettier --write` 
 
 GitHub Actions on `main` push and PRs:
 
-- **lint** job: `npm ci && npm run lint`
-- **test** job: `npm ci && xvfb-run -a npm test` (Node 22 + 24 matrix)
+- **lint** job: `pnpm install --frozen-lockfile && pnpm run lint`
+- **test** job: `pnpm install --frozen-lockfile && xvfb-run -a pnpm test` (Node 22 + 24 matrix)
 - **release** job: changesets-based, publishes to npm + VS Code marketplace + Open VSX
 
 Note: CI tests run under `xvfb-run` because vscode tests need a display server.
@@ -97,15 +97,15 @@ Note: CI tests run under `xvfb-run` because vscode tests need a display server.
 
 Uses `@changesets/cli` for versioning and releases:
 
-- `npm run change` -- add a changeset
-- `npm run version` -- apply changesets and update lockfile
+- `pnpm run change` -- add a changeset
+- `pnpm run version` -- apply changesets and update lockfile
 - Base branch: `main`
 
 ## Conventions
 
 - ESM-first source code, but esbuild produces CJS (and ESM for library packages)
 - `dist/` is the build output directory for all packages (gitignored)
-- `package-lock.json` is the lockfile (npm workspaces, not yarn/pnpm)
+- `pnpm-lock.yaml` is the lockfile (pnpm workspaces; see `pnpm-workspace.yaml`)
 - Node 22+ required for development (CI tests on 22 and 24)
 
 ## Agent feedback
