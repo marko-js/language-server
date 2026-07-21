@@ -1,27 +1,20 @@
 {
   "name": "marko-language-server-repo",
   "private": true,
-  "workspaces": [
-    "./packages/*"
-  ],
   "scripts": {
-    "@ci:build": "npm run build",
-    "@ci:lint": "npm run lint",
-    "@ci:release": "npm run build && changeset publish && npm run --ws --if-present release && npm ci",
-    "@ci:test": "npm test",
-    "@ci:version": "npm run build && npm run format && changeset version && npm i --package-lock-only",
-    "build": "tsc -b && NODE_ENV=production npm run --ws build",
+    "@ci:build": "pnpm run build",
+    "@ci:lint": "pnpm run lint",
+    "@ci:release": "pnpm run build && changeset publish && pnpm -r --if-present run release && pnpm install --frozen-lockfile",
+    "@ci:test": "pnpm test",
+    "@ci:version": "pnpm run build && pnpm run format && changeset version && pnpm install --lockfile-only",
+    "build": "tsc -b && NODE_ENV=production pnpm -r run build",
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "changeset add",
     "format": "eslint --fix .; prettier . --write --log-level=warn",
-    "postinstall": "patch-package",
     "lint": "eslint . && prettier . --check --log-level=warn && cspell --quiet",
-    "prepare": "husky & npm run --ws --if-present prepare",
-    "test": "npm run build && npm run --ws --if-present test",
-    "test:server": "npm run build -w @marko/language-tools -w @marko/language-server && npm run test -w @marko/language-server -- --update"
-  },
-  "overrides": {
-    "vscode-languageserver-types": "3.18.0"
+    "prepare": "husky",
+    "test": "pnpm run build && pnpm -r --if-present run test",
+    "test:server": "pnpm --filter @marko/language-tools --filter @marko/language-server run build && pnpm --filter @marko/language-server run test:update"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
@@ -37,14 +30,14 @@
     "globals": "^17.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
-    "marko": "^5.39.24",
+    "marko": "^5.39.25",
     "mocha": "^11.7.6",
     "mocha-snap": "^5.0.1",
-    "patch-package": "^8.0.1",
     "prettier": "^3.8.4",
     "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.0"
-  }
+  },
+  "packageManager": "pnpm@11.15.1"
 }

@@ -1,0 +1,25 @@
+packages:
+  - packages/*
+
+allowBuilds:
+  "@vscode/vsce-sign": true
+  esbuild: true
+  keytar: true
+
+linkWorkspacePackages: true
+
+# `marko`'s generated type imports reference `@marko/runtime-tags` from user
+# code without it being a direct dependency; hoist it like npm did so
+# TypeScript can resolve those imports in tests.
+publicHoistPattern:
+  - "@marko/runtime-tags"
+
+# This repo depends on same-day marko releases; disable pnpm's release-age gate.
+minimumReleaseAge: 0
+
+overrides:
+  vscode-languageserver-types: 3.18.0
+
+patchedDependencies:
+  css-tree@3.2.1: patches/css-tree@3.2.1.patch
+  jsdom@29.1.1: patches/jsdom@29.1.1.patch

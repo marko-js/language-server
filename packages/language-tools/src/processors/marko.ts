@@ -11,7 +11,7 @@ const isRemapExtensionReg = /\.ts$/;
 const skipRemapExtensionsReg =
   /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
-export default {
+const markoProcessor: ProcessorConfig = {
   extensions: [".marko"],
   create({ ts, host, configFile }) {
     const currentDirectory = host.getCurrentDirectory
@@ -316,7 +316,9 @@ export default {
       }
     }
   },
-} satisfies ProcessorConfig;
+};
+
+export default markoProcessor;
 
 function castType(type: string) {
   if (type === "any") {
