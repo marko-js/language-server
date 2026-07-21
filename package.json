@@ -37,6 +37,7 @@
     "globals": "^17.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
+    "marko": "^5.39.24",
     "mocha": "^11.7.6",
     "mocha-snap": "^5.0.1",
     "patch-package": "^8.0.1",
