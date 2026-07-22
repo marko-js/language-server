@@ -21,12 +21,35 @@ export interface Exceptions {
    * Exclude if the body content can't be determined
    */
   unknownBody?: boolean;
+  /**
+   * Exclude if the element is inside a control flow branch (`<if>`, `<for>`,
+   * ...). For rules that flag duplicated content across the document:
+   * branches are mutually exclusive at runtime, so apparent duplicates may
+   * never coexist in rendered output.
+   */
+  conditionalContent?: boolean;
+  /**
+   * Only report when the parent chain axe consults for the rule is fully
+   * known. This suppresses elements whose rendered parent comes from a usage
+   * site we can't see (top-level elements of a template) and elements under
+   * fabricated `<div>` placeholders. `"div-wrapped"` also requires a known
+   * grandparent when the direct parent is a presentational `<div>` (matching
+   * axe's `dlitem` semantics).
+   */
+  requiresKnownParent?: true | "div-wrapped";
 }
 
 type Blacklist =
   // Explicitly blacklisted for Marko Language Server
   | typeof r.structure.frameTested
-  // Requires a parent component to validate; we can potentially add support with child component analysis
+  // Requires context that may live in an *ancestor* template we can't see.
+  // `aria-required-parent` passes if any ancestor supplies the required role,
+  // so a component whose usage sites provide that ancestor would always be a
+  // false positive. Labels/names can be associated from the usage site (eg a
+  // wrapping `<label>` or cross-file id references). Page-level rules
+  // (landmarks, headings, region, bypass) only make sense for a full page.
+  // Unlike these, `listitem`/`dlitem` only consult the direct parent chain
+  // and are enabled with the `requiresKnownParent` exception.
   | typeof r.aria.ariaRequiredParent
   | typeof r.forms.label
   | typeof r.forms.labelTitleOnly
@@ -41,8 +64,6 @@ type Blacklist =
   | typeof r.semantics.landmarkMainIsTopLevel
   | typeof r.semantics.landmarkOneMain
   | typeof r.semantics.pageHasHeadingOne
-  | typeof r.structure.dlitem
-  | typeof r.structure.listitem
   | typeof r.tables.tdHeadersAttr
   // Seemingly broken in axe-core or JSDom
   | typeof r.aria.ariaRoledescription
@@ -73,6 +94,7 @@ type Whitelist = Exclude<RuleId, Blacklist>;
 // utility variables so the objects don't all need `: true` everywhere
 const unknownBody = true;
 const attrSpread = true;
+const conditionalContent = true;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
@@ -96,7 +118,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.presentationRoleConflict]: {},
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
-  [r.keyboard.accesskeys]: {},
+  [r.keyboard.accesskeys]: { conditionalContent },
   [r.keyboard.frameFocusableContent]: { unknownBody },
   [r.keyboard.skipLink]: { unknownBody },
   [r.keyboard.tabindex]: {},
@@ -115,22 +137,32 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.nameRoleValue.linkName]: { unknownBody, attrSpread },
   [r.nameRoleValue.summaryName]: { unknownBody, attrSpread },
   [r.parsing.marquee]: {},
-  [r.semantics.identicalLinksSamePurpose]: {},
-  [r.semantics.landmarkNoDuplicateBanner]: {},
-  [r.semantics.landmarkNoDuplicateContentinfo]: {},
-  [r.semantics.landmarkNoDuplicateMain]: {},
-  [r.semantics.landmarkUnique]: {},
+  [r.semantics.identicalLinksSamePurpose]: { conditionalContent },
+  [r.semantics.landmarkNoDuplicateBanner]: { conditionalContent },
+  [r.semantics.landmarkNoDuplicateContentinfo]: { conditionalContent },
+  [r.semantics.landmarkNoDuplicateMain]: { conditionalContent },
+  [r.semantics.landmarkUnique]: { conditionalContent },
   [r.sensoryAndVisualCues.metaViewport]: {},
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
   [r.structure.definitionList]: { unknownBody },
+  [r.structure.dlitem]: {
+    requiresKnownParent: "div-wrapped",
+    dynamicAttrs: ["role"],
+    attrSpread,
+  },
   [r.structure.list]: { unknownBody },
+  [r.structure.listitem]: {
+    requiresKnownParent: true,
+    dynamicAttrs: ["role"],
+    attrSpread,
+  },
   [r.tables.scopeAttrValid]: {},
   [r.tables.tableDuplicateName]: { unknownBody },
   [r.tables.thHasDataCells]: { unknownBody },
   [r.textAlternatives.areaAlt]: { attrSpread },
   [r.textAlternatives.documentTitle]: { unknownBody },
   [r.textAlternatives.frameTitle]: { unknownBody },
-  [r.textAlternatives.frameTitleUnique]: { unknownBody },
+  [r.textAlternatives.frameTitleUnique]: { unknownBody, conditionalContent },
   [r.textAlternatives.imageAlt]: { attrSpread },
   [r.textAlternatives.imageRedundantAlt]: { attrSpread },
   [r.textAlternatives.inputImageAlt]: { attrSpread },

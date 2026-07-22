@@ -65,6 +65,11 @@ export class Extractor {
     return this;
   }
 
+  /** Current length of the generated output. */
+  get length() {
+    return this.#generated.length;
+  }
+
   copy(range: Range | Range[] | string | false | void | undefined | null) {
     if (range) {
       if (typeof range === "string") {

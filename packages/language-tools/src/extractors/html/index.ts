@@ -1,4 +1,10 @@
-import { type Node, NodeType, type Parsed, type Range } from "../../parser";
+import {
+  isControlFlowTag,
+  type Node,
+  NodeType,
+  type Parsed,
+  type Range,
+} from "../../parser";
 import { Extractor } from "../../util/extractor";
 import {
   AttributeValueType,
@@ -6,31 +12,131 @@ import {
   isHTMLTag,
 } from "./keywords";
 
-export function extractHTML(parsed: Parsed) {
-  return new HTMLExtractor(parsed).end();
+export interface HTMLNodeDetails {
+  hasDynamicAttrs: boolean;
+  hasDynamicBody: boolean;
+  /**
+   * True when the element is inside a control flow branch (`<if>`, `<for>`,
+   * ...) and so may render zero or multiple times.
+   */
+  inConditional: boolean;
+}
+
+export interface HTMLBodySlot {
+  /** Offset in the generated HTML where default body content is rendered. */
+  offset: number;
+  /** Number of elements the slot is nested under within the template. */
+  depth: number;
+  /** True when the slot itself is inside a control flow branch. */
+  inConditional: boolean;
+}
+
+/**
+ * A pre-extracted child template that can be inlined where a custom tag is
+ * used, so rules can evaluate the tag's rendered output in context.
+ */
+export interface InlineChildTemplate {
+  /**
+   * The generated HTML skeleton, split at the default body slot when the
+   * template renders its default body content in exactly one known location.
+   */
+  segments: [string] | [string, string];
+  /** Element depth of the body slot (only when `segments.length === 2`). */
+  bodySlotDepth: number;
+  /** True when the body slot is inside a control flow branch. */
+  bodySlotConditional: boolean;
+  /**
+   * True when any part of the skeleton may not match the rendered output
+   * (dynamic content, unresolved tags, ...). Propagated to ancestors of the
+   * usage site so `unknownBody` rule exceptions still apply.
+   */
+  uncertain: boolean;
+  /** Details for elements of the skeleton, keyed by (prefixed) node id. */
+  nodeDetails: Record<string, HTMLNodeDetails>;
+  /** Node ids of the top-level elements of the skeleton. */
+  rootIds: string[];
+}
+
+/** A generated range produced by inlining a child template. */
+export interface InlineRegion {
+  start: number;
+  end: number;
+  /** Source range of the custom tag name, used to re-anchor diagnostics. */
+  tagName: Range;
+  /** True when body content spliced into this instance is dynamic. */
+  bodyUncertain: boolean;
+  /** True when the usage site is inside a control flow branch. */
+  inConditional: boolean;
+  /** Top-level element node ids of the inlined skeleton. */
+  rootIds: string[];
+}
+
+export interface ExtractHTMLOptions {
+  /**
+   * Prefix applied to generated node ids; must be unique per template file so
+   * details of inlined templates can be merged without collisions.
+   */
+  nodeIdPrefix?: string;
+  /**
+   * When true, a bodyless `<${input.renderBody}/>` (or `input.content`) tag
+   * is reported as a body slot instead of being treated as unknown dynamic
+   * content. Only enable when extracting a template for inlining, where the
+   * usage site determines what renders at the slot.
+   */
+  trackBodySlot?: boolean;
+  /** Resolve a custom tag to a child template skeleton to inline. */
+  resolveChild?(tagName: string): InlineChildTemplate | undefined;
+}
+
+const bodySlotReg = /^\$\{\s*input\.(?:renderBody|content)\s*\}$/;
+
+export function extractHTML(parsed: Parsed, options: ExtractHTMLOptions = {}) {
+  return new HTMLExtractor(parsed, options).end();
 }
 
 class HTMLExtractor {
   #extractor: Extractor;
   #read: Parsed["read"];
-  #nodeDetails: {
-    [id: string]: { hasDynamicAttrs: boolean; hasDynamicBody: boolean };
-  };
+  #options: ExtractHTMLOptions;
+  #nodeDetails: Record<string, HTMLNodeDetails>;
   #nodeIdCounter: number;
+  #domDepth: number;
+  #conditionalDepth: number;
+  #uncertain: boolean;
+  #rootIds: string[];
+  #bodySlots: HTMLBodySlot[];
+  #inlineRegions: InlineRegion[];
 
-  constructor(parsed: Parsed) {
+  constructor(parsed: Parsed, options: ExtractHTMLOptions) {
     this.#extractor = new Extractor(parsed);
     this.#read = parsed.read.bind(parsed);
+    this.#options = options;
     this.#nodeDetails = {};
     this.#nodeIdCounter = 0;
-    parsed.program.body.forEach((node) => this.#visitNode(node));
+    this.#domDepth = 0;
+    this.#conditionalDepth = 0;
+    this.#uncertain = false;
+    this.#rootIds = [];
+    this.#bodySlots = [];
+    this.#inlineRegions = [];
+    parsed.program.body.forEach((node) => {
+      if (this.#visitNode(node)) this.#uncertain = true;
+    });
   }
 
   end() {
-    return { extracted: this.#extractor.end(), nodeDetails: this.#nodeDetails };
+    return {
+      extracted: this.#extractor.end(),
+      nodeDetails: this.#nodeDetails,
+      /** True when any content may not match rendered output. */
+      uncertain: this.#uncertain,
+      bodySlots: this.#bodySlots,
+      inlineRegions: this.#inlineRegions,
+      rootIds: this.#rootIds,
+    };
   }
 
-  #visitNode(node: Node.ChildNode) {
+  #visitNode(node: Node.ChildNode): boolean {
     let hasDynamicBody = false,
       hasDynamicAttrs = false,
       isDynamic = false;
@@ -44,12 +150,35 @@ class HTMLExtractor {
         if (node.nameText === "script" || node.nameText === "style") {
           break;
         }
-        const nodeId = `${this.#nodeIdCounter++}`;
-        ({ isDynamic, hasDynamicAttrs, hasDynamicBody } = this.#writeTag(
+
+        if (isControlFlowTag(node)) {
+          // Control flow renders no element of its own; emit the body
+          // directly (rather than a fabricated `<div>`) so structural rules
+          // see the true parent/child relationships. The content is still
+          // dynamic: it may render zero or multiple times.
+          this.#conditionalDepth++;
+          node.body?.forEach((child) => this.#visitNode(child));
+          this.#conditionalDepth--;
+          isDynamic = true;
+          break;
+        }
+
+        if (!node.nameText || !isHTMLTag(node.nameText)) {
+          isDynamic = this.#writeDynamicTag(node);
+          break;
+        }
+
+        const nodeId = `${this.#options.nodeIdPrefix ?? ""}${this
+          .#nodeIdCounter++}`;
+        ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(
           node,
           nodeId,
         ));
-        this.#nodeDetails[nodeId] = { hasDynamicAttrs, hasDynamicBody };
+        this.#nodeDetails[nodeId] = {
+          hasDynamicAttrs,
+          hasDynamicBody,
+          inConditional: this.#conditionalDepth > 0,
+        };
         break;
       }
       case NodeType.Text:
@@ -68,21 +197,94 @@ class HTMLExtractor {
     return isDynamic || hasDynamicBody;
   }
 
-  #writeTag(node: Node.Tag, id: string) {
-    const isDynamic = !node.nameText || !isHTMLTag(node.nameText);
-    let hasDynamicAttrs = false,
-      hasDynamicBody = false;
-    if (isDynamic) {
-      this.#writeCustomTag(node);
-    } else {
-      ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(node, id));
+  /** Handles tags that are not plain HTML elements (custom/dynamic tags). */
+  #writeDynamicTag(node: Node.Tag): boolean {
+    // `<${input.renderBody}/>` — where a template renders its default body.
+    if (
+      !node.nameText &&
+      !node.body &&
+      bodySlotReg.test(this.#read(node.name))
+    ) {
+      if (this.#options.trackBodySlot) {
+        this.#bodySlots.push({
+          offset: this.#extractor.length,
+          depth: this.#domDepth,
+          inConditional: this.#conditionalDepth > 0,
+        });
+        // The usage site determines what renders here; certainty is decided
+        // when (and if) content is spliced in.
+        return false;
+      }
+
+      // Standalone validation of a template: the body is unknown content.
+      return true;
     }
-    return { isDynamic, hasDynamicAttrs, hasDynamicBody };
+
+    const child =
+      node.nameText && this.#options.resolveChild
+        ? this.#options.resolveChild(node.nameText)
+        : undefined;
+
+    if (
+      child &&
+      // Named content (`<@foo>`) can't be placed within the child skeleton.
+      !node.hasAttrTags &&
+      // A body needs a known slot to splice into; otherwise fall through so
+      // the body content is still emitted (and validated) below.
+      (!node.body || child.segments.length === 2)
+    ) {
+      return this.#inlineChild(node, child);
+    }
+
+    // Fallback: replace unknown and unresolvable tags with a `div` wrapping
+    // their body.
+    if (node.body) {
+      this.#extractor.write("<div>");
+      this.#domDepth++;
+      node.body.forEach((child) => this.#visitNode(child));
+      this.#domDepth--;
+      this.#extractor.write("</div>");
+    }
+
+    return true;
+  }
+
+  #inlineChild(node: Node.Tag, child: InlineChildTemplate): boolean {
+    const start = this.#extractor.length;
+    if (this.#domDepth === 0) this.#rootIds.push(...child.rootIds);
+    Object.assign(this.#nodeDetails, child.nodeDetails);
+
+    this.#extractor.write(child.segments[0]);
+
+    let bodyUncertain = false;
+    if (node.body && child.segments.length === 2) {
+      this.#domDepth += child.bodySlotDepth;
+      if (child.bodySlotConditional) this.#conditionalDepth++;
+      node.body.forEach((c) => {
+        if (this.#visitNode(c)) bodyUncertain = true;
+      });
+      if (child.bodySlotConditional) this.#conditionalDepth--;
+      this.#domDepth -= child.bodySlotDepth;
+    }
+
+    if (child.segments.length === 2) this.#extractor.write(child.segments[1]);
+
+    this.#inlineRegions.push({
+      start,
+      end: this.#extractor.length,
+      tagName: node.name,
+      bodyUncertain,
+      inConditional: this.#conditionalDepth > 0,
+      rootIds: child.rootIds,
+    });
+
+    return child.uncertain || bodyUncertain;
   }
 
   #writeHTMLTag(node: Node.Tag, id: string) {
     let hasDynamicAttrs = false,
       hasDynamicBody = false;
+    if (this.#domDepth === 0) this.#rootIds.push(id);
     // <[node name]
     this.#extractor.write("<");
     this.#extractor.copy(isEmptyRange(node.name) ? node.nameText : node.name);
@@ -97,22 +299,15 @@ class HTMLExtractor {
     this.#extractor.write(">");
 
     if (!isVoidTag(node.nameText)) {
+      this.#domDepth++;
       node.body?.forEach((child) => {
         if (this.#visitNode(child)) hasDynamicBody = true;
       });
+      this.#domDepth--;
       this.#extractor.write(`</${node.nameText}>`);
     }
 
     return { hasDynamicAttrs, hasDynamicBody };
-  }
-
-  #writeCustomTag(node: Node.Tag) {
-    if (node.body) {
-      // Replace all unknown and undefined tag names with `div`s
-      this.#extractor.write("<div>");
-      node.body.forEach((node) => this.#visitNode(node));
-      this.#extractor.write("</div>");
-    }
   }
 
   #writeAttrNamed(attr: Node.AttrNamed) {
