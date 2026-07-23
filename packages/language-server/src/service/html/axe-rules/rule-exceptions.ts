@@ -22,19 +22,13 @@ export interface Exceptions {
    */
   unknownBody?: boolean;
   /**
-   * Exclude if the element is inside a control flow branch (`<if>`, `<for>`,
-   * ...). For rules that flag duplicated content across the document:
-   * branches are mutually exclusive at runtime, so apparent duplicates may
-   * never coexist in rendered output.
+   * Exclude duplicate-content rules inside control flow branches, which are
+   * mutually exclusive at runtime
    */
   conditionalContent?: boolean;
   /**
-   * Only report when the parent chain axe consults for the rule is fully
-   * known. This suppresses elements whose rendered parent comes from a usage
-   * site we can't see (top-level elements of a template) and elements under
-   * fabricated `<div>` placeholders. `"div-wrapped"` also requires a known
-   * grandparent when the direct parent is a presentational `<div>` (matching
-   * axe's `dlitem` semantics).
+   * Only report when the parent chain axe consults is fully known;
+   * "div-wrapped" also checks the grandparent through presentational `<div>`s
    */
   requiresKnownParent?: true | "div-wrapped";
 }
@@ -42,14 +36,8 @@ export interface Exceptions {
 type Blacklist =
   // Explicitly blacklisted for Marko Language Server
   | typeof r.structure.frameTested
-  // Requires context that may live in an *ancestor* template we can't see.
-  // `aria-required-parent` passes if any ancestor supplies the required role,
-  // so a component whose usage sites provide that ancestor would always be a
-  // false positive. Labels/names can be associated from the usage site (eg a
-  // wrapping `<label>` or cross-file id references). Page-level rules
-  // (landmarks, headings, region, bypass) only make sense for a full page.
-  // Unlike these, `listitem`/`dlitem` only consult the direct parent chain
-  // and are enabled with the `requiresKnownParent` exception.
+  // Requires context that may live in an *ancestor* template we can't see
+  // (unlike listitem/dlitem, which only consult the known direct parent chain)
   | typeof r.aria.ariaRequiredParent
   | typeof r.forms.label
   | typeof r.forms.labelTitleOnly

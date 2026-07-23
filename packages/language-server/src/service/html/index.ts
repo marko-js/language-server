@@ -22,11 +22,8 @@ const MAX_INLINE_BYTES = 100_000;
 type Extraction = ReturnType<typeof extractHTML>;
 type NodeDetails = Extraction["nodeDetails"];
 
-// Extractions splice in cached child template skeletons, so they must be
-// invalidated when *any* file changes (a child template may have changed even
-// though this document's parse is unchanged). `projectVersion` bumps on every
-// document/watched-file change; extraction itself is cheap relative to the
-// jsdom + axe run below, so recomputing per version is fine.
+// Keyed on projectVersion (not just the parse): an inlined child template may
+// change without this document re-parsing. Extraction is cheap next to axe.
 const extractCache = new WeakMap<
   Parsed,
   { version: number; result: Extraction }
@@ -34,10 +31,8 @@ const extractCache = new WeakMap<
 let skeletonCacheVersion = -1;
 let skeletonCache = new Map<Parsed, InlineChildTemplate | undefined>();
 
-// Node ids of inlined skeletons are namespaced per template file so details
-// from multiple templates can be merged without collisions. The prefix is
-// path-independent (template basename + a dedup counter) so it stays stable
-// across machines.
+// Per-template node id namespaces, path-independent (basename + dedup
+// counter) so extracted output stays stable across machines.
 const templatePrefixes = new Map<string, string>();
 const basenameCounts = new Map<string, number>();
 function getNodeIdPrefix(template: string) {
@@ -51,15 +46,6 @@ function getNodeIdPrefix(template: string) {
   }
   return prefix;
 }
-
-// const axeViolationImpact: {
-//   [impact in NonNullable<axe.ImpactValue>]: DiagnosticSeverity;
-// } = {
-//   minor: 1,
-//   moderate: 2,
-//   serious: 3,
-//   critical: 4,
-// };
 
 const HTMLService: Partial<Plugin> = {
   commands: {
@@ -138,12 +124,8 @@ const HTMLService: Partial<Plugin> = {
       );
 
       if (!sourceRange) {
-        // The element came from an inlined child template and has no mapping
-        // into this document. Diagnostics on the *top-level* elements of the
-        // inlined skeleton describe the tag's rendered output as used here,
-        // so they are re-anchored to the tag name at the usage site. Anything
-        // nested deeper is the child template's own concern and is reported
-        // when the child template itself is validated.
+        // Unmapped elements come from an inlined child: re-anchor skeleton
+        // roots to the tag usage; deeper ones are the child's own concern.
         const region = regionAt(inlineRegions, generatedLoc.startOffset);
         if (
           !region ||
@@ -189,13 +171,8 @@ function extract(doc: TextDocument) {
   return result;
 }
 
-/**
- * Resolves a custom tag to the extracted skeleton of its template so it can
- * be inlined at the usage site. Returns undefined (falling back to the
- * previous `<div>` placeholder behavior) for anything that can't be resolved
- * confidently: non-template tags, cycles, or when the depth/size limits are
- * reached.
- */
+/** Undefined (the legacy `<div>` fallback) for non-template tags, cycles, and
+ * anything past the depth/size limits. */
 function createChildResolver(
   file: MarkoFile,
   stack: Set<string>,
@@ -289,18 +266,14 @@ function regionAt(regions: InlineRegion[], offset: number) {
   return match;
 }
 
-/**
- * True when the parent chain axe consults for a parent-context rule is fully
- * known — every consulted ancestor is a real extracted element (not the
- * document body, and not a fabricated placeholder) with static semantics.
- */
+/** True when every ancestor axe consults for the rule is a real extracted
+ * element with static semantics. */
 function hasKnownParent(
   element: HTMLElement,
   mode: NonNullable<Exceptions["requiresKnownParent"]>,
   nodeDetails: NodeDetails,
 ) {
-  // An element with an id could be re-parented in the accessibility tree via
-  // `aria-owns` from a template we can't see; don't judge it by DOM position.
+  // An id could be `aria-owns` re-parented from a template we can't see.
   if (element.hasAttribute("id")) return false;
 
   const parent = element.parentElement;
