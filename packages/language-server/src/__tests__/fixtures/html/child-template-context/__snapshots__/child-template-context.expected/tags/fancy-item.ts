@@ -1,11 +1,6 @@
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
-export { type Component };
 (function (this: void) {
   const input = Marko._.any as Input;
-  const component = Marko._.any as Component;
-  const state = Marko._.state(component);
-  const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.getGlobal(
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
@@ -18,10 +13,10 @@ export { type Component };
       };
     })(),
   });
-  Marko._.noop({ component, state, out, input, $global, $signal });
+  Marko._.noop({ input, $global, $signal });
   return;
 })();
-const __marko_internal_api = "class";
+const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 const FancyItem = new (class Template extends Marko._.Template<{
   render(
@@ -30,14 +25,14 @@ const FancyItem = new (class Template extends Marko._.Template<{
       write: (chunk: string) => void;
       end: (chunk?: string) => void;
     },
-  ): Marko.Out<Component>;
+  ): Marko.Out<never>;
 
   render(
     input: Marko.TemplateInput<Input>,
-    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void,
-  ): Marko.Out<Component>;
+    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
+  ): Marko.Out<never>;
 
-  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<never>;
 
   renderToString(input: Marko.TemplateInput<Input>): string;
 

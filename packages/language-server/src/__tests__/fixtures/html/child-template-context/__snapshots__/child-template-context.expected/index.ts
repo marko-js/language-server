@@ -14,7 +14,7 @@ export { type Component };
   Marko._.renderNativeTag("ul")()()({
     [Marko._.content]: (() => {
       const __marko_internal_tag_1 = Marko._.resolveTemplate(
-        import("./components/fancy-item.marko"),
+        import("./tags/fancy-item.marko"),
       );
       Marko._.renderTemplate(__marko_internal_tag_1)()()({});
       return () => {
@@ -25,7 +25,7 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
-        import("./components/fancy-item.marko"),
+        import("./tags/fancy-item.marko"),
       );
       Marko._.renderTemplate(__marko_internal_tag_2)()()({});
       return () => {
