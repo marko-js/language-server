@@ -5,7 +5,7 @@ import {
   type Parsed,
   type Range,
 } from "../../parser";
-import { Extractor } from "../../util/extractor";
+import { Extracted, Extractor } from "../../util/extractor";
 import {
   AttributeValueType,
   getAttributeValueType,
@@ -53,7 +53,17 @@ export interface ExtractHTMLOptions {
 
 const bodySlotReg = /^\$\{\s*input\.(?:renderBody|content)\s*\}$/;
 
-export function extractHTML(parsed: Parsed, options: ExtractHTMLOptions = {}) {
+export interface HTMLExtraction {
+  extracted: Extracted;
+  nodeDetails: Record<string, HTMLNodeDetails>;
+  inlineRegions: InlineRegion[];
+  fidelity: ExtractionFidelity;
+}
+
+export function extractHTML(
+  parsed: Parsed,
+  options: ExtractHTMLOptions = {},
+): HTMLExtraction {
   return new HTMLExtractor(parsed, options, false).end();
 }
 
@@ -103,7 +113,7 @@ class HTMLExtractor {
     });
   }
 
-  end() {
+  end(): HTMLExtraction {
     return {
       extracted: this.#extractor.end(),
       nodeDetails: this.#nodeDetails,
@@ -159,7 +169,7 @@ class HTMLExtractor {
         }
 
         if (!node.nameText || !isHTMLTag(node.nameText)) {
-          isDynamic = this.#writeDynamicTag(node);
+          isDynamic = this.#visitNonHTMLTag(node);
           break;
         }
 
@@ -194,7 +204,7 @@ class HTMLExtractor {
     return isDynamic || hasDynamicBody;
   }
 
-  #writeDynamicTag(node: Node.Tag): boolean {
+  #visitNonHTMLTag(node: Node.Tag): boolean {
     if (
       !node.nameText &&
       !node.body &&

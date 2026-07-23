@@ -1,6 +1,7 @@
 import {
   extractChildTemplate,
   extractHTML,
+  type HTMLExtraction,
   type InlineChildTemplate,
   type InlineRegion,
   type Parsed,
@@ -19,13 +20,12 @@ import { type Exceptions, ruleExceptions } from "./axe-rules/rule-exceptions";
 const MAX_INLINE_DEPTH = 3;
 const MAX_INLINE_BYTES = 100_000;
 
-type Extraction = ReturnType<typeof extractHTML>;
-type NodeDetails = Extraction["nodeDetails"];
+type NodeDetails = HTMLExtraction["nodeDetails"];
 
 // Keyed on projectVersion: inlined children can change without a re-parse.
 const extractCache = new WeakMap<
   Parsed,
-  { version: number; result: Extraction }
+  { version: number; result: HTMLExtraction }
 >();
 let childTemplateCacheVersion = -1;
 let childTemplateCache = new Map<Parsed, InlineChildTemplate | undefined>();
@@ -204,6 +204,7 @@ function getChildTemplate(
   }
   if (childTemplateCache.has(file.parsed))
     return childTemplateCache.get(file.parsed);
+  // In-progress marker; breaks the recursion for circular templates.
   childTemplateCache.set(file.parsed, undefined);
 
   const candidate = extractChildTemplate(file.parsed, {
@@ -230,7 +231,7 @@ function childTemplateSize(childTemplate: InlineChildTemplate) {
 // Source anchor for a violation: the element itself when it maps into this
 // document, else the usage site of the inlined child whose root rendered it.
 function anchorViolation(
-  extraction: Extraction,
+  extraction: HTMLExtraction,
   element: HTMLElement,
   generatedOffset: number,
   exceptions: Exceptions,
