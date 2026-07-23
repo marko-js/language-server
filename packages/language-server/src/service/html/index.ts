@@ -67,8 +67,7 @@ const HTMLService: Partial<Plugin> = {
       includeNodeLocations: true,
     });
     const { documentElement } = jsdom.window.document;
-    // Page-scoped rules only run when the extraction is exactly the rendered
-    // output and covers the whole document (an authored `<html>`).
+    // jsdom-fabricated `<html>` elements carry no node id.
     const exactDocument =
       extraction.fidelity === "exact" &&
       documentElement.dataset.markoNodeId !== undefined;
@@ -209,8 +208,7 @@ function getChildTemplate(
 
   const candidate = extractChildTemplate(file.parsed, {
     nodeIdPrefix: getNodeIdPrefix(template),
-    // Each cached template gets its own budget; usage sites re-check the
-    // composed size against theirs.
+    // Fresh budget: cached templates are shared, usage sites re-check size.
     resolveChild: createChildResolver(file, new Set(stack).add(template), {
       remaining: MAX_INLINE_BYTES,
     }),
@@ -228,8 +226,6 @@ function childTemplateSize(childTemplate: InlineChildTemplate) {
   );
 }
 
-// Source anchor for a violation: the element itself when it maps into this
-// document, else the usage site of the inlined child whose root rendered it.
 function anchorViolation(
   extraction: HTMLExtraction,
   element: HTMLElement,

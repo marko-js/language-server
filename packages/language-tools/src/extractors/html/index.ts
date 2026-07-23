@@ -24,12 +24,9 @@ interface HTMLBodySlot {
   inConditional: boolean;
 }
 
-/** How faithfully extracted HTML reflects rendered output, best to worst:
- * exact match; right structure with stand-in values; unknown structure. */
 export type ExtractionFidelity = "exact" | "approximate" | "uncertain";
 
 export interface InlineChildTemplate {
-  /** The HTML skeleton, split at the default body slot when exactly one exists. */
   segments: [string] | [string, string];
   bodySlot?: { depth: number; inConditional: boolean };
   fidelity: ExtractionFidelity;
@@ -67,7 +64,6 @@ export function extractHTML(
   return new HTMLExtractor(parsed, options, false).end();
 }
 
-/** Extracts a template as a skeleton that can be inlined at its usage sites. */
 export function extractChildTemplate(
   parsed: Parsed,
   options: ExtractHTMLOptions = {},
@@ -160,7 +156,6 @@ class HTMLExtractor {
         }
 
         if (isControlFlowTag(node)) {
-          // Emitted inline: control flow renders no element of its own.
           this.#conditionalDepth++;
           node.body?.forEach((child) => this.#visitNode(child));
           this.#conditionalDepth--;
@@ -190,7 +185,6 @@ class HTMLExtractor {
         this.#extractor.copy(node);
         break;
       case NodeType.Placeholder:
-        // Placeholder text stands in for unknown (possibly empty) content.
         this.#approximate = true;
         isDynamic =
           this.#read({
@@ -210,7 +204,6 @@ class HTMLExtractor {
       !node.body &&
       bodySlotReg.test(this.#read(node.name))
     ) {
-      // Without a usage site the default body is unknown content.
       if (!this.#trackBodySlot) return true;
 
       this.#bodySlots.push({
@@ -234,7 +227,6 @@ class HTMLExtractor {
       return this.#inlineChild(node, child);
     }
 
-    // Replace unknown and unresolvable tags with a `div` wrapping their body.
     if (node.body) {
       this.#extractor.write("<div>");
       this.#domDepth++;
@@ -284,13 +276,11 @@ class HTMLExtractor {
     let hasDynamicAttrs = false,
       hasDynamicBody = false;
     if (this.#domDepth === 0) this.#rootIds.push(id);
-    // <[node name]
     this.#extractor.write("<");
     this.#extractor.copy(isEmptyRange(node.name) ? node.nameText : node.name);
 
     this.#extractor.write(` data-marko-node-id="${id}"`);
     this.#writeShorthands(node);
-    // [node attributes]
     node.attrs?.forEach((attr) => {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
       else if (attr.type === NodeType.AttrSpread) {
@@ -298,7 +288,6 @@ class HTMLExtractor {
         this.#approximate = true;
       }
     });
-    // [body or self-closing `/`]
     this.#extractor.write(">");
 
     if (!isVoidTag(node.nameText)) {
@@ -405,7 +394,6 @@ class HTMLExtractor {
     }
   }
 
-  /** Stands in for values only known at runtime (vs removing the attribute). */
   #writeDynamic() {
     this.#extractor.write("dynamic");
     this.#approximate = true;
