@@ -32,9 +32,9 @@ export interface Exceptions {
   requiresKnownParent?: true | "div-wrapped";
   /**
    * Exclude unless the file renders a complete document (authored `<html>`)
-   * whose extraction is exact, with nothing dynamic anywhere
+   * whose extraction exactly matches rendered output
    */
-  requiresFullDocument?: boolean;
+  requiresExactDocument?: boolean;
 }
 
 type Blacklist =
@@ -70,7 +70,7 @@ type Whitelist = Exclude<RuleId, Blacklist>;
 const unknownBody = true;
 const attrSpread = true;
 const conditionalContent = true;
-const requiresFullDocument = true;
+const requiresExactDocument = true;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
@@ -86,7 +86,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaProhibitedAttr]: { dynamicAttrs: ["role"] },
   [r.aria.ariaRequiredAttr]: { attrSpread },
   [r.aria.ariaRequiredChildren]: { unknownBody },
-  [r.aria.ariaRequiredParent]: { requiresFullDocument },
+  [r.aria.ariaRequiredParent]: { requiresExactDocument },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
   [r.aria.ariaTabName]: { unknownBody, attrSpread },
   [r.aria.ariaText]: { unknownBody },
@@ -96,14 +96,14 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.presentationRoleConflict]: {},
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
-  [r.forms.label]: { requiresFullDocument },
-  [r.forms.labelTitleOnly]: { requiresFullDocument },
-  [r.forms.selectName]: { requiresFullDocument },
+  [r.forms.label]: { requiresExactDocument },
+  [r.forms.labelTitleOnly]: { requiresExactDocument },
+  [r.forms.selectName]: { requiresExactDocument },
   [r.keyboard.accesskeys]: { conditionalContent },
-  [r.keyboard.bypass]: { requiresFullDocument },
+  [r.keyboard.bypass]: { requiresExactDocument },
   [r.keyboard.frameFocusableContent]: { unknownBody },
-  [r.keyboard.nestedInteractive]: { requiresFullDocument },
-  [r.keyboard.region]: { requiresFullDocument },
+  [r.keyboard.nestedInteractive]: { requiresExactDocument },
+  [r.keyboard.region]: { requiresExactDocument },
   [r.keyboard.skipLink]: { unknownBody },
   [r.keyboard.tabindex]: {},
   [r.language.htmlHasLang]: { attrSpread },
@@ -121,18 +121,18 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.nameRoleValue.linkName]: { unknownBody, attrSpread },
   [r.nameRoleValue.summaryName]: { unknownBody, attrSpread },
   [r.parsing.marquee]: {},
-  [r.semantics.headingOrder]: { requiresFullDocument },
+  [r.semantics.headingOrder]: { requiresExactDocument },
   [r.semantics.identicalLinksSamePurpose]: { conditionalContent },
-  [r.semantics.landmarkBannerIsTopLevel]: { requiresFullDocument },
-  [r.semantics.landmarkComplementaryIsTopLevel]: { requiresFullDocument },
-  [r.semantics.landmarkContentinfoIsTopLevel]: { requiresFullDocument },
-  [r.semantics.landmarkMainIsTopLevel]: { requiresFullDocument },
+  [r.semantics.landmarkBannerIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkComplementaryIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkContentinfoIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkMainIsTopLevel]: { requiresExactDocument },
   [r.semantics.landmarkNoDuplicateBanner]: { conditionalContent },
   [r.semantics.landmarkNoDuplicateContentinfo]: { conditionalContent },
   [r.semantics.landmarkNoDuplicateMain]: { conditionalContent },
   [r.semantics.landmarkUnique]: { conditionalContent },
-  [r.semantics.landmarkOneMain]: { requiresFullDocument },
-  [r.semantics.pageHasHeadingOne]: { requiresFullDocument },
+  [r.semantics.landmarkOneMain]: { requiresExactDocument },
+  [r.semantics.pageHasHeadingOne]: { requiresExactDocument },
   [r.sensoryAndVisualCues.metaViewport]: {},
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
   [r.structure.definitionList]: { unknownBody },
@@ -149,7 +149,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   },
   [r.tables.scopeAttrValid]: {},
   [r.tables.tableDuplicateName]: { unknownBody },
-  [r.tables.tdHeadersAttr]: { requiresFullDocument },
+  [r.tables.tdHeadersAttr]: { requiresExactDocument },
   [r.tables.thHasDataCells]: { unknownBody },
   [r.textAlternatives.areaAlt]: { attrSpread },
   [r.textAlternatives.documentTitle]: { unknownBody },

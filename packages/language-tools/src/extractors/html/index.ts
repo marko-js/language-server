@@ -24,14 +24,15 @@ interface HTMLBodySlot {
   inConditional: boolean;
 }
 
+/** How faithfully extracted HTML reflects rendered output, best to worst:
+ * exact match; right structure with stand-in values; unknown structure. */
+export type ExtractionFidelity = "exact" | "approximate" | "uncertain";
+
 export interface InlineChildTemplate {
   /** The HTML skeleton, split at the default body slot when exactly one exists. */
   segments: [string] | [string, string];
-  bodySlotDepth: number;
-  bodySlotConditional: boolean;
-  uncertain: boolean;
-  /** True when the skeleton is exactly what the template renders. */
-  exact: boolean;
+  bodySlot?: { depth: number; inConditional: boolean };
+  fidelity: ExtractionFidelity;
   nodeDetails: Record<string, HTMLNodeDetails>;
   rootIds: string[];
 }
@@ -76,7 +77,7 @@ class HTMLExtractor {
   #rootIds: string[];
   #bodySlots: HTMLBodySlot[];
   #inlineRegions: InlineRegion[];
-  #exact: boolean;
+  #approximate: boolean;
   #trackBodySlot: boolean;
 
   constructor(
@@ -95,7 +96,7 @@ class HTMLExtractor {
     this.#rootIds = [];
     this.#bodySlots = [];
     this.#inlineRegions = [];
-    this.#exact = true;
+    this.#approximate = false;
     this.#trackBodySlot = trackBodySlot;
     parsed.program.body.forEach((node) => {
       if (this.#visitNode(node)) this.#uncertain = true;
@@ -107,8 +108,7 @@ class HTMLExtractor {
       extracted: this.#extractor.end(),
       nodeDetails: this.#nodeDetails,
       inlineRegions: this.#inlineRegions,
-      /** True when the output is exactly what the template renders. */
-      exact: !this.#uncertain && this.#exact,
+      fidelity: this.#fidelity(),
     };
   }
 
@@ -119,13 +119,19 @@ class HTMLExtractor {
       segments: slot
         ? [html.slice(0, slot.offset), html.slice(slot.offset)]
         : [html],
-      bodySlotDepth: slot?.depth ?? 0,
-      bodySlotConditional: slot?.inConditional ?? false,
-      uncertain: this.#uncertain,
-      exact: !this.#uncertain && this.#exact,
+      bodySlot: slot && {
+        depth: slot.depth,
+        inConditional: slot.inConditional,
+      },
+      fidelity: this.#fidelity(),
       nodeDetails: this.#nodeDetails,
       rootIds: this.#rootIds,
     };
+  }
+
+  #fidelity(): ExtractionFidelity {
+    if (this.#uncertain) return "uncertain";
+    return this.#approximate ? "approximate" : "exact";
   }
 
   #visitNode(node: Node.ChildNode): boolean {
@@ -175,7 +181,7 @@ class HTMLExtractor {
         break;
       case NodeType.Placeholder:
         // Placeholder text stands in for unknown (possibly empty) content.
-        this.#exact = false;
+        this.#approximate = true;
         isDynamic =
           this.#read({
             start: node.start + 1,
@@ -194,16 +200,15 @@ class HTMLExtractor {
       !node.body &&
       bodySlotReg.test(this.#read(node.name))
     ) {
-      if (this.#trackBodySlot) {
-        this.#bodySlots.push({
-          offset: this.#extractor.length,
-          depth: this.#domDepth,
-          inConditional: this.#conditionalDepth > 0,
-        });
-        return false;
-      }
+      // Without a usage site the default body is unknown content.
+      if (!this.#trackBodySlot) return true;
 
-      return true;
+      this.#bodySlots.push({
+        offset: this.#extractor.length,
+        depth: this.#domDepth,
+        inConditional: this.#conditionalDepth > 0,
+      });
+      return false;
     }
 
     const child =
@@ -233,21 +238,22 @@ class HTMLExtractor {
 
   #inlineChild(node: Node.Tag, child: InlineChildTemplate): boolean {
     const start = this.#extractor.length;
-    if (!child.exact) this.#exact = false;
+    if (child.fidelity !== "exact") this.#approximate = true;
     if (this.#domDepth === 0) this.#rootIds.push(...child.rootIds);
     Object.assign(this.#nodeDetails, child.nodeDetails);
 
     this.#extractor.write(child.segments[0]);
 
     let bodyUncertain = false;
-    if (node.body && child.segments.length === 2) {
-      this.#domDepth += child.bodySlotDepth;
-      if (child.bodySlotConditional) this.#conditionalDepth++;
+    if (node.body && child.bodySlot) {
+      const { depth, inConditional } = child.bodySlot;
+      this.#domDepth += depth;
+      if (inConditional) this.#conditionalDepth++;
       node.body.forEach((c) => {
         if (this.#visitNode(c)) bodyUncertain = true;
       });
-      if (child.bodySlotConditional) this.#conditionalDepth--;
-      this.#domDepth -= child.bodySlotDepth;
+      if (inConditional) this.#conditionalDepth--;
+      this.#domDepth -= depth;
     }
 
     if (child.segments.length === 2) this.#extractor.write(child.segments[1]);
@@ -261,7 +267,7 @@ class HTMLExtractor {
       rootIds: child.rootIds,
     });
 
-    return child.uncertain || bodyUncertain;
+    return child.fidelity === "uncertain" || bodyUncertain;
   }
 
   #writeHTMLTag(node: Node.Tag, id: string) {
@@ -279,7 +285,7 @@ class HTMLExtractor {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
       else if (attr.type === NodeType.AttrSpread) {
         hasDynamicAttrs = true;
-        this.#exact = false;
+        this.#approximate = true;
       }
     });
     // [body or self-closing `/`]
@@ -392,7 +398,7 @@ class HTMLExtractor {
   /** Stands in for values only known at runtime (vs removing the attribute). */
   #writeDynamic() {
     this.#extractor.write("dynamic");
-    this.#exact = false;
+    this.#approximate = true;
   }
 }
 

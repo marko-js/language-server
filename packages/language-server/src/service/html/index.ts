@@ -27,8 +27,8 @@ const extractCache = new WeakMap<
   Parsed,
   { version: number; result: Extraction }
 >();
-let skeletonCacheVersion = -1;
-let skeletonCache = new Map<Parsed, InlineChildTemplate | undefined>();
+let childTemplateCacheVersion = -1;
+let childTemplateCache = new Map<Parsed, InlineChildTemplate | undefined>();
 
 // Path-independent so extracted output is stable across machines.
 const templatePrefixes = new Map<string, string>();
@@ -61,7 +61,7 @@ const HTMLService: Partial<Plugin> = {
   },
   async doValidate(doc) {
     const extraction = extract(doc);
-    const { extracted, nodeDetails, inlineRegions } = extraction;
+    const { extracted, nodeDetails } = extraction;
 
     const jsdom = new JSDOM(extracted.toString(), {
       includeNodeLocations: true,
@@ -70,7 +70,8 @@ const HTMLService: Partial<Plugin> = {
     // Page-scoped rules only run when the extraction is exactly the rendered
     // output and covers the whole document (an authored `<html>`).
     const exactDocument =
-      extraction.exact && documentElement.dataset.markoNodeId !== undefined;
+      extraction.fidelity === "exact" &&
+      documentElement.dataset.markoNodeId !== undefined;
 
     const getViolationNodes = async (runOnly: string[]) =>
       (
@@ -111,7 +112,7 @@ const HTMLService: Partial<Plugin> = {
       }
 
       if (
-        (exceptions.requiresFullDocument && !exactDocument) ||
+        (exceptions.requiresExactDocument && !exactDocument) ||
         (exceptions.requiresKnownParent &&
           !hasKnownParent(element, exceptions.requiresKnownParent, nodeDetails))
       ) {
@@ -121,40 +122,21 @@ const HTMLService: Partial<Plugin> = {
       const generatedLoc = jsdom.nodeLocation(element);
       if (!generatedLoc) return [];
 
-      let messagePrefix = "";
-      let sourceRange = extracted.sourceLocationAt(
-        generatedLoc.startOffset + 1,
-        generatedLoc.startOffset + 1 + element.tagName.length,
+      const anchor = anchorViolation(
+        extraction,
+        element,
+        generatedLoc.startOffset,
+        exceptions,
       );
-
-      if (!sourceRange) {
-        // Unmapped elements come from an inlined child; only its top-level
-        // elements re-anchor to the usage site.
-        const region = innermostRegionAt(
-          inlineRegions,
-          generatedLoc.startOffset,
-        );
-        if (
-          !region ||
-          !nodeId ||
-          !region.rootIds.includes(nodeId) ||
-          (exceptions.unknownBody && region.bodyUncertain) ||
-          (exceptions.conditionalContent && region.inConditional)
-        ) {
-          return [];
-        }
-
-        sourceRange = extracted.parsed.locationAt(region.tagName);
-        messagePrefix = `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `;
-      }
+      if (!anchor) return [];
 
       return [
         {
-          range: sourceRange,
+          range: anchor.range,
           severity: 3,
           source: `axe-core(${ruleId})`,
           message:
-            messagePrefix +
+            anchor.messagePrefix +
             (result.failureSummary ?? "unknown accessibility issue"),
         },
       ];
@@ -197,18 +179,18 @@ function createChildResolver(
       return;
     }
 
-    const skeleton = getSkeleton(template, stack);
-    if (!skeleton) return;
+    const childTemplate = getChildTemplate(template, stack);
+    if (!childTemplate) return;
 
-    const size = skeletonSize(skeleton);
+    const size = childTemplateSize(childTemplate);
     if (size > budget.remaining) return;
     budget.remaining -= size;
 
-    return skeleton;
+    return childTemplate;
   };
 }
 
-function getSkeleton(
+function getChildTemplate(
   template: string,
   stack: Set<string>,
 ): InlineChildTemplate | undefined {
@@ -216,28 +198,66 @@ function getSkeleton(
   if (!doc) return;
   const file = getMarkoFile(doc);
 
-  if (skeletonCacheVersion !== projectVersion) {
-    skeletonCacheVersion = projectVersion;
-    skeletonCache = new Map();
+  if (childTemplateCacheVersion !== projectVersion) {
+    childTemplateCacheVersion = projectVersion;
+    childTemplateCache = new Map();
   }
-  if (skeletonCache.has(file.parsed)) return skeletonCache.get(file.parsed);
-  skeletonCache.set(file.parsed, undefined);
+  if (childTemplateCache.has(file.parsed))
+    return childTemplateCache.get(file.parsed);
+  childTemplateCache.set(file.parsed, undefined);
 
   const candidate = extractChildTemplate(file.parsed, {
     nodeIdPrefix: getNodeIdPrefix(template),
+    // Each cached template gets its own budget; usage sites re-check the
+    // composed size against theirs.
     resolveChild: createChildResolver(file, new Set(stack).add(template), {
       remaining: MAX_INLINE_BYTES,
     }),
   });
-  const skeleton =
-    skeletonSize(candidate) <= MAX_INLINE_BYTES ? candidate : undefined;
+  const childTemplate =
+    childTemplateSize(candidate) <= MAX_INLINE_BYTES ? candidate : undefined;
 
-  skeletonCache.set(file.parsed, skeleton);
-  return skeleton;
+  childTemplateCache.set(file.parsed, childTemplate);
+  return childTemplate;
 }
 
-function skeletonSize(skeleton: InlineChildTemplate) {
-  return skeleton.segments[0].length + (skeleton.segments[1]?.length ?? 0);
+function childTemplateSize(childTemplate: InlineChildTemplate) {
+  return (
+    childTemplate.segments[0].length + (childTemplate.segments[1]?.length ?? 0)
+  );
+}
+
+// Source anchor for a violation: the element itself when it maps into this
+// document, else the usage site of the inlined child whose root rendered it.
+function anchorViolation(
+  extraction: Extraction,
+  element: HTMLElement,
+  generatedOffset: number,
+  exceptions: Exceptions,
+) {
+  const { extracted, inlineRegions } = extraction;
+  const range = extracted.sourceLocationAt(
+    generatedOffset + 1,
+    generatedOffset + 1 + element.tagName.length,
+  );
+  if (range) return { range, messagePrefix: "" };
+
+  const region = innermostRegionAt(inlineRegions, generatedOffset);
+  const nodeId = element.dataset.markoNodeId;
+  if (
+    !region ||
+    !nodeId ||
+    !region.rootIds.includes(nodeId) ||
+    (exceptions.unknownBody && region.bodyUncertain) ||
+    (exceptions.conditionalContent && region.inConditional)
+  ) {
+    return;
+  }
+
+  return {
+    range: extracted.parsed.locationAt(region.tagName),
+    messagePrefix: `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `,
+  };
 }
 
 function innermostRegionAt(regions: InlineRegion[], offset: number) {
@@ -265,18 +285,21 @@ function hasKnownParent(
   const parent = element.parentElement;
   if (!isKnownElement(parent, nodeDetails)) return false;
 
-  if (mode === "div-wrapped" && parent!.tagName === "DIV") {
-    const role = parent!.getAttribute("role");
+  if (mode === "div-wrapped" && parent.tagName === "DIV") {
+    const role = parent.getAttribute("role");
     if (!role || role === "presentation" || role === "none") {
       // axe looks through presentational div wrappers to the grandparent.
-      return isKnownElement(parent!.parentElement, nodeDetails);
+      return isKnownElement(parent.parentElement, nodeDetails);
     }
   }
 
   return true;
 }
 
-function isKnownElement(element: HTMLElement | null, nodeDetails: NodeDetails) {
+function isKnownElement(
+  element: HTMLElement | null,
+  nodeDetails: NodeDetails,
+): element is HTMLElement {
   if (!element) return false;
   const nodeId = element.dataset.markoNodeId;
   if (!nodeId) return false;
