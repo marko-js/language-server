@@ -332,14 +332,21 @@ class HTMLExtractor {
         });
         this.#extractor.write('"');
         break;
-      case AttributeValueType.QuotedString:
+      case AttributeValueType.QuotedString: {
+        const start = valueString.search(/[^=\s]/g) + 1;
+        // A raw `"` in the value would terminate the generated attribute.
+        if (valueString.slice(start, -1).includes('"')) {
+          this.#extractor.write(`="dynamic"`);
+          break;
+        }
         this.#extractor.write('="');
         this.#extractor.copy({
-          start: attr.value.start + valueString.search(/[^=\s]/g) + 1,
+          start: attr.value.start + start,
           end: attr.value.end - 1,
         });
         this.#extractor.write('"');
         break;
+      }
       case AttributeValueType.Dynamic:
         // Replace all dynamic values with the string "dynamic" with a counter instead of removing them
         // Subject to change-- axe-core might require "true" for aria attributes or something
