@@ -1,11 +1,13 @@
 ## Diagnostics
-### Ln 2, Col 4
+### Ln 5, Col 2
 ```marko
-  1 | <ul>
-> 2 |   <raw-html/>
-    |    ^^^^^^^^ Argument of type '{}' is not assignable to parameter of type 'Directives & Input'.
-  Property 'html' is missing in type '{}' but required in type 'Input'.
   3 | </ul>
   4 |
+> 5 | <ul>
+    |  ^^ Fix all of the following:
+  List element has direct children that are not allowed: div
+  6 |   <plain-box/>
+  7 | </ul>
+  8 |
 ```
 

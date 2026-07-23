@@ -1,6 +1,4 @@
-export interface Input {
-  html?: string;
-}
+export interface Input {}
 abstract class Component extends Marko.Component<Input> {}
 export { type Component };
 (function (this: void) {
@@ -15,7 +13,6 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
-      input.html;
       return () => {
         return Marko._.voidReturn;
       };
@@ -26,7 +23,7 @@ export { type Component };
 })();
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
-const RawHtml = new (class Template extends Marko._.Template<{
+const PlainBox = new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -61,4 +58,4 @@ const RawHtml = new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-export default RawHtml;
+export default PlainBox;
