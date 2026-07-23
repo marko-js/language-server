@@ -30,6 +30,7 @@ export interface InlineChildTemplate {
   bodySlotDepth: number;
   bodySlotConditional: boolean;
   uncertain: boolean;
+  hasPlaceholders: boolean;
   nodeDetails: Record<string, HTMLNodeDetails>;
   rootIds: string[];
 }
@@ -67,6 +68,7 @@ class HTMLExtractor {
   #rootIds: string[];
   #bodySlots: HTMLBodySlot[];
   #inlineRegions: InlineRegion[];
+  #hasPlaceholders: boolean;
 
   constructor(parsed: Parsed, options: ExtractHTMLOptions) {
     this.#extractor = new Extractor(parsed);
@@ -80,6 +82,7 @@ class HTMLExtractor {
     this.#rootIds = [];
     this.#bodySlots = [];
     this.#inlineRegions = [];
+    this.#hasPlaceholders = false;
     parsed.program.body.forEach((node) => {
       if (this.#visitNode(node)) this.#uncertain = true;
     });
@@ -93,6 +96,7 @@ class HTMLExtractor {
       bodySlots: this.#bodySlots,
       inlineRegions: this.#inlineRegions,
       rootIds: this.#rootIds,
+      hasPlaceholders: this.#hasPlaceholders,
     };
   }
 
@@ -142,6 +146,7 @@ class HTMLExtractor {
         this.#extractor.copy(node);
         break;
       case NodeType.Placeholder:
+        this.#hasPlaceholders = true;
         isDynamic =
           this.#read({
             start: node.start + 1,
@@ -199,6 +204,7 @@ class HTMLExtractor {
 
   #inlineChild(node: Node.Tag, child: InlineChildTemplate): boolean {
     const start = this.#extractor.length;
+    if (child.hasPlaceholders) this.#hasPlaceholders = true;
     if (this.#domDepth === 0) this.#rootIds.push(...child.rootIds);
     Object.assign(this.#nodeDetails, child.nodeDetails);
 
@@ -238,6 +244,7 @@ class HTMLExtractor {
     this.#extractor.copy(isEmptyRange(node.name) ? node.nameText : node.name);
 
     this.#extractor.write(` data-marko-node-id="${id}"`);
+    this.#writeShorthands(node);
     // [node attributes]
     node.attrs?.forEach((attr) => {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
@@ -256,6 +263,38 @@ class HTMLExtractor {
     }
 
     return { hasDynamicAttrs, hasDynamicBody };
+  }
+
+  #writeShorthands(node: Node.Tag) {
+    const { shorthandId, shorthandClassNames } = node;
+    if (shorthandId) {
+      this.#extractor.write(' id="');
+      if (shorthandId.expressions.length) {
+        this.#extractor.write("dynamic");
+      } else {
+        this.#extractor.copy({
+          start: shorthandId.start + 1,
+          end: shorthandId.end,
+        });
+      }
+      this.#extractor.write('"');
+    }
+
+    if (shorthandClassNames) {
+      this.#extractor.write(' class="');
+      shorthandClassNames.forEach((shorthandClass, i) => {
+        if (i) this.#extractor.write(" ");
+        if (shorthandClass.expressions.length) {
+          this.#extractor.write("dynamic");
+        } else {
+          this.#extractor.copy({
+            start: shorthandClass.start + 1,
+            end: shorthandClass.end,
+          });
+        }
+      });
+      this.#extractor.write('"');
+    }
   }
 
   #writeAttrNamed(attr: Node.AttrNamed) {

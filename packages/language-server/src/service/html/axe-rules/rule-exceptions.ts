@@ -30,28 +30,16 @@ export interface Exceptions {
    * against axe-core 4.12's checks — re-verify on axe upgrades
    */
   requiresKnownParent?: true | "div-wrapped";
+  /**
+   * Exclude unless the file renders a complete document (authored `<html>`)
+   * whose extraction is exact, with nothing dynamic anywhere
+   */
+  requiresFullDocument?: boolean;
 }
 
 type Blacklist =
   // Explicitly blacklisted for Marko Language Server
   | typeof r.structure.frameTested
-  // Requires context that may live in an *ancestor* template we can't see
-  // (unlike listitem/dlitem, which only consult the known direct parent chain)
-  | typeof r.aria.ariaRequiredParent
-  | typeof r.forms.label
-  | typeof r.forms.labelTitleOnly
-  | typeof r.forms.selectName
-  | typeof r.keyboard.bypass
-  | typeof r.keyboard.nestedInteractive
-  | typeof r.keyboard.region
-  | typeof r.semantics.headingOrder
-  | typeof r.semantics.landmarkBannerIsTopLevel
-  | typeof r.semantics.landmarkComplementaryIsTopLevel
-  | typeof r.semantics.landmarkContentinfoIsTopLevel
-  | typeof r.semantics.landmarkMainIsTopLevel
-  | typeof r.semantics.landmarkOneMain
-  | typeof r.semantics.pageHasHeadingOne
-  | typeof r.tables.tdHeadersAttr
   // Seemingly broken in axe-core or JSDom
   | typeof r.aria.ariaRoledescription
   | typeof r.aria.ariaValidAttr
@@ -82,6 +70,7 @@ type Whitelist = Exclude<RuleId, Blacklist>;
 const unknownBody = true;
 const attrSpread = true;
 const conditionalContent = true;
+const requiresFullDocument = true;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
@@ -97,7 +86,9 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaProhibitedAttr]: { dynamicAttrs: ["role"] },
   [r.aria.ariaRequiredAttr]: { attrSpread },
   [r.aria.ariaRequiredChildren]: { unknownBody },
+  [r.aria.ariaRequiredParent]: { requiresFullDocument },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
+  [r.aria.ariaTabName]: { unknownBody, attrSpread },
   [r.aria.ariaText]: { unknownBody },
   [r.aria.ariaToggleFieldName]: { unknownBody, attrSpread },
   [r.aria.ariaTooltipName]: { unknownBody, attrSpread },
@@ -105,8 +96,14 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.presentationRoleConflict]: {},
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
+  [r.forms.label]: { requiresFullDocument },
+  [r.forms.labelTitleOnly]: { requiresFullDocument },
+  [r.forms.selectName]: { requiresFullDocument },
   [r.keyboard.accesskeys]: { conditionalContent },
+  [r.keyboard.bypass]: { requiresFullDocument },
   [r.keyboard.frameFocusableContent]: { unknownBody },
+  [r.keyboard.nestedInteractive]: { requiresFullDocument },
+  [r.keyboard.region]: { requiresFullDocument },
   [r.keyboard.skipLink]: { unknownBody },
   [r.keyboard.tabindex]: {},
   [r.language.htmlHasLang]: { attrSpread },
@@ -124,11 +121,18 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.nameRoleValue.linkName]: { unknownBody, attrSpread },
   [r.nameRoleValue.summaryName]: { unknownBody, attrSpread },
   [r.parsing.marquee]: {},
+  [r.semantics.headingOrder]: { requiresFullDocument },
   [r.semantics.identicalLinksSamePurpose]: { conditionalContent },
+  [r.semantics.landmarkBannerIsTopLevel]: { requiresFullDocument },
+  [r.semantics.landmarkComplementaryIsTopLevel]: { requiresFullDocument },
+  [r.semantics.landmarkContentinfoIsTopLevel]: { requiresFullDocument },
+  [r.semantics.landmarkMainIsTopLevel]: { requiresFullDocument },
   [r.semantics.landmarkNoDuplicateBanner]: { conditionalContent },
   [r.semantics.landmarkNoDuplicateContentinfo]: { conditionalContent },
   [r.semantics.landmarkNoDuplicateMain]: { conditionalContent },
   [r.semantics.landmarkUnique]: { conditionalContent },
+  [r.semantics.landmarkOneMain]: { requiresFullDocument },
+  [r.semantics.pageHasHeadingOne]: { requiresFullDocument },
   [r.sensoryAndVisualCues.metaViewport]: {},
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
   [r.structure.definitionList]: { unknownBody },
@@ -145,6 +149,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   },
   [r.tables.scopeAttrValid]: {},
   [r.tables.tableDuplicateName]: { unknownBody },
+  [r.tables.tdHeadersAttr]: { requiresFullDocument },
   [r.tables.thHasDataCells]: { unknownBody },
   [r.textAlternatives.areaAlt]: { attrSpread },
   [r.textAlternatives.documentTitle]: { unknownBody },

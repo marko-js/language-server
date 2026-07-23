@@ -59,12 +59,14 @@ const HTMLService: Partial<Plugin> = {
     },
   },
   async doValidate(doc) {
-    const { extracted, nodeDetails, inlineRegions } = extract(doc);
+    const extraction = extract(doc);
+    const { extracted, nodeDetails, inlineRegions } = extraction;
 
     const jsdom = new JSDOM(extracted.toString(), {
       includeNodeLocations: true,
     });
     const { documentElement } = jsdom.window.document;
+    const exactDocument = isExactFullDocument(extraction, documentElement);
 
     const getViolationNodes = async (runOnly: string[]) =>
       (
@@ -105,8 +107,9 @@ const HTMLService: Partial<Plugin> = {
       }
 
       if (
-        exceptions.requiresKnownParent &&
-        !hasKnownParent(element, exceptions.requiresKnownParent, nodeDetails)
+        (exceptions.requiresFullDocument && !exactDocument) ||
+        (exceptions.requiresKnownParent &&
+          !hasKnownParent(element, exceptions.requiresKnownParent, nodeDetails))
       ) {
         return [];
       }
@@ -217,16 +220,20 @@ function getSkeleton(
   if (skeletonCache.has(file.parsed)) return skeletonCache.get(file.parsed);
   skeletonCache.set(file.parsed, undefined);
 
-  const { extracted, nodeDetails, uncertain, bodySlots, rootIds } = extractHTML(
-    file.parsed,
-    {
-      nodeIdPrefix: getNodeIdPrefix(template),
-      trackBodySlot: true,
-      resolveChild: createChildResolver(file, new Set(stack).add(template), {
-        remaining: MAX_INLINE_BYTES,
-      }),
-    },
-  );
+  const {
+    extracted,
+    nodeDetails,
+    uncertain,
+    hasPlaceholders,
+    bodySlots,
+    rootIds,
+  } = extractHTML(file.parsed, {
+    nodeIdPrefix: getNodeIdPrefix(template),
+    trackBodySlot: true,
+    resolveChild: createChildResolver(file, new Set(stack).add(template), {
+      remaining: MAX_INLINE_BYTES,
+    }),
+  });
 
   const html = extracted.toString();
   let skeleton: InlineChildTemplate | undefined;
@@ -239,6 +246,7 @@ function getSkeleton(
       bodySlotDepth: slot?.depth ?? 0,
       bodySlotConditional: slot?.inConditional ?? false,
       uncertain,
+      hasPlaceholders,
       nodeDetails,
       rootIds,
     };
@@ -246,6 +254,20 @@ function getSkeleton(
 
   skeletonCache.set(file.parsed, skeleton);
   return skeleton;
+}
+
+// The extraction is exact when the file renders a whole document (an authored
+// `<html>`) containing nothing dynamic; page-scoped rules can then run safely.
+function isExactFullDocument(extraction: Extraction, documentElement: Element) {
+  return (
+    !extraction.uncertain &&
+    !extraction.hasPlaceholders &&
+    (documentElement as HTMLElement).dataset.markoNodeId !== undefined &&
+    !extraction.extracted.toString().includes('="dynamic"') &&
+    Object.values(extraction.nodeDetails).every(
+      (details) => !details.hasDynamicAttrs,
+    )
+  );
 }
 
 function innermostRegionAt(regions: InlineRegion[], offset: number) {
