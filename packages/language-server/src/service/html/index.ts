@@ -1,4 +1,5 @@
 import {
+  extractChildTemplate,
   extractHTML,
   type InlineChildTemplate,
   type InlineRegion,
@@ -66,7 +67,10 @@ const HTMLService: Partial<Plugin> = {
       includeNodeLocations: true,
     });
     const { documentElement } = jsdom.window.document;
-    const exactDocument = isExactFullDocument(extraction, documentElement);
+    // Page-scoped rules only run when the extraction is exactly the rendered
+    // output and covers the whole document (an authored `<html>`).
+    const exactDocument =
+      extraction.exact && documentElement.dataset.markoNodeId !== undefined;
 
     const getViolationNodes = async (runOnly: string[]) =>
       (
@@ -196,8 +200,7 @@ function createChildResolver(
     const skeleton = getSkeleton(template, stack);
     if (!skeleton) return;
 
-    const size =
-      skeleton.segments[0].length + (skeleton.segments[1]?.length ?? 0);
+    const size = skeletonSize(skeleton);
     if (size > budget.remaining) return;
     budget.remaining -= size;
 
@@ -220,54 +223,21 @@ function getSkeleton(
   if (skeletonCache.has(file.parsed)) return skeletonCache.get(file.parsed);
   skeletonCache.set(file.parsed, undefined);
 
-  const {
-    extracted,
-    nodeDetails,
-    uncertain,
-    hasPlaceholders,
-    bodySlots,
-    rootIds,
-  } = extractHTML(file.parsed, {
+  const candidate = extractChildTemplate(file.parsed, {
     nodeIdPrefix: getNodeIdPrefix(template),
-    trackBodySlot: true,
     resolveChild: createChildResolver(file, new Set(stack).add(template), {
       remaining: MAX_INLINE_BYTES,
     }),
   });
-
-  const html = extracted.toString();
-  let skeleton: InlineChildTemplate | undefined;
-  if (html.length <= MAX_INLINE_BYTES) {
-    const slot = bodySlots.length === 1 ? bodySlots[0] : undefined;
-    skeleton = {
-      segments: slot
-        ? [html.slice(0, slot.offset), html.slice(slot.offset)]
-        : [html],
-      bodySlotDepth: slot?.depth ?? 0,
-      bodySlotConditional: slot?.inConditional ?? false,
-      uncertain,
-      hasPlaceholders,
-      nodeDetails,
-      rootIds,
-    };
-  }
+  const skeleton =
+    skeletonSize(candidate) <= MAX_INLINE_BYTES ? candidate : undefined;
 
   skeletonCache.set(file.parsed, skeleton);
   return skeleton;
 }
 
-// The extraction is exact when the file renders a whole document (an authored
-// `<html>`) containing nothing dynamic; page-scoped rules can then run safely.
-function isExactFullDocument(extraction: Extraction, documentElement: Element) {
-  return (
-    !extraction.uncertain &&
-    !extraction.hasPlaceholders &&
-    (documentElement as HTMLElement).dataset.markoNodeId !== undefined &&
-    !extraction.extracted.toString().includes('="dynamic"') &&
-    Object.values(extraction.nodeDetails).every(
-      (details) => !details.hasDynamicAttrs,
-    )
-  );
+function skeletonSize(skeleton: InlineChildTemplate) {
+  return skeleton.segments[0].length + (skeleton.segments[1]?.length ?? 0);
 }
 
 function innermostRegionAt(regions: InlineRegion[], offset: number) {

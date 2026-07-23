@@ -18,7 +18,7 @@ export interface HTMLNodeDetails {
   inConditional: boolean;
 }
 
-export interface HTMLBodySlot {
+interface HTMLBodySlot {
   offset: number;
   depth: number;
   inConditional: boolean;
@@ -30,7 +30,8 @@ export interface InlineChildTemplate {
   bodySlotDepth: number;
   bodySlotConditional: boolean;
   uncertain: boolean;
-  hasPlaceholders: boolean;
+  /** True when the skeleton is exactly what the template renders. */
+  exact: boolean;
   nodeDetails: Record<string, HTMLNodeDetails>;
   rootIds: string[];
 }
@@ -46,14 +47,21 @@ export interface InlineRegion {
 
 export interface ExtractHTMLOptions {
   nodeIdPrefix?: string;
-  trackBodySlot?: boolean;
   resolveChild?(tagName: string): InlineChildTemplate | undefined;
 }
 
 const bodySlotReg = /^\$\{\s*input\.(?:renderBody|content)\s*\}$/;
 
 export function extractHTML(parsed: Parsed, options: ExtractHTMLOptions = {}) {
-  return new HTMLExtractor(parsed, options).end();
+  return new HTMLExtractor(parsed, options, false).end();
+}
+
+/** Extracts a template as a skeleton that can be inlined at its usage sites. */
+export function extractChildTemplate(
+  parsed: Parsed,
+  options: ExtractHTMLOptions = {},
+) {
+  return new HTMLExtractor(parsed, options, true).endChildTemplate();
 }
 
 class HTMLExtractor {
@@ -68,9 +76,14 @@ class HTMLExtractor {
   #rootIds: string[];
   #bodySlots: HTMLBodySlot[];
   #inlineRegions: InlineRegion[];
-  #hasPlaceholders: boolean;
+  #exact: boolean;
+  #trackBodySlot: boolean;
 
-  constructor(parsed: Parsed, options: ExtractHTMLOptions) {
+  constructor(
+    parsed: Parsed,
+    options: ExtractHTMLOptions,
+    trackBodySlot: boolean,
+  ) {
     this.#extractor = new Extractor(parsed);
     this.#read = parsed.read.bind(parsed);
     this.#options = options;
@@ -82,7 +95,8 @@ class HTMLExtractor {
     this.#rootIds = [];
     this.#bodySlots = [];
     this.#inlineRegions = [];
-    this.#hasPlaceholders = false;
+    this.#exact = true;
+    this.#trackBodySlot = trackBodySlot;
     parsed.program.body.forEach((node) => {
       if (this.#visitNode(node)) this.#uncertain = true;
     });
@@ -92,11 +106,25 @@ class HTMLExtractor {
     return {
       extracted: this.#extractor.end(),
       nodeDetails: this.#nodeDetails,
-      uncertain: this.#uncertain,
-      bodySlots: this.#bodySlots,
       inlineRegions: this.#inlineRegions,
+      /** True when the output is exactly what the template renders. */
+      exact: !this.#uncertain && this.#exact,
+    };
+  }
+
+  endChildTemplate(): InlineChildTemplate {
+    const html = this.#extractor.end().toString();
+    const slot = this.#bodySlots.length === 1 ? this.#bodySlots[0] : undefined;
+    return {
+      segments: slot
+        ? [html.slice(0, slot.offset), html.slice(slot.offset)]
+        : [html],
+      bodySlotDepth: slot?.depth ?? 0,
+      bodySlotConditional: slot?.inConditional ?? false,
+      uncertain: this.#uncertain,
+      exact: !this.#uncertain && this.#exact,
+      nodeDetails: this.#nodeDetails,
       rootIds: this.#rootIds,
-      hasPlaceholders: this.#hasPlaceholders,
     };
   }
 
@@ -146,7 +174,8 @@ class HTMLExtractor {
         this.#extractor.copy(node);
         break;
       case NodeType.Placeholder:
-        this.#hasPlaceholders = true;
+        // Placeholder text stands in for unknown (possibly empty) content.
+        this.#exact = false;
         isDynamic =
           this.#read({
             start: node.start + 1,
@@ -165,7 +194,7 @@ class HTMLExtractor {
       !node.body &&
       bodySlotReg.test(this.#read(node.name))
     ) {
-      if (this.#options.trackBodySlot) {
+      if (this.#trackBodySlot) {
         this.#bodySlots.push({
           offset: this.#extractor.length,
           depth: this.#domDepth,
@@ -204,7 +233,7 @@ class HTMLExtractor {
 
   #inlineChild(node: Node.Tag, child: InlineChildTemplate): boolean {
     const start = this.#extractor.length;
-    if (child.hasPlaceholders) this.#hasPlaceholders = true;
+    if (!child.exact) this.#exact = false;
     if (this.#domDepth === 0) this.#rootIds.push(...child.rootIds);
     Object.assign(this.#nodeDetails, child.nodeDetails);
 
@@ -248,7 +277,10 @@ class HTMLExtractor {
     // [node attributes]
     node.attrs?.forEach((attr) => {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
-      else if (attr.type === NodeType.AttrSpread) hasDynamicAttrs = true;
+      else if (attr.type === NodeType.AttrSpread) {
+        hasDynamicAttrs = true;
+        this.#exact = false;
+      }
     });
     // [body or self-closing `/`]
     this.#extractor.write(">");
@@ -270,7 +302,7 @@ class HTMLExtractor {
     if (shorthandId) {
       this.#extractor.write(' id="');
       if (shorthandId.expressions.length) {
-        this.#extractor.write("dynamic");
+        this.#writeDynamic();
       } else {
         this.#extractor.copy({
           start: shorthandId.start + 1,
@@ -285,7 +317,7 @@ class HTMLExtractor {
       shorthandClassNames.forEach((shorthandClass, i) => {
         if (i) this.#extractor.write(" ");
         if (shorthandClass.expressions.length) {
-          this.#extractor.write("dynamic");
+          this.#writeDynamic();
         } else {
           this.#extractor.copy({
             start: shorthandClass.start + 1,
@@ -336,7 +368,9 @@ class HTMLExtractor {
         const start = valueString.search(/[^=\s]/g) + 1;
         // A raw `"` in the value would terminate the generated attribute.
         if (valueString.slice(start, -1).includes('"')) {
-          this.#extractor.write(`="dynamic"`);
+          this.#extractor.write('="');
+          this.#writeDynamic();
+          this.#extractor.write('"');
           break;
         }
         this.#extractor.write('="');
@@ -348,11 +382,17 @@ class HTMLExtractor {
         break;
       }
       case AttributeValueType.Dynamic:
-        // Replace all dynamic values with the string "dynamic" with a counter instead of removing them
-        // Subject to change-- axe-core might require "true" for aria attributes or something
-        this.#extractor.write(`="dynamic"`);
+        this.#extractor.write('="');
+        this.#writeDynamic();
+        this.#extractor.write('"');
         break;
     }
+  }
+
+  /** Stands in for values only known at runtime (vs removing the attribute). */
+  #writeDynamic() {
+    this.#extractor.write("dynamic");
+    this.#exact = false;
   }
 }
 
