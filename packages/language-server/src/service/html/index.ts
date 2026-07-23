@@ -15,15 +15,13 @@ import { get, projectVersion } from "../../utils/text-documents";
 import type { Plugin } from "../types";
 import { type Exceptions, ruleExceptions } from "./axe-rules/rule-exceptions";
 
-/** Limits for inlining child templates into the extracted HTML. */
 const MAX_INLINE_DEPTH = 3;
 const MAX_INLINE_BYTES = 100_000;
 
 type Extraction = ReturnType<typeof extractHTML>;
 type NodeDetails = Extraction["nodeDetails"];
 
-// Keyed on projectVersion (not just the parse): an inlined child template may
-// change without this document re-parsing. Extraction is cheap next to axe.
+// Keyed on projectVersion: inlined children can change without a re-parse.
 const extractCache = new WeakMap<
   Parsed,
   { version: number; result: Extraction }
@@ -31,8 +29,7 @@ const extractCache = new WeakMap<
 let skeletonCacheVersion = -1;
 let skeletonCache = new Map<Parsed, InlineChildTemplate | undefined>();
 
-// Per-template node id namespaces, path-independent (basename + dedup
-// counter) so extracted output stays stable across machines.
+// Path-independent so extracted output is stable across machines.
 const templatePrefixes = new Map<string, string>();
 const basenameCounts = new Map<string, number>();
 function getNodeIdPrefix(template: string) {
@@ -124,9 +121,12 @@ const HTMLService: Partial<Plugin> = {
       );
 
       if (!sourceRange) {
-        // Unmapped elements come from an inlined child: re-anchor skeleton
-        // roots to the tag usage; deeper ones are the child's own concern.
-        const region = regionAt(inlineRegions, generatedLoc.startOffset);
+        // Unmapped elements come from an inlined child; only its top-level
+        // elements re-anchor to the usage site.
+        const region = innermostRegionAt(
+          inlineRegions,
+          generatedLoc.startOffset,
+        );
         if (
           !region ||
           !nodeId ||
@@ -171,8 +171,6 @@ function extract(doc: TextDocument) {
   return result;
 }
 
-/** Undefined (the legacy `<div>` fallback) for non-template tags, cycles, and
- * anything past the depth/size limits. */
 function createChildResolver(
   file: MarkoFile,
   stack: Set<string>,
@@ -217,7 +215,6 @@ function getSkeleton(
     skeletonCache = new Map();
   }
   if (skeletonCache.has(file.parsed)) return skeletonCache.get(file.parsed);
-  // Guard against re-entering while this skeleton is being built.
   skeletonCache.set(file.parsed, undefined);
 
   const { extracted, nodeDetails, uncertain, bodySlots, rootIds } = extractHTML(
@@ -251,8 +248,7 @@ function getSkeleton(
   return skeleton;
 }
 
-/** The innermost inlined region containing a generated offset, if any. */
-function regionAt(regions: InlineRegion[], offset: number) {
+function innermostRegionAt(regions: InlineRegion[], offset: number) {
   let match: InlineRegion | undefined;
   for (const region of regions) {
     if (
@@ -266,8 +262,6 @@ function regionAt(regions: InlineRegion[], offset: number) {
   return match;
 }
 
-/** True when every ancestor axe consults for the rule is a real extracted
- * element with static semantics. */
 function hasKnownParent(
   element: HTMLElement,
   mode: NonNullable<Exceptions["requiresKnownParent"]>,

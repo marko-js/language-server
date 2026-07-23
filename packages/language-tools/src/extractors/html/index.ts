@@ -15,57 +15,37 @@ import {
 export interface HTMLNodeDetails {
   hasDynamicAttrs: boolean;
   hasDynamicBody: boolean;
-  /** True inside a control flow branch, which may render zero or many times. */
   inConditional: boolean;
 }
 
 export interface HTMLBodySlot {
-  /** Offset in the generated HTML where default body content is rendered. */
   offset: number;
-  /** Number of elements the slot is nested under within the template. */
   depth: number;
-  /** True when the slot itself is inside a control flow branch. */
   inConditional: boolean;
 }
 
-/** A pre-extracted child template that can be inlined where a custom tag is used. */
 export interface InlineChildTemplate {
   /** The HTML skeleton, split at the default body slot when exactly one exists. */
   segments: [string] | [string, string];
-  /** Element depth of the body slot (only when `segments.length === 2`). */
   bodySlotDepth: number;
-  /** True when the body slot is inside a control flow branch. */
   bodySlotConditional: boolean;
-  /** True when the skeleton may not match rendered output; propagated to the
-   * usage site's ancestors so `unknownBody` rule exceptions still apply. */
   uncertain: boolean;
-  /** Details for elements of the skeleton, keyed by (prefixed) node id. */
   nodeDetails: Record<string, HTMLNodeDetails>;
-  /** Node ids of the top-level elements of the skeleton. */
   rootIds: string[];
 }
 
-/** A generated range produced by inlining a child template. */
 export interface InlineRegion {
   start: number;
   end: number;
-  /** Source range of the custom tag name, used to re-anchor diagnostics. */
   tagName: Range;
-  /** True when body content spliced into this instance is dynamic. */
   bodyUncertain: boolean;
-  /** True when the usage site is inside a control flow branch. */
   inConditional: boolean;
-  /** Top-level element node ids of the inlined skeleton. */
   rootIds: string[];
 }
 
 export interface ExtractHTMLOptions {
-  /** Unique-per-template prefix for node ids so merged details can't collide. */
   nodeIdPrefix?: string;
-  /** Report bodyless `<${input.renderBody}/>` tags as body slots instead of
-   * unknown content; enable only when extracting a template for inlining. */
   trackBodySlot?: boolean;
-  /** Resolve a custom tag to a child template skeleton to inline. */
   resolveChild?(tagName: string): InlineChildTemplate | undefined;
 }
 
@@ -132,8 +112,7 @@ class HTMLExtractor {
         }
 
         if (isControlFlowTag(node)) {
-          // Control flow renders no element of its own; emit the body directly
-          // so structural rules see the true parent/child relationships.
+          // Emitted inline: control flow renders no element of its own.
           this.#conditionalDepth++;
           node.body?.forEach((child) => this.#visitNode(child));
           this.#conditionalDepth--;
@@ -175,9 +154,7 @@ class HTMLExtractor {
     return isDynamic || hasDynamicBody;
   }
 
-  /** Handles tags that are not plain HTML elements (custom/dynamic tags). */
   #writeDynamicTag(node: Node.Tag): boolean {
-    // `<${input.renderBody}/>` — where a template renders its default body.
     if (
       !node.nameText &&
       !node.body &&
@@ -192,7 +169,6 @@ class HTMLExtractor {
         return false;
       }
 
-      // Without a usage site the body is unknown content.
       return true;
     }
 
@@ -203,9 +179,7 @@ class HTMLExtractor {
 
     if (
       child &&
-      // Named content (`<@foo>`) can't be placed within the child skeleton.
       !node.hasAttrTags &&
-      // A body needs a known slot to splice into.
       (!node.body || child.segments.length === 2)
     ) {
       return this.#inlineChild(node, child);

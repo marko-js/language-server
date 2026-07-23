@@ -65,7 +65,6 @@ export class Extractor {
     return this;
   }
 
-  /** Current length of the generated output. */
   get length() {
     return this.#generated.length;
   }

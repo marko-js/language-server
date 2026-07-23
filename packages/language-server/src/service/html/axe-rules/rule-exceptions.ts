@@ -22,13 +22,11 @@ export interface Exceptions {
    */
   unknownBody?: boolean;
   /**
-   * Exclude duplicate-content rules inside control flow branches, which are
-   * mutually exclusive at runtime
+   * Exclude if inside a control flow branch (branches never coexist)
    */
   conditionalContent?: boolean;
   /**
-   * Only report when the parent chain axe consults is fully known;
-   * "div-wrapped" also checks the grandparent through presentational `<div>`s
+   * Exclude unless the parent chain axe consults is fully known
    */
   requiresKnownParent?: true | "div-wrapped";
 }
