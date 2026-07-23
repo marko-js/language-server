@@ -131,6 +131,7 @@ const HTMLService: Partial<Plugin> = {
       const generatedLoc = jsdom.nodeLocation(element);
       if (!generatedLoc) return [];
 
+      let messagePrefix = "";
       let sourceRange = extracted.sourceLocationAt(
         generatedLoc.startOffset + 1,
         generatedLoc.startOffset + 1 + element.tagName.length,
@@ -155,6 +156,7 @@ const HTMLService: Partial<Plugin> = {
         }
 
         sourceRange = extracted.parsed.locationAt(region.tagName);
+        messagePrefix = `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `;
       }
 
       return [
@@ -162,7 +164,9 @@ const HTMLService: Partial<Plugin> = {
           range: sourceRange,
           severity: 3,
           source: `axe-core(${ruleId})`,
-          message: result.failureSummary ?? "unknown accessibility issue",
+          message:
+            messagePrefix +
+            (result.failureSummary ?? "unknown accessibility issue"),
         },
       ];
     });
