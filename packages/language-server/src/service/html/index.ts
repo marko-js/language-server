@@ -35,7 +35,7 @@ const basenameCounts = new Map<string, number>();
 function getNodeIdPrefix(template: string) {
   let prefix = templatePrefixes.get(template);
   if (prefix === undefined) {
-    const base = path.basename(template);
+    const base = path.basename(template).replace(/[^\w.-]/g, "_");
     const count = basenameCounts.get(base) ?? 0;
     basenameCounts.set(base, count + 1);
     prefix = `${count === 0 ? base : `${base}~${count}`}#`;

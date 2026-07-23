@@ -26,7 +26,8 @@ export interface Exceptions {
    */
   conditionalContent?: boolean;
   /**
-   * Exclude unless the parent chain axe consults is fully known
+   * Exclude unless the parent chain axe consults is fully known; written
+   * against axe-core 4.12's checks — re-verify on axe upgrades
    */
   requiresKnownParent?: true | "div-wrapped";
 }
