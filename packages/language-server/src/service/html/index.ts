@@ -149,28 +149,44 @@ const HTMLService: Partial<Plugin> = {
       extraction.fidelity === "exact" &&
       documentElement.dataset.markoNodeId !== undefined;
 
-    const getViolationNodes = async (runOnly: string[]) =>
+    const getViolationNodes = async (
+      runOnly: string[],
+      exclusions: HTMLElement[],
+    ) =>
       (
-        await axe.run(documentElement, {
-          runOnly,
-          rules: {
-            "color-contrast": { enabled: false },
+        await axe.run(
+          exclusions.length
+            ? ({ include: documentElement, exclude: exclusions } as never)
+            : documentElement,
+          {
+            runOnly,
+            rules: {
+              "color-contrast": { enabled: false },
+            },
+            resultTypes: ["violations"],
+            elementRef: true,
+            // Result nodes are consumed via elementRef, so skip axe's unique
+            // CSS selector generation for them.
+            selectors: false,
+            // No enabled rule reads CSS, so skip axe's CSSOM preload.
+            preload: false,
           },
-          resultTypes: ["violations"],
-          elementRef: true,
-          // Result nodes are consumed via elementRef, so skip axe's unique
-          // CSS selector generation for them.
-          selectors: false,
-          // No enabled rule reads CSS, so skip axe's CSSOM preload.
-          preload: false,
-        })
+        )
       ).violations.flatMap(({ nodes, id }) =>
         nodes.map((node) => ({ ...node, ruleId: id })),
       );
 
+    // Interior inlined content only ever anchors a diagnostic through its
+    // region root, so subtrees with no host content need context presence but
+    // no rule evaluation of their own; excluding them skips that work.
+    const exclusions = process.env.A11Y_PRUNE
+      ? collectPureInlinedSubtrees(documentElement, extraction.inlineRegions)
+      : [];
+
     const release = await acquireMutexLock();
     const violations = await getViolationNodes(
       exactDocument ? allRules : nonDocumentRules,
+      exclusions,
     );
     release();
 
@@ -387,6 +403,35 @@ function anchorViolation(
     anchor: { regionIndex },
     messagePrefix: `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `,
   };
+}
+
+// Host template elements carry unprefixed node ids; inlined ones contain "#".
+const hostElementSelector =
+  '[data-marko-node-id]:not([data-marko-node-id*="#"])';
+
+// Maximal inlined subtrees containing no host content and no region root:
+// nothing inside them can anchor a diagnostic, so axe need not evaluate them.
+function collectPureInlinedSubtrees(
+  documentElement: HTMLElement,
+  inlineRegions: InlineRegion[],
+): HTMLElement[] {
+  if (!inlineRegions.length) return [];
+  const rootIds = new Set(inlineRegions.flatMap((region) => region.rootIds));
+  const exclusions: HTMLElement[] = [];
+  const visit = (element: Element) => {
+    const id = element.getAttribute("data-marko-node-id");
+    if (
+      id?.includes("#") &&
+      !rootIds.has(id) &&
+      !element.querySelector(hostElementSelector)
+    ) {
+      exclusions.push(element as HTMLElement);
+      return;
+    }
+    for (const child of element.children) visit(child);
+  };
+  visit(documentElement);
+  return exclusions;
 }
 
 function innermostRegionIndexAt(regions: InlineRegion[], offset: number) {
