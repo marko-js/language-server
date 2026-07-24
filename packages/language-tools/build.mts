@@ -26,6 +26,14 @@ await Promise.all([
   build({
     ...opts,
     format: "cjs",
+    // The bundle locates its own shipped type files through `import.meta.url`,
+    // which has no cjs equivalent.
+    define: { "import.meta.url": "_importMetaUrl" },
+    banner: {
+      // The directive comes along so the banner does not displace the one
+      // esbuild emits, which would drop the bundle out of strict mode.
+      js: `"use strict";\nconst _importMetaUrl = require("url").pathToFileURL(__filename).href;`,
+    },
   }),
   build({
     ...opts,
