@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.9
+
+### Patch Changes
+
+- [#577](https://github.com/marko-js/language-server/pull/577) [`23c88e8`](https://github.com/marko-js/language-server/commit/23c88e878dcae24d13cacf4793a8b63be4bdab0c) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update `@marko/compiler` to 5.41.7 and `marko` to 5.39.27.
+
 ## 3.1.8
 
 ### Patch Changes
