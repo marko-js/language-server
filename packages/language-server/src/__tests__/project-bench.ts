@@ -75,6 +75,13 @@ async function sweep() {
       const validate = await timed(() => HTMLPlugin.doValidate!(doc));
       row.validateMs = validate.ms;
       row.diagnostics = (validate.value ?? []).length;
+      row.diagSig = (validate.value ?? [])
+        .map(
+          (d) =>
+            `${d.range.start.line}:${d.range.start.character}-${d.range.end.line}:${d.range.end.character} ${d.source} ${d.message.slice(0, 60)}`,
+        )
+        .sort()
+        .join("|");
 
       documents.doClose({ textDocument: { uri: doc.uri } });
     } catch (err) {

@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "28.0.3",
+    "happy-dom": "20.11.1",
     "tsx": "^4.22.4"
   }
 }

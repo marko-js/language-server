@@ -21,6 +21,58 @@ import { type Exceptions, ruleExceptions } from "./axe-rules/rule-exceptions";
 const MAX_INLINE_DEPTH = 3;
 const MAX_INLINE_BYTES = 100_000;
 
+// Benchmark escape hatch: A11Y_DOM=happy swaps jsdom for happy-dom. happy-dom
+// does not track node source locations, so generated offsets are derived from
+// the extraction string instead (see createHappyDom).
+interface A11yDom {
+  documentElement: HTMLElement;
+  locate(element: HTMLElement): number | undefined;
+}
+
+function createDom(html: string): A11yDom {
+  if (process.env.A11Y_DOM === "happy") return createHappyDom(html);
+  const jsdom = new JSDOM(html, { includeNodeLocations: true });
+  return {
+    documentElement: jsdom.window.document.documentElement,
+    locate: (element) => jsdom.nodeLocation(element)?.startOffset,
+  };
+}
+
+const nodeIdAttrReg = /\sdata-marko-node-id="/g;
+
+function createHappyDom(html: string): A11yDom {
+  // Lazy so the default path never loads it; devDependency for benchmarking.
+
+  const { Window } = require("happy-dom");
+  const window = new Window({
+    settings: { disableJavaScriptEvaluation: true },
+  });
+  window.document.write(html);
+  const documentElement = window.document
+    .documentElement as unknown as HTMLElement;
+  let offsets: WeakMap<Element, number> | undefined;
+  return {
+    documentElement,
+    locate(element) {
+      if (!offsets) {
+        // The nth data-marko-node-id attribute in the extracted string belongs
+        // to the nth element carrying that attribute in document order.
+        offsets = new WeakMap();
+        const elements = documentElement.ownerDocument.querySelectorAll(
+          "[data-marko-node-id]",
+        );
+        let match: RegExpExecArray | null;
+        let i = 0;
+        nodeIdAttrReg.lastIndex = 0;
+        while ((match = nodeIdAttrReg.exec(html)) && i < elements.length) {
+          offsets.set(elements[i++], html.lastIndexOf("<", match.index));
+        }
+      }
+      return offsets.get(element);
+    },
+  };
+}
+
 type NodeDetails = HTMLExtraction["nodeDetails"];
 
 // Keyed on projectVersion: inlined children can change without a re-parse.
@@ -90,10 +142,8 @@ const HTMLService: Partial<Plugin> = {
       return cached.entries.flatMap((entry) => toDiagnostic(extraction, entry));
     }
 
-    const jsdom = new JSDOM(extracted.toString(), {
-      includeNodeLocations: true,
-    });
-    const { documentElement } = jsdom.window.document;
+    const dom = createDom(extracted.toString());
+    const { documentElement } = dom;
     // jsdom-fabricated `<html>` elements carry no node id.
     const exactDocument =
       extraction.fidelity === "exact" &&
@@ -108,6 +158,9 @@ const HTMLService: Partial<Plugin> = {
           },
           resultTypes: ["violations"],
           elementRef: true,
+          // Result nodes are consumed via elementRef, so skip axe's unique
+          // CSS selector generation for them.
+          selectors: false,
           // No enabled rule reads CSS, so skip axe's CSSOM preload.
           preload: false,
         })
@@ -149,13 +202,13 @@ const HTMLService: Partial<Plugin> = {
         return [];
       }
 
-      const generatedLoc = jsdom.nodeLocation(element);
-      if (!generatedLoc) return [];
+      const generatedStart = dom.locate(element);
+      if (generatedStart === undefined) return [];
 
       const anchor = anchorViolation(
         extraction,
         element,
-        generatedLoc.startOffset,
+        generatedStart,
         exceptions,
       );
       if (!anchor) return [];
