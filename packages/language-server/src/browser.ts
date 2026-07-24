@@ -5,7 +5,7 @@
 // (a `ts.System`, the Marko compiler, a virtual filesystem) so an embedder -- eg
 // the in-browser playground on markojs.com -- can run the same analysis in a Web
 // Worker. It deliberately imports none of the Node-only pieces (the
-// `vscode-languageserver/node` connection, the jsdom-backed HTML/a11y plugin).
+// `vscode-languageserver/node` connection, the DOM-backed HTML/a11y plugin).
 export { createService } from "./service/create-service";
 export { default as MarkoPlugin } from "./service/marko";
 export { default as ScriptPlugin } from "./service/script";

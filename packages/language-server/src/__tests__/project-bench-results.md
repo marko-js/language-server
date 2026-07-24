@@ -147,3 +147,43 @@ extractions in marker `<div>`s and running one axe pass measures
 fragments must run solo. Combined with the happy-dom backend, worker-pool
 parallelism, and deduping repeated child templates across pages, this is the
 CLI path to roughly pre-feature whole-project times.
+
+## Shipped defaults (final round)
+
+All of the above was promoted to defaults on this branch: happy-dom replaces
+jsdom outright (dropping jsdom's bundling patches and esbuild workaround),
+axe result-selector generation stays off, anchor-free subtree pruning is
+always on behind its self-gate, child template extractions are cached across
+edits with parse-identity dependency checks (flushed wholesale on
+watched-file events, since those can change tag resolution), and the
+validation cache key is a hash instead of a re-serialized document. Swapping
+the DOM also turned the one fixture difference into a win: jsdom's axe
+missed the `<marquee>` violation entirely; happy-dom reports it, and the
+snapshot now expects it.
+
+Final measurements (same corpora, diagnostics identical on all 3060 files):
+
+| corpus         | jsdom baseline total | final total | p95           |
+| -------------- | -------------------- | ----------- | ------------- |
+| website        | 3.5s                 | 1.9s        | 535ms → 129ms |
+| evo-web routes | 21.9s                | 11.6s       | 182ms → 99ms  |
+| evo-marko tags | 18.3s                | 10.4s       | 24ms → 12ms   |
+| ebayui-core    | 23.1s                | 13.3s       | 21ms → 13ms   |
+
+Keystroke latency on the hot files (content edits; comment edits are ≤9ms
+everywhere via the validation cache):
+
+| file                       | before | final | pre-feature main |
+| -------------------------- | ------ | ----- | ---------------- |
+| website playground `+page` | 541ms  | 39ms  | 25ms             |
+| website `+layout`          | 103ms  | 45ms  | 26ms             |
+| website `_home/+page`      | 153ms  | 73ms  | 17ms             |
+| evo-web `_index/+layout`   | 607ms  | 271ms | 41ms             |
+| evo-web `+404`             | 102ms  | 66ms  | 19ms             |
+| evo-marko evo-button       | 28ms   | 15ms  | 22ms             |
+| ebayui ebay-carousel       | 31ms   | 19ms  | 32ms             |
+
+Component-sized templates now validate faster than they did on `main`
+before the inlining feature existed. The one remaining hot spot is the
+region-root-dense full-page layout (271ms), covered by the scheduling entry
+in `agent-feedback/perf.md`.

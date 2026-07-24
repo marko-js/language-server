@@ -1,8 +1,8 @@
-// Splits a11y validation cost for one file: JSDOM construction vs axe.run,
+// Splits a11y validation cost for one file: DOM construction vs axe.run,
 // plus per-rule axe timings. Usage: tsx phase-timing.ts <file.marko>
 import axe from "axe-core";
 import fs from "fs";
-import { JSDOM } from "jsdom";
+import { Window } from "happy-dom";
 import { URI } from "vscode-uri";
 
 import { documents } from "../service";
@@ -37,25 +37,29 @@ async function main() {
     return ms;
   };
 
-  await time("new JSDOM(includeNodeLocations)", 5, () => {
-    new JSDOM(html, { includeNodeLocations: true });
-  });
-  await time("new JSDOM (no locations)", 5, () => {
-    new JSDOM(html);
+  await time("new Window + document.write", 5, () => {
+    const w = new Window({ settings: { disableJavaScriptEvaluation: true } });
+    w.document.write(html);
   });
 
-  const jsdom = new JSDOM(html, { includeNodeLocations: true });
+  const window = new Window({
+    settings: { disableJavaScriptEvaluation: true },
+  });
+  window.document.write(html);
+  const documentElement = window.document
+    .documentElement as unknown as HTMLElement;
   const rules = Object.keys(ruleExceptions);
   const run = (runOnly: string[]) =>
-    axe.run(jsdom.window.document.documentElement, {
+    axe.run(documentElement, {
       runOnly,
       rules: { "color-contrast": { enabled: false } },
       resultTypes: ["violations"],
       elementRef: true,
+      selectors: false,
       preload: false,
     });
 
-  await time("axe.run all rules (same JSDOM)", 5, () => run(rules));
+  await time("axe.run all rules (same window)", 5, () => run(rules));
 
   const perRule: [string, number][] = [];
   for (const rule of rules) {

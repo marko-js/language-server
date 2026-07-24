@@ -7,81 +7,60 @@ import {
   type Parsed,
 } from "@marko/language-tools";
 import axe from "axe-core";
-import { JSDOM } from "jsdom";
+import { Window } from "happy-dom";
 import path from "path";
 import type { Diagnostic } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
 import { getMarkoFile, type MarkoFile } from "../../utils/file";
-import { get, projectVersion } from "../../utils/text-documents";
+import { get, onFileChange } from "../../utils/text-documents";
 import type { Plugin } from "../types";
 import { type Exceptions, ruleExceptions } from "./axe-rules/rule-exceptions";
 
 const MAX_INLINE_DEPTH = 3;
 const MAX_INLINE_BYTES = 100_000;
 
-// Benchmark escape hatch: A11Y_DOM=happy swaps jsdom for happy-dom. happy-dom
-// does not track node source locations, so generated offsets are derived from
-// the extraction string instead (see createHappyDom).
-interface A11yDom {
-  documentElement: HTMLElement;
-  locate(element: HTMLElement): number | undefined;
-}
-
-function createDom(html: string): A11yDom {
-  if (process.env.A11Y_DOM === "happy") return createHappyDom(html);
-  const jsdom = new JSDOM(html, { includeNodeLocations: true });
-  return {
-    documentElement: jsdom.window.document.documentElement,
-    locate: (element) => jsdom.nodeLocation(element)?.startOffset,
-  };
-}
-
-const nodeIdAttrReg = /\sdata-marko-node-id="/g;
-
-function createHappyDom(html: string): A11yDom {
-  // Lazy so the default path never loads it; devDependency for benchmarking.
-
-  const { Window } = require("happy-dom");
-  const window = new Window({
-    settings: { disableJavaScriptEvaluation: true },
-  });
-  window.document.write(html);
-  const documentElement = window.document
-    .documentElement as unknown as HTMLElement;
-  let offsets: WeakMap<Element, number> | undefined;
-  return {
-    documentElement,
-    locate(element) {
-      if (!offsets) {
-        // The nth data-marko-node-id attribute in the extracted string belongs
-        // to the nth element carrying that attribute in document order.
-        offsets = new WeakMap();
-        const elements = documentElement.ownerDocument.querySelectorAll(
-          "[data-marko-node-id]",
-        );
-        let match: RegExpExecArray | null;
-        let i = 0;
-        nodeIdAttrReg.lastIndex = 0;
-        while ((match = nodeIdAttrReg.exec(html)) && i < elements.length) {
-          offsets.set(elements[i++], html.lastIndexOf("<", match.index));
-        }
-      }
-      return offsets.get(element);
-    },
-  };
-}
-
 type NodeDetails = HTMLExtraction["nodeDetails"];
 
-// Keyed on projectVersion: inlined children can change without a re-parse.
+// Extractions depend on the parses of the template itself and of every
+// transitively inlined child; entries carry that dependency set and are
+// revalidated against the current parses instead of being dropped on every
+// project change. Watched-file events can change tag *resolution* (a created
+// or deleted template), which the dependency set cannot see, so those flush
+// everything via the generation counter.
+interface ExtractionDeps {
+  deps: Map<string, Parsed | undefined>;
+  generation: number;
+}
+let cacheGeneration = 0;
 const extractCache = new WeakMap<
   Parsed,
-  { version: number; result: HTMLExtraction }
+  ExtractionDeps & { result: HTMLExtraction }
 >();
-let childTemplateCacheVersion = -1;
-let childTemplateCache = new Map<Parsed, InlineChildTemplate | undefined>();
+const childTemplateCache = new Map<
+  string,
+  ExtractionDeps & { childTemplate: InlineChildTemplate | undefined }
+>();
+onFileChange((doc) => {
+  if (!doc) {
+    cacheGeneration++;
+    childTemplateCache.clear();
+  }
+});
+
+function currentParsed(template: string) {
+  const doc = get(URI.file(template).toString());
+  return doc && getMarkoFile(doc).parsed;
+}
+
+function isFresh({ deps, generation }: ExtractionDeps) {
+  if (generation !== cacheGeneration) return false;
+  for (const [template, parsed] of deps) {
+    if (currentParsed(template) !== parsed) return false;
+  }
+  return true;
+}
 
 interface ViolationEntry {
   source: string;
@@ -144,7 +123,7 @@ const HTMLService: Partial<Plugin> = {
 
     const dom = createDom(extracted.toString());
     const { documentElement } = dom;
-    // jsdom-fabricated `<html>` elements carry no node id.
+    // Fabricated `<html>` elements carry no node id.
     const exactDocument =
       extraction.fidelity === "exact" &&
       documentElement.dataset.markoNodeId !== undefined;
@@ -171,19 +150,12 @@ const HTMLService: Partial<Plugin> = {
         nodes.map((node) => ({ ...node, ruleId: id })),
       );
 
-    // Interior inlined content only ever anchors a diagnostic through its
-    // region root, so subtrees with no host content need context presence but
-    // no rule evaluation of their own; excluding them skips that work.
-    const exclusions = process.env.A11Y_PRUNE
-      ? collectPureInlinedSubtrees(documentElement, extraction)
-      : [];
-
     const release = await acquireMutexLock();
     let violations;
     try {
       violations = await getViolationNodes(
         exactDocument ? allRules : nonDocumentRules,
-        exclusions,
+        collectPrunableSubtrees(documentElement, extraction),
       );
     } finally {
       // Without this a rejected axe run would leave the mutex held and
@@ -246,21 +218,77 @@ const HTMLService: Partial<Plugin> = {
   },
 };
 
+// happy-dom does not track node source locations, so generated offsets are
+// recovered from the extraction string: the nth `data-marko-node-id`
+// attribute in it belongs to the nth element carrying that attribute in
+// document order.
+const nodeIdAttrReg = /\sdata-marko-node-id="/g;
+
+interface A11yDom {
+  documentElement: HTMLElement;
+  locate(element: HTMLElement): number | undefined;
+}
+
+function createDom(html: string): A11yDom {
+  const window = new Window({
+    settings: { disableJavaScriptEvaluation: true },
+  });
+  window.document.write(html);
+  const documentElement = window.document
+    .documentElement as unknown as HTMLElement;
+  let offsets: WeakMap<Element, number> | undefined;
+  return {
+    documentElement,
+    locate(element) {
+      if (!offsets) {
+        offsets = new WeakMap();
+        const elements = documentElement.ownerDocument.querySelectorAll(
+          "[data-marko-node-id]",
+        );
+        let match: RegExpExecArray | null;
+        let i = 0;
+        nodeIdAttrReg.lastIndex = 0;
+        while ((match = nodeIdAttrReg.exec(html)) && i < elements.length) {
+          offsets.set(elements[i++], html.lastIndexOf("<", match.index));
+        }
+      }
+      return offsets.get(element);
+    },
+  };
+}
+
+// FNV-1a over the extraction's identity, from two seeds so an accidental
+// collision (which would reuse stale axe results) is vanishingly unlikely.
 function extractionKey({
   extracted,
   nodeDetails,
   inlineRegions,
   fidelity,
 }: HTMLExtraction) {
-  let key = `${fidelity}\n${extracted.toString()}`;
+  let h1 = 0x811c9dc5;
+  let h2 = 0x01000193;
+  const mix = (part: string) => {
+    for (let i = 0; i < part.length; i++) {
+      const c = part.charCodeAt(i);
+      h1 = ((h1 ^ c) * 0x01000193) >>> 0;
+      h2 = ((h2 ^ c) * 0x01000193) >>> 0;
+    }
+    h1 = ((h1 ^ 0x1f) * 0x01000193) >>> 0;
+    h2 = ((h2 ^ 0x1f) * 0x01000193) >>> 0;
+  };
+
+  mix(fidelity);
+  mix(extracted.toString());
   for (const id in nodeDetails) {
     const d = nodeDetails[id];
-    key += `\n${id}:${+d.hasDynamicAttrs}${+d.hasDynamicBody}${+d.inConditional}`;
+    mix(`${id}:${+d.hasDynamicAttrs}${+d.hasDynamicBody}${+d.inConditional}`);
   }
   for (const r of inlineRegions) {
-    key += `\n${r.start}-${r.end}:${+r.bodyUncertain}${+r.inConditional}:${r.rootIds.join()}`;
+    mix(
+      `${r.start}-${r.end}:${+r.bodyUncertain}${+r.inConditional}:${r.rootIds.join()}`,
+    );
   }
-  return key;
+  return `${h1.toString(36)}:${h2.toString(36)}`;
 }
 
 function toDiagnostic(
@@ -283,8 +311,9 @@ function toDiagnostic(
 function extract(doc: TextDocument) {
   const file = getMarkoFile(doc);
   const cached = extractCache.get(file.parsed);
-  if (cached && cached.version === projectVersion) return cached.result;
+  if (cached && isFresh(cached)) return cached.result;
 
+  const deps = new Map<string, Parsed | undefined>();
   const result = extractHTML(file.parsed, {
     // Escape hatch used by the project-bench harness to isolate the cost of
     // child template inlining.
@@ -294,9 +323,10 @@ function extract(doc: TextDocument) {
           file,
           new Set(file.filename ? [file.filename] : []),
           { remaining: MAX_INLINE_BYTES },
+          deps,
         ),
   });
-  extractCache.set(file.parsed, { version: projectVersion, result });
+  extractCache.set(file.parsed, { generation: cacheGeneration, deps, result });
   return result;
 }
 
@@ -304,6 +334,7 @@ function createChildResolver(
   file: MarkoFile,
   stack: Set<string>,
   budget: { remaining: number },
+  deps: Map<string, Parsed | undefined>,
 ) {
   return (tagName: string): InlineChildTemplate | undefined => {
     if (stack.size > MAX_INLINE_DEPTH) return;
@@ -319,7 +350,11 @@ function createChildResolver(
       return;
     }
 
-    const childTemplate = getChildTemplate(template, stack);
+    const entry = getChildTemplate(template, stack);
+    deps.set(template, currentParsed(template));
+    if (entry) for (const [dep, parsed] of entry.deps) deps.set(dep, parsed);
+
+    const childTemplate = entry?.childTemplate;
     if (!childTemplate) return;
 
     const size = childTemplateSize(childTemplate);
@@ -330,35 +365,40 @@ function createChildResolver(
   };
 }
 
-function getChildTemplate(
-  template: string,
-  stack: Set<string>,
-): InlineChildTemplate | undefined {
+function getChildTemplate(template: string, stack: Set<string>) {
   const doc = get(URI.file(template).toString());
   if (!doc) return;
   const file = getMarkoFile(doc);
 
-  if (childTemplateCacheVersion !== projectVersion) {
-    childTemplateCacheVersion = projectVersion;
-    childTemplateCache = new Map();
-  }
-  if (childTemplateCache.has(file.parsed))
-    return childTemplateCache.get(file.parsed);
+  // Keyed by inline depth as well: a template extracted near the depth limit
+  // resolves fewer of its own children, and that shallower result must not be
+  // reused where more depth is available.
+  const cacheKey = `${stack.size}:${template}`;
+  const cached = childTemplateCache.get(cacheKey);
+  if (cached && isFresh(cached)) return cached;
+
+  const deps = new Map<string, Parsed | undefined>([[template, file.parsed]]);
   // In-progress marker; breaks the recursion for circular templates.
-  childTemplateCache.set(file.parsed, undefined);
+  const entry = {
+    childTemplate: undefined as InlineChildTemplate | undefined,
+    deps,
+    generation: cacheGeneration,
+  };
+  childTemplateCache.set(cacheKey, entry);
 
   const candidate = extractChildTemplate(file.parsed, {
     nodeIdPrefix: getNodeIdPrefix(template),
     // Fresh budget: cached templates are shared, usage sites re-check size.
-    resolveChild: createChildResolver(file, new Set(stack).add(template), {
-      remaining: MAX_INLINE_BYTES,
-    }),
+    resolveChild: createChildResolver(
+      file,
+      new Set(stack).add(template),
+      { remaining: MAX_INLINE_BYTES },
+      deps,
+    ),
   });
-  const childTemplate =
+  entry.childTemplate =
     childTemplateSize(candidate) <= MAX_INLINE_BYTES ? candidate : undefined;
-
-  childTemplateCache.set(file.parsed, childTemplate);
-  return childTemplate;
+  return entry;
 }
 
 function childTemplateSize(childTemplate: InlineChildTemplate) {
@@ -443,7 +483,7 @@ const PRUNE_MAX_SUBTREES = 16;
 // Maximal subtrees where nothing can anchor a diagnostic: no host element
 // (unprefixed node id, mappable to source) and no region root. Inlined
 // elements (prefixed ids) and synthesized wrappers (no id) both qualify.
-function collectPureInlinedSubtrees(
+function collectPrunableSubtrees(
   documentElement: HTMLElement,
   extraction: HTMLExtraction,
 ): HTMLElement[] {

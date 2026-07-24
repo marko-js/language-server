@@ -24,7 +24,7 @@ const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
 /**
  * Build the facade over a set of embedded plugins (eg css, typescript and our
  * own). The Node entry passes all four plugins; the browser entry omits the
- * jsdom-backed HTML plugin. Keeping the merge logic here (instead of in the
+ * DOM-backed HTML plugin. Keeping the merge logic here (instead of in the
  * Node `index.ts`) lets both environments share a single implementation.
  */
 export function createService(plugins: Partial<Plugin>[]): Plugin {
