@@ -19,3 +19,9 @@ With child template inlining, layout/page templates that pull in site chrome bec
 `packages/language-server/src/service/html/index.ts` › `extractionKey` | 2026-07-24 | impact:low | effort:low
 
 `extractionKey` concatenates the full extracted HTML plus every nodeDetails/inlineRegions entry into a fresh string on every `doValidate`, an O(document) allocation even when the cache hits (50kB+ on evo-web's docs layout, twice per comparison including the cached key). A cheap content hash, or comparing the parts incrementally, would make cache hits allocation-free. Re-verify with the `comment-edit` phase of `tsx src/__tests__/project-bench.ts edit` on a large page (currently ~1-10ms, dominated by this key build plus re-extraction).
+
+## Adopt happy-dom (or batching) to cut the a11y linter's raw DOM+axe cost
+
+`packages/language-server/src/service/html/index.ts` › `createDom` | 2026-07-24 | impact:high | effort:med
+
+Two cache-free speedups are implemented behind env flags and measured across 3060 real templates in marko-js/website and evo-web (see `src/__tests__/project-bench-results.md`): `A11Y_DOM=happy` swaps jsdom for happy-dom (1.6-1.9x per corpus, half the worst-page keystroke cost, diagnostics identical on 3057/3060 files — the 3 diffs favor happy-dom, see the modal-suppression entry in bugs.md; one `<marquee>` fixture differs) and `A11Y_PRUNE=1` excludes anchor-free inlined subtrees from axe evaluation (website playground keystroke 539→51ms, exact parity everywhere, self-gating where it cannot win). Promoting these to defaults needs a decision on the happy-dom dependency and the `<marquee>`/dialog-visibility rule differences. For a future CLI batch mode, one axe run over many wrapped fragment extractions measured 19.9→1.0ms/file (19x); fragments containing `aria-modal`/open `<dialog>` markup must run solo or they scope the whole batch. Re-verify with `tsx src/__tests__/project-bench.ts sweep` under each flag.

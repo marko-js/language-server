@@ -87,3 +87,63 @@ mostly-static page costs 297ms.
    the evo layout; grows with component count).
 3. `extractionKey` re-serializes the entire extraction per validation to test
    the cache — O(document) string build even on cache hits.
+
+## Raw-work speedups (second round, cache-free)
+
+Follow-up experiments targeting cold/CLI-shaped runs where caching cannot
+help. Three levers were implemented (the first is now always on, the other
+two behind env flags) plus one measured-but-not-implemented direction.
+
+### axe `selectors: false` (shipped, both backends)
+
+Violation nodes are consumed via `elementRef`, so axe's unique-CSS-selector
+generation per result node is pure waste: skipping it is output-identical and
+saves ~18% on a 50kB document.
+
+### happy-dom backend (`A11Y_DOM=happy`)
+
+Swaps jsdom for happy-dom in `doValidate`. happy-dom has no node source
+locations, so generated offsets are derived by matching `data-marko-node-id`
+attribute positions in the extraction string to document order. Results over
+all 3060 project files:
+
+- End-to-end diagnostics identical on 3057/3060 files. The 3 exceptions are
+  docs pages containing open `<dialog aria-modal>` markup where jsdom's axe
+  scopes the whole run to the "open modal" and reports nothing; happy-dom
+  reports the page's real violations (arguably more correct; recorded in
+  `agent-feedback/bugs.md`). Fixture suites identical except one `<marquee>`
+  fixture (visibility computation difference).
+- Sweep totals drop 1.6-1.9x per corpus; worst-page keystrokes roughly halve
+  (evo-web docs layout 607→279ms in the same-session comparison).
+
+### Anchor-free subtree pruning (`A11Y_PRUNE=1`)
+
+Interior inlined content can only anchor a diagnostic through its region
+root, so subtrees containing no host element and no region root are excluded
+from axe rule evaluation while remaining in the DOM as context. Because any
+non-empty exclude list forces axe onto its slower context-object path, the
+exclusion only engages when ≤16 subtrees cover ≥50% of the document.
+
+- Diagnostic parity: 3060/3060 files and all fixtures.
+- Component-composition pages collapse: website playground keystroke
+  539→51ms (back-to-back A/B; it was 25ms on main, so the feature's 22x
+  regression becomes 2x).
+- Structure-limited: the evo-web docs layout (~1330 elements, ~127 separately
+  anchored region roots) has little pure interior, so pruning disengages and
+  the page stays at its happy-dom floor (~280-400ms). Its remaining cost is
+  testing every region root (including accessible-name reads into subtrees)
+  plus document-level rules; going lower needs scheduling (deferred document
+  rules / tiered validation), not more pruning.
+- The gate makes pruning a no-op (±10%) everywhere it cannot win.
+
+### Batched CLI validation (measured, not implemented)
+
+For a whole-project CLI lint, per-file fixed costs dominate small files
+(~20ms/file at p50 across the component corpora). Wrapping 150 fragment
+extractions in marker `<div>`s and running one axe pass measures
+19.9ms/file → 1.0ms/file (19x), with per-fragment violation attribution via
+`closest("[data-frag]")`. Caveat: a fragment containing `aria-modal`/open
+`<dialog>` markup makes axe scope the entire batch to that "modal" — such
+fragments must run solo. Combined with the happy-dom backend, worker-pool
+parallelism, and deduping repeated child templates across pages, this is the
+CLI path to roughly pre-feature whole-project times.
