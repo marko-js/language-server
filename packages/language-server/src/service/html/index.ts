@@ -315,16 +315,12 @@ function extract(doc: TextDocument) {
 
   const deps = new Map<string, Parsed | undefined>();
   const result = extractHTML(file.parsed, {
-    // Escape hatch used by the project-bench harness to isolate the cost of
-    // child template inlining.
-    resolveChild: process.env.A11Y_BENCH_NO_INLINE
-      ? undefined
-      : createChildResolver(
-          file,
-          new Set(file.filename ? [file.filename] : []),
-          { remaining: MAX_INLINE_BYTES },
-          deps,
-        ),
+    resolveChild: createChildResolver(
+      file,
+      new Set(file.filename ? [file.filename] : []),
+      { remaining: MAX_INLINE_BYTES },
+      deps,
+    ),
   });
   extractCache.set(file.parsed, { generation: cacheGeneration, deps, result });
   return result;
