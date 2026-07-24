@@ -1,36 +1,146 @@
-import { type Node, NodeType, type Parsed, type Range } from "../../parser";
-import { Extractor } from "../../util/extractor";
+import {
+  isControlFlowTag,
+  type Node,
+  NodeType,
+  type Parsed,
+  type Range,
+} from "../../parser";
+import { Extracted, Extractor } from "../../util/extractor";
 import {
   AttributeValueType,
   getAttributeValueType,
   isHTMLTag,
 } from "./keywords";
 
-export function extractHTML(parsed: Parsed) {
-  return new HTMLExtractor(parsed).end();
+export interface HTMLNodeDetails {
+  hasDynamicAttrs: boolean;
+  hasDynamicBody: boolean;
+  inConditional: boolean;
+}
+
+interface HTMLBodySlot {
+  offset: number;
+  depth: number;
+  inConditional: boolean;
+}
+
+export type ExtractionFidelity = "exact" | "approximate" | "uncertain";
+
+export interface InlineChildTemplate {
+  segments: [string] | [string, string];
+  bodySlot?: { depth: number; inConditional: boolean };
+  fidelity: ExtractionFidelity;
+  nodeDetails: Record<string, HTMLNodeDetails>;
+  rootIds: string[];
+}
+
+export interface InlineRegion {
+  start: number;
+  end: number;
+  tagName: Range;
+  bodyUncertain: boolean;
+  inConditional: boolean;
+  rootIds: string[];
+}
+
+export interface ExtractHTMLOptions {
+  nodeIdPrefix?: string;
+  resolveChild?(tagName: string): InlineChildTemplate | undefined;
+}
+
+const bodySlotReg = /^\$\{\s*input\.(?:renderBody|content)\s*\}$/;
+
+export interface HTMLExtraction {
+  extracted: Extracted;
+  nodeDetails: Record<string, HTMLNodeDetails>;
+  inlineRegions: InlineRegion[];
+  fidelity: ExtractionFidelity;
+}
+
+export function extractHTML(
+  parsed: Parsed,
+  options: ExtractHTMLOptions = {},
+): HTMLExtraction {
+  return new HTMLExtractor(parsed, options, false).end();
+}
+
+export function extractChildTemplate(
+  parsed: Parsed,
+  options: ExtractHTMLOptions = {},
+) {
+  return new HTMLExtractor(parsed, options, true).endChildTemplate();
 }
 
 class HTMLExtractor {
   #extractor: Extractor;
   #read: Parsed["read"];
-  #nodeDetails: {
-    [id: string]: { hasDynamicAttrs: boolean; hasDynamicBody: boolean };
-  };
+  #options: ExtractHTMLOptions;
+  #nodeDetails: Record<string, HTMLNodeDetails>;
   #nodeIdCounter: number;
+  #domDepth: number;
+  #conditionalDepth: number;
+  #uncertain: boolean;
+  #rootIds: string[];
+  #bodySlots: HTMLBodySlot[];
+  #inlineRegions: InlineRegion[];
+  #approximate: boolean;
+  #trackBodySlot: boolean;
 
-  constructor(parsed: Parsed) {
+  constructor(
+    parsed: Parsed,
+    options: ExtractHTMLOptions,
+    trackBodySlot: boolean,
+  ) {
     this.#extractor = new Extractor(parsed);
     this.#read = parsed.read.bind(parsed);
+    this.#options = options;
     this.#nodeDetails = {};
     this.#nodeIdCounter = 0;
-    parsed.program.body.forEach((node) => this.#visitNode(node));
+    this.#domDepth = 0;
+    this.#conditionalDepth = 0;
+    this.#uncertain = false;
+    this.#rootIds = [];
+    this.#bodySlots = [];
+    this.#inlineRegions = [];
+    this.#approximate = false;
+    this.#trackBodySlot = trackBodySlot;
+    parsed.program.body.forEach((node) => {
+      if (this.#visitNode(node)) this.#uncertain = true;
+    });
   }
 
-  end() {
-    return { extracted: this.#extractor.end(), nodeDetails: this.#nodeDetails };
+  end(): HTMLExtraction {
+    return {
+      extracted: this.#extractor.end(),
+      nodeDetails: this.#nodeDetails,
+      inlineRegions: this.#inlineRegions,
+      fidelity: this.#fidelity(),
+    };
   }
 
-  #visitNode(node: Node.ChildNode) {
+  endChildTemplate(): InlineChildTemplate {
+    const html = this.#extractor.end().toString();
+    const slot = this.#bodySlots.length === 1 ? this.#bodySlots[0] : undefined;
+    return {
+      segments: slot
+        ? [html.slice(0, slot.offset), html.slice(slot.offset)]
+        : [html],
+      bodySlot: slot && {
+        depth: slot.depth,
+        inConditional: slot.inConditional,
+      },
+      fidelity: this.#fidelity(),
+      nodeDetails: this.#nodeDetails,
+      rootIds: this.#rootIds,
+    };
+  }
+
+  #fidelity(): ExtractionFidelity {
+    if (this.#uncertain) return "uncertain";
+    return this.#approximate ? "approximate" : "exact";
+  }
+
+  #visitNode(node: Node.ChildNode): boolean {
     let hasDynamicBody = false,
       hasDynamicAttrs = false,
       isDynamic = false;
@@ -44,18 +154,38 @@ class HTMLExtractor {
         if (node.nameText === "script" || node.nameText === "style") {
           break;
         }
-        const nodeId = `${this.#nodeIdCounter++}`;
-        ({ isDynamic, hasDynamicAttrs, hasDynamicBody } = this.#writeTag(
+
+        if (isControlFlowTag(node)) {
+          this.#conditionalDepth++;
+          node.body?.forEach((child) => this.#visitNode(child));
+          this.#conditionalDepth--;
+          isDynamic = true;
+          break;
+        }
+
+        if (!node.nameText || !isHTMLTag(node.nameText)) {
+          isDynamic = this.#visitNonHTMLTag(node);
+          break;
+        }
+
+        const nodeId = `${this.#options.nodeIdPrefix ?? ""}${this
+          .#nodeIdCounter++}`;
+        ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(
           node,
           nodeId,
         ));
-        this.#nodeDetails[nodeId] = { hasDynamicAttrs, hasDynamicBody };
+        this.#nodeDetails[nodeId] = {
+          hasDynamicAttrs,
+          hasDynamicBody,
+          inConditional: this.#conditionalDepth > 0,
+        };
         break;
       }
       case NodeType.Text:
         this.#extractor.copy(node);
         break;
       case NodeType.Placeholder:
+        this.#approximate = true;
         isDynamic =
           this.#read({
             start: node.start + 1,
@@ -68,50 +198,139 @@ class HTMLExtractor {
     return isDynamic || hasDynamicBody;
   }
 
-  #writeTag(node: Node.Tag, id: string) {
-    const isDynamic = !node.nameText || !isHTMLTag(node.nameText);
-    let hasDynamicAttrs = false,
-      hasDynamicBody = false;
-    if (isDynamic) {
-      this.#writeCustomTag(node);
-    } else {
-      ({ hasDynamicAttrs, hasDynamicBody } = this.#writeHTMLTag(node, id));
+  #visitNonHTMLTag(node: Node.Tag): boolean {
+    if (
+      !node.nameText &&
+      !node.body &&
+      bodySlotReg.test(this.#read(node.name))
+    ) {
+      if (!this.#trackBodySlot) return true;
+
+      this.#bodySlots.push({
+        offset: this.#extractor.length,
+        depth: this.#domDepth,
+        inConditional: this.#conditionalDepth > 0,
+      });
+      return false;
     }
-    return { isDynamic, hasDynamicAttrs, hasDynamicBody };
+
+    const child =
+      node.nameText && this.#options.resolveChild
+        ? this.#options.resolveChild(node.nameText)
+        : undefined;
+
+    if (
+      child &&
+      !node.hasAttrTags &&
+      (!node.body || child.segments.length === 2)
+    ) {
+      return this.#inlineChild(node, child);
+    }
+
+    if (node.body) {
+      this.#extractor.write("<div>");
+      this.#domDepth++;
+      node.body.forEach((child) => this.#visitNode(child));
+      this.#domDepth--;
+      this.#extractor.write("</div>");
+    }
+
+    return true;
+  }
+
+  #inlineChild(node: Node.Tag, child: InlineChildTemplate): boolean {
+    const start = this.#extractor.length;
+    if (child.fidelity !== "exact") this.#approximate = true;
+    if (this.#domDepth === 0) this.#rootIds.push(...child.rootIds);
+    Object.assign(this.#nodeDetails, child.nodeDetails);
+
+    this.#extractor.write(child.segments[0]);
+
+    let bodyUncertain = false;
+    if (node.body && child.bodySlot) {
+      const { depth, inConditional } = child.bodySlot;
+      this.#domDepth += depth;
+      if (inConditional) this.#conditionalDepth++;
+      node.body.forEach((c) => {
+        if (this.#visitNode(c)) bodyUncertain = true;
+      });
+      if (inConditional) this.#conditionalDepth--;
+      this.#domDepth -= depth;
+    }
+
+    if (child.segments.length === 2) this.#extractor.write(child.segments[1]);
+
+    this.#inlineRegions.push({
+      start,
+      end: this.#extractor.length,
+      tagName: node.name,
+      bodyUncertain,
+      inConditional: this.#conditionalDepth > 0,
+      rootIds: child.rootIds,
+    });
+
+    return child.fidelity === "uncertain" || bodyUncertain;
   }
 
   #writeHTMLTag(node: Node.Tag, id: string) {
     let hasDynamicAttrs = false,
       hasDynamicBody = false;
-    // <[node name]
+    if (this.#domDepth === 0) this.#rootIds.push(id);
     this.#extractor.write("<");
     this.#extractor.copy(isEmptyRange(node.name) ? node.nameText : node.name);
 
     this.#extractor.write(` data-marko-node-id="${id}"`);
-    // [node attributes]
+    this.#writeShorthands(node);
     node.attrs?.forEach((attr) => {
       if (attr.type === NodeType.AttrNamed) this.#writeAttrNamed(attr);
-      else if (attr.type === NodeType.AttrSpread) hasDynamicAttrs = true;
+      else if (attr.type === NodeType.AttrSpread) {
+        hasDynamicAttrs = true;
+        this.#approximate = true;
+      }
     });
-    // [body or self-closing `/`]
     this.#extractor.write(">");
 
     if (!isVoidTag(node.nameText)) {
+      this.#domDepth++;
       node.body?.forEach((child) => {
         if (this.#visitNode(child)) hasDynamicBody = true;
       });
+      this.#domDepth--;
       this.#extractor.write(`</${node.nameText}>`);
     }
 
     return { hasDynamicAttrs, hasDynamicBody };
   }
 
-  #writeCustomTag(node: Node.Tag) {
-    if (node.body) {
-      // Replace all unknown and undefined tag names with `div`s
-      this.#extractor.write("<div>");
-      node.body.forEach((node) => this.#visitNode(node));
-      this.#extractor.write("</div>");
+  #writeShorthands(node: Node.Tag) {
+    const { shorthandId, shorthandClassNames } = node;
+    if (shorthandId) {
+      this.#extractor.write(' id="');
+      if (shorthandId.expressions.length) {
+        this.#writeDynamic();
+      } else {
+        this.#extractor.copy({
+          start: shorthandId.start + 1,
+          end: shorthandId.end,
+        });
+      }
+      this.#extractor.write('"');
+    }
+
+    if (shorthandClassNames) {
+      this.#extractor.write(' class="');
+      shorthandClassNames.forEach((shorthandClass, i) => {
+        if (i) this.#extractor.write(" ");
+        if (shorthandClass.expressions.length) {
+          this.#writeDynamic();
+        } else {
+          this.#extractor.copy({
+            start: shorthandClass.start + 1,
+            end: shorthandClass.end,
+          });
+        }
+      });
+      this.#extractor.write('"');
     }
   }
 
@@ -150,20 +369,34 @@ class HTMLExtractor {
         });
         this.#extractor.write('"');
         break;
-      case AttributeValueType.QuotedString:
+      case AttributeValueType.QuotedString: {
+        const start = valueString.search(/[^=\s]/g) + 1;
+        // A raw `"` in the value would terminate the generated attribute.
+        if (valueString.slice(start, -1).includes('"')) {
+          this.#extractor.write('="');
+          this.#writeDynamic();
+          this.#extractor.write('"');
+          break;
+        }
         this.#extractor.write('="');
         this.#extractor.copy({
-          start: attr.value.start + valueString.search(/[^=\s]/g) + 1,
+          start: attr.value.start + start,
           end: attr.value.end - 1,
         });
         this.#extractor.write('"');
         break;
+      }
       case AttributeValueType.Dynamic:
-        // Replace all dynamic values with the string "dynamic" with a counter instead of removing them
-        // Subject to change-- axe-core might require "true" for aria attributes or something
-        this.#extractor.write(`="dynamic"`);
+        this.#extractor.write('="');
+        this.#writeDynamic();
+        this.#extractor.write('"');
         break;
     }
+  }
+
+  #writeDynamic() {
+    this.#extractor.write("dynamic");
+    this.#approximate = true;
   }
 }
 

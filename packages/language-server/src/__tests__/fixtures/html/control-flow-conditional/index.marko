@@ -1,0 +1,25 @@
+export interface Input {
+  a: boolean;
+}
+
+<ul>
+  <if=input.a>
+    <li>a</li>
+  </if>
+  <else>
+    <li>b</li>
+  </else>
+</ul>
+
+<div>
+  <if=input.a>
+    <li>stray</li>
+  </if>
+</div>
+
+<if=input.a>
+  <a href="/first" accesskey="q">First</a>
+</if>
+<else>
+  <a href="/second" accesskey="q">Second</a>
+</else>

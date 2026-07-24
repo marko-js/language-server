@@ -21,29 +21,25 @@ export interface Exceptions {
    * Exclude if the body content can't be determined
    */
   unknownBody?: boolean;
+  /**
+   * Exclude if inside a control flow branch (branches never coexist)
+   */
+  conditionalContent?: boolean;
+  /**
+   * Exclude unless the parent chain axe consults is fully known; written
+   * against axe-core 4.12's checks — re-verify on axe upgrades
+   */
+  requiresKnownParent?: "direct" | "through-presentational-wrappers";
+  /**
+   * Exclude unless the file renders a complete document (authored `<html>`)
+   * whose extraction exactly matches rendered output
+   */
+  requiresExactDocument?: boolean;
 }
 
 type Blacklist =
   // Explicitly blacklisted for Marko Language Server
   | typeof r.structure.frameTested
-  // Requires a parent component to validate; we can potentially add support with child component analysis
-  | typeof r.aria.ariaRequiredParent
-  | typeof r.forms.label
-  | typeof r.forms.labelTitleOnly
-  | typeof r.forms.selectName
-  | typeof r.keyboard.bypass
-  | typeof r.keyboard.nestedInteractive
-  | typeof r.keyboard.region
-  | typeof r.semantics.headingOrder
-  | typeof r.semantics.landmarkBannerIsTopLevel
-  | typeof r.semantics.landmarkComplementaryIsTopLevel
-  | typeof r.semantics.landmarkContentinfoIsTopLevel
-  | typeof r.semantics.landmarkMainIsTopLevel
-  | typeof r.semantics.landmarkOneMain
-  | typeof r.semantics.pageHasHeadingOne
-  | typeof r.structure.dlitem
-  | typeof r.structure.listitem
-  | typeof r.tables.tdHeadersAttr
   // Seemingly broken in axe-core or JSDom
   | typeof r.aria.ariaRoledescription
   | typeof r.aria.ariaValidAttr
@@ -73,6 +69,8 @@ type Whitelist = Exclude<RuleId, Blacklist>;
 // utility variables so the objects don't all need `: true` everywhere
 const unknownBody = true;
 const attrSpread = true;
+const conditionalContent = true;
+const requiresExactDocument = true;
 
 export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaAllowedRole]: { dynamicAttrs: ["role"] },
@@ -88,7 +86,9 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaProhibitedAttr]: { dynamicAttrs: ["role"] },
   [r.aria.ariaRequiredAttr]: { attrSpread },
   [r.aria.ariaRequiredChildren]: { unknownBody },
+  [r.aria.ariaRequiredParent]: { requiresExactDocument },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
+  [r.aria.ariaTabName]: { unknownBody, attrSpread },
   [r.aria.ariaText]: { unknownBody },
   [r.aria.ariaToggleFieldName]: { unknownBody, attrSpread },
   [r.aria.ariaTooltipName]: { unknownBody, attrSpread },
@@ -96,8 +96,14 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.presentationRoleConflict]: {},
   [r.forms.autocompleteValid]: {},
   [r.forms.formFieldMultipleLabels]: {},
-  [r.keyboard.accesskeys]: {},
+  [r.forms.label]: { requiresExactDocument },
+  [r.forms.labelTitleOnly]: { requiresExactDocument },
+  [r.forms.selectName]: { requiresExactDocument },
+  [r.keyboard.accesskeys]: { conditionalContent },
+  [r.keyboard.bypass]: { requiresExactDocument },
   [r.keyboard.frameFocusableContent]: { unknownBody },
+  [r.keyboard.nestedInteractive]: { requiresExactDocument },
+  [r.keyboard.region]: { requiresExactDocument },
   [r.keyboard.skipLink]: { unknownBody },
   [r.keyboard.tabindex]: {},
   [r.language.htmlHasLang]: { attrSpread },
@@ -115,22 +121,40 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.nameRoleValue.linkName]: { unknownBody, attrSpread },
   [r.nameRoleValue.summaryName]: { unknownBody, attrSpread },
   [r.parsing.marquee]: {},
-  [r.semantics.identicalLinksSamePurpose]: {},
-  [r.semantics.landmarkNoDuplicateBanner]: {},
-  [r.semantics.landmarkNoDuplicateContentinfo]: {},
-  [r.semantics.landmarkNoDuplicateMain]: {},
-  [r.semantics.landmarkUnique]: {},
+  [r.semantics.headingOrder]: { requiresExactDocument },
+  [r.semantics.identicalLinksSamePurpose]: { conditionalContent },
+  [r.semantics.landmarkBannerIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkComplementaryIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkContentinfoIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkMainIsTopLevel]: { requiresExactDocument },
+  [r.semantics.landmarkNoDuplicateBanner]: { conditionalContent },
+  [r.semantics.landmarkNoDuplicateContentinfo]: { conditionalContent },
+  [r.semantics.landmarkNoDuplicateMain]: { conditionalContent },
+  [r.semantics.landmarkUnique]: { conditionalContent },
+  [r.semantics.landmarkOneMain]: { requiresExactDocument },
+  [r.semantics.pageHasHeadingOne]: { requiresExactDocument },
   [r.sensoryAndVisualCues.metaViewport]: {},
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
   [r.structure.definitionList]: { unknownBody },
+  [r.structure.dlitem]: {
+    requiresKnownParent: "through-presentational-wrappers",
+    dynamicAttrs: ["role"],
+    attrSpread,
+  },
   [r.structure.list]: { unknownBody },
+  [r.structure.listitem]: {
+    requiresKnownParent: "direct",
+    dynamicAttrs: ["role"],
+    attrSpread,
+  },
   [r.tables.scopeAttrValid]: {},
   [r.tables.tableDuplicateName]: { unknownBody },
+  [r.tables.tdHeadersAttr]: { requiresExactDocument },
   [r.tables.thHasDataCells]: { unknownBody },
   [r.textAlternatives.areaAlt]: { attrSpread },
   [r.textAlternatives.documentTitle]: { unknownBody },
   [r.textAlternatives.frameTitle]: { unknownBody },
-  [r.textAlternatives.frameTitleUnique]: { unknownBody },
+  [r.textAlternatives.frameTitleUnique]: { unknownBody, conditionalContent },
   [r.textAlternatives.imageAlt]: { attrSpread },
   [r.textAlternatives.imageRedundantAlt]: { attrSpread },
   [r.textAlternatives.inputImageAlt]: { attrSpread },
