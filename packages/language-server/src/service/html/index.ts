@@ -154,24 +154,19 @@ const HTMLService: Partial<Plugin> = {
       exclusions: HTMLElement[],
     ) =>
       (
-        await axe.run(
-          exclusions.length
-            ? ({ include: documentElement, exclude: exclusions } as never)
-            : documentElement,
-          {
-            runOnly,
-            rules: {
-              "color-contrast": { enabled: false },
-            },
-            resultTypes: ["violations"],
-            elementRef: true,
-            // Result nodes are consumed via elementRef, so skip axe's unique
-            // CSS selector generation for them.
-            selectors: false,
-            // No enabled rule reads CSS, so skip axe's CSSOM preload.
-            preload: false,
+        await runAxe(documentElement, exclusions, {
+          runOnly,
+          rules: {
+            "color-contrast": { enabled: false },
           },
-        )
+          resultTypes: ["violations"],
+          elementRef: true,
+          // Result nodes are consumed via elementRef, so skip axe's unique
+          // CSS selector generation for them.
+          selectors: false,
+          // No enabled rule reads CSS, so skip axe's CSSOM preload.
+          preload: false,
+        })
       ).violations.flatMap(({ nodes, id }) =>
         nodes.map((node) => ({ ...node, ruleId: id })),
       );
@@ -184,11 +179,17 @@ const HTMLService: Partial<Plugin> = {
       : [];
 
     const release = await acquireMutexLock();
-    const violations = await getViolationNodes(
-      exactDocument ? allRules : nonDocumentRules,
-      exclusions,
-    );
-    release();
+    let violations;
+    try {
+      violations = await getViolationNodes(
+        exactDocument ? allRules : nonDocumentRules,
+        exclusions,
+      );
+    } finally {
+      // Without this a rejected axe run would leave the mutex held and
+      // deadlock every later validation.
+      release();
+    }
 
     const entries = violations.flatMap((result): ViolationEntry[] => {
       const { element } = result;
@@ -403,6 +404,32 @@ function anchorViolation(
     anchor: { regionIndex },
     messagePrefix: `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `,
   };
+}
+
+// With a plain element argument axe deduces its window/document globals from
+// the element, but an {include, exclude} context object skips that deduction
+// and needs an explicit axe.setup() first. The axe mutex serializes runs, so
+// the setup/teardown pair cannot interleave with another run.
+async function runAxe(
+  documentElement: HTMLElement,
+  exclusions: HTMLElement[],
+  options: axe.RunOptions,
+) {
+  if (!exclusions.length) return axe.run(documentElement, options);
+
+  axe.setup(documentElement.ownerDocument);
+  try {
+    return await axe.run(
+      { include: documentElement, exclude: exclusions } as never,
+      options,
+    );
+  } finally {
+    try {
+      axe.teardown();
+    } catch {
+      // axe.run tears down on success; a second teardown throws.
+    }
+  }
 }
 
 // Host template elements carry unprefixed node ids; inlined ones contain "#".
