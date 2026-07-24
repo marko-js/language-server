@@ -175,7 +175,7 @@ const HTMLService: Partial<Plugin> = {
     // region root, so subtrees with no host content need context presence but
     // no rule evaluation of their own; excluding them skips that work.
     const exclusions = process.env.A11Y_PRUNE
-      ? collectPureInlinedSubtrees(documentElement, extraction.inlineRegions)
+      ? collectPureInlinedSubtrees(documentElement, extraction)
       : [];
 
     const release = await acquireMutexLock();
@@ -432,33 +432,78 @@ async function runAxe(
   }
 }
 
-// Host template elements carry unprefixed node ids; inlined ones contain "#".
-const hostElementSelector =
-  '[data-marko-node-id]:not([data-marko-node-id*="#"])';
+// Any non-empty exclude list forces axe through its slower context-object
+// path, and axe checks candidate nodes against every exclude entry, so
+// pruning only pays off when a handful of large subtrees cover most of the
+// document. Otherwise run axe the plain way.
+const PRUNE_MIN_ELEMENTS = 50;
+const PRUNE_MIN_SHARE = 0.5;
+const PRUNE_MAX_SUBTREES = 16;
 
-// Maximal inlined subtrees containing no host content and no region root:
-// nothing inside them can anchor a diagnostic, so axe need not evaluate them.
+// Maximal subtrees where nothing can anchor a diagnostic: no host element
+// (unprefixed node id, mappable to source) and no region root. Inlined
+// elements (prefixed ids) and synthesized wrappers (no id) both qualify.
 function collectPureInlinedSubtrees(
   documentElement: HTMLElement,
-  inlineRegions: InlineRegion[],
+  extraction: HTMLExtraction,
 ): HTMLElement[] {
+  const { inlineRegions, nodeDetails } = extraction;
   if (!inlineRegions.length) return [];
+
+  // Cheap precheck off the extraction alone: documents with few inlined
+  // elements can never pass the share gate below.
+  let inlinedIds = 0;
+  for (const id in nodeDetails) if (id.includes("#")) inlinedIds++;
+  if (inlinedIds < PRUNE_MIN_ELEMENTS / 2) return [];
+
   const rootIds = new Set(inlineRegions.flatMap((region) => region.rootIds));
-  const exclusions: HTMLElement[] = [];
+
+  // First pass: per-element subtree size and whether it holds host content.
+  const containsHost = new Map<Element, boolean>();
+  const subtreeSize = new Map<Element, number>();
+  const measure = (element: Element) => {
+    const id = element.getAttribute("data-marko-node-id");
+    let host = id !== null && !id.includes("#");
+    let size = 1;
+    for (const child of element.children) {
+      measure(child);
+      host = containsHost.get(child)! || host;
+      size += subtreeSize.get(child)!;
+    }
+    containsHost.set(element, host);
+    subtreeSize.set(element, size);
+  };
+  measure(documentElement);
+
+  // Second pass: take the highest excludable ancestors.
+  const exclusions: { element: HTMLElement; size: number }[] = [];
   const visit = (element: Element) => {
     const id = element.getAttribute("data-marko-node-id");
     if (
-      id?.includes("#") &&
-      !rootIds.has(id) &&
-      !element.querySelector(hostElementSelector)
+      (id === null || id.includes("#")) &&
+      !(id !== null && rootIds.has(id)) &&
+      !containsHost.get(element)
     ) {
-      exclusions.push(element as HTMLElement);
+      exclusions.push({
+        element: element as HTMLElement,
+        size: subtreeSize.get(element)!,
+      });
       return;
     }
     for (const child of element.children) visit(child);
   };
   visit(documentElement);
-  return exclusions;
+
+  exclusions.sort((a, b) => b.size - a.size);
+  exclusions.length = Math.min(exclusions.length, PRUNE_MAX_SUBTREES);
+  const pruned = exclusions.reduce((sum, e) => sum + e.size, 0);
+  if (
+    pruned < PRUNE_MIN_ELEMENTS ||
+    pruned < PRUNE_MIN_SHARE * subtreeSize.get(documentElement)!
+  ) {
+    return [];
+  }
+  return exclusions.map((e) => e.element);
 }
 
 function innermostRegionIndexAt(regions: InlineRegion[], offset: number) {
