@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.8
+
+### Patch Changes
+
+- [#575](https://github.com/marko-js/language-server/pull/575) [`c42fed4`](https://github.com/marko-js/language-server/commit/c42fed47194b731f769ac19a5346e6c4128c0940) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Load the shipped `marko.internal.d.ts` from the installed `@marko/language-tools` rather than resolving it from the project being checked, so `mtc` no longer fails with "Could not resolve marko type files." in pnpm projects where `@marko/language-tools` is only a transitive dependency.
+
 ## 3.1.7
 
 ### Patch Changes
