@@ -59,6 +59,14 @@ function getNodeIdPrefix(template: string) {
   return prefix;
 }
 
+const allRules = Object.keys(ruleExceptions);
+// Rules gated on an exact document are filtered wholesale when the gate is
+// closed; skip running them at all.
+const nonDocumentRules = allRules.filter(
+  (id) =>
+    !ruleExceptions[id as keyof typeof ruleExceptions].requiresExactDocument,
+);
+
 const HTMLService: Partial<Plugin> = {
   commands: {
     "$/showHtmlOutput": async (uri: string) => {
@@ -100,13 +108,17 @@ const HTMLService: Partial<Plugin> = {
           },
           resultTypes: ["violations"],
           elementRef: true,
+          // No enabled rule reads CSS, so skip axe's CSSOM preload.
+          preload: false,
         })
       ).violations.flatMap(({ nodes, id }) =>
         nodes.map((node) => ({ ...node, ruleId: id })),
       );
 
     const release = await acquireMutexLock();
-    const violations = await getViolationNodes(Object.keys(ruleExceptions));
+    const violations = await getViolationNodes(
+      exactDocument ? allRules : nonDocumentRules,
+    );
     release();
 
     const entries = violations.flatMap((result): ViolationEntry[] => {
