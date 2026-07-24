@@ -216,11 +216,15 @@ function extract(doc: TextDocument) {
   if (cached && cached.version === projectVersion) return cached.result;
 
   const result = extractHTML(file.parsed, {
-    resolveChild: createChildResolver(
-      file,
-      new Set(file.filename ? [file.filename] : []),
-      { remaining: MAX_INLINE_BYTES },
-    ),
+    // Escape hatch used by the project-bench harness to isolate the cost of
+    // child template inlining.
+    resolveChild: process.env.A11Y_BENCH_NO_INLINE
+      ? undefined
+      : createChildResolver(
+          file,
+          new Set(file.filename ? [file.filename] : []),
+          { remaining: MAX_INLINE_BYTES },
+        ),
   });
   extractCache.set(file.parsed, { version: projectVersion, result });
   return result;
