@@ -282,7 +282,7 @@ function hasKnownParent(
   const parent = element.parentElement;
   if (!isKnownElement(parent, nodeDetails)) return false;
 
-  if (mode === "div-wrapped" && parent.tagName === "DIV") {
+  if (mode === "through-presentational-wrappers" && parent.tagName === "DIV") {
     const role = parent.getAttribute("role");
     if (!role || role === "presentation" || role === "none") {
       // axe looks through presentational div wrappers to the grandparent.

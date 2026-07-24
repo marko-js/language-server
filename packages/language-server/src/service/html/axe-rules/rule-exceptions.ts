@@ -29,7 +29,7 @@ export interface Exceptions {
    * Exclude unless the parent chain axe consults is fully known; written
    * against axe-core 4.12's checks — re-verify on axe upgrades
    */
-  requiresKnownParent?: true | "div-wrapped";
+  requiresKnownParent?: "direct" | "through-presentational-wrappers";
   /**
    * Exclude unless the file renders a complete document (authored `<html>`)
    * whose extraction exactly matches rendered output
@@ -137,13 +137,13 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.sensoryAndVisualCues.metaViewportLarge]: {},
   [r.structure.definitionList]: { unknownBody },
   [r.structure.dlitem]: {
-    requiresKnownParent: "div-wrapped",
+    requiresKnownParent: "through-presentational-wrappers",
     dynamicAttrs: ["role"],
     attrSpread,
   },
   [r.structure.list]: { unknownBody },
   [r.structure.listitem]: {
-    requiresKnownParent: true,
+    requiresKnownParent: "direct",
     dynamicAttrs: ["role"],
     attrSpread,
   },
