@@ -18,26 +18,26 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.0.0",
+    "@types/node": "^26.1.1",
     "cspell": "^10.0.1",
     "esbuild": "^0.28.1",
-    "eslint": "^10.5.0",
+    "eslint": "^10.7.0",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "fast-glob": "^3.3.3",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.2.0",
     "marko": "^5.39.25",
     "mocha": "^11.7.6",
     "mocha-snap": "^5.0.1",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.6",
     "prettier-plugin-packagejson": "^3.0.2",
-    "tsx": "^4.22.4",
+    "tsx": "^4.23.1",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.0"
+    "typescript-eslint": "^8.65.0"
   },
   "packageManager": "pnpm@11.15.1"
 }
