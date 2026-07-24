@@ -38,14 +38,14 @@
   },
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
-    "@marko/compiler": "^5.41.3",
+    "@marko/compiler": "^5.41.7",
     "htmljs-parser": "^5.12.1",
     "relative-import-path": "^1.0.1"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
     "@typescript/vfs": "^1.6.4",
-    "marko": "^5.39.25",
+    "marko": "^5.39.27",
     "mitata": "^1.0.34",
     "tsx": "^4.22.4"
   }
