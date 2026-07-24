@@ -23,12 +23,9 @@ const MAX_INLINE_BYTES = 100_000;
 
 type NodeDetails = HTMLExtraction["nodeDetails"];
 
-// Extractions depend on the parses of the template itself and of every
-// transitively inlined child; entries carry that dependency set and are
-// revalidated against the current parses instead of being dropped on every
-// project change. Watched-file events can change tag *resolution* (a created
-// or deleted template), which the dependency set cannot see, so those flush
-// everything via the generation counter.
+// Cached extractions stay valid while every template they inlined still has
+// the same parse. Watched-file events can change tag resolution, which the
+// dependency set cannot see, so those flush everything via the generation.
 interface ExtractionDeps {
   deps: Map<string, Parsed | undefined>;
   generation: number;
@@ -140,8 +137,7 @@ const HTMLService: Partial<Plugin> = {
           },
           resultTypes: ["violations"],
           elementRef: true,
-          // Result nodes are consumed via elementRef, so skip axe's unique
-          // CSS selector generation for them.
+          // Result nodes are consumed via elementRef.
           selectors: false,
           // No enabled rule reads CSS, so skip axe's CSSOM preload.
           preload: false,
@@ -158,8 +154,6 @@ const HTMLService: Partial<Plugin> = {
         collectPrunableSubtrees(documentElement, extraction),
       );
     } finally {
-      // Without this a rejected axe run would leave the mutex held and
-      // deadlock every later validation.
       release();
     }
 
@@ -218,10 +212,6 @@ const HTMLService: Partial<Plugin> = {
   },
 };
 
-// happy-dom does not track node source locations, so generated offsets are
-// recovered from the extraction string: the nth `data-marko-node-id`
-// attribute in it belongs to the nth element carrying that attribute in
-// document order.
 const nodeIdAttrReg = /\sdata-marko-node-id="/g;
 
 interface A11yDom {
@@ -241,6 +231,8 @@ function createDom(html: string): A11yDom {
     documentElement,
     locate(element) {
       if (!offsets) {
+        // happy-dom has no node locations; the nth data-marko-node-id in the
+        // extraction belongs to the nth such element in document order.
         offsets = new WeakMap();
         const elements = documentElement.ownerDocument.querySelectorAll(
           "[data-marko-node-id]",
@@ -257,8 +249,7 @@ function createDom(html: string): A11yDom {
   };
 }
 
-// FNV-1a over the extraction's identity, from two seeds so an accidental
-// collision (which would reuse stale axe results) is vanishingly unlikely.
+// Two FNV-1a seeds: a collision would silently reuse stale axe results.
 function extractionKey({
   extracted,
   nodeDetails,
@@ -366,9 +357,8 @@ function getChildTemplate(template: string, stack: Set<string>) {
   if (!doc) return;
   const file = getMarkoFile(doc);
 
-  // Keyed by inline depth as well: a template extracted near the depth limit
-  // resolves fewer of its own children, and that shallower result must not be
-  // reused where more depth is available.
+  // A template extracted near the depth limit resolves fewer of its own
+  // children, so shallower results only apply at the same depth.
   const cacheKey = `${stack.size}:${template}`;
   const cached = childTemplateCache.get(cacheKey);
   if (cached && isFresh(cached)) return cached;
@@ -442,10 +432,8 @@ function anchorViolation(
   };
 }
 
-// With a plain element argument axe deduces its window/document globals from
-// the element, but an {include, exclude} context object skips that deduction
-// and needs an explicit axe.setup() first. The axe mutex serializes runs, so
-// the setup/teardown pair cannot interleave with another run.
+// An {include, exclude} context object skips the globals deduction axe does
+// for a plain element argument, so it needs an explicit axe.setup() first.
 async function runAxe(
   documentElement: HTMLElement,
   exclusions: HTMLElement[],
@@ -468,17 +456,14 @@ async function runAxe(
   }
 }
 
-// Any non-empty exclude list forces axe through its slower context-object
-// path, and axe checks candidate nodes against every exclude entry, so
-// pruning only pays off when a handful of large subtrees cover most of the
-// document. Otherwise run axe the plain way.
+// Excluding is only worth axe's slower context-object path when a few large
+// subtrees cover most of the document.
 const PRUNE_MIN_ELEMENTS = 50;
 const PRUNE_MIN_SHARE = 0.5;
 const PRUNE_MAX_SUBTREES = 16;
 
 // Maximal subtrees where nothing can anchor a diagnostic: no host element
-// (unprefixed node id, mappable to source) and no region root. Inlined
-// elements (prefixed ids) and synthesized wrappers (no id) both qualify.
+// (unprefixed node id) and no region root.
 function collectPrunableSubtrees(
   documentElement: HTMLElement,
   extraction: HTMLExtraction,
@@ -486,15 +471,12 @@ function collectPrunableSubtrees(
   const { inlineRegions, nodeDetails } = extraction;
   if (!inlineRegions.length) return [];
 
-  // Cheap precheck off the extraction alone: documents with few inlined
-  // elements can never pass the share gate below.
   let inlinedIds = 0;
   for (const id in nodeDetails) if (id.includes("#")) inlinedIds++;
   if (inlinedIds < PRUNE_MIN_ELEMENTS / 2) return [];
 
   const rootIds = new Set(inlineRegions.flatMap((region) => region.rootIds));
 
-  // First pass: per-element subtree size and whether it holds host content.
   const containsHost = new Map<Element, boolean>();
   const subtreeSize = new Map<Element, number>();
   const measure = (element: Element) => {
@@ -511,7 +493,6 @@ function collectPrunableSubtrees(
   };
   measure(documentElement);
 
-  // Second pass: take the highest excludable ancestors.
   const exclusions: { element: HTMLElement; size: number }[] = [];
   const visit = (element: Element) => {
     const id = element.getAttribute("data-marko-node-id");
