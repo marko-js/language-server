@@ -9,6 +9,7 @@ import {
 import axe from "axe-core";
 import { JSDOM } from "jsdom";
 import path from "path";
+import type { Diagnostic } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 
@@ -29,6 +30,19 @@ const extractCache = new WeakMap<
 >();
 let childTemplateCacheVersion = -1;
 let childTemplateCache = new Map<Parsed, InlineChildTemplate | undefined>();
+
+interface ViolationEntry {
+  source: string;
+  message: string;
+  anchor: { generatedStart: number; length: number } | { regionIndex: number };
+}
+
+// Axe results depend only on the extraction's content; edits that leave it
+// unchanged (scriptlets, event handlers, ...) reuse them, re-mapping offsets.
+const validationCache = new WeakMap<
+  TextDocument,
+  { key: string; entries: ViolationEntry[] }
+>();
 
 // Path-independent so extracted output is stable across machines.
 const templatePrefixes = new Map<string, string>();
@@ -62,6 +76,11 @@ const HTMLService: Partial<Plugin> = {
   async doValidate(doc) {
     const extraction = extract(doc);
     const { extracted, nodeDetails } = extraction;
+    const key = extractionKey(extraction);
+    const cached = validationCache.get(doc);
+    if (cached?.key === key) {
+      return cached.entries.flatMap((entry) => toDiagnostic(extraction, entry));
+    }
 
     const jsdom = new JSDOM(extracted.toString(), {
       includeNodeLocations: true,
@@ -90,7 +109,7 @@ const HTMLService: Partial<Plugin> = {
     const violations = await getViolationNodes(Object.keys(ruleExceptions));
     release();
 
-    return violations.flatMap((result) => {
+    const entries = violations.flatMap((result): ViolationEntry[] => {
       const { element } = result;
       if (!element) return [];
       const ruleId = result.ruleId as keyof typeof ruleExceptions;
@@ -131,17 +150,53 @@ const HTMLService: Partial<Plugin> = {
 
       return [
         {
-          range: anchor.range,
-          severity: 3,
           source: `axe-core(${ruleId})`,
           message:
             anchor.messagePrefix +
             (result.failureSummary ?? "unknown accessibility issue"),
+          anchor: anchor.anchor,
         },
       ];
     });
+
+    validationCache.set(doc, { key, entries });
+    return entries.flatMap((entry) => toDiagnostic(extraction, entry));
   },
 };
+
+function extractionKey({
+  extracted,
+  nodeDetails,
+  inlineRegions,
+  fidelity,
+}: HTMLExtraction) {
+  let key = `${fidelity}\n${extracted.toString()}`;
+  for (const id in nodeDetails) {
+    const d = nodeDetails[id];
+    key += `\n${id}:${+d.hasDynamicAttrs}${+d.hasDynamicBody}${+d.inConditional}`;
+  }
+  for (const r of inlineRegions) {
+    key += `\n${r.start}-${r.end}:${+r.bodyUncertain}${+r.inConditional}:${r.rootIds.join()}`;
+  }
+  return key;
+}
+
+function toDiagnostic(
+  extraction: HTMLExtraction,
+  { anchor, source, message }: ViolationEntry,
+): Diagnostic[] {
+  const range =
+    "regionIndex" in anchor
+      ? extraction.extracted.parsed.locationAt(
+          extraction.inlineRegions[anchor.regionIndex].tagName,
+        )
+      : extraction.extracted.sourceLocationAt(
+          anchor.generatedStart + 1,
+          anchor.generatedStart + 1 + anchor.length,
+        );
+  if (!range) return [];
+  return [{ range, severity: 3, source, message }];
+}
 
 function extract(doc: TextDocument) {
   const file = getMarkoFile(doc);
@@ -233,13 +288,21 @@ function anchorViolation(
   exceptions: Exceptions,
 ) {
   const { extracted, inlineRegions } = extraction;
-  const range = extracted.sourceLocationAt(
-    generatedOffset + 1,
-    generatedOffset + 1 + element.tagName.length,
-  );
-  if (range) return { range, messagePrefix: "" };
+  const length = element.tagName.length;
+  if (
+    extracted.sourceLocationAt(
+      generatedOffset + 1,
+      generatedOffset + 1 + length,
+    )
+  ) {
+    return {
+      anchor: { generatedStart: generatedOffset, length },
+      messagePrefix: "",
+    };
+  }
 
-  const region = innermostRegionAt(inlineRegions, generatedOffset);
+  const regionIndex = innermostRegionIndexAt(inlineRegions, generatedOffset);
+  const region = inlineRegions[regionIndex];
   const nodeId = element.dataset.markoNodeId;
   if (
     !region ||
@@ -252,20 +315,21 @@ function anchorViolation(
   }
 
   return {
-    range: extracted.parsed.locationAt(region.tagName),
+    anchor: { regionIndex },
     messagePrefix: `This tag renders a \`<${element.tagName.toLowerCase()}>\` element here — `,
   };
 }
 
-function innermostRegionAt(regions: InlineRegion[], offset: number) {
-  let match: InlineRegion | undefined;
-  for (const region of regions) {
+function innermostRegionIndexAt(regions: InlineRegion[], offset: number) {
+  let match = -1;
+  for (let i = 0; i < regions.length; i++) {
+    const region = regions[i];
     if (
       region.start <= offset &&
       offset < region.end &&
-      (!match || region.start >= match.start)
+      (match === -1 || region.start >= regions[match].start)
     ) {
-      match = region;
+      match = i;
     }
   }
   return match;

@@ -38,6 +38,7 @@
     "!**/*.tsbuildinfo"
   ],
   "scripts": {
+    "bench": "BENCH=1 mocha './src/__tests__/bench.test.ts'",
     "build": "tsx build.mts",
     "test": "mocha './src/**/__tests__/*.test.ts'",
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
