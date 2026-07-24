@@ -4,6 +4,7 @@ import type { TaglibLookup } from "@marko/compiler/babel-utils";
 import { createRequire } from "module";
 import path from "path";
 import type TS from "typescript/lib/tsserverlibrary";
+import { fileURLToPath } from "url";
 
 import { ScriptLang } from "../extractors/script";
 
@@ -27,6 +28,13 @@ interface TypeLibs {
   markoTypesCode: string | undefined;
 }
 
+// `marko.internal.d.ts` ships in this package, next to the `dist/` bundle that
+// loads it. Resolving it as a module id would instead search the *consumer's*
+// `node_modules`, which under pnpm only exposes their direct dependencies.
+const shippedInternalTypesFile = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../marko.internal.d.ts",
+);
 const defaultTypeLibs: Partial<TypeLibs> = {};
 let defaultMeta: Meta | undefined;
 const ignoreErrors = (_err: Error) => {};
@@ -73,17 +81,13 @@ export function getTypeLibs(
     ".marko-run/routes.d.ts",
   );
   const resolveFromFile = path.join(rootDir, "_.d.ts");
+  const markoTypesSpecifier =
+    (config.translator.runtimeTypes as string | undefined) || "marko";
   const internalTypesFile =
-    defaultTypeLibs.internalTypesFile ||
-    ts.resolveTypeReferenceDirective(
-      "@marko/language-tools/marko.internal.d.ts",
-      resolveFromFile,
-      resolveTypeCompilerOptions,
-      host,
-    ).resolvedTypeReferenceDirective?.resolvedFileName;
+    defaultTypeLibs.internalTypesFile || shippedInternalTypesFile;
   const { resolvedTypeReferenceDirective: resolvedMarkoTypes } =
     ts.resolveTypeReferenceDirective(
-      (config.translator.runtimeTypes as string | undefined) || "marko",
+      markoTypesSpecifier,
       resolveFromFile,
       resolveTypeCompilerOptions,
       host,
@@ -99,8 +103,16 @@ export function getTypeLibs(
     resolvedMarkoTypes?.resolvedFileName || defaultTypeLibs.markoTypesFile;
   const markoRunTypesFile = resolvedMarkoRunTypes?.resolvedFileName;
 
-  if (!internalTypesFile || !markoTypesFile) {
-    throw new Error("Could not resolve marko type files.");
+  if (!markoTypesFile) {
+    throw new Error(
+      `Could not resolve the "${markoTypesSpecifier}" types from ${rootDir}.`,
+    );
+  }
+
+  if (!host.fileExists(internalTypesFile)) {
+    throw new Error(
+      `Could not find the marko internal types at ${internalTypesFile}.`,
+    );
   }
 
   config.cache.set(

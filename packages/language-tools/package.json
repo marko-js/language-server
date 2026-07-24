@@ -33,7 +33,8 @@
   ],
   "scripts": {
     "bench": "BENCH=1 mocha './src/**/__tests__/*.test.ts'",
-    "build": "tsx build.mts"
+    "build": "tsx build.mts",
+    "test": "mocha './src/**/__tests__/*.test.ts'"
   },
   "dependencies": {
     "@luxass/strip-json-comments": "^1.4.0",
