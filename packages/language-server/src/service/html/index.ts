@@ -7,7 +7,7 @@ import {
   type Parsed,
 } from "@marko/language-tools";
 import axe from "axe-core";
-import { JSDOM } from "jsdom";
+import { type DOMWindow, JSDOM } from "jsdom";
 import path from "path";
 import type { Diagnostic } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
@@ -93,6 +93,7 @@ const HTMLService: Partial<Plugin> = {
     const jsdom = new JSDOM(extracted.toString(), {
       includeNodeLocations: true,
     });
+    memoizeComputedStyles(jsdom.window);
     const { documentElement } = jsdom.window.document;
     // jsdom-fabricated `<html>` elements carry no node id.
     const exactDocument =
@@ -110,6 +111,7 @@ const HTMLService: Partial<Plugin> = {
           elementRef: true,
           // No enabled rule reads CSS, so skip axe's CSSOM preload.
           preload: false,
+          iframes: false,
         })
       ).violations.flatMap(({ nodes, id }) =>
         nodes.map((node) => ({ ...node, ruleId: id })),
@@ -208,6 +210,42 @@ function toDiagnostic(
         );
   if (!range) return [];
   return [{ range, severity: 3, source, message }];
+}
+
+// Extracted documents have no stylesheets, so jsdom's computed style is a
+// function of the UA sheet and the element's ancestor chain of tags/attrs
+// (data-marko-node-id is style-inert). Memoizing collapses the per-element
+// style computation that otherwise dominates axe's visibility checks.
+function memoizeComputedStyles(window: DOMWindow) {
+  if (window.document.styleSheets.length > 0) return;
+  const keys = new WeakMap<Element, string>();
+  const styles = new Map<string, CSSStyleDeclaration>();
+  const keyOf = (el: Element): string => {
+    let key = keys.get(el);
+    if (key === undefined) {
+      const parent = el.parentElement;
+      key = parent ? `${keyOf(parent)}>` : "";
+      key += el.tagName;
+      for (const attr of el.attributes) {
+        if (attr.name !== "data-marko-node-id") {
+          key += `|${attr.name}=${attr.value}`;
+        }
+      }
+      keys.set(el, key);
+    }
+    return key;
+  };
+  const original = window.getComputedStyle.bind(window);
+  window.getComputedStyle = ((el: Element, pseudo?: string | null) => {
+    if (pseudo) return original(el, pseudo);
+    const key = keyOf(el);
+    let style = styles.get(key);
+    if (!style) {
+      style = original(el);
+      styles.set(key, style);
+    }
+    return style;
+  }) as typeof window.getComputedStyle;
 }
 
 function extract(doc: TextDocument) {
