@@ -647,21 +647,31 @@ const ScriptService: Partial<Plugin> = {
   },
 };
 
+const processScriptCallbacks = new WeakMap<
+  TSProject,
+  (file: MarkoFile) => Extracted
+>();
+
 function processScript(doc: TextDocument, tsProject: TSProject) {
-  return processDoc(doc, ({ filename, parsed, lookup, dirname }) => {
-    const { host, markoScriptLang } = tsProject;
-    return extractScript({
-      ts,
-      parsed,
-      lookup,
-      translator: Project.getConfig(dirname).translator,
-      scriptLang: filename
-        ? Project.getScriptLang(filename, markoScriptLang, ts, host)
-        : markoScriptLang,
-      runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
-        ?.markoTypesCode,
-    });
-  });
+  let process = processScriptCallbacks.get(tsProject);
+  if (!process) {
+    process = ({ filename, parsed, lookup, dirname }) => {
+      const { host, markoScriptLang } = tsProject;
+      return extractScript({
+        ts,
+        parsed,
+        lookup,
+        translator: Project.getConfig(dirname).translator,
+        scriptLang: filename
+          ? Project.getScriptLang(filename, markoScriptLang, ts, host)
+          : markoScriptLang,
+        runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
+          ?.markoTypesCode,
+      });
+    };
+    processScriptCallbacks.set(tsProject, process);
+  }
+  return processDoc(doc, process);
 }
 
 /**
