@@ -69,6 +69,10 @@ const semanticTokensCache = new WeakMap<
   Extracted,
   { projectVersion: number; tokens: SemanticToken[] }
 >();
+const plainSemanticTokensCache = new WeakMap<
+  TextDocument,
+  { version: number; projectVersion: number; tokens: SemanticToken[] }
+>();
 const maxSemanticTokensGeneratedLength = 256 * 1024;
 const markoFileReg = /\.marko$/;
 // Plain (non-Marko) script files: `.ts`/`.tsx`/`.js`/`.jsx` and their
@@ -501,13 +505,26 @@ const ScriptService: Partial<Plugin> = {
     const result: SemanticToken[] = [];
 
     if (plainScriptReg.test(fileName)) {
+      const cached = plainSemanticTokensCache.get(doc);
+      if (
+        cached &&
+        cached.version === doc.version &&
+        cached.projectVersion === documents.projectVersion
+      ) {
+        return cached.tokens;
+      }
+
+      const { length } = doc.getText();
+      if (length > maxSemanticTokensGeneratedLength) return;
+
       const { spans } = project.service.getEncodedSemanticClassifications(
         fileName,
-        { start: 0, length: doc.getText().length },
+        { start: 0, length },
         ts.SemanticClassificationFormat.TwentyTwenty,
       );
 
       for (let i = 0; i < spans.length; i += 3) {
+        if (cancel.isCancellationRequested) return;
         const decoded = decodeTsClassification(spans[i + 2]);
         if (!decoded) continue;
         result.push({
@@ -519,6 +536,11 @@ const ScriptService: Partial<Plugin> = {
         });
       }
 
+      plainSemanticTokensCache.set(doc, {
+        version: doc.version,
+        projectVersion: documents.projectVersion,
+        tokens: result,
+      });
       return result;
     }
 
