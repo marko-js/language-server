@@ -80,9 +80,18 @@ export type Plugin = {
   findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
   getSemanticTokens: Handler<
     SemanticTokensParams | SemanticTokensRangeParams,
-    SemanticToken[] | SemanticTokens
+    SemanticToken[]
   >;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
   getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;
   format: Handler<DocumentFormattingParams, TextEdit[]>;
+};
+
+// Plugins report absolute-position tokens; only the merged facade speaks the
+// LSP delta encoding, so the two sides of the contract have different types.
+export type LanguageService = Omit<Plugin, "getSemanticTokens"> & {
+  getSemanticTokens: Handler<
+    SemanticTokensParams | SemanticTokensRangeParams,
+    SemanticTokens
+  >;
 };

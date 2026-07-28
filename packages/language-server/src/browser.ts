@@ -11,7 +11,7 @@ export { default as MarkoPlugin } from "./service/marko";
 export { default as ScriptPlugin } from "./service/script";
 export { semanticTokensLegend } from "./service/semantic-tokens";
 export { default as StylePlugin } from "./service/style";
-export type { Plugin, SemanticToken } from "./service/types";
+export type { LanguageService, Plugin, SemanticToken } from "./service/types";
 export { clearMarkoCacheForFile } from "./utils/file";
 export { default as setupMessages } from "./utils/messages";
 export * as documents from "./utils/text-documents";

@@ -196,19 +196,13 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
             { textDocument: { uri: doc.uri } },
             CancellationToken.None,
           );
-          await snapshot(
-            formatSemanticTokens(
-              code,
-              tokens && !Array.isArray(tokens) ? tokens : undefined,
+          await snapshot(formatSemanticTokens(code, tokens || undefined), {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(/\.marko$/, ".tokens.md"),
             ),
-            {
-              file: path.relative(
-                fixtureDir,
-                filename.replace(/\.marko$/, ".tokens.md"),
-              ),
-              dir: fixtureDir,
-            },
-          );
+            dir: fixtureDir,
+          });
         }
 
         documents.doClose(params);

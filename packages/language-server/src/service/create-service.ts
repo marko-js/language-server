@@ -22,7 +22,7 @@ import {
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import type { Plugin, SemanticToken } from "./types";
+import type { LanguageService, Plugin, SemanticToken } from "./types";
 
 const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
 
@@ -32,8 +32,8 @@ const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
  * jsdom-backed HTML plugin. Keeping the merge logic here (instead of in the
  * Node `index.ts`) lets both environments share a single implementation.
  */
-export function createService(plugins: Partial<Plugin>[]): Plugin {
-  const service: Plugin = {
+export function createService(plugins: Partial<Plugin>[]): LanguageService {
+  const service: LanguageService = {
     commands: Object.assign({}, ...plugins.map(({ commands }) => commands)),
     async initialize(params) {
       await Promise.allSettled(

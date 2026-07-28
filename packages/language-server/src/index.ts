@@ -255,7 +255,7 @@ async function getSemanticTokens(
     throw new ResponseError(LSPErrorCodes.ContentModified, "content modified");
   }
 
-  return result && !Array.isArray(result) ? result : { data: [] };
+  return result || { data: [] };
 }
 
 connection.onDocumentColor(async (params, cancel) => {
