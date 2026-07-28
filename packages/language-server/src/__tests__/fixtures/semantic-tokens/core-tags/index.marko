@@ -1,0 +1,13 @@
+<let/count = 1/>
+<ul>
+  <for|item| of=["a", "b"]>
+    <li>${item} ${count}</li>
+  </for>
+</ul>
+<if=count>
+  <const/doubled = count * 2/>
+  ${doubled}
+</if>
+<else>
+  none
+</else>

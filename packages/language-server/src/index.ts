@@ -3,17 +3,23 @@ import "./utils/project-defaults";
 import { Project } from "@marko/language-tools";
 import { inspect, isDeepStrictEqual } from "util";
 import {
+  type CancellationToken,
   createConnection,
   type DefinitionLink,
   Diagnostic,
   DidChangeWatchedFilesNotification,
+  LSPErrorCodes,
   ProposedFeatures,
+  ResponseError,
+  type SemanticTokensParams,
+  type SemanticTokensRangeParams,
   TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import service from "./service";
 import { markoCodeActionKinds } from "./service/marko/code-actions";
+import { semanticTokensLegend } from "./service/semantic-tokens";
 import { clearMarkoCacheForFile } from "./utils/file";
 import setupMessages from "./utils/messages";
 import * as documents from "./utils/text-documents";
@@ -30,7 +36,9 @@ if (
 const connection = createConnection(ProposedFeatures.all);
 const prevDiags = new WeakMap<TextDocument, Diagnostic[]>();
 let diagnosticTimeout: ReturnType<typeof setTimeout> | undefined;
+let semanticTokensRefreshTimeout: ReturnType<typeof setTimeout> | undefined;
 let canRegisterFileWatchers = false;
+let canRefreshSemanticTokens = false;
 
 // On-disk changes to these files affect Marko intellisense (imported
 // components, TS modules, styles, tag definitions, tsconfig, and dependency
@@ -53,6 +61,9 @@ connection.onInitialize(async (params) => {
   canRegisterFileWatchers = Boolean(
     params.capabilities.workspace?.didChangeWatchedFiles?.dynamicRegistration,
   );
+  canRefreshSemanticTokens = Boolean(
+    params.capabilities.workspace?.semanticTokens?.refreshSupport,
+  );
   setupMessages(connection);
   await service.initialize(params);
 
@@ -72,6 +83,11 @@ connection.onInitialize(async (params) => {
       colorProvider: true,
       documentHighlightProvider: true,
       documentSymbolProvider: true,
+      semanticTokensProvider: {
+        legend: semanticTokensLegend,
+        full: true,
+        range: true,
+      },
       completionProvider: {
         resolveProvider: true,
         triggerCharacters: [
@@ -112,7 +128,10 @@ connection.onInitialized(() => {
 });
 
 workspace.setup(connection);
-workspace.onConfigChange(validateDocs);
+workspace.onConfigChange(() => {
+  validateDocs();
+  queueSemanticTokensRefresh();
+});
 
 connection.onDidOpenTextDocument(async (params) => {
   documents.doOpen(params);
@@ -136,7 +155,10 @@ documents.onFileChange((changeDoc) => {
     queueDiagnostic();
     clearMarkoCacheForFile(changeDoc);
   } else {
+    // On-disk/config changes can alter tag and type classifications in every
+    // open document, which clients only re-request when told to.
     validateDocs();
+    queueSemanticTokensRefresh();
   }
 });
 
@@ -203,6 +225,38 @@ connection.onDocumentHighlight(async (params, cancel) => {
     )) || null
   );
 });
+
+connection.languages.semanticTokens.on((params, cancel) =>
+  getSemanticTokens({ textDocument: params.textDocument }, cancel),
+);
+connection.languages.semanticTokens.onRange(getSemanticTokens);
+
+async function getSemanticTokens(
+  params: SemanticTokensParams | SemanticTokensRangeParams,
+  cancel: CancellationToken,
+) {
+  const doc = documents.get(params.textDocument.uri);
+  if (!doc) return null;
+
+  const { version } = doc;
+  const result = await service.getSemanticTokens(doc, params, cancel);
+
+  if (cancel.isCancellationRequested) {
+    throw new ResponseError(LSPErrorCodes.RequestCancelled, "request canceled");
+  }
+
+  // Returning an empty result would clear the editor's existing tokens, so a
+  // request that raced an edit (or a close/reopen) must fail with
+  // ContentModified instead -- the client keeps the old tokens and retries.
+  if (
+    documents.get(params.textDocument.uri) !== doc ||
+    doc.version !== version
+  ) {
+    throw new ResponseError(LSPErrorCodes.ContentModified, "content modified");
+  }
+
+  return result && !Array.isArray(result) ? result : { data: [] };
+}
 
 connection.onDocumentColor(async (params, cancel) => {
   return (
@@ -285,6 +339,14 @@ for (const command in service.commands) {
 function validateDocs() {
   queueDiagnostic();
   Project.clearCaches();
+}
+
+function queueSemanticTokensRefresh() {
+  if (!canRefreshSemanticTokens) return;
+  clearTimeout(semanticTokensRefreshTimeout);
+  semanticTokensRefreshTimeout = setTimeout(() => {
+    void connection.languages.semanticTokens.refresh();
+  }, 1000);
 }
 
 function queueDiagnostic() {

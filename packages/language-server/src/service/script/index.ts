@@ -43,7 +43,12 @@ import {
 import * as documents from "../../utils/text-documents";
 import { system } from "../../utils/ts-system";
 import * as workspace from "../../utils/workspace";
-import type { Plugin } from "../types";
+import {
+  decodeTsClassification,
+  TokenModifier,
+  TokenType,
+} from "../semantic-tokens";
+import type { Plugin, SemanticToken } from "../types";
 import printJSDocTag from "./util/print-jsdoc-tag";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
@@ -60,6 +65,11 @@ export interface TSProject {
 const extractCache = new Map<string, ExtractedSnapshot>();
 const snapshotCache = new Map<string, ts.IScriptSnapshot>();
 const insertModuleStatementLocCache = new WeakMap<Extracted, Location>();
+const semanticTokensCache = new WeakMap<
+  Extracted,
+  { projectVersion: number; tokens: SemanticToken[] }
+>();
+const maxSemanticTokensGeneratedLength = 256 * 1024;
 const markoFileReg = /\.marko$/;
 // Plain (non-Marko) script files: `.ts`/`.tsx`/`.js`/`.jsx` and their
 // `.mjs`/`.cjs`/`.mts`/`.cts` variants. These are already part of the
@@ -483,6 +493,121 @@ const ScriptService: Partial<Plugin> = {
 
     return result.length ? result : undefined;
   },
+  getSemanticTokens(doc, _params, cancel) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
+    const project = getTSProject(fileName);
+    const result: SemanticToken[] = [];
+
+    if (plainScriptReg.test(fileName)) {
+      const { spans } = project.service.getEncodedSemanticClassifications(
+        fileName,
+        { start: 0, length: doc.getText().length },
+        ts.SemanticClassificationFormat.TwentyTwenty,
+      );
+
+      for (let i = 0; i < spans.length; i += 3) {
+        const decoded = decodeTsClassification(spans[i + 2]);
+        if (!decoded) continue;
+        result.push({
+          range: {
+            start: doc.positionAt(spans[i]),
+            end: doc.positionAt(spans[i] + spans[i + 1]),
+          },
+          ...decoded,
+        });
+      }
+
+      return result;
+    }
+
+    const extracted = processScript(doc, project);
+    const generated = extracted.toString();
+
+    // Classifications come from the whole TS program, so cache per extraction
+    // and re-classify only when any document changes. Without this the range
+    // and full requests a client sends per version would each re-classify.
+    const cached = semanticTokensCache.get(extracted);
+    if (cached && cached.projectVersion === documents.projectVersion) {
+      return cached.tokens;
+    }
+
+    // At the measured ~380ns per generated char, classification passes 100ms
+    // of uninterruptible work around this size; beyond it, leave highlighting
+    // to the grammar.
+    if (generated.length > maxSemanticTokensGeneratedLength) return;
+
+    const source = extracted.parsed.code;
+    const letTagVarNames = getLetTagVarNames(getMarkoFile(doc).parsed);
+    const { spans } = project.service.getEncodedSemanticClassifications(
+      fileName,
+      { start: 0, length: generated.length },
+      ts.SemanticClassificationFormat.TwentyTwenty,
+    );
+
+    const resultByRange = new Map<string, SemanticToken>();
+    for (let i = 0; i < spans.length; i += 3) {
+      if (cancel.isCancellationRequested) return;
+
+      const genStart = spans[i];
+      const genLength = spans[i + 1];
+      const decoded = decodeTsClassification(spans[i + 2]);
+      if (!decoded) continue;
+
+      // The extractor copies the same source range into several generated
+      // contexts and interleaves synthesized glue; only a classification that
+      // sits inside a single mapping, spans it exactly, and matches the source
+      // text verbatim is a real token of the .marko file.
+      const ranges = extracted.sourceRangesAt(genStart, genStart + genLength);
+      if (ranges.length !== 1) continue;
+
+      const [sourceRange] = ranges;
+      if (
+        sourceRange.end - sourceRange.start !== genLength ||
+        source.slice(sourceRange.start, sourceRange.end) !==
+          generated.slice(genStart, genStart + genLength)
+      ) {
+        continue;
+      }
+
+      const { type } = decoded;
+      let { modifiers } = decoded;
+      if (
+        letTagVarNames &&
+        type === TokenType.variable &&
+        modifiers & TokenModifier.readonly &&
+        letTagVarNames.has(source.slice(sourceRange.start, sourceRange.end))
+      ) {
+        // A `<let>` variable compiles to a generated `const`, so TypeScript
+        // reports mutable state as readonly; don't let it render like one.
+        modifiers &= ~TokenModifier.readonly;
+      }
+
+      const range = extracted.parsed.locationAt(sourceRange);
+      const key = rangeKey(range);
+      const existing = resultByRange.get(key);
+      if (!existing) {
+        resultByRange.set(key, { range, type, modifiers });
+      } else if (
+        existing.type === TokenType.property &&
+        type !== TokenType.property
+      ) {
+        // A mutated tag variable is also rewritten to a generated property
+        // access; the non-property classification is the one that reflects
+        // the source.
+        existing.type = type;
+        existing.modifiers = modifiers;
+      }
+    }
+
+    result.push(...resultByRange.values());
+    semanticTokensCache.set(extracted, {
+      projectVersion: documents.projectVersion,
+      tokens: result,
+    });
+    return result;
+  },
   doHover(doc, params) {
     const fileName = getFSPath(doc);
     if (!fileName) return;
@@ -828,6 +953,32 @@ function docLocationAtTextSpan(
 
 function rangeKey({ start, end }: Range) {
   return `${start.line}:${start.character}:${end.line}:${end.character}`;
+}
+
+const identifierReg = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+
+function getLetTagVarNames(parsed: Parsed) {
+  let names: Set<string> | undefined;
+  const stack: Node.ChildNode[] = [...parsed.program.body];
+  while (stack.length) {
+    const node = stack.pop()!;
+    if (node.type !== NodeType.Tag && node.type !== NodeType.AttrTag) continue;
+
+    if (node.type === NodeType.Tag && node.nameText === "let" && node.var) {
+      const name = parsed.read(node.var.value);
+      if (identifierReg.test(name)) {
+        (names ||= new Set()).add(name);
+      }
+    }
+
+    if (node.body) {
+      for (const child of node.body) {
+        stack.push(child);
+      }
+    }
+  }
+
+  return names;
 }
 
 function forEachSourceLocation(

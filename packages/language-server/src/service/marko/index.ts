@@ -8,6 +8,7 @@ import { findDocumentLinks } from "./document-links";
 import { findDocumentSymbols } from "./document-symbols";
 import { format, formatDocument, type FormatOptions } from "./format";
 import { doHover } from "./hover";
+import { getSemanticTokens } from "./semantic-tokens";
 import { doValidate } from "./validate";
 
 export default {
@@ -20,6 +21,7 @@ export default {
   findDefinition,
   findDocumentLinks,
   findDocumentSymbols,
+  getSemanticTokens,
   format,
   commands: {
     "$/formatWithMode": async ({
