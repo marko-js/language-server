@@ -45,6 +45,9 @@ export const TokenModifier = Object.fromEntries(
 
 const tsTokenTypeCount = 12;
 const tsTokenModifierCount = 6;
+// Deliberately narrower than TypeScript's own (1 << 8) - 1 mask: bits 6+ are
+// unassigned in the classifier today, and masking them off keeps a future TS
+// modifier from colliding with our appended `deprecated` bit.
 const tsTokenModifierMask = (1 << tsTokenModifierCount) - 1;
 
 // TypeScript "2020" format: classification = ((type + 1) << 8) + modifierSet.
