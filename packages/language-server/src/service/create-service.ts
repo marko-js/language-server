@@ -15,9 +15,14 @@ import type {
   SymbolInformation,
   WorkspaceEdit,
 } from "vscode-languageserver";
-import { MarkupContent, MarkupKind } from "vscode-languageserver";
+import {
+  MarkupContent,
+  MarkupKind,
+  SemanticTokensBuilder,
+} from "vscode-languageserver";
+import type { TextDocument } from "vscode-languageserver-textdocument";
 
-import type { Plugin } from "./types";
+import type { LanguageService, Plugin, SemanticToken } from "./types";
 
 const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
 
@@ -27,8 +32,8 @@ const REG_MARKDOWN_CHARS = /[\\`*_{}[\]<>()#+.!|-]/g;
  * jsdom-backed HTML plugin. Keeping the merge logic here (instead of in the
  * Node `index.ts`) lets both environments share a single implementation.
  */
-export function createService(plugins: Partial<Plugin>[]): Plugin {
-  const service: Plugin = {
+export function createService(plugins: Partial<Plugin>[]): LanguageService {
+  const service: LanguageService = {
     commands: Object.assign({}, ...plugins.map(({ commands }) => commands)),
     async initialize(params) {
       await Promise.allSettled(
@@ -169,6 +174,84 @@ export function createService(plugins: Partial<Plugin>[]): Plugin {
       }
 
       return highlights;
+    },
+    async getSemanticTokens(doc, params, cancel) {
+      const results = await Promise.allSettled(
+        plugins.map(async (plugin) =>
+          plugin.getSemanticTokens?.(doc, params, cancel),
+        ),
+      );
+
+      if (cancel.isCancellationRequested) return;
+
+      let tokens: SemanticToken[] | undefined;
+      for (const result of results) {
+        if (result.status === "rejected") {
+          console.error(result.reason);
+          continue;
+        }
+        if (!Array.isArray(result.value)) continue;
+
+        for (const token of result.value) {
+          const { start, end } = token.range;
+          if (start.line === end.line) {
+            if (start.character < end.character) {
+              (tokens ||= []).push(token);
+            }
+            continue;
+          }
+
+          // No client this server has seen advertises multilineTokenSupport,
+          // so split multiline tokens into one per line rather than emit them.
+          for (let line = start.line; line <= end.line; line++) {
+            const startCharacter = line === start.line ? start.character : 0;
+            const endCharacter =
+              line === end.line ? end.character : lineLength(doc, line);
+            if (startCharacter < endCharacter) {
+              (tokens ||= []).push({
+                range: {
+                  start: { line, character: startCharacter },
+                  end: { line, character: endCharacter },
+                },
+                type: token.type,
+                modifiers: token.modifiers,
+              });
+            }
+          }
+        }
+      }
+
+      if (!tokens) return;
+
+      // A stable sort keeps plugin order for equal starts, and the `prevEnd`
+      // watermark then drops any token overlapping one already kept -- so on
+      // conflicting ranges the earliest plugin wins, mirroring the overlap
+      // rules in findReferences/doRename. The watermark advances before the
+      // range filter so full and range requests agree on which overlapping
+      // token survives.
+      tokens.sort(
+        (a, b) =>
+          a.range.start.line - b.range.start.line ||
+          a.range.start.character - b.range.start.character,
+      );
+
+      const filterRange = "range" in params ? params.range : undefined;
+      const builder = new SemanticTokensBuilder();
+      let prevEnd: Range["end"] | undefined;
+      for (const { range, type, modifiers } of tokens) {
+        if (prevEnd && positionBefore(range.start, prevEnd)) continue;
+        prevEnd = range.end;
+        if (filterRange && !rangesOverlap(range, filterRange)) continue;
+        builder.push(
+          range.start.line,
+          range.start.character,
+          range.end.character - range.start.character,
+          type,
+          modifiers,
+        );
+      }
+
+      return { data: builder.build().data };
     },
     async findDocumentColors(doc, params, cancel) {
       const results = await Promise.allSettled(
@@ -341,6 +424,15 @@ export function createService(plugins: Partial<Plugin>[]): Plugin {
 
 function positionBefore(a: Range["start"], b: Range["start"]) {
   return a.line < b.line || (a.line === b.line && a.character < b.character);
+}
+
+function lineLength(doc: TextDocument, line: number) {
+  return doc
+    .getText({
+      start: { line, character: 0 },
+      end: { line: line + 1, character: 0 },
+    })
+    .replace(/\r?\n$/, "").length;
 }
 
 /** Whether two ranges overlap (ie two plugins reported the same token). */

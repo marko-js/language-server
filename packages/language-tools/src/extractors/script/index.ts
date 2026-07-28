@@ -1,4 +1,4 @@
-import type { types as t } from "@marko/compiler";
+import { types as t } from "@marko/compiler";
 import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
 import path from "path";
 import { relativeImportPath } from "relative-import-path";
@@ -52,7 +52,7 @@ const REG_INPUT_TYPE = /\s*(interface|type)\s+Input\b/y;
 const REG_OBJECT_PROPERTY = /^[_$a-z][_$a-z0-9]*$/i;
 // Match https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-path- and https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html#ts-check
 const REG_COMMENT_PRAGMA = /\/\/(?:\s*@ts-|\/\s*<)/y;
-const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z0-9_$]+$/;
+const REG_TAG_NAME_IDENTIFIER = /^[A-Z][a-zA-Z0-9_$]*$/;
 const REG_NODE_MODULES = /[\\/]node_modules[\\/]/;
 const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const TAG_ID = new WeakMap<Node.Tag, number>();
@@ -128,6 +128,7 @@ class ScriptExtractor {
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
   #mutations: Repeatable<Mutation>;
+  #bindingNames: Set<string> | undefined;
   #tagId = 1;
   #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
@@ -790,6 +791,71 @@ constructor(_) {}
     return returnTag !== undefined;
   }
 
+  /**
+   * Every name a tag name could resolve to in the generated module: the
+   * declarations of the module level statements plus every Marko tag variable
+   * and tag parameter.
+   *
+   * Deliberately a superset of any single tag's lexical scope. Over-reporting
+   * leaves a tag on the identifier path it has always taken, while
+   * under-reporting would silently retype a tag that does resolve, so the
+   * cheaper error is to include too much. Built on first use, since a template
+   * with no capitalized tag names never needs it.
+   */
+  #getBindingNames() {
+    if (this.#bindingNames) return this.#bindingNames;
+
+    const names = (this.#bindingNames = new Set<string>());
+    const add = (node: t.Node | null | undefined) => {
+      if (!node) return;
+
+      let found = false;
+      for (const name in t.getBindingIdentifiers(node)) {
+        names.add(name);
+        found = true;
+      }
+
+      if (!found) {
+        // A TypeScript type only declaration (`type`/`interface`/`enum`/
+        // `namespace`) has no binding identifier but still shadows a tag name.
+        const { id } = node as { id?: t.Node };
+        if (id && t.isIdentifier(id)) names.add(id.name);
+      }
+    };
+
+    for (const node of this.#parsed.program.static) {
+      switch (node.type) {
+        case NodeType.Import:
+          add(this.#ast.import(node));
+          break;
+        case NodeType.Export:
+          add(this.#ast.export(node));
+          break;
+        case NodeType.Static:
+          for (const statement of this.#ast.static(node) || []) add(statement);
+          break;
+      }
+    }
+
+    const stack: Node.ChildNode[] = [...this.#parsed.program.body];
+    while (stack.length) {
+      const node = stack.pop()!;
+      if (node.type !== NodeType.Tag && node.type !== NodeType.AttrTag)
+        continue;
+
+      if (node.var) add(this.#ast.tagVar(node.var));
+      if (node.params) {
+        for (const param of this.#ast.tagParams(node.params) || []) add(param);
+      }
+
+      if (node.body) {
+        for (const child of node.body) stack.push(child);
+      }
+    }
+
+    return names;
+  }
+
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
@@ -802,7 +868,19 @@ constructor(_) {}
     let templateVar: undefined | string;
 
     if (!def || importPath) {
-      const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
+      // Both translators only treat a tag name as an identifier when it also
+      // resolves to a binding (`TAG_NAME_IDENTIFIER_REG.test(name) &&
+      // tag.scope.getBinding(name)`); an unbound name stays a native/dynamic
+      // tag. Applying that gate everywhere would also silence TypeScript's
+      // `Cannot find name` on a misspelled component (`<Missing/>`), so it is
+      // limited to the unbound names the compiler gives a meaning of their
+      // own: a single-letter name is uppercase HTML (`<A>`, `<B>`, `<I>`) and
+      // a name that resolves to a tag file renders that file.
+      const isIdentifier =
+        tagName &&
+        REG_TAG_NAME_IDENTIFIER.test(tagName) &&
+        (this.#getBindingNames().has(tagName) ||
+          (!importPath && tagName.length > 1));
       const isMarkoFile = importPath?.endsWith(".marko");
 
       if (isIdentifier || isMarkoFile || !importPath) {

@@ -28,11 +28,20 @@ import type {
   Range,
   ReferenceParams,
   RenameParams,
+  SemanticTokens,
+  SemanticTokensParams,
+  SemanticTokensRangeParams,
   SymbolInformation,
   TextEdit,
   WorkspaceEdit,
 } from "vscode-languageserver";
 import type { TextDocument } from "vscode-languageserver-textdocument";
+
+export interface SemanticToken {
+  range: Range;
+  type: number;
+  modifiers: number;
+}
 
 export type Result<V> = Promise<V | void> | V | void;
 type Handler<P, R> = (
@@ -69,7 +78,20 @@ export type Plugin = {
   findDocumentSymbols: Handler<DocumentSymbolParams, SymbolInformation[]>;
   findDocumentLinks: Handler<DocumentLinkParams, DocumentLink[]>;
   findDocumentHighlights: Handler<DocumentHighlightParams, DocumentHighlight[]>;
+  getSemanticTokens: Handler<
+    SemanticTokensParams | SemanticTokensRangeParams,
+    SemanticToken[]
+  >;
   findDocumentColors: Handler<DocumentColorParams, ColorInformation[]>;
   getColorPresentations: Handler<ColorPresentationParams, ColorPresentation[]>;
   format: Handler<DocumentFormattingParams, TextEdit[]>;
+};
+
+// Plugins report absolute-position tokens; only the merged facade speaks the
+// LSP delta encoding, so the two sides of the contract have different types.
+export type LanguageService = Omit<Plugin, "getSemanticTokens"> & {
+  getSemanticTokens: Handler<
+    SemanticTokensParams | SemanticTokensRangeParams,
+    SemanticTokens
+  >;
 };

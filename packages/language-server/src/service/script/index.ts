@@ -43,7 +43,12 @@ import {
 import * as documents from "../../utils/text-documents";
 import { system } from "../../utils/ts-system";
 import * as workspace from "../../utils/workspace";
-import type { Plugin } from "../types";
+import {
+  decodeTsClassification,
+  TokenModifier,
+  TokenType,
+} from "../semantic-tokens";
+import type { Plugin, SemanticToken } from "../types";
 import printJSDocTag from "./util/print-jsdoc-tag";
 
 // Filter out some syntax errors from the TS compiler which will be surfaced from the marko compiler.
@@ -60,6 +65,15 @@ export interface TSProject {
 const extractCache = new Map<string, ExtractedSnapshot>();
 const snapshotCache = new Map<string, ts.IScriptSnapshot>();
 const insertModuleStatementLocCache = new WeakMap<Extracted, Location>();
+const semanticTokensCache = new WeakMap<
+  Extracted,
+  { projectVersion: number; tokens: SemanticToken[] }
+>();
+const plainSemanticTokensCache = new WeakMap<
+  TextDocument,
+  { version: number; projectVersion: number; tokens: SemanticToken[] }
+>();
+const maxSemanticTokensGeneratedLength = 256 * 1024;
 const markoFileReg = /\.marko$/;
 // Plain (non-Marko) script files: `.ts`/`.tsx`/`.js`/`.jsx` and their
 // `.mjs`/`.cjs`/`.mts`/`.cts` variants. These are already part of the
@@ -483,6 +497,128 @@ const ScriptService: Partial<Plugin> = {
 
     return result.length ? result : undefined;
   },
+  getSemanticTokens(doc, _params, cancel) {
+    const fileName = getFSPath(doc);
+    if (!fileName) return;
+
+    const project = getTSProject(fileName);
+    const result: SemanticToken[] = [];
+
+    if (plainScriptReg.test(fileName)) {
+      const cached = plainSemanticTokensCache.get(doc);
+      if (
+        cached &&
+        cached.version === doc.version &&
+        cached.projectVersion === documents.projectVersion
+      ) {
+        return cached.tokens;
+      }
+
+      const { length } = doc.getText();
+      if (length > maxSemanticTokensGeneratedLength) return;
+
+      const { spans } = project.service.getEncodedSemanticClassifications(
+        fileName,
+        { start: 0, length },
+        ts.SemanticClassificationFormat.TwentyTwenty,
+      );
+
+      for (let i = 0; i < spans.length; i += 3) {
+        if (cancel.isCancellationRequested) return;
+        const decoded = decodeTsClassification(spans[i + 2]);
+        if (!decoded) continue;
+        result.push({
+          range: {
+            start: doc.positionAt(spans[i]),
+            end: doc.positionAt(spans[i] + spans[i + 1]),
+          },
+          ...decoded,
+        });
+      }
+
+      plainSemanticTokensCache.set(doc, {
+        version: doc.version,
+        projectVersion: documents.projectVersion,
+        tokens: result,
+      });
+      return result;
+    }
+
+    const extracted = processScript(doc, project);
+    const generated = extracted.toString();
+
+    // Classifications come from the whole TS program, so cache per extraction
+    // and re-classify only when any document changes. Without this the range
+    // and full requests a client sends per version would each re-classify.
+    const cached = semanticTokensCache.get(extracted);
+    if (cached && cached.projectVersion === documents.projectVersion) {
+      return cached.tokens;
+    }
+
+    // At the measured ~380ns per generated char, classification passes 100ms
+    // of uninterruptible work around this size; beyond it, leave highlighting
+    // to the grammar.
+    if (generated.length > maxSemanticTokensGeneratedLength) return;
+
+    const source = extracted.parsed.code;
+    const { spans } = project.service.getEncodedSemanticClassifications(
+      fileName,
+      { start: 0, length: generated.length },
+      ts.SemanticClassificationFormat.TwentyTwenty,
+    );
+    const writability = getTagVarWritability(project, fileName, extracted);
+
+    const resultByRange = new Map<string, SemanticToken>();
+    for (let i = 0; i < spans.length; i += 3) {
+      if (cancel.isCancellationRequested) return;
+
+      const genStart = spans[i];
+      const genLength = spans[i + 1];
+      const decoded = decodeTsClassification(spans[i + 2]);
+      if (!decoded) continue;
+
+      // The extractor copies the same source range into several generated
+      // contexts and interleaves synthesized glue; only a classification that
+      // sits inside a single mapping, spans it exactly, and matches the source
+      // text verbatim is a real token of the .marko file.
+      const ranges = extracted.sourceRangesAt(genStart, genStart + genLength);
+      if (ranges.length !== 1) continue;
+
+      const [sourceRange] = ranges;
+      if (
+        sourceRange.end - sourceRange.start !== genLength ||
+        source.slice(sourceRange.start, sourceRange.end) !==
+          generated.slice(genStart, genStart + genLength)
+      ) {
+        continue;
+      }
+
+      const { type } = decoded;
+      let { modifiers } = decoded;
+      if (
+        type === TokenType.variable &&
+        modifiers & TokenModifier.readonly &&
+        writability?.isWritable(genStart)
+      ) {
+        modifiers &= ~TokenModifier.readonly;
+      }
+
+      const range = extracted.parsed.locationAt(sourceRange);
+      const key = rangeKey(range);
+      // Duplicate ranges with differing classifications are routine (the same
+      // source is copied into several generated contexts); the first span wins.
+      if (!resultByRange.has(key)) {
+        resultByRange.set(key, { range, type, modifiers });
+      }
+    }
+
+    result.push(...resultByRange.values());
+    semanticTokensCache.set(extracted, {
+      projectVersion: documents.projectVersion,
+      tokens: result,
+    });
+    return result;
+  },
   doHover(doc, params) {
     const fileName = getFSPath(doc);
     if (!fileName) return;
@@ -647,21 +783,31 @@ const ScriptService: Partial<Plugin> = {
   },
 };
 
+const processScriptCallbacks = new WeakMap<
+  TSProject,
+  (file: MarkoFile) => Extracted
+>();
+
 function processScript(doc: TextDocument, tsProject: TSProject) {
-  return processDoc(doc, ({ filename, parsed, lookup, dirname }) => {
-    const { host, markoScriptLang } = tsProject;
-    return extractScript({
-      ts,
-      parsed,
-      lookup,
-      translator: Project.getConfig(dirname).translator,
-      scriptLang: filename
-        ? Project.getScriptLang(filename, markoScriptLang, ts, host)
-        : markoScriptLang,
-      runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
-        ?.markoTypesCode,
-    });
-  });
+  let process = processScriptCallbacks.get(tsProject);
+  if (!process) {
+    process = ({ filename, parsed, lookup, dirname }) => {
+      const { host, markoScriptLang } = tsProject;
+      return extractScript({
+        ts,
+        parsed,
+        lookup,
+        translator: Project.getConfig(dirname).translator,
+        scriptLang: filename
+          ? Project.getScriptLang(filename, markoScriptLang, ts, host)
+          : markoScriptLang,
+        runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
+          ?.markoTypesCode,
+      });
+    };
+    processScriptCallbacks.set(tsProject, process);
+  }
+  return processDoc(doc, process);
 }
 
 /**
@@ -818,6 +964,184 @@ function docLocationAtTextSpan(
 
 function rangeKey({ start, end }: Range) {
   return `${start.line}:${start.character}:${end.line}:${end.character}`;
+}
+
+const anyOrUnknownFlags = ts.TypeFlags.Any | ts.TypeFlags.Unknown;
+
+/**
+ * Every tag variable is emitted as a generated `const`, so TypeScript reports
+ * all of them as readonly. Whether one can actually be assigned depends on the
+ * tag: a mutation compiles into a write through the object `Marko._.change`
+ * builds, and that object's property is mutable exactly when the tag returns a
+ * `valueChange` callback. Ask the tag's return type that same question,
+ * resolved from the token's own symbol so the answer follows scope instead of
+ * the variable's name.
+ */
+class TagVarWritability {
+  #checker: ts.TypeChecker;
+  #sourceFile: ts.SourceFile;
+  #extracted: Extracted;
+  #byBinding = new Map<ts.Symbol, boolean>();
+
+  constructor(
+    checker: ts.TypeChecker,
+    sourceFile: ts.SourceFile,
+    extracted: Extracted,
+  ) {
+    this.#checker = checker;
+    this.#sourceFile = sourceFile;
+    this.#extracted = extracted;
+  }
+
+  isWritable(generatedOffset: number) {
+    try {
+      const node = generatedNodeAt(this.#sourceFile, generatedOffset);
+      if (!ts.isIdentifier(node)) return false;
+      const symbol = this.#checker.getSymbolAtLocation(node);
+      if (!symbol) return false;
+
+      let result = this.#byBinding.get(symbol);
+      if (result === undefined) {
+        result = this.#resolve(symbol, true);
+        this.#byBinding.set(symbol, result);
+      }
+      return result;
+    } catch {
+      // A checker failure must not cost the file its tokens; keep readonly.
+      return false;
+    }
+  }
+
+  #resolve(symbol: ts.Symbol, followHoist: boolean): boolean {
+    const decl = enclosingVariableDeclaration(symbol.valueDeclaration);
+    const init = decl?.initializer;
+    if (
+      !decl ||
+      !init ||
+      !ts.isCallExpression(init) ||
+      !ts.isPropertyAccessExpression(init.expression) ||
+      !isMarkoInternalsAccess(init.expression.expression)
+    ) {
+      return false;
+    }
+
+    // Read outside its own tag body, a tag variable resolves to a program
+    // scope alias. The alias declaration maps back to the same source
+    // identifier as the real binding, so re-resolve through the identifier's
+    // other generated copies to reach it.
+    if (followHoist && init.expression.name.text === "hoist") {
+      if (!ts.isIdentifier(decl.name)) return false;
+      const aliasOffset = decl.name.getStart(this.#sourceFile);
+      const sourceRanges = this.#extracted.sourceRangesAt(
+        aliasOffset,
+        aliasOffset + decl.name.text.length,
+      );
+      if (sourceRanges.length !== 1) return false;
+
+      for (const offset of this.#extracted.generatedOffsetsAt(
+        sourceRanges[0].start,
+      )) {
+        if (offset === aliasOffset) continue;
+        const node = generatedNodeAt(this.#sourceFile, offset);
+        if (!ts.isIdentifier(node)) continue;
+        const bound = this.#checker.getSymbolAtLocation(node);
+        if (bound && bound !== symbol && this.#resolve(bound, false)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Anything that is not `const <name> = Marko._.returned(() => <rendered>)`
+    // (or a destructuring of one) is an ordinary binding and keeps its
+    // readonly.
+    if (init.expression.name.text !== "returned") return false;
+    const thunk = init.arguments[0];
+    if (
+      !thunk ||
+      !ts.isArrowFunction(thunk) ||
+      ts.isBlock(thunk.body) ||
+      !ts.isIdentifier(thunk.body)
+    ) {
+      return false;
+    }
+
+    const rendered = thunk.body;
+    const checker = this.#checker;
+    const renderedType = checker.getTypeAtLocation(rendered);
+    if (renderedType.flags & anyOrUnknownFlags) return true;
+    const returnSymbol = renderedType.getProperty("return");
+    if (!returnSymbol) return false;
+    const returnType = checker.getTypeOfSymbolAtLocation(
+      returnSymbol,
+      rendered,
+    );
+    if (returnType.flags & anyOrUnknownFlags) return true;
+    const changeSymbol = returnType.getProperty("valueChange");
+    if (!changeSymbol) return false;
+    return isCallable(
+      checker.getTypeOfSymbolAtLocation(changeSymbol, rendered),
+    );
+  }
+}
+
+function getTagVarWritability(
+  project: TSProject,
+  fileName: string,
+  extracted: Extracted,
+) {
+  try {
+    const program = project.service.getProgram();
+    const sourceFile = program?.getSourceFile(fileName);
+    if (!program || !sourceFile) return;
+    return new TagVarWritability(
+      program.getTypeChecker(),
+      sourceFile,
+      extracted,
+    );
+  } catch {
+    // Without a checker every tag variable keeps its readonly; better than
+    // failing the request and losing the file's script tokens entirely.
+  }
+}
+
+/**
+ * Whether an expression is the extractor's internals namespace access
+ * (`Marko._`), so a user's own `.returned(...)`/`.hoist(...)` methods cannot
+ * spoof a tag variable binding.
+ */
+function isMarkoInternalsAccess(expression: ts.Expression) {
+  return (
+    ts.isPropertyAccessExpression(expression) &&
+    expression.name.text === "_" &&
+    ts.isIdentifier(expression.expression) &&
+    expression.expression.text === "Marko"
+  );
+}
+
+function isCallable(type: ts.Type): boolean {
+  if (type.flags & anyOrUnknownFlags) return true;
+  if (type.isUnion()) return type.types.some(isCallable);
+  return type.getCallSignatures().length > 0;
+}
+
+/** The deepest node containing a generated offset. */
+function generatedNodeAt(node: ts.Node, pos: number): ts.Node {
+  let found: ts.Node | undefined;
+  ts.forEachChild(node, (child) => {
+    if (child.pos <= pos && pos < child.end) {
+      found = child;
+      return true;
+    }
+  });
+  return found ? generatedNodeAt(found, pos) : node;
+}
+
+function enclosingVariableDeclaration(node: ts.Node | undefined) {
+  for (let cur = node; cur; cur = cur.parent) {
+    if (ts.isVariableDeclaration(cur)) return cur;
+    if (ts.isStatement(cur) || ts.isSourceFile(cur)) return undefined;
+  }
 }
 
 function forEachSourceLocation(

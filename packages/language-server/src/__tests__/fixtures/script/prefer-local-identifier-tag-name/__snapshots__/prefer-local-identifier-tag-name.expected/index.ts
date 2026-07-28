@@ -26,11 +26,10 @@ export interface Input {}
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
       a: "hello",
     });
-    const __marko_internal_tag_3 = Marko._.fallbackTemplate(
-      TestTagB,
+    const __marko_internal_tag_3 = Marko._.resolveTemplate(
       import("./components/TestTagB.marko"),
     );
-    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+    Marko._.renderTemplate(__marko_internal_tag_3)()()({
       b: "hello",
     });
     Marko._.renderNativeTag("div")()()({

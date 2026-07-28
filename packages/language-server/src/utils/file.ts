@@ -70,21 +70,16 @@ export function processDoc<T>(
   process: (file: MarkoFile) => T,
 ): T {
   const file = getMarkoFile(doc);
-  const cache = processorCaches.get(file.parsed) as
-    | Map<typeof process, T>
-    | undefined;
-  let result: T | undefined;
-
-  if (cache) {
-    result = cache.get(process);
-    if (!result) {
-      result = process(file);
-      cache.set(process, result);
-    }
-  } else {
-    result = process(file);
-    processorCaches.set(file.parsed, new Map([[process, result]]));
+  let cache = processorCaches.get(file.parsed);
+  if (!cache) {
+    processorCaches.set(file.parsed, (cache = new Map()));
   }
 
+  if (cache.has(process)) {
+    return cache.get(process) as T;
+  }
+
+  const result = process(file);
+  cache.set(process, result);
   return result;
 }

@@ -7,6 +7,7 @@ import { URI } from "vscode-uri";
 
 import { documents } from "../service";
 import ScriptPlugin from "../service/script";
+import { tokenModifiers, tokenTypes } from "../service/semantic-tokens";
 
 Project.setDefaultTypePaths({
   internalTypesFile:
@@ -95,6 +96,118 @@ describe("plain script files", () => {
       assert.ok(
         labels.has("toUpperCase"),
         "expected string member completions",
+      );
+    } finally {
+      documents.doClose({ textDocument: { uri } });
+    }
+  });
+
+  it("classifies semantic tokens straight from the TypeScript classifier", async () => {
+    // The plain branch skips Marko extraction entirely, so the classifier's
+    // offsets are the document's own -- a token must land on the identifier it
+    // describes with TypeScript's classification passed through unchanged.
+    const text = [
+      "const answer = 42;",
+      "let mutable = answer;",
+      "function twice(n: number) {",
+      "  return n * 2;",
+      "}",
+      "class Thing {}",
+      "export { mutable, twice, Thing };",
+      "",
+    ].join("\n");
+    const { uri, doc } = openScript(text);
+    try {
+      const tokens = await ScriptPlugin.getSemanticTokens!(
+        doc,
+        { textDocument: { uri } } as never,
+        CancellationToken.None,
+      );
+      assert.ok(tokens?.length, "expected semantic tokens");
+
+      // Index by source offset so an assertion names a position in `text`
+      // rather than an ordinal in the (delta-encoded upstream) token list.
+      const byOffset = new Map<number, string>();
+      for (const token of tokens!) {
+        const start = doc.offsetAt(token.range.start);
+        const end = doc.offsetAt(token.range.end);
+        assert.equal(
+          text.slice(start, end),
+          text.slice(start, end).trim(),
+          `token at ${start} covers whitespace`,
+        );
+        const modifiers = tokenModifiers.filter(
+          (_, bit) => token.modifiers & (1 << bit),
+        );
+        byOffset.set(
+          start,
+          `${tokenTypes[token.type]}${
+            modifiers.length ? ` [${modifiers.join(" ")}]` : ""
+          } \`${text.slice(start, end)}\``,
+        );
+      }
+
+      const at = (needle: string, from = 0) =>
+        byOffset.get(text.indexOf(needle, from));
+
+      assert.equal(at("answer"), "variable [declaration readonly] `answer`");
+      assert.equal(at("mutable"), "variable [declaration] `mutable`");
+      // The read of the `const` keeps `readonly`; the `let` read has no
+      // modifiers at all.
+      assert.equal(at("answer", 20), "variable [readonly] `answer`");
+      assert.equal(at("twice"), "function [declaration] `twice`");
+      assert.equal(at("n: number"), "parameter [declaration] `n`");
+      assert.equal(at("Thing"), "class [declaration] `Thing`");
+      assert.equal(at("mutable, twice"), "variable `mutable`");
+    } finally {
+      documents.doClose({ textDocument: { uri } });
+    }
+  });
+
+  it("caches semantic tokens per version and honors cancellation", async () => {
+    const { uri, doc } = openScript(`const first = 1;\n`);
+    try {
+      const params = { textDocument: { uri } } as never;
+      const initial = await ScriptPlugin.getSemanticTokens!(
+        doc,
+        params,
+        CancellationToken.None,
+      );
+      // A repeat request at the same version serves the cached array itself.
+      assert.equal(
+        await ScriptPlugin.getSemanticTokens!(
+          doc,
+          params,
+          CancellationToken.None,
+        ),
+        initial,
+      );
+
+      documents.doChange({
+        textDocument: { uri, version: 2 },
+        contentChanges: [{ text: `const second = 2;\n` }],
+      });
+      const changed = await ScriptPlugin.getSemanticTokens!(
+        doc,
+        params,
+        CancellationToken.None,
+      );
+      assert.notEqual(changed, initial);
+      assert.ok(changed?.length, "expected tokens after the edit");
+
+      // A request cancelled before the classification loop finishes must not
+      // produce (or cache) a result.
+      documents.doChange({
+        textDocument: { uri, version: 3 },
+        contentChanges: [{ text: `const third = 3;\n` }],
+      });
+      assert.equal(
+        await ScriptPlugin.getSemanticTokens!(
+          doc,
+          params,
+          CancellationToken.Cancelled,
+        ),
+        undefined,
       );
     } finally {
       documents.doClose({ textDocument: { uri } });

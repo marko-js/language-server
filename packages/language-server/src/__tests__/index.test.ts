@@ -22,6 +22,7 @@ import {
   getFixCandidates,
 } from "../service/marko/code-actions";
 import { codeFrame } from "./util/code-frame";
+import { formatSemanticTokens } from "./util/semantic-tokens";
 
 Project.setDefaultTypePaths({
   internalTypesFile:
@@ -185,6 +186,23 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
 
         if (codeActionResults) {
           results += `## Code Actions\n${codeActionResults}`;
+        }
+
+        // Token snapshots are opt-in by fixture group to avoid churning every
+        // existing fixture; put new semantic-token cases under this subdir.
+        if (subdir === "semantic-tokens") {
+          const tokens = await MarkoLanguageService.getSemanticTokens(
+            doc,
+            { textDocument: { uri: doc.uri } },
+            CancellationToken.None,
+          );
+          await snapshot(formatSemanticTokens(code, tokens || undefined), {
+            file: path.relative(
+              fixtureDir,
+              filename.replace(/\.marko$/, ".tokens.md"),
+            ),
+            dir: fixtureDir,
+          });
         }
 
         documents.doClose(params);

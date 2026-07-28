@@ -23,7 +23,7 @@ import {
 } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { processDoc } from "../../utils/file";
+import { type MarkoFile, processDoc } from "../../utils/file";
 import fileSystemProvider from "../../utils/file-system";
 import resolveReference from "../../utils/resolve-url";
 import type { Plugin } from "../types";
@@ -405,34 +405,36 @@ const StyleSheetService: Partial<Plugin> = {
 export { StyleSheetService as default };
 
 function processStyle(doc: TextDocument) {
-  return processDoc(doc, ({ uri, version, parsed, lookup }) => {
-    const result: ProcessedStyle[] = [];
-    for (const [ext, extracted] of extractStyle({
-      parsed,
-      lookup,
-    })) {
-      const service = services[ext]?.({
-        fileSystemProvider,
-        clientCapabilities,
-      });
-      if (service) {
-        const virtualDoc = TextDocument.create(
-          uri,
-          "css",
-          version,
-          extracted.toString(),
-        );
-        result.push({
-          service,
-          extracted,
-          virtualDoc,
-          parsed: service.parseStylesheet(virtualDoc),
-        });
-      }
-    }
+  return processDoc(doc, extractStyles);
+}
 
-    return result;
-  });
+function extractStyles({ uri, version, parsed, lookup }: MarkoFile) {
+  const result: ProcessedStyle[] = [];
+  for (const [ext, extracted] of extractStyle({
+    parsed,
+    lookup,
+  })) {
+    const service = services[ext]?.({
+      fileSystemProvider,
+      clientCapabilities,
+    });
+    if (service) {
+      const virtualDoc = TextDocument.create(
+        uri,
+        "css",
+        version,
+        extracted.toString(),
+      );
+      result.push({
+        service,
+        extracted,
+        virtualDoc,
+        parsed: service.parseStylesheet(virtualDoc),
+      });
+    }
+  }
+
+  return result;
 }
 
 function getSourceEdits(

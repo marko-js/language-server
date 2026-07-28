@@ -58,7 +58,8 @@
     "vscodeignore",
     "vtsls",
     "vwong",
-    "Webstorm"
+    "Webstorm",
+    "writability"
   ],
   "ignoreRegExpList": [],
   "files": ["**/*.{md,ts,marko}"],

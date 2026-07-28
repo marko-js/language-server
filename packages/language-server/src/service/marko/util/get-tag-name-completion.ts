@@ -11,6 +11,7 @@ import {
 } from "vscode-languageserver";
 import { URI } from "vscode-uri";
 
+import { isCoreTag } from "./is-core-tag";
 import { isHTML } from "./is-html";
 
 const deprecated = [CompletionItemTag.Deprecated] as CompletionItemTag[];
@@ -34,15 +35,13 @@ export default function getTagNameCompletion({
 
   const nodeModuleName =
     nodeModuleMatch && nodeModuleMatch[1].replace(/\\/g, "/");
-  const isCoreTag =
-    /^@?marko[/-]/.test(tag.taglibId || tag.filePath) ||
-    nodeModuleName === "marko";
+  const coreTag = isCoreTag(tag);
   const html = isHTML(tag);
   const documentation = {
     kind: MarkupKind.Markdown,
     value: html
       ? `Built in [&lt;${tag.name}&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
-      : isCoreTag
+      : coreTag
         ? `Core Marko &lt;${tag.name}&gt; tag.`
         : nodeModuleName
           ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
