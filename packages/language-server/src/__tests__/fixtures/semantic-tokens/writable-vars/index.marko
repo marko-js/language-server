@@ -1,0 +1,21 @@
+export interface Input {
+  pair: { a: string; b: number };
+}
+
+static const value = 1;
+static const doubled = value * 2;
+
+<let/mutable = 2/>
+<let/{ a, b } = input.pair/>
+<const/frozen = 3/>
+<my-input/typed value="x"/>
+<my-ro/plain value="y"/>
+
+<button onClick() { mutable = mutable + 1; typed = "z"; a = "b" }>
+  ${doubled} ${mutable} ${a} ${b} ${frozen} ${typed} ${plain}
+</button>
+
+<for|i| of=[1, 2]>
+  <let/value = i/>
+  ${value}
+</for>

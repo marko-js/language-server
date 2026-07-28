@@ -539,12 +539,12 @@ const ScriptService: Partial<Plugin> = {
     if (generated.length > maxSemanticTokensGeneratedLength) return;
 
     const source = extracted.parsed.code;
-    const letTagVarNames = getLetTagVarNames(getMarkoFile(doc).parsed);
     const { spans } = project.service.getEncodedSemanticClassifications(
       fileName,
       { start: 0, length: generated.length },
       ts.SemanticClassificationFormat.TwentyTwenty,
     );
+    const writability = getTagVarWritability(project, fileName, extracted);
 
     const resultByRange = new Map<string, SemanticToken>();
     for (let i = 0; i < spans.length; i += 3) {
@@ -574,30 +574,19 @@ const ScriptService: Partial<Plugin> = {
       const { type } = decoded;
       let { modifiers } = decoded;
       if (
-        letTagVarNames &&
         type === TokenType.variable &&
         modifiers & TokenModifier.readonly &&
-        letTagVarNames.has(source.slice(sourceRange.start, sourceRange.end))
+        writability?.isWritable(genStart)
       ) {
-        // A `<let>` variable compiles to a generated `const`, so TypeScript
-        // reports mutable state as readonly; don't let it render like one.
         modifiers &= ~TokenModifier.readonly;
       }
 
       const range = extracted.parsed.locationAt(sourceRange);
       const key = rangeKey(range);
-      const existing = resultByRange.get(key);
-      if (!existing) {
+      // Duplicate ranges with differing classifications are routine (the same
+      // source is copied into several generated contexts); the first span wins.
+      if (!resultByRange.has(key)) {
         resultByRange.set(key, { range, type, modifiers });
-      } else if (
-        existing.type === TokenType.property &&
-        type !== TokenType.property
-      ) {
-        // A mutated tag variable is also rewritten to a generated property
-        // access; the non-property classification is the one that reflects
-        // the source.
-        existing.type = type;
-        existing.modifiers = modifiers;
       }
     }
 
@@ -955,30 +944,182 @@ function rangeKey({ start, end }: Range) {
   return `${start.line}:${start.character}:${end.line}:${end.character}`;
 }
 
-const identifierReg = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+const anyOrUnknownFlags = ts.TypeFlags.Any | ts.TypeFlags.Unknown;
 
-function getLetTagVarNames(parsed: Parsed) {
-  let names: Set<string> | undefined;
-  const stack: Node.ChildNode[] = [...parsed.program.body];
-  while (stack.length) {
-    const node = stack.pop()!;
-    if (node.type !== NodeType.Tag && node.type !== NodeType.AttrTag) continue;
+/**
+ * Every tag variable is emitted as a generated `const`, so TypeScript reports
+ * all of them as readonly. Whether one can actually be assigned depends on the
+ * tag: a mutation compiles into a write through the object `Marko._.change`
+ * builds, and that object's property is mutable exactly when the tag returns a
+ * `valueChange` callback. Ask the tag's return type that same question,
+ * resolved from the token's own symbol so the answer follows scope instead of
+ * the variable's name.
+ */
+class TagVarWritability {
+  #checker: ts.TypeChecker;
+  #sourceFile: ts.SourceFile;
+  #extracted: Extracted;
+  #byBinding = new Map<ts.Symbol, boolean>();
 
-    if (node.type === NodeType.Tag && node.nameText === "let" && node.var) {
-      const name = parsed.read(node.var.value);
-      if (identifierReg.test(name)) {
-        (names ||= new Set()).add(name);
+  constructor(
+    checker: ts.TypeChecker,
+    sourceFile: ts.SourceFile,
+    extracted: Extracted,
+  ) {
+    this.#checker = checker;
+    this.#sourceFile = sourceFile;
+    this.#extracted = extracted;
+  }
+
+  isWritable(generatedOffset: number) {
+    try {
+      const node = generatedNodeAt(this.#sourceFile, generatedOffset);
+      if (!ts.isIdentifier(node)) return false;
+      const symbol = this.#checker.getSymbolAtLocation(node);
+      if (!symbol) return false;
+
+      let result = this.#byBinding.get(symbol);
+      if (result === undefined) {
+        result = this.#resolve(symbol, true);
+        this.#byBinding.set(symbol, result);
       }
-    }
-
-    if (node.body) {
-      for (const child of node.body) {
-        stack.push(child);
-      }
+      return result;
+    } catch {
+      // A checker failure must not cost the file its tokens; keep readonly.
+      return false;
     }
   }
 
-  return names;
+  #resolve(symbol: ts.Symbol, followHoist: boolean): boolean {
+    const decl = enclosingVariableDeclaration(symbol.valueDeclaration);
+    const init = decl?.initializer;
+    if (
+      !decl ||
+      !init ||
+      !ts.isCallExpression(init) ||
+      !ts.isPropertyAccessExpression(init.expression) ||
+      !isMarkoInternalsAccess(init.expression.expression)
+    ) {
+      return false;
+    }
+
+    // Read outside its own tag body, a tag variable resolves to a program
+    // scope alias. The alias declaration maps back to the same source
+    // identifier as the real binding, so re-resolve through the identifier's
+    // other generated copies to reach it.
+    if (followHoist && init.expression.name.text === "hoist") {
+      if (!ts.isIdentifier(decl.name)) return false;
+      const aliasOffset = decl.name.getStart(this.#sourceFile);
+      const sourceRanges = this.#extracted.sourceRangesAt(
+        aliasOffset,
+        aliasOffset + decl.name.text.length,
+      );
+      if (sourceRanges.length !== 1) return false;
+
+      for (const offset of this.#extracted.generatedOffsetsAt(
+        sourceRanges[0].start,
+      )) {
+        if (offset === aliasOffset) continue;
+        const node = generatedNodeAt(this.#sourceFile, offset);
+        if (!ts.isIdentifier(node)) continue;
+        const bound = this.#checker.getSymbolAtLocation(node);
+        if (bound && bound !== symbol && this.#resolve(bound, false)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Anything that is not `const <name> = Marko._.returned(() => <rendered>)`
+    // (or a destructuring of one) is an ordinary binding and keeps its
+    // readonly.
+    if (init.expression.name.text !== "returned") return false;
+    const thunk = init.arguments[0];
+    if (
+      !thunk ||
+      !ts.isArrowFunction(thunk) ||
+      ts.isBlock(thunk.body) ||
+      !ts.isIdentifier(thunk.body)
+    ) {
+      return false;
+    }
+
+    const rendered = thunk.body;
+    const checker = this.#checker;
+    const renderedType = checker.getTypeAtLocation(rendered);
+    if (renderedType.flags & anyOrUnknownFlags) return true;
+    const returnSymbol = renderedType.getProperty("return");
+    if (!returnSymbol) return false;
+    const returnType = checker.getTypeOfSymbolAtLocation(
+      returnSymbol,
+      rendered,
+    );
+    if (returnType.flags & anyOrUnknownFlags) return true;
+    const changeSymbol = returnType.getProperty("valueChange");
+    if (!changeSymbol) return false;
+    return isCallable(
+      checker.getTypeOfSymbolAtLocation(changeSymbol, rendered),
+    );
+  }
+}
+
+function getTagVarWritability(
+  project: TSProject,
+  fileName: string,
+  extracted: Extracted,
+) {
+  try {
+    const program = project.service.getProgram();
+    const sourceFile = program?.getSourceFile(fileName);
+    if (!program || !sourceFile) return;
+    return new TagVarWritability(
+      program.getTypeChecker(),
+      sourceFile,
+      extracted,
+    );
+  } catch {
+    // Without a checker every tag variable keeps its readonly; better than
+    // failing the request and losing the file's script tokens entirely.
+  }
+}
+
+/**
+ * Whether an expression is the extractor's internals namespace access
+ * (`Marko._`), so a user's own `.returned(...)`/`.hoist(...)` methods cannot
+ * spoof a tag variable binding.
+ */
+function isMarkoInternalsAccess(expression: ts.Expression) {
+  return (
+    ts.isPropertyAccessExpression(expression) &&
+    expression.name.text === "_" &&
+    ts.isIdentifier(expression.expression) &&
+    expression.expression.text === "Marko"
+  );
+}
+
+function isCallable(type: ts.Type): boolean {
+  if (type.flags & anyOrUnknownFlags) return true;
+  if (type.isUnion()) return type.types.some(isCallable);
+  return type.getCallSignatures().length > 0;
+}
+
+/** The deepest node containing a generated offset. */
+function generatedNodeAt(node: ts.Node, pos: number): ts.Node {
+  let found: ts.Node | undefined;
+  ts.forEachChild(node, (child) => {
+    if (child.pos <= pos && pos < child.end) {
+      found = child;
+      return true;
+    }
+  });
+  return found ? generatedNodeAt(found, pos) : node;
+}
+
+function enclosingVariableDeclaration(node: ts.Node | undefined) {
+  for (let cur = node; cur; cur = cur.parent) {
+    if (ts.isVariableDeclaration(cur)) return cur;
+    if (ts.isStatement(cur) || ts.isSourceFile(cur)) return undefined;
+  }
 }
 
 function forEachSourceLocation(

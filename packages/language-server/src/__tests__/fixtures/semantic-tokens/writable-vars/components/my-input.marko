@@ -1,0 +1,7 @@
+export interface Input<T> {
+  value: T;
+  valueChange?: (value: T) => void;
+}
+
+<div>${String(input.value)}</div>
+<return=input.value valueChange=(input.valueChange as (value: T) => void)/>
