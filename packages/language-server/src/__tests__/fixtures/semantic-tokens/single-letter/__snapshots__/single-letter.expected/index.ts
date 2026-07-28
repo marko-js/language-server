@@ -41,6 +41,14 @@ export { type Component };
       };
     })(),
   });
+  const __marko_internal_tag_7 = Missing;
+  Marko._.renderDynamicTag(__marko_internal_tag_7)()()({
+    [Marko._.contentFor(__marko_internal_tag_7)]: (() => {
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

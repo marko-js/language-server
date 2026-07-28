@@ -151,7 +151,7 @@ export { type Component };
           };
         })(),
       });
-      const __marko_internal_tag_3 = Marko._.interpolated`Missing`;
+      const __marko_internal_tag_3 = Missing;
       Marko._.renderDynamicTag(__marko_internal_tag_3)()()({});
       const __marko_internal_tag_4 = Marko._.interpolated`complex-missing`;
       Marko._.renderDynamicTag(__marko_internal_tag_4)()()({});

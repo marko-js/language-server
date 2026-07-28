@@ -871,13 +871,16 @@ constructor(_) {}
       // Both translators only treat a tag name as an identifier when it also
       // resolves to a binding (`TAG_NAME_IDENTIFIER_REG.test(name) &&
       // tag.scope.getBinding(name)`); an unbound name stays a native/dynamic
-      // tag. Matching that here keeps markup the compiler accepts -- eg the
-      // uppercase HTML tags `<A>`, `<B>`, `<I>` -- from being emitted as a bare
-      // reference that TypeScript reports `Cannot find name` for.
+      // tag. Applying that gate everywhere would also silence TypeScript's
+      // `Cannot find name` on a misspelled component (`<Missing/>`), so it is
+      // limited to the unbound names the compiler gives a meaning of their
+      // own: a single-letter name is uppercase HTML (`<A>`, `<B>`, `<I>`) and
+      // a name that resolves to a tag file renders that file.
       const isIdentifier =
         tagName &&
         REG_TAG_NAME_IDENTIFIER.test(tagName) &&
-        this.#getBindingNames().has(tagName);
+        (this.#getBindingNames().has(tagName) ||
+          (!importPath && tagName.length > 1));
       const isMarkoFile = importPath?.endsWith(".marko");
 
       if (isIdentifier || isMarkoFile || !importPath) {

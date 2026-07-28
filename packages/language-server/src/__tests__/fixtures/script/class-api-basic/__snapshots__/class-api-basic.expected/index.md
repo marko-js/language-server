@@ -85,3 +85,14 @@
   78 |
 ```
 
+### Ln 79, Col 6
+```marko
+  77 |     <div>Placeholder example: <code>\${someValue}</code></div>
+  78 |
+> 79 |     <Missing/>
+     |      ^^^^^^^ Cannot find name 'Missing'.
+  80 |     <complex-missing/>
+  81 | </div>
+  82 |
+```
+

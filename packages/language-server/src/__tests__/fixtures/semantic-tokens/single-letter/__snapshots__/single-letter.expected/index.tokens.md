@@ -6,3 +6,5 @@ Ln 9, Col 2 (len 1) class `B`
 Ln 9, Col 47 (len 1) class `B`
 Ln 10, Col 2 (len 1) class `I`
 Ln 10, Col 43 (len 1) class `I`
+Ln 11, Col 2 (len 7) class `Missing`
+Ln 11, Col 67 (len 7) class `Missing`
