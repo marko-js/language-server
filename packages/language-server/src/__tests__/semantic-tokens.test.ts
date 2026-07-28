@@ -98,7 +98,7 @@ describe("semantic tokens facade", () => {
               start: { line: 0, character: 2 },
               end: { line: 2, character: 1 },
             },
-            type: TokenType.string,
+            type: TokenType.type,
             modifiers: 0,
           },
           token(3, 3, 3),
@@ -110,9 +110,9 @@ describe("semantic tokens facade", () => {
     );
 
     assert.deepEqual(result?.data, [
-      ...[0, 2, 3, TokenType.string, 0],
-      ...[1, 0, 5, TokenType.string, 0],
-      ...[1, 0, 1, TokenType.string, 0],
+      ...[0, 2, 3, TokenType.type, 0],
+      ...[1, 0, 5, TokenType.type, 0],
+      ...[1, 0, 1, TokenType.type, 0],
       ...[2, 1, 1, TokenType.variable, 0],
     ]);
   });
