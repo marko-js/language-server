@@ -8,7 +8,7 @@ import { isCoreTag } from "./util/is-core-tag";
 export const getSemanticTokens: Plugin["getSemanticTokens"] = (doc) =>
   processDoc(doc, extractSemanticTokens);
 
-const localTagNameReg = /^[A-Z][a-zA-Z0-9_$]+$/;
+const localTagNameReg = /^[A-Z][a-zA-Z0-9_$]*$/;
 const nodeModulesReg = /[\\/]node_modules[\\/]/;
 // Mirrors the `#tag-name` rule in packages/vscode/syntaxes/marko.tmLanguage.json
 // (`keyword.control.flow.marko`); keep the two lists in sync.
