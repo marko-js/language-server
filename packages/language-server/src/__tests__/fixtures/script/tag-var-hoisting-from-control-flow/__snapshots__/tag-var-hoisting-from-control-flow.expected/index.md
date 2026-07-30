@@ -36,7 +36,7 @@
   20 |
   21 | -- ${() => {
 > 22 |   a;
-     |   ^ const a: never
+     |   ^ const a: readonly ["apples", "oranges"]
   23 | //^?
   24 |   b;
   25 | //^?
@@ -47,7 +47,7 @@
   22 |   a;
   23 | //^?
 > 24 |   b;
-     |   ^ const b: never
+     |   ^ const b: readonly ["slice", "dice"]
   25 | //^?
   26 |   c;
   27 | //^?

@@ -1,22 +1,31 @@
 ## Hovers
-### Ln 13, Col 35
+### Ln 1, Col 23
 ```marko
-  11 | </style>
-  12 |
-> 13 | <main id=styles.main class=styles.button/>
+> 1 | <section class=styles.button/>
+    |                       ^ (property) "button": string
+  2 | //                    ^?
+  3 | <style/styles>
+  4 |   .button {
+```
+
+### Ln 15, Col 35
+```marko
+  13 | </style>
+  14 |
+> 15 | <main id=styles.main class=styles.button/>
      |                                   ^ (property) "button": string
-  14 | //                                ^?
-  15 | <div class=styles.missing/>
-  16 |
+  16 | //                                ^?
+  17 | <div class=styles.missing/>
+  18 |
 ```
 
 ## Diagnostics
-### Ln 15, Col 19
+### Ln 17, Col 19
 ```marko
-  13 | <main id=styles.main class=styles.button/>
-  14 | //                                ^?
-> 15 | <div class=styles.missing/>
+  15 | <main id=styles.main class=styles.button/>
+  16 | //                                ^?
+> 17 | <div class=styles.missing/>
      |                   ^^^^^^^ Property 'missing' does not exist on type '{ button: string; main: string; }'.
-  16 |
+  18 |
 ```
 
