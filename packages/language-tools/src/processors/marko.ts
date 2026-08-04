@@ -2,7 +2,12 @@ import type { Config, types as t } from "@marko/compiler";
 import path from "path";
 import type ts from "typescript/lib/tsserverlibrary";
 
-import { extractScript, ScriptLang } from "../extractors/script";
+import {
+  extractScript,
+  INTERNAL_API_EXPORT_NAME,
+  INTERNAL_API_VAR,
+  ScriptLang,
+} from "../extractors/script";
 import { parse } from "../parser";
 import * as Project from "../util/project";
 import type { ProcessorConfig } from ".";
@@ -141,7 +146,7 @@ const markoProcessor: ProcessorConfig = {
             // Matches `export default ...`.
             defaultExport = statement;
             defaultExportId = ts.isIdentifier(statement.expression)
-              ? (statement.expression.escapedText as string)
+              ? statement.expression.text
               : undefined;
           } else if (
             ts.isClassDeclaration(statement) &&
@@ -167,6 +172,8 @@ const markoProcessor: ProcessorConfig = {
             isImportComponentType(statement) || // skips the generated `import type Component from "..."`.
             isExportEmptyInputType(statement) || // skips empty exported Input, eg `export type Input = {}` or `export interface Input {}`.
             isExportInputTypeAsComponentInput(statement) || // skips outputting `export type Input = Component["input"]` since it's inferred.
+            isInternalApiVar(statement) || // skips the generated `const __marko_internal_api = "..."`.
+            isExportInternalApi(statement) || // skips the generated `export { __marko_internal_api as "~api" }`.
             (defaultExportId && // If the `export default` was an identifier, we also remove the variable that declared the identifier.
               isVariableStatementForName(statement, defaultExportId))
           ) {
@@ -290,6 +297,36 @@ const markoProcessor: ProcessorConfig = {
       );
     }
 
+    // The `"~api"` export is re-derived whenever the emitted `.d.marko` is
+    // itself extracted, so both it and the `const` backing it are internal to
+    // the extracted script and must not be printed into the declaration file.
+    function isInternalApiVar(statement: ts.Statement) {
+      return isVariableStatementForName(statement, INTERNAL_API_VAR);
+    }
+
+    function isExportInternalApi(statement: ts.Statement) {
+      if (
+        !ts.isExportDeclaration(statement) ||
+        statement.moduleSpecifier || // the generated export names a local `const`, so it has no source.
+        !statement.exportClause ||
+        !ts.isNamedExports(statement.exportClause) ||
+        statement.exportClause.elements.length !== 1
+      ) {
+        return false;
+      }
+
+      // Matched on both names so a source `export { something as "~api" }` is
+      // left alone.
+      const [{ name, propertyName }] = statement.exportClause.elements;
+      return (
+        ts.isStringLiteral(name) &&
+        name.text === INTERNAL_API_EXPORT_NAME &&
+        !!propertyName &&
+        ts.isIdentifier(propertyName) &&
+        propertyName.text === INTERNAL_API_VAR
+      );
+    }
+
     function isExportComponentType(statement: ts.Statement) {
       if (ts.isExportDeclaration(statement)) {
         return (
@@ -309,7 +346,9 @@ const markoProcessor: ProcessorConfig = {
     function isVariableStatementForName(statement: ts.Statement, name: string) {
       if (ts.isVariableStatement(statement)) {
         for (const decl of statement.declarationList.declarations) {
-          if (ts.isIdentifier(decl.name) && decl.name.escapedText === name) {
+          // `text` rather than `escapedText` since TypeScript escapes leading
+          // double underscores (as in `__marko_internal_api`) in the latter.
+          if (ts.isIdentifier(decl.name) && decl.name.text === name) {
             return true;
           }
         }

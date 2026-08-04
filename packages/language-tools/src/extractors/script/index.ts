@@ -41,6 +41,13 @@ const SEP_SPACE = " ";
 const SEP_COMMA_SPACE = ", ";
 const SEP_COMMA_NEW_LINE = ",\n";
 const VAR_LOCAL_PREFIX = "__marko_internal_";
+/**
+ * The `const` holding the resolved runtime api and the name it is exported as.
+ * Consumers of the extracted output (eg the `.d.marko` printer) need to
+ * recognize these to strip the internal export back out.
+ */
+export const INTERNAL_API_VAR = `${VAR_LOCAL_PREFIX}api`;
+export const INTERNAL_API_EXPORT_NAME = "~api";
 const VAR_SHARED_PREFIX = `Marko._.`;
 const ATTR_UNNAMED = "value";
 const REG_EXT = /(?<=[/\\][^/\\]+)\.[^.]+$/;
@@ -433,7 +440,7 @@ function ${templateName}() {\n`);
     )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
       "ReturnWithScope",
     )}<${internalInput}, ${returnTypeStr}>)`;
-    const apiVar = varLocal("api");
+    const apiVar = INTERNAL_API_VAR;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(
@@ -469,7 +476,7 @@ function ${templateName}() {\n`);
       // `.ts` and `.js` extractions; it still surfaces the api as a
       // `"tags"`/`"class"` string literal.
       this.#extractor.write(
-        `const ${apiVar} = "${this.#api}";\nexport { ${apiVar} as "~api" };\n`,
+        `const ${apiVar} = "${this.#api}";\nexport { ${apiVar} as "${INTERNAL_API_EXPORT_NAME}" };\n`,
       );
     }
 
