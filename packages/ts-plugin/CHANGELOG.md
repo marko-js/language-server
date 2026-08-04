@@ -1,5 +1,11 @@
 # @marko/ts-plugin
 
+## 3.1.10
+
+### Patch Changes
+
+- [#584](https://github.com/marko-js/language-server/pull/584) [`4e2cedc`](https://github.com/marko-js/language-server/commit/4e2cedc587c45f1991dc42ef1d886540665a0684) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Stop leaking the internal `"~api"` export into generated `.d.marko` files.
+
 ## 3.1.9
 
 ### Patch Changes
