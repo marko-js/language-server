@@ -1,0 +1,15 @@
+export interface Input {
+  start: number;
+}
+
+class {
+  declare count: number;
+  onCreate(input: Input) {
+    this.count = input.start;
+  }
+  increment() {
+    this.count++;
+  }
+}
+
+<button on-click("increment")>${input.start}</button>

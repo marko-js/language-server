@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "rootDir": "src",
+    // Keeps the emit (and so the snapshots) to declarations rather than also
+    // writing the compiled template output.
+    "emitDeclarationOnly": true,
+    // Must live in `dist` so the test wiping `dist` fully resets the build.
+    // Left at its default it sits beside this file, and the solution builder
+    // considers the project up to date and emits nothing on the next run.
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src"]
+}

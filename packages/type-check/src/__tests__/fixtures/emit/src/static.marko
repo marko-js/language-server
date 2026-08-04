@@ -1,0 +1,7 @@
+export type Size = "sm" | "lg";
+
+export interface Input {
+  size?: Size;
+}
+
+<div class=`box-${input.size || "sm"}`/>
