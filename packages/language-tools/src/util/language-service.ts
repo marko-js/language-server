@@ -52,7 +52,14 @@ export function createLanguageService(
     allowNonTsExtensions: true,
   };
 
-  const rootNames = new Set(Processors.getRootNames(processors));
+  const rootNames = new Set<string>();
+  for (const ext in processors) {
+    for (const rootName of processors[
+      ext as Processors.ProcessorExtension
+    ].getRootNames?.() || []) {
+      rootNames.add(rootName);
+    }
+  }
   const getScriptVersion = (fileName: string) =>
     `${host.getModifiedTime?.(fileName)?.getTime() ?? 0}`;
   const snapshots = new Map<
@@ -100,14 +107,7 @@ export function createLanguageService(
         compilerOptions,
       ),
     }),
-    readDirectory: (path, extensions, exclude, include, depth) =>
-      host.readDirectory(
-        path,
-        extensions?.concat(Processors.extensions),
-        exclude,
-        include,
-        depth,
-      ),
+    readDirectory: host.readDirectory,
     readFile: host.readFile,
     fileExists: host.fileExists,
     directoryExists: host.directoryExists,

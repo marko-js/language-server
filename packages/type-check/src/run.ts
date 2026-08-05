@@ -446,11 +446,18 @@ export default function run(opts: Options) {
     );
     if (!parsedCommandLine) return;
 
-    parsedCommandLine.fileNames = [
-      ...new Set(
-        parsedCommandLine.fileNames.concat(Processors.getRootNames(processors)),
-      ),
-    ];
+    const finalRootNames = new Set(parsedCommandLine.fileNames);
+    for (const name in processors) {
+      const rootNames =
+        processors[name as keyof typeof processors].getRootNames?.();
+      if (rootNames) {
+        for (const rootName of rootNames) {
+          finalRootNames.add(rootName);
+        }
+      }
+    }
+
+    parsedCommandLine.fileNames = [...finalRootNames];
     return parsedCommandLine;
   };
 

@@ -76,23 +76,6 @@ export function create(options: CreateProcessorOptions) {
   return result;
 }
 
-/** Deduped root file names across every processor. */
-export function getRootNames(
-  processors: Record<ProcessorExtension, Processor>,
-): string[] {
-  const rootNames = new Set<string>();
-  for (const ext in processors) {
-    const names = processors[ext as ProcessorExtension].getRootNames?.();
-    if (names) {
-      for (const name of names) {
-        rootNames.add(name);
-      }
-    }
-  }
-
-  return [...rootNames];
-}
-
 /** Resolve a file's processor extension, including compound `.module.css`. */
 export function getProcessorExtension(
   fileName: string,

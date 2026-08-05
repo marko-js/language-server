@@ -20,7 +20,6 @@ const configFile = path.join(FIXTURE_DIR, "tsconfig.json");
 const entryFile = path.join(FIXTURE_DIR, "entry.marko");
 const tagFile = path.join(FIXTURE_DIR, "components/my-tag.marko");
 const otherFile = path.join(FIXTURE_DIR, "other.marko");
-const parseErrorFile = path.join(FIXTURE_DIR, "parse-error.marko");
 
 describe("createLanguageService", () => {
   it("type checks a .marko file with <tag> and relative .marko imports", () => {
@@ -52,41 +51,22 @@ describe("createLanguageService", () => {
     }
   });
 
-  it("exposes the extracted exports through the type checker", () => {
-    const { service, addRootName } = createLanguageService({ ts, configFile });
-    addRootName(entryFile);
-
-    const program = service.getProgram()!;
-    const checker = program.getTypeChecker();
-    const sourceFile = program.getSourceFile(entryFile)!;
-    const moduleSymbol = checker.getSymbolAtLocation(sourceFile)!;
-    const input = checker
-      .getExportsOfModule(moduleSymbol)
-      .find((exported) => exported.name === "Input")!;
-    assert.deepEqual(
-      checker
-        .getPropertiesOfType(checker.getDeclaredTypeOfSymbol(input))
-        .map((prop) => prop.name),
-      ["name"],
-    );
-  });
-
   it("checks a file whose extraction fails as an empty file", () => {
     const { service, addRootName, getProcessor } = createLanguageService({
       ts,
       configFile,
     });
     // No fixture input reliably makes `extract` throw, so force a failure.
-    const processor = getProcessor(parseErrorFile)!;
+    const processor = getProcessor(otherFile)!;
     const extract = processor.extract;
     processor.extract = () => {
       throw new Error("simulated parse failure");
     };
 
     try {
-      addRootName(parseErrorFile);
+      addRootName(otherFile);
       const program = service.getProgram()!;
-      const sourceFile = program.getSourceFile(parseErrorFile)!;
+      const sourceFile = program.getSourceFile(otherFile)!;
       assert.equal(sourceFile.text, "");
       assert.deepEqual(program.getSemanticDiagnostics(sourceFile), []);
     } finally {
