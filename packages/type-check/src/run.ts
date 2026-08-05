@@ -3,11 +3,10 @@
 
 import { codeFrameColumns } from "@marko/compiler/internal/babel";
 import {
-  getExt,
+  createModuleResolver,
   isDefinitionFile,
   type Location,
   Processors,
-  Project,
 } from "@marko/language-tools";
 import crypto from "crypto";
 import color from "kleur";
@@ -38,9 +37,6 @@ const currentDirectory = ts.sys.getCurrentDirectory();
 const getCanonicalFileName = ts.sys.useCaseSensitiveFileNames
   ? (fileName: string) => fileName
   : (fileName: string) => fileName.toLowerCase();
-const fsPathReg = /^(?:[./\\]|[A-Z]:)/i;
-const importTagReg = /^<([^>]+)>$/;
-const modulePartsReg = /^((?:@(?:[^/]+)\/)?(?:[^/]+))(.*)$/;
 const isRemapExtensionReg = /\.ts$/;
 const isSourceMapExtensionReg = /\.map$/;
 const skipRemapExtensionsReg =
@@ -228,138 +224,12 @@ export default function run(opts: Options) {
           depth,
         );
 
-      compilerHost.resolveModuleNameLiterals = (
-        moduleLiterals,
-        containingFile,
-        redirectedReference,
-        options,
-        _containingSourceFile,
-        _reusedNames,
-      ) => {
-        let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
-        let resolvedModules:
-          | undefined
-          | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
-
-        for (let i = 0; i < moduleLiterals.length; i++) {
-          const moduleLiteral = moduleLiterals[i];
-          let moduleName = moduleLiteral.text;
-
-          const tagNameMatch = importTagReg.exec(moduleName);
-          if (tagNameMatch) {
-            // Try to resolve `import Tag from "<tag>"` style imports.
-            const [, tagName] = tagNameMatch;
-            const tagDef = Project.getTagLookup(
-              path.dirname(containingFile),
-            ).getTag(tagName);
-            const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
-            if (tagFileName) {
-              moduleName = tagFileName;
-            }
-          }
-
-          const processor =
-            moduleName[0] !== "*" ? getProcessor(moduleName) : undefined;
-          if (processor) {
-            let isExternalLibraryImport = false;
-            let resolvedFileName: string | undefined;
-            if (fsPathReg.test(moduleName)) {
-              // For fs paths just see if it exists on disk.
-              resolvedFileName = path.resolve(containingFile, "..", moduleName);
-            } else {
-              // For other paths we treat it as a node_module and try resolving
-              // that modules `package.json`. If the `package.json` exists then we'll
-              // try resolving the `.marko` file relative to that.
-              const [, nodeModuleName, relativeModulePath] =
-                modulePartsReg.exec(moduleName)!;
-              const { resolvedModule } = ts.nodeModuleNameResolver(
-                `${nodeModuleName}/package.json`,
-                containingFile,
-                options,
-                compilerHost,
-                resolutionCache,
-                redirectedReference,
-              );
-
-              if (resolvedModule) {
-                isExternalLibraryImport = true;
-                resolvedFileName = path.join(
-                  resolvedModule.resolvedFileName,
-                  "..",
-                  relativeModulePath,
-                );
-              }
-            }
-
-            if (!resolvedModules) {
-              resolvedModules = [];
-              normalModuleLiterals = [];
-              for (let j = 0; j < i; j++) {
-                resolvedModules.push(undefined);
-                normalModuleLiterals.push(moduleLiterals[j]);
-              }
-            }
-
-            if (resolvedFileName) {
-              if (isDefinitionFile(resolvedFileName)) {
-                if (!compilerHost.fileExists(resolvedFileName)) {
-                  resolvedFileName = undefined;
-                }
-              } else {
-                const ext = getExt(resolvedFileName)!;
-                const definitionFile = `${resolvedFileName.slice(
-                  0,
-                  -ext.length,
-                )}.d${ext}`;
-                if (compilerHost.fileExists(definitionFile)) {
-                  resolvedFileName = definitionFile;
-                } else if (!compilerHost.fileExists(resolvedFileName)) {
-                  resolvedFileName = undefined;
-                }
-              }
-            }
-
-            resolvedModules.push({
-              resolvedModule: resolvedFileName
-                ? {
-                    resolvedFileName,
-                    extension: processor.getScriptExtension(resolvedFileName),
-                    isExternalLibraryImport,
-                  }
-                : undefined,
-            });
-          } else if (resolvedModules) {
-            resolvedModules.push(undefined);
-            normalModuleLiterals.push(moduleLiteral);
-          }
-        }
-
-        const normalResolvedModules = normalModuleLiterals.length
-          ? normalModuleLiterals.map((moduleLiteral) => {
-              return ts.bundlerModuleNameResolver(
-                moduleLiteral.text,
-                containingFile,
-                options,
-                compilerHost,
-                resolutionCache,
-                redirectedReference,
-              );
-            })
-          : undefined;
-
-        if (resolvedModules) {
-          if (normalResolvedModules) {
-            for (let i = 0, j = 0; i < resolvedModules.length; i++) {
-              if (!resolvedModules[i]) {
-                resolvedModules[i] = normalResolvedModules[j++];
-              }
-            }
-          }
-          return resolvedModules as readonly ts.ResolvedModuleWithFailedLookupLocations[];
-        } else {
-          return normalResolvedModules!;
-        }
-      };
+      compilerHost.resolveModuleNameLiterals = createModuleResolver({
+        ts,
+        host: compilerHost,
+        getProcessor,
+        resolutionCache,
+      });
 
       const getSourceFile = compilerHost.getSourceFile.bind(compilerHost);
       compilerHost.getSourceFile = (
@@ -576,18 +446,11 @@ export default function run(opts: Options) {
     );
     if (!parsedCommandLine) return;
 
-    const finalRootNames = new Set(parsedCommandLine.fileNames);
-    for (const name in processors) {
-      const rootNames =
-        processors[name as keyof typeof processors].getRootNames?.();
-      if (rootNames) {
-        for (const rootName of rootNames) {
-          finalRootNames.add(rootName);
-        }
-      }
-    }
-
-    parsedCommandLine.fileNames = [...finalRootNames];
+    parsedCommandLine.fileNames = [
+      ...new Set(
+        parsedCommandLine.fileNames.concat(Processors.getRootNames(processors)),
+      ),
+    ];
     return parsedCommandLine;
   };
 

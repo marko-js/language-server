@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "preserve",
+    "moduleResolution": "bundler"
+  },
+  "include": ["."]
+}
