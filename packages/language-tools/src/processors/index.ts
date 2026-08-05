@@ -76,7 +76,7 @@ export function create(options: CreateProcessorOptions) {
   return result;
 }
 
-/** Collect the deduped root file names every processor needs in the program. */
+/** Deduped root file names across every processor. */
 export function getRootNames(
   processors: Record<ProcessorExtension, Processor>,
 ): string[] {

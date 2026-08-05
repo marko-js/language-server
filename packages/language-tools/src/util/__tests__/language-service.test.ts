@@ -10,9 +10,6 @@ import { createLanguageService, Project } from "../..";
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-// When running from source the shipped `marko.internal.d.ts` is not where the
-// published bundle expects it, so pin the defaults like the published package
-// resolves them.
 Project.setDefaultTypePaths({
   internalTypesFile: path.join(__dirname, "../../../marko.internal.d.ts"),
   markoTypesFile: require.resolve("marko/index.d.ts"),
@@ -31,9 +28,6 @@ describe("createLanguageService", () => {
     addRootName(entryFile);
 
     const program = service.getProgram()!;
-    // `entry.marko` pulls `components/my-tag.marko` in through the taglib
-    // lookup (`import MyTag from "<my-tag>"` in the extracted script) and
-    // `other.marko` through its relative import.
     assert.ok(
       program.getSourceFile(tagFile),
       "expected the <my-tag> import to resolve to components/my-tag.marko",
@@ -82,9 +76,7 @@ describe("createLanguageService", () => {
       ts,
       configFile,
     });
-    // Extraction failures depend on the project's translator, so none can be
-    // reliably provoked from a fixture alone; force one through the same
-    // processor instance the host extracts with.
+    // No fixture input reliably makes `extract` throw, so force a failure.
     const processor = getProcessor(parseErrorFile)!;
     const extract = processor.extract;
     processor.extract = () => {

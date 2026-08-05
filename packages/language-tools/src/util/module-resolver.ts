@@ -26,11 +26,8 @@ export type ModuleResolver = (
 
 /**
  * Returns a `resolveModuleNameLiterals` implementation (for a
- * `ts.CompilerHost` or `ts.LanguageServiceHost`) that understands processor
- * files: `import Tag from "<tag>"` resolves through the taglib lookup,
- * relative and external-package specifiers resolve to processor files
- * (preferring an adjacent `.d.*` definition file), and everything else falls
- * back to `ts.bundlerModuleNameResolver`.
+ * `ts.CompilerHost` or `ts.LanguageServiceHost`) that understands `<tag>`
+ * and processor-file imports.
  */
 export function createModuleResolver({
   ts,
@@ -50,7 +47,6 @@ export function createModuleResolver({
 
       const tagNameMatch = importTagReg.exec(moduleName);
       if (tagNameMatch) {
-        // Try to resolve `import Tag from "<tag>"` style imports.
         const [, tagName] = tagNameMatch;
         const tagDef = Project.getTagLookup(
           path.dirname(containingFile),
@@ -67,12 +63,8 @@ export function createModuleResolver({
         let isExternalLibraryImport = false;
         let resolvedFileName: string | undefined;
         if (fsPathReg.test(moduleName)) {
-          // For fs paths just see if it exists on disk.
           resolvedFileName = path.resolve(containingFile, "..", moduleName);
         } else {
-          // For other paths we treat it as a node_module and try resolving
-          // that modules `package.json`. If the `package.json` exists then we'll
-          // try resolving the `.marko` file relative to that.
           const [, nodeModuleName, relativeModulePath] =
             modulePartsReg.exec(moduleName)!;
           const { resolvedModule } = ts.nodeModuleNameResolver(

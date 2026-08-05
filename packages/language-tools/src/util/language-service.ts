@@ -6,33 +6,22 @@ import { createModuleResolver } from "./module-resolver";
 
 export interface CreateLanguageServiceOptions {
   ts: typeof ts;
-  /** Filesystem access for the service, defaults to `ts.sys`. */
+  /** Defaults to `ts.sys`. */
   host?: ts.System;
-  /**
-   * Path to a `tsconfig.json`/`jsconfig.json`. Discovered from the host's
-   * current directory when omitted.
-   */
+  /** Defaults to the nearest `tsconfig.json`/`jsconfig.json`. */
   configFile?: string;
-  /** Extra compiler options merged over those from the config file. */
   compilerOptions?: ts.CompilerOptions;
 }
 
 export interface MarkoLanguageService {
   service: ts.LanguageService;
-  /** Adds a file to the program's root file names (deduped). */
   addRootName(fileName: string): void;
-  /** The processor responsible for a file, if any. */
   getProcessor(fileName: string): Processors.Processor | undefined;
 }
 
 /**
- * Creates a `ts.LanguageService` that understands processor files (`.marko`,
- * CSS modules), for tools that need a type checker over them without owning
- * any of the host plumbing: script snapshots are the extracted TypeScript (a
- * file that fails to parse checks as an empty file), module specifiers resolve
- * through the processors (including `import Tag from "<tag>"`), script
- * versions track the host's modified times so long-lived services pick up
- * edits, and root names are seeded from the processors' own requirements.
+ * Creates a `ts.LanguageService` that understands processor files
+ * (`.marko`, CSS modules).
  */
 export function createLanguageService(
   options: CreateLanguageServiceOptions,
@@ -57,9 +46,6 @@ export function createLanguageService(
         })?.options
       : undefined),
     ...options.compilerOptions,
-    // Processor files must be allowed into the program regardless of the
-    // project's own settings, and a service over extracted sources can
-    // neither emit nor usefully re-check the libs.
     noEmit: true,
     allowJs: true,
     skipLibCheck: true,
@@ -69,8 +55,6 @@ export function createLanguageService(
   const rootNames = new Set(Processors.getRootNames(processors));
   const getScriptVersion = (fileName: string) =>
     `${host.getModifiedTime?.(fileName)?.getTime() ?? 0}`;
-  // Re-extracting every processor file on each program update would make the
-  // service O(files²); keep snapshots until the file's version moves on.
   const snapshots = new Map<
     string,
     { version: string; snapshot: ts.IScriptSnapshot }
@@ -94,7 +78,6 @@ export function createLanguageService(
         try {
           extractedCode = processor.extract(fileName, code).toString();
         } catch {
-          // Parse errors check as an empty file.
           extractedCode = "";
         }
       }
