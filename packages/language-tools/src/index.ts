@@ -9,10 +9,8 @@ export { getExt } from "./util/get-ext";
 export { isDefinitionFile } from "./util/is-definition-file";
 export {
   createLanguageService,
-  createLanguageServiceHost,
   type CreateLanguageServiceOptions,
   type MarkoLanguageService,
-  type MarkoLanguageServiceHost,
 } from "./util/language-service";
 export {
   createModuleResolver,
