@@ -1,9 +1,5 @@
 import type { types as t } from "@marko/compiler";
 import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
-import path from "path";
-import { relativeImportPath } from "relative-import-path";
-import type TS from "typescript/lib/tsserverlibrary";
-
 import {
   isControlFlowTag,
   type Node,
@@ -12,7 +8,11 @@ import {
   type Range,
   type Repeatable,
   type Repeated,
-} from "../../parser";
+} from "@marko/parse";
+import path from "path";
+import { relativeImportPath } from "relative-import-path";
+import type TS from "typescript/lib/tsserverlibrary";
+
 import { Extractor } from "../../util/extractor";
 import { findStyleSelectors } from "../../util/find-style-selectors";
 import { normalizePath } from "../../util/normalize-path";
@@ -222,7 +222,10 @@ class ScriptExtractor {
           break;
         }
         case NodeType.Static: {
-          let start = node.start + "static ".length;
+          let start =
+            (node.name
+              ? node.name.end
+              : node.start + (node.target || "static").length) + 1;
           let end = node.end;
           this.#writeComments(node);
 
@@ -514,10 +517,20 @@ function ${templateName}() {\n`);
   }
 
   #writeCommentPragmas(program: Node.Program) {
+    // Leading comments are attached to the node which follows them, so when
+    // the body begins with comment nodes look past them for the attachment.
+    let firstBodyNode: Node.RootBodyNode | undefined;
+    for (const node of program.body) {
+      if (node.type !== NodeType.Comment) {
+        firstBodyNode = node;
+        break;
+      }
+    }
+
     const firstComments = program.static.length
       ? program.static[0].comments
-      : program.body.length
-        ? (program.body[0] as Node.Commentable).comments
+      : firstBodyNode
+        ? (firstBodyNode as Node.Commentable).comments
         : program.comments;
 
     if (firstComments) {
@@ -533,29 +546,31 @@ function ${templateName}() {\n`);
   #writeComments(node: Node.Commentable) {
     if (node.comments) {
       for (const comment of node.comments) {
-        if (!WROTE_COMMENT.has(comment)) {
-          if (this.#code.charAt(comment.start + 1) === "/") {
-            this.#extractor.write("//").copy(comment.value).write("\n");
-          } else if (this.#code.charAt(comment.start + 1) === "!") {
-            this.#extractor.write("/*");
-            let startIndex = comment.value.start;
-            // handle closing JS comments _within_ the HTML comment
-            for (const { index } of this.#read(comment.value).matchAll(
-              /\*\//g,
-            )) {
-              this.#extractor
-                .copy({
-                  start: startIndex,
-                  end: (startIndex = comment.value.start + index + 1),
-                })
-                .write("\\");
-            }
-            this.#extractor.copy({ start: startIndex, end: comment.value.end });
-            this.#extractor.write("*/");
-          } else {
-            this.#extractor.write("/*").copy(comment.value).write("*/");
-          }
+        this.#writeComment(comment);
+      }
+    }
+  }
+
+  #writeComment(comment: Node.Comment) {
+    if (!WROTE_COMMENT.has(comment)) {
+      if (this.#code.charAt(comment.start + 1) === "/") {
+        this.#extractor.write("//").copy(comment.value).write("\n");
+      } else if (this.#code.charAt(comment.start + 1) === "!") {
+        this.#extractor.write("/*");
+        let startIndex = comment.value.start;
+        // handle closing JS comments _within_ the HTML comment
+        for (const { index } of this.#read(comment.value).matchAll(/\*\//g)) {
+          this.#extractor
+            .copy({
+              start: startIndex,
+              end: (startIndex = comment.value.start + index + 1),
+            })
+            .write("\\");
         }
+        this.#extractor.copy({ start: startIndex, end: comment.value.end });
+        this.#extractor.write("*/");
+      } else {
+        this.#extractor.write("/*").copy(comment.value).write("*/");
       }
     }
   }
@@ -782,6 +797,9 @@ constructor(_) {}
           break;
         case NodeType.Scriptlet:
           this.#writeScriptlet(child);
+          break;
+        case NodeType.Comment:
+          this.#writeComment(child);
           break;
       }
     }
@@ -1601,10 +1619,20 @@ constructor(_) {}
     let content: ProcessedBody["content"];
     let staticAttrTags: ProcessedBody["staticAttrTags"];
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
+    let pendingComments: Node.Comment[] | undefined;
     let i = 0;
 
     while (i <= last) {
       const child = body[i++];
+
+      // Comments followed by a node are written as that node's leading
+      // comments; only comments at the end of the body (ignoring whitespace)
+      // have no node to attach to and must be written explicitly.
+      if (child.type === NodeType.Comment) {
+        (pendingComments ||= []).push(child);
+      } else if (!(child.type === NodeType.Text && this.#isEmptyText(child))) {
+        pendingComments = undefined;
+      }
 
       switch (child.type) {
         case NodeType.AttrTag: {
@@ -1637,6 +1665,8 @@ constructor(_) {}
               loop: while (i <= last) {
                 const nextChild = body[i++];
                 switch (nextChild.type) {
+                  case NodeType.Comment:
+                    continue loop;
                   case NodeType.Text:
                     // Ignore empty text nodes.
                     if (this.#isEmptyText(nextChild)) {
@@ -1727,6 +1757,14 @@ constructor(_) {}
           break;
         }
 
+        case NodeType.Comment:
+        case NodeType.Import:
+        case NodeType.Export:
+        case NodeType.Class:
+        case NodeType.Style:
+        case NodeType.Static:
+          break;
+
         default:
           if (content) {
             content.push(child);
@@ -1735,6 +1773,13 @@ constructor(_) {}
           }
           break;
       }
+    }
+
+    // Only written when there is other content; a comment-only body must not
+    // become `content` since that changes the shape of the generated code
+    // (eg for attr tag bodies) and with it diagnostic locations.
+    if (pendingComments && content) {
+      content.push(...pendingComments);
     }
 
     if (content || staticAttrTags || dynamicAttrTagParents) {

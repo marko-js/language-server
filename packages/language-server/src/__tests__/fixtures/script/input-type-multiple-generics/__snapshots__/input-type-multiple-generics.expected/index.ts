@@ -26,6 +26,7 @@ export { type Component };
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   input.fullName;
+  //         ^?
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

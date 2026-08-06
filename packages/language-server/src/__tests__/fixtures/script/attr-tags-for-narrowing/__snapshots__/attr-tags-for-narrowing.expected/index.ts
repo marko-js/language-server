@@ -37,7 +37,6 @@ export { type Component };
         {
           of: [1, 2, 3],
         },
-        // ^?
         () => ({
           ["item"]: Marko._.attrTagFor(__marko_internal_tag_1, "item")(
             "item",
@@ -100,4 +99,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-// ^?

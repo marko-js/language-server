@@ -1,4 +1,4 @@
-import type { Range } from "../parser";
+import type { Range } from "@marko/parse";
 
 /**
  * Collect class (`.name`) and id (`#name`) selectors, mapping each unique name

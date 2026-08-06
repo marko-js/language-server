@@ -142,9 +142,9 @@ importers:
       '@marko/compiler':
         specifier: ^5.41.7
         version: 5.41.7
-      htmljs-parser:
-        specifier: ^5.12.1
-        version: 5.12.1
+      '@marko/parse':
+        specifier: ^0.0.0
+        version: link:../parse
       relative-import-path:
         specifier: ^1.0.1
         version: 1.0.1
@@ -161,6 +161,16 @@ importers:
       mitata:
         specifier: ^1.0.34
         version: 1.0.34
+      tsx:
+        specifier: ^4.22.4
+        version: 4.22.4
+
+  packages/parse:
+    dependencies:
+      htmljs-parser:
+        specifier: ^5.12.1
+        version: 5.12.1
+    devDependencies:
       tsx:
         specifier: ^4.22.4
         version: 4.22.4

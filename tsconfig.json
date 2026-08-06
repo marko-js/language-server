@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "./packages/parse" },
     { "path": "./packages/language-tools" },
     { "path": "./packages/language-server" },
     { "path": "./packages/ts-plugin" },

@@ -23,6 +23,7 @@ export interface Input {}
         a = _a;
       },
     });
+    //   ^?   ^?
     var __marko_internal_hoist__b = b;
   }
   Marko._.noop({ b, input, $global, $signal });

@@ -54,6 +54,7 @@ export interface Input {}
                   value: () => a.filter((e) => e.length),
                 });
                 baz;
+                //    ^?
                 return new (class MarkoReturn<Return = void> {
                   readonly [Marko._.scope] = { c };
                   declare return: Return;
@@ -72,7 +73,6 @@ export interface Input {}
     }
   })();
   const __marko_internal_rendered_6 = (() => {
-    //    ^?
     if ($global.foo) {
       const __marko_internal_tag_7 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),

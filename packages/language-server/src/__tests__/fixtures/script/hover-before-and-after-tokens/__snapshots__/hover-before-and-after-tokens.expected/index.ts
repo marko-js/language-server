@@ -14,6 +14,7 @@ export { type Component };
   //^?
   console.log("hello");
   console.log("world");
+  //^?
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

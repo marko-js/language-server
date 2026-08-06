@@ -1,6 +1,5 @@
 import type { TaglibLookup } from "@marko/compiler/babel-utils";
-
-import { type Node, NodeType, type Parsed } from "../../../parser";
+import { type Node, NodeType, type Parsed } from "@marko/parse";
 
 export type RuntimeAPI = (typeof RuntimeAPI)[keyof typeof RuntimeAPI];
 export const RuntimeAPI = {
@@ -98,7 +97,7 @@ function detectAPIFromProgram(
 
 function detectAPIFromBody(
   parsed: Parsed,
-  body: undefined | Node.ChildNode[],
+  body: undefined | Node.RootBodyNode[],
 ): RuntimeAPI | void {
   if (body) {
     for (const child of body) {
@@ -110,7 +109,7 @@ function detectAPIFromBody(
 
 function detectAPIFromChild(
   parsed: Parsed,
-  child: Node.ChildNode,
+  child: Node.RootBodyNode,
 ): RuntimeAPI | void {
   switch (child.type) {
     case NodeType.Scriptlet:
