@@ -25,8 +25,7 @@ Marko._.renderNativeTag("div")()()({
 const __marko_internal_tag_3 = (
 Marko._.resolveTemplate(import("marko/src/core-tags/core/script.d.marko"))
 );
-Marko._.renderTemplate(__marko_internal_tag_3)()()(// ^?
-{
+Marko._.renderTemplate(__marko_internal_tag_3)()()({
 async value(){$el;  
   //^?
   $hoistedEl;

@@ -774,10 +774,14 @@ function getInsertModuleStatementOffset(parsed: Parsed) {
     firstNode = program.static[0];
   }
 
-  if (program.body.length) {
-    if (!firstNode || firstNode.start > program.body[0].start) {
-      firstNode = program.body[0];
+  for (const node of program.body) {
+    // Comments in the body are the attached leading comments of the node
+    // which follows them, so skip to that node.
+    if (node.type === NodeType.Comment) continue;
+    if (!firstNode || firstNode.start > node.start) {
+      firstNode = node;
     }
+    break;
   }
 
   // Fall back to after the comments of the first node,

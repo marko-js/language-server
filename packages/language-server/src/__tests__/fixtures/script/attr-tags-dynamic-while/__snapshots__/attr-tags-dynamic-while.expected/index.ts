@@ -23,6 +23,7 @@ export { type Component };
           ["a"]: {
             [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
               i;
+              //      ^?
               return () => {
                 return Marko._.voidReturn;
               };
@@ -32,7 +33,6 @@ export { type Component };
         }
       : {}),
   });
-  //      ^?
   let done = false;
   i = 0;
   const __marko_internal_tag_2 = custom;

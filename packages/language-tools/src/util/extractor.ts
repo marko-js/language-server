@@ -5,7 +5,7 @@ import {
   type Location,
   type Position,
   type Range,
-} from "../parser";
+} from "@marko/parse";
 
 /**
  * The minimal source an {@link Extractor} needs to maintain a source mapping.

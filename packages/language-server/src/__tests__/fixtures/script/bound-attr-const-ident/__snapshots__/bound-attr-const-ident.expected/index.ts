@@ -39,6 +39,7 @@ export interface Input {}
           __marko_internal_change__a.a = _a;
         },
       });
+      //   ^?   ^?
       var __marko_internal_hoist__a = a;
       var __marko_internal_hoist__b = b;
     }

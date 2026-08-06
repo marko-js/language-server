@@ -1,4 +1,5 @@
 import type { Config, types as t } from "@marko/compiler";
+import { parse } from "@marko/parse";
 import path from "path";
 import type ts from "typescript/lib/tsserverlibrary";
 
@@ -8,7 +9,6 @@ import {
   INTERNAL_API_VAR,
   ScriptLang,
 } from "../extractors/script";
-import { parse } from "../parser";
 import * as Project from "../util/project";
 import type { ProcessorConfig } from ".";
 

@@ -38,6 +38,7 @@ export class Component extends Marko.Component {}
         ["foo"]: {
           [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
             data;
+            //^?
             return Marko._.voidReturn;
           },
           [Symbol.iterator]: Marko._.any,
@@ -50,36 +51,33 @@ export class Component extends Marko.Component {}
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
-    //^?
-    {
-      ["foo"]: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
-        "foo",
-        {
-          ["foo"]: {
-            bar: true,
-            [Symbol.iterator]: Marko._.any,
-          },
+  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+    ["foo"]: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
+      "foo",
+      {
+        ["foo"]: {
+          bar: true,
+          [Symbol.iterator]: Marko._.any,
         },
-        {
-          ["foo"]: {
-            [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
-              data;
-              return Marko._.voidReturn;
-            },
-            [Symbol.iterator]: Marko._.any,
+      },
+      {
+        ["foo"]: {
+          [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
+            data;
+            //^?
+            return Marko._.voidReturn;
           },
+          [Symbol.iterator]: Marko._.any,
         },
-      ),
-    },
-  );
+      },
+    ),
+  });
   const __marko_internal_tag_3 = true && Child;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@foo"];
     input["@foo"];
   });
   Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
-    //^?
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
       ["foo"]: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
@@ -94,6 +92,7 @@ export class Component extends Marko.Component {}
           ["foo"]: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
               data;
+              //^?
               return Marko._.voidReturn;
             },
             [Symbol.iterator]: Marko._.any,
@@ -111,4 +110,3 @@ export default new /**
  * @extends { Marko._.Template<{              render(         input: Marko.TemplateInput<Input>,         stream?: {           write: (chunk: string) => void;           end: (chunk?: string) => void;         },       ): Marko.Out<Component>;               render(         input: Marko.TemplateInput<Input>,         cb?: (           err: Error | null,           result: Marko.RenderResult<Component>,         ) => void,       ): Marko.Out<Component>;               renderSync(         input: Marko.TemplateInput<Input>,       ): Marko.RenderResult<Component>;               renderToString(input: Marko.TemplateInput<Input>): string;               stream(         input: Marko.TemplateInput<Input>,       ): ReadableStream<string> & NodeJS.ReadableStream;               mount(         input: Marko.TemplateInput<Input>,         reference: Node,         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",       ): Marko.MountedTemplate<typeof input>;          api: typeof __marko_internal_api,   _(): () => <__marko_internal_input extends unknown>(input: Marko.Directives & Input & Marko._.Relate<__marko_internal_input, Marko.Directives & Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>); }>}
  */
 (class Template extends Marko._.Template {})();
-//^?
