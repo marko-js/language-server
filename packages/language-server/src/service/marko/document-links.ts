@@ -28,7 +28,7 @@ function extractDocumentLinks({
 
   const links: DocumentLink[] = [];
   const { program, read } = parsed;
-  const visit = (node: Node.ChildNode) => {
+  const visit = (node: Node.RootBodyNode) => {
     switch (node.type) {
       case NodeType.AttrTag:
         if (node.body) {

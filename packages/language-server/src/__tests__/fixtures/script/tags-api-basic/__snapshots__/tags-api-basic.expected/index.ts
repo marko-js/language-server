@@ -87,22 +87,20 @@ function __marko_internal_template(this: void) {
                 })(),
               },
             );
+            //                 ^?        ^?
             return Marko._.voidReturn;
           },
         );
-        Marko._.renderNativeTag("div")()()(
-          //                 ^?        ^?
-          {
-            class: Marko._.interpolated`container`,
-            [Marko._.content]: (() => {
-              const __marko_internal_tag_2 = renderBody;
-              Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-          },
-        );
+        Marko._.renderNativeTag("div")()()({
+          class: Marko._.interpolated`container`,
+          [Marko._.content]: (() => {
+            const __marko_internal_tag_2 = renderBody;
+            Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+        });
         const __marko_internal_tag_3 = FancyButton;
         Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
           "no-update": true,

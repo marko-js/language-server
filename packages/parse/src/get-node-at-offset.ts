@@ -1,4 +1,4 @@
-import { type Node, NodeType } from "../parser";
+import { type Node, NodeType } from "./index";
 
 export function getNodeAtOffset(
   offset: number,
@@ -9,7 +9,10 @@ export function getNodeAtOffset(
   return childAtOffset(offset, program.static) || program;
 }
 
-function visitChildNode(offset: number, child: Node.ChildNode): Node.AnyNode {
+function visitChildNode(
+  offset: number,
+  child: Node.ChildNode | Node.StaticNode,
+): Node.AnyNode {
   switch (child.type) {
     case NodeType.Tag:
     case NodeType.AttrTag:

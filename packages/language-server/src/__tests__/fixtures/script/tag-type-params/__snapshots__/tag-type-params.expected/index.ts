@@ -17,6 +17,7 @@ export interface Input {}
     )()()({
       data: 1 as const,
       [Marko._.contentFor(__marko_internal_tag_1)]: <A,>(data: A) => {
+        //                  ^?
         var __marko_internal_return = Marko._.returnTag(
           //                         ^?
           {
@@ -29,8 +30,8 @@ export interface Input {}
         })(__marko_internal_return);
       },
     });
-    //                  ^?
     result;
+    //   ^?
     var __marko_internal_hoist__result = result;
   }
   Marko._.noop({ result, input, $global, $signal });

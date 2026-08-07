@@ -1,0 +1,42 @@
+{
+  "name": "@marko/parse",
+  "version": "0.0.0",
+  "description": "A syntax tree parser for Marko templates",
+  "keywords": [
+    "cst",
+    "marko",
+    "parse",
+    "parser",
+    "syntax"
+  ],
+  "homepage": "https://github.com/marko-js/language-server/tree/main/packages/parse/README.md",
+  "bugs": "https://github.com/marko-js/language-server/issues/new?template=bug-report.yml",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marko-js/language-server/tree/main/packages/parse"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "tsx build.mts",
+    "test": "mocha './src/**/__tests__/*.test.ts'"
+  },
+  "dependencies": {
+    "htmljs-parser": "^5.12.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.22.4"
+  }
+}

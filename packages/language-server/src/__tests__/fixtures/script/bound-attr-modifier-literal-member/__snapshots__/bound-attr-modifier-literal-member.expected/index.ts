@@ -48,6 +48,7 @@ export interface Input {}
           }),
       },
     );
+    //      ^?    ^?
     var __marko_internal_hoist__a = a;
   }
   Marko._.noop({ a, input, $global, $signal });

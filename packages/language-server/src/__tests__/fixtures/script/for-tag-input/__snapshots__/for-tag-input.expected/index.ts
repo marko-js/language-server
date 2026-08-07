@@ -28,6 +28,7 @@ export { type Component };
           href: href,
           [Marko._.content]: (() => {
             title;
+            // ^?
             return () => {
               return Marko._.voidReturn;
             };
@@ -37,36 +38,34 @@ export { type Component };
       return Marko._.voidReturn;
     },
   );
-  Marko._.renderNativeTag("select")()()(
-    // ^?
-    {
-      [Marko._.content]: (() => {
-        Marko._.forOfTag(
-          {
-            of: input.option,
-          },
-          ({ value, content }) => {
-            Marko._.renderNativeTag("option")()()(
-              // ^?
-              {
-                value: value,
-                [Marko._.content]: (() => {
-                  content;
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
-              },
-            );
-            return Marko._.voidReturn;
-          },
-        );
-        return () => {
+  Marko._.renderNativeTag("select")()()({
+    [Marko._.content]: (() => {
+      Marko._.forOfTag(
+        {
+          of: input.option,
+        },
+        ({ value, content }) => {
+          Marko._.renderNativeTag("option")()()(
+            // ^?
+            {
+              value: value,
+              [Marko._.content]: (() => {
+                content;
+                // ^?
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+            },
+          );
           return Marko._.voidReturn;
-        };
-      })(),
-    },
-  );
+        },
+      );
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/my-select.marko"),
   );
@@ -74,53 +73,50 @@ export { type Component };
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()(
-    // ^?
-    {
-      ...Marko._.mergeAttrTags(
-        Marko._.forOfAttrTag(
-          {
-            of: input.tab,
+  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    ...Marko._.mergeAttrTags(
+      Marko._.forOfAttrTag(
+        {
+          of: input.tab,
+        },
+        ({ href, title }) => ({
+          // ^?
+          ["option"]: {
+            value: href,
+            [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+              // ^?
+              title;
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+            [Symbol.iterator]: Marko._.any,
           },
-          ({ href, title }) => ({
-            // ^?
-            ["option"]: {
-              value: href,
-              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-                // ^?
-                title;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
-            },
-          }),
-          Marko._.input(__marko_internal_tag_1),
-        ),
-        Marko._.forOfAttrTag(
-          {
-            of: input.option,
-          },
-          ({ value, content }) => ({
-            // ^?
-            ["option"]: {
-              value: value,
-              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-                // ^?
-                content;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
-            },
-          }),
-          Marko._.input(__marko_internal_tag_1),
-        ),
+        }),
+        Marko._.input(__marko_internal_tag_1),
       ),
-    },
-  );
+      Marko._.forOfAttrTag(
+        {
+          of: input.option,
+        },
+        ({ value, content }) => ({
+          // ^?
+          ["option"]: {
+            value: value,
+            [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+              // ^?
+              content;
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+            [Symbol.iterator]: Marko._.any,
+          },
+        }),
+        Marko._.input(__marko_internal_tag_1),
+      ),
+    ),
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

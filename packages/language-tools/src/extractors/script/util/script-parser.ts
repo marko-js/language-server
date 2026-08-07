@@ -3,8 +3,8 @@ import {
   parse as parseStatement,
   parseExpression,
 } from "@marko/compiler/internal/babel";
+import type { Node, Parsed } from "@marko/parse";
 
-import type { Node, Parsed } from "../../../parser";
 import { isTextOnlyScript } from "./is-text-only-script";
 
 const plugins = ["exportDefaultFrom", "importAssertions", "typescript"];

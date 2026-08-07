@@ -22,6 +22,7 @@ function __marko_internal_template(this: void) {
       "value",
       __marko_internal_rendered_1.return,
     );
+    // ^?
     var __marko_internal_return = Marko._.returnTag({
       value: x as 1 | 2,
       valueChange(

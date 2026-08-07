@@ -19,6 +19,7 @@ export interface Component extends Marko._.ResolveComponent<
     onClick: component["strange-handler"],
   });
   console.log(component);
+  //            ^?
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
