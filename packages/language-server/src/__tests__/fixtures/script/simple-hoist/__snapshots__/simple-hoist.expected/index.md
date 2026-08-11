@@ -11,6 +11,21 @@
 ```
 
 ## Diagnostics
+### Ln 13, Col 1
+```marko
+  11 | </div>
+  12 |
+> 13 | <effect() {
+     | ^^^^^^^^^^^
+> 14 |   console.log(el())
+     | ^^^^^^^^^^^^^^^^^^^
+> 15 | //            ^?
+     | ^^^^^^^^^^^^^^^^^^^
+> 16 | }/>
+     | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+  17 |
+```
+
 ### Ln 4, Col 4
 ```marko
   2 |   <let/x=1/>
@@ -27,5 +42,40 @@
   5 |     x = 2;
   6 |     x++;
   7 |     ++x;
+```
+
+## Code Actions
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+<div>
+  <let/x=1/>
+  ${x}
+  <button/el onClick() {
+    x = 2;
+    x++;
+    ++x;
+  }/>
+</div>
+<script >
+  console.log(el());
+  //            ^?
+</script>
+```
+
+### Fix all auto-fixable Marko issues
+```marko
+<div>
+  <let/x=1/>
+  ${x}
+  <button/el onClick() {
+    x = 2;
+    x++;
+    ++x;
+  }/>
+</div>
+<script >
+  console.log(el());
+  //            ^?
+</script>
 ```
 

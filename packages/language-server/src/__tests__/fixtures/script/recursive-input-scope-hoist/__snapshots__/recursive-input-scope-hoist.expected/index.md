@@ -42,3 +42,75 @@
   21 | }/>
 ```
 
+## Diagnostics
+### Ln 14, Col 1
+```marko
+  12 | </comments>
+  13 |
+> 14 | <effect() {
+     | ^^^^^^^^^^^
+> 15 |   a;
+     | ^^^^
+> 16 | //^?
+     | ^^^^
+> 17 |   b;
+     | ^^^^
+> 18 | //^?
+     | ^^^^
+> 19 |   c;
+     | ^^^^
+> 20 | //^?
+     | ^^^^
+> 21 | }/>
+     | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+```
+
+## Code Actions
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+<comments>
+  <@comment id="a">
+    <@comment id="b">
+      <!--    ^?-->
+      <let/b=(() => "b" as const)/>
+    </@comment>
+    <let/a=(() => "a" as const)/>
+  </@comment>
+  <@comment id="c">
+    <let/c=(() => "c" as const)/>
+  </@comment>
+</comments>
+<script >
+  a;
+  //^?
+  b;
+  //^?
+  c;
+  //^?
+</script>
+```
+
+### Fix all auto-fixable Marko issues
+```marko
+<comments>
+  <@comment id="a">
+    <@comment id="b">
+      <!--    ^?-->
+      <let/b=(() => "b" as const)/>
+    </@comment>
+    <let/a=(() => "a" as const)/>
+  </@comment>
+  <@comment id="c">
+    <let/c=(() => "c" as const)/>
+  </@comment>
+</comments>
+<script >
+  a;
+  //^?
+  b;
+  //^?
+  c;
+  //^?
+</script>
+```
+
