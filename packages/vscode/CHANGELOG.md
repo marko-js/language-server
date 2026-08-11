@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.2.0
+
+### Minor Changes
+
+- [#588](https://github.com/marko-js/language-server/pull/588) [`9b627df`](https://github.com/marko-js/language-server/commit/9b627df21b63f9aeecd04780b9336ac3b734fa17) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support the `async` shorthand method modifier, eg `<button async onClick() { await save() }>`, so its body type-checks as an async function.
+
+### Patch Changes
+
+- [#590](https://github.com/marko-js/language-server/pull/590) [`52fe463`](https://github.com/marko-js/language-server/commit/52fe463be3bf2beb31bc61ae754a4b5a427c2ebc) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update prettier-plugin-marko to 4.1, so formatting keeps the `async` keyword on shorthand methods.
+
 ## 3.1.8
 
 ### Patch Changes

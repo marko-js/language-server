@@ -1,5 +1,16 @@
 # @marko/type-check
 
+## 3.2.0
+
+### Minor Changes
+
+- [#588](https://github.com/marko-js/language-server/pull/588) [`9b627df`](https://github.com/marko-js/language-server/commit/9b627df21b63f9aeecd04780b9336ac3b734fa17) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Support the `async` shorthand method modifier, eg `<button async onClick() { await save() }>`, so its body type-checks as an async function.
+
+### Patch Changes
+
+- Updated dependencies [[`9b627df`](https://github.com/marko-js/language-server/commit/9b627df21b63f9aeecd04780b9336ac3b734fa17)]:
+  - @marko/language-tools@2.7.0
+
 ## 3.1.6
 
 ### Patch Changes
