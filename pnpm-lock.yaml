@@ -85,8 +85,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.41.7
-        version: 5.41.7
+        specifier: ^5.42.0
+        version: 5.42.0
       '@marko/language-tools':
         specifier: ^2.6.8
         version: link:../language-tools
@@ -100,8 +100,8 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1(patch_hash=63260bcabe348afac2b14cafcd725106f132adbad0fab0328f16e5a9c6a1a1e4)
       marko:
-        specifier: ^5.39.27
-        version: 5.39.27
+        specifier: ^5.39.33
+        version: 5.39.33
       prettier:
         specifier: ^3.8.4
         version: 3.8.4
@@ -140,8 +140,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.41.7
-        version: 5.41.7
+        specifier: ^5.42.0
+        version: 5.42.0
       htmljs-parser:
         specifier: ^5.14.0
         version: 5.14.0
@@ -156,8 +156,8 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4(supports-color@8.1.1)(typescript@6.0.3)
       marko:
-        specifier: ^5.39.27
-        version: 5.39.27
+        specifier: ^5.39.33
+        version: 5.39.33
       mitata:
         specifier: ^1.0.34
         version: 1.0.34
@@ -174,8 +174,8 @@ importers:
         specifier: ^2.6.8
         version: link:../language-tools
       marko:
-        specifier: ^5.39.27
-        version: 5.39.27
+        specifier: ^5.39.33
+        version: 5.39.33
       tsx:
         specifier: ^4.22.4
         version: 4.22.4
@@ -189,8 +189,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.41.7
-        version: 5.41.7
+        specifier: ^5.42.0
+        version: 5.42.0
       '@marko/language-tools':
         specifier: ^2.6.8
         version: link:../language-tools
@@ -909,8 +909,16 @@ packages:
     resolution: {integrity: sha512-8NtJhMzMlAL4p5ml+KFyCou/MjSQEoNEikARnBaR3nJv7zROruFo6eegtR6qb9y09zbO1FERq2eBmRQ7LGvXXw==}
     engines: {node: 18 || 20 || >=22}
 
+  '@marko/compiler@5.42.0':
+    resolution: {integrity: sha512-w9awaOlrqIBpjX1hMz0fllOnRCa3IaY2ZeoD0+lp8Yo/EmTs2LxJHc6RxXwZsEMcj22fCCVh7yGcylRhhJNTQw==}
+    engines: {node: '>=22'}
+
   '@marko/runtime-tags@6.3.21':
     resolution: {integrity: sha512-ehZ6vvj7kX6HfVKGHJu8TtImnvEbrgWMAES267rlC4HF1cSYSxzx3LDXpyqtZB0bASKAshgrf4lnepqLHH7JHQ==}
+    engines: {node: '>=22'}
+
+  '@marko/runtime-tags@6.3.35':
+    resolution: {integrity: sha512-Tx0NjH5uMpkm84uRmsR0B+VbUQs26a9TlMzc5z6eWxvKpQYFtAC0vVRCMW5Ds0Rg4L9+NZG4PAIijxXF7zEIpw==}
     engines: {node: '>=22'}
 
   '@napi-rs/wasm-runtime@0.2.12':
@@ -2369,6 +2377,11 @@ packages:
   marko@5.39.27:
     resolution: {integrity: sha512-Gz65+mVEIQeK5p/q3UiyY0QjARpMQWl5opsbTT+CpPEO6/yfkAVFEC95NG6JQDzOaK8feIoWs2JFR+MDp4FzrA==}
     engines: {node: 18 || 20 || >=22}
+    hasBin: true
+
+  marko@5.39.33:
+    resolution: {integrity: sha512-LJ1M2gyopR9n8RfriwdpzevlSEk8ny6t5uRkOX1pJCQvwmaMls4xRPs7yCzzYEcjtBKlDewHI1HLVSYRFPsKAg==}
+    engines: {node: '>=22'}
     hasBin: true
 
   math-intrinsics@1.1.0:
@@ -4008,9 +4021,33 @@ snapshots:
       self-closing-tags: 1.0.1
       source-map-support: 0.5.21
 
+  '@marko/compiler@5.42.0':
+    dependencies:
+      '@luxass/strip-json-comments': 2.0.1
+      complain: 1.6.1
+      he: 1.2.0
+      htmljs-parser: 5.14.0
+      jsesc: 3.1.0
+      kleur: 4.1.5
+      lasso-package-root: 1.0.1
+      magic-string: 0.30.21
+      raptor-regexp: 1.0.1
+      raptor-util: 3.2.0
+      relative-import-path: 1.0.1
+      resolve-from: 5.0.0
+      self-closing-tags: 1.0.1
+      source-map-support: 0.5.21
+
   '@marko/runtime-tags@6.3.21':
     dependencies:
       '@marko/compiler': 5.41.7
+      csstype: 3.2.3
+      fastest-levenshtein: 1.0.16
+      magic-string: 0.30.21
+
+  '@marko/runtime-tags@6.3.35':
+    dependencies:
+      '@marko/compiler': 5.42.0
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
       magic-string: 0.30.21
@@ -5621,6 +5658,25 @@ snapshots:
     dependencies:
       '@marko/compiler': 5.41.7
       '@marko/runtime-tags': 6.3.21
+      app-module-path: 2.2.0
+      argly: 1.2.0
+      browser-refresh-client: 1.1.4
+      complain: 1.6.1
+      csstype: 3.2.3
+      events-light: 1.0.5
+      he: 1.2.0
+      listener-tracker: 2.0.0
+      magic-string: 0.30.21
+      minimatch: 10.2.5
+      raptor-util: 3.2.0
+      resolve-from: 5.0.0
+      self-closing-tags: 1.0.1
+      warp10: 2.1.0
+
+  marko@5.39.33:
+    dependencies:
+      '@marko/compiler': 5.42.0
+      '@marko/runtime-tags': 6.3.35
       app-module-path: 2.2.0
       argly: 1.2.0
       browser-refresh-client: 1.1.4

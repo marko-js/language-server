@@ -161,6 +161,55 @@
 ```
 
 ## Diagnostics
+### Ln 51, Col 1
+```marko
+  49 | </>
+  50 |
+> 51 | <effect() {
+     | ^^^^^^^^^^^
+> 52 |   hoistedFromForOf;
+     | ^^^^^^^^^^^^^^^^^^^
+> 53 | //^?
+     | ^^^^^^^^^^^^^^^^^^^
+> 54 | }/>
+     | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+  55 |
+  56 | <let/record={ a: 1, b: 2 } as const/>
+  57 |
+```
+
+### Ln 75, Col 1
+```marko
+  73 | </>
+  74 |
+> 75 | <effect() {
+     | ^^^^^^^^^^^
+> 76 |   hoistedFromForIn;
+     | ^^^^^^^^^^^^^^^^^^^
+> 77 | //^?
+     | ^^^^^^^^^^^^^^^^^^^
+> 78 | }/>
+     | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+  79 |
+  80 | <${custom}>
+  81 |   <for|index| to=10>
+```
+
+### Ln 116, Col 1
+```marko
+  114 | </>
+  115 |
+> 116 | <effect() {
+      | ^^^^^^^^^^^
+> 117 |   hoistedFromForTo;
+      | ^^^^^^^^^^^^^^^^^^^
+> 118 | //^?
+      | ^^^^^^^^^^^^^^^^^^^
+> 119 | }/>
+      | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+  120 |
+```
+
 ### Ln 1, Col 4
 ```marko
 > 1 | <${custom}>
@@ -288,5 +337,470 @@
   109 |   <for|index| to=10>
   110 |     <@a>
   111 |       <const/hoistedFromForTo() { return index }/>
+```
+
+## Code Actions
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+<${custom}>
+  <for>
+    <@a/>
+  </for>
+</>
+<let/list=[{
+  value: 1
+}, {
+  value: 2
+}, {
+  value: 3
+}] as const/>
+<${custom}>
+  <for of=list>
+    <@a/>
+  </for>
+</>
+<${custom}>
+  <for|item, index, all| of=list>
+    <@a>
+      ${item} ${index} ${all}
+      <!--      ^?      ^?       ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|item, index| of=list>
+    <@a>
+      ${item}
+      <!--      ^?-->
+    </@a>
+    <@b>
+      ${index}
+      <!--      ^?-->
+    </@b>
+  </for>
+</>
+<${custom}>
+  <for|item| of=list>
+    <@a>
+      <const/hoistedFromForOf() {
+        return item.value;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForOf;
+  //^?
+</script>
+<let/record={
+  a: 1,
+  b: 2
+} as const/>
+<${custom}>
+  <for|key, value| in=record>
+    <@a>
+      ${key} ${value}
+      <!--      ^?     ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|key| in=record>
+    <@a>
+      <const/hoistedFromForIn() {
+        return key;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForIn;
+  //^?
+}/>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| from=1 to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10 step=2>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      <const/hoistedFromForTo() {
+        return index;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForTo;
+  //^?
+}/>
+```
+
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+<${custom}>
+  <for>
+    <@a/>
+  </for>
+</>
+<let/list=[{
+  value: 1
+}, {
+  value: 2
+}, {
+  value: 3
+}] as const/>
+<${custom}>
+  <for of=list>
+    <@a/>
+  </for>
+</>
+<${custom}>
+  <for|item, index, all| of=list>
+    <@a>
+      ${item} ${index} ${all}
+      <!--      ^?      ^?       ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|item, index| of=list>
+    <@a>
+      ${item}
+      <!--      ^?-->
+    </@a>
+    <@b>
+      ${index}
+      <!--      ^?-->
+    </@b>
+  </for>
+</>
+<${custom}>
+  <for|item| of=list>
+    <@a>
+      <const/hoistedFromForOf() {
+        return item.value;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForOf;
+  //^?
+}/>
+<let/record={
+  a: 1,
+  b: 2
+} as const/>
+<${custom}>
+  <for|key, value| in=record>
+    <@a>
+      ${key} ${value}
+      <!--      ^?     ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|key| in=record>
+    <@a>
+      <const/hoistedFromForIn() {
+        return key;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForIn;
+  //^?
+</script>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| from=1 to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10 step=2>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      <const/hoistedFromForTo() {
+        return index;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForTo;
+  //^?
+}/>
+```
+
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+<${custom}>
+  <for>
+    <@a/>
+  </for>
+</>
+<let/list=[{
+  value: 1
+}, {
+  value: 2
+}, {
+  value: 3
+}] as const/>
+<${custom}>
+  <for of=list>
+    <@a/>
+  </for>
+</>
+<${custom}>
+  <for|item, index, all| of=list>
+    <@a>
+      ${item} ${index} ${all}
+      <!--      ^?      ^?       ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|item, index| of=list>
+    <@a>
+      ${item}
+      <!--      ^?-->
+    </@a>
+    <@b>
+      ${index}
+      <!--      ^?-->
+    </@b>
+  </for>
+</>
+<${custom}>
+  <for|item| of=list>
+    <@a>
+      <const/hoistedFromForOf() {
+        return item.value;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForOf;
+  //^?
+}/>
+<let/record={
+  a: 1,
+  b: 2
+} as const/>
+<${custom}>
+  <for|key, value| in=record>
+    <@a>
+      ${key} ${value}
+      <!--      ^?     ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|key| in=record>
+    <@a>
+      <const/hoistedFromForIn() {
+        return key;
+      }/>
+    </@a>
+  </for>
+</>
+<effect() {
+  hoistedFromForIn;
+  //^?
+}/>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| from=1 to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10 step=2>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      <const/hoistedFromForTo() {
+        return index;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForTo;
+  //^?
+</script>
+```
+
+### Fix all auto-fixable Marko issues
+```marko
+<${custom}>
+  <for>
+    <@a/>
+  </for>
+</>
+<let/list=[{
+  value: 1
+}, {
+  value: 2
+}, {
+  value: 3
+}] as const/>
+<${custom}>
+  <for of=list>
+    <@a/>
+  </for>
+</>
+<${custom}>
+  <for|item, index, all| of=list>
+    <@a>
+      ${item} ${index} ${all}
+      <!--      ^?      ^?       ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|item, index| of=list>
+    <@a>
+      ${item}
+      <!--      ^?-->
+    </@a>
+    <@b>
+      ${index}
+      <!--      ^?-->
+    </@b>
+  </for>
+</>
+<${custom}>
+  <for|item| of=list>
+    <@a>
+      <const/hoistedFromForOf() {
+        return item.value;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForOf;
+  //^?
+</script>
+<let/record={
+  a: 1,
+  b: 2
+} as const/>
+<${custom}>
+  <for|key, value| in=record>
+    <@a>
+      ${key} ${value}
+      <!--      ^?     ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|key| in=record>
+    <@a>
+      <const/hoistedFromForIn() {
+        return key;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForIn;
+  //^?
+</script>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| from=1 to=10>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10 step=2>
+    <@a>
+      ${index}
+      <!--      ^?-->
+    </@a>
+  </for>
+</>
+<${custom}>
+  <for|index| to=10>
+    <@a>
+      <const/hoistedFromForTo() {
+        return index;
+      }/>
+    </@a>
+  </for>
+</>
+<script >
+  hoistedFromForTo;
+  //^?
+</script>
 ```
 

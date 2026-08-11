@@ -22,6 +22,25 @@
 ```
 
 ## Diagnostics
+### Ln 92, Col 1
+```marko
+  90 | </>
+  91 |
+> 92 | <effect() {
+     | ^^^^^^^^^^^
+> 93 |   hoistedFromStaticMember;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 94 | //^?
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 95 |   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 96 | //^?
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 97 | }/>
+     | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
+  98 |
+```
+
 ### Ln 4, Col 4
 ```marko
   2 | static const y = 2;
@@ -119,5 +138,180 @@
   73 |   // hi
   74 |   <@a b=1>
   75 |     <const/hoistedFromStaticMember = () => 1 as const/>
+```
+
+## Code Actions
+### The 'effect' tag has been replaced by the 'script' tag.
+```marko
+static const x = 1;
+static const y = 2;
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if=x/>
+  <else>
+    <@a/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else>
+    <@b/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else if=y>
+    <@b/>
+  </else>
+  <else-if=!y>
+    <@c/>
+  </else-if>
+  <else>
+    <@d/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else-if>
+    <@b/>
+  </else-if>
+</>
+<${custom} x=1>
+  <if(x)>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <if=y>
+    <@b/>
+  </if>
+</>
+<${custom} x=1>
+  <!-- hi-->
+  <@a b=1>
+    <const/hoistedFromStaticMember=(() => 1 as const)/>
+     hi!
+  </@a>
+  <@b/>
+  <if=x>
+    <@b>
+      <const/hoistedFromDynamicMember=(() => 2 as const)/>
+    </@b>
+  </if>
+  <if=y>
+    <@a/>
+  </if>
+</>
+<script >
+  hoistedFromStaticMember;
+  //^?
+  hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
+  //^?
+</script>
+```
+
+### Fix all auto-fixable Marko issues
+```marko
+static const x = 1;
+static const y = 2;
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if=x/>
+  <else>
+    <@a/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else>
+    <@b/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else if=y>
+    <@b/>
+  </else>
+  <else-if=!y>
+    <@c/>
+  </else-if>
+  <else>
+    <@d/>
+  </else>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <else-if>
+    <@b/>
+  </else-if>
+</>
+<${custom} x=1>
+  <if(x)>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if>
+    <@a/>
+  </if>
+</>
+<${custom} x=1>
+  <if=x>
+    <@a/>
+  </if>
+  <if=y>
+    <@b/>
+  </if>
+</>
+<${custom} x=1>
+  <!-- hi-->
+  <@a b=1>
+    <const/hoistedFromStaticMember=(() => 1 as const)/>
+     hi!
+  </@a>
+  <@b/>
+  <if=x>
+    <@b>
+      <const/hoistedFromDynamicMember=(() => 2 as const)/>
+    </@b>
+  </if>
+  <if=y>
+    <@a/>
+  </if>
+</>
+<script >
+  hoistedFromStaticMember;
+  //^?
+  hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
+  //^?
+</script>
 ```
 
