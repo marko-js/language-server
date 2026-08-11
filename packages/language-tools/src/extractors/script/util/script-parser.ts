@@ -103,12 +103,14 @@ export class ScriptParser {
   }
 
   attrMethod(node: Node.AttrMethod): t.ObjectMethod | undefined {
-    const start = node.params.start - 2;
+    // Padded so that the params and body keep their source offsets.
+    const prefix = node.async ? "{async _" : "{_";
+    const start = node.params.start - prefix.length;
     const expr =
       this.#cache.get(start) ??
       this.#expressionAt(
         start,
-        `{_${this.#parsed.read({ start: node.params.start, end: node.body.end })}}`,
+        `${prefix}${this.#parsed.read({ start: node.params.start, end: node.body.end })}}`,
       );
     if (expr) {
       return (expr as t.ObjectExpression).properties[0] as

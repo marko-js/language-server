@@ -94,8 +94,8 @@ importers:
         specifier: ^4.12.1
         version: 4.12.1
       htmljs-parser:
-        specifier: ^5.12.1
-        version: 5.12.1
+        specifier: ^5.14.0
+        version: 5.14.0
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1(patch_hash=63260bcabe348afac2b14cafcd725106f132adbad0fab0328f16e5a9c6a1a1e4)
@@ -143,8 +143,8 @@ importers:
         specifier: ^5.41.7
         version: 5.41.7
       htmljs-parser:
-        specifier: ^5.12.1
-        version: 5.12.1
+        specifier: ^5.14.0
+        version: 5.14.0
       relative-import-path:
         specifier: ^1.0.1
         version: 1.0.1
@@ -2024,8 +2024,8 @@ packages:
     resolution: {integrity: sha512-CV9TW3Y3f8/wT0BRFc1/KAVQ3TUHiXmaAb6VW9vtiMFf7SLoMd1PdAc4W3KFOFETBJUb90KatHqlsZMWV+R9Gg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
-  htmljs-parser@5.12.1:
-    resolution: {integrity: sha512-QnHLg5SWqoH5o8MD4iOWJFtdKSS2lXxtNgyznFXvEeeCK0CTi6URdYtFGkFGDANdq8RZzkuc91KaBgLx2WAhSA==}
+  htmljs-parser@5.14.0:
+    resolution: {integrity: sha512-cGHMvzufiWAcQl11UM8HwxxpFkVicgtJ5RniyFHTClT0WfwMWSxAc7QMAlqpKet+xTsrr7QOOeShOENBMvCPVg==}
 
   htmlparser2@10.1.0:
     resolution: {integrity: sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==}
@@ -3996,7 +3996,7 @@ snapshots:
       '@luxass/strip-json-comments': 2.0.1
       complain: 1.6.1
       he: 1.2.0
-      htmljs-parser: 5.12.1
+      htmljs-parser: 5.14.0
       jsesc: 3.1.0
       kleur: 4.1.5
       lasso-package-root: 1.0.1
@@ -5273,7 +5273,7 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  htmljs-parser@5.12.1: {}
+  htmljs-parser@5.14.0: {}
 
   htmlparser2@10.1.0:
     dependencies:
@@ -5916,7 +5916,7 @@ snapshots:
 
   prettier-plugin-marko@4.0.10:
     dependencies:
-      htmljs-parser: 5.12.1
+      htmljs-parser: 5.14.0
 
   prettier-plugin-packagejson@3.0.2(prettier@3.8.4):
     dependencies:

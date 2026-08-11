@@ -1,0 +1,13 @@
+<let/count=0/>
+
+<button async onClick() {
+  count = await Promise.resolve(1);
+}>increment</button>
+
+<button async onClick<T extends PointerEvent>(event: T) {
+  count = await Promise.resolve(event.detail);
+}>generic</button>
+
+<my-tag async (value: number) {
+  count = await Promise.resolve(value);
+}/>
