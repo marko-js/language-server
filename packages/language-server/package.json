@@ -51,7 +51,7 @@
     "jsdom": "^29.1.1",
     "marko": "^5.39.33",
     "prettier": "^3.8.4",
-    "prettier-plugin-marko": "^4.0.10",
+    "prettier-plugin-marko": "^4.1.0",
     "relative-import-path": "^1.0.1",
     "typescript": "^6.0.3",
     "vscode-css-languageservice": "^6.3.10",
