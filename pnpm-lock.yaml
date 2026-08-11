@@ -106,8 +106,8 @@ importers:
         specifier: ^3.8.4
         version: 3.8.4
       prettier-plugin-marko:
-        specifier: ^4.0.10
-        version: 4.0.10
+        specifier: ^4.1.0
+        version: 4.1.0
       relative-import-path:
         specifier: ^1.0.1
         version: 1.0.1
@@ -2649,8 +2649,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-plugin-marko@4.0.10:
-    resolution: {integrity: sha512-xEzL8+T1/+3oNWJGPNDMlgbeJM7l48pWLiApMLJyvcMe36p4mw0Ld7FBaQVy7nSQDArKtIv4x+6Zb9j32hy2ng==}
+  prettier-plugin-marko@4.1.0:
+    resolution: {integrity: sha512-cm3DgiGqXnXsn1aBK1Ajfdlb+W4zynl9RHc5Ega+lySHAbJCzkcDIty7j36GB6mMoBoEKX+t1L71qCMDw1Fn2Q==}
 
   prettier-plugin-packagejson@3.0.2:
     resolution: {integrity: sha512-kmoj3hEynXwoHDo8ZhmWAIjRBoQWCDUVackiWfSDWdgD0rS3LGB61T9zoVbume/cotYdCoadUh4sqViAmXvpBQ==}
@@ -5970,7 +5970,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-marko@4.0.10:
+  prettier-plugin-marko@4.1.0:
     dependencies:
       htmljs-parser: 5.14.0
 

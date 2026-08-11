@@ -34,6 +34,20 @@ describe("format", () => {
 `,
     );
   });
+
+  it("async shorthand method", async () => {
+    await snap.inline(
+      () => format("<button async onClick() { await save() }>go</button>"),
+      `
+<button async onClick() {
+    await save();
+}>
+    go
+</button>
+
+`,
+    );
+  });
 });
 
 async function format(src: string) {
