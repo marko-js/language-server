@@ -1055,6 +1055,7 @@ constructor(_) {}
             if (value) {
               switch (value.type) {
                 case NodeType.AttrMethod:
+                  if (value.async) this.#extractor.write("async ");
                   this.#extractor
                     .write('"')
                     .anchor(defaultMapPosition)

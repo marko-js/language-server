@@ -84,6 +84,11 @@
       "patterns": [
         { "include": "#javascript-comments" },
         {
+          "comment": "The async modifier, which only applies when a method follows it",
+          "match": "\\basync(?=(?:[ \\t]+[a-zA-Z0-9_$][a-zA-Z0-9_$-]*|[ \\t]*)[ \\t]*(?:<[^<>]*>)?[ \\t]*\\([^()]*\\)[ \\t]*\\{)",
+          "name": "storage.modifier.async.marko"
+        },
+        {
           "comment": "Attribute with optional value",
           "name": "meta.marko-attribute",
           "applyEndPatternLast": 1,
@@ -105,7 +110,7 @@
           "name": "meta.marko-spread-attribute",
           "contentName": "source.ts",
           "begin": "(\\.\\.\\.)",
-          "end": "(?=[,;\\]]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+          "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
           "patterns": [{ "include": "#javascript-expression" }],
           "beginCaptures": { "1": { "name": "keyword.operator.spread.marko" } }
         },
@@ -123,7 +128,7 @@
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
       "begin": "\\s*(:?=)\\s*",
-      "end": "(?=[,;\\]]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+      "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
       "patterns": [{ "include": "#javascript-expression" }],
       "beginCaptures": { "1": { "patterns": [{ "include": "source.ts" }] } }
     },
@@ -758,7 +763,7 @@
             {
               "comment": "Match type",
               "begin": "\\s*(:)(?!=)",
-              "end": "(?=[,;\\](]|/>|(?<=[^=>])>|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+              "end": "(?=[,;\\](]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
               "patterns": [
                 { "include": "source.ts#type" },
                 { "include": "#javascript-expression" }

@@ -266,6 +266,7 @@ export namespace Node {
     typeParams: undefined | Ranges.Value;
     params: Range;
     body: Range;
+    async: boolean;
   }
 
   export interface AttrSpread extends Ranges.Value {
@@ -764,6 +765,7 @@ class Builder {
       typeParams: range.typeParams,
       params: range.params,
       body: range.body,
+      async: range.async,
       start: range.start,
       end: range.end,
     };
