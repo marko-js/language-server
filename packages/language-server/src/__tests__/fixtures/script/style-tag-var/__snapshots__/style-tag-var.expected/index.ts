@@ -7,15 +7,21 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const styles = Marko._.hoist(() => __marko_internal_hoist__styles);
+  Marko._.renderNativeTag("section")()()({
+    class: styles.button,
+  });
   {
     const styles = Marko._.any as { button: string; main: string };
-    Marko._.renderNativeTag("style")()()({
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
-    });
+    Marko._.renderNativeTag("style")()()(
+      //                    ^?
+      {
+        [Marko._.content]: (() => {
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      },
+    );
     Marko._.renderNativeTag("main")()()({
       id: styles.main,
       class: styles.button,

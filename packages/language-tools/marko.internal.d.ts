@@ -33,7 +33,7 @@ declare global {
 
       export function hoist<T>(
         value: () => T,
-      ): T extends () => infer R ? T & Iterable<R> : never;
+      ): T extends () => infer R ? T & Iterable<R> : Exclude<T, undefined>;
       // TODO: hoist should really be the below implementation which accounts for hoisting from unknown
       // sections causing the getter to return undefined. Right now the type says it always has a value.
       // export function hoist<T, U = T>(
