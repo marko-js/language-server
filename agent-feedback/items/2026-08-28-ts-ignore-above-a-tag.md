@@ -1,0 +1,12 @@
+---
+type: dx
+impact: low
+effort: low
+site: packages/language-tools/src/extractors/script/index.ts › ScriptExtractor#writeTagInputObject
+---
+
+# Give `// @ts-ignore` above a tag a line it can suppress in the extracted TS
+
+A `//` comment above a tag can never suppress a TypeScript diagnostic on that tag's attributes, on any of the three paths the extractor has for such a comment. A file-leading `// @ts-` comment is hoisted by `#writeCommentPragmas` to line 1 of the extracted TS, where the next line is `export interface Input {}`; a comment above a tag without params is copied by `#writeTagInputObject` (`if (!tag.params) this.#writeComments(tag)`) onto the `Marko._.renderNativeTag("input")()()(` call line, so the only thing it covers is the `{` that opens the input object while each attribute is written on a later line; and a comment above a tag with params is written by the `tag.params` branch after the whole attribute object, onto the params arrow. Moving the comment inside the tag directly above the offending attribute does not help, because that comment is dropped from the extraction entirely. So `// @ts-expect-error` above a tag reports `TS2578 Unused '@ts-expect-error' directive` at 1:1 and still reports the attribute error, and the only suppression that works is `// @ts-nocheck` on line 1, which turns off checking for the whole file; a template that hits an extractor-side type bug therefore has no narrow escape hatch. Write a tag's leading comments onto the line before its first attribute so a directive covers them, and name the current limitation in `website/docs/reference/typescript.md`, which mentions `// @ts-nocheck` and no other suppression.
+
+Check: in a project with `@marko/type-check` 3.2.0, write `src/probe/ign1.marko` as the four lines `// @ts-ignore`, `<input`, `  bogus=1`, `/>`; `src/probe/ign4.marko` the same with `// @ts-expect-error`; `src/probe/ign6.marko` as `<input`, `  // @ts-ignore`, `  bogus=1`, `/>`; and `src/probe/ign9.marko` as `<div>` / `  // @ts-ignore` / `  <for|item| of=[1] bogus=1>` / `    ${item}` / `  </for>` / `</div>`. `npx mtc -d condensed` reports `TS2353 Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'` for ign1, ign6 and ign9, and for ign4 both `ign4.marko:1:1 - error TS2578` and the same TS2353; after the fix the directive suppresses the attribute diagnostic and no TS2578 is emitted.
