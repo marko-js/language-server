@@ -327,9 +327,9 @@ export namespace Node {
      */
     target: "client" | "server" | "static" | undefined;
     /**
-     * The range of the statement's name (set when forced via `getTagType`).
+     * The range of the statement keyword.
      */
-    name: Range | undefined;
+    name: Range;
   }
 }
 
@@ -579,7 +579,7 @@ class Builder {
             parent: this.#program,
             comments: this.#comments,
             target: nameText,
-            name: undefined,
+            name: { start: range.start, end: range.end },
             start: range.start,
             end: UNFINISHED,
           });

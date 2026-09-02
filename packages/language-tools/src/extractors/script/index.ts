@@ -67,13 +67,15 @@ const RENDER_VAR = new WeakMap<Node.Tag, string>();
 const TEMPLATE_VAR = new WeakMap<Node.Tag, string>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 // Trailing comments of bodies with no other content, keyed by the body's parent.
-const BODY_COMMENTS = new WeakMap<Node.ParentNode, Repeated<Node.Comment>>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
 
 type ProcessedBody = {
   content: Repeatable<Node.ChildNode>;
   staticAttrTags: undefined | Record<string, Repeated<Node.AttrTag>>;
   dynamicAttrTagParents: Repeatable<Node.ControlFlowTag>;
+  // Trailing comments of a body with no other content, which would otherwise
+  // be lost since comments are only written ahead of the node they precede.
+  comments: Repeatable<Node.Comment>;
 };
 type IfTag = Node.ControlFlowTag & { nameText: "if" };
 type IfTagAlternate = {
@@ -224,10 +226,7 @@ class ScriptExtractor {
           break;
         }
         case NodeType.Static: {
-          let start =
-            (node.name
-              ? node.name.end
-              : node.start + (node.target || "static").length) + 1;
+          let start = node.name.end + 1;
           let end = node.end;
           this.#writeComments(node);
 
@@ -386,7 +385,7 @@ function ${templateName}() {\n`);
       }
     }
 
-    this.#writeBodyComments(program);
+    this.#writeBodyComments(body);
 
     if (body?.content) {
       this.#writeChildren(body.content);
@@ -521,28 +520,12 @@ function ${templateName}() {\n`);
   }
 
   #writeCommentPragmas(program: Node.Program) {
-    // Leading comments are attached to the node which follows them, so when
-    // the body begins with comment nodes look past them for the attachment.
-    let firstBodyNode: Node.RootBodyNode | undefined;
+    // Pragmas must lead the file, so only the comments before the first node.
     for (const node of program.body) {
-      if (node.type !== NodeType.Comment) {
-        firstBodyNode = node;
-        break;
-      }
-    }
-
-    const firstComments = program.static.length
-      ? program.static[0].comments
-      : firstBodyNode
-        ? (firstBodyNode as Node.Commentable).comments
-        : program.comments;
-
-    if (firstComments) {
-      for (const comment of firstComments) {
-        if (this.#testAtIndex(REG_COMMENT_PRAGMA, comment.start)) {
-          WROTE_COMMENT.add(comment);
-          this.#extractor.copy(comment).write("\n");
-        }
+      if (node.type !== NodeType.Comment) break;
+      if (this.#testAtIndex(REG_COMMENT_PRAGMA, node.start)) {
+        WROTE_COMMENT.add(node);
+        this.#extractor.copy(node).write("\n");
       }
     }
   }
@@ -672,7 +655,7 @@ constructor(_) {}
                 .write(") {\n");
 
               const ifBody = this.#processBody(child);
-              this.#writeBodyComments(child);
+              this.#writeBodyComments(ifBody);
               if (ifBody?.content) {
                 this.#writeChildren(ifBody.content, true);
 
@@ -703,7 +686,7 @@ constructor(_) {}
                   }
 
                   const alternateBody = this.#processBody(node);
-                  this.#writeBodyComments(node);
+                  this.#writeBodyComments(alternateBody);
                   if (alternateBody?.content) {
                     this.#writeChildren(alternateBody.content, true);
 
@@ -756,7 +739,7 @@ constructor(_) {}
               this.#extractor.write("\n) => {\n");
 
               const body = this.#processBody(child);
-              this.#writeBodyComments(child);
+              this.#writeBodyComments(body);
 
               if (body?.content) {
                 this.#writeChildren(body.content);
@@ -783,7 +766,7 @@ constructor(_) {}
                 .write("\n) {\n");
 
               const body = this.#processBody(child);
-              this.#writeBodyComments(child);
+              this.#writeBodyComments(body);
               if (body?.content) {
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
@@ -1448,13 +1431,7 @@ constructor(_) {}
       hasInput = true;
       this.#extractor.copy(tag.args.value);
 
-      if (
-        body ||
-        tag.attrs ||
-        tag.shorthandId ||
-        tag.shorthandClassNames ||
-        BODY_COMMENTS.has(tag)
-      ) {
+      if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
         this.#extractor.write(",\n{\n");
       } else {
         writeInputObj = false;
@@ -1498,7 +1475,11 @@ constructor(_) {}
         end: tag.body[tag.body.length - 1].end,
       });
       this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
-    } else if (body) {
+    } else if (
+      body?.content ||
+      body?.staticAttrTags ||
+      body?.dynamicAttrTagParents
+    ) {
       hasInput = true;
       this.#writeAttrTags(body, this.#getTagInputType(tag));
       hasBodyContent = body.content !== undefined;
@@ -1539,7 +1520,7 @@ constructor(_) {}
       if (body?.content) {
         didReturn = this.#writeChildren(body.content);
       } else {
-        this.#writeBodyComments(tag);
+        this.#writeBodyComments(body);
       }
 
       if (!tag.params) {
@@ -1560,7 +1541,7 @@ constructor(_) {}
 
       this.#extractor.write(SEP_COMMA_NEW_LINE);
     } else {
-      this.#writeBodyComments(tag);
+      this.#writeBodyComments(body);
     }
 
     if (tag.type === NodeType.AttrTag) {
@@ -1638,6 +1619,7 @@ constructor(_) {}
     let content: ProcessedBody["content"];
     let staticAttrTags: ProcessedBody["staticAttrTags"];
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
+    let comments: ProcessedBody["comments"];
     let pendingComments: Repeatable<Node.Comment>;
     let i = 0;
 
@@ -1813,19 +1795,18 @@ constructor(_) {}
         // A comment only body must not become `content`: that changes the
         // shape of the generated code (eg an extra content function on a
         // tag) and with it the diagnostics.
-        BODY_COMMENTS.set(parent, pendingComments);
+        comments = pendingComments;
       }
     }
 
-    if (content || staticAttrTags || dynamicAttrTagParents) {
-      return { content, staticAttrTags, dynamicAttrTagParents };
+    if (content || staticAttrTags || dynamicAttrTagParents || comments) {
+      return { content, staticAttrTags, dynamicAttrTagParents, comments };
     }
   }
 
-  #writeBodyComments(parent: Node.ParentNode) {
-    const comments = BODY_COMMENTS.get(parent);
-    if (comments) {
-      for (const comment of comments) {
+  #writeBodyComments(body: ProcessedBody | undefined) {
+    if (body?.comments) {
+      for (const comment of body.comments) {
         this.#writeComment(comment);
       }
     }
@@ -1849,7 +1830,7 @@ constructor(_) {}
       }
     } else {
       this.#extractor.write("{");
-      this.#writeBodyComments(tag);
+      this.#writeBodyComments(body);
       this.#extractor.write("}");
     }
   }

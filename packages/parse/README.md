@@ -42,5 +42,5 @@ The hook is only called for `Tag` nodes, with the tag name, the range of the
 name and the body type the built in table chose (`TagType.html`,
 `TagType.text` or `TagType.void`). Returning a `TagType` replaces that body
 type; returning `TagType.statement` instead turns the tag into a generic
-`Static` node (with `target` undefined and its keyword in `name`); returning
+`Static` node (with `target` undefined; `name` is always the keyword range); returning
 nothing keeps the default.
