@@ -14,7 +14,9 @@ export interface Input {}
     const y = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
       __marko_internal_tag_1,
-    )()()({});
+    )()()({
+      // ^?
+    });
     var __marko_internal_hoist__y = y;
   }
   Marko._.noop({ y, input, $global, $signal });
@@ -57,4 +59,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-// ^?

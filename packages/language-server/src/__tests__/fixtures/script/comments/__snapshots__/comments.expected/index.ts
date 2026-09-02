@@ -11,7 +11,27 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.noop({ component, state, out, input, $global, $signal });
+  // Single-line comment */ // \n
+  /*
+multi-line
+  comment
+  <!--
+
+    */ /*
+  HTML
+    Comment
+        *\/
+  *\/ //
+\n
+    *\/
+                  */ Marko._.noop({
+    component,
+    state,
+    out,
+    input,
+    $global,
+    $signal,
+  });
   return;
 })();
 const __marko_internal_api = "class";

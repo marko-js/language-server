@@ -1,5 +1,4 @@
 import { types as t } from "@marko/compiler";
-
 import {
   type Node,
   NodeType,
@@ -7,7 +6,8 @@ import {
   type Range,
   type Repeatable,
   type Repeated,
-} from "../../../parser";
+} from "@marko/parse";
+
 import { ScriptParser } from "./script-parser";
 
 export type Scope = ProgramScope | TagScope;
@@ -162,7 +162,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
     return mutations.sort(byStart) as Repeated<Mutation>;
   }
 
-  function visit(body: Node.ChildNode[], parentScope: Scope) {
+  function visit(body: Node.RootBodyNode[], parentScope: Scope) {
     for (const child of body) {
       switch (child.type) {
         case NodeType.Tag:

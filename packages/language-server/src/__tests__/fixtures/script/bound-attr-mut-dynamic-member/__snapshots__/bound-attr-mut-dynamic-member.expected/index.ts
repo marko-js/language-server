@@ -29,6 +29,7 @@ export interface Input {}
         value: a["b"],
         valueChange: a[`${"b"}Change`],
       });
+      //   ^?   ^?
       var __marko_internal_hoist__a = a;
       var __marko_internal_hoist__b = b;
     }

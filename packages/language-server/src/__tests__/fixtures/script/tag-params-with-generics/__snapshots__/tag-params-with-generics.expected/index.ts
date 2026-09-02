@@ -40,6 +40,7 @@ export { type Component };
   );
   Marko._.renderTemplate(__marko_internal_tag_3)()()({
     [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
+      //      ^?
       return Marko._.voidReturn;
     },
   });
@@ -83,4 +84,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//      ^?

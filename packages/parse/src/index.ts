@@ -1,7 +1,6 @@
 import { createParser, type Range, type Ranges, TagType } from "htmljs-parser";
 
-import { getNodeAtOffset } from "./util/get-node-at-offset";
-import { normalizePath } from "./util/normalize-path";
+import { getNodeAtOffset } from "./get-node-at-offset";
 
 const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
 
@@ -9,47 +8,67 @@ export type Repeated<T> = [T, ...T[]] | [...T[], T] | [T, ...T[], T];
 export type Repeatable<T> = undefined | Repeated<T>;
 export const UNFINISHED = Number.MAX_SAFE_INTEGER;
 
-export {
-  getLines,
-  getLocation,
-  getPosition,
-  type Location,
-  type Position,
-  type Range,
-  type Ranges,
-} from "htmljs-parser";
+export * from "htmljs-parser";
 
 export type Parsed = ReturnType<typeof parse>;
+
+/**
+ * Node type names are strings so that tools which select on a node's `type`
+ * (eg ESLint selectors) work naturally.
+ */
 export enum NodeType {
-  Program,
-  Tag,
-  OpenTagName,
-  ShorthandId,
-  ShorthandClassName,
-  TagTypeArgs,
-  TagTypeParams,
-  TagVar,
-  TagArgs,
-  TagParams,
-  AttrNamed,
-  AttrName,
-  AttrArgs,
-  AttrValue,
-  AttrMethod,
-  AttrSpread,
-  AttrTag,
-  Text,
-  CDATA,
-  Doctype,
-  Declaration,
-  Comment,
-  Placeholder,
-  Scriptlet,
-  Import,
-  Export,
-  Class,
-  Style,
-  Static,
+  Program = "Program",
+  Tag = "Tag",
+  OpenTagName = "OpenTagName",
+  ShorthandId = "ShorthandId",
+  ShorthandClassName = "ShorthandClassName",
+  TagTypeArgs = "TagTypeArgs",
+  TagTypeParams = "TagTypeParams",
+  TagVar = "TagVar",
+  TagArgs = "TagArgs",
+  TagParams = "TagParams",
+  AttrNamed = "AttrNamed",
+  AttrName = "AttrName",
+  AttrArgs = "AttrArgs",
+  AttrValue = "AttrValue",
+  AttrMethod = "AttrMethod",
+  AttrSpread = "AttrSpread",
+  AttrTag = "AttrTag",
+  Text = "Text",
+  CDATA = "CDATA",
+  Doctype = "Doctype",
+  Declaration = "Declaration",
+  Comment = "Comment",
+  Placeholder = "Placeholder",
+  Scriptlet = "Scriptlet",
+  Import = "Import",
+  Export = "Export",
+  Class = "Class",
+  Style = "Style",
+  Static = "Static",
+}
+
+export enum CommentType {
+  line = "line",
+  block = "block",
+  html = "html",
+}
+
+export interface ParseOptions {
+  /**
+   * Overrides the body type of a tag with the given name (eg from taglib
+   * `parseOptions`). Called after the built in table has decided the node
+   * kind, so it is never consulted for the core statements (`import`,
+   * `export`, `class`, `static`, `server`, `client` and `style {}` blocks)
+   * or attribute tags. `defaultType` is the built in body type; returning
+   * `TagType.statement` turns the tag into a generic `Static` node with a
+   * `name` range, returning nothing keeps the default.
+   */
+  getTagType?(
+    name: string,
+    range: Range,
+    defaultType: Exclude<TagType, typeof TagType.statement>,
+  ): TagType | undefined | void;
 }
 
 export namespace Node {
@@ -84,6 +103,8 @@ export namespace Node {
     | Style
     | Static;
   export type ParentNode = Program | Tag | AttrTag;
+  /** Anything that can appear in the root `program.body`. */
+  export type RootBodyNode = ChildNode | StaticNode;
   export type StaticNode = Import | Export | Class | Style | Static;
   export type ParentTag = Tag | AttrTag;
   export type AttrNode = AttrNamed | AttrSpread;
@@ -99,7 +120,8 @@ export namespace Node {
     | Declaration
     | CDATA
     | Placeholder
-    | Scriptlet;
+    | Scriptlet
+    | Comment;
 
   export interface Commentable {
     comments: Repeatable<Comment>;
@@ -109,7 +131,7 @@ export namespace Node {
     type: NodeType.Program;
     parent: undefined;
     static: StaticNode[];
-    body: ChildNode[];
+    body: RootBodyNode[];
   }
 
   export interface Tag extends Range, Commentable {
@@ -221,6 +243,7 @@ export namespace Node {
   export interface Comment extends Ranges.Value {
     type: NodeType.Comment;
     parent: ParentNode;
+    commentType: CommentType;
   }
 
   export interface Placeholder extends Ranges.Value, Commentable {
@@ -299,11 +322,23 @@ export namespace Node {
   export interface Static extends Range, Commentable {
     type: NodeType.Static;
     parent: ParentNode;
+    /**
+     * The statement keyword (undefined when forced via `getTagType`).
+     */
+    target: "client" | "server" | "static" | undefined;
+    /**
+     * The range of the statement keyword.
+     */
+    name: Range;
   }
 }
 
-export function parse(code: string, filename = "index.marko") {
-  const builder = new Builder(code);
+export function parse(
+  code: string,
+  filename = "index.marko",
+  options?: ParseOptions,
+) {
+  const builder = new Builder(code, options);
   const parser = createParser(builder);
 
   parser.parse(code);
@@ -313,13 +348,19 @@ export function parse(code: string, filename = "index.marko") {
     locationAt: parser.locationAt,
     positionAt: parser.positionAt,
     nodeAt: (offset: number) => getNodeAtOffset(offset, program),
-    filename: normalizePath(filename),
+    filename,
     program,
+    /** Every comment in the template, in document order. */
+    comments: builder.comments,
+    /** Syntax errors encountered while parsing. */
+    errors: builder.errors,
     code,
   };
 }
 
 class Builder {
+  public comments: Node.Comment[] = [];
+  public errors: Ranges.Error[] = [];
   #code: string;
   #program: Node.Program;
   #openTagStart: Range | undefined;
@@ -327,9 +368,11 @@ class Builder {
   #staticNode: Node.StaticNode | undefined;
   #attrNode: Node.AttrNamed | undefined;
   #comments: Repeatable<Node.Comment>;
+  #getTagType: ParseOptions["getTagType"];
 
-  constructor(code: string) {
+  constructor(code: string, options?: ParseOptions) {
     this.#code = code;
+    this.#getTagType = options?.getTagType;
     this.#program = this.#parentNode = {
       type: NodeType.Program,
       comments: undefined,
@@ -344,6 +387,12 @@ class Builder {
   end() {
     this.#program.comments = this.#comments;
     return this.#program;
+  }
+
+  #pushStatic(node: Node.StaticNode) {
+    this.#staticNode = node;
+    this.#program.static.push(node);
+    this.#program.body.push(node);
   }
 
   onText(range: Range) {
@@ -382,18 +431,40 @@ class Builder {
     });
   }
   onComment(range: Ranges.Value) {
+    let commentType = CommentType.html;
+    switch (this.#code.charCodeAt(range.start + 1)) {
+      case 47: // /
+        commentType = CommentType.line;
+        break;
+      case 42: // *
+        commentType = CommentType.block;
+        break;
+    }
+
     const comment: Node.Comment = {
       type: NodeType.Comment,
       parent: this.#parentNode,
+      commentType,
       value: range.value,
       start: range.start,
       end: range.end,
     };
+
+    // The same comment node is indexed three ways for different consumers:
+    // the flat list (all comments without a tree walk), the parent body
+    // (authoritative document-order position) and, below, buffered to attach
+    // as the leading comments of the node which follows it.
+    this.comments.push(comment);
+    pushBody(this.#parentNode, comment);
+
     if (this.#comments) {
       this.#comments.push(comment);
     } else {
       this.#comments = [comment];
     }
+  }
+  onError(range: Ranges.Error) {
+    this.errors.push(range);
   }
   onPlaceholder(range: Ranges.Placeholder) {
     pushBody(this.#parentNode, {
@@ -427,7 +498,7 @@ class Builder {
     let concise = true;
     let start = range.start;
     let type = NodeType.Tag;
-    let bodyType: TagType = TagType.html;
+    let bodyType: Node.Tag["bodyType"] = TagType.html;
     let nameText: string | undefined = undefined;
 
     if (this.#openTagStart) {
@@ -437,7 +508,9 @@ class Builder {
     }
 
     if (!range.expressions.length) {
-      switch ((nameText = this.#code.slice(range.start, range.end) || "div")) {
+      nameText = this.#code.slice(range.start, range.end) || "div";
+
+      switch (nameText) {
         // All statement types will early return.
         case "style": {
           styleBlockReg.lastIndex = range.end;
@@ -445,20 +518,18 @@ class Builder {
 
           if (styleBlockMatch) {
             const [{ length }, ext] = styleBlockMatch;
-            this.#program.static.push(
-              (this.#staticNode = {
-                type: NodeType.Style,
-                parent: this.#program,
-                comments: this.#comments,
-                ext: ext || undefined,
-                value: {
-                  start: range.end + length,
-                  end: UNFINISHED,
-                },
-                start: range.start,
+            this.#pushStatic({
+              type: NodeType.Style,
+              parent: this.#program,
+              comments: this.#comments,
+              ext: ext || undefined,
+              value: {
+                start: range.end + length,
                 end: UNFINISHED,
-              }),
-            );
+              },
+              start: range.start,
+              end: UNFINISHED,
+            });
 
             this.#comments = undefined;
             return TagType.statement;
@@ -468,56 +539,50 @@ class Builder {
           }
         }
         case "class":
-          this.#program.static.push(
-            (this.#staticNode = {
-              type: NodeType.Class,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            }),
-          );
+          this.#pushStatic({
+            type: NodeType.Class,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
 
           this.#comments = undefined;
           return TagType.statement;
         case "export":
-          this.#program.static.push(
-            (this.#staticNode = {
-              type: NodeType.Export,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            }),
-          );
+          this.#pushStatic({
+            type: NodeType.Export,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
 
           this.#comments = undefined;
           return TagType.statement;
         case "import":
-          this.#program.static.push(
-            (this.#staticNode = {
-              type: NodeType.Import,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            }),
-          );
+          this.#pushStatic({
+            type: NodeType.Import,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
 
           this.#comments = undefined;
           return TagType.statement;
         case "server":
         case "client":
         case "static":
-          this.#program.static.push(
-            (this.#staticNode = {
-              type: NodeType.Static,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            }),
-          );
+          this.#pushStatic({
+            type: NodeType.Static,
+            parent: this.#program,
+            comments: this.#comments,
+            target: nameText,
+            name: { start: range.start, end: range.end },
+            start: range.start,
+            end: UNFINISHED,
+          });
 
           this.#comments = undefined;
           return TagType.statement;
@@ -559,6 +624,27 @@ class Builder {
             type = NodeType.AttrTag;
           }
           break;
+      }
+
+      if (type === NodeType.Tag) {
+        const hookedType = this.#getTagType?.(nameText, range, bodyType);
+
+        if (hookedType === TagType.statement) {
+          this.#pushStatic({
+            type: NodeType.Static,
+            parent: this.#program,
+            comments: this.#comments,
+            target: undefined,
+            name: { start: range.start, end: range.end },
+            start: range.start,
+            end: UNFINISHED,
+          });
+
+          this.#comments = undefined;
+          return TagType.statement;
+        } else if (hookedType !== undefined) {
+          bodyType = hookedType;
+        }
       }
     }
 
@@ -813,6 +899,9 @@ class Builder {
     if (hasCloseTag(parent)) parent.close.end = range.end;
     parent.end = range.end;
     this.#parentNode = parent.parent;
+    // Trailing comments in the closed body must not attach as the leading
+    // comments of whatever follows the tag; they remain body children only.
+    this.#comments = undefined;
   }
 }
 
