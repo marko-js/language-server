@@ -66,6 +66,8 @@ const TAG_ID = new WeakMap<Node.Tag, number>();
 const RENDER_VAR = new WeakMap<Node.Tag, string>();
 const TEMPLATE_VAR = new WeakMap<Node.Tag, string>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
+// Trailing comments of bodies with no other content, keyed by the body's parent.
+const BODY_COMMENTS = new WeakMap<Node.ParentNode, Repeated<Node.Comment>>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
 
 type ProcessedBody = {
@@ -384,6 +386,8 @@ function ${templateName}() {\n`);
       }
     }
 
+    this.#writeBodyComments(program);
+
     if (body?.content) {
       this.#writeChildren(body.content);
 
@@ -668,6 +672,7 @@ constructor(_) {}
                 .write(") {\n");
 
               const ifBody = this.#processBody(child);
+              this.#writeBodyComments(child);
               if (ifBody?.content) {
                 this.#writeChildren(ifBody.content, true);
 
@@ -698,6 +703,7 @@ constructor(_) {}
                   }
 
                   const alternateBody = this.#processBody(node);
+                  this.#writeBodyComments(node);
                   if (alternateBody?.content) {
                     this.#writeChildren(alternateBody.content, true);
 
@@ -750,6 +756,7 @@ constructor(_) {}
               this.#extractor.write("\n) => {\n");
 
               const body = this.#processBody(child);
+              this.#writeBodyComments(child);
 
               if (body?.content) {
                 this.#writeChildren(body.content);
@@ -776,6 +783,7 @@ constructor(_) {}
                 .write("\n) {\n");
 
               const body = this.#processBody(child);
+              this.#writeBodyComments(child);
               if (body?.content) {
                 // The while tag is not available in the tags api and
                 // so doesn't need to support hoisted vars or assignments.
@@ -1440,7 +1448,13 @@ constructor(_) {}
       hasInput = true;
       this.#extractor.copy(tag.args.value);
 
-      if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
+      if (
+        body ||
+        tag.attrs ||
+        tag.shorthandId ||
+        tag.shorthandClassNames ||
+        BODY_COMMENTS.has(tag)
+      ) {
         this.#extractor.write(",\n{\n");
       } else {
         writeInputObj = false;
@@ -1524,6 +1538,8 @@ constructor(_) {}
 
       if (body?.content) {
         didReturn = this.#writeChildren(body.content);
+      } else {
+        this.#writeBodyComments(tag);
       }
 
       if (!tag.params) {
@@ -1543,6 +1559,8 @@ constructor(_) {}
       }
 
       this.#extractor.write(SEP_COMMA_NEW_LINE);
+    } else {
+      this.#writeBodyComments(tag);
     }
 
     if (tag.type === NodeType.AttrTag) {
@@ -1620,19 +1638,31 @@ constructor(_) {}
     let content: ProcessedBody["content"];
     let staticAttrTags: ProcessedBody["staticAttrTags"];
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
-    let pendingComments: Node.Comment[] | undefined;
+    let pendingComments: Repeatable<Node.Comment>;
     let i = 0;
 
     while (i <= last) {
       const child = body[i++];
 
-      // Comments followed by a node are written as that node's leading
-      // comments; only comments at the end of the body (ignoring whitespace)
-      // have no node to attach to and must be written explicitly.
-      if (child.type === NodeType.Comment) {
-        (pendingComments ||= []).push(child);
-      } else if (!(child.type === NodeType.Text && this.#isEmptyText(child))) {
-        pendingComments = undefined;
+      // Comments are written as the leading comments of the next node which
+      // carries them; those with no such node in the body (ignoring text and
+      // other non commentable nodes) are written explicitly at the end.
+      switch (child.type) {
+        case NodeType.Comment:
+          if (pendingComments) {
+            pendingComments.push(child);
+          } else {
+            pendingComments = [child];
+          }
+          break;
+        case NodeType.Text:
+        case NodeType.CDATA:
+        case NodeType.Doctype:
+        case NodeType.Declaration:
+          break;
+        default:
+          pendingComments = undefined;
+          break;
       }
 
       switch (child.type) {
@@ -1776,15 +1806,28 @@ constructor(_) {}
       }
     }
 
-    // Only written when there is other content; a comment-only body must not
-    // become `content` since that changes the shape of the generated code
-    // (eg for attr tag bodies) and with it diagnostic locations.
-    if (pendingComments && content) {
-      content.push(...pendingComments);
+    if (pendingComments) {
+      if (content) {
+        content.push(...pendingComments);
+      } else {
+        // A comment only body must not become `content`: that changes the
+        // shape of the generated code (eg an extra content function on a
+        // tag) and with it the diagnostics.
+        BODY_COMMENTS.set(parent, pendingComments);
+      }
     }
 
     if (content || staticAttrTags || dynamicAttrTagParents) {
       return { content, staticAttrTags, dynamicAttrTagParents };
+    }
+  }
+
+  #writeBodyComments(parent: Node.ParentNode) {
+    const comments = BODY_COMMENTS.get(parent);
+    if (comments) {
+      for (const comment of comments) {
+        this.#writeComment(comment);
+      }
     }
   }
 
@@ -1805,7 +1848,9 @@ constructor(_) {}
         this.#extractor.write(";\n})()");
       }
     } else {
-      this.#extractor.write("{}");
+      this.#extractor.write("{");
+      this.#writeBodyComments(tag);
+      this.#extractor.write("}");
     }
   }
 
@@ -2240,9 +2285,8 @@ function resolveTagImport(from: string, def: TagDefinition | undefined) {
   if (!def || !filename) return;
   if (!from) return filename;
 
-  // `from` is parsed.filename which is already normalized, but the taglib
-  // provided path must use native separators too or relativeImportPath
-  // falls back to returning the absolute path.
+  // Both paths must use native separators or relativeImportPath falls back
+  // to returning the absolute path.
   const to = normalizePath(filename);
   return packageImportPath(from, def, to) || relativeImportPath(from, to);
 }

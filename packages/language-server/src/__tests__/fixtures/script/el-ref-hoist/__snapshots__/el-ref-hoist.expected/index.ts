@@ -20,6 +20,7 @@ $el
 });
 {const $el = Marko._.el("div");
 Marko._.renderNativeTag("div")()()({
+// ^?
 
 });
 const __marko_internal_tag_3 = (

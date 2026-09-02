@@ -9,6 +9,7 @@ import {
   INTERNAL_API_VAR,
   ScriptLang,
 } from "../extractors/script";
+import { normalizePath } from "../util/normalize-path";
 import * as Project from "../util/project";
 import type { ProcessorConfig } from ".";
 
@@ -107,7 +108,7 @@ const markoProcessor: ProcessorConfig = {
           : ts.ScriptKind.JS;
       },
       extract(fileName, code) {
-        const parsed = parse(code, fileName);
+        const parsed = parse(code, normalizePath(fileName));
         const dir = path.dirname(parsed.filename);
         return extractScript({
           ts,

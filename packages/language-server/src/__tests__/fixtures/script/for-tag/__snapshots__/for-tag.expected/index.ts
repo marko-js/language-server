@@ -66,6 +66,7 @@ export interface Input {}
         by: (item, index) => `${item}-${index}`,
       },
       () => {
+        //               ^?    ^?
         return Marko._.voidReturn;
       },
     );
@@ -138,6 +139,7 @@ export interface Input {}
           by: (value, key) => `${value}-${key}`,
         },
         () => {
+          //                 ^?     ^?
           return Marko._.voidReturn;
         },
       );
@@ -191,6 +193,7 @@ export interface Input {}
           by: (index) => `${index}`,
         },
         () => {
+          //             ^?
           return Marko._.voidReturn;
         },
       );
@@ -266,6 +269,7 @@ export interface Input {}
           by: (index) => `${index}`,
         },
         () => {
+          //             ^?
           return Marko._.voidReturn;
         },
       );

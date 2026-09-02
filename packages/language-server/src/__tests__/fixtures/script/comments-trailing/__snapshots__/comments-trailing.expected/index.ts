@@ -6,20 +6,49 @@ export interface Input {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const y = Marko._.hoist(() => __marko_internal_hoist__y);
+  const data = Marko._.hoist(() => __marko_internal_hoist__data);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/oneOrTwo.marko"),
+    import("@marko/runtime-tags/tags/const.d.marko"),
   );
   {
-    const y = Marko._.returned(() => __marko_internal_rendered_1);
+    const data = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
       __marko_internal_tag_1,
     )()()({
+      value: { a: 1 },
+    });
+    const __marko_internal_tag_2 = Marko._.interpolated`loader`;
+    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+      [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
+        //  ^?
+        return Marko._.voidReturn;
+      },
+    });
+    Marko._.renderNativeTag("div")()()({
+      ["x"]: {
+        [Symbol.iterator]: Marko._.any,
+      },
       // ^?
     });
-    var __marko_internal_hoist__y = y;
+    Marko._.renderNativeTag("span")()()({
+      [Marko._.content]: (() => {
+        // after
+        return () => {
+          return Marko._.voidReturn;
+        };
+      })(),
+    });
+    Marko._.renderNativeTag("div")()()({
+      [Marko._.content]: (() => {
+        // c
+        return () => {
+          return Marko._.voidReturn;
+        };
+      })(),
+    });
+    var __marko_internal_hoist__data = data;
   }
-  Marko._.noop({ y, input, $global, $signal });
+  Marko._.noop({ data, input, $global, $signal });
   return;
 })();
 const __marko_internal_api = "tags";

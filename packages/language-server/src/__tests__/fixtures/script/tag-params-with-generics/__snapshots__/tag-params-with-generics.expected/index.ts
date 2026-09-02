@@ -40,6 +40,7 @@ export { type Component };
   );
   Marko._.renderTemplate(__marko_internal_tag_3)()()({
     [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
+      //      ^?
       return Marko._.voidReturn;
     },
   });

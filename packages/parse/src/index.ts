@@ -1,7 +1,6 @@
 import { createParser, type Range, type Ranges, TagType } from "htmljs-parser";
 
 import { getNodeAtOffset } from "./get-node-at-offset";
-import { normalizePath } from "./normalize-path";
 
 const styleBlockReg = /((?:\.[^\s\\/:*?"<>|({]+)*)\s*\{/y;
 
@@ -57,13 +56,19 @@ export enum CommentType {
 
 export interface ParseOptions {
   /**
-   * Overrides how a tag with the given name is parsed (eg from taglib
-   * `parseOptions`). When a type is returned it takes precedence over the
-   * built in core/html tag handling (including the core statements, which
-   * become generic `Static` nodes with a `name` range when forced);
-   * returning nothing falls back to the built in behavior.
+   * Overrides the body type of a tag with the given name (eg from taglib
+   * `parseOptions`). Called after the built in table has decided the node
+   * kind, so it is never consulted for the core statements (`import`,
+   * `export`, `class`, `static`, `server`, `client` and `style {}` blocks)
+   * or attribute tags. `defaultType` is the built in body type; returning
+   * `TagType.statement` turns the tag into a generic `Static` node with a
+   * `name` range, returning nothing keeps the default.
    */
-  getTagType?(name: string, range: Range): TagType | undefined | void;
+  getTagType?(
+    name: string,
+    range: Range,
+    defaultType: Exclude<TagType, typeof TagType.statement>,
+  ): TagType | undefined | void;
 }
 
 export namespace Node {
@@ -343,7 +348,7 @@ export function parse(
     locationAt: parser.locationAt,
     positionAt: parser.positionAt,
     nodeAt: (offset: number) => getNodeAtOffset(offset, program),
-    filename: normalizePath(filename),
+    filename,
     program,
     /** Every comment in the template, in document order. */
     comments: builder.comments,
@@ -493,7 +498,7 @@ class Builder {
     let concise = true;
     let start = range.start;
     let type = NodeType.Tag;
-    let bodyType: TagType = TagType.html;
+    let bodyType: Node.Tag["bodyType"] = TagType.html;
     let nameText: string | undefined = undefined;
 
     if (this.#openTagStart) {
@@ -505,10 +510,125 @@ class Builder {
     if (!range.expressions.length) {
       nameText = this.#code.slice(range.start, range.end) || "div";
 
-      const hookedType =
-        nameText[0] === "@" ? undefined : this.#getTagType?.(nameText, range);
+      switch (nameText) {
+        // All statement types will early return.
+        case "style": {
+          styleBlockReg.lastIndex = range.end;
+          const styleBlockMatch = styleBlockReg.exec(this.#code);
 
-      if (hookedType !== undefined) {
+          if (styleBlockMatch) {
+            const [{ length }, ext] = styleBlockMatch;
+            this.#pushStatic({
+              type: NodeType.Style,
+              parent: this.#program,
+              comments: this.#comments,
+              ext: ext || undefined,
+              value: {
+                start: range.end + length,
+                end: UNFINISHED,
+              },
+              start: range.start,
+              end: UNFINISHED,
+            });
+
+            this.#comments = undefined;
+            return TagType.statement;
+          } else {
+            bodyType = TagType.text;
+            break;
+          }
+        }
+        case "class":
+          this.#pushStatic({
+            type: NodeType.Class,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
+
+          this.#comments = undefined;
+          return TagType.statement;
+        case "export":
+          this.#pushStatic({
+            type: NodeType.Export,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
+
+          this.#comments = undefined;
+          return TagType.statement;
+        case "import":
+          this.#pushStatic({
+            type: NodeType.Import,
+            parent: this.#program,
+            comments: this.#comments,
+            start: range.start,
+            end: UNFINISHED,
+          });
+
+          this.#comments = undefined;
+          return TagType.statement;
+        case "server":
+        case "client":
+        case "static":
+          this.#pushStatic({
+            type: NodeType.Static,
+            parent: this.#program,
+            comments: this.#comments,
+            target: nameText,
+            name: undefined,
+            start: range.start,
+            end: UNFINISHED,
+          });
+
+          this.#comments = undefined;
+          return TagType.statement;
+
+        // The following are all still tags,
+        // but with a different body type.
+        case "area":
+        case "base":
+        case "br":
+        case "col":
+        case "embed":
+        case "hr":
+        case "img":
+        case "input":
+        case "link":
+        case "meta":
+        case "param":
+        case "source":
+        case "track":
+        case "wbr":
+        case "const":
+        case "debug":
+        case "id":
+        case "let":
+        case "lifecycle":
+        case "log":
+        case "return":
+          bodyType = TagType.void;
+          break;
+        case "html-comment":
+        case "html-script":
+        case "html-style":
+        case "script":
+        case "textarea":
+          bodyType = TagType.text;
+          break;
+        default:
+          if (nameText[0] === "@") {
+            type = NodeType.AttrTag;
+          }
+          break;
+      }
+
+      if (type === NodeType.Tag) {
+        const hookedType = this.#getTagType?.(nameText, range, bodyType);
+
         if (hookedType === TagType.statement) {
           this.#pushStatic({
             type: NodeType.Static,
@@ -522,125 +642,10 @@ class Builder {
 
           this.#comments = undefined;
           return TagType.statement;
+        } else if (hookedType !== undefined) {
+          bodyType = hookedType;
         }
-
-        bodyType = hookedType;
-      } else
-        switch (nameText) {
-          // All statement types will early return.
-          case "style": {
-            styleBlockReg.lastIndex = range.end;
-            const styleBlockMatch = styleBlockReg.exec(this.#code);
-
-            if (styleBlockMatch) {
-              const [{ length }, ext] = styleBlockMatch;
-              this.#pushStatic({
-                type: NodeType.Style,
-                parent: this.#program,
-                comments: this.#comments,
-                ext: ext || undefined,
-                value: {
-                  start: range.end + length,
-                  end: UNFINISHED,
-                },
-                start: range.start,
-                end: UNFINISHED,
-              });
-
-              this.#comments = undefined;
-              return TagType.statement;
-            } else {
-              bodyType = TagType.text;
-              break;
-            }
-          }
-          case "class":
-            this.#pushStatic({
-              type: NodeType.Class,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            });
-
-            this.#comments = undefined;
-            return TagType.statement;
-          case "export":
-            this.#pushStatic({
-              type: NodeType.Export,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            });
-
-            this.#comments = undefined;
-            return TagType.statement;
-          case "import":
-            this.#pushStatic({
-              type: NodeType.Import,
-              parent: this.#program,
-              comments: this.#comments,
-              start: range.start,
-              end: UNFINISHED,
-            });
-
-            this.#comments = undefined;
-            return TagType.statement;
-          case "server":
-          case "client":
-          case "static":
-            this.#pushStatic({
-              type: NodeType.Static,
-              parent: this.#program,
-              comments: this.#comments,
-              target: nameText,
-              name: undefined,
-              start: range.start,
-              end: UNFINISHED,
-            });
-
-            this.#comments = undefined;
-            return TagType.statement;
-
-          // The following are all still tags,
-          // but with a different body type.
-          case "area":
-          case "base":
-          case "br":
-          case "col":
-          case "embed":
-          case "hr":
-          case "img":
-          case "input":
-          case "link":
-          case "meta":
-          case "param":
-          case "source":
-          case "track":
-          case "wbr":
-          case "const":
-          case "debug":
-          case "id":
-          case "let":
-          case "lifecycle":
-          case "log":
-          case "return":
-            bodyType = TagType.void;
-            break;
-          case "html-comment":
-          case "html-script":
-          case "html-style":
-          case "script":
-          case "textarea":
-            bodyType = TagType.text;
-            break;
-          default:
-            if (nameText[0] === "@") {
-              type = NodeType.AttrTag;
-            }
-            break;
-        }
+      }
     }
 
     const parent = this.#parentNode as Node.ParentNode;
