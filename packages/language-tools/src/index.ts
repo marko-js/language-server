@@ -2,6 +2,7 @@ export * from "./extractors/css-module";
 export * from "./extractors/html";
 export * from "./extractors/script";
 export * from "./extractors/style";
+export { parse } from "./parse";
 export * as Processors from "./processors";
 export { type Extracted } from "./util/extractor";
 export { getExt } from "./util/get-ext";
