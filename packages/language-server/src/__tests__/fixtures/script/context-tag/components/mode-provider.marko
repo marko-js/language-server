@@ -1,0 +1,16 @@
+export interface Input {
+  detailed?: boolean;
+  content?: Marko.Body;
+}
+
+// The provide sits inside control flow: the consumed type must still be
+// exactly the provided type, with no extractor-added `undefined` (reading
+// an unprovided context is a runtime error, not a valid `undefined`).
+<if=input.detailed>
+  <context=({ mode: "detailed", level: 2 } as const)>
+    <${input.content}/>
+  </context>
+</if>
+<else>
+  <${input.content}/>
+</else>

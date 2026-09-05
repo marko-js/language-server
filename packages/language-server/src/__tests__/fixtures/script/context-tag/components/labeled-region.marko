@@ -1,0 +1,12 @@
+export interface Input {
+  label: string;
+  content?: Marko.Body;
+}
+
+// Self-referencing consume: `from=` resolves to this same template.
+<context=input.label>
+  <${input.content}/>
+  <context/label from="<labeled-region>"/>
+  //       ^?
+  <div>${label.toUpperCase()}</div>
+</context>

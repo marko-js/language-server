@@ -4,6 +4,7 @@ import type { DocumentLink } from "vscode-languageserver";
 import { type MarkoFile, processDoc } from "../../utils/file";
 import resolveUrl from "../../utils/resolve-url";
 import type { Plugin } from "../types";
+import getContextFromAttr from "./util/context-from-attr";
 import isDocumentLinkAttr from "./util/is-document-link-attr";
 
 const importTagReg = /(['"])<((?:[^'"\\>]|\\.)*)>?\1/g;
@@ -40,7 +41,25 @@ function extractDocumentLinks({
       case NodeType.Tag:
         if (node.attrs && node.nameText) {
           for (const attr of node.attrs) {
-            if (isDocumentLinkAttr(code, node, attr)) {
+            const fromAttr = getContextFromAttr(code, node, attr);
+            if (fromAttr) {
+              const request = read(fromAttr.value.value).slice(1, -1);
+              const tagMatch = /^<(.*)>$/.exec(request);
+              const target = tagMatch
+                ? (() => {
+                    const tagDef = lookup.getTag(tagMatch[1]);
+                    return tagDef && (tagDef.template || tagDef.renderer);
+                  })()
+                : request[0] === "."
+                  ? resolveUrl(request, uri)
+                  : undefined;
+              if (target) {
+                links.push({
+                  range: parsed.locationAt(fromAttr.value.value),
+                  target,
+                });
+              }
+            } else if (isDocumentLinkAttr(code, node, attr)) {
               const resolved = resolveUrl(
                 read(attr.value.value).slice(1, -1),
                 uri,
