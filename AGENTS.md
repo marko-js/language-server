@@ -73,7 +73,7 @@ pnpm --filter @marko/language-tools run bench   # BENCH=1 mocha ...
 
 ## Lint and format
 
-`pnpm run lint` runs build first, then: eslint -> prettier (check) -> cspell.
+`pnpm run lint` runs build first, then: eslint -> prettier (check).
 `pnpm run format` runs build first, then: eslint --fix -> prettier --write.
 
 Key lint rules:
