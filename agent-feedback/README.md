@@ -60,6 +60,6 @@ pnpm monorepo, four packages under `packages/`: `language-tools` (extraction/ana
 
 **Guard tests.** Fixture directories under `packages/language-server/src/__tests__/fixtures/<kind>/<name>/` holding `.marko` files. `^?` markers in a fixture define hover positions. Snapshots are individual files under a sibling `__snapshots__/<name>.expected/`. Run and update with `pnpm run test:server` (builds `language-tools` + `language-server`, then runs `test:update`). Mocha timeout is 10s.
 
-**Pre-ship.** `pnpm run lint` (build, then eslint, prettier check, cspell) and `pnpm test`. Add a changeset with `pnpm run change`.
+**Pre-ship.** `pnpm run lint` (build, then eslint, prettier check) and `pnpm test`. Add a changeset with `pnpm run change`.
 
 **Gotchas.** The `vscode` package's tests launch VS Code Insiders and need a display server (CI uses `xvfb-run`); several completion tests fail locally against current Insiders builds, so a failure there is not necessarily yours. Snapshot output depends on the installed `marko` / `@marko/runtime-tags` versions, so pin the versions you reproduced against in the item. Many type-surface defects are really upstream in marko-js/marko (`packages/runtime-tags`); name the upstream authority in the item when the fix belongs there.

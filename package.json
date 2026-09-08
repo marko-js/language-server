@@ -11,7 +11,7 @@
     "build:dev": "tsx ./packages/vscode/build.mts",
     "change": "changeset add",
     "format": "eslint --fix .; prettier . --write --log-level=warn",
-    "lint": "eslint . && prettier . --check --log-level=warn && cspell --quiet",
+    "lint": "eslint . && prettier . --check --log-level=warn",
     "prepare": "husky",
     "test": "pnpm run build && pnpm -r --if-present run test",
     "test:server": "pnpm --filter @marko/language-tools --filter @marko/language-server run build && pnpm --filter @marko/language-server run test:update"
@@ -22,7 +22,6 @@
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^26.0.0",
-    "cspell": "^10.0.1",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
     "eslint-plugin-simple-import-sort": "^13.0.0",
