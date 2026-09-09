@@ -1,0 +1,5 @@
+<typed-badge/badge label="hello" count=1 size="small" id="badge" onClick() { badge().setAttribute("active", ""); }>
+  <span>child</span>
+</typed-badge>
+import type { Input as BadgeInput } from "./typed-badge.d.marko";
+export interface Input { badge?: BadgeInput; }

@@ -1,0 +1,15 @@
+<typed-badge/badge
+  label="hello"
+//^?
+  count=1
+//^?
+  size="small"
+//^?
+  id="badge"
+  onClick() { badge().setAttribute("active", ""); }
+>
+  <span>child</span>
+</typed-badge>
+<typed-badge count="invalid" size="medium"/>
+import type { Input as BadgeInput } from "<typed-badge>";
+export interface Input { badge?: BadgeInput; }

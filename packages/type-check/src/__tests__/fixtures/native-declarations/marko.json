@@ -1,0 +1,7 @@
+{
+  "<typed-badge>": {
+    "html": true,
+    "types": "./src/typed-badge.d.marko",
+    "@*": "expression"
+  }
+}

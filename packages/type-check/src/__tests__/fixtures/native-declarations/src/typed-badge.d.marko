@@ -1,0 +1,6 @@
+export interface Input extends Omit<Marko.HTMLAttributes<HTMLElement>, "content" | "label" | "count" | "size"> {
+  label?: string;
+  count?: number;
+  size?: "small" | "large";
+  content?: Marko.Body;
+}
