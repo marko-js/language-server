@@ -332,21 +332,6 @@ const ScriptService: Partial<Plugin> = {
     let result: DefinitionLink[] | DefinitionLink | undefined;
 
     for (const def of boundary.definitions) {
-      const origin = Project.getVirtualFileOrigin(def.fileName);
-      if (origin) {
-        const link = {
-          targetUri: filenameToURI(origin),
-          targetRange: START_LOCATION,
-          targetSelectionRange: START_LOCATION,
-          originSelectionRange,
-        };
-        result = result
-          ? Array.isArray(result)
-            ? [...result, link]
-            : [result, link]
-          : link;
-        continue;
-      }
       const targetUri = filenameToURI(def.fileName);
       const defDoc = documents.get(targetUri);
       if (!defDoc) continue;

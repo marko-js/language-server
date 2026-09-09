@@ -1,7 +1,4 @@
-import type { Input as BadgeInput } from "typed-badge/index.d.marko";
-export interface Input {
-  badge?: BadgeInput;
-}
+export interface Input {}
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;
@@ -10,42 +7,105 @@ export interface Input {
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const badge = Marko._.hoist(() => __marko_internal_hoist__badge);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("typed-badge/index.d.marko"),
-  );
+  Marko._.renderNativeTag(
+    "typed-badge",
+    Marko._.any as {
+      /** Badge label. */
+      label?: string;
+      count?: number;
+      size?: "small" | "large";
+      active?: boolean;
+      model?: unknown;
+      items?: unknown;
+      weight?: -1 | 0 | 1;
+      broken?: unknown;
+    },
+  )()()({});
   {
     const badge = Marko._.el("typed-badge");
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
-      label:
-        "hello",
-        //^?
-      count: 1,
-      //^?
-      size: "small",
-      //^?
-      id: "badge",
-      onClick() {
-        badge().setAttribute("active", "");
+    Marko._.renderNativeTag(
+      "typed-badge",
+      Marko._.any as {
+        /** Badge label. */
+        label?: string;
+        count?: number;
+        size?: "small" | "large";
+        active?: boolean;
+        model?: unknown;
+        items?: unknown;
+        weight?: -1 | 0 | 1;
+        broken?: unknown;
       },
-      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-        Marko._.renderNativeTag("span")()()({
-          [Marko._.content]: (() => {
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
-    });
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("typed-badge/index.d.marko"),
+    )()()(
+      // ^?
+      {
+        label:
+          "hello",
+          //^?
+        count: 1,
+        //^?
+        size: "small",
+        //^?
+        id: "badge",
+        active: true,
+        weight: -1,
+        model: { value: 1 },
+        items: ["a"],
+        broken: 1,
+        "aria-label": "Badge",
+        "data-testid": "badge",
+        onClick() {
+          badge().setAttribute("active", "");
+        },
+        [Marko._.content]: (() => {
+          Marko._.renderNativeTag("span")()()({
+            [Marko._.content]: (() => {
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      },
     );
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    Marko._.renderNativeTag(
+      "typed-badge",
+      Marko._.any as {
+        /** Badge label. */
+        label?: string;
+        count?: number;
+        size?: "small" | "large";
+        active?: boolean;
+        model?: unknown;
+        items?: unknown;
+        weight?: -1 | 0 | 1;
+        broken?: unknown;
+      },
+    )()()({
       count: "invalid",
       size: "medium",
+    });
+    Marko._.renderNativeTag(
+      "typed-badge",
+      Marko._.any as {
+        /** Badge label. */
+        label?: string;
+        count?: number;
+        size?: "small" | "large";
+        active?: boolean;
+        model?: unknown;
+        items?: unknown;
+        weight?: -1 | 0 | 1;
+        broken?: unknown;
+      },
+    )()()({
+      active: "invalid",
+      weight: 2,
+      id: 1,
+      onClick: 1,
     });
     var __marko_internal_hoist__badge = badge;
   }

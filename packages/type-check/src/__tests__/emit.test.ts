@@ -43,6 +43,27 @@ for (const fixture of fs.readdirSync(FIXTURE_DIR)) {
           dir: fixtureDir,
         });
       }
+      if (process.env.UPDATE_SNAPSHOTS || process.argv.includes("--update")) {
+        const dir = path.join(
+          fixtureDir,
+          "__snapshots__",
+          "emits-declaration-files.expected",
+        );
+        const outputs = new Set(
+          emitted.map((file) => path.relative(outDir, file)),
+        );
+        if (fs.existsSync(dir)) {
+          for (const file of fs.readdirSync(dir, {
+            recursive: true,
+            withFileTypes: true,
+          })) {
+            const filename = path.join(file.parentPath, file.name);
+            if (file.isFile() && !outputs.has(path.relative(dir, filename))) {
+              fs.unlinkSync(filename);
+            }
+          }
+        }
+      }
     });
 
     it("emits declaration files that type check", () => {

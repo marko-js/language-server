@@ -40,17 +40,20 @@ export default function getTagNameCompletion({
   const html = isHTML(tag);
   const documentation = {
     kind: MarkupKind.Markdown,
-    value: html
-      ? `Built in [&lt;${tag.name}&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
-      : isCoreTag
-        ? `Core Marko &lt;${tag.name}&gt; tag.`
-        : nodeModuleName
-          ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
-          : `Custom Marko tag discovered from:\n\n[${
-              importer
-                ? path.relative(path.dirname(importer), fileForTag)
-                : fileForTag
-            }](${fileURIForTag})`,
+    value:
+      (tag.htmlType as string) === "custom-element"
+        ? `Native custom element discovered from [${nodeModuleName || "manifest"}](${fileURIForTag}).`
+        : html
+          ? `Built in [&lt;${tag.name}&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/${tag.name}) HTML tag.`
+          : isCoreTag
+            ? `Core Marko &lt;${tag.name}&gt; tag.`
+            : nodeModuleName
+              ? `Custom Marko tag discovered from the ["${nodeModuleName}"](${fileURIForTag}) npm package.`
+              : `Custom Marko tag discovered from:\n\n[${
+                  importer
+                    ? path.relative(path.dirname(importer), fileForTag)
+                    : fileForTag
+                }](${fileURIForTag})`,
   };
 
   if (tag.description) {

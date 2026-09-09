@@ -175,6 +175,17 @@ declare global {
       export function renderNativeTag<Name extends string>(
         tag: Name,
       ): NativeTagRenderer<Name>;
+      export function renderNativeTag<Name extends string, Attributes>(
+        tag: Name,
+        attributes: Attributes,
+      ): NativeTagRenderer<
+        Name,
+        Omit<
+          Marko.HTMLAttributes<HTMLElement>,
+          keyof Attributes | DefaultBodyContentKey
+        > &
+          Attributes & { [Key in DefaultBodyContentKey]?: Marko.Body }
+      >;
       export const missingTag: DefaultRenderer;
       export function resolveTemplate<Template>(
         imported: Promise<{ default: Template }>,
@@ -468,15 +479,15 @@ declare global {
           ? BaseRenderer<Input, Return>
           : DefaultRenderer;
 
-      export interface NativeTagRenderer<Name extends string> {
+      export interface NativeTagRenderer<
+        Name extends string,
+        Input = Marko.NativeTags[Name]["input"],
+      > {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         (): () => <__marko_internal_input extends unknown>(
           input: Marko.Directives &
-            Marko.NativeTags[Name]["input"] &
-            Relate<
-              __marko_internal_input,
-              Marko.Directives & Marko.NativeTags[Name]["input"]
-            >,
+            Input &
+            Relate<__marko_internal_input, Marko.Directives & Input>,
         ) => ReturnAndScope<
           Scopes<__marko_internal_input>,
           Marko.NativeTags[Name]["return"]

@@ -1,4 +1,3 @@
-import { Project } from "@marko/language-tools";
 import fs from "fs";
 import {
   type DidChangeTextDocumentParams,
@@ -46,10 +45,6 @@ export function get(uri: string) {
 
   const { fsPath, scheme } = URI.parse(uri);
   if (scheme === "file") {
-    const source = Project.getVirtualFile(fsPath);
-    if (source !== undefined) {
-      return TextDocument.create(uri, "marko", projectVersion, source);
-    }
     if (fileExists.get(uri) === false) return undefined;
     try {
       const newDoc = TextDocument.create(
@@ -69,7 +64,6 @@ export function get(uri: string) {
 }
 
 export function exists(uri: string) {
-  if (Project.getVirtualFile(URI.parse(uri).fsPath) !== undefined) return true;
   const cached = fileExists.get(uri);
   if (cached !== undefined) return cached;
 

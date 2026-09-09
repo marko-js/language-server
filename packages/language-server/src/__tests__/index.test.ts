@@ -48,6 +48,19 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
   for (const entry of fs.readdirSync(fixtureSubdir)) {
     it(entry, async () => {
       const fixtureDir = path.join(fixtureSubdir, entry);
+      const outputs = new Set<string>();
+      const snapshotOutput: typeof snapshot = async (value, options) => {
+        outputs.add(options!.file!);
+        return snapshot(
+          typeof value === "string"
+            ? value.replaceAll(
+                URI.file(fixtureDir).toString(),
+                "file:///<fixture>",
+              )
+            : value,
+          options,
+        );
+      };
 
       for (const filename of loadMarkoFiles(fixtureDir)) {
         const doc = documents.get(URI.file(filename).toString())!;
@@ -111,7 +124,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           "$/showScriptOutput"
         ](doc.uri);
         if (scriptOutput) {
-          await snapshot(scriptOutput.content, {
+          await snapshotOutput(scriptOutput.content, {
             file: path.relative(
               fixtureDir,
               filename.replace(
@@ -132,7 +145,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           doc.uri,
         );
         if (htmlOutput) {
-          await snapshot(htmlOutput.content, {
+          await snapshotOutput(htmlOutput.content, {
             file: path.relative(
               fixtureDir,
               filename.replace(/\.marko$/, ".html"),
@@ -189,7 +202,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
 
         documents.doClose(params);
 
-        await snapshot(results, {
+        await snapshotOutput(results, {
           file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
           dir: fixtureDir,
         });
@@ -202,10 +215,24 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
           code: fs.readFileSync(filename, "utf-8"),
           fileName: filename,
         });
-        await snapshot(extracted.toString(), {
+        await snapshotOutput(extracted.toString(), {
           file: path.relative(fixtureDir, `${filename}.ts`),
           dir: fixtureDir,
         });
+      }
+      if (process.env.UPDATE_SNAPSHOTS || process.argv.includes("--update")) {
+        const dir = path.join(fixtureDir, "__snapshots__", `${entry}.expected`);
+        if (fs.existsSync(dir)) {
+          for (const file of fs.readdirSync(dir, {
+            recursive: true,
+            withFileTypes: true,
+          })) {
+            const filename = path.join(file.parentPath, file.name);
+            if (file.isFile() && !outputs.has(path.relative(dir, filename))) {
+              fs.unlinkSync(filename);
+            }
+          }
+        }
       }
     });
   }

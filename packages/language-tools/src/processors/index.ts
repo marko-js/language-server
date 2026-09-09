@@ -2,7 +2,6 @@ import type ts from "typescript/lib/tsserverlibrary";
 
 import { Extracted } from "../util/extractor";
 import { getExt } from "../util/get-ext";
-import { patchVirtualFiles } from "../util/project";
 import cssModule from "./css-module";
 import marko from "./marko";
 
@@ -66,7 +65,6 @@ export const extensions = configs.flatMap(
 ) as ProcessorExtension[];
 
 export function create(options: CreateProcessorOptions) {
-  patchVirtualFiles(options.host);
   const result = {} as Record<ProcessorExtension, Processor>;
   for (const config of configs) {
     const processor = config.create(options);

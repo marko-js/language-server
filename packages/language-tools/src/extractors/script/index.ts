@@ -1,5 +1,6 @@
 import type { types as t } from "@marko/compiler";
 import type { TagDefinition, TaglibLookup } from "@marko/compiler/babel-utils";
+import { parse as parseScript } from "@marko/compiler/internal/babel";
 import path from "path";
 import { relativeImportPath } from "relative-import-path";
 import type TS from "typescript/lib/tsserverlibrary";
@@ -801,7 +802,7 @@ constructor(_) {}
     const tagName = tag.nameText;
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const importPath = resolveTagImport(this.#filename, def);
-    const isHTML = def?.html;
+    const isHTML = !importPath && def?.html;
     const needsHoist = hasHoists(tag);
     const mutatedVars = tag.var && !isHTML && getMutatedVars(tag);
     let isTemplate = false;
@@ -875,11 +876,38 @@ constructor(_) {}
       }
     }
 
-    if (isHTML && !templateVar) {
+    if (isHTML) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
         .copy(isEmptyRange(tag.name) ? tagName : tag.name)
-        .write('")');
+        .write('"');
+      if ((def.htmlType as string) === "custom-element") {
+        this.#extractor.write(", ");
+        const fields = Object.values(def.attributes)
+          .filter(
+            (attr) =>
+              attr.name !== "*" &&
+              attr.name !== "content" &&
+              attr.name !== "renderBody",
+          )
+          .map((attr) => {
+            const nativeType = (attr as typeof attr & { nativeType?: string })
+              .nativeType;
+            const doc =
+              attr.description && this.#scriptLang === ScriptLang.ts
+                ? `/** ${attr.description.replace(/\*\//g, "*\\/")} */\n`
+                : "";
+            return `${doc}${JSON.stringify(attr.name)}?: ${nativeAttributeType(nativeType)};`;
+          })
+          .join("\n");
+        const type = `{\n${fields}\n}`;
+        this.#extractor.write(
+          this.#scriptLang === ScriptLang.ts
+            ? `${varShared("any")} as ${type}`
+            : `/** @type {${type.replace(/\*\//g, "*\\u002f")}} */(${varShared("any")})`,
+        );
+      }
+      this.#extractor.write(")");
     } else if (templateVar) {
       this.#extractor
         .write(
@@ -2190,6 +2218,72 @@ function isValueAttribute(
   );
 }
 
+function nativeAttributeType(text: string | undefined): string {
+  if (text) {
+    try {
+      const { program } = parseScript(`type Attribute = ${text}`, {
+        sourceType: "module",
+        plugins: ["typescript"],
+      });
+      const [statement] = program.body;
+      if (
+        program.body.length === 1 &&
+        statement.type === "TSTypeAliasDeclaration"
+      ) {
+        return nativeTypeNode(statement.typeAnnotation) ?? "unknown";
+      }
+    } catch {
+      // Manifest types may use JSDoc syntax rather than TypeScript.
+    }
+  }
+  return "unknown";
+}
+
+function nativeTypeNode(node: t.TSType): string | undefined {
+  switch (node.type) {
+    case "TSStringKeyword":
+      return "string";
+    case "TSNumberKeyword":
+      return "number";
+    case "TSBooleanKeyword":
+      return "boolean";
+    case "TSUnknownKeyword":
+      return "unknown";
+    case "TSAnyKeyword":
+      return "any";
+    case "TSNeverKeyword":
+      return "never";
+    case "TSNullKeyword":
+      return "null";
+    case "TSUndefinedKeyword":
+      return "undefined";
+    case "TSParenthesizedType":
+      return nativeTypeNode(node.typeAnnotation);
+    case "TSUnionType": {
+      const types = node.types.map(nativeTypeNode);
+      if (types.every((type) => type !== undefined)) return types.join(" | ");
+      return;
+    }
+    case "TSLiteralType": {
+      const { literal } = node;
+      if (
+        literal.type === "StringLiteral" ||
+        literal.type === "NumericLiteral" ||
+        literal.type === "BooleanLiteral"
+      ) {
+        return JSON.stringify(literal.value);
+      }
+      if (
+        literal.type === "UnaryExpression" &&
+        literal.operator === "-" &&
+        literal.argument.type === "NumericLiteral"
+      ) {
+        return `-${literal.argument.value}`;
+      }
+    }
+  }
+}
+
 function resolveTagImport(from: string, def: TagDefinition | undefined) {
   const filename = resolveTagFile(def);
   if (!def || !filename) return;
@@ -2199,7 +2293,6 @@ function resolveTagImport(from: string, def: TagDefinition | undefined) {
   // provided path must use native separators too or relativeImportPath
   // falls back to returning the absolute path.
   const to = normalizePath(filename);
-  if (def.html && def.types) return to;
   return packageImportPath(from, def, to) || relativeImportPath(from, to);
 }
 

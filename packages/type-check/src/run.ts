@@ -252,8 +252,7 @@ export default function run(opts: Options) {
             const tagDef = Project.getTagLookup(
               path.dirname(containingFile),
             ).getTag(tagName);
-            const tagFileName =
-              tagDef && (tagDef.types || tagDef.template || tagDef.renderer);
+            const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
             if (tagFileName) {
               moduleName = tagFileName;
             }
@@ -382,9 +381,6 @@ export default function run(opts: Options) {
               true,
               processor.getScriptKind(fileName),
             );
-            if (Project.getVirtualFile(fileName) !== undefined) {
-              sourceFile.isDeclarationFile = true;
-            }
 
             (sourceFile as any).version = crypto
               .createHash("md5")
@@ -613,12 +609,10 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
   );
 
   if (diag.file) {
-    const origin = Project.getVirtualFileOrigin(diag.file.fileName);
-    const filename = origin || diag.file.fileName;
     let code = diag.file.text;
     let loc: Location | void = undefined;
 
-    if (diag.start !== undefined && !origin) {
+    if (diag.start !== undefined) {
       const extracted = extractCache.get(
         getCanonicalFileName(diag.file.fileName),
       );
@@ -647,7 +641,7 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
     if (loc) {
       report.out.push(
         `${color.cyan(
-          path.relative(currentDirectory, filename),
+          path.relative(currentDirectory, diag.file.fileName),
         )}:${color.yellow(loc.start.line + 1)}:${color.yellow(
           loc.start.character + 1,
         )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
@@ -662,7 +656,7 @@ function reportDiagnostic(report: Report, diag: ts.Diagnostic) {
     } else {
       report.out.push(
         `${color.cyan(
-          path.relative(currentDirectory, filename),
+          path.relative(currentDirectory, diag.file.fileName),
         )} - ${coloredDiagnosticCategory(diag.category)} ${color.dim(
           `TS${diag.code}`,
         )}${report.formatSettings.newLineCharacter}${diagMessage}`,

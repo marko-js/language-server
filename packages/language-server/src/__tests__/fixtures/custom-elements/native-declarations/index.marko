@@ -1,3 +1,5 @@
+<typed-badge/>
+// ^?
 <typed-badge/badge
   label="hello"
 //^?
@@ -6,10 +8,16 @@
   size="small"
 //^?
   id="badge"
+  active
+  weight=-1
+  model={ value: 1 }
+  items=["a"]
+  broken=1
+  aria-label="Badge"
+  data-testid="badge"
   onClick() { badge().setAttribute("active", ""); }
 >
   <span>child</span>
 </typed-badge>
 <typed-badge count="invalid" size="medium"/>
-import type { Input as BadgeInput } from "<typed-badge>";
-export interface Input { badge?: BadgeInput; }
+<typed-badge active="invalid" weight=2 id=1 onClick=1/>
