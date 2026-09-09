@@ -801,7 +801,7 @@ constructor(_) {}
     const tagName = tag.nameText;
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
     const importPath = resolveTagImport(this.#filename, def);
-    const isHTML = !importPath && def?.html;
+    const isHTML = def?.html;
     const needsHoist = hasHoists(tag);
     const mutatedVars = tag.var && !isHTML && getMutatedVars(tag);
     let isTemplate = false;
@@ -875,7 +875,7 @@ constructor(_) {}
       }
     }
 
-    if (isHTML) {
+    if (isHTML && !templateVar) {
       this.#extractor
         .write(`${varShared("renderNativeTag")}("`)
         .copy(isEmptyRange(tag.name) ? tagName : tag.name)
@@ -2199,6 +2199,7 @@ function resolveTagImport(from: string, def: TagDefinition | undefined) {
   // provided path must use native separators too or relativeImportPath
   // falls back to returning the absolute path.
   const to = normalizePath(filename);
+  if (def.html && def.types) return to;
   return packageImportPath(from, def, to) || relativeImportPath(from, to);
 }
 

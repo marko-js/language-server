@@ -45,6 +45,43 @@ export function getCompiler(dir?: string) {
   return getMeta(dir).compiler;
 }
 
+export function getVirtualFile(filename: string): string | undefined {
+  return readVirtualFile(filename, "getVirtualFile");
+}
+
+export function getVirtualFileOrigin(filename: string): string | undefined {
+  return readVirtualFile(filename, "getVirtualFileOrigin");
+}
+
+function readVirtualFile(
+  filename: string,
+  method: "getVirtualFile" | "getVirtualFileOrigin",
+) {
+  if (!filename.endsWith(".d.marko")) return;
+  for (const meta of new Set([defaultMeta, ...metaByDir.values()])) {
+    const compiler = meta?.compiler as
+      | (typeof Compiler &
+          Partial<
+            Record<typeof method, (filename: string) => string | undefined>
+          >)
+      | undefined;
+    const result = compiler?.[method]?.(filename);
+    if (result !== undefined) return result;
+  }
+}
+
+const virtualHosts = new WeakSet<TS.ModuleResolutionHost>();
+
+export function patchVirtualFiles(host: TS.ModuleResolutionHost) {
+  if (virtualHosts.has(host)) return;
+  virtualHosts.add(host);
+  const readFile = host.readFile.bind(host);
+  const fileExists = host.fileExists.bind(host);
+  host.readFile = (filename) => getVirtualFile(filename) ?? readFile(filename);
+  host.fileExists = (filename) =>
+    getVirtualFile(filename) !== undefined || fileExists(filename);
+}
+
 export function getCache(dir?: string) {
   return getMeta(dir).config.cache!;
 }

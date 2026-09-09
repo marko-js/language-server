@@ -41,6 +41,14 @@ Server implementation can be found [here](/packages/language-server).
 
 ## Development
 
+### Custom elements
+
+With a compiler that discovers custom elements manifests, editor services and
+`mtc` read generated declaration-only `.d.marko` types directly from the compiler.
+Attribute hovers, completions and checking require no generated files on disk.
+Go to definition opens the original manifest rather than an imaginary file.
+Older compiler versions continue to work without the virtual declaration API.
+
 We include a `.vscode` directory that contains launch configurations for developers.
 You can find three settings that will help you get started. The workflow will be
 explained in the following items:

@@ -165,7 +165,8 @@ export function patch(
           const tagDef = Project.getTagLookup(
             path.dirname(containingFile),
           ).getTag(tagName);
-          const tagFileName = tagDef && (tagDef.template || tagDef.renderer);
+          const tagFileName =
+            tagDef && (tagDef.types || tagDef.template || tagDef.renderer);
           if (tagFileName) {
             moduleName = tagFileName;
           }
