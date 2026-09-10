@@ -9,33 +9,49 @@ export interface Input {}
   const badge = Marko._.hoist(() => __marko_internal_hoist__badge);
   Marko._.renderNativeTag(
     "typed-badge",
-    Marko._.any as {
-      /** Badge label. */
-      label?: string;
-      count?: number;
-      size?: "small" | "large";
-      active?: boolean;
-      model?: unknown;
-      items?: unknown;
-      weight?: -1 | 0 | 1;
-      broken?: unknown;
-    },
+    Marko._.any as Marko._.CustomElementAttributes<
+      // @ts-ignore
+      typeof import("./node_modules/typed-badge/index.js"),
+      {
+        /** Badge label. */
+        label?: string;
+        count?: number;
+        size?: Marko._.CustomElementField<
+          "typed-badge",
+          "size",
+          "small" | "large"
+        >;
+        active?: boolean;
+        model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+        items?: unknown;
+        weight?: -1 | 0 | 1;
+        broken?: unknown;
+      }
+    >,
   )()()({});
   {
     const badge = Marko._.el("typed-badge");
     Marko._.renderNativeTag(
       "typed-badge",
-      Marko._.any as {
-        /** Badge label. */
-        label?: string;
-        count?: number;
-        size?: "small" | "large";
-        active?: boolean;
-        model?: unknown;
-        items?: unknown;
-        weight?: -1 | 0 | 1;
-        broken?: unknown;
-      },
+      Marko._.any as Marko._.CustomElementAttributes<
+        // @ts-ignore
+        typeof import("./node_modules/typed-badge/index.js"),
+        {
+          /** Badge label. */
+          label?: string;
+          count?: number;
+          size?: Marko._.CustomElementField<
+            "typed-badge",
+            "size",
+            "small" | "large"
+          >;
+          active?: boolean;
+          model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+          items?: unknown;
+          weight?: -1 | 0 | 1;
+          broken?: unknown;
+        }
+      >,
     )()()(
       // ^?
       {
@@ -73,34 +89,99 @@ export interface Input {}
     );
     Marko._.renderNativeTag(
       "typed-badge",
-      Marko._.any as {
-        /** Badge label. */
-        label?: string;
-        count?: number;
-        size?: "small" | "large";
-        active?: boolean;
-        model?: unknown;
-        items?: unknown;
-        weight?: -1 | 0 | 1;
-        broken?: unknown;
-      },
+      Marko._.any as Marko._.CustomElementAttributes<
+        // @ts-ignore
+        typeof import("./node_modules/typed-badge/index.js"),
+        {
+          /** Badge label. */
+          label?: string;
+          count?: number;
+          size?: Marko._.CustomElementField<
+            "typed-badge",
+            "size",
+            "small" | "large"
+          >;
+          active?: boolean;
+          model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+          items?: unknown;
+          weight?: -1 | 0 | 1;
+          broken?: unknown;
+        }
+      >,
+    )()()({
+      size: "auto",
+      model: { value: 2, color: "red" },
+    });
+    Marko._.renderNativeTag(
+      "typed-badge",
+      Marko._.any as Marko._.CustomElementAttributes<
+        // @ts-ignore
+        typeof import("./node_modules/typed-badge/index.js"),
+        {
+          /** Badge label. */
+          label?: string;
+          count?: number;
+          size?: Marko._.CustomElementField<
+            "typed-badge",
+            "size",
+            "small" | "large"
+          >;
+          active?: boolean;
+          model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+          items?: unknown;
+          weight?: -1 | 0 | 1;
+          broken?: unknown;
+        }
+      >,
+    )()()({
+      model: { color: "red" },
+    });
+    Marko._.renderNativeTag(
+      "typed-badge",
+      Marko._.any as Marko._.CustomElementAttributes<
+        // @ts-ignore
+        typeof import("./node_modules/typed-badge/index.js"),
+        {
+          /** Badge label. */
+          label?: string;
+          count?: number;
+          size?: Marko._.CustomElementField<
+            "typed-badge",
+            "size",
+            "small" | "large"
+          >;
+          active?: boolean;
+          model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+          items?: unknown;
+          weight?: -1 | 0 | 1;
+          broken?: unknown;
+        }
+      >,
     )()()({
       count: "invalid",
       size: "medium",
     });
     Marko._.renderNativeTag(
       "typed-badge",
-      Marko._.any as {
-        /** Badge label. */
-        label?: string;
-        count?: number;
-        size?: "small" | "large";
-        active?: boolean;
-        model?: unknown;
-        items?: unknown;
-        weight?: -1 | 0 | 1;
-        broken?: unknown;
-      },
+      Marko._.any as Marko._.CustomElementAttributes<
+        // @ts-ignore
+        typeof import("./node_modules/typed-badge/index.js"),
+        {
+          /** Badge label. */
+          label?: string;
+          count?: number;
+          size?: Marko._.CustomElementField<
+            "typed-badge",
+            "size",
+            "small" | "large"
+          >;
+          active?: boolean;
+          model?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
+          items?: unknown;
+          weight?: -1 | 0 | 1;
+          broken?: unknown;
+        }
+      >,
     )()()({
       active: "invalid",
       weight: 2,

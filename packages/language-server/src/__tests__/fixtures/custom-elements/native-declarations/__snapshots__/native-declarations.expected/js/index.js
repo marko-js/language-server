@@ -23,9 +23,9 @@ export class Component extends Marko.Component {}
     /** @type {{
 "label"?: string;
 "count"?: number;
-"size"?: "small" | "large";
+"size"?: Marko._.CustomElementField<"typed-badge", "size", "small" | "large">;
 "active"?: boolean;
-"model"?: unknown;
+"model"?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
 "items"?: unknown;
 "weight"?: -1 | 0 | 1;
 "broken"?: unknown;
@@ -42,9 +42,9 @@ export class Component extends Marko.Component {}
     /** @type {{
 "label"?: string;
 "count"?: number;
-"size"?: "small" | "large";
+"size"?: Marko._.CustomElementField<"typed-badge", "size", "small" | "large">;
 "active"?: boolean;
-"model"?: unknown;
+"model"?: Marko._.CustomElementField<"typed-badge", "model", unknown>;
 "items"?: unknown;
 "weight"?: -1 | 0 | 1;
 "broken"?: unknown;

@@ -883,6 +883,9 @@ constructor(_) {}
         .write('"');
       if ((def.htmlType as string) === "custom-element") {
         this.#extractor.write(", ");
+        const { browserImport } = def as typeof def & {
+          browserImport?: string;
+        };
         const fields = Object.values(def.attributes)
           .filter(
             (attr) =>
@@ -891,16 +894,34 @@ constructor(_) {}
               attr.name !== "renderBody",
           )
           .map((attr) => {
-            const nativeType = (attr as typeof attr & { nativeType?: string })
-              .nativeType;
+            const { nativeType, fieldName } = attr as typeof attr & {
+              nativeType?: string;
+              fieldName?: string;
+            };
             const doc =
               attr.description && this.#scriptLang === ScriptLang.ts
                 ? `/** ${attr.description.replace(/\*\//g, "*\\/")} */\n`
                 : "";
-            return `${doc}${JSON.stringify(attr.name)}?: ${nativeAttributeType(nativeType)};`;
+            const fallback = nativeAttributeType(nativeType);
+            // Libraries commonly ship richer TypeScript than the manifest
+            // via `HTMLElementTagNameMap`; prefer the class field's type.
+            const type = fieldName
+              ? `${varShared("CustomElementField")}<${JSON.stringify(def.name)}, ${JSON.stringify(fieldName)}, ${fallback}>`
+              : fallback;
+            return `${doc}${JSON.stringify(attr.name)}?: ${type};`;
           })
           .join("\n");
-        const type = `{\n${fields}\n}`;
+        let type = `{\n${fields}\n}`;
+        if (browserImport && this.#scriptLang === ScriptLang.ts) {
+          // Reference the registration module so its global
+          // `HTMLElementTagNameMap` augmentation is part of the program,
+          // mirroring the import the compiled output adds. The ignore keeps
+          // untyped libraries from surfacing an implicit-any diagnostic.
+          type = `${varShared("CustomElementAttributes")}<
+// @ts-ignore
+typeof import(${JSON.stringify(fileImportPath(this.#filename, browserImport))}),
+${type}>`;
+        }
         this.#extractor.write(
           this.#scriptLang === ScriptLang.ts
             ? `${varShared("any")} as ${type}`
@@ -2282,6 +2303,19 @@ function nativeTypeNode(node: t.TSType): string | undefined {
       }
     }
   }
+}
+
+/**
+ * A relative file specifier for a type-only include. Unlike a package
+ * specifier this cannot be blocked by an `exports` map, and TypeScript
+ * substitutes the module's `.d.ts` for the `.js` on resolution.
+ */
+function fileImportPath(from: string, to: string) {
+  const rel = path
+    .relative(path.dirname(from), normalizePath(to))
+    .split(path.sep)
+    .join("/");
+  return rel[0] === "." || path.isAbsolute(rel) ? rel : `./${rel}`;
 }
 
 function resolveTagImport(from: string, def: TagDefinition | undefined) {

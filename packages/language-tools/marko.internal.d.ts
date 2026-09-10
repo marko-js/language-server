@@ -57,6 +57,27 @@ declare global {
         name: Name,
       ): Marko.NativeTags[Name]["return"]["value"];
 
+      /**
+       * Carries a `typeof import(...)` of a custom element's registration
+       * module so its `HTMLElementTagNameMap` augmentation joins the program;
+       * otherwise passes the attributes type through unchanged.
+       */
+      export type CustomElementAttributes<_Module, Attributes> = Attributes;
+
+      /**
+       * Types a manifest attribute from the element class field the library
+       * ships TypeScript for, falling back to the manifest-derived type.
+       */
+      export type CustomElementField<
+        Name extends string,
+        Field extends string,
+        Fallback,
+      > = Name extends keyof HTMLElementTagNameMap
+        ? Field extends keyof HTMLElementTagNameMap[Name]
+          ? HTMLElementTagNameMap[Name][Field]
+          : Fallback
+        : Fallback;
+
       export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
       export const Template: new <Overrides = unknown>() => {
