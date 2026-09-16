@@ -317,6 +317,15 @@ export default function run(opts: Options) {
                   resolvedFileName = undefined;
                 }
               }
+
+              if (resolvedFileName && isDefinitionFile(resolvedFileName)) {
+                // A pre-built definition file comes from an already compiled
+                // dependency. Tag discovery and pnpm workspaces can surface it
+                // as an fs path, so mark it external here or composite
+                // projects will demand it be listed in their own file list
+                // (TS6307) and under their rootDir (TS6059).
+                isExternalLibraryImport = true;
+              }
             }
 
             resolvedModules.push({

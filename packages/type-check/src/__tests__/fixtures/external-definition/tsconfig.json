@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    // `rootDir` deliberately excludes `dep`: pre-built `.d.marko` files from
+    // dependencies must be treated as external, not as project sources that
+    // belong under `rootDir` (TS6059) or in the file list (TS6307).
+    "rootDir": "src",
+    "emitDeclarationOnly": true,
+    // Must live in `dist` so the test wiping `dist` fully resets the build.
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src"]
+}

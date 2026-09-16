@@ -1,0 +1,13 @@
+// `dep` stands in for an already compiled dependency (a pnpm workspace
+// sibling, or a package reached through tag discovery): it ships only a
+// pre-built `.d.marko`, lives outside this project's `rootDir`/`include`,
+// and is imported through a plain fs path.
+import type { Input as HelloInput } from "../dep/components/hello/index.marko";
+
+export interface Input {
+  name: string;
+}
+
+static const greeting: HelloInput = { name: "external" };
+
+<div>Hello ${input.name} ${greeting.name}</div>
