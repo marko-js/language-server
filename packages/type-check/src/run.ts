@@ -361,6 +361,7 @@ export default function run(opts: Options) {
         }
       };
 
+      const rootFileNames = new Set(rootNames?.map(getCanonicalFileName));
       const getSourceFile = compilerHost.getSourceFile.bind(compilerHost);
       compilerHost.getSourceFile = (
         fileName,
@@ -386,6 +387,11 @@ export default function run(opts: Options) {
               .createHash("md5")
               .update(extractedCode)
               .digest("hex");
+            // Like a `.d.ts`, a definition file from outside the project is only
+            // checked against; the project's own are still emitted to `outDir`.
+            sourceFile.isDeclarationFile =
+              isDefinitionFile(fileName) &&
+              !rootFileNames.has(getCanonicalFileName(fileName));
             extractCache.set(getCanonicalFileName(fileName), extracted);
             return sourceFile;
           }
