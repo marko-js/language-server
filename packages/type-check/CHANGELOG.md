@@ -1,5 +1,11 @@
 # @marko/type-check
 
+## 3.2.1
+
+### Patch Changes
+
+- [#599](https://github.com/marko-js/language-server/pull/599) [`f4f0577`](https://github.com/marko-js/language-server/commit/f4f057743cb793251d8f5adae8d0f660babec335) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Fix TS6059/TS6307 errors when a component resolves to a `.d.marko` file outside the project (such as a sibling workspace package) by treating it as a declaration file.
+
 ## 3.2.0
 
 ### Minor Changes
