@@ -8,7 +8,7 @@ import {
   INTERNAL_API_VAR,
   ScriptLang,
 } from "../extractors/script";
-import { parse } from "../parser";
+import { parse } from "../parse";
 import * as Project from "../util/project";
 import type { ProcessorConfig } from ".";
 

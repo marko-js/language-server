@@ -1,6 +1,6 @@
 import type { TaglibLookup } from "@marko/compiler/babel-utils";
+import { type Node, NodeType, type Parsed } from "@marko/parse";
 
-import { type Node, NodeType, type Parsed } from "../../parser";
 import { type Extracted, Extractor } from "../../util/extractor";
 
 export interface ExtractStyleOptions {
@@ -34,7 +34,7 @@ export function extractStyle(opts: ExtractStyleOptions) {
 
   return extractedByExt;
 
-  function visit(node: Node.ChildNode) {
+  function visit(node: Node.RootBodyNode) {
     switch (node.type) {
       case NodeType.AttrTag:
         if (node.body) {

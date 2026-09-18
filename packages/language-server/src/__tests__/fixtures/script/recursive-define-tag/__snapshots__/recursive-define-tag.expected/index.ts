@@ -35,6 +35,7 @@ export interface Input {
             Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
               children: children,
             });
+            // ^?
             return Marko._.voidReturn;
           },
         );
@@ -45,14 +46,12 @@ export interface Input {
       {
         of: input.value,
       },
-      (
-        // ^?
-        help,
-      ) => {
+      (help) => {
         const __marko_internal_tag_3 = Section;
         Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
           ...help,
         });
+        // ^?
         return Marko._.voidReturn;
       },
     );
@@ -98,4 +97,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-// ^?

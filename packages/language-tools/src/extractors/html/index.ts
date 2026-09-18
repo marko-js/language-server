@@ -1,4 +1,5 @@
-import { type Node, NodeType, type Parsed, type Range } from "../../parser";
+import { type Node, NodeType, type Parsed, type Range } from "@marko/parse";
+
 import { Extractor } from "../../util/extractor";
 import {
   AttributeValueType,
@@ -30,7 +31,7 @@ class HTMLExtractor {
     return { extracted: this.#extractor.end(), nodeDetails: this.#nodeDetails };
   }
 
-  #visitNode(node: Node.ChildNode) {
+  #visitNode(node: Node.RootBodyNode) {
     let hasDynamicBody = false,
       hasDynamicAttrs = false,
       isDynamic = false;
@@ -107,7 +108,7 @@ class HTMLExtractor {
   }
 
   #writeCustomTag(node: Node.Tag) {
-    if (node.body) {
+    if (node.body && hasRenderedChildren(node.body)) {
       // Replace all unknown and undefined tag names with `div`s
       this.#extractor.write("<div>");
       node.body.forEach((node) => this.#visitNode(node));
@@ -191,4 +192,11 @@ function isVoidTag(tagName: string | undefined) {
 
 function isEmptyRange(range: Range) {
   return range.start === range.end;
+}
+
+function hasRenderedChildren(body: Node.ChildNode[]) {
+  for (const child of body) {
+    if (child.type !== NodeType.Comment) return true;
+  }
+  return false;
 }

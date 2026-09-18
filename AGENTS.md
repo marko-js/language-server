@@ -2,11 +2,12 @@
 
 ## Repo overview
 
-Monorepo for the Marko Language Server and related tooling. Four pnpm workspaces under `packages/`:
+Monorepo for the Marko Language Server and related tooling. Five pnpm workspaces under `packages/`:
 
 | Package           | Published as                                | Purpose                                                     |
 | ----------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| `language-tools`  | `@marko/language-tools`                     | Core extraction/analysis of Marko files (leaf dependency)   |
+| `parse`           | `@marko/parse`                              | CST parser for Marko templates (leaf dependency)            |
+| `language-tools`  | `@marko/language-tools`                     | Core extraction/analysis of Marko files; depends on parse   |
 | `language-server` | `@marko/language-server`                    | LSP implementation; depends on language-tools               |
 | `type-check`      | `@marko/type-check`                         | CLI type-checker (`mtc`); depends on language-tools         |
 | `vscode`          | `marko-vscode` (VS Code extension, private) | VS Code client; depends on language-server + language-tools |
@@ -18,8 +19,8 @@ TypeScript emits **only `.d.ts` files** (`emitDeclarationOnly: true`); esbuild (
 **Build order matters** due to project references:
 
 ```
-language-tools -> language-server -> vscode
-language-tools -> type-check
+parse -> language-tools -> language-server -> vscode
+parse -> language-tools -> type-check
 ```
 
 Commands:
@@ -33,7 +34,13 @@ The vscode build is the most complex: it bundles 4 entry points (including tests
 
 **Build is always required before testing.** `pnpm test` at root runs `pnpm run build && pnpm -r --if-present run test`.
 
-Only two packages have tests:
+Only three packages have tests:
+
+### parse (mocha)
+
+```sh
+pnpm --filter @marko/parse run test
+```
 
 ### language-server (mocha + mocha-snap)
 

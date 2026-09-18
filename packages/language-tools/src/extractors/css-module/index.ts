@@ -1,4 +1,5 @@
-import { getLines, getLocation, getPosition, type Range } from "../../parser";
+import { getLines, getLocation, getPosition, type Range } from "@marko/parse";
+
 import {
   type Extracted,
   Extractor,

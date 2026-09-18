@@ -13,6 +13,7 @@ export interface Input {}
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     [Marko._.contentFor(__marko_internal_tag_1)]: (a) => {
       a;
+      //  ^?
       return Marko._.voidReturn;
     },
   });
@@ -20,7 +21,6 @@ export interface Input {}
     import("./components/test-tag.marko"),
   );
   Marko._.renderTemplate(__marko_internal_tag_2)()()({
-    //  ^?
     [Marko._.contentFor(__marko_internal_tag_2)]: (a) => {
       var __marko_internal_return = Marko._.returnTag({
         value: a,

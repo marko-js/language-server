@@ -47,6 +47,7 @@ export { type Component };
             i;
             //^?
             foo;
+            //^?
             return Marko._.voidReturn;
           },
           [Symbol.iterator]: Marko._.any,
@@ -95,4 +96,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//^?

@@ -23,7 +23,7 @@ function extractDocumentSymbols({
 
   const symbols: SymbolInformation[] = [];
   const { program } = parsed;
-  const visit = (node: Node.ChildNode) => {
+  const visit = (node: Node.RootBodyNode) => {
     switch (node.type) {
       case NodeType.Tag:
       case NodeType.AttrTag:

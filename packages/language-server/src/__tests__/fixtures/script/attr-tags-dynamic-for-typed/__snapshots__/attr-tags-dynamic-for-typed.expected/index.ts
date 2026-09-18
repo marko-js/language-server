@@ -34,6 +34,7 @@ export { type Component };
                 };
               })(),
             });
+            //                   ^?
             return Marko._.voidReturn;
           },
           [Symbol.iterator]: Marko._.any,
@@ -48,25 +49,23 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@menuitem"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)()()(
-    //                   ^?
-    {
-      ["menuitem"]: {
-        [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
-          Marko._.renderNativeTag("div")()()({
-            [Marko._.content]: (() => {
-              foo;
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-          });
-          return Marko._.voidReturn;
-        },
-        [Symbol.iterator]: Marko._.any,
+  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    ["menuitem"]: {
+      [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
+        Marko._.renderNativeTag("div")()()({
+          [Marko._.content]: (() => {
+            foo;
+            return () => {
+              return Marko._.voidReturn;
+            };
+          })(),
+        });
+        //         ^?
+        return Marko._.voidReturn;
       },
+      [Symbol.iterator]: Marko._.any,
     },
-  );
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
@@ -107,4 +106,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//         ^?

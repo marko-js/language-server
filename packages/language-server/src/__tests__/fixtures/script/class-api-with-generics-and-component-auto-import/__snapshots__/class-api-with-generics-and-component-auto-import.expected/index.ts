@@ -20,6 +20,7 @@ export type { Component };
     onClick: component["strange-handler"],
   });
   console.log(component.input);
+  //                      ^?
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

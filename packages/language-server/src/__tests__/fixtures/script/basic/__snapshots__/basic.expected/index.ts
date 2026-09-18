@@ -26,6 +26,7 @@ export interface Input<T extends string> {
         x;
         //  ^?
         input.name;
+        //        ^?
         return () => {
           return new (class MarkoReturn<Return = void> {
             readonly [Marko._.scope] = { x };
@@ -36,8 +37,8 @@ export interface Input<T extends string> {
       }
     })(),
   });
-  //        ^?
   x;
+  //   ^?
   var { x: __marko_internal_hoist__x } = Marko._.readScope(
     __marko_internal_rendered_1,
   );
