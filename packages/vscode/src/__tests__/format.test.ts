@@ -48,6 +48,20 @@ describe("format", () => {
 `,
     );
   });
+
+  it("async shorthand method whose body does not parse", async () => {
+    await snap.inline(
+      () =>
+        format(
+          "<div></div>\n<button async onClick() { await save(). }>go</button>",
+        ),
+      `
+<div/>
+<button async onClick() { await save(). }>go</button>
+
+`,
+    );
+  });
 });
 
 async function format(src: string) {
