@@ -72,15 +72,15 @@
   <@comment id="a">
     <@comment id="b">
       <!--    ^?-->
-      <let/b=(() => "b" as const)/>
+      <let/b=() => "b" as const>
     </@comment>
-    <let/a=(() => "a" as const)/>
+    <let/a=() => "a" as const>
   </@comment>
   <@comment id="c">
-    <let/c=(() => "c" as const)/>
+    <let/c=() => "c" as const>
   </@comment>
 </comments>
-<script >
+<script>
   a;
   //^?
   b;
@@ -88,6 +88,7 @@
   c;
   //^?
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
@@ -96,15 +97,15 @@
   <@comment id="a">
     <@comment id="b">
       <!--    ^?-->
-      <let/b=(() => "b" as const)/>
+      <let/b=() => "b" as const>
     </@comment>
-    <let/a=(() => "a" as const)/>
+    <let/a=() => "a" as const>
   </@comment>
   <@comment id="c">
-    <let/c=(() => "c" as const)/>
+    <let/c=() => "c" as const>
   </@comment>
 </comments>
-<script >
+<script>
   a;
   //^?
   b;
@@ -112,5 +113,6 @@
   c;
   //^?
 </script>
+
 ```
 

@@ -1,3 +1,5 @@
+import { createRequire } from "module";
+import path from "path";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
 import { CancellationToken, TextEdit } from "vscode-languageserver";
@@ -22,21 +24,11 @@ export async function formatDocument(
   try {
     const filepath = getFSPath(doc);
     const text = doc.getText();
-    const options: prettier.Options = {
-      parser: "marko",
-      filepath,
-      plugins: [markoPrettier],
+    const formatted = await formatWithProjectConfig(text, filepath, {
       tabWidth: formatOptions.tabSize,
       useTabs: formatOptions.insertSpaces === false,
       markoSyntax: formatOptions.mode ?? "auto",
-      ...(filepath
-        ? await prettier
-            .resolveConfig(filepath, {
-              editorconfig: true,
-            })
-            .catch(() => null)
-        : null),
-    };
+    });
 
     if (cancel?.isCancellationRequested) return;
 
@@ -47,7 +39,7 @@ export async function formatDocument(
           start: START_POSITION,
           end: doc.positionAt(text.length),
         },
-        await prettier.format(text, options),
+        formatted,
       ),
     ];
   } catch (e) {
@@ -58,3 +50,57 @@ export async function formatDocument(
 export const format: Plugin["format"] = async (doc, params, cancel) => {
   return formatDocument(doc, params.options, cancel);
 };
+
+/**
+ * Formats Marko code with the project's prettier config over the given options.
+ * The config's plugins are resolved from the config file, since prettier
+ * resolves a plugin name from the process's working directory, and the Marko
+ * plugin is always kept, which a config's `plugins` would otherwise replace.
+ */
+export async function formatWithProjectConfig(
+  text: string,
+  filepath: string | undefined,
+  options?: prettier.Options,
+) {
+  const base: prettier.Options = {
+    parser: "marko",
+    filepath,
+    ...options,
+    plugins: [markoPrettier],
+  };
+  const [config, configFile] = filepath
+    ? await Promise.all([
+        prettier
+          .resolveConfig(filepath, { editorconfig: true })
+          .catch(() => null),
+        prettier.resolveConfigFile(filepath).catch(() => null),
+      ])
+    : [null, null];
+  if (!config) return prettier.format(text, base);
+
+  const plugins = resolvePlugins(config.plugins, configFile ?? filepath!);
+  const withConfig = {
+    ...base,
+    ...config,
+    plugins: [markoPrettier, ...plugins],
+  };
+  try {
+    return await prettier.format(text, withConfig);
+  } catch (err) {
+    if (!plugins.length) throw err;
+    // A project plugin that cannot load or run should not stop Marko formatting.
+    return prettier.format(text, { ...withConfig, plugins: [markoPrettier] });
+  }
+}
+
+function resolvePlugins(plugins: prettier.Options["plugins"], from: string) {
+  const require = createRequire(from);
+  return (plugins ?? []).map((plugin) => {
+    if (typeof plugin !== "string" || path.isAbsolute(plugin)) return plugin;
+    try {
+      return require.resolve(plugin);
+    } catch {
+      return plugin;
+    }
+  });
+}

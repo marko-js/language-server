@@ -207,25 +207,26 @@ static const y = 2;
 <${custom} x=1>
   <!-- hi-->
   <@a b=1>
-    <const/hoistedFromStaticMember=(() => 1 as const)/>
-     hi!
+    <const/hoistedFromStaticMember=() => 1 as const>
+    hi!
   </@a>
   <@b/>
   <if=x>
     <@b>
-      <const/hoistedFromDynamicMember=(() => 2 as const)/>
+      <const/hoistedFromDynamicMember=() => 2 as const>
     </@b>
   </if>
   <if=y>
     <@a/>
   </if>
 </>
-<script >
+<script>
   hoistedFromStaticMember;
   //^?
   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
   //^?
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
@@ -294,24 +295,25 @@ static const y = 2;
 <${custom} x=1>
   <!-- hi-->
   <@a b=1>
-    <const/hoistedFromStaticMember=(() => 1 as const)/>
-     hi!
+    <const/hoistedFromStaticMember=() => 1 as const>
+    hi!
   </@a>
   <@b/>
   <if=x>
     <@b>
-      <const/hoistedFromDynamicMember=(() => 2 as const)/>
+      <const/hoistedFromDynamicMember=() => 2 as const>
     </@b>
   </if>
   <if=y>
     <@a/>
   </if>
 </>
-<script >
+<script>
   hoistedFromStaticMember;
   //^?
   hoistedFromDynamicMember; // TODO: this should be better and include `undefined` as a possible value
   //^?
 </script>
+
 ```
 

@@ -1,8 +1,6 @@
 import type { Diagnostic as CompilerDiagnostic } from "@marko/compiler/babel-utils";
 import { Project } from "@marko/language-tools";
 import path from "path";
-import * as prettier from "prettier";
-import * as markoPrettier from "prettier-plugin-marko";
 import {
   type CodeAction,
   CodeActionKind,
@@ -17,6 +15,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 import { getFSPath } from "../../utils/file";
 import * as documents from "../../utils/text-documents";
 import type { Plugin } from "../types";
+import { formatWithProjectConfig } from "./format";
 import { compilerConfig, getMarkoDiagnostics } from "./validate";
 
 type LocRange = Exclude<CompilerDiagnostic["loc"], undefined | false>;
@@ -360,16 +359,7 @@ async function formatMarko(
   filepath: string | undefined,
 ): Promise<string | undefined> {
   try {
-    return await prettier.format(code, {
-      parser: "marko",
-      filepath,
-      plugins: [markoPrettier],
-      ...(filepath
-        ? await prettier
-            .resolveConfig(filepath, { editorconfig: true })
-            .catch(() => null)
-        : null),
-    });
+    return await formatWithProjectConfig(code, filepath);
   } catch {
     return undefined;
   }
