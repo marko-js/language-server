@@ -1,10 +1,15 @@
 import fs from "fs";
-import os from "os";
 import path from "path";
 import timers from "timers/promises";
 import vscode from "vscode";
 
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "marko-vscode-test"));
+// Inside the repo, so the test project resolves this repo's `marko` rather
+// than whatever a `node_modules` above the system temp dir provides, with its
+// own empty prettier config so the repo's does not apply either.
+const tempRoot = path.resolve(__dirname, "../../.vscode-test/projects");
+fs.mkdirSync(tempRoot, { recursive: true });
+fs.writeFileSync(path.join(tempRoot, ".prettierrc.json"), "{}\n");
+const tempDir = fs.mkdtempSync(path.join(tempRoot, "marko-vscode-test"));
 const activeFile = path.join(tempDir, "test.marko");
 const tempFiles: Set<string> = new Set();
 const noop = () => {};

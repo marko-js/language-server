@@ -353,119 +353,99 @@
 ## Code Actions
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
-<for of=list>
-  Repeated!
-</for>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
+<for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}
-  <!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
 </for>
-<for of=list by=((item, index) => `${item}-${index}`)>
+<for of=list by=(item, index) => `${item}-${index}`>
   <!--               ^?    ^?-->
 </for>
 <for|item| of=list>
-  <const/hoistedFromForOf=(() => item.value)/>
+  <const/hoistedFromForOf=() => item.value>
 </for>
 <for|item| of=list/>
-<script >
+<script>
   hoistedFromForOf;
   //^?
 </script>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
-<for|key, value| in=record>
-  ${key} ${value}
-  <!--  ^?     ^?-->
-</for>
-<for in=record by=((value, key) => `${value}-${key}`)>
+  b: 2,
+} as const>
+<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for in=record by=(value, key) => `${value}-${key}`>
   <!--                 ^?     ^?-->
 </for>
 <for|key| in=record>
-  <const/hoistedFromForIn=(() => key)/>
+  <const/hoistedFromForIn=() => key>
 </for>
 <effect() {
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for to=10 by=(index => `${index}`)>
+<for|index| to=10>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| to=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 to=10>${index}<!--  ^?--></for>
+<for|index| to=10 step=2>${index}<!--  ^?--></for>
 <for|index| to=10>
-  <const/hoistedFromForTo=(() => index)/>
+  <const/hoistedFromForTo=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for until=10 by=(index => `${index}`)>
+<for|index| until=10>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| until=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 until=10>${index}<!--  ^?--></for>
+<for|index| until=10 step=2>${index}<!--  ^?--></for>
 <for|index| until=10>
-  <const/hoistedFromForUntil=(() => index)/>
+  <const/hoistedFromForUntil=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index|>
-  Should error
-</for>
+<for|index|>Should error</for>
+
 ```
 
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
-<for of=list>
-  Repeated!
-</for>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
+<for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}
-  <!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
 </for>
-<for of=list by=((item, index) => `${item}-${index}`)>
+<for of=list by=(item, index) => `${item}-${index}`>
   <!--               ^?    ^?-->
 </for>
 <for|item| of=list>
-  <const/hoistedFromForOf=(() => item.value)/>
+  <const/hoistedFromForOf=() => item.value>
 </for>
 <for|item| of=list/>
 <effect() {
@@ -474,92 +454,71 @@
 }/>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
-<for|key, value| in=record>
-  ${key} ${value}
-  <!--  ^?     ^?-->
-</for>
-<for in=record by=((value, key) => `${value}-${key}`)>
+  b: 2,
+} as const>
+<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for in=record by=(value, key) => `${value}-${key}`>
   <!--                 ^?     ^?-->
 </for>
 <for|key| in=record>
-  <const/hoistedFromForIn=(() => key)/>
+  <const/hoistedFromForIn=() => key>
 </for>
-<script >
+<script>
   hoistedFromForIn;
   //^?
 </script>
-<for|index| to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for to=10 by=(index => `${index}`)>
+<for|index| to=10>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| to=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 to=10>${index}<!--  ^?--></for>
+<for|index| to=10 step=2>${index}<!--  ^?--></for>
 <for|index| to=10>
-  <const/hoistedFromForTo=(() => index)/>
+  <const/hoistedFromForTo=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for until=10 by=(index => `${index}`)>
+<for|index| until=10>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| until=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 until=10>${index}<!--  ^?--></for>
+<for|index| until=10 step=2>${index}<!--  ^?--></for>
 <for|index| until=10>
-  <const/hoistedFromForUntil=(() => index)/>
+  <const/hoistedFromForUntil=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index|>
-  Should error
-</for>
+<for|index|>Should error</for>
+
 ```
 
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
-<for of=list>
-  Repeated!
-</for>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
+<for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}
-  <!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
 </for>
-<for of=list by=((item, index) => `${item}-${index}`)>
+<for of=list by=(item, index) => `${item}-${index}`>
   <!--               ^?    ^?-->
 </for>
 <for|item| of=list>
-  <const/hoistedFromForOf=(() => item.value)/>
+  <const/hoistedFromForOf=() => item.value>
 </for>
 <for|item| of=list/>
 <effect() {
@@ -568,92 +527,71 @@
 }/>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
-<for|key, value| in=record>
-  ${key} ${value}
-  <!--  ^?     ^?-->
-</for>
-<for in=record by=((value, key) => `${value}-${key}`)>
+  b: 2,
+} as const>
+<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for in=record by=(value, key) => `${value}-${key}`>
   <!--                 ^?     ^?-->
 </for>
 <for|key| in=record>
-  <const/hoistedFromForIn=(() => key)/>
+  <const/hoistedFromForIn=() => key>
 </for>
 <effect() {
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for to=10 by=(index => `${index}`)>
+<for|index| to=10>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| to=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 to=10>${index}<!--  ^?--></for>
+<for|index| to=10 step=2>${index}<!--  ^?--></for>
 <for|index| to=10>
-  <const/hoistedFromForTo=(() => index)/>
+  <const/hoistedFromForTo=() => index>
 </for>
-<script >
+<script>
   hoistedFromForUntil;
   //^?
 </script>
-<for|index| until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for until=10 by=(index => `${index}`)>
+<for|index| until=10>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| until=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 until=10>${index}<!--  ^?--></for>
+<for|index| until=10 step=2>${index}<!--  ^?--></for>
 <for|index| until=10>
-  <const/hoistedFromForUntil=(() => index)/>
+  <const/hoistedFromForUntil=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index|>
-  Should error
-</for>
+<for|index|>Should error</for>
+
 ```
 
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
-<for of=list>
-  Repeated!
-</for>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
+<for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}
-  <!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
 </for>
-<for of=list by=((item, index) => `${item}-${index}`)>
+<for of=list by=(item, index) => `${item}-${index}`>
   <!--               ^?    ^?-->
 </for>
 <for|item| of=list>
-  <const/hoistedFromForOf=(() => item.value)/>
+  <const/hoistedFromForOf=() => item.value>
 </for>
 <for|item| of=list/>
 <effect() {
@@ -662,162 +600,119 @@
 }/>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
-<for|key, value| in=record>
-  ${key} ${value}
-  <!--  ^?     ^?-->
-</for>
-<for in=record by=((value, key) => `${value}-${key}`)>
+  b: 2,
+} as const>
+<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for in=record by=(value, key) => `${value}-${key}`>
   <!--                 ^?     ^?-->
 </for>
 <for|key| in=record>
-  <const/hoistedFromForIn=(() => key)/>
+  <const/hoistedFromForIn=() => key>
 </for>
 <effect() {
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for to=10 by=(index => `${index}`)>
+<for|index| to=10>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| to=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 to=10>${index}<!--  ^?--></for>
+<for|index| to=10 step=2>${index}<!--  ^?--></for>
 <for|index| to=10>
-  <const/hoistedFromForTo=(() => index)/>
+  <const/hoistedFromForTo=() => index>
 </for>
 <effect() {
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for until=10 by=(index => `${index}`)>
+<for|index| until=10>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| until=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 until=10>${index}<!--  ^?--></for>
+<for|index| until=10 step=2>${index}<!--  ^?--></for>
 <for|index| until=10>
-  <const/hoistedFromForUntil=(() => index)/>
+  <const/hoistedFromForUntil=() => index>
 </for>
-<script >
+<script>
   hoistedFromForUntil;
   //^?
 </script>
-<for|index|>
-  Should error
-</for>
+<for|index|>Should error</for>
+
 ```
 
 ### Fix all auto-fixable Marko issues
 ```marko
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
-<for of=list>
-  Repeated!
-</for>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
+<for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}
-  <!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
 </for>
-<for of=list by=((item, index) => `${item}-${index}`)>
+<for of=list by=(item, index) => `${item}-${index}`>
   <!--               ^?    ^?-->
 </for>
 <for|item| of=list>
-  <const/hoistedFromForOf=(() => item.value)/>
+  <const/hoistedFromForOf=() => item.value>
 </for>
 <for|item| of=list/>
-<script >
+<script>
   hoistedFromForOf;
   //^?
 </script>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
-<for|key, value| in=record>
-  ${key} ${value}
-  <!--  ^?     ^?-->
-</for>
-<for in=record by=((value, key) => `${value}-${key}`)>
+  b: 2,
+} as const>
+<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for in=record by=(value, key) => `${value}-${key}`>
   <!--                 ^?     ^?-->
 </for>
 <for|key| in=record>
-  <const/hoistedFromForIn=(() => key)/>
+  <const/hoistedFromForIn=() => key>
 </for>
-<script >
+<script>
   hoistedFromForIn;
   //^?
 </script>
-<for|index| to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for to=10 by=(index => `${index}`)>
+<for|index| to=10>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 to=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| to=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 to=10>${index}<!--  ^?--></for>
+<for|index| to=10 step=2>${index}<!--  ^?--></for>
 <for|index| to=10>
-  <const/hoistedFromForTo=(() => index)/>
+  <const/hoistedFromForTo=() => index>
 </for>
-<script >
+<script>
   hoistedFromForUntil;
   //^?
 </script>
-<for|index| until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for until=10 by=(index => `${index}`)>
+<for|index| until=10>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
   <!--             ^?-->
 </for>
-<for|index| from=1 until=10>
-  ${index}
-  <!--  ^?-->
-</for>
-<for|index| until=10 step=2>
-  ${index}
-  <!--  ^?-->
-</for>
+<for|index| from=1 until=10>${index}<!--  ^?--></for>
+<for|index| until=10 step=2>${index}<!--  ^?--></for>
 <for|index| until=10>
-  <const/hoistedFromForUntil=(() => index)/>
+  <const/hoistedFromForUntil=() => index>
 </for>
-<script >
+<script>
   hoistedFromForUntil;
   //^?
 </script>
-<for|index|>
-  Should error
-</for>
+<for|index|>Should error</for>
+
 ```
 

@@ -48,7 +48,7 @@
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
 <div>
-  <let/x=1/>
+  <let/x=1>
   ${x}
   <button/el onClick() {
     x = 2;
@@ -56,16 +56,17 @@
     ++x;
   }/>
 </div>
-<script >
+<script>
   console.log(el());
   //            ^?
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
 ```marko
 <div>
-  <let/x=1/>
+  <let/x=1>
   ${x}
   <button/el onClick() {
     x = 2;
@@ -73,9 +74,10 @@
     ++x;
   }/>
 </div>
-<script >
+<script>
   console.log(el());
   //            ^?
 </script>
+
 ```
 

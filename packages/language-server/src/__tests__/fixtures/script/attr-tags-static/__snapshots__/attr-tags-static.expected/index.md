@@ -41,15 +41,16 @@
 <${custom}>
   <@b/>
   <@a b=1>
-    <const/hoistedFromStaticMember=(() => 1 as const)/>
-     hi!
+    <const/hoistedFromStaticMember=() => 1 as const>
+    hi!
   </@a>
   <@b c=2/>
 </>
-<script >
+<script>
   hoistedFromStaticMember;
   //^?
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
@@ -57,14 +58,15 @@
 <${custom}>
   <@b/>
   <@a b=1>
-    <const/hoistedFromStaticMember=(() => 1 as const)/>
-     hi!
+    <const/hoistedFromStaticMember=() => 1 as const>
+    hi!
   </@a>
   <@b c=2/>
 </>
-<script >
+<script>
   hoistedFromStaticMember;
   //^?
 </script>
+
 ```
 

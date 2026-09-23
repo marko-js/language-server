@@ -56,29 +56,25 @@
 ## Code Actions
 ### The 'data' variable is deprecated. Use 'input' instead.
 ```marko
-<div class=input.theme>
-  Showing ${data.title} and ${data.body}
-</div>
+<div class=input.theme>Showing ${data.title} and ${data.body}</div>
+
 ```
 
 ### The 'data' variable is deprecated. Use 'input' instead.
 ```marko
-<div class=data.theme>
-  Showing ${input.title} and ${data.body}
-</div>
+<div class=data.theme>Showing ${input.title} and ${data.body}</div>
+
 ```
 
 ### The 'data' variable is deprecated. Use 'input' instead.
 ```marko
-<div class=data.theme>
-  Showing ${data.title} and ${input.body}
-</div>
+<div class=data.theme>Showing ${data.title} and ${input.body}</div>
+
 ```
 
 ### Fix all auto-fixable Marko issues
 ```marko
-<div class=input.theme>
-  Showing ${input.title} and ${input.body}
-</div>
+<div class=input.theme>Showing ${input.title} and ${input.body}</div>
+
 ```
 

@@ -30,21 +30,23 @@
 ## Code Actions
 ### The 'effect' tag has been replaced by the 'script' tag.
 ```marko
-<script >
+<script>
   $signal.onabort = () => {
     // ^?
-    console.log('aborted');
+    console.log("aborted");
   };
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
 ```marko
-<script >
+<script>
   $signal.onabort = () => {
     // ^?
-    console.log('aborted');
+    console.log("aborted");
   };
 </script>
+
 ```
 

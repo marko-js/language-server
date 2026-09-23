@@ -347,13 +347,17 @@
     <@a/>
   </for>
 </>
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
 <${custom}>
   <for of=list>
     <@a/>
@@ -361,22 +365,13 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>
-      ${item} ${index} ${all}
-      <!--      ^?      ^?       ^?-->
-    </@a>
+    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>
-      ${item}
-      <!--      ^?-->
-    </@a>
-    <@b>
-      ${index}
-      <!--      ^?-->
-    </@b>
+    <@a>${item}<!--      ^?--></@a>
+    <@b>${index}<!--      ^?--></@b>
   </for>
 </>
 <${custom}>
@@ -384,24 +379,21 @@
     <@a>
       <const/hoistedFromForOf() {
         return item.value;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForOf;
   //^?
 </script>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
+  b: 2,
+} as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>
-      ${key} ${value}
-      <!--      ^?     ^?-->
-    </@a>
+    <@a>${key} ${value}<!--      ^?     ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -409,7 +401,7 @@
     <@a>
       <const/hoistedFromForIn() {
         return key;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -419,26 +411,17 @@
 }/>
 <${custom}>
   <for|index| to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -446,7 +429,7 @@
     <@a>
       <const/hoistedFromForTo() {
         return index;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -454,6 +437,7 @@
   hoistedFromForTo;
   //^?
 }/>
+
 ```
 
 ### The 'effect' tag has been replaced by the 'script' tag.
@@ -463,13 +447,17 @@
     <@a/>
   </for>
 </>
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
 <${custom}>
   <for of=list>
     <@a/>
@@ -477,22 +465,13 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>
-      ${item} ${index} ${all}
-      <!--      ^?      ^?       ^?-->
-    </@a>
+    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>
-      ${item}
-      <!--      ^?-->
-    </@a>
-    <@b>
-      ${index}
-      <!--      ^?-->
-    </@b>
+    <@a>${item}<!--      ^?--></@a>
+    <@b>${index}<!--      ^?--></@b>
   </for>
 </>
 <${custom}>
@@ -500,7 +479,7 @@
     <@a>
       <const/hoistedFromForOf() {
         return item.value;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -510,14 +489,11 @@
 }/>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
+  b: 2,
+} as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>
-      ${key} ${value}
-      <!--      ^?     ^?-->
-    </@a>
+    <@a>${key} ${value}<!--      ^?     ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -525,36 +501,27 @@
     <@a>
       <const/hoistedFromForIn() {
         return key;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForIn;
   //^?
 </script>
 <${custom}>
   <for|index| to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -562,7 +529,7 @@
     <@a>
       <const/hoistedFromForTo() {
         return index;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -570,6 +537,7 @@
   hoistedFromForTo;
   //^?
 }/>
+
 ```
 
 ### The 'effect' tag has been replaced by the 'script' tag.
@@ -579,13 +547,17 @@
     <@a/>
   </for>
 </>
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
 <${custom}>
   <for of=list>
     <@a/>
@@ -593,22 +565,13 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>
-      ${item} ${index} ${all}
-      <!--      ^?      ^?       ^?-->
-    </@a>
+    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>
-      ${item}
-      <!--      ^?-->
-    </@a>
-    <@b>
-      ${index}
-      <!--      ^?-->
-    </@b>
+    <@a>${item}<!--      ^?--></@a>
+    <@b>${index}<!--      ^?--></@b>
   </for>
 </>
 <${custom}>
@@ -616,7 +579,7 @@
     <@a>
       <const/hoistedFromForOf() {
         return item.value;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -626,14 +589,11 @@
 }/>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
+  b: 2,
+} as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>
-      ${key} ${value}
-      <!--      ^?     ^?-->
-    </@a>
+    <@a>${key} ${value}<!--      ^?     ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -641,7 +601,7 @@
     <@a>
       <const/hoistedFromForIn() {
         return key;
-      }/>
+      }>
     </@a>
   </for>
 </>
@@ -651,26 +611,17 @@
 }/>
 <${custom}>
   <for|index| to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -678,14 +629,15 @@
     <@a>
       <const/hoistedFromForTo() {
         return index;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForTo;
   //^?
 </script>
+
 ```
 
 ### Fix all auto-fixable Marko issues
@@ -695,13 +647,17 @@
     <@a/>
   </for>
 </>
-<let/list=[{
-  value: 1
-}, {
-  value: 2
-}, {
-  value: 3
-}] as const/>
+<let/list=[
+  {
+    value: 1,
+  },
+  {
+    value: 2,
+  },
+  {
+    value: 3,
+  },
+] as const>
 <${custom}>
   <for of=list>
     <@a/>
@@ -709,22 +665,13 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>
-      ${item} ${index} ${all}
-      <!--      ^?      ^?       ^?-->
-    </@a>
+    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>
-      ${item}
-      <!--      ^?-->
-    </@a>
-    <@b>
-      ${index}
-      <!--      ^?-->
-    </@b>
+    <@a>${item}<!--      ^?--></@a>
+    <@b>${index}<!--      ^?--></@b>
   </for>
 </>
 <${custom}>
@@ -732,24 +679,21 @@
     <@a>
       <const/hoistedFromForOf() {
         return item.value;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForOf;
   //^?
 </script>
 <let/record={
   a: 1,
-  b: 2
-} as const/>
+  b: 2,
+} as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>
-      ${key} ${value}
-      <!--      ^?     ^?-->
-    </@a>
+    <@a>${key} ${value}<!--      ^?     ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -757,36 +701,27 @@
     <@a>
       <const/hoistedFromForIn() {
         return key;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForIn;
   //^?
 </script>
 <${custom}>
   <for|index| to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>
-      ${index}
-      <!--      ^?-->
-    </@a>
+    <@a>${index}<!--      ^?--></@a>
   </for>
 </>
 <${custom}>
@@ -794,13 +729,14 @@
     <@a>
       <const/hoistedFromForTo() {
         return index;
-      }/>
+      }>
     </@a>
   </for>
 </>
-<script >
+<script>
   hoistedFromForTo;
   //^?
 </script>
+
 ```
 

@@ -38,22 +38,19 @@
 ## Code Actions
 ### The 'data' variable is deprecated. Use 'input' instead.
 ```marko
-<div class=input.className>
-  Hello ${data.name}!
-</div>
+<div class=input.className>Hello ${data.name}!</div>
+
 ```
 
 ### The 'data' variable is deprecated. Use 'input' instead.
 ```marko
-<div class=data.className>
-  Hello ${input.name}!
-</div>
+<div class=data.className>Hello ${input.name}!</div>
+
 ```
 
 ### Fix all auto-fixable Marko issues
 ```marko
-<div class=input.className>
-  Hello ${input.name}!
-</div>
+<div class=input.className>Hello ${input.name}!</div>
+
 ```
 
