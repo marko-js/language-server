@@ -204,7 +204,7 @@ importers:
   packages/vscode:
     devDependencies:
       '@marko/language-server':
-        specifier: ^3.4.0
+        specifier: ^3.4.1
         version: link:../language-server
       '@types/vscode':
         specifier: ^1.116.0

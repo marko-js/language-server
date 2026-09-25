@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.2.1
+
+### Patch Changes
+
+- [#603](https://github.com/marko-js/language-server/pull/603) [`e4cd501`](https://github.com/marko-js/language-server/commit/e4cd501e22f380345917fbfb233791124a44eec2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Keep formatting Marko files when the project's prettier config lists `plugins`, which replaced the Marko plugin so "Format Document" failed with `Couldn't resolve parser "marko"` and code-action fixes were left unformatted. The config's plugins are now resolved from the config file and loaded beside the Marko plugin, and one that cannot be loaded is skipped rather than failing the format.
+
+- [#601](https://github.com/marko-js/language-server/pull/601) [`2eb4dee`](https://github.com/marko-js/language-server/commit/2eb4deeb7f2a47bac574df531f6da0dd6ff1e21f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update prettier-plugin-marko to 4.1.1, so formatting a template whose code does not parse yet keeps the `async` on shorthand methods and the `$` on scriptlets, and no longer lets a trailing line comment in an attribute value swallow the rest of the tag.
+
+- [#604](https://github.com/marko-js/language-server/pull/604) [`dec73df`](https://github.com/marko-js/language-server/commit/dec73df3752d261df8f50433c7257779de6f6fa6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update prettier-plugin-marko to 4.1.3, so formatting keeps the comments inside an open tag, which it deleted before, and no longer doubles the backslashes in text. A line comment that ends a tag var is moved into a block comment, since it would otherwise swallow the rest of the tag.
+
 ## 3.2.0
 
 ### Minor Changes
