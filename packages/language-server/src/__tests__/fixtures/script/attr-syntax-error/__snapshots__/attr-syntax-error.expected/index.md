@@ -1,4 +1,34 @@
 ## Diagnostics
+### Ln 1, Col 13
+```marko
+> 1 | <div data-x=#2/>
+    |             ^ Unexpected digit after hash token.
+  2 |
+  3 | <div onClick(a, %b) {
+  4 |   console.log(#hello!);
+```
+
+### Ln 3, Col 17
+```marko
+  1 | <div data-x=#2/>
+  2 |
+> 3 | <div onClick(a, %b) {
+    |                 ^ Unexpected token
+  4 |   console.log(#hello!);
+  5 | }/>
+  6 |
+```
+
+### Ln 4, Col 15
+```marko
+  2 |
+  3 | <div onClick(a, %b) {
+> 4 |   console.log(#hello!);
+    |               ^ Private names are only allowed in property accesses (`obj.#hello`) or in `in` expressions (`#hello in obj`).
+  5 | }/>
+  6 |
+```
+
 ### Ln 3, Col 17
 ```marko
   1 | <div data-x=#2/>

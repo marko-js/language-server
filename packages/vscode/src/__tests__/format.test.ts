@@ -62,6 +62,21 @@ describe("format", () => {
 `,
     );
   });
+
+  it("comments between attrs", async () => {
+    await snap.inline(
+      () =>
+        format('<input\n  // the field name\n  name="email" type="email"/>'),
+      `
+<input
+    // the field name
+    name="email"
+    type="email"
+>
+
+`,
+    );
+  });
 });
 
 async function format(src: string) {
