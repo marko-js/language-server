@@ -11,6 +11,10 @@ Monorepo for the Marko Language Server and related tooling. Four pnpm workspaces
 | `type-check`      | `@marko/type-check`                         | CLI type-checker (`mtc`); depends on language-tools         |
 | `vscode`          | `marko-vscode` (VS Code extension, private) | VS Code client; depends on language-server + language-tools |
 
+## Scope
+
+The language server answers questions about `.marko` files, using TypeScript's analysis of the script inside them. Features for plain `.ts`/`.js` files belong to tsserver and the TS plugin.
+
 ## Build
 
 TypeScript emits **only `.d.ts` files** (`emitDeclarationOnly: true`); esbuild (and package build scripts) produce the actual JS bundles.
