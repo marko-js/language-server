@@ -12,7 +12,7 @@ export async function getConfig<T = any>(section: string): Promise<T> {
       cached = (await connection.workspace.getConfiguration(section)) || {};
       settingsCache.set(section, cached);
     } catch {
-      // ignore
+      cached = {};
     }
   }
 
