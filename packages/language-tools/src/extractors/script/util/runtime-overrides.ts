@@ -5,7 +5,7 @@ const commentsReg = /\/\*(?:[^*]|\*[^/])*\*\//gm;
 const replaceTokensReg =
   /\babstract\s+(\w+)|Marko\.(TemplateInput(?:<[^>]+>)?|Component)|\b(Return)\b/gm;
 const overrideBlockReg =
-  /\/\*[*\s]*@marko-overload-start[*\s]*\*\/([\s\S]+)\/\*[*\s]*@marko-overload-end[*\s]*\*\//g;
+  /\/\*[*\s]*@marko-overload-start[*\s]*\*\/([\s\S]+)\/\*[*\s]*@marko-overload-end[*\s]*\*\//;
 
 enum Replacement {
   Generics,
