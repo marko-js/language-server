@@ -47,7 +47,7 @@
     "@marko/compiler": "^5.42.8",
     "@marko/language-tools": "^2.7.0",
     "axe-core": "^4.12.1",
-    "htmljs-parser": "^5.17.1",
+    "htmljs-parser": "^5.18.0",
     "jsdom": "^29.1.1",
     "marko": "^5.39.43",
     "prettier": "^3.8.4",
