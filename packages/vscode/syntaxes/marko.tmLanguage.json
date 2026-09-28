@@ -110,7 +110,7 @@
           "name": "meta.marko-spread-attribute",
           "contentName": "source.ts",
           "begin": "(\\.\\.\\.)",
-          "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+          "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[~*%&^|?:]|^!|[^\\w$)\\]]!|[^.$\\w]await!|[^.$\\w]async!|[^.$\\w]class!|[^.$\\w]function!|[^.$\\w]keyof!|[^.$\\w]new!|[^.$\\w]readonly!|[^.$\\w]infer!|[^.$\\w]typeof!|[^.$\\w]void!|[^.$\\w]delete!|[^.$\\w]in!|[^.$\\w]instanceof!|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void|[^.$\\w]delete)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
           "patterns": [{ "include": "#javascript-expression" }],
           "beginCaptures": { "1": { "name": "keyword.operator.spread.marko" } }
         },
@@ -128,7 +128,7 @@
       "name": "meta.embedded.ts",
       "contentName": "source.ts",
       "begin": "\\s*(:?=)\\s*",
-      "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+      "end": "(?=[,;\\]]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[~*%&^|?:]|^!|[^\\w$)\\]]!|[^.$\\w]await!|[^.$\\w]async!|[^.$\\w]class!|[^.$\\w]function!|[^.$\\w]keyof!|[^.$\\w]new!|[^.$\\w]readonly!|[^.$\\w]infer!|[^.$\\w]typeof!|[^.$\\w]void!|[^.$\\w]delete!|[^.$\\w]in!|[^.$\\w]instanceof!|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void|[^.$\\w]delete)\\s+(?![\\n{(+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
       "patterns": [{ "include": "#javascript-expression" }],
       "beginCaptures": { "1": { "patterns": [{ "include": "source.ts" }] } }
     },
@@ -643,7 +643,7 @@
         {
           "comment": "We must match the some expressions ourselves since otherwise the js grammar can overstep.",
           "contentName": "source.ts",
-          "match": "(?:\\s*\\b(?:as|await|extends|in|instanceof|satisfies|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
+          "match": "(?:\\s*\\b(?:as|await|delete|extends|in|instanceof|satisfies|keyof|new|typeof|void))+\\s+(?![:=/,;>])[a-zA-Z0-9_$@#]*",
           "captures": { "0": { "patterns": [{ "include": "source.ts" }] } }
         },
         {
@@ -763,9 +763,16 @@
             {
               "comment": "Match type",
               "begin": "\\s*(:)(?!=)",
-              "end": "(?=[,;\\](]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[!~*%&^|?:]|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof|[^.$\\w]void)\\s+(?![\\n{+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
+              "end": "(?=[,;\\](]|/>|(?<=[^=>])(?:(?<!\\s)>|>(?!=))|(?<!^|[~*%&^|?:]|^!|[^\\w$)\\]]!|[^.$\\w]await!|[^.$\\w]async!|[^.$\\w]class!|[^.$\\w]function!|[^.$\\w]keyof!|[^.$\\w]new!|[^.$\\w]readonly!|[^.$\\w]infer!|[^.$\\w]typeof!|[^.$\\w]in!|[^.$\\w]instanceof!|[!~*%&^|?/<>+=-]=|[=>]>|[^.]\\.|[^-]-|[^+]\\+|[a-zA-Z0-9%).<\\]}]\\s/|[^.$\\w]await|[^.$\\w]async|[^.$\\w]class|[^.$\\w]function|[^.$\\w]keyof|[^.$\\w]new|[^.$\\w]readonly|[^.$\\w]infer|[^.$\\w]typeof)\\s+(?![\\n{+!~*%&^|?:]|[<>/=-]=|[=>]>|\\.[^.]|-[^-]|/[^>]|(?:in|instanceof|satisfies|as|extends)\\s+[^:=/,;>]))",
               "patterns": [
                 { "include": "source.ts#type" },
+                {
+                  "comment": "In a type `void` is the void type, so unlike the operator it takes no operand",
+                  "match": "\\s*\\b(void)\\b",
+                  "captures": {
+                    "1": { "name": "support.type.primitive.ts" }
+                  }
+                },
                 { "include": "#javascript-expression" }
               ],
               "beginCaptures": {
