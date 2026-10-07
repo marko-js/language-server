@@ -8,16 +8,47 @@ import {
 
 import fileSystem, { FileType } from "../../../utils/file-system";
 import resolveUrl from "../../../utils/resolve-url";
+import getContextFromAttr from "../util/context-from-attr";
 import isDocumentLinkAttr from "../util/is-document-link-attr";
+import getTagShorthandCompletions from "../util/tag-shorthand-completions";
 import type { CompletionMeta } from ".";
+
+// The shorthand tag name inside a `from=` string (eg `"<foo>"` or `"<fo`).
+const fromTagReg = /^<((?:[^'">\\]|\\.)*)(>?)/;
 
 export async function AttrValue({
   offset,
   node,
-  file: { uri, parsed, code },
+  file,
 }: CompletionMeta<Node.AttrValue>): Promise<void | CompletionItem[]> {
+  const { uri, parsed, code } = file;
   const attr = node.parent;
-  if (isDocumentLinkAttr(code, attr.parent, attr)) {
+  const fromAttr = getContextFromAttr(code, attr.parent, attr);
+
+  if (fromAttr) {
+    const start = node.value.start + 1;
+    const content = parsed.read({ start, end: node.value.end - 1 });
+    const match = fromTagReg.exec(content);
+    if (match || !content) {
+      // Complete the `"<tag-name>"` form; a `.`-led value falls through to
+      // the relative path completion below.
+      const [, name = "", close = ""] = match || [];
+      const nameStart = start + (match ? 1 : 0);
+      const items = getTagShorthandCompletions(
+        file,
+        { start: nameStart, end: nameStart + name.length },
+        close ? "" : ">",
+      );
+      if (!match) {
+        for (const item of items) {
+          item.textEdit!.newText = `<${item.textEdit!.newText}`;
+        }
+      }
+      return items;
+    }
+  }
+
+  if (fromAttr || isDocumentLinkAttr(code, attr.parent, attr)) {
     const start = node.value.start + 1;
     if (code[start] !== ".") return; // only resolve relative paths
 

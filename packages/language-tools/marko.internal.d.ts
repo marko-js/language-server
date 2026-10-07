@@ -31,6 +31,25 @@ declare global {
         rendered: () => T,
       ): T extends { return: { value: infer Returned } } ? Returned : never;
 
+      export const contextValue: unique symbol;
+      export function withContext<Context, Return>(
+        context: Context,
+        returned: Return,
+      ): (Return extends void ? unknown : Return) & {
+        [contextValue]: [Context];
+      };
+      export function contextTag<Rendered>(
+        rendered: () => Rendered,
+      ): Rendered extends { return: infer Return }
+        ? [Return] extends [void]
+          ? unknown
+          : NonNullable<Return> extends { [contextValue]: [infer Context] }
+            ? NonNullable<Context> extends () => infer Value
+              ? Value
+              : unknown
+            : unknown
+        : unknown;
+
       export function hoist<T>(
         value: () => T,
       ): T extends () => infer R ? T & Iterable<R> : never;
