@@ -1,5 +1,11 @@
 # @marko/language-tools
 
+## 2.7.1
+
+### Patch Changes
+
+- [#608](https://github.com/marko-js/language-server/pull/608) [`6d1f577`](https://github.com/marko-js/language-server/commit/6d1f577358e3f0071b41795eecddd1f3c9a49a44) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.18.0, which ends a type at a trailing `void`, reads a TypeScript `!` after an operand as a non-null assertion, reads `delete` as an operator, and reads types in scriptlets, so templates using them are no longer misparsed.
+
 ## 2.7.0
 
 ### Minor Changes
