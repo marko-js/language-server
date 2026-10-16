@@ -135,8 +135,8 @@
     "concise-html-block": {
       "comment": "--- HTML block within concise mode content. ---",
       "name": "meta.section.marko-html-block",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-html-mode" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -151,29 +151,44 @@
       "match": "\\s*(--+)(?=\\s+\\S)(.*)($)",
       "captures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" },
-        "2": {
-          "patterns": [
-            { "include": "#cdata" },
-            { "include": "#doctype" },
-            { "include": "#declaration" },
-            { "include": "#javascript-comments-after-whitespace" },
-            { "include": "#html-comment" },
-            { "include": "#tag-html" },
-            {
-              "comment": "Match escape characters in text.",
-              "name": "text.marko",
-              "match": "\\\\."
-            },
-            { "include": "#placeholder" },
-            {
-              "comment": "Match anything else as text.",
-              "name": "text.marko",
-              "match": ".+?"
-            }
-          ]
-        },
+        "2": { "patterns": [{ "include": "#concise-html-line-content" }] },
         "3": { "name": "punctuation.section.embedded.scope.end.marko" }
       }
+    },
+    "concise-html-line-backtick": {
+      "comment": "` HTML line within concise mode content.",
+      "name": "meta.section.marko-html-line",
+      "begin": "\\s*(`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
+      "patterns": [{ "include": "#concise-html-line-content" }],
+      "beginCaptures": {
+        "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.scope.end.marko" }
+      }
+    },
+    "concise-html-line-content": {
+      "comment": "Content of an HTML line within concise mode content.",
+      "patterns": [
+        { "include": "#cdata" },
+        { "include": "#doctype" },
+        { "include": "#declaration" },
+        { "include": "#javascript-comments-after-whitespace" },
+        { "include": "#html-comment" },
+        { "include": "#tag-html" },
+        {
+          "comment": "Match escape characters in text.",
+          "name": "text.marko",
+          "match": "\\\\."
+        },
+        { "include": "#placeholder" },
+        {
+          "comment": "Match anything else as text.",
+          "name": "text.marko",
+          "match": ".+?"
+        }
+      ]
     },
     "concise-semi-eol": {
       "comment": "Match spaces followed by a semi that represents the end of the line in concise mode.",
@@ -192,10 +207,7 @@
       "end": "]",
       "patterns": [
         { "include": "#concise-attr-group" },
-        {
-          "begin": "\\s+",
-          "end": "(?=\\S)"
-        },
+        { "begin": "\\s+", "end": "(?=\\S)" },
         { "include": "#attrs" },
         { "include": "#invalid" }
       ],
@@ -213,14 +225,11 @@
         {
           "comment": "Matches unenclosed concise mode attributes.",
           "begin": "(?!^)[, \\t]",
-          "end": "(?=--)|(?=\\n)",
+          "end": "(?=--)|(?<=\\s)(?=`)|(?=\\n)",
           "patterns": [
             { "include": "#concise-semi-eol" },
             { "include": "#concise-attr-group" },
-            {
-              "begin": "[ \\t]+",
-              "end": "(?=\\S|\\n)"
-            },
+            { "begin": "[ \\t]+", "end": "(?=\\S|\\n)" },
             { "include": "#attrs" },
             { "include": "#invalid" }
           ]
@@ -230,8 +239,8 @@
     "concise-comment-block": {
       "comment": "--- Embedded concise comment content block. ---",
       "name": "meta.section.marko-comment-block",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-embedded-comment" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -243,9 +252,8 @@
     "concise-comment-line": {
       "comment": "-- Embedded concise comment content line.",
       "name": "meta.section.marko-comment-line",
-      "applyEndPatternLast": 1,
-      "begin": "\\s*(--+)",
-      "end": "$",
+      "begin": "\\s*(--+|`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
       "patterns": [{ "include": "#content-embedded-comment" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -257,8 +265,8 @@
     "concise-script-block": {
       "comment": "--- Embedded concise script content block. ---",
       "name": "meta.section.marko-script-block",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-embedded-script" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -270,9 +278,8 @@
     "concise-script-line": {
       "comment": "-- Embedded concise script content line.",
       "name": "meta.section.marko-script-line",
-      "applyEndPatternLast": 1,
-      "begin": "\\s*(--+)",
-      "end": "$",
+      "begin": "\\s*(--+|`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
       "patterns": [{ "include": "#content-embedded-script" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -285,8 +292,8 @@
       "comment": "--- Embedded concise style content block. ---",
       "name": "meta.section.marko-style-block",
       "contentName": "source.css",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-embedded-style" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -299,8 +306,8 @@
       "comment": "--- Embedded concise style content block. ---",
       "name": "meta.section.marko-style-block",
       "contentName": "source.less",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-embedded-style-less" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -313,8 +320,8 @@
       "comment": "--- Embedded concise style content block. ---",
       "name": "meta.section.marko-style-block",
       "contentName": "source.scss",
-      "begin": "\\s*(--+)\\s*$",
-      "end": "\\1",
+      "begin": "\\s*(--+|`+)\\s*$",
+      "end": "^\\s*\\1\\s*$",
       "patterns": [{ "include": "#content-embedded-style-scss" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -327,9 +334,8 @@
       "comment": "-- Embedded concise style content line.",
       "name": "meta.section.marko-style-line",
       "contentName": "source.css",
-      "applyEndPatternLast": 1,
-      "begin": "\\s*(--+)",
-      "end": "$",
+      "begin": "\\s*(--+|`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
       "patterns": [{ "include": "#content-embedded-style" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -342,9 +348,8 @@
       "comment": "-- Embedded concise style content line.",
       "name": "meta.section.marko-style-line",
       "contentName": "source.less",
-      "applyEndPatternLast": 1,
-      "begin": "\\s*(--+)",
-      "end": "$",
+      "begin": "\\s*(--+|`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
       "patterns": [{ "include": "#content-embedded-style-less" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -357,9 +362,8 @@
       "comment": "-- Embedded concise style content line.",
       "name": "meta.section.marko-style-line",
       "contentName": "source.scss",
-      "applyEndPatternLast": 1,
-      "begin": "\\s*(--+)",
-      "end": "$",
+      "begin": "\\s*(--+|`+)(?!\\s*$)",
+      "end": "(?=`)(?<!`)\\1(?!`)(?=\\s*(?:$|//|/\\*))|$",
       "patterns": [{ "include": "#content-embedded-style-scss" }],
       "beginCaptures": {
         "1": { "name": "punctuation.section.embedded.scope.begin.marko" }
@@ -380,6 +384,7 @@
         { "include": "#html-comment" },
         { "include": "#concise-html-block" },
         { "include": "#concise-html-line" },
+        { "include": "#concise-html-line-backtick" },
         { "include": "#invalid-close-tag" },
         { "include": "#tag-html" },
         {
@@ -388,7 +393,7 @@
             {
               "comment": "Concise Marko html-comment tag",
               "begin": "^(\\s*)(?=html-comment[^a-zA-Z0-9_$@-])",
-              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-comment-block" },
@@ -398,7 +403,7 @@
             {
               "comment": "Concise style tag less",
               "begin": "^(\\s*)(?=style\\b[^\\s]*\\.less\\b)",
-              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-less" },
@@ -408,7 +413,7 @@
             {
               "comment": "Concise style tag scss",
               "begin": "^(\\s*)(?=style\\b[^\\s]*\\.scss\\b)",
-              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block-scss" },
@@ -428,7 +433,7 @@
             {
               "comment": "Concise style tag",
               "begin": "^(\\s*)(?=(?:html-)?style[^a-zA-Z0-9_$@-])",
-              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#concise-style-block" },
@@ -448,7 +453,7 @@
             {
               "comment": "Normal concise tag",
               "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#])",
-              "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
+              "while": "(?=^(?:\\s*[})\\]]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
                 { "include": "#content-concise-mode" }
@@ -462,10 +467,7 @@
       "comment": "Match comment content, but allow Marko placeholders.",
       "patterns": [
         { "include": "#placeholder" },
-        {
-          "name": "comment.block.marko",
-          "match": "."
-        }
+        { "name": "comment.block.marko", "match": "." }
       ]
     },
     "content-embedded-script": {
@@ -557,19 +559,9 @@
       "begin": "\\s*<!(?=(?i:DOCTYPE\\s))",
       "end": ">",
       "patterns": [
-        {
-          "match": "\\G(?i:DOCTYPE)",
-          "name": "entity.name.tag.marko"
-        },
-        {
-          "begin": "\"",
-          "end": "\"",
-          "name": "string.quoted.double.marko"
-        },
-        {
-          "match": "[^\\s>]+",
-          "name": "entity.other.attribute-name.marko"
-        }
+        { "match": "\\G(?i:DOCTYPE)", "name": "entity.name.tag.marko" },
+        { "begin": "\"", "end": "\"", "name": "string.quoted.double.marko" },
+        { "match": "[^\\s>]+", "name": "entity.other.attribute-name.marko" }
       ],
       "beginCaptures": {
         "0": { "name": "punctuation.definition.tag.begin.marko" }
@@ -769,9 +761,7 @@
                 {
                   "comment": "In a type `void` is the void type, so unlike the operator it takes no operand",
                   "match": "\\s*\\b(void)\\b",
-                  "captures": {
-                    "1": { "name": "support.type.primitive.ts" }
-                  }
+                  "captures": { "1": { "name": "support.type.primitive.ts" } }
                 },
                 { "include": "#javascript-expression" }
               ],
@@ -809,10 +799,7 @@
               "patterns": [{ "include": "source.ts#type" }]
             },
             { "include": "source.ts#variable-initializer" },
-            {
-              "name": "punctuation.separator.parameter.ts",
-              "match": ","
-            },
+            { "name": "punctuation.separator.parameter.ts", "match": "," },
             { "include": "source.ts" }
           ]
         },
