@@ -11,7 +11,7 @@
 ```marko
 > 1 | p role="text"
     | ^ Fix any of the following:
-  Element has focusable descendants
+  Element has focusable descendants. Move them outside of the element, or remove them.
   2 |   -- body text
   3 |   button
 ```
