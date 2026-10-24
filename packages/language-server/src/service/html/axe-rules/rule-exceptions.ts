@@ -45,8 +45,6 @@ type Blacklist =
   | typeof r.structure.listitem
   | typeof r.tables.tdHeadersAttr
   // Seemingly broken in axe-core or JSDom
-  | typeof r.aria.ariaRoledescription
-  | typeof r.aria.ariaValidAttr
   | typeof r.color.colorContrast
   | typeof r.color.colorContrastEnhanced
   | typeof r.color.linkInTextBlock
@@ -59,6 +57,10 @@ type Blacklist =
   // handled by TypeScript
   | typeof r.aria.ariaValidAttrValue
   | typeof r.aria.ariaAllowedAttr
+  | typeof r.aria.ariaValidAttr
+  // deprecated in axe-core
+  | typeof r.aria.ariaRoledescription
+  | typeof r.timeAndMedia.audioCaption
   // blacklisted as the rules are in axe-core experimental phase
   | typeof r.structure.cssOrientationLock
   | typeof r.keyboard.focusOrderSemantics
@@ -89,6 +91,7 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.aria.ariaRequiredAttr]: { attrSpread },
   [r.aria.ariaRequiredChildren]: { unknownBody },
   [r.aria.ariaRoles]: { dynamicAttrs: ["role"] },
+  [r.aria.ariaTabName]: { unknownBody, attrSpread },
   [r.aria.ariaText]: { unknownBody },
   [r.aria.ariaToggleFieldName]: { unknownBody, attrSpread },
   [r.aria.ariaTooltipName]: { unknownBody, attrSpread },
@@ -139,7 +142,6 @@ export const ruleExceptions: { [id in Whitelist]: Exceptions } = {
   [r.textAlternatives.serverSideImageMap]: {},
   [r.textAlternatives.svgImgAlt]: { attrSpread },
   [r.textAlternatives.videoCaption]: { unknownBody },
-  [r.timeAndMedia.audioCaption]: { unknownBody },
   [r.timeAndMedia.blink]: {},
   [r.timeAndMedia.metaRefresh]: {},
   [r.timeAndMedia.metaRefreshNoExceptions]: {},

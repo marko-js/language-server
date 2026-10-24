@@ -88,8 +88,8 @@ importers:
         specifier: ^2.7.0
         version: link:../language-tools
       axe-core:
-        specifier: ^4.12.1
-        version: 4.12.1
+        specifier: ^4.14.0
+        version: 4.14.0
       htmljs-parser:
         specifier: ^5.18.0
         version: 5.18.0
@@ -1090,8 +1090,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axe-core@4.12.1:
-    resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
+  axe-core@4.14.0:
+    resolution: {integrity: sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==}
     engines: {node: '>=4'}
 
   azure-devops-node-api@12.5.0:
@@ -3935,7 +3935,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axe-core@4.12.1: {}
+  axe-core@4.14.0: {}
 
   azure-devops-node-api@12.5.0:
     dependencies:
