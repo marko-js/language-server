@@ -211,8 +211,8 @@
         { "include": "#tag-before-attrs" },
         { "include": "#concise-semi-eol" },
         {
-          "comment": "Matches unenclosed concise mode attributes.",
-          "begin": "(?!^)[, \\t]",
+          "comment": "Matches unenclosed concise mode attributes, or an attribute group starting a line with an empty tag name.",
+          "begin": "(?!^)[, \\t]|\\G(?=\\[)",
           "end": "(?=--)|(?=\\n)",
           "patterns": [
             { "include": "#concise-semi-eol" },
@@ -373,6 +373,12 @@
       "name": "meta.marko-concise-content",
       "patterns": [
         { "include": "#scriptlet" },
+        {
+          "comment": "A line starting with a semicolon is empty.",
+          "begin": "^(?=\\s*;)",
+          "end": "$",
+          "patterns": [{ "include": "#concise-semi-eol" }]
+        },
         { "include": "#javascript-comments" },
         { "include": "#cdata" },
         { "include": "#doctype" },
@@ -447,7 +453,7 @@
             },
             {
               "comment": "Normal concise tag",
-              "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#])",
+              "begin": "^([ \\t]*)(?=[a-zA-Z0-9_$@.#\\[]|-[a-zA-Z0-9_$])",
               "while": "(?=^(?:\\s*[})\\]`]|\\*/|\\s*$|\\1\\s+(\\S|$)))",
               "patterns": [
                 { "include": "#concise-open-tag-content" },
@@ -1086,7 +1092,7 @@
       "comment": "Matches the tag name.",
       "patterns": [
         {
-          "begin": "\\G(style)\\b(\\.[a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|([a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
+          "begin": "\\G(style)\\b(\\.[a-zA-Z0-9$_-]+(?:\\.[a-zA-Z0-9$_-]+)*)|(-?[a-zA-Z0-9_@](?:[a-zA-Z0-9_@-]+|:(?!=))*)",
           "end": "(?=.)",
           "applyEndPatternLast": 1,
           "patterns": [{ "include": "#tag-type-args" }],
