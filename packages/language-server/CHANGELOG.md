@@ -1,5 +1,24 @@
 # Change Log
 
+## 3.4.1
+
+### Patch Changes
+
+- [#611](https://github.com/marko-js/language-server/pull/611) [`b271697`](https://github.com/marko-js/language-server/commit/b27169714a290c1961b74066e0e4f55129df03b1) Thanks [@saiponnada](https://github.com/saiponnada)! - Update axe-core to 4.14, enabling the new `aria-tab-name` rule and dropping the deprecated `audio-caption` rule.
+
+- [#608](https://github.com/marko-js/language-server/pull/608) [`6d1f577`](https://github.com/marko-js/language-server/commit/6d1f577358e3f0071b41795eecddd1f3c9a49a44) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.18.0, which ends a type at a trailing `void`, reads a TypeScript `!` after an operand as a non-null assertion, reads `delete` as an operator, and reads types in scriptlets, so templates using them are no longer misparsed.
+
+- [#612](https://github.com/marko-js/language-server/pull/612) [`0e40de9`](https://github.com/marko-js/language-server/commit/0e40de929420db5281bfaf84587703ea485bf762) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.20.0, which names an open tag that ends before its name (eg a concise line of just `,`, as while typing) instead of leaving it nameless, which failed the whole template's analysis. It also ignores concise lines starting with `;`, reads a concise line starting with `[` as an attribute group, reads concise tag names starting with `-` (eg `-if`), and reports code after a `;` line's html comment.
+
+- [#603](https://github.com/marko-js/language-server/pull/603) [`e4cd501`](https://github.com/marko-js/language-server/commit/e4cd501e22f380345917fbfb233791124a44eec2) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Keep formatting Marko files when the project's prettier config lists `plugins`, which replaced the Marko plugin so "Format Document" failed with `Couldn't resolve parser "marko"` and code-action fixes were left unformatted. The config's plugins are now resolved from the config file and loaded beside the Marko plugin, and one that cannot be loaded is skipped rather than failing the format.
+
+- [#601](https://github.com/marko-js/language-server/pull/601) [`2eb4dee`](https://github.com/marko-js/language-server/commit/2eb4deeb7f2a47bac574df531f6da0dd6ff1e21f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update prettier-plugin-marko to 4.1.1, so formatting a template whose code does not parse yet keeps the `async` on shorthand methods and the `$` on scriptlets, and no longer lets a trailing line comment in an attribute value swallow the rest of the tag.
+
+- [#604](https://github.com/marko-js/language-server/pull/604) [`dec73df`](https://github.com/marko-js/language-server/commit/dec73df3752d261df8f50433c7257779de6f6fa6) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update prettier-plugin-marko to 4.1.3, so formatting keeps the comments inside an open tag, which it deleted before, and no longer doubles the backslashes in text. A line comment that ends a tag var is moved into a block comment, since it would otherwise swallow the rest of the tag.
+
+- Updated dependencies [[`6d1f577`](https://github.com/marko-js/language-server/commit/6d1f577358e3f0071b41795eecddd1f3c9a49a44), [`0e40de9`](https://github.com/marko-js/language-server/commit/0e40de929420db5281bfaf84587703ea485bf762)]:
+  - @marko/language-tools@2.7.1
+
 ## 3.4.0
 
 ### Minor Changes
