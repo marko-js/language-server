@@ -1,0 +1,18 @@
+// Code ending in a line comment must not swallow the generated code after
+// it: the `missing*` reads are the only errors.
+static const count: number = 1;
+
+div
+  if=count // a condition ending in a comment
+    -- ${count.missingInIf}
+
+script --
+  count.missingInScript;
+  // a script ending in a comment
+
+<script>count.missingInInlineScript // also inline</script>
+
+<div data-x=count // an attribute ending in a comment
+/>
+
+<div>${count.missingAfter}</div>
