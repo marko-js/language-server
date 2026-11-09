@@ -650,7 +650,8 @@ constructor(_) {}
                     this.#getAttrValue(child, ATTR_UNNAMED) ||
                     "undefined",
                 )
-                .write(") {\n");
+                // On its own line: the condition can end in a line comment.
+                .write("\n) {\n");
 
               const ifBody = this.#processBody(child);
               if (ifBody?.content) {
@@ -1465,7 +1466,8 @@ constructor(_) {}
         start: tag.body[0].start,
         end: tag.body[tag.body.length - 1].end,
       });
-      this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
+      // On its own line: the script can end in a line comment.
+      this.#extractor.write(`\n}${SEP_COMMA_NEW_LINE}`);
     } else if (body) {
       hasInput = true;
       this.#writeAttrTags(body, this.#getTagInputType(tag));
