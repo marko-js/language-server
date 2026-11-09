@@ -819,8 +819,10 @@ constructor(_) {}
 
         if (isIdentifier) {
           if (importPath) {
+            // The name is a local variable if one is declared, and otherwise
+            // (typed `any`, and ignored) the discovered tag.
             this.#extractor.write(
-              `${varShared("fallbackTemplate")}(${tagName},${isMarkoFile ? `import("${importPath}")` : varShared("any")})`,
+              `${varShared("fallbackTemplate")}(\n// @ts-ignore\n${tagName},\n${isMarkoFile ? `import("${importPath}")` : varShared("any")})`,
             );
           } else {
             this.#extractor.copy(tag.name);

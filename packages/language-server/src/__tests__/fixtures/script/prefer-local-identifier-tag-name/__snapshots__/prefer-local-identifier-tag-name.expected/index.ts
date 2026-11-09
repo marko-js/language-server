@@ -20,6 +20,7 @@ export interface Input {}
       value: CustomTagA,
     });
     const __marko_internal_tag_2 = Marko._.fallbackTemplate(
+      // @ts-ignore
       TestTagA,
       import("./components/TestTagA.marko"),
     );
@@ -27,6 +28,7 @@ export interface Input {}
       a: "hello",
     });
     const __marko_internal_tag_3 = Marko._.fallbackTemplate(
+      // @ts-ignore
       TestTagB,
       import("./components/TestTagB.marko"),
     );
@@ -46,6 +48,7 @@ export interface Input {}
             value: CustomTagB,
           });
           const __marko_internal_tag_5 = Marko._.fallbackTemplate(
+            // @ts-ignore
             TestTagA,
             import("./components/TestTagA.marko"),
           );
@@ -59,6 +62,7 @@ export interface Input {}
       })(),
     });
     const __marko_internal_tag_6 = Marko._.fallbackTemplate(
+      // @ts-ignore
       TestTagA,
       import("./components/TestTagA.marko"),
     );
