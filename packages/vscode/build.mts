@@ -45,7 +45,9 @@ await build({
     "import.meta.url": "_importMetaUrl",
   },
   banner: {
-    js: "const _importMetaUrl = require('url').pathToFileURL(__filename);",
+    // The directive comes along so the banner does not displace the one
+    // esbuild emits, which would drop the bundle out of strict mode.
+    js: `"use strict";\nconst _importMetaUrl = require("url").pathToFileURL(__filename);`,
   },
   plugins: markoBundlePlugins,
 }).then(async (result) => {
