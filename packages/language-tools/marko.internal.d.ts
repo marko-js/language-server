@@ -15,10 +15,15 @@ declare global {
      * Do not use or you will be fired.
      */
     namespace _ {
-      export const voidReturn = new (class Void {
-        readonly [Marko._.scope] = Marko._.never;
-        declare return: void;
-      })();
+      // Only what is exported is public (with `export {}`), so hovers name
+      // `Void` alone, not `Marko._.Void`.
+      export {};
+      // Declared: an ambient `const` may not be initialized with an instance.
+      interface Void {
+        readonly [Marko._.scope]: never;
+        return: void;
+      }
+      export const voidReturn: Void;
       export const scope: unique symbol;
       export const never: never;
       export const any: any;
