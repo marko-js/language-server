@@ -1,0 +1,9 @@
+// A handler being typed that Babel recovers into parser-only nodes
+// (`tion f(y: number)` reads `y: number` as a TSTypeCastExpression) must not
+// fail the template's analysis while it mutates a tag variable.
+<let/x=1/>
+<button onClick() {
+  tion update(y: number) {
+    x = y;
+  }
+}>Save</button>

@@ -66,7 +66,12 @@ export interface Mutation {
 
 type Bindings = { [name: string]: Binding };
 
-const VISITOR_KEYS = (t as any).VISITOR_KEYS;
+const VISITOR_KEYS = (t as any).VISITOR_KEYS as Record<string, string[]>;
+/**
+ * The keys to walk in a node: none for the nodes only Babel's parser makes
+ * when recovering from an error (eg a `TSTypeCastExpression`).
+ */
+const getVisitorKeys = (node: t.Node) => VISITOR_KEYS[node.type] || [];
 const ATTR_UNNAMED = "value";
 const Scopes = new WeakMap<NonNullable<Node.ParentNode["body"]>, Scope>();
 const BoundAttrValueRange = new WeakMap<
@@ -741,7 +746,7 @@ function trackMutations(
       break;
   }
 
-  for (const key of VISITOR_KEYS[node.type]) {
+  for (const key of getVisitorKeys(node)) {
     const child = (node as any)[key] as void | null | t.Node | t.Node[];
 
     if (Array.isArray(child)) {
@@ -795,7 +800,7 @@ function traverse(
 ): void {
   if (!node) return;
   if (enter(node)) return;
-  for (const key of VISITOR_KEYS[node.type]) {
+  for (const key of getVisitorKeys(node)) {
     const child = (node as any)[key] as void | null | t.Node | t.Node[];
 
     if (Array.isArray(child)) {
