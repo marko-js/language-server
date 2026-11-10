@@ -16,3 +16,11 @@ script --
 />
 
 <div>${count.missingAfter}</div>
+
+// A `@ts-expect-error` that ends a body applies to nothing after it: the next
+// tag's error is reported
+<div>
+  <span/>
+  // @ts-expect-error
+</div>
+<div>${count.missingAfterExpectError}</div>

@@ -56,12 +56,9 @@ export interface Input {}
     const __marko_internal_tag_3 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
     ).default;
-    Marko._.renderTemplate(__marko_internal_tag_3)()()(
-      //  ^?
-      {
-        "bogus-key": 1,
-      },
-    );
+    Marko._.renderTemplate(__marko_internal_tag_3)()()({
+      "bogus-key": 1,
+    });
     const __marko_internal_tag_4 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
     ).default;

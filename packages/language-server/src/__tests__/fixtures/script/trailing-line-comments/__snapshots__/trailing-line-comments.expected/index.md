@@ -39,5 +39,16 @@
 > 18 | <div>${count.missingAfter}</div>
      |              ^^^^^^^^^^^^ Property 'missingAfter' does not exist on type 'number'.
   19 |
+  20 | // A `@ts-expect-error` that ends a body applies to nothing after it: the next
+  21 | // tag's error is reported
+```
+
+### Ln 26, Col 14
+```marko
+  24 |   // @ts-expect-error
+  25 | </div>
+> 26 | <div>${count.missingAfterExpectError}</div>
+     |              ^^^^^^^^^^^^^^^^^^^^^^^ Property 'missingAfterExpectError' does not exist on type 'number'.
+  27 |
 ```
 

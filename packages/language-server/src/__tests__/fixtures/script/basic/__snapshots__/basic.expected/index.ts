@@ -36,7 +36,6 @@ export interface Input<T extends string> {
       }
     })(),
   });
-  //        ^?
   x;
   var { x: __marko_internal_hoist__x } = Marko._.readScope(
     __marko_internal_rendered_1,

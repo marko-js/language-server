@@ -64,21 +64,15 @@ export interface Input {}
         of: list,
         by: (item, index) => `${item}-${index}`,
       },
-      () =>
-        //  ^?      ^?       ^?
-
-        {
-          return Marko._.voidReturn;
-        },
+      () => {
+        return Marko._.voidReturn;
+      },
     );
     const __marko_internal_rendered_2 = Marko._.forOfTag(
       {
         of: list,
       },
-      (
-        //               ^?    ^?
-        item,
-      ) => {
+      (item) => {
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
         ).default;
@@ -141,21 +135,15 @@ export interface Input {}
           in: record,
           by: (value, key) => `${value}-${key}`,
         },
-        () =>
-          //  ^?     ^?
-
-          {
-            return Marko._.voidReturn;
-          },
+        () => {
+          return Marko._.voidReturn;
+        },
       );
       const __marko_internal_rendered_6 = Marko._.forInTag(
         {
           in: record,
         },
-        (
-          //                 ^?     ^?
-          key,
-        ) => {
+        (key) => {
           const __marko_internal_tag_7 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           ).default;
@@ -199,22 +187,16 @@ export interface Input {}
           to: 10,
           by: (index) => `${index}`,
         },
-        () =>
-          //  ^?
-
-          {
-            return Marko._.voidReturn;
-          },
+        () => {
+          return Marko._.voidReturn;
+        },
       );
       Marko._.forToTag(
         {
           from: 1,
           to: 10,
         },
-        (
-          //             ^?
-          index,
-        ) => {
+        (index) => {
           index;
           return Marko._.voidReturn;
         },
@@ -224,10 +206,7 @@ export interface Input {}
           to: 10,
           step: 2,
         },
-        (
-          //  ^?
-          index,
-        ) => {
+        (index) => {
           index;
           return Marko._.voidReturn;
         },
@@ -236,10 +215,7 @@ export interface Input {}
         {
           to: 10,
         },
-        (
-          //  ^?
-          index,
-        ) => {
+        (index) => {
           const __marko_internal_tag_10 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           ).default;
@@ -283,22 +259,16 @@ export interface Input {}
           until: 10,
           by: (index) => `${index}`,
         },
-        () =>
-          //  ^?
-
-          {
-            return Marko._.voidReturn;
-          },
+        () => {
+          return Marko._.voidReturn;
+        },
       );
       Marko._.forUntilTag(
         {
           from: 1,
           until: 10,
         },
-        (
-          //             ^?
-          index,
-        ) => {
+        (index) => {
           index;
           return Marko._.voidReturn;
         },
@@ -308,10 +278,7 @@ export interface Input {}
           until: 10,
           step: 2,
         },
-        (
-          //  ^?
-          index,
-        ) => {
+        (index) => {
           index;
           return Marko._.voidReturn;
         },
@@ -320,10 +287,7 @@ export interface Input {}
         {
           until: 10,
         },
-        (
-          //  ^?
-          index,
-        ) => {
+        (index) => {
           const __marko_internal_tag_13 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
           ).default;
