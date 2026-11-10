@@ -26,7 +26,6 @@ export interface Input {}
   const __marko_internal_rendered_2 = Marko._.renderTemplate(
     __marko_internal_tag_2,
   )()()({
-    //  ^?   ^?
     [Marko._.contentFor(__marko_internal_tag_2)]: (a) => {
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),

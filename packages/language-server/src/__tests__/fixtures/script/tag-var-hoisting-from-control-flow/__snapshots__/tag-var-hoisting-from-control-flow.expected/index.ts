@@ -72,7 +72,6 @@ export interface Input {}
     }
   })();
   const __marko_internal_rendered_6 = (() => {
-    //    ^?
     if ($global.foo) {
       const __marko_internal_tag_7 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),

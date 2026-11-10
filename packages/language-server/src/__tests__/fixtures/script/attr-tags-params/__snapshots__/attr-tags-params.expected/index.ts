@@ -44,36 +44,32 @@ export { type Component };
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
-    //^?
-    {
-      foo: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
-        "foo",
-        {
-          foo: {
-            bar: true,
-            [Symbol.iterator]: Marko._.any,
-          },
+  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
+    foo: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
+      "foo",
+      {
+        foo: {
+          bar: true,
+          [Symbol.iterator]: Marko._.any,
         },
-        {
-          foo: {
-            [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
-              data;
-              return Marko._.voidReturn;
-            },
-            [Symbol.iterator]: Marko._.any,
+      },
+      {
+        foo: {
+          [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
+            data;
+            return Marko._.voidReturn;
           },
+          [Symbol.iterator]: Marko._.any,
         },
-      ),
-    },
-  );
+      },
+    ),
+  });
   const __marko_internal_tag_3 = true && Child;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@foo"];
     input["@foo"];
   });
   Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
-    //^?
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
       foo: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
@@ -136,4 +132,3 @@ export default new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-//^?

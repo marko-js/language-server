@@ -75,33 +75,30 @@ export { type Component };
     input["@a"];
     input["@b"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
-    //      ^?
-    {
-      x: 1,
-      ...(x
-        ? (() => {
-            const a = 1 as const;
-            return {
-              //          ^?
-              a: {
-                a: a,
-                [Symbol.iterator]: Marko._.any,
-              },
-            };
-          })()
-        : (() => {
-            const b = 2 as const;
-            return {
-              //          ^?
-              b: {
-                b: b,
-                [Symbol.iterator]: Marko._.any,
-              },
-            };
-          })()),
-    },
-  );
+  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+    x: 1,
+    ...(x
+      ? (() => {
+          const a = 1 as const;
+          return {
+            //          ^?
+            a: {
+              a: a,
+              [Symbol.iterator]: Marko._.any,
+            },
+          };
+        })()
+      : (() => {
+          const b = 2 as const;
+          return {
+            //          ^?
+            b: {
+              b: b,
+              [Symbol.iterator]: Marko._.any,
+            },
+          };
+        })()),
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

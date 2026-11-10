@@ -55,6 +55,26 @@ export { type Component };
       };
     })(),
   });
+  Marko._.renderNativeTag("div")()()(
+    // A `@ts-expect-error` that ends a body applies to nothing after it: the next
+    // tag's error is reported
+    {
+      [Marko._.content]: (() => {
+        Marko._.renderNativeTag("span")()()({});
+        return () => {
+          return Marko._.voidReturn;
+        };
+      })(),
+    },
+  );
+  Marko._.renderNativeTag("div")()()({
+    [Marko._.content]: (() => {
+      count.missingAfterExpectError;
+      return () => {
+        return Marko._.voidReturn;
+      };
+    })(),
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();

@@ -45,10 +45,7 @@ export interface Input {
       {
         of: input.value,
       },
-      (
-        // ^?
-        help,
-      ) => {
+      (help) => {
         const __marko_internal_tag_3 = Section;
         Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
           ...help,
@@ -99,4 +96,3 @@ const Input = new (class Template extends Marko._.Template<{
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
 export default Input;
-// ^?

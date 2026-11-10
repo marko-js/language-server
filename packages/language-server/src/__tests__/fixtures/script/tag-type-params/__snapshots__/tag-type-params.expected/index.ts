@@ -29,7 +29,6 @@ export interface Input {}
         })(__marko_internal_return);
       },
     });
-    //                  ^?
     result;
     var __marko_internal_hoist__result = result;
   }

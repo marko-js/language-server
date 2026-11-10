@@ -32,7 +32,6 @@ export { type Component };
         }
       : {}),
   });
-  //      ^?
   let done = false;
   i = 0;
   const __marko_internal_tag_2 = custom;

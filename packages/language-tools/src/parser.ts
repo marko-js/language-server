@@ -813,6 +813,10 @@ class Builder {
     if (hasCloseTag(parent)) parent.close.end = range.end;
     parent.end = range.end;
     this.#parentNode = parent.parent;
+    // Comments are held to lead the next tag, placeholder, scriptlet or
+    // statement read. Ones still held when a tag closes ended its body, and
+    // must not lead whatever follows the tag.
+    this.#comments = undefined;
   }
 }
 

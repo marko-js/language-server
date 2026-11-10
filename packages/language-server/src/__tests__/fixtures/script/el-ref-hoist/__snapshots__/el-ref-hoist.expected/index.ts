@@ -24,17 +24,14 @@ export interface Input {}
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("marko/src/core-tags/core/script.d.marko"),
       ).default;
-      Marko._.renderTemplate(__marko_internal_tag_3)()()(
-        // ^?
-        {
-          async value() {
-            $el;
-            //^?
-            $hoistedEl;
-            //^?
-          },
+      Marko._.renderTemplate(__marko_internal_tag_3)()()({
+        async value() {
+          $el;
+          //^?
+          $hoistedEl;
+          //^?
         },
-      );
+      });
       var __marko_internal_hoist__$hoistedEl = $hoistedEl;
       var __marko_internal_hoist__$el = $el;
     }
