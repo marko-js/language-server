@@ -9,7 +9,7 @@ export interface Input<T> extends ChildInput<T> {}
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../gchild/index.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@item"];
   });
@@ -25,7 +25,7 @@ export interface Input<T> extends ChildInput<T> {}
           (item) =>
             Marko._.attrTags(__marko_internal_tag_1)([
               {
-                ["item"]: {
+                item: {
                   ...item,
                   label: "x",
                   [Marko._.contentFor(__marko_internal_tag_1)]: (row) => {
@@ -46,7 +46,7 @@ export interface Input<T> extends ChildInput<T> {}
 })();
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-const Gwrapper = new (class Template extends Marko._.Template<{
+const Input = new (class Template extends Marko._.Template<{
   render<T>(
     input: Marko.TemplateInput<Input<T>>,
     stream?: {
@@ -92,4 +92,4 @@ const Gwrapper = new (class Template extends Marko._.Template<{
         ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>;
   [Marko._.anyInput]: Input<any>;
 }> {})();
-export default Gwrapper;
+export default Input;

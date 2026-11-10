@@ -67,30 +67,44 @@ const Input = new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
-    ? <FirstName extends string, LastName extends string, Extra>() => <
-        __marko_internal_input extends unknown,
-      >(
-        input: Marko.Directives &
-          Input<FirstName, LastName, Extra> &
-          Marko._.Relate<
-            __marko_internal_input,
-            Marko.Directives & Input<FirstName, LastName, Extra>
-          >,
-      ) => Marko._.ReturnWithScope<__marko_internal_input, void>
-    : () => <
-        __marko_internal_input extends unknown,
+  _<__marko_internal_apply = 1>(
+    m?: __marko_internal_apply,
+  ): __marko_internal_apply extends 0 | 2
+    ? <
         FirstName extends string,
         LastName extends string,
         Extra,
-      >(
-        input: Marko.Directives &
-          Input<FirstName, LastName, Extra> &
-          Marko._.Relate<
+      >() => Marko._.Renderer<
+        Input<FirstName, LastName, Extra>,
+        void,
+        __marko_internal_apply
+      >
+    : __marko_internal_apply extends 1
+      ? () => <
+          __marko_internal_input,
+          FirstName extends string,
+          LastName extends string,
+          Extra,
+        >(
+          input: Marko.Directives &
+            Input<FirstName, LastName, Extra> &
+            Marko._.Relate<
+              __marko_internal_input,
+              Marko.Directives & Input<FirstName, LastName, Extra>
+            >,
+        ) => Marko._.ReturnWithScope<__marko_internal_input, void>
+      : () => <
+          __marko_internal_input,
+          FirstName extends string,
+          LastName extends string,
+          Extra,
+        >(
+          input: Marko._.TagInput<
             __marko_internal_input,
-            Marko.Directives & Input<FirstName, LastName, Extra>
+            Input<FirstName, LastName, Extra>
           >,
-      ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>;
+  [Marko._.anyInput]: Input<any, any, any>;
 }> {})();
 export default Input;
 //         ^?

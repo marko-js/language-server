@@ -22,28 +22,34 @@ export { type Component };
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     section: {
+      ...Marko._.givenAttrTags("item"),
       ...Marko._.forOfAttrTag(
         {
           of: ["a", "b", "c"],
         },
-        (name) => ({
-          item: {
-            [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
-              Marko._.renderNativeTag("div")()()({
-                [Marko._.content]: (() => {
-                  name;
-                  label;
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
-              });
-              return Marko._.voidReturn;
+        (name) =>
+          Marko._.attrTags(
+            __marko_internal_tag_1,
+            "section",
+          )([
+            {
+              item: {
+                [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
+                  Marko._.renderNativeTag("div")()()({
+                    [Marko._.content]: (() => {
+                      name;
+                      label;
+                      return () => {
+                        return Marko._.voidReturn;
+                      };
+                    })(),
+                  });
+                  return Marko._.voidReturn;
+                },
+                [Symbol.iterator]: Marko._.any,
+              },
             },
-            [Symbol.iterator]: Marko._.any,
-          },
-        }),
-        Marko._.inputForAttr(__marko_internal_tag_1, "section"),
+          ]),
       ),
       [Symbol.iterator]: Marko._.any,
     },
@@ -110,9 +116,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

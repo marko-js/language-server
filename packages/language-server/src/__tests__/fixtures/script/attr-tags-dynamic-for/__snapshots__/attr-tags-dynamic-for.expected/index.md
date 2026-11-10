@@ -77,7 +77,7 @@
   50 |
   51 | <effect() {
 > 52 |   hoistedFromForOf;
-     |   ^ const hoistedFromForOf: (() => 1 | 2 | 3) & Iterable<1 | 2 | 3>
+     |   ^ const hoistedFromForOf: (() => 1 | 3 | 2) & Iterable<1 | 3 | 2>
   53 | //^?
   54 | }/>
   55 |

@@ -22,17 +22,23 @@ export { type Component };
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     a: {
+      ...Marko._.givenAttrTags("b"),
       ...Marko._.forOfAttrTag(
         {
           of: [1, 2, 3],
         },
-        () => ({
-          b: {
-            size: "small",
-            [Symbol.iterator]: Marko._.any,
-          },
-        }),
-        Marko._.inputForAttr(__marko_internal_tag_1, "a"),
+        () =>
+          Marko._.attrTags(
+            __marko_internal_tag_1,
+            "a",
+          )([
+            {
+              b: {
+                size: "small",
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+          ]),
       ),
       [Symbol.iterator]: Marko._.any,
     },
@@ -71,9 +77,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

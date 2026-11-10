@@ -4,7 +4,10 @@
   4 |   <@foo bar/>
   5 |   <@foo|data|>
 > 6 |     ${data}
-    |       ^ (parameter) data: any
+    |       ^ (parameter) data: {
+    a: string;
+    b: number;
+}
   7 |     //^?
   8 |   </@foo>
   9 | </child>
@@ -15,7 +18,10 @@
   12 |   <@foo bar/>
   13 |   <@foo|data|>
 > 14 |     ${data}
-     |       ^ (parameter) data: any
+     |       ^ (parameter) data: {
+    a: string;
+    b: number;
+}
   15 |     //^?
   16 |   </@foo>
   17 | </Child>
@@ -26,9 +32,26 @@
   21 |   <@foo bar/>
   22 |   <@foo|data|>
 > 23 |     ${data}
-     |       ^ (parameter) data: any
+     |       ^ (parameter) data: {
+    a: string;
+    b: number;
+}
   24 |     //^?
   25 |   </@foo>
   26 | </>
+```
+
+### Ln 32, Col 9
+```marko
+  30 |   <for|n| of=[1, 2]>
+  31 |     <@foo|data| bar="no">
+> 32 |       ${data}
+     |         ^ (parameter) data: {
+    a: string;
+    b: number;
+}
+  33 |       //^?
+  34 |     </@foo>
+  35 |   </for>
 ```
 

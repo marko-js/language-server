@@ -1,0 +1,102 @@
+export interface Input {
+  user?: { name: string; email: string };
+}
+
+$ const flag = Math.random() > 0.5;
+
+<menu>
+  <@item|{ foo }| size="small">${foo}</@item>
+//                                ^?
+  <@item|{ foo }|>${foo}</@item>
+</menu>
+
+<menu>
+  <@item|{ foo }|>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| size="large">${foo}</@item>
+//                                 ^?
+  </if>
+</menu>
+
+<menu>
+  <@item|{ foo }|>${foo}</@item>
+  <for|name| of=["a"]>
+    <@item|{ foo }|>${name} ${foo}</@item>
+//                            ^?
+  </for>
+</menu>
+
+<menu>
+  <if=flag>
+    <for|name| of=["a"]>
+      <@item|{ foo }|>${name} ${foo}</@item>
+//                              ^?
+    </for>
+  </if>
+</menu>
+
+<menu>
+  <@item|{ foo }|>
+    <@row label="a"/>
+    <@row label="b"/>
+    ${foo}
+  </@item>
+</menu>
+
+<menu>
+  <@item size="huge"/>
+  <@item|{ foo }|>${foo}</@item>
+</menu>
+
+<menu>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+  <@item|{ foo }|>${foo}</@item>
+</menu>
+
+<menu>
+  <@item|{ foo }|>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| bogus=1>${foo}</@item>
+  </if>
+</menu>
+
+<menu>
+  <@item|{ foo }|>${foo}</@item>
+  <for|name| of=["a"]>
+    <@item|{ foo }| bogus=name>${foo}</@item>
+  </for>
+</menu>
+
+<menu>
+  <@item|{ foo }|>
+    <@row label="a" bogus=1/>
+    <@row label="b"/>
+    ${foo}
+  </@item>
+</menu>
+
+// Repeated and <if> occurrences reading a narrowed property
+<if=input.user>
+  <list>
+    <@item label=input.user.name/>
+    <@item label=input.user.email/>
+    <if=flag>
+      <@item label=input.user.name/>
+    </if>
+  </list>
+</if>
+
+// A bind on a repeated attribute tag: clean when the variable takes what its
+// change handler gives
+<let/both = "a" as string | number/>
+<groups>
+  <@group selected:=both/>
+  <@group selected:=both/>
+</groups>
+
+// Else an error at the bind, as on one written once
+<let/text = "a"/>
+<groups>
+  <@group selected:=text/>
+  <@group selected:=text/>
+</groups>

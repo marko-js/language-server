@@ -19,27 +19,28 @@ export { type Component };
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ...Marko._.mergeAttrTags(
+  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
           of: [1, 2, 3],
         },
-        () => ({
-          item: {
-            size: "small",
-            [Symbol.iterator]: Marko._.any,
-          },
-        }),
-        Marko._.input(__marko_internal_tag_1),
+        () =>
+          Marko._.attrTags(__marko_internal_tag_1)([
+            {
+              item: {
+                size: "small",
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+          ]),
       ),
       Marko._.forOfAttrTag(
         {
           of: [1, 2, 3],
         },
-        () => ({
-          item: Marko._.attrTagFor(__marko_internal_tag_1, "item")(
-            "item",
+        () =>
+          Marko._.attrTags(__marko_internal_tag_1)([
             {
               item: {
                 size: "small",
@@ -53,11 +54,10 @@ export { type Component };
                 [Symbol.iterator]: Marko._.any,
               },
             },
-          ),
-        }),
-        Marko._.input(__marko_internal_tag_1),
+          ]),
       ),
-    ),
+    ],
+    ...Marko._.givenAttrTags("item"),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
@@ -93,9 +93,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

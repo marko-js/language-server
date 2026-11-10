@@ -24,3 +24,13 @@ import Child from "<child>";
     //^?
   </@foo>
 </>
+// In a <for>: the body param typed (the wrong value is not reported, as nothing
+// is in a JavaScript template)
+<child>
+  <for|n| of=[1, 2]>
+    <@foo|data| bar="no">
+      ${data}
+      //^?
+    </@foo>
+  </for>
+</child>

@@ -1,0 +1,9 @@
+export interface Input<T> {
+  rows: T[];
+  section?: Marko.AttrTag<{
+    title?: string;
+    row?: Marko.AttrTag<{ id?: number; content?: Marko.Body<[T]> }>;
+  }>;
+}
+
+<div/>

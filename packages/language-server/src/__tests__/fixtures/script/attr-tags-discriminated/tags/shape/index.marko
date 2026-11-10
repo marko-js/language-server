@@ -1,0 +1,8 @@
+export interface Input {
+  part?: Marko.AttrTag<
+    | { kind: "circle"; radius: number }
+    | { kind: "square"; side: number }
+  >;
+}
+
+<for|part| of=input.part>${part.kind}</for>

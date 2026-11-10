@@ -49,26 +49,35 @@ const Input = new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
-    ? <T = string>() => <__marko_internal_input extends unknown>(
-        input: Marko.Directives &
-          Input<T> &
-          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
+  _<__marko_internal_apply = 1>(
+    m?: __marko_internal_apply,
+  ): __marko_internal_apply extends 0 | 2
+    ? <T = string>() => Marko._.Renderer<
+        Input<T>,
         typeof __marko_internal_template<T> extends () => infer Return
           ? Return
-          : never
+          : never,
+        __marko_internal_apply
       >
-    : () => <__marko_internal_input extends unknown, T = string>(
-        input: Marko.Directives &
-          Input<T> &
-          Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        typeof __marko_internal_template<T> extends () => infer Return
-          ? Return
-          : never
-      >;
+    : __marko_internal_apply extends 1
+      ? () => <__marko_internal_input, T = string>(
+          input: Marko.Directives &
+            Input<T> &
+            Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
+        ) => Marko._.ReturnWithScope<
+          __marko_internal_input,
+          typeof __marko_internal_template<T> extends () => infer Return
+            ? Return
+            : never
+        >
+      : () => <__marko_internal_input, T = string>(
+          input: Marko._.TagInput<__marko_internal_input, Input<T>>,
+        ) => Marko._.ReturnWithRestAttrTagsScope<
+          __marko_internal_input,
+          typeof __marko_internal_template<T> extends () => infer Return
+            ? Return
+            : never
+        >;
+  [Marko._.anyInput]: Input<any>;
 }> {})();
 export default Input;

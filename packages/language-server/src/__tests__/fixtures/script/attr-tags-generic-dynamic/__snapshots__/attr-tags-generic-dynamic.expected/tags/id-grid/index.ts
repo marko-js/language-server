@@ -1,0 +1,88 @@
+export interface Input<T extends { id: string }> {
+  rows: T[];
+  column: Marko.AttrTag<{ header: string; content?: Marko.Body<[T]> }>;
+  sort?: (a: T, b: T) => number;
+}
+(function <T extends { id: string }>(this: void) {
+  const input = Marko._.any as Input<T>;
+  const $signal = Marko._.any as AbortSignal;
+  const $global = Marko._.getGlobal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
+    (Marko._.error, Marko._.any as MarkoRun.Context),
+  );
+  Marko._.forOfTag(
+    {
+      of: input.rows,
+    },
+    (row) => {
+      Marko._.forOfTag(
+        {
+          of: input.column,
+        },
+        (column) => {
+          const __marko_internal_tag_1 = column.content;
+          Marko._.renderDynamicTag(__marko_internal_tag_1)()()(row);
+          return Marko._.voidReturn;
+        },
+      );
+      return Marko._.voidReturn;
+    },
+  );
+  Marko._.noop({ input, $global, $signal });
+  return;
+})();
+const __marko_internal_api = "tags";
+export { __marko_internal_api as "~api" };
+const Input = new (class Template extends Marko._.Template<{
+  render<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+    stream?: {
+      write: (chunk: string) => void;
+      end: (chunk?: string) => void;
+    },
+  ): Marko.Out<never>;
+
+  render<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
+  ): Marko.Out<never>;
+
+  renderSync<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+  ): Marko.RenderResult<never>;
+
+  renderToString<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+  ): string;
+
+  stream<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+  ): ReadableStream<string> & NodeJS.ReadableStream;
+
+  mount<T extends { id: string }>(
+    input: Marko.TemplateInput<Input<T>>,
+    reference: Node,
+    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
+  ): Marko.MountedTemplate<typeof input>;
+
+  api: typeof __marko_internal_api;
+  _<__marko_internal_apply = 1>(
+    m?: __marko_internal_apply,
+  ): __marko_internal_apply extends 0 | 2
+    ? <T extends { id: string }>() => Marko._.Renderer<
+        Input<T>,
+        void,
+        __marko_internal_apply
+      >
+    : __marko_internal_apply extends 1
+      ? () => <__marko_internal_input, T extends { id: string }>(
+          input: Marko.Directives &
+            Input<T> &
+            Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
+        ) => Marko._.ReturnWithScope<__marko_internal_input, void>
+      : () => <__marko_internal_input, T extends { id: string }>(
+          input: Marko._.TagInput<__marko_internal_input, Input<T>>,
+        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>;
+  [Marko._.anyInput]: Input<any>;
+}> {})();
+export default Input;

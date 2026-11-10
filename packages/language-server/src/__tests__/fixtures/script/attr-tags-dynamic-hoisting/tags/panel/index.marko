@@ -1,0 +1,12 @@
+export interface Input {
+  section?: Marko.AttrTag<{
+    row?: Marko.AttrTag<{ content?: Marko.Body }>;
+    cell?: Marko.AttrTag<{ content?: Marko.Body }>;
+    content?: Marko.Body;
+  }>;
+  content?: Marko.Body;
+}
+
+<for|section| of=input.section>
+  <${section.content}/>
+</for>

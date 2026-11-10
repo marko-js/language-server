@@ -1,0 +1,331 @@
+static const tuple = ["x", "y"] as const;
+static const cols = ["x", "y"];
+import ReqMenu from "./tags/req-menu/index.marko";
+import RMenu from "./tags/rmenu/index.marko";
+static const flag = Math.random() > 0.5;
+
+// Every branch has it
+<req-menu>
+  <if=flag>
+    <@req label="a"/>
+  </if>
+  <else>
+    <@req label="b"/>
+  </else>
+</req-menu>
+
+// Repeated, one with params (left out of TypeScript's first check)
+<req-menu>
+  <@req|n|>${n}</@req>
+  <@req/>
+</req-menu>
+
+// Static, then possibly another
+<req-menu>
+  <@req|n|>${n}</@req>
+  <if=flag>
+    <@req/>
+  </if>
+</req-menu>
+
+// Only in an <if>, with an attribute: given, though not by every render
+<req-menu title="x">
+  <if=flag>
+    <@req/>
+  </if>
+</req-menu>
+
+// Only in a while: given
+<req-menu>
+  <while=flag>
+    <@req/>
+  </while>
+</req-menu>
+
+// Only in an <if>, by a dynamic tag: given
+<${ReqMenu}>
+  <if=flag>
+    <@req/>
+  </if>
+</>
+
+// Only in an <if>, by one of several templates, with no other attribute: given
+<${flag ? ReqMenu : RMenu}>
+  <if=flag>
+    <@req/>
+  </if>
+</>
+
+// By a <define> tag
+<define/Req|input: { req: Marko.AttrTag<{ content?: Marko.Body }> }|>
+  <${input.req.content}/>
+</define>
+
+<Req>
+  <@req/>
+  <@req/>
+</Req>
+
+<Req>
+  <if=flag>
+    <@req/>
+  </if>
+</Req>
+
+// An unknown attribute, with the attribute tag given
+<req-menu bogus=1>
+  <@req/>
+  <@req/>
+</req-menu>
+
+// An input with an index signature
+<idx-menu other=1>
+  <@req/>
+  <@req/>
+</idx-menu>
+
+<idx-menu other=1>
+  <if=flag>
+    <@req/>
+  </if>
+</idx-menu>
+
+// Repeated 50 times, as rest attribute tags and in a for (each merged by name)
+<req-menu>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+  <@req/>
+</req-menu>
+
+<req-menu>
+  <for of=[1] as const>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+    <@req/>
+  </for>
+</req-menu>
+
+// Required only in a <for> over an array literal
+<rmenu>
+  <for|t| of=["x", "y"]>
+    <@item label=t/>
+  </for>
+</rmenu>
+
+// Required only in a <for> over a non-empty const tuple
+<rmenu>
+  <for|t| of=tuple>
+    <@item label=t/>
+  </for>
+</rmenu>
+
+// Required only in a <for to=3>
+<rmenu>
+  <for|i| to=3>
+    <@item label=String(i)/>
+  </for>
+</rmenu>
+
+// Required only in a <for> over a possibly empty list: given
+<rmenu>
+  <for|t| of=cols>
+    <@item label=t/>
+  </for>
+</rmenu>
+
+// Nested required, in an attribute tag in a loop
+<rgrid>
+  <for|i| of=[1, 2]>
+    <@section>
+      <@row label=`${i}`/>
+      <@row/>
+    </@section>
+  </for>
+</rgrid>
+<rgrid>
+  <for|i| of=[1, 2]>
+    <@section>
+      <for|j| of=[i]>
+        <@row label=`${j}`/>
+      </for>
+    </@section>
+  </for>
+</rgrid>
+<rgrid>
+  <for|i| of=[1, 2]>
+    <@section>
+      <if=i === 2>
+        <@row/>
+      </if>
+      <else>
+        <@row/>
+      </else>
+    </@section>
+  </for>
+</rgrid>
+
+// Given nowhere, by a tag with rest attribute tags => error
+<idx-menu>
+  <@other/>
+  <@other/>
+</idx-menu>
+<idx-menu>
+  <for|t| of=cols>
+    <@other label=t/>
+  </for>
+</idx-menu>
+// An attribute tag replaces a spread's attribute of its name, as Marko
+// writes each attribute tag after the attributes (as nothing, if none is given).
+static const spread = { title: "a", req: ["x", "y"] };
+static const withReq = { req: { label: "a", *[Symbol.iterator]() {} } };
+// The spread's is not checked: a <for> gives it
+<req-menu ...spread>
+  <for|label| of=tuple>
+    <@req label=label/>
+  </for>
+</req-menu>
+// The spread's is replaced by one that might be missing: given
+<req-menu ...withReq>
+  <if=flag>
+    <@req label="a"/>
+  </if>
+</req-menu>
+<req-menu ...withReq>
+  <for|label| of=cols>
+    <@req label=label/>
+  </for>
+</req-menu>
+// The spread's other attributes are still checked => error
+<req-menu ...{ title: 1 }>
+  <for|label| of=tuple>
+    <@req label=label/>
+  </for>
+</req-menu>
+// Written once, it is the attribute already
+<req-menu ...spread>
+  <@req label="a"/>
+  <if=flag>
+    <@req label="b"/>
+  </if>
+</req-menu>
+// An attribute of an attribute tag's name, the attribute tag in a <for>:
+// reported as overwritten, as Marko replaces it with the attribute tag
+<req-menu req=1>
+  <for|label| of=tuple>
+    <@req label=label/>
+  </for>
+</req-menu>
+
+// A required nested attribute tag given only in an <if> with a scriptlet, and
+// with its attribute tag in a <for>: given
+<rgrid>
+  <@section>
+    <if=flag>
+      $ const label = "a";
+      <@row label=label/>
+    </if>
+  </@section>
+</rgrid>
+<rgrid>
+  <for|label| of=cols>
+    <@section>
+      <if=flag>
+        <@row label=label/>
+      </if>
+    </@section>
+  </for>
+</rgrid>

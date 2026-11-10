@@ -1,0 +1,163 @@
+static const users = [{ name: "a" }, { name: "b" }];
+static const cols = ["x", "y"];
+static const flag = Math.random() > 0.5;
+
+// In the attributes and an attribute tag
+<menu size="huge">
+  <@item size="small"/>
+  <@item bogus=1/>
+</menu>
+
+// In two attribute tags
+<menu>
+  <@item|{ foo }| size="huge">${foo}</@item>
+  <@item bogus=1/>
+</menu>
+
+// In an attribute tag and one in an <if>
+<menu>
+  <@item bogus=1/>
+  <if=flag>
+    <@item size="tiny"/>
+  </if>
+</menu>
+
+// In an attribute tag with params, beside an <if>
+<menu>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+//                          ^?
+  <if=flag>
+    <@item|{ foo }| size="large">${foo}</@item>
+//                                 ^?
+  </if>
+</menu>
+
+// On a native tag
+<div>
+  <@item/>
+  <@item/>
+</div>
+
+// An error in the input and one in a <for>
+<gtable rows=users caption=1>
+  <for|c| of=cols>
+    <@column title=2/>
+  </for>
+</gtable>
+
+// Unknown attribute in a <for> on a generic tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column title=c bogus=1/>
+  </for>
+</gtable>
+
+// Wrong value in a <for> on a generic tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column title=1/>
+  </for>
+</gtable>
+
+// Missing attribute in a <for> on a generic tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column width=1/>
+  </for>
+</gtable>
+
+// Unknown attribute tag name in a <for> on a generic tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@colum title=c/>
+  </for>
+</gtable>
+
+// A static occurrence and a <for> disagree on T
+<sel>
+  <@option value="a"/>
+  <for|n| of=[1, 2]>
+    <@option value=n/>
+  </for>
+</sel>
+
+// An attribute tag declared as a plain object (not `Marko.AttrTag`): reported
+// once and in an <if>, as main reports one written once
+<plain>
+  <@footer label="a"/>
+</plain>
+<plain>
+  <if=flag>
+    <@footer label="a"/>
+  </if>
+</plain>
+
+// Type arguments on a tag that takes none, with repeated attribute tags
+<menu<string>>
+  <@item size="small"/>
+  <@item size="large"/>
+</menu>
+
+// A wrong value only an <else> gives: reported from its attribute tag
+<menu>
+  <@item size="small"/>
+  <if=flag>
+    $ console.log(flag);
+  </if>
+  <else>
+    <@item size="huge"/>
+  </else>
+</menu>
+
+// A wrong value in a <while>: reported from its attribute tag
+static let n = 0;
+<menu>
+  <while(n++ < 2)>
+    <@item size="huge"/>
+  </while>
+</menu>
+
+static declare const body: Marko.Body;
+static declare const render: Marko.Body<
+  [number, { item?: Marko.AttrTag<{ size?: string }> }]
+>;
+static declare const tpl: Marko.Template;
+
+// A body that takes no input, given attribute tags in a <for>
+<${body}>
+  <for of=cols>
+    <@x/>
+  </for>
+</>
+
+// A tag with arguments takes its attributes after them: its attribute tags
+// are not checked against its first argument
+<${render}(1)>
+  <@item size="a"/>
+  <@item size="b"/>
+</>
+
+// A template whose input is not known takes any attribute tag, also in an <if>
+// or a <for>
+<${tpl}>
+  <@a/>
+  <if=flag>
+    <@a/>
+  </if>
+  <for of=[1, 2]>
+    <@a/>
+  </for>
+</>
+
+// A body that takes `unknown` takes any attribute tag, as it takes any
+// attribute
+static declare const anyBody: Marko.Body<[unknown]>;
+<${anyBody}>
+  <@a/>
+  <if=flag>
+    <@a/>
+  </if>
+  <for of=[1, 2]>
+    <@a/>
+  </for>
+</>

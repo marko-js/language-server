@@ -25,15 +25,12 @@ export class Component extends Marko.Component {}
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    foo: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
-      "foo",
-      {
-        foo: {
-          bar: true,
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
+  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    foo: {
+      bar: true,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
       {
         foo: {
           [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
@@ -43,22 +40,19 @@ export class Component extends Marko.Component {}
           [Symbol.iterator]: Marko._.any,
         },
       },
-    ),
+    ],
   });
   const __marko_internal_tag_2 = Child;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    foo: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
-      "foo",
-      {
-        foo: {
-          bar: true,
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+    foo: {
+      bar: true,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
       {
         foo: {
           [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
@@ -68,24 +62,21 @@ export class Component extends Marko.Component {}
           [Symbol.iterator]: Marko._.any,
         },
       },
-    ),
+    ],
   });
   const __marko_internal_tag_3 = true && Child;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
-      foo: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
-        "foo",
-        {
-          foo: {
-            bar: true,
-            [Symbol.iterator]: Marko._.any,
-          },
-        },
+      foo: {
+        bar: true,
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
         {
           foo: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
@@ -95,7 +86,40 @@ export class Component extends Marko.Component {}
             [Symbol.iterator]: Marko._.any,
           },
         },
-      ),
+      ],
+    },
+  );
+  const __marko_internal_tag_4 = Marko._.resolveTemplate(
+    import("./components/child.marko"),
+  ).default;
+  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+    input["@foo"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_4)(Marko._.withRestAttrTags)()(
+    // In a <for>: the body param typed (the wrong value is not reported, as nothing
+    // is in a JavaScript template)
+    {
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: [1, 2],
+          },
+          (n) =>
+            Marko._.attrTags(__marko_internal_tag_4)([
+              {
+                foo: {
+                  bar: "no",
+                  [Marko._.contentFor(__marko_internal_tag_4)]: (data) => {
+                    data;
+                    return Marko._.voidReturn;
+                  },
+                  [Symbol.iterator]: Marko._.any,
+                },
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("foo"),
     },
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
@@ -104,6 +128,6 @@ export class Component extends Marko.Component {}
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 export default new /**
- * @extends { Marko._.Template<{              render(         input: Marko.TemplateInput<Input>,         stream?: {           write: (chunk: string) => void;           end: (chunk?: string) => void;         },       ): Marko.Out<Component>;               render(         input: Marko.TemplateInput<Input>,         cb?: (           err: Error | null,           result: Marko.RenderResult<Component>,         ) => void,       ): Marko.Out<Component>;               renderSync(         input: Marko.TemplateInput<Input>,       ): Marko.RenderResult<Component>;               renderToString(input: Marko.TemplateInput<Input>): string;               stream(         input: Marko.TemplateInput<Input>,       ): ReadableStream<string> & NodeJS.ReadableStream;               mount(         input: Marko.TemplateInput<Input>,         reference: Node,         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",       ): Marko.MountedTemplate<typeof input>;          api: typeof __marko_internal_api,   _(): () => <__marko_internal_input extends unknown>(input: Marko.Directives & Input & Marko._.Relate<__marko_internal_input, Marko.Directives & Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>); }>}
+ * @extends { Marko._.Template<{              render(         input: Marko.TemplateInput<Input>,         stream?: {           write: (chunk: string) => void;           end: (chunk?: string) => void;         },       ): Marko.Out<Component>;               render(         input: Marko.TemplateInput<Input>,         cb?: (           err: Error | null,           result: Marko.RenderResult<Component>,         ) => void,       ): Marko.Out<Component>;               renderSync(         input: Marko.TemplateInput<Input>,       ): Marko.RenderResult<Component>;               renderToString(input: Marko.TemplateInput<Input>): string;               stream(         input: Marko.TemplateInput<Input>,       ): ReadableStream<string> & NodeJS.ReadableStream;               mount(         input: Marko.TemplateInput<Input>,         reference: Node,         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",       ): Marko.MountedTemplate<typeof input>;          api: typeof __marko_internal_api,   _<A = 1>(m?: A): () => A extends 3     ? Marko._.RestAttrTagsRenderer<Input, void>     : <I>(input: Marko.Directives & Input & Marko._.Relate<I, Marko.Directives & Input>) => Marko._.ReturnWithScope<I, void>; }>}
  */
 (class Template extends Marko._.Template {})();

@@ -1,0 +1,244 @@
+static const users = [{ name: "a" }, { name: "b" }];
+static const cols = ["x", "y"];
+static const groups = [{ items: ["p", "q"] }];
+static const record = { a: 1, b: 2 } as const;
+$ const flag = Math.random() > 0.5;
+
+// From an attribute, repeated
+<pick value="a">
+  <@option|v| value="b">${v}</@option>
+//                        ^?
+  <@option value="c"/>
+</pick>
+
+// From an attribute, in an if
+<pick value=1>
+  <if=flag>
+    <@option|v| value=2>${v}</@option>
+//                        ^?
+  </if>
+</pick>
+
+// From an attribute and the attribute tags, as const
+<pick value="a" as const>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+  <@option value="a"/>
+</pick>
+
+<pick value="a" as const>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+</pick>
+
+<pick value="a" as const>
+  <@option|v| value="a" as const>${v}</@option>
+//                                 ^?
+  <@option value="a" as const/>
+</pick>
+
+// From the attribute tags, into the tag's own content
+<pick|v|>
+  <@option value=1/>
+  <@option value=2/>
+  ${v}
+//  ^?
+</pick>
+
+// An attribute tag that disagrees with the attribute
+<pick value="a">
+  <@option value="b"/>
+  <@option value=1/>
+</pick>
+
+// From an attribute, in a for (its body is typed apart from the tag)
+<pick value="a">
+  <for|x| of=["b", "c"]>
+    <@option|v| value=x>${v}</@option>
+//                        ^?
+  </for>
+</pick>
+
+// Given type arguments
+<pick<number>>
+  <@option|v| value=1>${v}</@option>
+//                      ^?
+  <@option value="a"/>
+</pick>
+
+// From an attribute, into repeated attribute tags' params
+<a-grid rows=[{ id: "a" }]>
+  <@column|{ row }| header="Id">${row.id}</@column>
+//                                ^?
+  <@column|{ row }| header="Id again">${row.id}</@column>
+</a-grid>
+
+<a-grid<{ id: string }> rows=[]>
+  <@column|{ row }| header="Id">${row.id}</@column>
+//                                ^?
+  <@column|{ row }| header="Id again">${row.id}</@column>
+</a-grid>
+
+// A required attribute tag, from an attribute: repeated, in an if, in a for
+<req-grid rows=[{ id: "a" }] sort(a, b) { return a.id.localeCompare(b.id); }>
+  <@column|row| header="Id">${row.id}</@column>
+//                            ^?
+  <@column|row| header="Id again">${row.id}</@column>
+</req-grid>
+
+<req-grid rows=[{ id: "a" }] sort(a, b) { return a.id.localeCompare(b.id); }>
+  <if=flag>
+    <@column|row| header="Id">${row.id}</@column>
+  </if>
+  <else>
+    <@column|row| header="Id again">${row.id}</@column>
+  </else>
+</req-grid>
+
+<req-grid rows=[{ id: "a" }] sort(a, b) { return a.id.localeCompare(b.id); }>
+//                                                ^?
+  <for|header| of=["Id", "Id again"] as const>
+    <@column header=header/>
+  </for>
+</req-grid>
+
+// The same, with a constrained type parameter
+<id-grid rows=[{ id: "a", name: "A" }] sort(a, b) { return a.name.localeCompare(b.name); }>
+  <@column|row| header="Name">${row.name}</@column>
+  <@column|row| header="Id">${row.id}</@column>
+</id-grid>
+
+<id-grid rows=[{ id: "a", name: "A" }] sort(a, b) { return a.name.localeCompare(b.name); }>
+  <if=flag>
+    <@column|row| header="Name">${row.name}</@column>
+  </if>
+  <else>
+    <@column|row| header="Id">${row.id}</@column>
+  </else>
+</id-grid>
+
+<id-grid rows=[{ id: "a", name: "A" }] sort(a, b) { return a.name.localeCompare(b.name); }>
+  <for|header| of=["Name", "Id"] as const>
+    <@column header=header/>
+  </for>
+</id-grid>
+
+// T from an attribute, body param in a <for>: `any`, as in every loop's body
+// (checked apart from the tag, so without its type arguments)
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column|row| title=c>${row.name}</@column>
+//                          ^?
+  </for>
+</gtable>
+
+// T from an attribute, a <for> in an <if>
+<gtable rows=users>
+  <if=flag>
+    <for|c| of=cols>
+      <@column|row| title=c>${row.name}</@column>
+//                            ^?
+    </for>
+  </if>
+</gtable>
+
+// T from an attribute, an <if> in a <for>
+<gtable rows=users>
+  <for|c| of=cols>
+    <if=flag>
+      <@column|row| title=c>${row.name}</@column>
+//                            ^?
+    </if>
+  </for>
+</gtable>
+
+// T from an attribute, nested <for>s
+<gtable rows=users>
+  <for|g| of=groups>
+    <for|c| of=g.items>
+      <@column|row| title=c>${row.name}</@column>
+//                            ^?
+    </for>
+  </for>
+</gtable>
+
+// T from an attribute, <for to>
+<gtable rows=users>
+  <for|i| to=2>
+    <@column|row| title=String(i)>${row.name}</@column>
+//                                  ^?
+  </for>
+</gtable>
+
+// T from an attribute, <for in>
+<gtable rows=users>
+  <for|key| in=record>
+    <@column|row| title=key>${row.name}</@column>
+//                            ^?
+  </for>
+</gtable>
+
+// T from an attribute, an <if> body with a scriptlet: `any`, as in a loop's body
+<gtable rows=users>
+  <if=flag>
+    $ const label = "x";
+    <@column|row| title=label>${row.name}</@column>
+//                              ^?
+  </if>
+</gtable>
+
+// T from an attribute, a nested attribute tag's <for>: its body params are
+// `any` (known: a nested attribute tag's rest attribute tags are checked apart
+// from the tag, so without its type arguments)
+<gpanel rows=users>
+  <@section title="s">
+    <for|i| of=[1, 2]>
+      <@row|r| id=i>${r.name}</@row>
+//                    ^?
+    </for>
+  </@section>
+</gpanel>
+
+// The same in a tag in the body of another tag's <for>: written as a tag of
+// its own, not as one of that tag's attribute tags
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column|row| title=c>
+      <gpanel rows=[row]>
+        <@section title=c>
+          <for|i| of=[1, 2]>
+            <@row|r| id=i>${r.name}</@row>
+//                          ^?
+          </for>
+        </@section>
+      </gpanel>
+    </@column>
+  </for>
+</gtable>
+
+// Annotated body params in a <for> on a generic tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column|row: { name: string }| title=c>${row.name}</@column>
+//                                            ^?
+  </for>
+</gtable>
+
+// The same repeated: annotated body params are accepted, others are `any`,
+// also with its attribute tag in a <for>
+<gpanel rows=users>
+  <@section title="s">
+    <@row|r: { name: string }| id=1>${r.name}</@row>
+    <@row|r| id=2>${r.name}</@row>
+//                  ^?
+  </@section>
+</gpanel>
+<gpanel rows=users>
+  <for|c| of=cols>
+    <@section title=c>
+      <@row|r: { name: string }| id=1>${r.name}</@row>
+      <@row|r| id=2>${r.name}</@row>
+//                    ^?
+    </@section>
+  </for>
+</gpanel>

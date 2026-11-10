@@ -1,0 +1,150 @@
+static const users = [{ name: "a" }, { name: "b" }];
+static const cols = ["x", "y"];
+static const flag = Math.random() > 0.5;
+static const list = [1, 2];
+
+// Repeated
+<panel>
+  <@section>
+    <const/fromRepeated=() => "repeated" as const/>
+  </@section>
+  <@section/>
+</panel>
+
+// In an if
+<panel>
+  <@section/>
+  <if=flag>
+    <@section>
+      <const/fromIf=() => "if" as const/>
+    </@section>
+  </if>
+</panel>
+
+// In a for
+<panel>
+  <for|i| of=list>
+    <@section>
+      <const/fromFor=() => i/>
+    </@section>
+  </for>
+</panel>
+
+// Nested, beside the tag's own content
+<panel>
+  <const/fromContent=() => "content" as const/>
+  <@section>
+    <@row>
+      <const/fromNested=() => "nested" as const/>
+    </@row>
+    <@row/>
+  </@section>
+  <@section/>
+</panel>
+
+// A <define> tag
+<define/Box|input: { section?: Marko.AttrTag<{ content?: Marko.Body }> }|>
+  <for|section| of=input.section>
+    <${section.content}/>
+  </for>
+</define>
+
+<Box>
+  <@section>
+    <const/fromDefine=() => "define" as const/>
+  </@section>
+  <if=flag>
+    <@section/>
+  </if>
+</Box>
+
+// An untyped tag
+<define/Untyped|input: any|>
+  <${input.section}/>
+</define>
+
+<Untyped>
+  <for|i| of=list>
+    <@section>
+      <const/fromUntyped=() => i/>
+    </@section>
+  </for>
+  <@section/>
+</Untyped>
+
+<script>
+  fromRepeated;
+  // ^?
+  fromIf;
+  // ^?
+  fromFor;
+  // ^?
+  fromContent;
+  // ^?
+  fromNested;
+  // ^?
+  fromDefine;
+  // ^?
+  fromUntyped;
+  // ^?
+</script>
+
+// A tag variable hoisted out of a <for>'s attribute tag
+<gtable rows=users>
+  <for|c| of=cols>
+    <@column title=c>
+      <const/fromLoop=() => c/>
+    </@column>
+  </for>
+</gtable>
+<script>
+      fromLoop;
+//    ^?
+</script>
+
+// A tag variable hoisted from an attribute tag beside one with an error: its
+// type is lost with the tag's input (TypeScript drops a failed call's
+// inference when its argument has an unannotated param)
+<gtable rows=users>
+  <@column title=1/>
+  <if=flag>
+    <@column|row| title="a">
+      <const/besideError=() => row/>
+    </@column>
+  </if>
+</gtable>
+<script>
+      besideError;
+//    ^?
+</script>
+
+// A tag variable hoisted out of an attribute tag in an <if> with a scriptlet
+<panel>
+  <@section/>
+  <if=flag>
+    $ const label = "scriptlet";
+    <@section>
+      <const/fromScriptletIf=() => label/>
+    </@section>
+  </if>
+</panel>
+<script>
+      fromScriptletIf;
+//    ^?
+</script>
+
+// A tag variable hoisted out of a nested attribute tag between two of another
+// name: typed, as each group gives its own names
+<panel>
+  <@section>
+    <@row/>
+    <@cell>
+      <const/fromCell=() => "cell" as const/>
+    </@cell>
+    <@row/>
+  </@section>
+</panel>
+<script>
+      fromCell;
+//    ^?
+</script>

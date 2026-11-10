@@ -1,0 +1,13 @@
+export interface Input<T> {
+  value?: T;
+  option?: Marko.AttrTag<{
+    value: T;
+    onPick?: (value: T) => void;
+    content?: Marko.Body<[T]>;
+  }>;
+  content?: Marko.Body<[T]>;
+}
+
+<for|option| of=input.option>
+  <${option.content}(option.value)/>
+</for>

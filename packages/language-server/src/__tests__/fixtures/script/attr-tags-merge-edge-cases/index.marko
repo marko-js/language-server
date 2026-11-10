@@ -1,0 +1,102 @@
+$ const flag = Math.random() > 0.5;
+$ const list = [1, 2];
+$ const extra = { v: 1, unknown: true };
+
+// Interleaved names: the second @a is its own repetition.
+<edge-menu>
+  <@a|{ n }| v=1>${n}</@a>
+//                 ^?
+  <@b w="x"/>
+  <@a|{ n }|>${n}</@a>
+//             ^?
+</edge-menu>
+
+// Each branch with its own attribute tags, one repeated.
+<edge-menu>
+  <if=flag>
+    <@a|{ n }|>${n}</@a>
+    <@a v=2/>
+  </if>
+  <else if=!flag>
+    <@b w="y"/>
+  </else>
+  <else>
+    <@b w=1/>
+  </else>
+</edge-menu>
+
+// Nested control flow: for in for, if in for, for in if.
+<edge-menu>
+  <for|i| of=list>
+    <for|j| of=list>
+      <@a|{ n }| v=i + j>${n}</@a>
+//                         ^?
+    </for>
+    <if=(i > 1)>
+      <@b w=String(i) bogus=1/>
+    </if>
+  </for>
+  <if=flag>
+    <for|i| of=list>
+      <@a|{ n }| v=i>${n}</@a>
+//                     ^?
+      <@b nope=i/>
+    </for>
+  </if>
+</edge-menu>
+
+// Nested attribute tags, dynamic inside static and inside dynamic.
+<edge-menu>
+  <@item>
+    <for|i| of=list>
+      <@row label=String(i)/>
+      <@row label=i/>
+    </for>
+  </@item>
+  <for|i| of=list>
+    <@item>
+      <if=flag>
+        <@row label=String(i) bogus=1/>
+      </if>
+    </@item>
+  </for>
+</edge-menu>
+
+// A scriptlet in a dynamic body, a quoted name, a spread, an unknown name.
+<edge-menu>
+  <if=flag>
+    $ const v = 3;
+    <@a v=v/>
+  </if>
+  <@my-item x=1/>
+  <@my-item x="2"/>
+  <@a ...extra/>
+  <for|i| of=list>
+    <@itme v=i/>
+  </for>
+</edge-menu>
+
+// A required attribute tag: present, and only in an <if> or a loop (given).
+<req-menu>
+  <@req/>
+  <if=flag><@req/></if>
+</req-menu>
+
+<req-menu>
+  <if=flag><@req/></if>
+</req-menu>
+
+<req-menu>
+  <for|i| of=list><@req/></for>
+</req-menu>
+
+<req-menu>
+  <for|i| of=[1, 2] as const><@req/></for>
+</req-menu>
+
+<req-menu>
+  <if=flag><@req/></if>
+  <else>
+    $ console.log("none");
+  </else>
+</req-menu>

@@ -1,0 +1,6 @@
+export interface Input {
+  title?: string;
+  req: Marko.AttrTag<{ label?: string; content?: Marko.Body<[number]> }>;
+}
+
+<${input.req.content}(1)/>

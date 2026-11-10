@@ -1,0 +1,125 @@
+static const ids = ["a", "b"];
+// Single
+<pick>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+</pick>
+
+// Repeated
+<pick>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+  <@option value="b"/>
+</pick>
+
+// In a for: `any` (a loop's body is checked apart from the tag)
+<pick>
+  <for|x| of=["a", "b"] as const>
+    <@option|v| value=x>${v}</@option>
+//                        ^?
+  </for>
+</pick>
+
+// In an if
+$ const flag = Math.random() > 0.5;
+<pick>
+  <@option value="a"/>
+  <if=flag>
+    <@option|v| value="b">${v}</@option>
+//                          ^?
+  </if>
+</pick>
+
+// Tag params: first occurrence static
+<sel|v| onPick(p) { p; }>
+//                  ^?
+  <@option value="a"/>
+  ${v}
+//  ^?
+</sel>
+
+// Tag params: only in a for
+<sel|v| onPick(p) { p; }>
+//                  ^?
+  <for|id| of=ids>
+    <@option|o| value=id>${o}</@option>
+//                         ^?
+  </for>
+  ${v}
+//  ^?
+</sel>
+
+// Tag params: only in a for with an error in another attribute tag (known: unknown)
+<sel|v| onPick(p) { p; }>
+//                  ^?
+  <for|id| of=ids>
+    <@option value=id/>
+    <@note size="tiny"/>
+  </for>
+  ${v}
+//  ^?
+</sel>
+
+// Tag params: only in an if
+<sel|v| onPick(p) { p; }>
+//                  ^?
+  <if=flag>
+    <@option value=1/>
+  </if>
+  ${v}
+//  ^?
+</sel>
+
+// Tag params: static first, another type in a for
+<sel|v| onPick(p) { p; }>
+//                  ^?
+  <@option value="a"/>
+  <for|n| of=[1, 2]>
+    <@option value=n/>
+  </for>
+  ${v}
+//  ^?
+</sel>
+
+// T only from a <for>, an annotated occurrence param: accepted
+<sel>
+  <for|id| of=ids>
+    <@option|o: string| value=id>${o}</@option>
+//                                 ^?
+  </for>
+</sel>
+
+// Type parameter only from a loop, with keys an occurrence lacks
+<opt-pick|v|>
+  <for|x| of=["a", "b"]>
+    <@option value=x/>
+  </for>
+  ${v}
+//  ^?
+</opt-pick>
+<opt-pick|v|>
+  <for|x| of=[1, 2]>
+    <@option value=x/>
+  </for>
+  <@option value=3/>
+  ${v}
+//  ^?
+</opt-pick>
+
+// A static occurrence and a <for> whose values widen T together: no error
+<sel>
+  <@option value=null/>
+  <for|s| of=["a", "b"]>
+    <@option value=s/>
+  </for>
+</sel>
+
+// A conflict on T from an <if> in a <for>: reported from its attribute tag
+<sel>
+  <@option value="a"/>
+  <for|n| of=[1, 2]>
+    <if=n>
+      <@option value=n/>
+    </if>
+  </for>
+</sel>

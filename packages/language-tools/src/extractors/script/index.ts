@@ -70,7 +70,11 @@ const START_OF_FILE: Range = { start: 0, end: 0 };
 
 type ProcessedBody = {
   content: Repeatable<Node.ChildNode>;
-  staticAttrTags: undefined | Record<string, Repeated<Node.AttrTag>>;
+  /**
+   * The static attribute tags by repetition: the first of each name, then
+   * the second of each repeated one, and so on.
+   */
+  staticAttrTags: undefined | Repeated<Repeated<Node.AttrTag>>;
   dynamicAttrTagParents: Repeatable<Node.ControlFlowTag>;
 };
 type IfTag = Node.ControlFlowTag & { nameText: "if" };
@@ -138,6 +142,7 @@ class ScriptExtractor {
   /** Whether the template declares its `Input` itself. */
   #declaresInput = false;
   #tagId = 1;
+  #attrTagTrees = new WeakMap<Node.Tag, AttrTagTree | undefined>();
   #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
     const { parsed, lookup, scriptLang } = opts;
@@ -241,6 +246,7 @@ class ScriptExtractor {
 
     let typeParamsStr = "";
     let typeArgsStr = "";
+    let anyTypeArgsStr = "";
     let jsDocTemplateTagsStr = "";
     const isExternalComponentFile =
       !componentClassBody && componentFileName !== undefined;
@@ -257,6 +263,7 @@ class ScriptExtractor {
             (param.constraint ? ` extends ${param.constraint}` : "") +
             (param.default ? ` = ${param.default}` : "");
           typeArgsStr += sep + param.name;
+          anyTypeArgsStr += sep + "any";
           sep = SEP_COMMA_SPACE;
         }
 
@@ -429,20 +436,28 @@ function ${templateName}() {\n`);
     }
 
     const templateBaseClass = varShared("Template");
-    const internalInput = varLocal("input");
-    const internalInputWithExtends = `${internalInput} extends unknown`;
     const internalApply = varLocal("apply");
     const returnTypeStr = didReturn
       ? `typeof ${
           templateName + typeArgsStr
         } extends () => infer Return ? Return : never`
       : "void";
-    const renderAndReturn = `(input: Marko.Directives & Input${typeArgsStr} & ${varShared(
-      "Relate",
-    )}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => (${varShared(
-      "ReturnWithScope",
-    )}<${internalInput}, ${returnTypeStr}>)`;
+    const internalInput = varLocal("input");
+    const typeParams = typeParamsStr.slice(1, -1);
     const apiVar = INTERNAL_API_VAR;
+    // A template's renderer (its `_`), in the form its first call takes (see
+    // `Marko._.Renderer`). A tag without rest attribute tags renders by the
+    // signature written here, which is cheaper to check than a named one (its
+    // type parameters can have short names, as the template has none).
+    const renderer = typeParamsStr
+      ? `<${internalApply} = 1>(m?: ${internalApply}): ${internalApply} extends 0 | 2
+    ? ${typeParamsStr}() => ${varShared("Renderer")}<Input${typeArgsStr}, ${returnTypeStr}, ${internalApply}>
+    : ${internalApply} extends 1
+    ? () => <${internalInput}, ${typeParams}>(input: Marko.Directives & Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeStr}>
+    : () => <${internalInput}, ${typeParams}>(input: ${varShared("TagInput")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithRestAttrTagsScope")}<${internalInput}, ${returnTypeStr}>;`
+      : `<A = 1>(m?: A): () => A extends 3
+    ? ${varShared("RestAttrTagsRenderer")}<Input, ${returnTypeStr}>
+    : <I>(input: Marko.Directives & Input & ${varShared("Relate")}<I, Marko.Directives & Input>) => ${varShared("ReturnWithScope")}<I, ${returnTypeStr}>;`;
     const templateOverrideClass = `${templateBaseClass}<{${
       this.#runtimeTypes
         ? getRuntimeOverrides(
@@ -455,15 +470,10 @@ function ${templateName}() {\n`);
         : ""
     }
   ${this.#interop ? `api: typeof ${apiVar},` : ""}
-  _${
-    typeParamsStr
-      ? `<${internalApply} = 1>(): ${internalApply} extends 0
-    ? ${typeParamsStr}() => <${internalInputWithExtends}>${renderAndReturn}
-    : () => <${internalInputWithExtends}, ${typeParamsStr.slice(
-      1,
-      -1,
-    )}>${renderAndReturn};`
-      : `(): () => <${internalInputWithExtends}>${renderAndReturn};`
+  _${renderer}${
+    anyTypeArgsStr
+      ? `\n  [${varShared("anyInput")}]: Input<${anyTypeArgsStr}>;`
+      : ""
   }
 }>`;
 
@@ -797,7 +807,7 @@ constructor(_) {}
       this.#extractor.write(
         `var ${varLocal("return")} = ${varShared("returnTag")}(`,
       );
-      this.#writeTagInputObject(returnTag);
+      this.#writeTagInputObject(returnTag, this.#processBody(returnTag));
       this.#extractor.write(");\n");
     }
 
@@ -857,7 +867,7 @@ constructor(_) {}
         templateVar = varShared("missingTag");
       }
 
-      const attrTagTree = this.#getAttrTagTree(tag);
+      const attrTagTree = this.#getTagAttrTagTree(tag);
       if (attrTagTree) {
         this.#writeAttrTagTree(attrTagTree, templateVar);
         this.#extractor.write(";\n");
@@ -910,13 +920,27 @@ constructor(_) {}
       this.#extractor.write(varShared("missingTag"));
     }
 
+    // The renderer's form (see `Marko._.Renderer`): with rest attribute tags
+    // only for a tag that has them (and no arguments, which take its input).
+    const body = this.#processBody(tag);
+    const withRestAttrTags = !!(
+      body &&
+      !this.#getTagArgs(tag) &&
+      hasRestAttrTags(body)
+    );
     if (tag.typeArgs) {
-      this.#extractor.write(`<0>()`).copy(tag.typeArgs).write("()(");
+      this.#extractor
+        .write(withRestAttrTags ? `<2>()` : `<0>()`)
+        .copy(tag.typeArgs)
+        .write("()(");
     } else {
-      this.#extractor.write("()()(");
+      this.#extractor.write(
+        withRestAttrTags ? `(${varShared("withRestAttrTags")})()(` : "()()(",
+      );
     }
 
-    this.#writeTagInputObject(tag);
+    this.#writeTagInputObject(tag, body, withRestAttrTags);
+
     this.#extractor.write(");\n");
 
     if (mutatedVars) {
@@ -1264,86 +1288,127 @@ constructor(_) {}
     return hasAttrs;
   }
 
-  #writeAttrTags(
-    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
-    constraintExpr?: string,
-  ) {
-    let wasMerge = false;
-
-    if (dynamicAttrTagParents) {
-      if (staticAttrTags) {
-        this.#extractor.write(`...${varShared("mergeAttrTags")}({\n`);
-        wasMerge = true;
-      } else if (dynamicAttrTagParents.length > 1) {
-        this.#extractor.write(`...${varShared("mergeAttrTags")}(\n`);
-        wasMerge = true;
-      } else {
-        this.#extractor.write(`...`);
-      }
-    }
-
-    if (staticAttrTags) {
-      this.#writeStaticAttrTags(staticAttrTags);
-      if (dynamicAttrTagParents)
-        this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
-    }
-
-    if (dynamicAttrTagParents) {
-      this.#writeDynamicAttrTagParents(dynamicAttrTagParents, constraintExpr);
-      if (wasMerge) this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
+  /**
+   * Writes an attribute tag's (or a control flow tag's) attribute tags into
+   * its input. Without rest attribute tags each goes in the input itself,
+   * which types and checks it; otherwise all of them are merged by
+   * `attrTags`.
+   */
+  #writeAttrTags(body: ProcessedBody, owner: string) {
+    const { staticAttrTags } = body;
+    if (hasRestAttrTags(body)) {
+      this.#extractor.write("...");
+      this.#writeAttrTagsCall(body, owner);
+      this.#extractor.write(SEP_COMMA_NEW_LINE);
+    } else if (staticAttrTags) {
+      this.#writeAttrTagProps(staticAttrTags[0]);
     }
   }
 
-  #writeStaticAttrTags(
-    staticAttrTags: Exclude<ProcessedBody["staticAttrTags"], undefined>,
+  /**
+   * `attrTags(owner)([...groups])`, see `#writeAttrTagGroups`.
+   */
+  #writeAttrTagsCall(body: ProcessedBody, owner: string) {
+    const { staticAttrTags, dynamicAttrTagParents } = body;
+    if (
+      !staticAttrTags &&
+      dynamicAttrTagParents!.length === 1 &&
+      dynamicAttrTagParents![0].nameText === "for"
+    ) {
+      // One group, already checked: a loop.
+      this.#writeDynamicAttrTagParents(dynamicAttrTagParents!, owner, "");
+      return;
+    }
+
+    this.#extractor.write(`${varShared("attrTags")}(${owner})([\n`);
+    this.#writeAttrTagGroups(body, owner);
+    this.#extractor.write("])");
+  }
+
+  /**
+   * The groups of a body's attribute tags: the static ones (an object per
+   * repetition, so that each has a name once; from the second, the rest
+   * attribute tags, with `fromRepetition`, as the first is written in the
+   * input itself), then each `<if>` chain, `<while>` and `<for>` (merged by
+   * name, so their order does not matter), each followed by a comma.
+   */
+  #writeAttrTagGroups(
+    { staticAttrTags, dynamicAttrTagParents }: ProcessedBody,
+    owner: string,
+    fromRepetition = 0,
   ) {
-    for (const nameText in staticAttrTags) {
-      const attrTag = staticAttrTags[nameText];
-      const isRepeated = attrTag.length > 1;
-      const [firstAttrTag] = attrTag;
-      const name = this.#getAttrTagName(firstAttrTag);
-
-      // Quoted, not bare: the name is not copied, so its anchor has to fall
-      // inside the key TypeScript reports a problem on.
-      this.#extractor.write(`"`).anchor(firstAttrTag.name).write(`${name}": `);
-
-      if (isRepeated) {
-        const templateVar = this.#getTemplateVar(firstAttrTag.owner!);
-        if (templateVar) {
-          this.#extractor.write(
-            `${varShared("attrTagFor")}(${templateVar},${this.#getAttrTagPath(firstAttrTag)})(`,
-          );
-        } else {
-          this.#extractor.write(`${varShared("attrTag")}(`);
-        }
-
-        this.#extractor.write(`"${name}",`);
-
-        for (const childNode of attrTag) {
-          this.#extractor
-            .write(`{"`)
-            .anchor(childNode.name)
-            .write(`${name}": `);
-          this.#writeTagInputObject(childNode);
-          this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
-        }
-
-        this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
-      } else {
-        for (const childNode of attrTag) {
-          this.#writeTagInputObject(childNode);
-          this.#extractor.write(SEP_COMMA_NEW_LINE);
-        }
+    if (staticAttrTags) {
+      for (let i = fromRepetition; i < staticAttrTags.length; i++) {
+        this.#extractor.write("{\n");
+        this.#writeAttrTagProps(staticAttrTags[i]);
+        this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
       }
     }
+
+    if (dynamicAttrTagParents) {
+      this.#writeDynamicAttrTagParents(dynamicAttrTagParents, owner);
+    }
+  }
+
+  /** Writes attribute tags as properties, each followed by a comma. */
+  #writeAttrTagProps(attrTags: readonly Node.AttrTag[]) {
+    for (const attrTag of attrTags) {
+      // Quoted, not bare: the name is not copied, so its anchor has to fall
+      // inside the key TypeScript reports a problem on.
+      this.#extractor
+        .write(`"`)
+        .anchor(attrTag.name)
+        .write(`${this.#getAttrTagName(attrTag)}": `);
+      this.#writeTagInputObject(attrTag, this.#processBody(attrTag));
+      this.#extractor.write(SEP_COMMA_NEW_LINE);
+    }
+  }
+
+  /**
+   * Names the attribute tags only a tag's rest attribute tags give, so that
+   * one it requires counts as given. After its attributes: Marko writes each
+   * attribute tag after them (as nothing, if no `<if>` or `<for>` gives it),
+   * so it replaces one a spread has.
+   */
+  #writeGivenAttrTags(
+    tag: Node.ParentTag,
+    inline: readonly Node.AttrTag[] | undefined,
+  ) {
+    const tree =
+      tag.type === NodeType.Tag
+        ? this.#getTagAttrTagTree(tag)
+        : this.#getAttrTagTree(tag);
+    let sep = `...${varShared("givenAttrTags")}(`;
+    for (const name in tree) {
+      if (!inline?.some((t) => tree[name].tags.includes(t))) {
+        this.#extractor.write(`${sep}${JSON.stringify(name)}`);
+        sep = SEP_COMMA_SPACE;
+      }
+    }
+    if (sep === SEP_COMMA_SPACE) {
+      this.#extractor.write(`)${SEP_COMMA_NEW_LINE}`);
+    }
+  }
+
+  /**
+   * An anchor at the first attribute tag in a control flow tag, so that an
+   * error on its whole group is reported from it.
+   */
+  #anchorAttrTag(tag: Node.ControlFlowTag) {
+    let first = getFirstAttrTag(tag);
+    const alternates = IF_TAG_ALTERNATES.get(tag as IfTag);
+    if (!first && alternates) {
+      for (const { node } of alternates) {
+        if ((first = getFirstAttrTag(node))) break;
+      }
+    }
+    if (first) this.#extractor.anchor(first.name);
   }
 
   #writeDynamicAttrTagParents(
-    dynamicAttrTagParents: Exclude<
-      ProcessedBody["dynamicAttrTagParents"],
-      undefined
-    >,
-    constraintExpr?: string,
+    dynamicAttrTagParents: readonly Node.ControlFlowTag[],
+    owner: string,
+    sep = SEP_COMMA_NEW_LINE,
   ) {
     for (const tag of dynamicAttrTagParents) {
       switch (tag.nameText) {
@@ -1351,17 +1416,20 @@ constructor(_) {}
           // @ts-expect-error we know we are in an If Tag
           declare const tag: IfTag;
           const alternates = IF_TAG_ALTERNATES.get(tag);
+          const test =
+            this.#getRangeWithoutTrailingComma(tag.args?.value) ||
+            this.#getAttrValue(tag, ATTR_UNNAMED);
           this.#writeComments(tag);
+          // An error on a whole group (which TypeScript does not elaborate
+          // into a ternary) from its first attribute tag, not the condition.
+          this.#extractor.write("((");
+          if (test) this.#anchorAttrTag(tag);
           this.#extractor
-            .write("((\n")
-            .copy(
-              this.#getRangeWithoutTrailingComma(tag.args?.value) ||
-                this.#getAttrValue(tag, ATTR_UNNAMED) ||
-                "undefined",
-            )
+            .write("\n")
+            .copy(test || "undefined")
             .write("\n) ? ");
 
-          this.#writeDynamicAttrTagBody(tag);
+          this.#writeDynamicAttrTagBody(tag, owner);
 
           let needsAlternate = true;
           if (alternates) {
@@ -1376,21 +1444,26 @@ constructor(_) {}
                 this.#extractor.write(": undefined ? ");
               }
 
-              this.#writeDynamicAttrTagBody(node);
+              this.#writeDynamicAttrTagBody(node, owner);
             }
           }
 
           if (needsAlternate) {
-            this.#extractor.write(" : {}");
+            this.#extractor.write(` : ${varShared("never")}`);
           }
 
           this.#extractor.write(")");
           break;
         }
         case "for": {
-          this.#extractor
-            .write(`${varShared(getForAttrTagRuntime(this.#parsed, tag))}({\n`)
-            .anchor(tag.name);
+          // An error on its whole group (eg on a type parameter the tag
+          // infers otherwise) from its first attribute tag; one on its
+          // attributes from its name.
+          this.#extractor.write(
+            `${varShared(getForAttrTagRuntime(this.#parsed, tag))}(`,
+          );
+          this.#anchorAttrTag(tag);
+          this.#extractor.write("{\n").anchor(tag.name);
           this.#writeAttrs(tag);
           this.#extractor.write("\n}, \n");
           this.#writeComments(tag);
@@ -1398,47 +1471,55 @@ constructor(_) {}
             .copy(tag.typeParams)
             .write("(\n")
             .copy(tag.params?.value)
-            .write("\n) => (");
-          this.#writeDynamicAttrTagBody(tag, constraintExpr);
-          this.#extractor.write(")");
-          if (constraintExpr) {
-            this.#extractor.write(`,${constraintExpr}`);
-          }
+            .write("\n) => ");
+          // Returned, which TypeScript does not check for unknown properties,
+          // so always through `attrTags`.
+          this.#writeDynamicAttrTagBody(tag, owner, true);
           this.#extractor.write(")");
           break;
         }
         case "while": {
           this.#writeComments(tag);
+          this.#extractor.write("((");
+          if (tag.args) this.#anchorAttrTag(tag);
           this.#extractor
-            .write("((\n")
+            .write("\n")
             .copy(
               this.#getRangeWithoutTrailingComma(tag.args?.value) ||
                 "undefined",
             )
             .write("\n) ? ");
-          this.#writeDynamicAttrTagBody(tag);
-          this.#extractor.write(" : {})");
+          this.#writeDynamicAttrTagBody(tag, owner);
+          this.#extractor.write(` : ${varShared("never")})`);
           break;
         }
       }
 
-      this.#extractor.write(SEP_COMMA_NEW_LINE);
+      this.#extractor.write(sep);
     }
   }
 
-  #writeTagInputObject(tag: Node.ParentTag) {
+  /**
+   * Writes a tag's input. With `withRestAttrTags`, its rest attribute tags go
+   * in it as groups (keyed by `restAttrTags`), for its renderer to merge,
+   * unless the tag has arguments (passed before its input object), which
+   * merges them with `attrTags`.
+   */
+  #writeTagInputObject(
+    tag: Node.ParentTag,
+    body: ProcessedBody | undefined,
+    withRestAttrTags?: boolean,
+  ) {
     if (!tag.params) this.#writeComments(tag);
 
-    const body = this.#processBody(tag);
+    const args = this.#getTagArgs(tag);
+    const restAttrTagsBody = withRestAttrTags ? body : undefined;
     let hasInput = false;
     let writeInputObj = true;
 
-    if (
-      tag.args &&
-      (this.#api === RuntimeAPI.tags || !!this.#getDynamicTagExpression(tag))
-    ) {
+    if (args) {
       hasInput = true;
-      this.#extractor.copy(tag.args.value);
+      this.#extractor.copy(args.value);
 
       if (body || tag.attrs || tag.shorthandId || tag.shorthandClassNames) {
         this.#extractor.write(",\n{\n");
@@ -1447,6 +1528,19 @@ constructor(_) {}
       }
     } else {
       this.#extractor.write("{\n");
+
+      if (restAttrTagsBody) {
+        // An anchor where the rest of the input starts (its first attribute,
+        // shorthand id or class, or arguments; else the tag's name), so that
+        // an error on the whole input (eg a missing attribute tag) is
+        // reported from there rather than from inside its body.
+        const inputStart = getInputStart(tag);
+        this.#extractor.anchor(
+          inputStart === undefined
+            ? tag.name
+            : { start: inputStart, end: inputStart },
+        );
+      }
 
       if (tag.args) {
         hasInput = true;
@@ -1486,8 +1580,23 @@ constructor(_) {}
       // On its own line: the script can end in a line comment.
       this.#extractor.write(`\n}${SEP_COMMA_NEW_LINE}`);
     } else if (body) {
-      hasInput = true;
-      this.#writeAttrTags(body, this.#getTagInputType(tag));
+      if (!restAttrTagsBody) {
+        hasInput = true;
+        if (tag.type === NodeType.AttrTag && hasRestAttrTags(body)) {
+          // Each name its groups give, as a tag's (see `#writeGivenAttrTags`).
+          this.#writeGivenAttrTags(tag, undefined);
+        }
+        // A tag with arguments takes its attributes after them, which
+        // `attrTags` cannot type: its attribute tags are not checked.
+        this.#writeAttrTags(
+          body,
+          args ? varShared("any") : this.#getAttrTagsOwner(tag),
+        );
+      } else if (body.staticAttrTags) {
+        // The first of each name is the attribute itself (its iterator
+        // yields the others), so it is written as one written once is.
+        this.#writeAttrTagProps(body.staticAttrTags[0]);
+      }
       hasBodyContent = body.content !== undefined;
     } else if (tag.close) {
       hasBodyContent = true;
@@ -1553,6 +1662,21 @@ constructor(_) {}
         .write(`Symbol.iterator]: ${varShared("any")}${SEP_COMMA_NEW_LINE}`);
     }
 
+    if (restAttrTagsBody) {
+      // Last, so that a message that prints the input shows what is written
+      // on the tag first.
+      this.#extractor.write(`[${varShared("restAttrTags")}]: [\n`);
+      this.#writeAttrTagGroups(
+        restAttrTagsBody,
+        this.#getAttrTagsOwner(tag),
+        1,
+      );
+      this.#extractor.write(`]${SEP_COMMA_NEW_LINE}`);
+      // After everything else written (which a spread then prints after
+      // them), and after the attributes, as Marko writes each attribute tag.
+      this.#writeGivenAttrTags(tag, restAttrTagsBody.staticAttrTags?.[0]);
+    }
+
     if (!hasInput) {
       this.#extractor.anchor(tag.name);
     }
@@ -1571,6 +1695,14 @@ constructor(_) {}
     this.#extractor
       .anchor(def?.template ? tag.name : undefined, true)
       .write("default");
+  }
+
+  /** A tag's arguments, when they are passed before its input object. */
+  #getTagArgs(tag: Node.ParentTag) {
+    return tag.args &&
+      (this.#api === RuntimeAPI.tags || !!this.#getDynamicTagExpression(tag))
+      ? tag.args
+      : undefined;
   }
 
   #getCastedType(type: string) {
@@ -1631,6 +1763,7 @@ constructor(_) {}
     const last = body.length - 1;
     let content: ProcessedBody["content"];
     let staticAttrTags: ProcessedBody["staticAttrTags"];
+    let attrTagCounts: Map<string, number> | undefined;
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
     let i = 0;
 
@@ -1639,16 +1772,17 @@ constructor(_) {}
 
       switch (child.type) {
         case NodeType.AttrTag: {
-          const attrName = child.nameText;
           if (staticAttrTags) {
-            const attr = staticAttrTags[attrName];
-            if (attr) {
-              attr.push(child);
+            const repetition = attrTagCounts!.get(child.nameText) || 0;
+            attrTagCounts!.set(child.nameText, repetition + 1);
+            if (repetition < staticAttrTags.length) {
+              staticAttrTags[repetition].push(child);
             } else {
-              staticAttrTags[attrName] = [child];
+              staticAttrTags.push([child]);
             }
           } else {
-            staticAttrTags = { [attrName]: [child] };
+            staticAttrTags = [[child]];
+            attrTagCounts = new Map([[child.nameText, 1]]);
           }
 
           break;
@@ -1773,24 +1907,43 @@ constructor(_) {}
     }
   }
 
-  #writeDynamicAttrTagBody(tag: Node.ControlFlowTag, constraintExpr?: string) {
+  /**
+   * A control flow tag's attribute tags, after its other content (as a
+   * loop's arrow body, `isFor`, or in a function called once): an object
+   * (which TypeScript keeps normalized with the other branches of an
+   * `<if>`, as merging by name needs); or, with rest attribute tags or where
+   * it is returned (which TypeScript does not check for unknown
+   * properties), merged by `#writeAttrTagsCall`.
+   */
+  #writeDynamicAttrTagBody(
+    tag: Node.ControlFlowTag,
+    owner: string,
+    isFor?: boolean,
+  ) {
     const body = this.#processBody(tag);
-    if (body) {
-      if (body.content) {
-        this.#extractor.write("(() => {\n");
-        this.#writeChildren(body.content);
-        this.#extractor.write("return ");
-      }
-      this.#extractor.write("{\n");
-      this.#writeAttrTags(body, constraintExpr);
-      this.#extractor.write("}");
+    if (body?.content) {
+      this.#extractor.write(isFor ? "{\n" : "(() => {\n");
+      this.#writeChildren(body.content);
+      this.#extractor.write("return ");
+    }
 
-      if (body.content) {
-        this.#endChildren();
-        this.#extractor.write(";\n})()");
-      }
+    if (!body?.staticAttrTags && !body?.dynamicAttrTagParents) {
+      // A branch that gives nothing: not `{}`, which would absorb a branch a
+      // function returns (`cond ? (() => …)() : {}` is typed `{}`).
+      this.#extractor.write(
+        isFor ? (body?.content ? "{}" : "({})") : varShared("never"),
+      );
+    } else if (!isFor && !body.content) {
+      this.#extractor.write("{\n");
+      this.#writeAttrTags(body, owner);
+      this.#extractor.write("}");
     } else {
-      this.#extractor.write("{}");
+      this.#writeAttrTagsCall(body, owner);
+    }
+
+    if (body?.content) {
+      this.#endChildren();
+      this.#extractor.write(isFor ? ";\n}" : ";\n})()");
     }
   }
 
@@ -2063,17 +2216,16 @@ constructor(_) {}
     return path;
   }
 
-  #getTagInputType(tag: Node.ParentTag): string | undefined {
+  /** The arguments of `attrTags` for the attribute tags of `tag`. */
+  #getAttrTagsOwner(tag: Node.ParentTag): string {
     if (tag.type === NodeType.AttrTag) {
-      if (!tag.owner) return;
-      const templateVar = this.#getTemplateVar(tag.owner);
-      if (!templateVar) return;
-      return `${varShared("inputForAttr")}(${templateVar},${this.#getAttrTagPath(tag)})`;
+      const templateVar = tag.owner && this.#getTemplateVar(tag.owner);
+      return templateVar
+        ? `${templateVar},${this.#getAttrTagPath(tag)}`
+        : varShared("any");
     }
 
-    const templateVar = this.#getTemplateVar(tag);
-    if (!templateVar) return;
-    return `${varShared("input")}(${templateVar})`;
+    return this.#getTemplateVar(tag) || varShared("any");
   }
 
   #writeAttrTagTree(tree: AttrTagTree, valueExpression: string, nested?: true) {
@@ -2091,6 +2243,14 @@ constructor(_) {}
       }
     }
     this.#extractor.write(`});`);
+  }
+
+  /** A tag's `#getAttrTagTree`, built once. */
+  #getTagAttrTagTree(tag: Node.Tag) {
+    if (!this.#attrTagTrees.has(tag)) {
+      this.#attrTagTrees.set(tag, this.#getAttrTagTree(tag));
+    }
+    return this.#attrTagTrees.get(tag);
   }
 
   #getAttrTagTree(tag: Node.Tag | Node.AttrTag, attrTags?: AttrTagTree) {
@@ -2194,6 +2354,55 @@ function getForAttrTagRuntime(parsed: Parsed, tag: Node.Tag) {
     default:
       return "forAttrTag";
   }
+}
+
+/** Where the attributes (or class API arguments) of a tag's input start. */
+/**
+ * The first attribute tag in a control flow tag's body or in the control flow
+ * nested in it.
+ */
+function getFirstAttrTag(tag: Node.ParentTag): Node.AttrTag | undefined {
+  if (tag.body) {
+    for (const child of tag.body) {
+      if (child.type === NodeType.AttrTag) return child;
+      if (
+        child.type === NodeType.Tag &&
+        child.hasAttrTags &&
+        isControlFlowTag(child)
+      ) {
+        const first = getFirstAttrTag(child);
+        if (first) return first;
+      }
+    }
+  }
+}
+
+function getInputStart(tag: Node.ParentTag) {
+  return minStart(
+    minStart(minStart(tag.attrs?.[0]?.start, tag.args), tag.shorthandId),
+    tag.shorthandClassNames?.[0],
+  );
+}
+
+function minStart(start: number | undefined, range: Range | undefined) {
+  return range && (start === undefined || range.start < start)
+    ? range.start
+    : start;
+}
+
+/**
+ * Whether a body has rest attribute tags: attribute tags that are not all
+ * written once (one is repeated, or given by an `<if>`, `<while>` or `<for>`),
+ * and so are merged as groups.
+ */
+function hasRestAttrTags({
+  staticAttrTags,
+  dynamicAttrTagParents,
+}: ProcessedBody) {
+  return !!(
+    dynamicAttrTagParents ||
+    (staticAttrTags && staticAttrTags.length > 1)
+  );
 }
 
 function varLocal(name: string) {

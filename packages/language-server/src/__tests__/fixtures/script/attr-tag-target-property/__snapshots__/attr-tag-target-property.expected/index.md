@@ -1,14 +1,13 @@
 ## Diagnostics
-### Ln 6, Col 4
+### Ln 10, Col 4
 ```marko
-  4 |
-  5 | <test-tag>
-> 6 |   <@item x=1>
-    |    ^^^^^ Type 'AttrTag<{ readonly x: 1; readonly renderBody: () => Void; readonly [Symbol.iterator]: any; }> | AttrTag<{ readonly renderBody: () => Void; readonly [Symbol.iterator]: any; }>' is not assignable to type 'AttrTag<{ x: number; renderBody?: Body<[], void> | undefined; }>'.
-  Type 'AttrTag<{ readonly renderBody: () => Void; readonly [Symbol.iterator]: any; }>' is not assignable to type 'AttrTag<{ x: number; renderBody?: Body<[], void> | undefined; }>'.
-    Property 'x' is missing in type 'AttrTag<{ readonly renderBody: () => Void; readonly [Symbol.iterator]: any; }>' but required in type '{ x: number; renderBody?: Body<[], void> | undefined; }'.
-  7 |     Hello!
-  8 |   </>
-  9 |
+   8 |   </>
+   9 |
+> 10 |   <@item>
+     |    ^^^^^ Type '{ renderBody: () => Void; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<{ x: number; renderBody?: Body<[], void> | undefined; }>'.
+  Property 'x' is missing in type '{ renderBody: () => Void; [Symbol.iterator]: any; }' but required in type '{ x: number; renderBody?: Body<[], void> | undefined; }'.
+  11 |     Hello!
+  12 |   </>
+  13 | </test-tag>
 ```
 

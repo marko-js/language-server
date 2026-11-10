@@ -24,32 +24,17 @@ export interface Input {}
       input["@header"];
       input["@footer"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-      ...Marko._.mergeAttrTags(
-        {
-          header: {
-            [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
-          },
-        },
-        someCondition
-          ? {
-              //^?
-              footer: {
-                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
-                [Symbol.iterator]: Marko._.any,
-              },
-            }
-          : {},
-      ),
+    Marko._.renderDynamicTag(__marko_internal_tag_2)(
+      Marko._.withRestAttrTags,
+    )()({
+      header: {
+        [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+        [Symbol.iterator]: Marko._.any,
+      },
       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
         Marko._.forOfTag(
           {
@@ -64,6 +49,22 @@ export interface Input {}
           return Marko._.voidReturn;
         };
       })(),
+      [Marko._.restAttrTags]: [
+        someCondition
+          ? {
+              //^?
+              footer: {
+                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+                [Symbol.iterator]: Marko._.any,
+              },
+            }
+          : Marko._.never,
+      ],
+      ...Marko._.givenAttrTags("footer"),
     });
     var __marko_internal_hoist__someCondition = someCondition;
   }
@@ -101,9 +102,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

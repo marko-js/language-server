@@ -25,7 +25,22 @@ declare global {
       }
       export const voidReturn: Void;
       export const scope: unique symbol;
+      /**
+       * The key of a tag's input that holds its rest attribute tags: each
+       * attribute tag that is not the first of its name written directly under
+       * the tag, as groups (see `AttrTagGroup`).
+       */
+      export const restAttrTags: typeof attributeTags;
       export const never: never;
+      /**
+       * The key, in a generic template, of its input with `any` for each type
+       * parameter. `attrTags` reads it, as it checks attribute tags apart
+       * from the tag (a loop's body, an `<if>`'s with a scriptlet, an
+       * attribute tag's own) and so cannot see the tag's type arguments.
+       */
+      export const anyInput: unique symbol;
+      /** A renderer's form for a tag with rest attribute tags. */
+      export const withRestAttrTags: 3;
       export const any: any;
 
       export function getGlobal<Override>(
@@ -92,6 +107,11 @@ declare global {
 
       export type ReturnWithScope<Input, Return> = ReturnAndScope<
         Scopes<Input>,
+        Return
+      >;
+
+      export type ReturnWithRestAttrTagsScope<Input, Return> = ReturnAndScope<
+        Scopes<Input> | RestAttrTagsScopes<Input>,
         Return
       >;
 
@@ -202,11 +222,6 @@ declare global {
         tag: Tag,
         fallback: Template,
       ): [0] extends [1 & Tag] ? Template : Tag;
-      export function input<Name>(tag: Name): InputFor<Name>;
-      export function inputForAttr<
-        Name,
-        Path extends readonly [string, ...string[]],
-      >(tag: Name, ...path: Path): AttrTagValue<InputFor<Name>, Path>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -301,6 +316,7 @@ declare global {
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
+      /** The attribute tags of a `<for of>`: its body's own type. */
       export function forOfAttrTag<
         Value,
         Item extends [0] extends [1 & Value]
@@ -308,8 +324,7 @@ declare global {
           : Value extends readonly (infer Item)[] | Iterable<infer Item>
             ? Item
             : never,
-        const Return extends Partial<Constraint>,
-        Constraint = unknown,
+        Return,
       >(
         input: {
           of: Value & (Iterable<unknown> | false | void | null);
@@ -319,93 +334,34 @@ declare global {
           index: number,
           all: Exclude<Value, false | void | null>,
         ) => Return,
-        constraint?: Constraint,
-      ): {
-        [Key in keyof Return]: Return[Key] extends
-          | readonly (infer Item)[]
-          | (infer Item extends Record<PropertyKey, any>)
-          ? AttrTagByListSize<Exclude<Value, false | void | null>, Item>
-          : never;
-      };
+      ): Return;
 
-      export function forInAttrTag<
-        Value extends object,
-        const Return extends Partial<Constraint>,
-        Constraint = unknown,
-      >(
+      export function forInAttrTag<Value extends object, Return>(
         input: {
           in: Value | false | void | null;
         },
         content: (key: keyof Value, value: Value[keyof Value]) => Return,
-        constraint?: Constraint,
-      ): {
-        [Key in keyof Return]: Return[Key] extends
-          | readonly (infer Item)[]
-          | (infer Item extends Record<PropertyKey, any>)
-          ? AttrTagByObjectSize<Value, Item>
-          : never;
-      };
+      ): Return;
 
-      export function forToAttrTag<
-        To extends number,
-        From extends void | number,
-        Step extends void | number,
-        const Return extends Partial<Constraint>,
-        Constraint = unknown,
-      >(
+      export function forToAttrTag<Return>(
         input: {
-          to: To;
-          from?: From;
-          step?: Step;
+          to: number;
+          from?: number;
+          step?: number;
         },
         content: (index: number) => Return,
-        constraint?: Constraint,
-      ): {
-        [Key in keyof Return]: Return[Key] extends
-          | readonly (infer Item)[]
-          | (infer Item extends Record<PropertyKey, any>)
-          ? number extends From | To | Step
-            ? undefined | Marko.AttrTag<Item>
-            : Step extends 0
-              ? never
-              : [To] extends [From extends void ? 0 : From]
-                ? undefined
-                : Marko.AttrTag<Item>
-          : never;
-      };
+      ): Return;
 
-      export function forUntilAttrTag<
-        Until extends number,
-        From extends void | number,
-        Step extends void | number,
-        const Return extends Partial<Constraint>,
-        Constraint = unknown,
-      >(
+      export function forUntilAttrTag<Return>(
         input: {
-          until: Until;
-          from?: From;
-          step?: Step;
+          until: number;
+          from?: number;
+          step?: number;
         },
         content: (index: number) => Return,
-        constraint?: Constraint,
-      ): {
-        [Key in keyof Return]: Return[Key] extends
-          | readonly (infer Item)[]
-          | (infer Item extends Record<PropertyKey, any>)
-          ? number extends From | Until | Step
-            ? undefined | Marko.AttrTag<Item>
-            : Step extends 0
-              ? never
-              : [Until] extends [From extends void ? 0 : From]
-                ? undefined
-                : Marko.AttrTag<Item>
-          : never;
-      };
+      ): Return;
 
-      export function forAttrTag<
-        const Return extends Partial<Constraint>,
-        Constraint = unknown,
-      >(
+      export function forAttrTag<Return>(
         input:
           | {
               of: Iterable<unknown> | false | void | null;
@@ -424,50 +380,62 @@ declare global {
               step?: number;
             },
         content: (...args: unknown[]) => Return,
-        constraint?: Constraint,
-      ): {
-        [Key in keyof Return]: Return[Key] extends
-          | readonly (infer Item)[]
-          | (infer Item extends Record<PropertyKey, any>)
-          ? undefined | Marko.AttrTag<Item>
-          : never;
-      };
+      ): Return;
 
-      export function mergeAttrTags<Attrs extends readonly any[]>(
-        ...attrs: Attrs
-      ): MergeAttrTags<Attrs>;
-      export function attrTag<
-        Name extends string,
-        AttrTags extends readonly { [K in Name]: unknown }[],
-      >(name: Name, ...attrTags: AttrTags): AttrTagsToAttrTag<Name, AttrTags>;
-      export function attrTagFor<Tag, Path extends readonly string[]>(
+      /**
+       * What each group of the attribute tags of a tag (or of its attribute
+       * tag) with `Input` is checked against, as the renderer checks the input
+       * itself. A group is what one repetition, `<if>` chain or loop body
+       * gives: an object of attribute tags, each name once (see `Directives`).
+       */
+      export type AttrTagGroup<Input> = [0] extends [1 & Input]
+        ? unknown
+        : [Input] extends [never]
+          ? // Untyped (eg a `<define>` tag's input), or an attribute tag the
+            // tag does not have, which its input reports.
+            unknown
+          : [UnionKeys<Input>] extends [never]
+            ? [Input] extends [object]
+              ? // No properties (`{}`), which TypeScript does not check for
+                // unknown ones: with the directives, as the input is checked.
+                Marko.Directives & Input
+              : unknown extends Input
+                ? // A template that declares `unknown`: no input, as the
+                  // input itself is checked (one whose input is not known is
+                  // read as `any`, see `KnownInput`).
+                  Marko.Directives
+                : // A body's `undefined`, whose renderer checks its input.
+                  unknown
+            : Partial<Input>;
+
+      /**
+       * Spread into the input of a tag with rest attribute tags, after its
+       * attributes, for the attribute tags only its rest attribute tags give
+       * (each `never`, checked where it is written): so that one the tag
+       * requires counts as given, and replaces one a spread has, as Marko
+       * writes each attribute tag after the attributes.
+       */
+      export function givenAttrTags<Names extends string[]>(
+        ...names: Names
+      ): { [Name in Names[number]]: never };
+
+      /**
+       * The attribute tags of an attribute tag at `path` of a tag (or of the
+       * tag itself, eg in a `<for>`) with rest attribute tags: its groups,
+       * merged by name as a renderer merges a tag's (see `Directives`), and
+       * checked against that attribute tag's type. A tag's own groups are
+       * given to its renderer where they are written, so that TypeScript
+       * infers its type parameters from them too.
+       */
+      export function attrTags<Tag, Path extends readonly string[]>(
         tag: Tag,
         ...path: Path
-      ): <
-        Name extends string,
-        const AttrTags extends readonly ([0] extends [1 & Tag]
-          ? Record<Name, Marko.AttrTag<unknown>>
-          : Record<
-              Name,
-              Tag extends InputFor<infer Input>
-                ? [0] extends [1 & Input]
-                  ? Marko.AttrTag<unknown>
-                  : AttrTagValue<Input, Path>
-                : Marko.AttrTag<unknown>
-            >)[],
-      >(
-        name: Name,
-        ...attrTags: AttrTags
-      ) => AttrTagsToAttrTag<Name, AttrTags>;
+      ): CheckedAttrTags<AttrTagGroup<AttrTagsInput<AnyInputFor<Tag>, Path>>>;
 
       export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
         : [Name] extends [Marko.Template<any, any> | string]
-          ? {
-              (): () => <Input extends Marko.Input<Name>>(
-                input: Marko.Directives & Input,
-              ) => ReturnWithScope<Input, Marko.Return<Name>>;
-            }
+          ? DynamicInputRenderer<Name>
           : [Name] extends [AnyMarkoBody]
             ? BodyRenderer<Name>
             : [Name] extends [
@@ -487,18 +455,17 @@ declare global {
           ? BaseRenderer<Input, Return>
           : DefaultRenderer;
 
+      // Each renderer's first call takes the form of renderer the tag needs
+      // (see `Renderer`): `1` (the default) for a tag without rest attribute
+      // tags, `withRestAttrTags` (`3`) for one with them, and `0` and `2`
+      // likewise for a generic template given type arguments.
       export interface NativeTagRenderer<Name extends string> {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-        (): () => <__marko_internal_input extends unknown>(
-          input: Marko.Directives &
-            Marko.NativeTags[Name]["input"] &
-            Relate<
-              __marko_internal_input,
-              Marko.Directives & Marko.NativeTags[Name]["input"]
-            >,
-        ) => ReturnWithScope<
-          __marko_internal_input,
-          Marko.NativeTags[Name]["return"]
+        <Mode extends number = 1>(
+          mode?: Mode,
+        ): () => Renderer<
+          Marko.NativeTags[Name]["input"],
+          Marko.NativeTags[Name]["return"],
+          Mode
         >;
       }
 
@@ -506,30 +473,99 @@ declare global {
        * A body's renderer: given its input, as a template's is, when its only
        * param is its input (eg a `<define>` with attributes), which is much
        * cheaper to check than its arguments, else given its arguments.
+       * With rest attribute tags (`Mode` `2` or `3`), its input has them.
        */
       export interface BodyRenderer<Body extends AnyMarkoBody> {
-        (): () => [0] extends [1 & BodyParamsWithDefault<Body>]
+        <Mode extends number = 1>(
+          mode?: Mode,
+        ): () => [0] extends [1 & BodyParamsWithDefault<Body>]
           ? BodyArgsRenderer<Body>
           : BodyParamsWithDefault<Body> extends readonly [input?: infer Input]
-            ? BodyInputRenderer<
-                Input,
-                Body extends Marko.Body<any, infer Return> ? Return : never
-              >
+            ? Mode extends 2 | 3
+              ? RestAttrTagsRenderer<
+                  KnownInput<Input>,
+                  Body extends Marko.Body<any, infer Return> ? Return : never
+                >
+              : BodyInputRenderer<
+                  Input,
+                  Body extends Marko.Body<any, infer Return> ? Return : never
+                >
             : BodyArgsRenderer<Body>;
       }
 
       export interface BaseRenderer<Input, Return = void> {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-        (): () => <__marko_input_with_scope extends unknown>(
-          input: Marko.Directives &
-            Input &
-            Relate<__marko_input_with_scope, Marko.Directives & Input>,
-        ) => ReturnWithScope<__marko_input_with_scope, Return>;
+        <Mode extends number = 1>(
+          mode?: Mode,
+        ): () => Renderer<Input, Return, Mode>;
       }
 
       export interface DefaultRenderer {
-        (): () => <Input>(input: Input) => ReturnWithScope<Input, void>;
+        <Mode extends number = 1>(
+          mode?: Mode,
+        ): () => Mode extends 2 | 3
+          ? <Input>(input: Input) => ReturnWithRestAttrTagsScope<Input, void>
+          : <Input>(input: Input) => ReturnWithScope<Input, void>;
       }
+
+      /**
+       * A tag's renderer given its input, in the form `Mode` takes: with rest
+       * attribute tags (`2` or `3`, `RestAttrTagsRenderer`), or without them
+       * (`InputRenderer`), so that a tag without them costs only the latter.
+       */
+      export type Renderer<Input, Return, Mode> = Mode extends 2 | 3
+        ? RestAttrTagsRenderer<Input, Return>
+        : InputRenderer<Input, Return>;
+
+      /**
+       * Renders a tag without rest attribute tags given its input, with
+       * `Marko.Directives`: related to it (with `Relate`), so that TypeScript types
+       * it by it and reports what it does not have, while
+       * `__marko_internal_input` keeps its type for `Scopes`.
+       */
+      export interface InputRenderer<Input, Return> {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+        <__marko_internal_input extends unknown>(
+          input: Marko.Directives &
+            Input &
+            Relate<__marko_internal_input, Marko.Directives & Input>,
+        ): ReturnWithScope<__marko_internal_input, Return>;
+        /** See `RestAttrTagsRenderer`. */
+        readonly [rendererInput]?: (input: Input) => Input;
+      }
+
+      /**
+       * Renders a tag given its input with rest attribute tags: its
+       * attributes, the first attribute tag of each name written directly
+       * under it, and (keyed by `restAttrTags`) its rest attribute tags as
+       * groups (see `Directives`). One argument, so that TypeScript infers
+       * the tag's type parameters from both and reports each of their
+       * errors. It is related to the input (with `Relate`), so that
+       * TypeScript types it by it and reports what it does not have, while
+       * `__marko_internal_input` keeps its type, and so its groups', for
+       * `Scopes`.
+       */
+      export interface RestAttrTagsRenderer<Input, Return> {
+        <__marko_internal_input>(
+          input: RestAttrTagsInput<Input> &
+            Relate<__marko_internal_input, RestAttrTagsInput<Input>>,
+        ): ReturnWithRestAttrTagsScope<__marko_internal_input, Return>;
+        /**
+         * Never set: keeps `Input` invariant, which its signature does not
+         * (TypeScript measures `Input` there as having no effect), so that
+         * two templates with different inputs (eg in a union of them) differ.
+         */
+        readonly [rendererInput]?: (input: Input) => Input;
+      }
+
+      /**
+       * What a generic template's renderer takes with rest attribute tags, as
+       * `RestAttrTagsRenderer` does: named to keep its trailer short, and a
+       * conditional type, so that once `Actual` is inferred TypeScript prints
+       * it as the intersection, not by this name.
+       */
+      export type TagInput<Actual, Input> = [Actual] extends [unknown]
+        ? RestAttrTagsInput<Input> & Relate<Actual, RestAttrTagsInput<Input>>
+        : never;
 
       export type ResolveComponent<Component> = CheckNever<
         ComponentOf<
@@ -552,6 +588,43 @@ declare abstract class MarkoReturn<Return> {
 }
 
 type AnyMarkoBody = Marko.Body<any, any>;
+
+/**
+ * Renders a tag named by a template or a string, or by one of several of them,
+ * with any of their inputs (`Marko.Input<Name>`). The attributes are
+ * intersected with it rather than related to it, which is cheaper than each
+ * renderer's check, so unknown attributes are not reported. Its rest
+ * attribute tags are checked against any of the inputs (a native tag has
+ * none).
+ */
+type DynamicInputRenderer<Name> = {
+  <Mode extends number = 1>(
+    mode?: Mode,
+  ): () => Mode extends 2 | 3
+    ? DynamicInputRestAttrTagsRenderer<Name>
+    : <Input extends Marko.Input<Name>>(
+        input: Marko.Directives & Input,
+      ) => Marko._.ReturnWithScope<Input, Marko.Return<Name>>;
+};
+
+/**
+ * A tag's input for its groups: `any` where it is not known (a bare
+ * `Marko.Template`'s, or a body's `unknown` param), which takes anything, as
+ * its attributes do (`unknown` would take none, see `AttrTagGroup`). A
+ * compiled template's is read with the directives, so one that declares
+ * `unknown` takes none.
+ */
+type KnownInput<Input> = unknown extends Input ? any : Input;
+
+/** `DynamicInputRenderer` for a tag with rest attribute tags. */
+type DynamicInputRestAttrTagsRenderer<Name> = <
+  // With the directives, whose rest attribute tags the input object has, so
+  // that TypeScript infers it, rather than this constraint, when it has no
+  // other property in common with an input whose properties are all optional.
+  Input extends Directives<KnownInput<Marko.Input<Name>>> & Marko.Input<Name>,
+>(
+  input: Directives<KnownInput<Marko.Input<Name>>> & Input,
+) => Marko._.ReturnWithRestAttrTagsScope<Input, Marko.Return<Name>>;
 
 type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
   [Marko._.scope]: infer Scope;
@@ -633,78 +706,105 @@ type MergeScopes<Scopes> = {
     : never;
 };
 
-type MergeAttrTags<Attrs extends readonly any[]> = Attrs extends readonly [
-  infer A,
-  infer B,
-  ...infer Rest,
-]
-  ? MergeAttrTags<[MergeAttrTag<A, B>, ...Rest]>
-  : Attrs extends readonly [infer A]
-    ? A
-    : never;
-
-type MergeAttrTag<A, B> = {
-  [K in keyof A | keyof B]: K extends keyof A
-    ? K extends keyof B
-      ? MergeAttrTagValue<A[K], B[K]>
-      : A[K]
-    : K extends keyof B
-      ? B[K]
-      : never;
-};
-
-type MergeAttrTagValue<A, B> = A extends readonly (infer AType)[]
-  ? B extends readonly (infer BType)[]
-    ? AType | BType
-    : B extends void
-      ? A
-      : AType | B
-  : A extends void
-    ? B
-    : B extends void
-      ? A
-      : A | B;
-
-type AttrTagsToAttrTag<
-  Name extends string,
-  AttrTags extends readonly unknown[],
-> = AttrTags[number] extends infer AttrTag
-  ? AttrTag extends { [K in Name]: Marko.AttrTag<infer Input> }
-    ? [0] extends [1 & Input]
-      ? never
-      : Marko.AttrTag<Input>
-    : never
+/**
+ * Attribute tag `Groups` merged by name, as Marko applies them: each attribute
+ * tag is one of those the groups give, given if any of them gives it. Not a
+ * group at a time, which nests a type per group, too deep for TypeScript from
+ * about 50 (eg repetitions of one). A conditional, so that TypeScript prints
+ * the merged object rather than this name and the groups.
+ */
+type MergeAttrTags<Groups extends readonly any[]> = Groups extends unknown
+  ? {
+      [Key in UnionKeys<Groups[number]>]: {
+        [Index in keyof Groups]: Key extends keyof Groups[Index]
+          ? Groups[Index][Key]
+          : never;
+      }[number] extends infer Value
+        ? // Missing (eg an `<if>` branch that does not give it) where no
+          // group gives it.
+          [Exclude<Value, void>] extends [never]
+          ? Value
+          : Exclude<Value, void>
+        : never;
+    }
   : never;
 
-type AttrTagByListSize<T, Item> = T extends
-  | readonly [any, ...any[]]
-  | readonly [...any[], any]
-  ? Marko.AttrTag<Item>
-  : T extends readonly []
-    ? undefined
-    : undefined | Marko.AttrTag<Item>;
+/**
+ * `InputFor`, but a generic template's with `any` type arguments, and `any`
+ * where it is not known (see `KnownInput`).
+ */
+type AnyInputFor<Tag> = Tag extends { [Marko._.anyInput]: infer Input }
+  ? Input
+  : KnownInput<InputFor<Tag>>;
 
-type AttrTagByObjectSize<
-  Value,
-  Item,
-  Keys = RecordKeys<Value>,
-  KnownKeys = KnownRecordKeys<Value>,
-> = CheckNever<
-  Keys,
-  undefined,
-  CheckNever<KnownKeys, Marko.AttrTag<Item>, undefined | Marko.AttrTag<Item>>
+type AttrTagsInput<
+  Input,
+  Path extends readonly string[],
+> = Path extends readonly [] ? Input : AttrTagValue<Input, Path>;
+
+// One array of groups, not an argument each: TypeScript reports only the first
+// failing argument of a call, but every failing element of an array literal.
+// `| []` infers a tuple.
+type CheckedAttrTags<Group> = <Groups extends readonly Group[] | []>(
+  groups: (readonly Group[] | []) & Marko._.Relate<Groups, readonly Group[]>,
+) => // `NoInfer`: TypeScript 7.1's language service infers `Groups` from it
+// when it checks this call first, which types the attribute tags' params as
+// `any`.
+NoInfer<
+  number extends Groups["length"]
+    ? // Not a tuple: a group failed its check, which inferred the constraint
+      // and which TypeScript reported. Nothing, so that it is not reported
+      // again, and the attribute tag it is spread into is still checked (its
+      // names are given, see `givenAttrTags`).
+      {}
+    : MergeAttrTags<Groups>
 >;
+
+/** A tag's input with rest attribute tags. */
+type RestAttrTagsInput<Input> = Input & Directives<Input>;
+
+/** The key of `Marko._.InputRenderer`'s `Input`. */
+declare const rendererInput: unique symbol;
+
+/**
+ * The key of a tag's input that holds its rest attribute tags
+ * (`Marko._.restAttrTags`), declared out of `Marko._` so that TypeScript prints
+ * it as `[attributeTags]`.
+ */
+declare const attributeTags: unique symbol;
+
+/**
+ * `Marko.Directives`, with the rest attribute tags of a tag's input, as groups
+ * (the static ones, an object per repetition, so that each has a name once; an
+ * `<if>` chain or a `<while>`; or a `<for>`'s `for*AttrTag`), merged by name.
+ * `| []` infers a tuple.
+ */
+interface Directives<Input> extends Marko.Directives {
+  [attributeTags]?: readonly Marko._.AttrTagGroup<Input>[] | [];
+}
+
+/** The scopes of the attribute tag bodies in each group of an input. */
+type RestAttrTagsScopes<Input> = Input extends {
+  [attributeTags]: readonly (infer Group)[];
+}
+  ? Group extends unknown
+    ? Scopes<Group>
+    : never
+  : never;
 
 type AttrTagValue<Input, Path extends readonly string[]> = Path extends [
   infer Prop extends keyof Input,
   ...infer Rest extends readonly string[],
 ]
-  ? Input[Prop] & Marko.AttrTag<unknown> extends infer Value
+  ? Exclude<Input[Prop], undefined | null> extends infer Value
     ? Rest extends readonly []
       ? Value
       : AttrTagValue<Value, Rest>
-    : Marko.AttrTag<unknown>
-  : Marko.AttrTag<unknown>;
+    : never
+  : never;
+
+/** The keys of each member of `T` (`keyof` a union has only common keys). */
+type UnionKeys<T> = T extends unknown ? keyof T : never;
 
 type AttrTagNames<Input> = Record<string, never> &
   (Input extends infer Input extends {}
@@ -716,20 +816,6 @@ type AttrTagNames<Input> = Record<string, never> &
           : never}`]: Input[Key];
       }
     : never);
-
-type RecordKeys<T> = keyof {
-  [K in keyof T as CheckNever<T[K], never, K>]: 0;
-};
-
-type KnownRecordKeys<T> = keyof {
-  [Key in keyof T as string extends Key
-    ? never
-    : number extends Key
-      ? never
-      : symbol extends Key
-        ? never
-        : CheckNever<T[Key], never, Key>]: 0;
-};
 
 type CheckNever<T, If, Else = T> = [T] extends [never] ? If : Else;
 type ComponentOf<T> = T extends Marko.Component ? T : T & Marko.Component;
