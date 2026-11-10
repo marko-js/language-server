@@ -65,12 +65,23 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<
-    __marko_internal_input,
-    typeof __marko_internal_template extends () => infer Return ? Return : never
-  >;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<
+        Input,
+        typeof __marko_internal_template extends () => infer Return
+          ? Return
+          : never
+      >
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<
+        I,
+        typeof __marko_internal_template extends () => infer Return
+          ? Return
+          : never
+      >;
 }> {})();

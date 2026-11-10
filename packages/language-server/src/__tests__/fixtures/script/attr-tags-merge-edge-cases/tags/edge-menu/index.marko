@@ -1,0 +1,11 @@
+export interface Input {
+  a?: Marko.AttrTag<{ v?: number; content?: Marko.Body<[{ n: number }]> }>;
+  b?: Marko.AttrTag<{ w?: string }>;
+  "my-item"?: Marko.AttrTag<{ x?: number }>;
+  item?: Marko.AttrTag<{
+    row?: Marko.AttrTag<{ label: string }>;
+    content?: Marko.Body;
+  }>;
+}
+
+<for|a| of=input.a>${a.v}</for>

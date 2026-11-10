@@ -34,26 +34,31 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@then"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
     value: 1 as const,
-    ...Marko._.forOfAttrTag(
-      {
-        of: [1],
-      },
-      (i) => ({
-        then: {
-          [Marko._.contentFor(__marko_internal_tag_2)]: (foo) => {
-            //   ^?
-            i;
-            //^?
-            foo;
-            return Marko._.voidReturn;
-          },
-          [Symbol.iterator]: Marko._.any,
+    [Marko._.restAttrTags]: [
+      Marko._.forOfAttrTag(
+        {
+          of: [1],
         },
-      }),
-      Marko._.input(__marko_internal_tag_2),
-    ),
+        (i) =>
+          Marko._.attrTags(__marko_internal_tag_2)([
+            {
+              then: {
+                [Marko._.contentFor(__marko_internal_tag_2)]: (foo) => {
+                  //   ^?
+                  i;
+                  //^?
+                  foo;
+                  return Marko._.voidReturn;
+                },
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+          ]),
+      ),
+    ],
+    ...Marko._.givenAttrTags("then"),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
@@ -89,9 +94,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

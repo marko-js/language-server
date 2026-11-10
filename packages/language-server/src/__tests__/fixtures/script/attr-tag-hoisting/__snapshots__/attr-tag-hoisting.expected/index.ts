@@ -14,36 +14,31 @@ export interface Input {}
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
     __marko_internal_tag_1,
-  )()()({
-    section: Marko._.attrTagFor(__marko_internal_tag_1, "section")(
-      "section",
-      {
-        section: {
-          [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-            const __marko_internal_tag_2 = Marko._.resolveTemplate(
-              import("@marko/runtime-tags/tags/const.d.marko"),
-            ).default;
-            {
-              const nested = Marko._.returned(
-                () => __marko_internal_rendered_2,
-              );
-              const __marko_internal_rendered_2 = Marko._.renderTemplate(
-                __marko_internal_tag_2,
-              )()()({
-                value: () => 1,
-              });
-              return () => {
-                return new (class MarkoReturn<Return = void> {
-                  readonly [Marko._.scope] = { nested };
-                  declare return: Return;
-                  constructor(_?: Return) {}
-                })();
-              };
-            }
-          })(),
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
+  )(Marko._.withRestAttrTags)()({
+    section: {
+      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+        const __marko_internal_tag_2 = Marko._.resolveTemplate(
+          import("@marko/runtime-tags/tags/const.d.marko"),
+        ).default;
+        {
+          const nested = Marko._.returned(() => __marko_internal_rendered_2);
+          const __marko_internal_rendered_2 = Marko._.renderTemplate(
+            __marko_internal_tag_2,
+          )()()({
+            value: () => 1,
+          });
+          return () => {
+            return new (class MarkoReturn<Return = void> {
+              readonly [Marko._.scope] = { nested };
+              declare return: Return;
+              constructor(_?: Return) {}
+            })();
+          };
+        }
+      })(),
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
       {
         section: {
           [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
@@ -54,7 +49,7 @@ export interface Input {}
           [Symbol.iterator]: Marko._.any,
         },
       },
-    ),
+    ],
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("marko/src/core-tags/core/script.d.marko"),
@@ -102,9 +97,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

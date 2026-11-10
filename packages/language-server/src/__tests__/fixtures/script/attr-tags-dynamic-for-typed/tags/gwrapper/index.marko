@@ -1,0 +1,10 @@
+import type { Input as ChildInput } from "../gchild/index.marko";
+export interface Input<T> extends ChildInput<T> {}
+
+// A generic one: clean, the body params typed by its type parameter
+<gchild ...input>
+  <for|item| of=input.item>
+    <@item|row| ...item label="x">${row}</@item>
+//                                  ^?
+  </for>
+</gchild>

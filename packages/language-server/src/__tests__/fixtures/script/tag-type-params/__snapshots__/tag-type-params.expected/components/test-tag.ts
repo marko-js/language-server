@@ -48,32 +48,38 @@ const Input = new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(): __marko_internal_apply extends 0
-    ? <T, U>() => <__marko_internal_input extends unknown>(
-        input: Marko.Directives &
-          Input<T, U> &
-          Marko._.Relate<
-            __marko_internal_input,
-            Marko.Directives & Input<T, U>
-          >,
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
+  _<__marko_internal_apply = 1>(
+    m?: __marko_internal_apply,
+  ): __marko_internal_apply extends 0 | 2
+    ? <T, U>() => Marko._.Renderer<
+        Input<T, U>,
         typeof __marko_internal_template<T, U> extends () => infer Return
           ? Return
-          : never
+          : never,
+        __marko_internal_apply
       >
-    : () => <__marko_internal_input extends unknown, T, U>(
-        input: Marko.Directives &
-          Input<T, U> &
-          Marko._.Relate<
-            __marko_internal_input,
-            Marko.Directives & Input<T, U>
-          >,
-      ) => Marko._.ReturnWithScope<
-        __marko_internal_input,
-        typeof __marko_internal_template<T, U> extends () => infer Return
-          ? Return
-          : never
-      >;
+    : __marko_internal_apply extends 1
+      ? () => <__marko_internal_input, T, U>(
+          input: Marko.Directives &
+            Input<T, U> &
+            Marko._.Relate<
+              __marko_internal_input,
+              Marko.Directives & Input<T, U>
+            >,
+        ) => Marko._.ReturnWithScope<
+          __marko_internal_input,
+          typeof __marko_internal_template<T, U> extends () => infer Return
+            ? Return
+            : never
+        >
+      : () => <__marko_internal_input, T, U>(
+          input: Marko._.TagInput<__marko_internal_input, Input<T, U>>,
+        ) => Marko._.ReturnWithRestAttrTagsScope<
+          __marko_internal_input,
+          typeof __marko_internal_template<T, U> extends () => infer Return
+            ? Return
+            : never
+        >;
+  [Marko._.anyInput]: Input<any, any>;
 }> {})();
 export default Input;

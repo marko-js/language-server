@@ -1,0 +1,11 @@
+import type { Input as ChildInput } from "../child/index.marko";
+export interface Input extends ChildInput {}
+
+// Spreads its input and gives each item again, with another attribute: clean,
+// the body params typed
+<child ...input>
+  <for|item| of=input.item>
+    <@item|{ foo }| ...item extra=1>${foo}</@item>
+//                                    ^?
+  </for>
+</child>

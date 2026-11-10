@@ -14,7 +14,7 @@
    8 | <foo value=1 as const>
    9 |   <for|i| of=[1]>
 > 10 |     <@then|foo|>
-     |            ^ (parameter) foo: unknown
+     |            ^ (parameter) foo: any
   11 |       //   ^?
   12 |       ${i}
   13 |       //^?
@@ -36,7 +36,7 @@
   12 |       ${i}
   13 |       //^?
 > 14 |       ${foo}
-     |         ^ (parameter) foo: unknown
+     |         ^ (parameter) foo: any
   15 |       //^?
   16 |     </@then>
   17 |   </for>

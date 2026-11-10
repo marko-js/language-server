@@ -4,7 +4,7 @@
   2 |   <@a>
   3 |     <for of=[1, 2, 3]>
 > 4 |       <@b size="small"/>
-    |           ^ (property) "size": "small"
+    |           ^ (property) size?: "small" | "large" | undefined
   5 |       //  ^?
   6 |     </for>
   7 |   </>

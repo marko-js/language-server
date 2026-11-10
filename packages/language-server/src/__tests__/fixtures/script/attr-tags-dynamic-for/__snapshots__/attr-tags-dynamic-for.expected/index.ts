@@ -21,16 +21,19 @@ export interface Input {}
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    ...Marko._.forAttrTag(
-      {},
-      () => ({
-        a: {
-          [Symbol.iterator]: Marko._.any,
-        },
-      }),
-      Marko._.input(__marko_internal_tag_1),
-    ),
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      Marko._.forAttrTag({}, () =>
+        Marko._.attrTags(__marko_internal_tag_1)([
+          {
+            a: {
+              [Symbol.iterator]: Marko._.any,
+            },
+          },
+        ]),
+      ),
+    ],
+    ...Marko._.givenAttrTags("a"),
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
@@ -56,76 +59,97 @@ export interface Input {}
     Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
       input["@a"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-      ...Marko._.forOfAttrTag(
-        {
-          of: list,
-        },
-        () => ({
-          a: {
-            [Symbol.iterator]: Marko._.any,
+    Marko._.renderDynamicTag(__marko_internal_tag_3)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: list,
           },
-        }),
-        Marko._.input(__marko_internal_tag_3),
-      ),
+          () =>
+            Marko._.attrTags(__marko_internal_tag_3)([
+              {
+                a: {
+                  [Symbol.iterator]: Marko._.any,
+                },
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("a"),
     });
     const __marko_internal_tag_4 = custom;
     Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
       input["@a"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
-      ...Marko._.forOfAttrTag(
-        {
-          of: list,
-        },
-        (item, index, all) => ({
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
-              item;
-              index;
-              all;
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
+    Marko._.renderDynamicTag(__marko_internal_tag_4)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: list,
           },
-        }),
-        Marko._.input(__marko_internal_tag_4),
-      ),
+          (item, index, all) =>
+            Marko._.attrTags(__marko_internal_tag_4)([
+              {
+                a: {
+                  [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
+                    item;
+                    index;
+                    all;
+                    return () => {
+                      return Marko._.voidReturn;
+                    };
+                  })(),
+                  [Symbol.iterator]: Marko._.any,
+                },
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("a"),
     });
     const __marko_internal_tag_5 = custom;
     Marko._.attrTagNames(__marko_internal_tag_5, (input) => {
       input["@a"];
       input["@b"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
-      ...Marko._.forOfAttrTag(
-        {
-          of: list,
-        },
-        (item, index) => ({
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
-              item;
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
+    Marko._.renderDynamicTag(__marko_internal_tag_5)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: list,
           },
-          b: {
-            [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
-              index;
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
-          },
-        }),
-        Marko._.input(__marko_internal_tag_5),
-      ),
+          (item, index) =>
+            Marko._.attrTags(__marko_internal_tag_5)([
+              {
+                a: {
+                  [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
+                    item;
+                    return () => {
+                      return Marko._.voidReturn;
+                    };
+                  })(),
+                  [Symbol.iterator]: Marko._.any,
+                },
+                b: {
+                  [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
+                    index;
+                    return () => {
+                      return Marko._.voidReturn;
+                    };
+                  })(),
+                  [Symbol.iterator]: Marko._.any,
+                },
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("a", "b"),
     });
     const __marko_internal_tag_6 = custom;
     Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
@@ -133,42 +157,46 @@ export interface Input {}
     });
     const __marko_internal_rendered_6 = Marko._.renderDynamicTag(
       __marko_internal_tag_6,
-    )()()({
-      ...Marko._.forOfAttrTag(
-        {
-          of: list,
-        },
-        (item) => ({
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_6)]: (() => {
-              const __marko_internal_tag_7 = Marko._.resolveTemplate(
-                import("@marko/runtime-tags/tags/const.d.marko"),
-              ).default;
-              {
-                const hoistedFromForOf = Marko._.returned(
-                  () => __marko_internal_rendered_7,
-                );
-                const __marko_internal_rendered_7 = Marko._.renderTemplate(
-                  __marko_internal_tag_7,
-                )()()({
-                  value() {
-                    return item.value;
-                  },
-                });
-                return () => {
-                  return new (class MarkoReturn<Return = void> {
-                    readonly [Marko._.scope] = { hoistedFromForOf };
-                    declare return: Return;
-                    constructor(_?: Return) {}
-                  })();
-                };
-              }
-            })(),
-            [Symbol.iterator]: Marko._.any,
+    )(Marko._.withRestAttrTags)()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: list,
           },
-        }),
-        Marko._.input(__marko_internal_tag_6),
-      ),
+          (item) =>
+            Marko._.attrTags(__marko_internal_tag_6)([
+              {
+                a: {
+                  [Marko._.contentFor(__marko_internal_tag_6)]: (() => {
+                    const __marko_internal_tag_7 = Marko._.resolveTemplate(
+                      import("@marko/runtime-tags/tags/const.d.marko"),
+                    ).default;
+                    {
+                      const hoistedFromForOf = Marko._.returned(
+                        () => __marko_internal_rendered_7,
+                      );
+                      const __marko_internal_rendered_7 =
+                        Marko._.renderTemplate(__marko_internal_tag_7)()()({
+                          value() {
+                            return item.value;
+                          },
+                        });
+                      return () => {
+                        return new (class MarkoReturn<Return = void> {
+                          readonly [Marko._.scope] = { hoistedFromForOf };
+                          declare return: Return;
+                          constructor(_?: Return) {}
+                        })();
+                      };
+                    }
+                  })(),
+                  [Symbol.iterator]: Marko._.any,
+                },
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("a"),
     });
     const __marko_internal_tag_8 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/effect.d.marko"),
@@ -193,25 +221,32 @@ export interface Input {}
       Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
         input["@a"];
       });
-      Marko._.renderDynamicTag(__marko_internal_tag_10)()()({
-        ...Marko._.forInAttrTag(
-          {
-            in: record,
-          },
-          (key, value) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_10)]: (() => {
-                key;
-                value;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      Marko._.renderDynamicTag(__marko_internal_tag_10)(
+        Marko._.withRestAttrTags,
+      )()({
+        [Marko._.restAttrTags]: [
+          Marko._.forInAttrTag(
+            {
+              in: record,
             },
-          }),
-          Marko._.input(__marko_internal_tag_10),
-        ),
+            (key, value) =>
+              Marko._.attrTags(__marko_internal_tag_10)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_10)]: (() => {
+                      key;
+                      value;
+                      return () => {
+                        return Marko._.voidReturn;
+                      };
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_11 = custom;
       Marko._.attrTagNames(__marko_internal_tag_11, (input) => {
@@ -219,42 +254,46 @@ export interface Input {}
       });
       const __marko_internal_rendered_11 = Marko._.renderDynamicTag(
         __marko_internal_tag_11,
-      )()()({
-        ...Marko._.forInAttrTag(
-          {
-            in: record,
-          },
-          (key) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_11)]: (() => {
-                const __marko_internal_tag_12 = Marko._.resolveTemplate(
-                  import("@marko/runtime-tags/tags/const.d.marko"),
-                ).default;
-                {
-                  const hoistedFromForIn = Marko._.returned(
-                    () => __marko_internal_rendered_12,
-                  );
-                  const __marko_internal_rendered_12 = Marko._.renderTemplate(
-                    __marko_internal_tag_12,
-                  )()()({
-                    value() {
-                      return key;
-                    },
-                  });
-                  return () => {
-                    return new (class MarkoReturn<Return = void> {
-                      readonly [Marko._.scope] = { hoistedFromForIn };
-                      declare return: Return;
-                      constructor(_?: Return) {}
-                    })();
-                  };
-                }
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      )(Marko._.withRestAttrTags)()({
+        [Marko._.restAttrTags]: [
+          Marko._.forInAttrTag(
+            {
+              in: record,
             },
-          }),
-          Marko._.input(__marko_internal_tag_11),
-        ),
+            (key) =>
+              Marko._.attrTags(__marko_internal_tag_11)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_11)]: (() => {
+                      const __marko_internal_tag_12 = Marko._.resolveTemplate(
+                        import("@marko/runtime-tags/tags/const.d.marko"),
+                      ).default;
+                      {
+                        const hoistedFromForIn = Marko._.returned(
+                          () => __marko_internal_rendered_12,
+                        );
+                        const __marko_internal_rendered_12 =
+                          Marko._.renderTemplate(__marko_internal_tag_12)()()({
+                            value() {
+                              return key;
+                            },
+                          });
+                        return () => {
+                          return new (class MarkoReturn<Return = void> {
+                            readonly [Marko._.scope] = { hoistedFromForIn };
+                            declare return: Return;
+                            constructor(_?: Return) {}
+                          })();
+                        };
+                      }
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_13 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
@@ -269,72 +308,93 @@ export interface Input {}
       Marko._.attrTagNames(__marko_internal_tag_14, (input) => {
         input["@a"];
       });
-      Marko._.renderDynamicTag(__marko_internal_tag_14)()()({
-        ...Marko._.forToAttrTag(
-          {
-            to: 10,
-          },
-          (index) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_14)]: (() => {
-                index;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      Marko._.renderDynamicTag(__marko_internal_tag_14)(
+        Marko._.withRestAttrTags,
+      )()({
+        [Marko._.restAttrTags]: [
+          Marko._.forToAttrTag(
+            {
+              to: 10,
             },
-          }),
-          Marko._.input(__marko_internal_tag_14),
-        ),
+            (index) =>
+              Marko._.attrTags(__marko_internal_tag_14)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_14)]: (() => {
+                      index;
+                      return () => {
+                        return Marko._.voidReturn;
+                      };
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_15 = custom;
       Marko._.attrTagNames(__marko_internal_tag_15, (input) => {
         input["@a"];
       });
-      Marko._.renderDynamicTag(__marko_internal_tag_15)()()({
-        ...Marko._.forToAttrTag(
-          {
-            from: 1,
-            to: 10,
-          },
-          (index) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_15)]: (() => {
-                index;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      Marko._.renderDynamicTag(__marko_internal_tag_15)(
+        Marko._.withRestAttrTags,
+      )()({
+        [Marko._.restAttrTags]: [
+          Marko._.forToAttrTag(
+            {
+              from: 1,
+              to: 10,
             },
-          }),
-          Marko._.input(__marko_internal_tag_15),
-        ),
+            (index) =>
+              Marko._.attrTags(__marko_internal_tag_15)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_15)]: (() => {
+                      index;
+                      return () => {
+                        return Marko._.voidReturn;
+                      };
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_16 = custom;
       Marko._.attrTagNames(__marko_internal_tag_16, (input) => {
         input["@a"];
       });
-      Marko._.renderDynamicTag(__marko_internal_tag_16)()()({
-        ...Marko._.forToAttrTag(
-          {
-            to: 10,
-            step: 2,
-          },
-          (index) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_16)]: (() => {
-                index;
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      Marko._.renderDynamicTag(__marko_internal_tag_16)(
+        Marko._.withRestAttrTags,
+      )()({
+        [Marko._.restAttrTags]: [
+          Marko._.forToAttrTag(
+            {
+              to: 10,
+              step: 2,
             },
-          }),
-          Marko._.input(__marko_internal_tag_16),
-        ),
+            (index) =>
+              Marko._.attrTags(__marko_internal_tag_16)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_16)]: (() => {
+                      index;
+                      return () => {
+                        return Marko._.voidReturn;
+                      };
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_17 = custom;
       Marko._.attrTagNames(__marko_internal_tag_17, (input) => {
@@ -342,42 +402,46 @@ export interface Input {}
       });
       const __marko_internal_rendered_17 = Marko._.renderDynamicTag(
         __marko_internal_tag_17,
-      )()()({
-        ...Marko._.forToAttrTag(
-          {
-            to: 10,
-          },
-          (index) => ({
-            a: {
-              [Marko._.contentFor(__marko_internal_tag_17)]: (() => {
-                const __marko_internal_tag_18 = Marko._.resolveTemplate(
-                  import("@marko/runtime-tags/tags/const.d.marko"),
-                ).default;
-                {
-                  const hoistedFromForTo = Marko._.returned(
-                    () => __marko_internal_rendered_18,
-                  );
-                  const __marko_internal_rendered_18 = Marko._.renderTemplate(
-                    __marko_internal_tag_18,
-                  )()()({
-                    value() {
-                      return index;
-                    },
-                  });
-                  return () => {
-                    return new (class MarkoReturn<Return = void> {
-                      readonly [Marko._.scope] = { hoistedFromForTo };
-                      declare return: Return;
-                      constructor(_?: Return) {}
-                    })();
-                  };
-                }
-              })(),
-              [Symbol.iterator]: Marko._.any,
+      )(Marko._.withRestAttrTags)()({
+        [Marko._.restAttrTags]: [
+          Marko._.forToAttrTag(
+            {
+              to: 10,
             },
-          }),
-          Marko._.input(__marko_internal_tag_17),
-        ),
+            (index) =>
+              Marko._.attrTags(__marko_internal_tag_17)([
+                {
+                  a: {
+                    [Marko._.contentFor(__marko_internal_tag_17)]: (() => {
+                      const __marko_internal_tag_18 = Marko._.resolveTemplate(
+                        import("@marko/runtime-tags/tags/const.d.marko"),
+                      ).default;
+                      {
+                        const hoistedFromForTo = Marko._.returned(
+                          () => __marko_internal_rendered_18,
+                        );
+                        const __marko_internal_rendered_18 =
+                          Marko._.renderTemplate(__marko_internal_tag_18)()()({
+                            value() {
+                              return index;
+                            },
+                          });
+                        return () => {
+                          return new (class MarkoReturn<Return = void> {
+                            readonly [Marko._.scope] = { hoistedFromForTo };
+                            declare return: Return;
+                            constructor(_?: Return) {}
+                          })();
+                        };
+                      }
+                    })(),
+                    [Symbol.iterator]: Marko._.any,
+                  },
+                },
+              ]),
+          ),
+        ],
+        ...Marko._.givenAttrTags("a"),
       });
       const __marko_internal_tag_19 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/effect.d.marko"),
@@ -446,9 +510,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

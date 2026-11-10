@@ -1,0 +1,31 @@
+$ const flag = Math.random() > 0.5;
+
+<shape>
+  <@part kind="circle" radius=1/>
+  <@part kind="square" side=2/>
+  <@part kind="square" radius=3/>
+</shape>
+
+<shape>
+  <for|i| of=[1, 2]>
+    <@part kind="circle" radius=i/>
+    <@part kind="square" side=i/>
+  </for>
+  <if=flag>
+    <@part kind="circle" side=1/>
+  </if>
+</shape>
+
+// A union input whose members have no key in common: an <if> is accepted, and
+// a wrong value in a <for> is reported at it
+<uni>
+  <@a x=1/>
+  <if=flag>
+    <@a x=2/>
+  </if>
+</uni>
+<uni>
+  <for|i| of=[1, 2]>
+    <@a x=String(i)/>
+  </for>
+</uni>

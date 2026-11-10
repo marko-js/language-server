@@ -1,0 +1,7 @@
+export interface Input<T> {
+  option?: Marko.AttrTag<{ value: T; content?: Marko.Body<[T]> }>;
+}
+
+<for|option| of=input.option>
+  <${option.content}(option.value)/>
+</for>

@@ -17,21 +17,10 @@ export interface Input {}
   });
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
     __marko_internal_tag_1,
-  )()()({
-    b: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
-      "b",
-      {
-        b: {
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
-      {
-        b: {
-          c: 2,
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
-    ),
+  )(Marko._.withRestAttrTags)()({
+    b: {
+      [Symbol.iterator]: Marko._.any,
+    },
     a: {
       b: 1,
       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
@@ -58,6 +47,14 @@ export interface Input {}
       })(),
       [Symbol.iterator]: Marko._.any,
     },
+    [Marko._.restAttrTags]: [
+      {
+        b: {
+          c: 2,
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+    ],
   });
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
@@ -105,9 +102,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

@@ -16,21 +16,24 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    ...(++i < 10
-      ? {
-          //         ^?
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-              i;
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
-          },
-        }
-      : {}),
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      ++i < 10
+        ? {
+            //         ^?
+            a: {
+              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+                i;
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+    ...Marko._.givenAttrTags("a"),
   });
   let done = false;
   i = 0;
@@ -38,43 +41,49 @@ export { type Component };
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    ...(!done
-      ? {
-          //        ^?
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-              done;
-              //      ^?
-              if (++i === 5) {
-                done = true;
-              }
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
-          },
-        }
-      : {}),
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      !done
+        ? {
+            //        ^?
+            a: {
+              [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+                done;
+                //      ^?
+                if (++i === 5) {
+                  done = true;
+                }
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+    ...Marko._.givenAttrTags("a"),
   });
   const __marko_internal_tag_3 = custom;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-    ...(undefined
-      ? {
-          a: {
-            [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
-            [Symbol.iterator]: Marko._.any,
-          },
-        }
-      : {}),
+  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      undefined
+        ? {
+            a: {
+              [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
+                return () => {
+                  return Marko._.voidReturn;
+                };
+              })(),
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+    ...Marko._.givenAttrTags("a"),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
@@ -110,9 +119,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

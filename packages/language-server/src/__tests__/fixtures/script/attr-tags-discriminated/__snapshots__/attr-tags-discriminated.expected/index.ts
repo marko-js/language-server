@@ -1,0 +1,185 @@
+export interface Input {}
+abstract class Component extends Marko.Component<Input> {}
+export { type Component };
+(function (this: void) {
+  const input = Marko._.any as Input;
+  const component = Marko._.any as Component;
+  const state = Marko._.state(component);
+  const out = Marko._.any as Marko.Out;
+  const $signal = Marko._.any as AbortSignal;
+  const $global = Marko._.getGlobal(
+    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
+    (Marko._.error, Marko._.any as MarkoRun.Context),
+  );
+  const flag = Math.random() > 0.5;
+  const __marko_internal_tag_1 = Marko._.resolveTemplate(
+    import("./tags/shape/index.marko"),
+  ).default;
+  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+    input["@part"];
+    input["@part"];
+    input["@part"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    part: {
+      kind: "circle",
+      radius: 1,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
+      {
+        part: {
+          kind: "square",
+          side: 2,
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+      {
+        part: {
+          kind: "square",
+          radius: 3,
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+    ],
+  });
+  const __marko_internal_tag_2 = Marko._.resolveTemplate(
+    import("./tags/shape/index.marko"),
+  ).default;
+  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+    input["@part"];
+    input["@part"];
+    input["@part"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      Marko._.forOfAttrTag(
+        {
+          of: [1, 2],
+        },
+        (i) =>
+          Marko._.attrTags(__marko_internal_tag_2)([
+            {
+              part: {
+                kind: "circle",
+                radius: i,
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+            {
+              part: {
+                kind: "square",
+                side: i,
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+          ]),
+      ),
+      flag
+        ? {
+            part: {
+              kind: "circle",
+              side: 1,
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+    ...Marko._.givenAttrTags("part"),
+  });
+  const __marko_internal_tag_3 = Marko._.resolveTemplate(
+    import("./tags/uni/index.marko"),
+  ).default;
+  Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
+    input["@a"];
+    input["@a"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+    // A union input whose members have no key in common: an <if> is accepted, and
+    // a wrong value in a <for> is reported at it
+    {
+      a: {
+        x: 1,
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
+        flag
+          ? {
+              a: {
+                x: 2,
+                [Symbol.iterator]: Marko._.any,
+              },
+            }
+          : Marko._.never,
+      ],
+    },
+  );
+  const __marko_internal_tag_4 = Marko._.resolveTemplate(
+    import("./tags/uni/index.marko"),
+  ).default;
+  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+    input["@a"];
+  });
+  Marko._.renderTemplate(__marko_internal_tag_4)(Marko._.withRestAttrTags)()({
+    [Marko._.restAttrTags]: [
+      Marko._.forOfAttrTag(
+        {
+          of: [1, 2],
+        },
+        (i) =>
+          Marko._.attrTags(__marko_internal_tag_4)([
+            {
+              a: {
+                x: String(i),
+                [Symbol.iterator]: Marko._.any,
+              },
+            },
+          ]),
+      ),
+    ],
+    ...Marko._.givenAttrTags("a"),
+  });
+  Marko._.noop({ component, state, out, input, $global, $signal });
+  return;
+})();
+const __marko_internal_api = "class";
+export { __marko_internal_api as "~api" };
+export default new (class Template extends Marko._.Template<{
+  render(
+    input: Marko.TemplateInput<Input>,
+    stream?: {
+      write: (chunk: string) => void;
+      end: (chunk?: string) => void;
+    },
+  ): Marko.Out<Component>;
+
+  render(
+    input: Marko.TemplateInput<Input>,
+    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void,
+  ): Marko.Out<Component>;
+
+  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
+
+  renderToString(input: Marko.TemplateInput<Input>): string;
+
+  stream(
+    input: Marko.TemplateInput<Input>,
+  ): ReadableStream<string> & NodeJS.ReadableStream;
+
+  mount(
+    input: Marko.TemplateInput<Input>,
+    reference: Node,
+    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
+  ): Marko.MountedTemplate<typeof input>;
+
+  api: typeof __marko_internal_api;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
+}> {})();

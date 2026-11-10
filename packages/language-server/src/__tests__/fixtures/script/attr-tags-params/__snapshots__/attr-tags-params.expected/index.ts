@@ -19,15 +19,12 @@ export { type Component };
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    foo: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
-      "foo",
-      {
-        foo: {
-          bar: true,
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
+  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    foo: {
+      bar: true,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
       {
         foo: {
           [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
@@ -37,22 +34,19 @@ export { type Component };
           [Symbol.iterator]: Marko._.any,
         },
       },
-    ),
+    ],
   });
   const __marko_internal_tag_2 = Child;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    foo: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
-      "foo",
-      {
-        foo: {
-          bar: true,
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+    foo: {
+      bar: true,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
       {
         foo: {
           [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
@@ -62,24 +56,21 @@ export { type Component };
           [Symbol.iterator]: Marko._.any,
         },
       },
-    ),
+    ],
   });
   const __marko_internal_tag_3 = true && Child;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
-      foo: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
-        "foo",
-        {
-          foo: {
-            bar: true,
-            [Symbol.iterator]: Marko._.any,
-          },
-        },
+      foo: {
+        bar: true,
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
         {
           foo: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
@@ -89,7 +80,7 @@ export { type Component };
             [Symbol.iterator]: Marko._.any,
           },
         },
-      ),
+      ],
     },
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
@@ -126,9 +117,13 @@ export default new (class Template extends Marko._.Template<{
   ): Marko.MountedTemplate<typeof input>;
 
   api: typeof __marko_internal_api;
-  _(): () => <__marko_internal_input extends unknown>(
-    input: Marko.Directives &
-      Input &
-      Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
-  ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
+  _<A = 1>(
+    m?: A,
+  ): () => A extends 3
+    ? Marko._.RestAttrTagsRenderer<Input, void>
+    : <I>(
+        input: Marko.Directives &
+          Input &
+          Marko._.Relate<I, Marko.Directives & Input>,
+      ) => Marko._.ReturnWithScope<I, void>;
 }> {})();

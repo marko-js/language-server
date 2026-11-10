@@ -1,0 +1,11 @@
+export interface Input<T> {
+  rows: T[];
+  column: Marko.AttrTag<{ header: string; content?: Marko.Body<[T]> }>;
+  sort?: (a: T, b: T) => number;
+}
+
+<for|row| of=input.rows>
+  <for|column| of=input.column>
+    <${column.content}(row)/>
+  </for>
+</for>

@@ -1,0 +1,15 @@
+export interface Input<T> {
+  rows: T[];
+  caption?: string;
+  column?: Marko.AttrTag<{
+    title: string;
+    width?: number;
+    content?: Marko.Body<[T]>;
+  }>;
+}
+
+<for|row| of=input.rows>
+  <for|column| of=input.column>
+    <${column.content}(row)/>
+  </for>
+</for>

@@ -9,7 +9,7 @@ export interface Input extends ChildInput {}
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("../child/index.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@item"];
   });
@@ -26,7 +26,7 @@ export interface Input extends ChildInput {}
           (item) =>
             Marko._.attrTags(__marko_internal_tag_1)([
               {
-                ["item"]: {
+                item: {
                   ...item,
                   extra: 1,
                   [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
@@ -47,7 +47,7 @@ export interface Input extends ChildInput {}
 })();
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-const Wrapper = new (class Template extends Marko._.Template<{
+const Input = new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -78,7 +78,7 @@ const Wrapper = new (class Template extends Marko._.Template<{
   api: typeof __marko_internal_api;
   _<A = 1>(
     m?: A,
-  ): () => A extends 2 | 3
+  ): () => A extends 3
     ? Marko._.RestAttrTagsRenderer<Input, void>
     : <I>(
         input: Marko.Directives &
@@ -86,4 +86,4 @@ const Wrapper = new (class Template extends Marko._.Template<{
           Marko._.Relate<I, Marko.Directives & Input>,
       ) => Marko._.ReturnWithScope<I, void>;
 }> {})();
-export default Wrapper;
+export default Input;

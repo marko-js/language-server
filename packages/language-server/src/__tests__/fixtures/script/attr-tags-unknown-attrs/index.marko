@@ -1,0 +1,135 @@
+$ const flag = Math.random() > 0.5;
+
+<menu>
+  <@item|{ foo }| size="small" bogus=1>${foo}</@item>
+</menu>
+
+<menu>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }| size="small" bogus=1>${name} ${foo}</@item>
+  </for>
+</menu>
+
+<menu>
+  <for|key| in={ a: 1 }>
+    <@item|{ foo }| bogus=1>${key} ${foo}</@item>
+  </for>
+</menu>
+
+<menu>
+  <for|i| to=2>
+    <@item|{ foo }| bogus=1>${i} ${foo}</@item>
+  </for>
+</menu>
+
+<menu>
+  <for|i| until=2>
+    <@item|{ foo }| bogus=1>${i} ${foo}</@item>
+  </for>
+</menu>
+
+<menu>
+  <for|name| of=["a"]>
+    <if=flag>
+      <@item|{ foo }| bogus=1>${name} ${foo}</@item>
+    </if>
+  </for>
+</menu>
+
+<menu>
+  <for|name| of=["a"]>
+    <@item|{ foo }|>
+      <@row label=name bogus=1/>
+      ${foo}
+    </@item>
+  </for>
+</menu>
+
+<menu>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }| size="large">
+      <@row label=name/>
+      ${foo}
+//       ^?
+    </@item>
+  </for>
+</menu>
+
+<menu>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+  <@item|{ foo }| bogus=2>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| bogus=3>${foo}</@item>
+  </if>
+</menu>
+
+<empty>
+  <@a/>
+  <@a/>
+</empty>
+
+<empty>
+  <for|i| of=[1, 2]>
+    <@a x=i/>
+  </for>
+</empty>
+
+<menu>
+  <@nope>
+    <@row/>
+    <@row/>
+  </@nope>
+</menu>
+
+<menu>
+  <if=flag>
+    $ const bar = 1;
+    <@item|{ foo }| bogus=bar>${foo}</@item>
+  </if>
+</menu>
+
+// An error in an attribute tag and one in its repeated attribute tags: both
+// reported, and the variable it hoists still typed
+<menu>
+  <@item size="huge">
+    <const/fromItem=() => "s"/>
+    <@row label="a"/>
+    <@row label=1/>
+  </@item>
+</menu>
+<script>
+  fromItem;
+//^?
+</script>
+
+// An unknown attribute tag name only a <for> gives: reported once, at it
+<menu>
+  <for|name| of=["a", "b"]>
+    <@itme label=name/>
+  </for>
+</menu>
+
+// Errors in two groups of an attribute tag's attribute tags, in a <for>: each
+// reported at it, and not its attributes ("specified more than once")
+<menu>
+  <for|name| of=["a", "b"]>
+    <@item size="small">
+      ${name}
+      <@row label=name bogus=1/>
+      <if=flag>
+        <@row label=1/>
+      </if>
+    </@item>
+  </for>
+</menu>
+
+// An input declared `unknown` takes no attribute tag, also in an <if> or a
+// <for>
+<unk>
+  <if=flag>
+    <@b/>
+  </if>
+  <for of=[1, 2]>
+    <@c/>
+  </for>
+</unk>
