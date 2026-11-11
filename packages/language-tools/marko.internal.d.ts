@@ -454,7 +454,7 @@ declare global {
           ? {
               (): () => <Input extends Marko.Input<Name>>(
                 input: Marko.Directives & Input,
-              ) => ReturnAndScope<Scopes<Input>, Marko.Return<Name>>;
+              ) => ReturnWithScope<Input, Marko.Return<Name>>;
             }
           : [Name] extends [AnyMarkoBody]
             ? BodyRenderer<Name>
@@ -484,8 +484,8 @@ declare global {
               __marko_internal_input,
               Marko.Directives & Marko.NativeTags[Name]["input"]
             >,
-        ) => ReturnAndScope<
-          Scopes<__marko_internal_input>,
+        ) => ReturnWithScope<
+          __marko_internal_input,
           Marko.NativeTags[Name]["return"]
         >;
       }
@@ -495,8 +495,8 @@ declare global {
         (): () => <__marko_internal_input extends unknown>(
           ...args: BodyParamsWithDefault<Body> &
             Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
-        ) => ReturnAndScope<
-          Scopes<__marko_internal_input extends [infer Input] ? Input : never>,
+        ) => ReturnWithScope<
+          __marko_internal_input extends [infer Input] ? Input : never,
           Body extends Marko.Body<any, infer Return> ? Return : never
         >;
       }
@@ -507,11 +507,11 @@ declare global {
           input: Marko.Directives &
             Input &
             Relate<__marko_input_with_scope, Marko.Directives & Input>,
-        ) => ReturnAndScope<Scopes<__marko_input_with_scope>, Return>;
+        ) => ReturnWithScope<__marko_input_with_scope, Return>;
       }
 
       export interface DefaultRenderer {
-        (): () => <Input>(input: Input) => ReturnAndScope<Scopes<Input>, void>;
+        (): () => <Input>(input: Input) => ReturnWithScope<Input, void>;
       }
 
       export type ResolveComponent<Component> = CheckNever<
@@ -542,10 +542,16 @@ type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
   ? Scope
   : never;
 
-type ReturnAndScope<Scope, Return> = {
+/**
+ * An interface, not a type alias: TypeScript resolves an interface's members,
+ * and so `Scope`, only once one is read (as `readScopes` reads `scope`), where
+ * an alias resolves its type arguments as soon as it is instantiated, which
+ * would compute the scopes of every tag whether or not anything is hoisted.
+ */
+interface ReturnAndScope<Scope, Return> {
   return: Return;
   scope: Scope;
-};
+}
 
 type BodyParamsWithDefault<Body extends AnyMarkoBody> =
   Body extends Marko.Body<infer Params, any>
