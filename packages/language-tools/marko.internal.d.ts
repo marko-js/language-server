@@ -181,12 +181,14 @@ declare global {
         tag: Name,
       ): NativeTagRenderer<Name>;
       export const missingTag: DefaultRenderer;
-      export function resolveTemplate<Template>(
-        imported: Promise<{ default: Template }>,
-      ): Template;
+      // A template's module, whose `default` a tag reads by its name, so
+      // TypeScript shows the template's docs there.
+      export function resolveTemplate<Module>(
+        imported: Promise<Module>,
+      ): Module;
       export function fallbackTemplate<Tag, Template>(
         tag: Tag,
-        fallback: Promise<{ default: Template }>,
+        fallback: Template,
       ): [0] extends [1 & Tag] ? Template : Tag;
       export function input<Name>(tag: Name): InputFor<Name>;
       export function inputForAttr<

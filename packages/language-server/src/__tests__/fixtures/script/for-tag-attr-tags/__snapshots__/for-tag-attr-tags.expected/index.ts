@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/my-table.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@row"];
     Marko._.nestedAttrTagNames(input["@row"], (input) => {
@@ -66,7 +66,7 @@ export { type Component };
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/my-table.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@row"];
     Marko._.nestedAttrTagNames(input["@row"], (input) => {

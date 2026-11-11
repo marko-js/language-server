@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./tags/my-layout/index.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
@@ -50,7 +50,7 @@ export { type Component };
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./tags/my-layout/index.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {

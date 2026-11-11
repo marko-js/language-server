@@ -9,7 +9,7 @@ export interface Input {}
   const result = Marko._.hoist(() => __marko_internal_hoist__result);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/test-tag.marko"),
-  );
+  ).default;
   {
     const result = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(

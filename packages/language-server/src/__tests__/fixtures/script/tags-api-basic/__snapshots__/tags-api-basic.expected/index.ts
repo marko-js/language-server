@@ -27,7 +27,7 @@ function __marko_internal_template(this: void) {
   const renderBody = Marko._.hoist(() => __marko_internal_hoist__renderBody);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
-  );
+  ).default;
   {
     const { year, isSmartOnly, type, mobileList, renderBody } =
       Marko._.returned(() => __marko_internal_rendered_1);
@@ -164,7 +164,7 @@ function __marko_internal_template(this: void) {
 }
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-export default new (class Template extends Marko._.Template<{
+const Input = new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -202,3 +202,4 @@ export default new (class Template extends Marko._.Template<{
     typeof __marko_internal_template extends () => infer Return ? Return : never
   >;
 }> {})();
+export default Input;

@@ -28,7 +28,7 @@ export { type Component };
   });
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("marko/src/core-tags/core/script.d.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     async [Marko._.never]() {
       count.missingInScript;
@@ -37,7 +37,7 @@ export { type Component };
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("marko/src/core-tags/core/script.d.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_2)()()({
     async [Marko._.never]() {
       count.missingInInlineScript; // also inline

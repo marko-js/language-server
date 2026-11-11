@@ -20,7 +20,7 @@ export class Component extends Marko.Component {}
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/child.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@foo"];
     input["@foo"];

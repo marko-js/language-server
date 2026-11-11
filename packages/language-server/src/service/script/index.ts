@@ -493,11 +493,17 @@ const ScriptService: Partial<Plugin> = {
 
     let generatedOffset: number | undefined;
     let extracted: Extracted | undefined;
+    let viaAnchor = false;
     if (isPlain) {
       generatedOffset = sourceOffset;
     } else {
       extracted = processScript(doc, project);
       generatedOffset = extracted.generatedOffsetAt(sourceOffset);
+      if (generatedOffset === undefined) {
+        // Eg the template a tag's name stands for.
+        generatedOffset = extracted.hoverOffsetAt(sourceOffset);
+        viaAnchor = true;
+      }
     }
     if (generatedOffset === undefined) return;
 
@@ -508,13 +514,19 @@ const ScriptService: Partial<Plugin> = {
     if (!quickInfo) return;
 
     const sourceRange = extracted
-      ? sourceLocationAtTextSpan(extracted, quickInfo.textSpan)
+      ? (viaAnchor && extracted.hoverLocationAt(quickInfo.textSpan.start)) ||
+        sourceLocationAtTextSpan(extracted, quickInfo.textSpan)
       : docLocationAtTextSpan(doc, quickInfo.textSpan);
     if (!sourceRange) return;
 
     let contents = "";
 
-    const displayParts = ts.displayPartsToString(quickInfo.displayParts);
+    let displayParts = ts.displayPartsToString(quickInfo.displayParts);
+    if (viaAnchor) {
+      // Less the generated declaration of the alias TypeScript shows (eg
+      // `export default Input`), which TypeScript 7 leaves out.
+      displayParts = displayParts.split("\n", 1)[0];
+    }
     if (displayParts) {
       contents += `\`\`\`typescript\n${displayParts}\n\`\`\``;
     }

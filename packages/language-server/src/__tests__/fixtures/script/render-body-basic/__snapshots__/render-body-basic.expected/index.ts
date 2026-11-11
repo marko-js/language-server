@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/my-tag/index.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     [Marko._.contentFor(__marko_internal_tag_1)]: (name) => {
       //      ^?

@@ -13,7 +13,7 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/list.marko"),
-  );
+  ).default;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@item"];
     input["@item"];

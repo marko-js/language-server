@@ -186,7 +186,7 @@ export interface Input {}
           [Marko._.contentFor(__marko_internal_tag_9)]: (() => {
             const __marko_internal_tag_10 = Marko._.resolveTemplate(
               import("@marko/runtime-tags/tags/const.d.marko"),
-            );
+            ).default;
             {
               const hoistedFromStaticMember = Marko._.returned(
                 () => __marko_internal_rendered_10,
@@ -217,7 +217,7 @@ export interface Input {}
               [Marko._.contentFor(__marko_internal_tag_9)]: (() => {
                 const __marko_internal_tag_11 = Marko._.resolveTemplate(
                   import("@marko/runtime-tags/tags/const.d.marko"),
-                );
+                ).default;
                 {
                   const hoistedFromDynamicMember = Marko._.returned(
                     () => __marko_internal_rendered_11,
@@ -251,7 +251,7 @@ export interface Input {}
   });
   const __marko_internal_tag_12 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_12)()()({
     value() {
       hoistedFromStaticMember;

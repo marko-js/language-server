@@ -14,7 +14,7 @@ export interface Input {}
     if ($global.foo) {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),
-      );
+      ).default;
       {
         const a = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
@@ -24,7 +24,7 @@ export interface Input {}
         });
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
-        );
+        ).default;
         {
           const b = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
@@ -45,7 +45,7 @@ export interface Input {}
             ) => {
               const __marko_internal_tag_5 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/const.d.marko"),
-              );
+              ).default;
               {
                 const c = Marko._.returned(() => __marko_internal_rendered_5);
                 const __marko_internal_rendered_5 = Marko._.renderTemplate(
@@ -76,7 +76,7 @@ export interface Input {}
     if ($global.foo) {
       const __marko_internal_tag_7 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),
-      );
+      ).default;
       {
         const { d } = Marko._.returned(() => __marko_internal_rendered_7);
         const __marko_internal_rendered_7 = Marko._.renderTemplate(
@@ -91,7 +91,7 @@ export interface Input {}
     } else {
       const __marko_internal_tag_8 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/const.d.marko"),
-      );
+      ).default;
       {
         const { d } = Marko._.returned(() => __marko_internal_rendered_8);
         const __marko_internal_rendered_8 = Marko._.renderTemplate(

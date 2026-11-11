@@ -23,6 +23,8 @@ const enum Mapping {
   full,
   alias,
   anchor,
+  /** An anchor TypeScript's hover of the source range is read at. */
+  hoverAnchor,
 }
 
 interface Token {
@@ -101,7 +103,15 @@ export class Extractor {
     return this;
   }
 
-  anchor(range: Range | false | void | undefined | null) {
+  /**
+   * Map the generated position to a source range (eg a tag's name, for a
+   * diagnostic on the generated code after it). With `hover`, TypeScript's
+   * hover of what is written next is also the source range's hover (eg the
+   * `default` export of the template a tag's name stands for); nothing else
+   * maps from the source to an anchor, so no edit, definition or reference
+   * reaches it.
+   */
+  anchor(range: Range | false | void | undefined | null, hover?: boolean) {
     if (range) {
       const { code } = this.#parsed;
       const sourceStart = Math.min(range.start, code.length);
@@ -112,7 +122,7 @@ export class Extractor {
         sourceStart,
         generatedLength: 0,
         sourceLength: length,
-        mapping: Mapping.anchor,
+        mapping: hover ? Mapping.hoverAnchor : Mapping.anchor,
         linkedSources: undefined,
       });
     }
@@ -139,6 +149,37 @@ export class Extracted {
   ) {
     this.#generated = generated;
     this.#tokens = tokens;
+  }
+
+  /**
+   * Where TypeScript's hover of a source offset is read, if it is in the
+   * range of a hover anchor (see `Extractor.anchor`).
+   */
+  hoverOffsetAt(sourceOffset: number) {
+    for (const token of this.#tokens) {
+      if (
+        token.mapping === Mapping.hoverAnchor &&
+        sourceOffset >= token.sourceStart &&
+        sourceOffset <= token.sourceStart + token.sourceLength
+      ) {
+        return token.generatedStart;
+      }
+    }
+  }
+
+  /** The source location of the hover anchor at a generated offset. */
+  hoverLocationAt(generatedOffset: number) {
+    for (const token of this.#tokens) {
+      if (
+        token.mapping === Mapping.hoverAnchor &&
+        token.generatedStart === generatedOffset
+      ) {
+        return this.parsed.locationAt({
+          start: token.sourceStart,
+          end: token.sourceStart + token.sourceLength,
+        });
+      }
+    }
   }
 
   get #generatedLines() {
@@ -187,7 +228,7 @@ export class Extracted {
 
     const tokens: Token[] = [];
     for (const token of this.#tokens) {
-      if (token.mapping === Mapping.anchor) continue;
+      if (token.mapping >= Mapping.anchor) continue;
       tokens.push(token);
 
       if (token.linkedSources) {
@@ -254,7 +295,7 @@ export class Extracted {
       generatedStart,
       generatedEnd,
     )) {
-      if (token.mapping === Mapping.anchor) {
+      if (token.mapping >= Mapping.anchor) {
         pushUniqueRange(
           result,
           token.sourceStart,
@@ -471,7 +512,7 @@ abstract class TokenView {
       this.outStart(startToken) + Math.max(0, inStart - startTokenInStart);
     const end =
       this.outStart(endToken) +
-      (endToken.mapping === Mapping.anchor
+      (endToken.mapping >= Mapping.anchor
         ? endToken.sourceLength
         : Math.min(this.inLength(endToken), inEnd - this.inStart(endToken)));
 
@@ -480,7 +521,7 @@ abstract class TokenView {
         start,
         end:
           this.outStart(startToken) +
-          (startToken.mapping === Mapping.anchor
+          (startToken.mapping >= Mapping.anchor
             ? startToken.sourceLength
             : Math.min(this.inLength(startToken), inEnd - startTokenInStart)),
       };

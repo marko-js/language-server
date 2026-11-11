@@ -8,7 +8,7 @@ export interface Input {}
   );
 const x = Marko._.hoist(() => __marko_internal_hoist__x);
 const __marko_internal_tag_1 = (
-Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko"))
+Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko")).default
 );
 {const x = Marko._.returned(() => __marko_internal_rendered_1);
 const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1)()()(// A handler being typed that Babel recovers into parser-only nodes

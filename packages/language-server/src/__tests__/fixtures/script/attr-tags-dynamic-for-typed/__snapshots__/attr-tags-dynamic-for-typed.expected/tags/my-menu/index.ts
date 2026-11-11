@@ -33,7 +33,7 @@ export interface Input {
 })();
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-const MyMenu = new (class Template extends Marko._.Template<{
+const Input = new (class Template extends Marko._.Template<{
   render(
     input: Marko.TemplateInput<Input>,
     stream?: {
@@ -68,4 +68,4 @@ const MyMenu = new (class Template extends Marko._.Template<{
       Marko._.Relate<__marko_internal_input, Marko.Directives & Input>,
   ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
-export default MyMenu;
+export default Input;

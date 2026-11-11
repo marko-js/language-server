@@ -11,7 +11,7 @@ export interface Input {}
   const TestTagA = Marko._.hoist(() => __marko_internal_hoist__TestTagA);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/const.d.marko"),
-  );
+  ).default;
   {
     const TestTagA = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
@@ -22,7 +22,7 @@ export interface Input {}
     const __marko_internal_tag_2 = Marko._.fallbackTemplate(
       // @ts-ignore
       TestTagA,
-      import("./components/TestTagA.marko"),
+      Marko._.resolveTemplate(import("./components/TestTagA.marko")).default,
     );
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
       a: "hello",
@@ -30,7 +30,7 @@ export interface Input {}
     const __marko_internal_tag_3 = Marko._.fallbackTemplate(
       // @ts-ignore
       TestTagB,
-      import("./components/TestTagB.marko"),
+      Marko._.resolveTemplate(import("./components/TestTagB.marko")).default,
     );
     Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
       b: "hello",
@@ -39,7 +39,7 @@ export interface Input {}
       [Marko._.content]: (() => {
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
-        );
+        ).default;
         {
           const TestTagA = Marko._.returned(() => __marko_internal_rendered_4);
           const __marko_internal_rendered_4 = Marko._.renderTemplate(
@@ -50,7 +50,8 @@ export interface Input {}
           const __marko_internal_tag_5 = Marko._.fallbackTemplate(
             // @ts-ignore
             TestTagA,
-            import("./components/TestTagA.marko"),
+            Marko._.resolveTemplate(import("./components/TestTagA.marko"))
+              .default,
           );
           Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
             a: "hello",
@@ -64,7 +65,7 @@ export interface Input {}
     const __marko_internal_tag_6 = Marko._.fallbackTemplate(
       // @ts-ignore
       TestTagA,
-      import("./components/TestTagA.marko"),
+      Marko._.resolveTemplate(import("./components/TestTagA.marko")).default,
     );
     Marko._.renderDynamicTag(__marko_internal_tag_6)()()({
       a: "hello",

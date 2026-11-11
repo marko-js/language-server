@@ -7,7 +7,7 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context)
   );
 const __marko_internal_tag_1 = (
-Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko"))
+Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko")).default
 );
 {const { %x } = Marko._.returned(() => __marko_internal_rendered_1);
 const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1)()()(// Should be resistant to syntax errors.
