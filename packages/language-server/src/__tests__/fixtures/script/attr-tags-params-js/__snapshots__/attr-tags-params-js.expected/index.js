@@ -26,16 +26,16 @@ export class Component extends Marko.Component {}
     input["@foo"];
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ["foo"]: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
+    foo: Marko._.attrTagFor(__marko_internal_tag_1, "foo")(
       "foo",
       {
-        ["foo"]: {
+        foo: {
           bar: true,
           [Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["foo"]: {
+        foo: {
           [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
             data;
             return Marko._.voidReturn;
@@ -53,16 +53,16 @@ export class Component extends Marko.Component {}
   Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
     //^?
     {
-      ["foo"]: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
+      foo: Marko._.attrTagFor(__marko_internal_tag_2, "foo")(
         "foo",
         {
-          ["foo"]: {
+          foo: {
             bar: true,
             [Symbol.iterator]: Marko._.any,
           },
         },
         {
-          ["foo"]: {
+          foo: {
             [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
               data;
               return Marko._.voidReturn;
@@ -82,16 +82,16 @@ export class Component extends Marko.Component {}
     //^?
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
-      ["foo"]: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
+      foo: Marko._.attrTagFor(__marko_internal_tag_3, "foo")(
         "foo",
         {
-          ["foo"]: {
+          foo: {
             bar: true,
             [Symbol.iterator]: Marko._.any,
           },
         },
         {
-          ["foo"]: {
+          foo: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
               data;
               return Marko._.voidReturn;

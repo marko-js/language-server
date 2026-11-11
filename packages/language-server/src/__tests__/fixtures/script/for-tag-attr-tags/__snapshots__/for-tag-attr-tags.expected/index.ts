@@ -30,12 +30,12 @@ export { type Component };
         ],
       },
       (row) => ({
-        ["row"]: {
-          ["cell"]: Marko._.attrTagFor(__marko_internal_tag_1, "row", "cell")(
+        row: {
+          cell: Marko._.attrTagFor(__marko_internal_tag_1, "row", "cell")(
             "cell",
             {
               // ^?
-              ["cell"]: {
+              cell: {
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   row.foo;
                   return () => {
@@ -47,7 +47,7 @@ export { type Component };
             },
             {
               // ^?     ^?
-              ["cell"]: {
+              cell: {
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   row.bar;
                   return () => {
@@ -83,12 +83,12 @@ export { type Component };
         ] as const,
       },
       (row) => ({
-        ["row"]: {
-          ["cell"]: Marko._.attrTagFor(__marko_internal_tag_2, "row", "cell")(
+        row: {
+          cell: Marko._.attrTagFor(__marko_internal_tag_2, "row", "cell")(
             "cell",
             {
               // ^?
-              ["cell"]: {
+              cell: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   row.foo;
                   return () => {
@@ -100,7 +100,7 @@ export { type Component };
             },
             {
               // ^?     ^?
-              ["cell"]: {
+              cell: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   row.bar;
                   return () => {

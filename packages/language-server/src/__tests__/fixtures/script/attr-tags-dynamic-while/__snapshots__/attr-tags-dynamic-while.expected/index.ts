@@ -20,7 +20,7 @@ export { type Component };
     ...(++i < 10
       ? {
           //         ^?
-          ["a"]: {
+          a: {
             [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
               i;
               return () => {
@@ -43,7 +43,7 @@ export { type Component };
     ...(!done
       ? {
           //        ^?
-          ["a"]: {
+          a: {
             [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
               done;
               //      ^?
@@ -66,7 +66,7 @@ export { type Component };
   Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
     ...(undefined
       ? {
-          ["a"]: {
+          a: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               return () => {
                 return Marko._.voidReturn;

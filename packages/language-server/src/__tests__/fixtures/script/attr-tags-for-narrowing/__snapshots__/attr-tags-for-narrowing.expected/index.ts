@@ -26,7 +26,7 @@ export { type Component };
           of: [1, 2, 3],
         },
         () => ({
-          ["item"]: {
+          item: {
             size: "small",
             [Symbol.iterator]: Marko._.any,
           },
@@ -39,17 +39,17 @@ export { type Component };
         },
         // ^?
         () => ({
-          ["item"]: Marko._.attrTagFor(__marko_internal_tag_1, "item")(
+          item: Marko._.attrTagFor(__marko_internal_tag_1, "item")(
             "item",
             {
-              ["item"]: {
+              item: {
                 size: "small",
                 [Symbol.iterator]: Marko._.any,
               },
             },
             {
               // ^?
-              ["item"]: {
+              item: {
                 size: "huge",
                 [Symbol.iterator]: Marko._.any,
               },

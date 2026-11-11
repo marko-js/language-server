@@ -21,13 +21,13 @@ export { type Component };
     });
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ["a"]: {
+    a: {
       ...Marko._.forOfAttrTag(
         {
           of: [1, 2, 3],
         },
         () => ({
-          ["b"]: {
+          b: {
             size: "small",
             [Symbol.iterator]: Marko._.any,
           },

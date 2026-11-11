@@ -21,13 +21,13 @@ export { type Component };
     });
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ["section"]: {
+    section: {
       ...Marko._.forOfAttrTag(
         {
           of: ["a", "b", "c"],
         },
         (name) => ({
-          ["item"]: {
+          item: {
             [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
               Marko._.renderNativeTag("div")()()({
                 [Marko._.content]: (() => {
@@ -60,8 +60,8 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_2)()()(
     //                     ^?
     {
-      ["section"]: {
-        ["item"]: {
+      section: {
+        item: {
           [Marko._.contentFor(__marko_internal_tag_2)]: ({ label }) => {
             Marko._.renderNativeTag("div")()()({
               [Marko._.content]: (() => {

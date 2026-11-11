@@ -22,7 +22,7 @@ export interface Input {}
     x: 1,
     ...(x
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
@@ -37,7 +37,7 @@ export interface Input {}
     ...(x
       ? {}
       : {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }),
@@ -51,12 +51,12 @@ export interface Input {}
     x: 1,
     ...(x
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
       : {
-          ["b"]: {
+          b: {
             [Symbol.iterator]: Marko._.any,
           },
         }),
@@ -72,24 +72,24 @@ export interface Input {}
     x: 1,
     ...(x
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
       : y
         ? {
-            ["b"]: {
+            b: {
               [Symbol.iterator]: Marko._.any,
             },
           }
         : !y
           ? {
-              ["c"]: {
+              c: {
                 [Symbol.iterator]: Marko._.any,
               },
             }
           : {
-              ["d"]: {
+              d: {
                 [Symbol.iterator]: Marko._.any,
               },
             }),
@@ -103,13 +103,13 @@ export interface Input {}
     x: 1,
     ...(x
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
       : undefined
         ? {
-            ["b"]: {
+            b: {
               [Symbol.iterator]: Marko._.any,
             },
           }
@@ -123,7 +123,7 @@ export interface Input {}
     x: 1,
     ...(x
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
@@ -137,7 +137,7 @@ export interface Input {}
     x: 1,
     ...(undefined
       ? {
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }
@@ -153,14 +153,14 @@ export interface Input {}
     ...Marko._.mergeAttrTags(
       x
         ? {
-            ["a"]: {
+            a: {
               [Symbol.iterator]: Marko._.any,
             },
           }
         : {},
       y
         ? {
-            ["b"]: {
+            b: {
               [Symbol.iterator]: Marko._.any,
             },
           }
@@ -181,7 +181,7 @@ export interface Input {}
     ...Marko._.mergeAttrTags(
       {
         // hi
-        ["a"]: {
+        a: {
           b: 1,
           [Marko._.contentFor(__marko_internal_tag_9)]: (() => {
             const __marko_internal_tag_10 = Marko._.resolveTemplate(
@@ -207,13 +207,13 @@ export interface Input {}
           })(),
           [Symbol.iterator]: Marko._.any,
         },
-        ["b"]: {
+        b: {
           [Symbol.iterator]: Marko._.any,
         },
       },
       x
         ? {
-            ["b"]: {
+            b: {
               [Marko._.contentFor(__marko_internal_tag_9)]: (() => {
                 const __marko_internal_tag_11 = Marko._.resolveTemplate(
                   import("@marko/runtime-tags/tags/const.d.marko"),
@@ -242,7 +242,7 @@ export interface Input {}
         : {},
       y
         ? {
-            ["a"]: {
+            a: {
               [Symbol.iterator]: Marko._.any,
             },
           }

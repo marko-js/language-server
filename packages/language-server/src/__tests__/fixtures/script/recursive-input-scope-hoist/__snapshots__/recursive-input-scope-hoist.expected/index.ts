@@ -22,12 +22,12 @@ export interface Input {}
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
     __marko_internal_tag_1,
   )()()({
-    ["comment"]: Marko._.attrTagFor(__marko_internal_tag_1, "comment")(
+    comment: Marko._.attrTagFor(__marko_internal_tag_1, "comment")(
       "comment",
       {
-        ["comment"]: {
+        comment: {
           id: Marko._.interpolated`a`,
-          ["comment"]: {
+          comment: {
             id: Marko._.interpolated`b`,
             [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
               const __marko_internal_tag_2 = Marko._.resolveTemplate(
@@ -78,7 +78,7 @@ export interface Input {}
         },
       },
       {
-        ["comment"]: {
+        comment: {
           id: Marko._.interpolated`c`,
           [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
             const __marko_internal_tag_4 = Marko._.resolveTemplate(

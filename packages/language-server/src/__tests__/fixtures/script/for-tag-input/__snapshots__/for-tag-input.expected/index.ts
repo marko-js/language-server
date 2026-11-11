@@ -84,7 +84,7 @@ export { type Component };
           },
           ({ href, title }) => ({
             // ^?
-            ["option"]: {
+            option: {
               value: href,
               [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 // ^?
@@ -104,7 +104,7 @@ export { type Component };
           },
           ({ value, content }) => ({
             // ^?
-            ["option"]: {
+            option: {
               value: value,
               [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 // ^?

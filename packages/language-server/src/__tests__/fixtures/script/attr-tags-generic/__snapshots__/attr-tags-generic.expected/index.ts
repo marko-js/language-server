@@ -19,7 +19,7 @@ export { type Component };
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     value: 1 as const,
-    ["then"]: {
+    then: {
       [Marko._.contentFor(__marko_internal_tag_1)]: (foo) => {
         //   ^?
         foo;
@@ -41,7 +41,7 @@ export { type Component };
         of: [1],
       },
       (i) => ({
-        ["then"]: {
+        then: {
           [Marko._.contentFor(__marko_internal_tag_2)]: (foo) => {
             //   ^?
             i;
