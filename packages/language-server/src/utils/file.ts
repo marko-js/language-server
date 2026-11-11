@@ -32,7 +32,7 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
   const { fsPath, scheme } = URI.parse(uri);
   const filename = scheme === "file" ? fsPath : undefined;
   const dirname = filename ? path.dirname(filename) : process.cwd();
-  const cache = Project.getCache(dirname) as Map<TextDocument, MarkoFile>;
+  const cache = getFileCache(dirname);
   let file = cache.get(doc);
   if (!file) {
     const { version } = doc;
@@ -58,7 +58,17 @@ export function getMarkoFile(doc: TextDocument): MarkoFile {
 }
 
 export function clearMarkoCacheForFile(doc: TextDocument) {
-  (Project.getCache(getFSDir(doc)) as Map<TextDocument, MarkoFile>).delete(doc);
+  getFileCache(getFSDir(doc) || process.cwd()).delete(doc);
+}
+
+// Held weakly, so a document's parse goes once nothing holds the document.
+function getFileCache(dirname: string) {
+  const cache = Project.getCache(dirname);
+  let files = cache.get(getFileCache) as
+    | WeakMap<TextDocument, MarkoFile>
+    | undefined;
+  if (!files) cache.set(getFileCache, (files = new WeakMap()));
+  return files;
 }
 
 /**

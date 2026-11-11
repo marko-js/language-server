@@ -20,10 +20,6 @@ Marko tooling for VS Code, powered by [marko-language-server](../../tree/master/
 
 ![goToTag](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToTag.gif)
 
-- Custom Attribute Names
-
-![goToAttrName](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrName.gif)
-
 - Custom Handlers
 
 ![goToAttrValue](https://raw.githubusercontent.com/marko-js/language-server/main/packages/vscode/img/goToAttrValue.gif)

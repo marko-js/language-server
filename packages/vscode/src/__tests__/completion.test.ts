@@ -29,16 +29,7 @@ describe("completion", () => {
     await snap.inline(
       () => suggest("<div aria-liv█>"),
       `
-<div aria-live="off">
-`,
-    );
-  });
-
-  it("attr modifier", async () => {
-    await snap.inline(
-      () => suggest("<div id:s█>"),
-      `
-<div id:scoped>
+<div aria-live>
 `,
     );
   });

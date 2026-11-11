@@ -7,6 +7,7 @@ import {
   type DefinitionLink,
   Diagnostic,
   DidChangeWatchedFilesNotification,
+  FileChangeType,
   ProposedFeatures,
   TextDocumentSyncKind,
 } from "vscode-languageserver/node";
@@ -39,6 +40,11 @@ let canRegisterFileWatchers = false;
 // server registers itself — so register them to keep caches in sync everywhere.
 const WATCHED_FILES_GLOB =
   "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}";
+
+// Changes to these files can alter a project's setup or which tags its
+// templates find, so they clear the caches whatever the change.
+const projectFileReg =
+  /[\\/](?:(?:marko|package|tsconfig|jsconfig|package-lock|(?:[^\\/]+\.)?marko-tag)\.json|pnpm-lock\.yaml|yarn\.lock)$/;
 
 console.log = (...args: unknown[]) => {
   connection.console.log(args.map((v) => inspect(v)).join(" "));
@@ -129,15 +135,23 @@ connection.onDidOpenTextDocument(async (params) => {
 });
 connection.onDidChangeTextDocument(documents.doChange);
 connection.onDidCloseTextDocument(documents.doClose);
-connection.onDidChangeWatchedFiles(documents.doChangeWatchedFiles);
+connection.onDidChangeWatchedFiles((params) => {
+  // Files coming or going can change a project's files or a template's tags;
+  // an edit to any other file is seen by its content or modified time.
+  if (
+    params.changes.some(
+      ({ uri, type }) =>
+        type !== FileChangeType.Changed || projectFileReg.test(uri),
+    )
+  ) {
+    Project.clearCaches();
+  }
+  documents.doChangeWatchedFiles(params);
+});
 
 documents.onFileChange((changeDoc) => {
-  if (changeDoc) {
-    queueDiagnostic();
-    clearMarkoCacheForFile(changeDoc);
-  } else {
-    validateDocs();
-  }
+  if (changeDoc) clearMarkoCacheForFile(changeDoc);
+  queueDiagnostic();
 });
 
 connection.onCompletion(async (params, cancel) => {
