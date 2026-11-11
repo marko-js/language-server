@@ -25,7 +25,7 @@ export interface Input {}
     ...Marko._.forAttrTag(
       {},
       () => ({
-        ["a"]: {
+        a: {
           [Symbol.iterator]: Marko._.any,
         },
       }),
@@ -62,7 +62,7 @@ export interface Input {}
           of: list,
         },
         () => ({
-          ["a"]: {
+          a: {
             [Symbol.iterator]: Marko._.any,
           },
         }),
@@ -79,7 +79,7 @@ export interface Input {}
           of: list,
         },
         (item, index, all) => ({
-          ["a"]: {
+          a: {
             [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
               item;
               index;
@@ -107,7 +107,7 @@ export interface Input {}
             of: list,
           },
           (item, index) => ({
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
                 item;
                 return () => {
@@ -117,7 +117,7 @@ export interface Input {}
               [Symbol.iterator]: Marko._.any,
             },
             //      ^?
-            ["b"]: {
+            b: {
               [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
                 index;
                 return () => {
@@ -145,7 +145,7 @@ export interface Input {}
             of: list,
           },
           (item) => ({
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_6)]: (() => {
                 const __marko_internal_tag_7 = Marko._.resolveTemplate(
                   import("@marko/runtime-tags/tags/const.d.marko"),
@@ -206,7 +206,7 @@ export interface Input {}
             in: record,
           },
           (key, value) => ({
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_10)]: (() => {
                 key;
                 value;
@@ -234,7 +234,7 @@ export interface Input {}
               in: record,
             },
             (key) => ({
-              ["a"]: {
+              a: {
                 [Marko._.contentFor(__marko_internal_tag_11)]: (() => {
                   const __marko_internal_tag_12 = Marko._.resolveTemplate(
                     import("@marko/runtime-tags/tags/const.d.marko"),
@@ -285,7 +285,7 @@ export interface Input {}
             to: 10,
           },
           (index) => ({
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_14)]: (() => {
                 index;
                 return () => {
@@ -311,7 +311,7 @@ export interface Input {}
               to: 10,
             },
             (index) => ({
-              ["a"]: {
+              a: {
                 [Marko._.contentFor(__marko_internal_tag_15)]: (() => {
                   index;
                   return () => {
@@ -338,7 +338,7 @@ export interface Input {}
               step: 2,
             },
             (index) => ({
-              ["a"]: {
+              a: {
                 [Marko._.contentFor(__marko_internal_tag_16)]: (() => {
                   index;
                   return () => {
@@ -366,7 +366,7 @@ export interface Input {}
               to: 10,
             },
             (index) => ({
-              ["a"]: {
+              a: {
                 [Marko._.contentFor(__marko_internal_tag_17)]: (() => {
                   const __marko_internal_tag_18 = Marko._.resolveTemplate(
                     import("@marko/runtime-tags/tags/const.d.marko"),

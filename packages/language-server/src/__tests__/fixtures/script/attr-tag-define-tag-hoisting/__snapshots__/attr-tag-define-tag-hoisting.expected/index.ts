@@ -32,10 +32,10 @@ export interface Input {}
     const __marko_internal_rendered_3 = Marko._.renderDynamicTag(
       __marko_internal_tag_3,
     )()()({
-      ["section"]: Marko._.attrTagFor(__marko_internal_tag_3, "section")(
+      section: Marko._.attrTagFor(__marko_internal_tag_3, "section")(
         "section",
         {
-          ["section"]: {
+          section: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               const __marko_internal_tag_4 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/const.d.marko"),
@@ -62,7 +62,7 @@ export interface Input {}
           },
         },
         {
-          ["section"]: {
+          section: {
             [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               return () => {
                 return Marko._.voidReturn;

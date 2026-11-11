@@ -27,7 +27,7 @@ export interface Input {}
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
       ...Marko._.mergeAttrTags(
         {
-          ["header"]: {
+          header: {
             [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
               return () => {
                 return Marko._.voidReturn;
@@ -39,7 +39,7 @@ export interface Input {}
         someCondition
           ? {
               //^?
-              ["footer"]: {
+              footer: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   return () => {
                     return Marko._.voidReturn;

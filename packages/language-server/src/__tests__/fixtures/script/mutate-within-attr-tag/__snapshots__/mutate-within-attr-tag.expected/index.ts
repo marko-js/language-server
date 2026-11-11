@@ -27,7 +27,7 @@ export interface Input {}
       input["@nested"];
     });
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-      ["nested"]: {
+      nested: {
         onClick() {
           __marko_internal_change__count.count++;
         },

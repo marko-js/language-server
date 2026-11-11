@@ -18,21 +18,21 @@ export interface Input {}
   const __marko_internal_rendered_1 = Marko._.renderDynamicTag(
     __marko_internal_tag_1,
   )()()({
-    ["b"]: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
+    b: Marko._.attrTagFor(__marko_internal_tag_1, "b")(
       "b",
       {
-        ["b"]: {
+        b: {
           [Symbol.iterator]: Marko._.any,
         },
       },
       {
-        ["b"]: {
+        b: {
           c: 2,
           [Symbol.iterator]: Marko._.any,
         },
       },
     ),
-    ["a"]: {
+    a: {
       b: 1,
       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
         const __marko_internal_tag_2 = Marko._.resolveTemplate(

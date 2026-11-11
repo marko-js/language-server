@@ -1287,10 +1287,9 @@ constructor(_) {}
       const [firstAttrTag] = attrTag;
       const name = this.#getAttrTagName(firstAttrTag);
 
-      this.#extractor
-        .write(`["`)
-        .anchor(firstAttrTag.name)
-        .write(`${name}"]: `);
+      // Quoted, not bare: the name is not copied, so its anchor has to fall
+      // inside the key TypeScript reports a problem on.
+      this.#extractor.write(`"`).anchor(firstAttrTag.name).write(`${name}": `);
 
       if (isRepeated) {
         const templateVar = this.#getTemplateVar(firstAttrTag.owner!);
@@ -1306,9 +1305,9 @@ constructor(_) {}
 
         for (const childNode of attrTag) {
           this.#extractor
-            .write(`{["`)
+            .write(`{"`)
             .anchor(childNode.name)
-            .write(`${name}"]: `);
+            .write(`${name}": `);
           this.#writeTagInputObject(childNode);
           this.#extractor.write(`}${SEP_COMMA_NEW_LINE}`);
         }

@@ -18,7 +18,7 @@ export { type Component };
     input["@item"];
   });
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    ["items"]: {
+    items: {
       x: 1,
       [Symbol.iterator]: Marko._.any,
     },
@@ -31,10 +31,10 @@ export { type Component };
     input["@item"];
   });
   Marko._.renderTemplate(__marko_internal_tag_2)()()({
-    ["items"]: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
+    items: Marko._.attrTagFor(__marko_internal_tag_2, "items")(
       "items",
       {
-        ["items"]: {
+        items: {
           x: 1,
           [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
             return () => {
@@ -45,7 +45,7 @@ export { type Component };
         },
       },
       {
-        ["items"]: {
+        items: {
           [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
             return () => {
               return Marko._.voidReturn;

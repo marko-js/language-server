@@ -1,0 +1,17 @@
+<let/count=0/>
+<key-tag aria-label="Hi" class="a" for="b" default=1 value:=count data-count=2>
+//       ^?              ^?        ^?      ^?        ^?           ^?
+  <@my-item label="x"/>
+//  ^?
+  <@item label="y"/>
+//  ^?
+</key-tag>
+<key-tag bogus-key=1/>
+<key-tag bogus=1/>
+<key-tag default="x"/>
+<key-tag>
+  <@itme label="z"/>
+</key-tag>
+<key-tag>
+  <@my-itme label="z"/>
+</key-tag>

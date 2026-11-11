@@ -24,7 +24,7 @@ export { type Component };
           i++;
           return {
             //    ^?
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 done;
                 //      ^?
@@ -56,7 +56,7 @@ export { type Component };
           const doubleIndex = index * 2;
           return {
             //          ^?
-            ["a"]: {
+            a: {
               [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                 doubleIndex;
                 return () => {
@@ -84,7 +84,7 @@ export { type Component };
             const a = 1 as const;
             return {
               //          ^?
-              ["a"]: {
+              a: {
                 a: a,
                 [Symbol.iterator]: Marko._.any,
               },
@@ -94,7 +94,7 @@ export { type Component };
             const b = 2 as const;
             return {
               //          ^?
-              ["b"]: {
+              b: {
                 b: b,
                 [Symbol.iterator]: Marko._.any,
               },

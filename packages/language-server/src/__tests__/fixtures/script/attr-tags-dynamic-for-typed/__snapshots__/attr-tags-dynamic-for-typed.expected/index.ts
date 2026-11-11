@@ -23,7 +23,7 @@ export { type Component };
         of: ["a", "b", "c"],
       },
       (name) => ({
-        ["menuitem"]: {
+        menuitem: {
           [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
             Marko._.renderNativeTag("div")()()({
               [Marko._.content]: (() => {
@@ -51,7 +51,7 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_2)()()(
     //                   ^?
     {
-      ["menuitem"]: {
+      menuitem: {
         [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
           Marko._.renderNativeTag("div")()()({
             [Marko._.content]: (() => {
