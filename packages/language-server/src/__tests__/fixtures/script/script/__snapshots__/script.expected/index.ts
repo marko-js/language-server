@@ -88,7 +88,7 @@ export interface Input<T extends string> {
     x: __marko_internal_hoist__x,
     y: __marko_internal_hoist__y,
     promise: __marko_internal_hoist__promise,
-  } = Marko._.readScope(__marko_internal_rendered_1);
+  } = Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_1));
   Marko._.noop({ x, y, promise, input, $global, $signal });
   return;
 })();

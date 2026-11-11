@@ -10,15 +10,15 @@
   12 | <${input.content} title="a" bogus=1/>
 ```
 
-### Ln 29, Col 7
+### Ln 30, Col 7
 ```marko
-  27 |   ${heading} ${size}
-  28 | </define>
-> 29 | <Card heading="a" size=1/>
+  28 |   ${heading} ${size}
+  29 | </define>
+> 30 | <Card heading="a" size=1/>
      |       ^ (property) "heading": string
-  30 | //    ^?
-  31 | <Card heading=1/>
-  32 | <Card heading="a" bogus=1/>
+  31 | //    ^?
+  32 | <Card heading=1/>
+  33 | <Card heading="a" bogus=1/>
 ```
 
 ## Diagnostics
@@ -86,6 +86,6 @@
      |                 ^^^^^ Type 'number' is not assignable to type 'never'.
   23 |
   24 | // A <define> with attributes is such a body too. (Its attributes are not
-  25 | // checked yet: a tag variable used as a tag name is read through its hoist.)
+  25 | // checked in this fixture, which is typed with Marko 5: its body is `content`,
 ```
 

@@ -96,8 +96,8 @@ export interface Input {}
     hoisted;
     //^?
   };
-  var { hoisted: __marko_internal_hoist__hoisted } = Marko._.readScope(
-    __marko_internal_rendered_5,
+  var { hoisted: __marko_internal_hoist__hoisted } = Marko._.hoisted(
+    Marko._.readScope(__marko_internal_rendered_5),
   );
   Marko._.noop({ hoisted, input, $global, $signal });
   return;

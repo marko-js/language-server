@@ -405,7 +405,7 @@ function ${templateName}() {\n`);
               )
               .join(
                 SEP_COMMA_SPACE,
-              )}} = ${this.#getBodyHoistScopeExpression(program.body)!};\n`,
+              )}} = ${varShared("hoisted")}(${this.#getBodyHoistScopeExpression(program.body)!});\n`,
           );
         }
       }

@@ -41,8 +41,8 @@ export interface Input {}
       };
     })(),
   });
-  var { searchInput: __marko_internal_hoist__searchInput } = Marko._.readScope(
-    __marko_internal_rendered_1,
+  var { searchInput: __marko_internal_hoist__searchInput } = Marko._.hoisted(
+    Marko._.readScope(__marko_internal_rendered_1),
   );
   Marko._.noop({ searchInput, input, $global, $signal });
   return;

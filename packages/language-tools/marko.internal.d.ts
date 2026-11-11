@@ -119,6 +119,18 @@ declare global {
         }[keyof Rendered]
       >;
 
+      /**
+       * The variables a template hoists (`readScope` or `readScopes`). One
+       * they do not have is `any`: the extractor only hoists a variable it
+       * found, so its type was lost, most often with its tag's input when that
+       * fails its check (which TypeScript reports, and which loses the types
+       * of its bodies that have an unannotated param). A missing name would
+       * be reported with no location.
+       */
+      export function hoisted<Scope>(
+        scope: Scope,
+      ): Scope & { [name: string]: any };
+
       export function readScope<Value>(
         value: Value,
       ): MergeScopes<

@@ -63,7 +63,8 @@ export interface Input {
     )()()({
       // A <define> with attributes is such a body too. (Its attributes are not
       [Marko._.contentFor(__marko_internal_tag_10)]:
-        // checked yet: a tag variable used as a tag name is read through its hoist.)
+        // checked in this fixture, which is typed with Marko 5: its body is `content`,
+        // not the `renderBody` read here. They are checked in a Marko 6 project.)
         ({ heading, size }: { heading: string; size?: number }) => {
           heading;
           size;

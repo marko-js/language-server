@@ -263,7 +263,7 @@ export interface Input {}
   var {
     hoistedFromStaticMember: __marko_internal_hoist__hoistedFromStaticMember,
     hoistedFromDynamicMember: __marko_internal_hoist__hoistedFromDynamicMember,
-  } = Marko._.readScope(__marko_internal_rendered_9);
+  } = Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_9));
   Marko._.noop({
     hoistedFromStaticMember,
     hoistedFromDynamicMember,
