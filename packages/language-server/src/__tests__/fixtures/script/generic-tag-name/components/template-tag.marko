@@ -1,0 +1,35 @@
+export interface Input<
+  T extends Marko.Template<
+    { value: string; item?: Marko.AttrTag<{ x: number; renderBody?: Marko.Body<[{ y: number }]> }> },
+    void
+  >,
+> {
+  tag: T;
+}
+
+<${input.tag} value="x"/>
+<${input.tag} value=1/>
+<${input.tag} value="x" bogus=1/>
+<${input.tag} value="x">
+  <@item x=1/>
+  <@item x="2"/>
+</>
+
+// As a template of the constraint's type
+static declare const Tag: Marko.Template<
+  { value: string; item?: Marko.AttrTag<{ x: number; renderBody?: Marko.Body<[{ y: number }]> }> },
+  void
+>;
+<${Tag} value="x" bogus=1/>
+<${Tag} value="x">
+  <@item x=1/>
+  <@item x="2"/>
+</>
+
+// Content params by the constraint
+<${input.tag} value="x">
+  <@item|{ y }| x=1>${y.toFixed()}</@item>
+</>
+<${Tag} value="x">
+  <@item|{ y }| x=1>${y.toFixed()}</@item>
+</>

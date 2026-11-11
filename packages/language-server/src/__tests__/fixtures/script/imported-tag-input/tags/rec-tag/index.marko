@@ -1,0 +1,11 @@
+export interface GroupAttrs {
+  title: string;
+  group?: Marko.AttrTag<GroupAttrs>;
+}
+
+export interface Input {
+  title: string;
+  group?: Marko.AttrTag<GroupAttrs>;
+}
+
+<div>${input.title}</div>

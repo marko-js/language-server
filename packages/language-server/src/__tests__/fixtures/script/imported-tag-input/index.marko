@@ -1,0 +1,107 @@
+import Flat from "./tags/flat-tag/index.marko";
+import Gen from "./tags/gen-tag/index.marko";
+import Rec from "./tags/rec-tag/index.marko";
+import ShortFlat from "<flat-tag>";
+
+$ const flag = Math.random() > 0.5;
+
+// Each tag is rendered by its discovered name, as an imported identifier,
+// by the `import X from "<x>"` shorthand and as `<${X}>`: all report the same.
+
+// An attribute the tag does not have
+<flat-tag title="x" bogus=1/>
+<Flat title="x" bogus=1/>
+<ShortFlat title="x" bogus=1/>
+<${Flat} title="x" bogus=1/>
+
+// An attribute tag the tag does not have
+<flat-tag title="x"><@nope title="a"/></flat-tag>
+<Flat title="x"><@nope title="a"/></Flat>
+<${Flat} title="x"><@nope title="a"/></>
+
+// A missing attribute
+<flat-tag count=1/>
+<Flat count=1/>
+<${Flat} count=1/>
+
+// The tag var
+<flat-tag/discovered title="x"/>
+<Flat/imported title="x"/>
+<${Flat}/dynamic title="x"/>
+<script>
+  discovered;
+  // ^?
+  imported;
+  // ^?
+  dynamic;
+  // ^?
+</script>
+
+// A generic tag infers its params
+<gen-tag|{ item }| items=[{ id: "a" }]>
+  ${item.id}
+//  ^?
+</gen-tag>
+<Gen|{ item }| items=[{ id: "b" }]>
+  ${item.id}
+//  ^?
+</Gen>
+<${Gen}|{ item }| items=[{ id: "c" }]>
+  ${item.id}
+//  ^?
+</>
+
+// A var hoisted from its body
+<gen-tag|{ item }| items=[{ id: "d" }]>
+  <const/discoveredHoisted=() => item/>
+</gen-tag>
+<Gen|{ item }| items=[{ id: "e" }]>
+  <const/importedHoisted=() => item/>
+</Gen>
+<${Gen}|{ item }| items=[{ id: "f" }]>
+  <const/dynamicHoisted=() => item/>
+</>
+<script>
+  discoveredHoisted;
+  // ^?
+  importedHoisted;
+  // ^?
+  dynamicHoisted;
+  // ^?
+</script>
+
+// A recursive attribute tag
+<rec-tag title="a">
+  <@group title="b">
+    <@group title="c" bogus=1/>
+  </@group>
+</rec-tag>
+<Rec title="a">
+  <@group title="b">
+    <@group title="c" bogus=1/>
+  </@group>
+</Rec>
+<${Rec} title="a">
+  <@group title="b">
+    <@group title="c" bogus=1/>
+  </@group>
+</>
+<rec-tag/>
+<Rec/>
+<${Rec}/>
+
+// Type args
+<gen-tag<{ id: string }>|{ item }| items=[{ id: 1 }]>
+  ${item.id}
+//  ^?
+</gen-tag>
+<Gen<{ id: string }>|{ item }| items=[{ id: 1 }]>
+  ${item.id}
+//  ^?
+</Gen>
+
+// A name that is one of several tags takes any of their inputs (and does not
+// report unknown attributes)
+<${flag ? Flat : Rec} title="x" bogus=1/>
+<${flag ? Flat : "div"} title="x"/>
+<${flag ? Flat : Gen} title="x"/>

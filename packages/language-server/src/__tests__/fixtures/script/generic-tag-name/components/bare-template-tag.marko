@@ -1,0 +1,17 @@
+export interface Input<T extends Marko.Template> {
+  tag: T;
+}
+
+<${input.tag} foo=1>body</>
+<${input.tag}>
+  <@item x=1/>
+  <@item x=2/>
+</>
+
+// As a template of the constraint's type
+static declare const Tag: Marko.Template;
+<${Tag} foo=1>body</>
+<${Tag}>
+  <@item x=1/>
+  <@item x=2/>
+</>

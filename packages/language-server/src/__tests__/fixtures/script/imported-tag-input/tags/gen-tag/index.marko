@@ -1,0 +1,8 @@
+export interface Input<T> {
+  items: T[];
+  content: Marko.Body<[{ item: T; index: number }]>;
+}
+
+<for|item, index| of=input.items>
+  <${input.content} item=item index=index/>
+</for>

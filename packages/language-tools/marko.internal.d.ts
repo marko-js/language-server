@@ -63,6 +63,14 @@ declare global {
       //   : never;
 
       export function attrTagNames<Tag>(
+        tag: Tag & NotGeneric<Tag>,
+        fn: (input: AttrTagNames<InputFor<Tag>>) => void,
+      ): void;
+      export function attrTagNames<Input, Return>(
+        tag: Marko.Template<Input, Return>,
+        fn: (input: AttrTagNames<Input>) => void,
+      ): void;
+      export function attrTagNames<Tag>(
         tag: Tag,
         fn: (input: AttrTagNames<InputFor<Tag>>) => void,
       ): void;
@@ -77,6 +85,12 @@ declare global {
         name: Name,
       ): Marko.NativeTags[Name]["return"]["value"];
 
+      export function contentFor<Name>(
+        tag: Name & NotGeneric<Name>,
+      ): ContentFor<Name>;
+      export function contentFor<Input, Return>(
+        tag: Marko.Template<Input, Return>,
+      ): ContentFor<Marko.Template<Input, Return>>;
       export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
       export const Template: new <Overrides = unknown>() => {
@@ -222,6 +236,18 @@ declare global {
         tag: Tag,
         fallback: Template,
       ): [0] extends [1 & Tag] ? Template : Tag;
+      export function renderDynamicTag<Name>(
+        tag: Name & NotGeneric<Name>,
+      ): DynamicRenderer<Name>;
+      // A name of a type parameter's type (eg `as: S`) defers
+      // `DynamicRenderer`, which is then not callable: such a name is checked
+      // by the constraint it has, as with the other helpers given a tag.
+      export function renderDynamicTag<Name extends keyof Marko.NativeTags>(
+        tag: Name,
+      ): NativeTagsRenderer<Name>;
+      export function renderDynamicTag<Input, Return>(
+        tag: Marko.Template<Input, Return>,
+      ): BaseRenderer<InputOrAny<Input>, Return>;
       export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
 
       export function returnTag<
@@ -428,24 +454,45 @@ declare global {
        * infers its type parameters from them too.
        */
       export function attrTags<Tag, Path extends readonly string[]>(
+        tag: Tag & NotGeneric<Tag>,
+        ...path: Path
+      ): CheckedAttrTags<AttrTagGroup<AttrTagsInput<AnyInputFor<Tag>, Path>>>;
+      export function attrTags<Input, Return, Path extends readonly string[]>(
+        tag: Marko.Template<Input, Return>,
+        ...path: Path
+      ): CheckedAttrTags<AttrTagGroup<AttrTagsInput<Input, Path>>>;
+      export function attrTags<Tag, Path extends readonly string[]>(
         tag: Tag,
         ...path: Path
       ): CheckedAttrTags<AttrTagGroup<AttrTagsInput<AnyInputFor<Tag>, Path>>>;
 
       export type DynamicRenderer<Name> = [0] extends [1 & Name]
         ? DefaultRenderer
-        : [Name] extends [Marko.Template<any, any> | string]
-          ? DynamicInputRenderer<Name>
-          : [Name] extends [AnyMarkoBody]
-            ? BodyRenderer<Name>
-            : [Name] extends [
-                  {
-                    [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
-                      AnyMarkoBody;
-                  },
-                ]
-              ? BodyRenderer<BodyValue>
-              : DefaultRenderer;
+        : [Name] extends [{ _: infer Renderer }]
+          ? // A template (eg an imported one) renders by its own renderer, as
+            // by its discovered name: generic, and checked for unknown
+            // attributes. A union of templates takes any of their inputs.
+            IsUnion<Name> extends false
+            ? Renderer
+            : DynamicInputRenderer<Name>
+          : [Name] extends [Marko.Template<infer Input, infer Return>]
+            ? // A template typed only as `Marko.Template`: by its input, as
+              // TemplateRenderer renders one.
+              IsUnion<Name> extends false
+              ? BaseRenderer<InputOrAny<Input>, Return>
+              : DynamicInputRenderer<Name>
+            : [Name] extends [Marko.Template<any, any> | string]
+              ? DynamicInputRenderer<Name>
+              : [Name] extends [AnyMarkoBody]
+                ? BodyRenderer<Name>
+                : [Name] extends [
+                      {
+                        [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
+                          AnyMarkoBody;
+                      },
+                    ]
+                  ? BodyRenderer<BodyValue>
+                  : DefaultRenderer;
 
       export type TemplateRenderer<Template> = Template extends {
         _: infer Renderer;
@@ -590,7 +637,7 @@ declare abstract class MarkoReturn<Return> {
 type AnyMarkoBody = Marko.Body<any, any>;
 
 /**
- * Renders a tag named by a template or a string, or by one of several of them,
+ * Renders a tag named by a string, or by one of several templates or strings,
  * with any of their inputs (`Marko.Input<Name>`). The attributes are
  * intersected with it rather than related to it, which is cheaper than each
  * renderer's check, so unknown attributes are not reported. Its rest
@@ -625,6 +672,58 @@ type DynamicInputRestAttrTagsRenderer<Name> = <
 >(
   input: Directives<KnownInput<Marko.Input<Name>>> & Input,
 ) => Marko._.ReturnWithRestAttrTagsScope<Input, Marko.Return<Name>>;
+
+/**
+ * Native tags checked as any of `Names`, as `DynamicInputRenderer` checks a
+ * union of them (with their rest attribute tags): `Relate` defers for a type
+ * parameter's names.
+ */
+type NativeTagsRenderer<Names extends keyof Marko.NativeTags> = {
+  <Mode extends number = 1>(
+    mode?: Mode,
+  ): () => Mode extends 2 | 3
+    ? <Input extends Marko.NativeTags[Names]["input"]>(
+        input: Directives<NoAttrTags> & Input & NoAttrTagsIn<Input>,
+      ) => Marko._.ReturnWithRestAttrTagsScope<
+        Input,
+        Marko.NativeTags[Names]["return"]
+      >
+    : <Input extends Marko.NativeTags[Names]["input"]>(
+        input: Marko.Directives & Input & NoAttrTagsIn<Input>,
+      ) => Marko._.ReturnWithScope<Input, Marko.NativeTags[Names]["return"]>;
+};
+
+/** What a native tag takes as attribute tags: none. */
+interface NoAttrTags {
+  [name: string]: never;
+}
+
+/** The attribute tags of `Input` (the extractor marks each one), as `never`. */
+type NoAttrTagsIn<Input> = {
+  [Key in keyof Input as Input[Key] extends { [Symbol.iterator]: infer Mark }
+    ? 0 extends 1 & Mark
+      ? Key
+      : never
+    : never]: never;
+};
+
+/**
+ * The input of a template typed only as `Marko.Template<Input>`: any input,
+ * as for a tag name it does not know, when that is `unknown` (or `any`).
+ */
+type InputOrAny<Input> = unknown extends Input
+  ? Record<string, unknown>
+  : Input;
+
+/** `never` for a type parameter's type, which defers conditional types. */
+type NotGeneric<T> = [T] extends [never] ? never : unknown;
+
+/** `false` when `T` is a single type, assignable to each of its members. */
+type IsUnion<T, All = T> = T extends unknown
+  ? [All] extends [T]
+    ? false
+    : true
+  : never;
 
 type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
   [Marko._.scope]: infer Scope;
@@ -792,14 +891,21 @@ type RestAttrTagsScopes<Input> = Input extends {
     : never
   : never;
 
-type AttrTagValue<Input, Path extends readonly string[]> = Path extends [
-  infer Prop extends keyof Input,
-  ...infer Rest extends readonly string[],
-]
-  ? Exclude<Input[Prop], undefined | null> extends infer Value
-    ? Rest extends readonly []
-      ? Value
-      : AttrTagValue<Value, Rest>
+/**
+ * The attribute tag at `Path` of an input: of any of its members that has it,
+ * so that a tag named by one of several templates types it as one does
+ * (`never` if none has it).
+ */
+type AttrTagValue<Input, Path extends readonly string[]> = Input extends unknown
+  ? Path extends [
+      infer Prop extends keyof Input,
+      ...infer Rest extends readonly string[],
+    ]
+    ? Exclude<Input[Prop], undefined | null> extends infer Value
+      ? Rest extends readonly []
+        ? Value
+        : AttrTagValue<Value, Rest>
+      : never
     : never
   : never;
 
