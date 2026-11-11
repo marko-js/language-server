@@ -1,0 +1,33 @@
+export interface Input {
+  content: Marko.Body<[{ title: string; count?: number }]>;
+  pair: Marko.Body<[a: string, b: number]>;
+  plain: Marko.Body;
+}
+
+// A body whose only param is its input is given attributes, checked as a
+// tag's are.
+<${input.content} title="a" count=1/>
+//                ^?
+<${input.content} title=1/>
+<${input.content} title="a" bogus=1/>
+<${input.content}/>
+
+// A body with other params is given arguments.
+<${input.pair}("a", 1)/>
+<${input.pair}("a", "b")/>
+<${input.pair}("a")/>
+
+// A body with no params takes nothing.
+<${input.plain}/>
+<${input.plain} bogus=1/>
+
+// A <define> with attributes is such a body too. (Its attributes are not
+// checked yet: a tag variable used as a tag name is read through its hoist.)
+<define/Card|{ heading, size }: { heading: string; size?: number }|>
+  ${heading} ${size}
+</define>
+<Card heading="a" size=1/>
+//    ^?
+<Card heading=1/>
+<Card heading="a" bogus=1/>
+<Card/>
