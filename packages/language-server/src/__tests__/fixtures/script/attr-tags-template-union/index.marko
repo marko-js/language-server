@@ -1,0 +1,80 @@
+import Flat from "./tags/flat/index.marko";
+import Menu from "./tags/menu/index.marko";
+import ClassMenu from "./components/class-menu.marko";
+static const flag = Math.random() > 0.5;
+static const FlatOrMenu = flag ? Flat : Menu;
+
+// One attribute tag
+<${FlatOrMenu}>
+  <@item|{ foo }| size="small">${foo}</@item>
+//                               ^?
+</>
+
+// Repeated
+<${FlatOrMenu}>
+  <@item|{ foo }| size="small">${foo}</@item>
+//                               ^?
+  <@item/>
+</>
+
+// In an if
+<${FlatOrMenu}>
+  <if=flag>
+    <@item|{ foo }| size="small">${foo}</@item>
+//                                 ^?
+  </if>
+</>
+
+// In a for
+<${FlatOrMenu}>
+  <for|i| of=[1, 2]>
+    <@item|{ foo }| size="small">${i} ${foo}</@item>
+//                                      ^?
+  </for>
+</>
+
+// Nested, repeated
+<${FlatOrMenu}>
+  <@item>
+    <@row|{ bar }|>${bar}</@row>
+//                   ^?
+    <@row/>
+  </@item>
+</>
+
+// Wrong values
+<${FlatOrMenu}>
+  <@item size="huge"/>
+  <@item bogus=1/>
+</>
+
+// Hoisted from a rest attribute tag
+<${FlatOrMenu}>
+  <@item/>
+  <if=flag>
+    <@item>
+      <const/fromUnion=() => "union" as const/>
+    </@item>
+  </if>
+</>
+
+<script>
+  fromUnion;
+  // ^?
+</script>
+
+// One of several native tags, which have no attribute tags
+static declare const native: "a" | "div";
+<${native}>
+  <@item/>
+  <@item/>
+</>
+
+// A template or a native tag: typed by the template (where both name their
+// content alike; `Menu`'s is `content`, a native tag's here `renderBody`)
+<${flag ? ClassMenu : "div"}>
+  <if=flag>
+    <@item|n| label="a">${n}</@item>
+//         ^?
+  </if>
+</>

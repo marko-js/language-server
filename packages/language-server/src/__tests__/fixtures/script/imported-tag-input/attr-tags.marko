@@ -1,0 +1,154 @@
+import Menu from "./tags/menu-tag/index.marko";
+import Pick from "./tags/pick-tag/index.marko";
+
+$ const flag = Math.random() > 0.5;
+
+// Each tag is rendered by its discovered name, as an imported identifier and
+// as `<${X}>`: all report the same.
+
+// Repeated
+<menu-tag bogus=1>
+  <@item|{ foo }| size="small">${foo}</@item>
+  <@item|{ foo }|>${foo}</@item>
+</menu-tag>
+<Menu bogus=1>
+  <@item|{ foo }| size="small">${foo}</@item>
+  <@item|{ foo }|>${foo}</@item>
+//                  ^?
+</Menu>
+<${Menu} bogus=1>
+  <@item|{ foo }| size="small">${foo}</@item>
+  <@item|{ foo }|>${foo}</@item>
+//                  ^?
+</>
+
+// In an if
+<menu-tag bogus=1>
+  <if=flag>
+    <@item|{ foo }| size="small">${foo}</@item>
+  </if>
+</menu-tag>
+<Menu bogus=1>
+  <if=flag>
+    <@item|{ foo }| size="small">${foo}</@item>
+//                                 ^?
+  </if>
+</Menu>
+<${Menu} bogus=1>
+  <if=flag>
+    <@item|{ foo }| size="small">${foo}</@item>
+//                                 ^?
+  </if>
+</>
+
+// In a for
+<menu-tag bogus=1>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }|>${name} ${foo}</@item>
+  </for>
+</menu-tag>
+<Menu bogus=1>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }|>${name} ${foo}</@item>
+//                            ^?
+  </for>
+</Menu>
+<${Menu} bogus=1>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }|>${name} ${foo}</@item>
+//                            ^?
+  </for>
+</>
+
+// An attribute the attribute tags do not have
+<menu-tag>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| bogus=2>${foo}</@item>
+  </if>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }| size="tiny">${name} ${foo}</@item>
+  </for>
+</menu-tag>
+<Menu>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| bogus=2>${foo}</@item>
+  </if>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }| size="tiny">${name} ${foo}</@item>
+  </for>
+</Menu>
+<${Menu}>
+  <@item|{ foo }| bogus=1>${foo}</@item>
+  <if=flag>
+    <@item|{ foo }| bogus=2>${foo}</@item>
+  </if>
+  <for|name| of=["a", "b"]>
+    <@item|{ foo }| size="tiny">${name} ${foo}</@item>
+  </for>
+</>
+
+// A generic tag's attribute tag
+<pick-tag bogus=1>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+</pick-tag>
+<Pick bogus=1>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+</Pick>
+<${Pick} bogus=1>
+  <@option|v| value="a">${v}</@option>
+//                        ^?
+</>
+
+// A generic tag's repeated attribute tags, and ones in an if and a for
+<pick-tag bogus=1>
+  <@option value="a"/>
+  <@option value="b"/>
+  <if=flag>
+    <@option value="c"/>
+  </if>
+  <for|x| of=["d"]>
+    <@option value=x/>
+  </for>
+</pick-tag>
+<Pick bogus=1>
+  <@option value="a"/>
+  <@option value="b"/>
+  <if=flag>
+    <@option value="c"/>
+  </if>
+  <for|x| of=["d"]>
+    <@option value=x/>
+  </for>
+</Pick>
+<${Pick} bogus=1>
+  <@option value="a"/>
+  <@option value="b"/>
+  <if=flag>
+    <@option value="c"/>
+  </if>
+  <for|x| of=["d"]>
+    <@option value=x/>
+  </for>
+</>
+<pick-tag>
+  <@option value="a" bogus=1/>
+  <if=flag>
+    <@option value="b" bogus=2/>
+  </if>
+</pick-tag>
+<Pick>
+  <@option value="a" bogus=1/>
+  <if=flag>
+    <@option value="b" bogus=2/>
+  </if>
+</Pick>
+<${Pick}>
+  <@option value="a" bogus=1/>
+  <if=flag>
+    <@option value="b" bogus=2/>
+  </if>
+</>

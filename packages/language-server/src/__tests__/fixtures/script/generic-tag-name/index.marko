@@ -1,0 +1,45 @@
+export interface Input<
+  S extends keyof Marko.NativeTags,
+  A extends "a" | "button",
+> {
+  as: S;
+  link: A;
+}
+
+<${input.as} class="x" onClick() {}/>
+<${input.as} class=1/>
+
+// A native tag has no attribute tags: once, repeated, in an <if> and a <for>.
+<${input.as}>
+  <@item/>
+</>
+<${input.as}>
+  <@item/>
+  <@item/>
+</>
+<${input.as}>
+  <if=input.as>
+    <@item/>
+  </if>
+</>
+<${input.as}>
+  <for|x| of=[1]>
+    <@item title=`${x}`/>
+  </for>
+</>
+<${input.as} class=["a", "b"] title="x">
+  hi
+</>
+<${input.link} class="x"/>
+<${input.link} href="/"/>
+<${input.as || "div"} class="x"/>
+
+// As a concrete name
+<div class=1/>
+<button href="/"/>
+
+// As a name of the constraint's type
+static declare const anyTag: keyof Marko.NativeTags;
+static declare const linkTag: "a" | "button";
+<${anyTag} class=1/>
+<${linkTag} href="/"/>
