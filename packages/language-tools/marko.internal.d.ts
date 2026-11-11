@@ -490,15 +490,20 @@ declare global {
         >;
       }
 
+      /**
+       * A body's renderer: given its input, as a template's is, when its only
+       * param is its input (eg a `<define>` with attributes), which is much
+       * cheaper to check than its arguments, else given its arguments.
+       */
       export interface BodyRenderer<Body extends AnyMarkoBody> {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-        (): () => <__marko_internal_input extends unknown>(
-          ...args: BodyParamsWithDefault<Body> &
-            Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
-        ) => ReturnWithScope<
-          __marko_internal_input extends [infer Input] ? Input : never,
-          Body extends Marko.Body<any, infer Return> ? Return : never
-        >;
+        (): () => [0] extends [1 & BodyParamsWithDefault<Body>]
+          ? BodyArgsRenderer<Body>
+          : BodyParamsWithDefault<Body> extends readonly [input?: infer Input]
+            ? BodyInputRenderer<
+                Input,
+                Body extends Marko.Body<any, infer Return> ? Return : never
+              >
+            : BodyArgsRenderer<Body>;
       }
 
       export interface BaseRenderer<Input, Return = void> {
@@ -551,6 +556,30 @@ type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
 interface ReturnAndScope<Scope, Return> {
   return: Return;
   scope: Scope;
+}
+
+/**
+ * A tag's renderer for a body whose only param is its input: related to it
+ * (with `Relate`), so that TypeScript types it by it and reports what it does
+ * not have, while `__marko_internal_input` keeps its type for `Scopes`.
+ */
+interface BodyInputRenderer<Input, Return> {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+  <__marko_internal_input extends unknown>(
+    input: Input & Marko._.Relate<__marko_internal_input, Input>,
+  ): Marko._.ReturnWithScope<__marko_internal_input, Return>;
+}
+
+/** A tag's renderer for a body with params other than one input. */
+interface BodyArgsRenderer<Body extends AnyMarkoBody> {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+  <__marko_internal_input extends unknown>(
+    ...args: BodyParamsWithDefault<Body> &
+      Marko._.Relate<__marko_internal_input, BodyParamsWithDefault<Body>>
+  ): Marko._.ReturnWithScope<
+    __marko_internal_input extends [infer Input] ? Input : never,
+    Body extends Marko.Body<any, infer Return> ? Return : never
+  >;
 }
 
 type BodyParamsWithDefault<Body extends AnyMarkoBody> =
