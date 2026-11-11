@@ -3,8 +3,6 @@ import path from "path";
 import {
   type CompletionItem,
   CompletionItemKind,
-  CompletionItemTag,
-  InsertTextFormat,
   MarkupKind,
   type Range,
   TextEdit,
@@ -13,20 +11,16 @@ import { URI } from "vscode-uri";
 
 import { isHTML } from "./is-html";
 
-const deprecated = [CompletionItemTag.Deprecated] as CompletionItemTag[];
-
 export default function getTagNameCompletion({
   tag,
   range,
-  showAutoComplete,
   importer,
 }: {
   tag: TagDefinition;
   range?: Range;
   importer?: string;
-  showAutoComplete?: true;
 }): CompletionItem {
-  let label = tag.isNestedTag ? `@${tag.name}` : tag.name;
+  const label = tag.isNestedTag ? `@${tag.name}` : tag.name;
   const fileForTag = tag.template || tag.renderer || tag.filePath;
   const fileURIForTag = URI.file(fileForTag).toString();
   const nodeModuleMatch =
@@ -53,32 +47,10 @@ export default function getTagNameCompletion({
             }](${fileURIForTag})`,
   };
 
-  if (tag.description) {
-    documentation.value += `\n\n${tag.description}`;
-  }
-
-  const autocomplete = showAutoComplete ? tag.autocomplete?.[0] : undefined;
-
-  if (autocomplete) {
-    if (autocomplete.displayText) {
-      label = autocomplete.displayText;
-    }
-
-    if (autocomplete.description) {
-      documentation.value += `\n\n${autocomplete.description}`;
-    }
-
-    if (autocomplete.descriptionMoreURL) {
-      documentation.value += `\n\n[More Info](${autocomplete.descriptionMoreURL})`;
-    }
-  }
-
   return {
     label,
     documentation,
-    tags: tag.deprecated ? deprecated : undefined,
-    insertTextFormat: autocomplete ? InsertTextFormat.Snippet : undefined,
     kind: html ? CompletionItemKind.Property : CompletionItemKind.Class,
-    textEdit: range && TextEdit.replace(range, autocomplete?.snippet || label),
+    textEdit: range && TextEdit.replace(range, label),
   };
 }

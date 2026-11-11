@@ -3,7 +3,6 @@ import type { CompletionItem, CompletionParams } from "vscode-languageserver";
 
 import { getMarkoFile, type MarkoFile } from "../../../utils/file";
 import type { Plugin, Result } from "../../types";
-import { AttrName } from "./AttrName";
 import { AttrValue } from "./AttrValue";
 import { Import } from "./Import";
 import { OpenTagName } from "./OpenTagName";
@@ -23,7 +22,6 @@ const handlers: Record<
 > = {
   Tag,
   OpenTagName,
-  AttrName,
   AttrValue,
   Import,
   Static: Import,

@@ -3,7 +3,6 @@ import type { DefinitionLink, DefinitionParams } from "vscode-languageserver";
 
 import { getMarkoFile, type MarkoFile } from "../../../utils/file";
 import type { Plugin, Result } from "../../types";
-import { AttrName } from "./AttrName";
 import { OpenTagName } from "./OpenTagName";
 
 export type DefinitionResult = Result<DefinitionLink[]>;
@@ -19,7 +18,6 @@ const handlers: Record<
   (data: DefinitionMeta<any>) => DefinitionResult
 > = {
   OpenTagName,
-  AttrName,
 };
 
 export const findDefinition: Plugin["findDefinition"] = async (doc, params) => {

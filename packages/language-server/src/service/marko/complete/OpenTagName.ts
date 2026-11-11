@@ -27,7 +27,6 @@ export function OpenTagName({
               tag,
               range,
               importer: filename,
-              showAutoComplete: true,
             }),
           );
         }
@@ -51,7 +50,6 @@ export function OpenTagName({
           tag,
           range,
           importer: filename,
-          showAutoComplete: true,
         });
         completion.sortText = `0${completion.label}`; // Ensure higher priority than typescript.
         result.push(completion);
