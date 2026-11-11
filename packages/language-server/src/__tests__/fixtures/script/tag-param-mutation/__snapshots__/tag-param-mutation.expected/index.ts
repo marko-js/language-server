@@ -82,8 +82,8 @@ export interface Input {}
       })(),
     });
     var __marko_internal_hoist__string = string;
-    var { inputId: __marko_internal_hoist__inputId } = Marko._.readScope(
-      __marko_internal_rendered_3,
+    var { inputId: __marko_internal_hoist__inputId } = Marko._.hoisted(
+      Marko._.readScope(__marko_internal_rendered_3),
     );
   }
   Marko._.noop({ string, inputId, input, $global, $signal });

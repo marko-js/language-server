@@ -83,8 +83,8 @@ export interface Input {}
       },
     });
     var __marko_internal_hoist__Foo = Foo;
-    var { nested: __marko_internal_hoist__nested } = Marko._.readScope(
-      __marko_internal_rendered_3,
+    var { nested: __marko_internal_hoist__nested } = Marko._.hoisted(
+      Marko._.readScope(__marko_internal_rendered_3),
     );
   }
   Marko._.noop({ Foo, nested, input, $global, $signal });

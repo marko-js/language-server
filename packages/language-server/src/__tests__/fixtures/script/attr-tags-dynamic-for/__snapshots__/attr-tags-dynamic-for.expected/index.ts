@@ -394,11 +394,13 @@ export interface Input {}
         hoistedFromForOf: __marko_internal_hoist__hoistedFromForOf,
         hoistedFromForIn: __marko_internal_hoist__hoistedFromForIn,
         hoistedFromForTo: __marko_internal_hoist__hoistedFromForTo,
-      } = Marko._.readScopes({
-        __marko_internal_rendered_6,
-        __marko_internal_rendered_11,
-        __marko_internal_rendered_17,
-      });
+      } = Marko._.hoisted(
+        Marko._.readScopes({
+          __marko_internal_rendered_6,
+          __marko_internal_rendered_11,
+          __marko_internal_rendered_17,
+        }),
+      );
     }
   }
   Marko._.noop({

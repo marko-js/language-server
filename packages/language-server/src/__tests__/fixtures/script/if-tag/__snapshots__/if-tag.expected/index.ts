@@ -282,14 +282,16 @@ export interface Input {}
         g: __marko_internal_hoist__g,
         h: __marko_internal_hoist__h,
         i: __marko_internal_hoist__i,
-      } = Marko._.readScopes({
-        __marko_internal_rendered_3,
-        __marko_internal_rendered_5,
-        __marko_internal_rendered_9,
-        __marko_internal_rendered_11,
-        __marko_internal_rendered_13,
-        __marko_internal_rendered_16,
-      });
+      } = Marko._.hoisted(
+        Marko._.readScopes({
+          __marko_internal_rendered_3,
+          __marko_internal_rendered_5,
+          __marko_internal_rendered_9,
+          __marko_internal_rendered_11,
+          __marko_internal_rendered_13,
+          __marko_internal_rendered_16,
+        }),
+      );
     }
   }
   Marko._.noop({

@@ -70,7 +70,7 @@ export interface Input {}
   });
   var {
     hoistedFromStaticMember: __marko_internal_hoist__hoistedFromStaticMember,
-  } = Marko._.readScope(__marko_internal_rendered_1);
+  } = Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_1));
   Marko._.noop({ hoistedFromStaticMember, input, $global, $signal });
   return;
 })();

@@ -119,10 +119,12 @@ export interface Input {}
     b: __marko_internal_hoist__b,
     c: __marko_internal_hoist__c,
     d: __marko_internal_hoist__d,
-  } = Marko._.readScopes({
-    __marko_internal_rendered_1,
-    __marko_internal_rendered_6,
-  });
+  } = Marko._.hoisted(
+    Marko._.readScopes({
+      __marko_internal_rendered_1,
+      __marko_internal_rendered_6,
+    }),
+  );
   Marko._.noop({ a, b, c, d, input, $global, $signal });
   return;
 })();
