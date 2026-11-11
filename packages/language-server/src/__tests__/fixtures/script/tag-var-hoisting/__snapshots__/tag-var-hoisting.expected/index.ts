@@ -20,7 +20,7 @@ export interface Input {}
     [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
-      );
+      ).default;
       {
         const {
           a,
@@ -49,7 +49,7 @@ export interface Input {}
         });
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
-        );
+        ).default;
         {
           const [h, i, , ...j] = Marko._.returned(
             () => __marko_internal_rendered_3,

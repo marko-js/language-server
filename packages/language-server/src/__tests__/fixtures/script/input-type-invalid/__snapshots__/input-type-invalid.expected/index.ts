@@ -18,7 +18,7 @@ return;
 })();
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
-export default new (
+const Input = new (
   class Template extends Marko._.Template<{
       
       render(
@@ -62,3 +62,4 @@ export default new (
   _(): () => <__marko_internal_input extends unknown>(input: Marko.Directives & Input & Marko._.Relate<__marko_internal_input, Marko.Directives & Input>) => (Marko._.ReturnWithScope<__marko_internal_input, void>);
 }> {}
 );
+export default Input;

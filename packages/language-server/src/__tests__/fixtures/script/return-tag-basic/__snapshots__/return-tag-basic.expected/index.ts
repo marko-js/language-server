@@ -9,7 +9,7 @@ function __marko_internal_template(this: void) {
   const value = Marko._.hoist(() => __marko_internal_hoist__value);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
-  );
+  ).default;
   {
     const value = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(

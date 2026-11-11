@@ -8,6 +8,7 @@ import path from "path";
 import {
   CancellationToken,
   Command,
+  DiagnosticTag,
   type InitializeParams,
   Position,
 } from "vscode-languageserver";
@@ -40,6 +41,7 @@ MarkoPlugin.initialize?.({
 // const SHOULD_BENCH = process.env.BENCH;
 // const BENCHED = new Set<string>();
 const FIXTURE_DIR = path.join(__dirname, "fixtures");
+const ROOT_DIR = path.join(__dirname, "../../../..");
 
 for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
   const fixtureSubdir = path.join(FIXTURE_DIR, subdir);
@@ -153,7 +155,14 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
             };
             results += `### Ln ${loc.start.line + 1}, Col ${
               loc.start.character + 1
-            }\n\`\`\`marko\n${codeFrame(code, error.message, loc)}\n\`\`\`\n\n`;
+            }\n\`\`\`marko\n${codeFrame(
+              code,
+              // What an editor strikes through.
+              error.tags?.includes(DiagnosticTag.Deprecated)
+                ? `${error.message} (struck through)`
+                : error.message,
+              loc,
+            )}\n\`\`\`\n\n`;
           }
         }
 
@@ -189,7 +198,7 @@ for (const subdir of fs.readdirSync(FIXTURE_DIR)) {
 
         documents.doClose(params);
 
-        await snapshot(results, {
+        await snapshot(normalizeURIs(results, fixtureDir), {
           file: path.relative(fixtureDir, filename.replace(/\.marko$/, ".md")),
           dir: fixtureDir,
         });
@@ -315,6 +324,13 @@ function* getHovers(doc: TextDocument): Generator<Position> {
       character: pos.character,
     };
   }
+}
+
+/** Files linked from results, by where they are in the repo. */
+function normalizeURIs(text: string, fixtureDir: string) {
+  return text
+    .replaceAll(URI.file(fixtureDir).toString(), "<fixture>")
+    .replaceAll(URI.file(ROOT_DIR).toString(), "<root>");
 }
 
 export function* loadMarkoFiles(dir: string): Generator<string> {

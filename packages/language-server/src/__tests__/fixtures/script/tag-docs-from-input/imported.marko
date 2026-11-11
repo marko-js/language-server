@@ -1,0 +1,17 @@
+import FancyButton from "./components/fancy-button.marko";
+import ShinyButton from "./components/ShinyButton.marko";
+import type { Input as FancyInput } from "./components/fancy-button.marko";
+
+// A wrapper extending a deprecated tag's input.
+export interface Input extends FancyInput {}
+//                             ^?
+
+<FancyButton label="Go"/>
+// ^?
+<${FancyButton} label="Go"/>
+//  ^?
+<const/Button=FancyButton/>
+<Button label="Go"/>
+// ^?
+<ShinyButton/>
+// ^?

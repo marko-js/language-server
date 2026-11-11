@@ -1,0 +1,13 @@
+/** Counts clicks, with the Class API. */
+export interface Input {
+  start: number;
+}
+
+class {
+  declare state: { count: number };
+  onCreate(input: Input) {
+    this.state = { count: input.start };
+  }
+}
+
+<button onClick() { component.state.count++ }>${state.count}</button>

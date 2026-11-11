@@ -10,7 +10,7 @@ export interface Input {}
   const inputId = Marko._.hoist(() => __marko_internal_hoist__inputId);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
-  );
+  ).default;
   {
     const string = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
@@ -25,7 +25,7 @@ export interface Input {}
     );
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("./components/test-tag.marko"),
-    );
+    ).default;
     Marko._.renderTemplate(__marko_internal_tag_2)()()({
       //  ^?
       [Marko._.contentFor(__marko_internal_tag_2)]: (val) => {
@@ -51,7 +51,7 @@ export interface Input {}
       (_unused) => {
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/let.d.marko"),
-        );
+        ).default;
         {
           const inputId = Marko._.returned(() => __marko_internal_rendered_4);
           const __marko_internal_rendered_4 = Marko._.renderTemplate(

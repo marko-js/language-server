@@ -135,6 +135,8 @@ class ScriptExtractor {
   #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
   #mutations: Repeatable<Mutation>;
+  /** Whether the template declares its `Input` itself. */
+  #declaresInput = false;
   #tagId = 1;
   #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
@@ -485,9 +487,13 @@ function ${templateName}() {\n`);
     // `MyButtonMarko`. Only auto-discoverable tags get a name, and only when it
     // is not already referenced in the source — a cheap conservative check that
     // keeps the anonymous default export rather than risk a redeclaration.
+    // A template declaring its `Input` names its template `Input` too: one
+    // symbol, which the comment above `Input` documents wherever the
+    // template is used (eg by a tag's name, which reads its `default`).
     const componentName = getComponentName(this.#filename);
-    const exportName =
-      componentName && !this.#code.includes(componentName)
+    const exportName = this.#declaresInput
+      ? "Input"
+      : componentName && !this.#code.includes(componentName)
         ? componentName
         : undefined;
 
@@ -822,16 +828,26 @@ constructor(_) {}
             // The name is a local variable if one is declared, and otherwise
             // (typed `any`, and ignored) the discovered tag.
             this.#extractor.write(
-              `${varShared("fallbackTemplate")}(\n// @ts-ignore\n${tagName},\n${isMarkoFile ? `import("${importPath}")` : varShared("any")})`,
+              `${varShared("fallbackTemplate")}(\n// @ts-ignore\n${tagName},\n`,
             );
+            if (isMarkoFile) {
+              this.#extractor.write(
+                `${varShared("resolveTemplate")}(import("${importPath}")).`,
+              );
+              this.#writeTemplateExport(tag, def);
+            } else {
+              this.#extractor.write(varShared("any"));
+            }
+            this.#extractor.write(")");
           } else {
             this.#extractor.copy(tag.name);
           }
         } else if (isMarkoFile) {
           isTemplate = true;
           this.#extractor.write(
-            `${varShared("resolveTemplate")}(import("${importPath}"))`,
+            `${varShared("resolveTemplate")}(import("${importPath}")).`,
           );
+          this.#writeTemplateExport(tag, def);
         } else {
           this.#writeDynamicTagName(tag);
         }
@@ -1546,6 +1562,17 @@ constructor(_) {}
     }
   }
 
+  /**
+   * The `default` a tag reads off its template's module, with the tag's name
+   * mapped onto it if a template defines the tag (not a core tag's types):
+   * TypeScript's hover there shows the template's docs.
+   */
+  #writeTemplateExport(tag: Node.Tag, def: TagDefinition | undefined) {
+    this.#extractor
+      .anchor(def?.template ? tag.name : undefined, true)
+      .write("default");
+  }
+
   #getCastedType(type: string) {
     return this.#scriptLang === ScriptLang.ts
       ? `${varShared("any")} as ${type}`
@@ -1825,6 +1852,7 @@ constructor(_) {}
     for (const node of program.static) {
       if (node.type === NodeType.Export) {
         if (this.#testAtIndex(REG_INPUT_TYPE, node.start + "export ".length)) {
+          this.#declaresInput = true;
           const exported = this.#ast.export(node) as
             | undefined
             | t.ExportNamedDeclaration;
@@ -1885,6 +1913,7 @@ constructor(_) {}
         if (this.#code.charAt(comment.start + 1) === "*") {
           const type = getJSDocInputType(this.#read(comment), this.#ts!);
           if (type) {
+            this.#declaresInput = true;
             WROTE_COMMENT.add(comment);
             this.#extractor.write("/*").copy(comment.value).write("*/");
             return type;

@@ -10,7 +10,7 @@ export interface Input {}
   const nested = Marko._.hoist(() => __marko_internal_hoist__nested);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/define.d.marko"),
-  );
+  ).default;
   {
     const Foo = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
@@ -39,7 +39,7 @@ export interface Input {}
             [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
               const __marko_internal_tag_4 = Marko._.resolveTemplate(
                 import("@marko/runtime-tags/tags/const.d.marko"),
-              );
+              ).default;
               {
                 const nested = Marko._.returned(
                   () => __marko_internal_rendered_4,
@@ -75,7 +75,7 @@ export interface Input {}
     });
     const __marko_internal_tag_5 = Marko._.resolveTemplate(
       import("marko/src/core-tags/core/script.d.marko"),
-    );
+    ).default;
     Marko._.renderTemplate(__marko_internal_tag_5)()()({
       async value() {
         nested;

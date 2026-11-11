@@ -1,0 +1,7 @@
+{
+  "<registered-button>": { "template": "./lib/button-impl.marko" },
+  "<typed-button>": {
+    "template": "./lib/typed-button.marko",
+    "types": "./lib/typed-button.d.marko"
+  }
+}

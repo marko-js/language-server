@@ -15,7 +15,7 @@ export interface Input<T extends string> {
     [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
-      );
+      ).default;
       {
         const x = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
@@ -30,7 +30,7 @@ export interface Input<T extends string> {
         );
         const __marko_internal_tag_3 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),
-        );
+        ).default;
         {
           const y = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
@@ -45,7 +45,7 @@ export interface Input<T extends string> {
           );
           const __marko_internal_tag_4 = Marko._.resolveTemplate(
             import("@marko/runtime-tags/tags/const.d.marko"),
-          );
+          ).default;
           {
             const promise = Marko._.returned(() => __marko_internal_rendered_4);
             const __marko_internal_rendered_4 = Marko._.renderTemplate(
@@ -55,7 +55,7 @@ export interface Input<T extends string> {
             });
             const __marko_internal_tag_5 = Marko._.resolveTemplate(
               import("marko/src/core-tags/core/script.d.marko"),
-            );
+            ).default;
             Marko._.renderTemplate(__marko_internal_tag_5)()()({
               async value() {
                 console.log(x);
@@ -94,7 +94,7 @@ export interface Input<T extends string> {
 })();
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-export default new (class Template extends Marko._.Template<{
+const Input = new (class Template extends Marko._.Template<{
   render<T extends string>(
     input: Marko.TemplateInput<Input<T>>,
     stream?: {
@@ -139,3 +139,4 @@ export default new (class Template extends Marko._.Template<{
           Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
       ) => Marko._.ReturnWithScope<__marko_internal_input, void>;
 }> {})();
+export default Input;

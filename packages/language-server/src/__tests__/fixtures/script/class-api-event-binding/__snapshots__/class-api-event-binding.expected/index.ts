@@ -20,13 +20,13 @@ export { type Component };
   );
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("./components/fancy-button/index.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     onClick: component.handleClick,
   });
   const __marko_internal_tag_2 = Marko._.resolveTemplate(
     import("./components/fancy-button/index.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_2)()()(
     //                     ^?
     {
@@ -35,7 +35,7 @@ export { type Component };
   );
   const __marko_internal_tag_3 = Marko._.resolveTemplate(
     import("./components/fancy-button/index.marko"),
-  );
+  ).default;
   Marko._.renderTemplate(__marko_internal_tag_3)()()(
     //                     ^?
     {

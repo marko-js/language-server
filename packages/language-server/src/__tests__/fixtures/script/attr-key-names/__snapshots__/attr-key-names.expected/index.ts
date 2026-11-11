@@ -9,7 +9,7 @@ export interface Input {}
   const count = Marko._.hoist(() => __marko_internal_hoist__count);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
-  );
+  ).default;
   {
     const count = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
@@ -24,7 +24,7 @@ export interface Input {}
     );
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
       input["@my-item"];
       input["@item"];
@@ -55,7 +55,7 @@ export interface Input {}
     });
     const __marko_internal_tag_3 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.renderTemplate(__marko_internal_tag_3)()()(
       //  ^?
       {
@@ -64,19 +64,19 @@ export interface Input {}
     );
     const __marko_internal_tag_4 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.renderTemplate(__marko_internal_tag_4)()()({
       bogus: 1,
     });
     const __marko_internal_tag_5 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.renderTemplate(__marko_internal_tag_5)()()({
       default: "x",
     });
     const __marko_internal_tag_6 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
       input["@itme"];
     });
@@ -88,7 +88,7 @@ export interface Input {}
     });
     const __marko_internal_tag_7 = Marko._.resolveTemplate(
       import("./components/key-tag.marko"),
-    );
+    ).default;
     Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
       input["@my-itme"];
     });

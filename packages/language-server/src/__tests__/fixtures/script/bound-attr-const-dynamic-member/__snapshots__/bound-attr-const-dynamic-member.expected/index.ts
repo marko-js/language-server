@@ -10,7 +10,7 @@ export interface Input {}
   const b = Marko._.hoist(() => __marko_internal_hoist__b);
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/let.d.marko"),
-  );
+  ).default;
   {
     const a = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
@@ -20,7 +20,7 @@ export interface Input {}
     });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("@marko/runtime-tags/tags/let.d.marko"),
-    );
+    ).default;
     {
       const b = Marko._.returned(() => __marko_internal_rendered_2);
       const __marko_internal_rendered_2 = Marko._.renderTemplate(
