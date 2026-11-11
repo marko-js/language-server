@@ -1,2 +1,3 @@
 pnpm-lock.yaml
 __snapshots__
+packages/language-server/src/__tests__/fixtures/script/taglib-broken-tag/broken/marko-tag.json

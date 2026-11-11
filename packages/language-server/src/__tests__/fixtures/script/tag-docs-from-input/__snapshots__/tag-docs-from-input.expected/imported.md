@@ -77,6 +77,41 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
 A button that shines.
   17 | // ^?
   18 |
+  19 | // A core tag, documented by its types.
+```
+
+### Ln 20, Col 3
+```marko
+  18 |
+  19 | // A core tag, documented by its types.
+> 20 | <id/buttonId/>
+     |   ^ Core Marko &lt;id&gt; tag.
+(alias) const Input: Template
+---
+Exposes a short unique id string through its tag variable, for `id=` and
+aria attributes.
+
+[Marko docs](https://markojs.com/docs/reference/core-tag#id)
+  21 | //^?
+  22 | <await|n|=Promise.resolve(buttonId)>${n}</await>
+  23 | //^?
+```
+
+### Ln 22, Col 3
+```marko
+  20 | <id/buttonId/>
+  21 | //^?
+> 22 | <await|n|=Promise.resolve(buttonId)>${n}</await>
+     |   ^ Core Marko &lt;await&gt; tag.
+(alias) const Input: Template
+---
+Renders asynchronously with the result of the promise in its argument:
+`@then` with the value it resolves to, `@catch` with the error it rejects
+with, and `@placeholder` while it is pending.
+
+[Marko 5 docs](https://v5.markojs.com/docs/core-tags/#await)
+  23 | //^?
+  24 |
 ```
 
 ## Diagnostics

@@ -71,7 +71,7 @@
 <comments>
   <@comment id="a">
     <@comment id="b">
-      <!--    ^?-->
+      //    ^?
       <let/b=() => "b" as const>
     </@comment>
     <let/a=() => "a" as const>
@@ -96,7 +96,7 @@
 <comments>
   <@comment id="a">
     <@comment id="b">
-      <!--    ^?-->
+      //    ^?
       <let/b=() => "b" as const>
     </@comment>
     <let/a=() => "a" as const>

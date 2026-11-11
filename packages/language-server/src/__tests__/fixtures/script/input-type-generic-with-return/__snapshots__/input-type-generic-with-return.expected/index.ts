@@ -46,7 +46,12 @@ const Input = new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input<T>>,
     reference: Node,
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input>;
+  ): Marko.MountedTemplate<
+    typeof input,
+    typeof __marko_internal_template<T> extends () => infer Return
+      ? Return
+      : never
+  >;
 
   api: typeof __marko_internal_api;
   _<__marko_internal_apply = 1>(

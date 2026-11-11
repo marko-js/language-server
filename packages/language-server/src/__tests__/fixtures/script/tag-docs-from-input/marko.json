@@ -3,5 +3,9 @@
   "<typed-button>": {
     "template": "./lib/typed-button.marko",
     "types": "./lib/typed-button.d.marko"
+  },
+  "<missing-types-button>": {
+    "template": "./lib/missing-types-button.marko",
+    "types": "./lib/missing-types-button.d.marko"
   }
 }

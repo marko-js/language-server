@@ -365,13 +365,22 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
+    <@a>
+      ${item} ${index} ${all}
+      //      ^?      ^?       ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>${item}<!--      ^?--></@a>
-    <@b>${index}<!--      ^?--></@b>
+    <@a>
+      ${item}
+      //      ^?
+    </@a>
+    <@b>
+      ${index}
+      //      ^?
+    </@b>
   </for>
 </>
 <${custom}>
@@ -393,7 +402,10 @@
 } as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>${key} ${value}<!--      ^?     ^?--></@a>
+    <@a>
+      ${key} ${value}
+      //      ^?     ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -411,17 +423,26 @@
 }/>
 <${custom}>
   <for|index| to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -465,13 +486,22 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
+    <@a>
+      ${item} ${index} ${all}
+      //      ^?      ^?       ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>${item}<!--      ^?--></@a>
-    <@b>${index}<!--      ^?--></@b>
+    <@a>
+      ${item}
+      //      ^?
+    </@a>
+    <@b>
+      ${index}
+      //      ^?
+    </@b>
   </for>
 </>
 <${custom}>
@@ -493,7 +523,10 @@
 } as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>${key} ${value}<!--      ^?     ^?--></@a>
+    <@a>
+      ${key} ${value}
+      //      ^?     ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -511,17 +544,26 @@
 </script>
 <${custom}>
   <for|index| to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -565,13 +607,22 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
+    <@a>
+      ${item} ${index} ${all}
+      //      ^?      ^?       ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>${item}<!--      ^?--></@a>
-    <@b>${index}<!--      ^?--></@b>
+    <@a>
+      ${item}
+      //      ^?
+    </@a>
+    <@b>
+      ${index}
+      //      ^?
+    </@b>
   </for>
 </>
 <${custom}>
@@ -593,7 +644,10 @@
 } as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>${key} ${value}<!--      ^?     ^?--></@a>
+    <@a>
+      ${key} ${value}
+      //      ^?     ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -611,17 +665,26 @@
 }/>
 <${custom}>
   <for|index| to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -665,13 +728,22 @@
 </>
 <${custom}>
   <for|item, index, all| of=list>
-    <@a>${item} ${index} ${all}<!--      ^?      ^?       ^?--></@a>
+    <@a>
+      ${item} ${index} ${all}
+      //      ^?      ^?       ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|item, index| of=list>
-    <@a>${item}<!--      ^?--></@a>
-    <@b>${index}<!--      ^?--></@b>
+    <@a>
+      ${item}
+      //      ^?
+    </@a>
+    <@b>
+      ${index}
+      //      ^?
+    </@b>
   </for>
 </>
 <${custom}>
@@ -693,7 +765,10 @@
 } as const>
 <${custom}>
   <for|key, value| in=record>
-    <@a>${key} ${value}<!--      ^?     ^?--></@a>
+    <@a>
+      ${key} ${value}
+      //      ^?     ^?
+    </@a>
   </for>
 </>
 <${custom}>
@@ -711,17 +786,26 @@
 </script>
 <${custom}>
   <for|index| to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| from=1 to=10>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>
   <for|index| to=10 step=2>
-    <@a>${index}<!--      ^?--></@a>
+    <@a>
+      ${index}
+      //      ^?
+    </@a>
   </for>
 </>
 <${custom}>

@@ -11,6 +11,7 @@ export interface Input extends FancyInput {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const Button = Marko._.hoist(() => __marko_internal_hoist__Button);
+  const buttonId = Marko._.hoist(() => __marko_internal_hoist__buttonId);
   const __marko_internal_tag_1 = FancyButton;
   Marko._.renderDynamicTag(__marko_internal_tag_1)()()(
     //                             ^?
@@ -51,9 +52,34 @@ export interface Input extends FancyInput {}
       // ^?
       {},
     );
-    var __marko_internal_hoist__Button = Button;
+    const __marko_internal_tag_6 = Marko._.resolveTemplate(
+      import("@marko/runtime-tags/tags/id.d.marko"),
+    ).default;
+    {
+      const buttonId = Marko._.returned(() => __marko_internal_rendered_6);
+      const __marko_internal_rendered_6 = Marko._.renderTemplate(
+        __marko_internal_tag_6,
+      )()()(
+        // ^?
+        // A core tag, documented by its types.
+        {},
+      );
+      const __marko_internal_tag_7 = Marko._.resolveTemplate(
+        import("marko/src/core-tags/core/await/index.d.marko"),
+      ).default;
+      Marko._.renderTemplate(__marko_internal_tag_7)()()({
+        value: Promise.resolve(buttonId),
+        //^?
+        [Marko._.contentFor(__marko_internal_tag_7)]: (n) => {
+          n;
+          return Marko._.voidReturn;
+        },
+      });
+      var __marko_internal_hoist__Button = Button;
+      var __marko_internal_hoist__buttonId = buttonId;
+    }
   }
-  Marko._.noop({ Button, input, $global, $signal });
+  Marko._.noop({ Button, buttonId, input, $global, $signal });
   return;
 })();
 const __marko_internal_api = "tags";
@@ -84,7 +110,7 @@ const Input = new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>,
     reference: Node,
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input>;
+  ): Marko.MountedTemplate<typeof input, void>;
 
   api: typeof __marko_internal_api;
   _<A = 1>(
@@ -98,4 +124,4 @@ const Input = new (class Template extends Marko._.Template<{
       ) => Marko._.ReturnWithScope<I, void>;
 }> {})();
 export default Input;
-// ^?
+//^?

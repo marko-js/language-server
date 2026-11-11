@@ -205,7 +205,7 @@ static const y = 2;
   </if>
 </>
 <${custom} x=1>
-  <!-- hi-->
+  // hi
   <@a b=1>
     <const/hoistedFromStaticMember=() => 1 as const>
     hi!
@@ -293,7 +293,7 @@ static const y = 2;
   </if>
 </>
 <${custom} x=1>
-  <!-- hi-->
+  // hi
   <@a b=1>
     <const/hoistedFromStaticMember=() => 1 as const>
     hi!

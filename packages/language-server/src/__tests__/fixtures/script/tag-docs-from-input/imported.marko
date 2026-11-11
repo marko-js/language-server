@@ -15,3 +15,9 @@ export interface Input extends FancyInput {}
 // ^?
 <ShinyButton/>
 // ^?
+
+// A core tag, documented by its types.
+<id/buttonId/>
+//^?
+<await|n|=Promise.resolve(buttonId)>${n}</await>
+//^?

@@ -52,8 +52,8 @@ importers:
         specifier: ^17.0.8
         version: 17.0.8
       marko:
-        specifier: ^5.39.43
-        version: 5.39.43
+        specifier: ^5.40.0
+        version: 5.40.0
       mocha:
         specifier: ^11.7.6
         version: 11.7.6
@@ -82,8 +82,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.42.8
-        version: 5.42.8
+        specifier: ^5.43.2
+        version: 5.43.2
       '@marko/language-tools':
         specifier: ^2.7.1
         version: link:../language-tools
@@ -97,8 +97,8 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1(patch_hash=63260bcabe348afac2b14cafcd725106f132adbad0fab0328f16e5a9c6a1a1e4)
       marko:
-        specifier: ^5.39.43
-        version: 5.39.43
+        specifier: ^5.40.0
+        version: 5.40.0
       prettier:
         specifier: ^3.8.4
         version: 3.8.4
@@ -137,8 +137,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.42.8
-        version: 5.42.8
+        specifier: ^5.43.2
+        version: 5.43.2
       htmljs-parser:
         specifier: ^5.20.0
         version: 5.20.0
@@ -153,8 +153,8 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4(supports-color@8.1.1)(typescript@6.0.3)
       marko:
-        specifier: ^5.39.43
-        version: 5.39.43
+        specifier: ^5.40.0
+        version: 5.40.0
       mitata:
         specifier: ^1.0.34
         version: 1.0.34
@@ -171,8 +171,8 @@ importers:
         specifier: ^2.7.0
         version: link:../language-tools
       marko:
-        specifier: ^5.39.43
-        version: 5.39.43
+        specifier: ^5.40.0
+        version: 5.40.0
       tsx:
         specifier: ^4.22.4
         version: 4.22.4
@@ -186,8 +186,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@marko/compiler':
-        specifier: ^5.42.8
-        version: 5.42.8
+        specifier: ^5.43.2
+        version: 5.43.2
       '@marko/language-tools':
         specifier: ^2.7.0
         version: link:../language-tools
@@ -651,6 +651,9 @@ packages:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
 
+  '@isaacs/nonrecursive-glob-match@1.1.0':
+    resolution: {integrity: sha512-GPm/Dbvk5RLmhRnxXIa7nTpK0xtl4E0wj0MslsuNiJ1FIROU+2+9lgUC/dgF7Ey4QCWhfEsgxilMRMCdHPfDfw==}
+
   '@jridgewell/sourcemap-codec@1.6.0':
     resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
@@ -658,23 +661,19 @@ packages:
     resolution: {integrity: sha512-Zl343to4u/t8jz1q7R/1UY6hLX+344cwPLEXsIYthVwdU5zyjuVBGcpf2E24+QZkwFfRfmnHTcscreQzWn3hiA==}
     engines: {node: '>=18'}
 
-  '@luxass/strip-json-comments@2.0.2':
-    resolution: {integrity: sha512-EWtlxDlLx1LYFLwS47FEb92DeXdQiIGJBTrxHiL4v1ajZ4ZuTlIuA+my6b1OZkXgDXNILqvHskzIsk4Nii/XaQ==}
-    engines: {node: '>=24'}
-
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
 
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
 
-  '@marko/compiler@5.42.8':
-    resolution: {integrity: sha512-82hl2ujlU4hth5hl0QITftDUQK/dPa83dcImRl3+e1FGywDjMQuq64SzEx7LmKy+j/A8R1YlTQftJleVh0a/aw==}
-    engines: {node: '>=22'}
+  '@marko/compiler@5.43.2':
+    resolution: {integrity: sha512-bdtlZ/qN2bE3c6fmIEJ2fBbq82clJNuNmFQrZWHV3WEPQzFnSpUYNAblhayOKaZ0UgjunjsQZyCVkhuBm81xtA==}
+    engines: {node: '>=22.12.0'}
 
-  '@marko/runtime-tags@6.3.53':
-    resolution: {integrity: sha512-fWU7JWk0L3ZDkNA6+voIv14MSyjg1pYI5SGryfoDjKAwhdDvlQykaod3yDZl1nE/7F+hXP0vrrC+l8ozUTpmZQ==}
-    engines: {node: '>=22'}
+  '@marko/runtime-tags@6.4.13':
+    resolution: {integrity: sha512-gj9sKOhyrvcH8kO8EBefEbyrmpLYoD6py19+bJ3c5RCxFRtQazMde9CJMXSkL3U3bCZ+f9YMDdf01+DrGG2RGA==}
+    engines: {node: '>=22.12.0'}
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -1149,9 +1148,6 @@ packages:
 
   buffer-equal-constant-time@1.0.1:
     resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
-
-  buffer-from@1.1.2:
-    resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
@@ -1942,12 +1938,6 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  lasso-caching-fs@1.0.2:
-    resolution: {integrity: sha512-mudop0s8U3tLm3Fn9lhiZsiELpLeJToEo6RlDLdph7vWRxL9Sz0o+9WUw1IwlpCYXv/P0CLsMYWFgPwIKWEYvg==}
-
-  lasso-package-root@1.0.1:
-    resolution: {integrity: sha512-j6LnauNCldqSDvOxoKpD6sTzudPGMiwcZQbySoF9KvJ0lD9Dp2t6QZF8kC0jbUDHuQPiAo5RuQ/mC3AGXscUYA==}
-
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
@@ -2035,16 +2025,16 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  magic-string@0.30.21:
-    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+  magic-string@1.4.5:
+    resolution: {integrity: sha512-oLLC2+YvQUfAa+vxoufE/yc1icb87M9iXIRqAoR/2EhE/8cb3SF/+Gi0c2By1B+5Vz2e2vQtUvHiu1+63Znh+w==}
 
   markdown-it@14.3.0:
     resolution: {integrity: sha512-RCEsPjR+sr0x+AuYp601tKTkgFG4YEPLCzHST3cQ/fhlJkqAkz1L2/Qbp1j9qw5SBwQHFBoW8+hoN5xssOF0Tw==}
     hasBin: true
 
-  marko@5.39.43:
-    resolution: {integrity: sha512-SNhXXvP8TOFIQO/3bR1NNEBgXozkYjiAy569fTNeZzRmBGc8img/A9VPHgb4bQRuPfg8TolvqpMdAvqef/4WMQ==}
-    engines: {node: '>=22'}
+  marko@5.40.0:
+    resolution: {integrity: sha512-EUPSx3r/QGnGtukcp+A8TmOceqIF7og2AL1AB75Xhphy6QFzxG4uSwDj88Z3pVoGPhTy83Z1+7+DXOjvGZX4Qw==}
+    engines: {node: '>=22.12.0'}
     hasBin: true
 
   math-intrinsics@1.1.0:
@@ -2089,6 +2079,10 @@ packages:
   minimatch@10.2.6:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
+
+  minimatch@11.0.8:
+    resolution: {integrity: sha512-nFQuYSTVrGvysVBps5Ih+0BdnYFN/Cj3C816r6+p7yK+FHrVLGE4O4N9AFwykrlNlvM2HYt+Rad1Uiro6h88Ig==}
+    engines: {node: 20 || >=22}
 
   minimatch@9.0.9:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
@@ -2360,12 +2354,6 @@ packages:
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
-  raptor-async@1.1.3:
-    resolution: {integrity: sha512-VZCxygWMjW9lKqnApK9D2QbfyzRn7ehiTqnXWwMCLBXANSy+xbnYfbX/5f8YX3bZXu+g+JESmqWPchIQrZj2ig==}
-
-  raptor-regexp@1.0.1:
-    resolution: {integrity: sha512-DqC7ViHJUs3jLIxJI1/HVvCu3yPJaP8CM7PGsHvjimg7yJ3lLOdCBxlPE0G2Q8OJgUA8Pe7nvhm6lcQ3hZepow==}
-
   raptor-util@3.2.0:
     resolution: {integrity: sha512-uEDMMkBCJvjTqYMBnJNxn+neiS6a0rhybQNA9RaexGor1uvKjwyHA5VcbZMZEuqXhKUWbL+WNS7PhuZVZNB7pw==}
 
@@ -2413,6 +2401,13 @@ packages:
   resolve-from@5.0.0:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
+
+  resolve-sync@1.3.0:
+    resolution: {integrity: sha512-ya+kf0m+C4k12q4vo2D5hxob3nSFMkKJb8BZh7RU9KME3iLLcX0BCPnFt3neduTlZqUiJtsG1vThsKw9EE7z3w==}
+
+  resolve.exports@2.0.4:
+    resolution: {integrity: sha512-zepuGL0ulf+nt+XaFrlKeaiTJeyPFPLLY62+ncq1/VTHBdt3HsfXOH60priZ6tnXQozdGcDeIF5JVTanvIcYWQ==}
+    engines: {node: '>=10'}
 
   restore-cursor@5.1.0:
     resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
@@ -2541,13 +2536,6 @@ packages:
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
-    engines: {node: '>=0.10.0'}
-
-  source-map-support@0.5.21:
-    resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
-
-  source-map@0.6.1:
-    resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
   spawndamnit@3.0.1:
@@ -3415,11 +3403,11 @@ snapshots:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
+  '@isaacs/nonrecursive-glob-match@1.1.0': {}
+
   '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@luxass/strip-json-comments@1.4.0': {}
-
-  '@luxass/strip-json-comments@2.0.2': {}
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -3437,28 +3425,21 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  '@marko/compiler@5.42.8':
+  '@marko/compiler@5.43.2':
     dependencies:
-      '@luxass/strip-json-comments': 2.0.2
-      complain: 1.6.1
       htmljs-parser: 5.20.0
       jsesc: 3.1.0
       kleur: 4.1.5
-      lasso-package-root: 1.0.1
-      magic-string: 0.30.21
-      raptor-regexp: 1.0.1
-      raptor-util: 3.2.0
+      magic-string: 1.4.5
       relative-import-path: 1.0.1
-      resolve-from: 5.0.0
-      self-closing-tags: 1.0.1
-      source-map-support: 0.5.21
+      resolve-sync: 1.3.0
 
-  '@marko/runtime-tags@6.3.53':
+  '@marko/runtime-tags@6.4.13':
     dependencies:
-      '@marko/compiler': 5.42.8
+      '@marko/compiler': 5.43.2
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
-      magic-string: 0.30.21
+      magic-string: 1.4.5
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -3991,8 +3972,6 @@ snapshots:
   buffer-crc32@0.2.13: {}
 
   buffer-equal-constant-time@1.0.1: {}
-
-  buffer-from@1.1.2: {}
 
   buffer@5.7.1:
     dependencies:
@@ -4830,14 +4809,6 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  lasso-caching-fs@1.0.2:
-    dependencies:
-      raptor-async: 1.1.3
-
-  lasso-package-root@1.0.1:
-    dependencies:
-      lasso-caching-fs: 1.0.2
-
   leven@3.1.0: {}
 
   levn@0.4.1:
@@ -4926,7 +4897,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  magic-string@0.30.21:
+  magic-string@1.4.5:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
@@ -4939,10 +4910,10 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  marko@5.39.43:
+  marko@5.40.0:
     dependencies:
-      '@marko/compiler': 5.42.8
-      '@marko/runtime-tags': 6.3.53
+      '@marko/compiler': 5.43.2
+      '@marko/runtime-tags': 6.4.13
       app-module-path: 2.2.0
       argly: 1.2.0
       browser-refresh-client: 1.1.4
@@ -4950,10 +4921,9 @@ snapshots:
       csstype: 3.2.3
       events-light: 1.0.5
       listener-tracker: 2.0.0
-      magic-string: 0.30.21
-      minimatch: 10.2.6
+      magic-string: 1.4.5
+      minimatch: 11.0.8
       raptor-util: 3.2.0
-      resolve-from: 5.0.0
       self-closing-tags: 1.0.1
       warp10: 2.1.0
 
@@ -4985,6 +4955,11 @@ snapshots:
 
   minimatch@10.2.6:
     dependencies:
+      brace-expansion: 5.0.12
+
+  minimatch@11.0.8:
+    dependencies:
+      '@isaacs/nonrecursive-glob-match': 1.1.0
       brace-expansion: 5.0.12
 
   minimatch@9.0.9:
@@ -5274,10 +5249,6 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  raptor-async@1.1.3: {}
-
-  raptor-regexp@1.0.1: {}
-
   raptor-util@3.2.0: {}
 
   rc-config-loader@4.1.4(supports-color@8.1.1):
@@ -5342,6 +5313,12 @@ snapshots:
   require-from-string@2.0.2: {}
 
   resolve-from@5.0.0: {}
+
+  resolve-sync@1.3.0:
+    dependencies:
+      resolve.exports: 2.0.4
+
+  resolve.exports@2.0.4: {}
 
   restore-cursor@5.1.0:
     dependencies:
@@ -5475,13 +5452,6 @@ snapshots:
       tinyglobby: 0.2.17
 
   source-map-js@1.2.1: {}
-
-  source-map-support@0.5.21:
-    dependencies:
-      buffer-from: 1.1.2
-      source-map: 0.6.1
-
-  source-map@0.6.1: {}
 
   spawndamnit@3.0.1:
     dependencies:

@@ -189,6 +189,30 @@ A button typed by its declaration.
 [components/split-button/index.marko](<fixture>/components/split-button/index.marko)
 (alias) const SplitButton: Template
   22 | //  ^?
-  23 |
+  23 | <missing-types-button/>
+  24 | //  ^?
+```
+
+### Ln 23, Col 5
+```marko
+  21 | <split-button label="Go"/>
+  22 | //  ^?
+> 23 | <missing-types-button/>
+     |     ^ Custom Marko tag discovered from:
+
+[lib/missing-types-button.marko](<fixture>/lib/missing-types-button.marko)
+  24 | //  ^?
+  25 |
+```
+
+## Diagnostics
+### Ln 23, Col 2
+```marko
+  21 | <split-button label="Go"/>
+  22 | //  ^?
+> 23 | <missing-types-button/>
+     |  ^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
+  24 | //  ^?
+  25 |
 ```
 

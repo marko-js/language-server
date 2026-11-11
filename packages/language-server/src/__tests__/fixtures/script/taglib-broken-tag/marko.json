@@ -1,0 +1,5 @@
+{
+  "script-lang": "js",
+  "<missing-template>": { "template": "./missing.marko" },
+  "<broken-json>": "./broken/marko-tag.json"
+}
