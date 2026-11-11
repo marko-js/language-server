@@ -59,7 +59,7 @@ export async function writeTestFiles(files: Record<string, string>) {
     Object.keys(files).map(async (entry) => {
       const fileName = path.join(tempDir, entry);
       tempFiles.add(fileName);
-      await fs.promises.mkdir(path.dirname(fileName)).catch(noop);
+      await fs.promises.mkdir(path.dirname(fileName), { recursive: true });
       await fs.promises.writeFile(fileName, files[entry]);
       await vscode.commands.executeCommand(
         "vscode.openWith",

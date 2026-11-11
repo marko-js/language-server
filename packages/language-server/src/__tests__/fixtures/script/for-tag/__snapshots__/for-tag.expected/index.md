@@ -366,10 +366,11 @@
 ] as const>
 <for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}
+  //  ^?      ^?       ^?
 </for>
 <for of=list by=(item, index) => `${item}-${index}`>
-  <!--               ^?    ^?-->
+  //               ^?    ^?
 </for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
@@ -383,9 +384,12 @@
   a: 1,
   b: 2,
 } as const>
-<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for|key, value| in=record>
+  ${key} ${value}
+  //  ^?     ^?
+</for>
 <for in=record by=(value, key) => `${value}-${key}`>
-  <!--                 ^?     ^?-->
+  //                 ^?     ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -394,12 +398,21 @@
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>${index}<!--  ^?--></for>
-<for to=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| to=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 to=10>${index}<!--  ^?--></for>
-<for|index| to=10 step=2>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 to=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| to=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| to=10>
   <const/hoistedFromForTo=() => index>
 </for>
@@ -407,12 +420,21 @@
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>${index}<!--  ^?--></for>
-<for until=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| until=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 until=10>${index}<!--  ^?--></for>
-<for|index| until=10 step=2>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 until=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| until=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| until=10>
   <const/hoistedFromForUntil=() => index>
 </for>
@@ -439,10 +461,11 @@
 ] as const>
 <for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}
+  //  ^?      ^?       ^?
 </for>
 <for of=list by=(item, index) => `${item}-${index}`>
-  <!--               ^?    ^?-->
+  //               ^?    ^?
 </for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
@@ -456,9 +479,12 @@
   a: 1,
   b: 2,
 } as const>
-<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for|key, value| in=record>
+  ${key} ${value}
+  //  ^?     ^?
+</for>
 <for in=record by=(value, key) => `${value}-${key}`>
-  <!--                 ^?     ^?-->
+  //                 ^?     ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -467,12 +493,21 @@
   hoistedFromForIn;
   //^?
 </script>
-<for|index| to=10>${index}<!--  ^?--></for>
-<for to=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| to=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 to=10>${index}<!--  ^?--></for>
-<for|index| to=10 step=2>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 to=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| to=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| to=10>
   <const/hoistedFromForTo=() => index>
 </for>
@@ -480,12 +515,21 @@
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>${index}<!--  ^?--></for>
-<for until=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| until=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 until=10>${index}<!--  ^?--></for>
-<for|index| until=10 step=2>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 until=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| until=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| until=10>
   <const/hoistedFromForUntil=() => index>
 </for>
@@ -512,10 +556,11 @@
 ] as const>
 <for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}
+  //  ^?      ^?       ^?
 </for>
 <for of=list by=(item, index) => `${item}-${index}`>
-  <!--               ^?    ^?-->
+  //               ^?    ^?
 </for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
@@ -529,9 +574,12 @@
   a: 1,
   b: 2,
 } as const>
-<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for|key, value| in=record>
+  ${key} ${value}
+  //  ^?     ^?
+</for>
 <for in=record by=(value, key) => `${value}-${key}`>
-  <!--                 ^?     ^?-->
+  //                 ^?     ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -540,12 +588,21 @@
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>${index}<!--  ^?--></for>
-<for to=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| to=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 to=10>${index}<!--  ^?--></for>
-<for|index| to=10 step=2>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 to=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| to=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| to=10>
   <const/hoistedFromForTo=() => index>
 </for>
@@ -553,12 +610,21 @@
   hoistedFromForUntil;
   //^?
 </script>
-<for|index| until=10>${index}<!--  ^?--></for>
-<for until=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| until=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 until=10>${index}<!--  ^?--></for>
-<for|index| until=10 step=2>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 until=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| until=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| until=10>
   <const/hoistedFromForUntil=() => index>
 </for>
@@ -585,10 +651,11 @@
 ] as const>
 <for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}
+  //  ^?      ^?       ^?
 </for>
 <for of=list by=(item, index) => `${item}-${index}`>
-  <!--               ^?    ^?-->
+  //               ^?    ^?
 </for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
@@ -602,9 +669,12 @@
   a: 1,
   b: 2,
 } as const>
-<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for|key, value| in=record>
+  ${key} ${value}
+  //  ^?     ^?
+</for>
 <for in=record by=(value, key) => `${value}-${key}`>
-  <!--                 ^?     ^?-->
+  //                 ^?     ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -613,12 +683,21 @@
   hoistedFromForIn;
   //^?
 }/>
-<for|index| to=10>${index}<!--  ^?--></for>
-<for to=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| to=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 to=10>${index}<!--  ^?--></for>
-<for|index| to=10 step=2>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 to=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| to=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| to=10>
   <const/hoistedFromForTo=() => index>
 </for>
@@ -626,12 +705,21 @@
   hoistedFromForUntil;
   //^?
 }/>
-<for|index| until=10>${index}<!--  ^?--></for>
-<for until=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| until=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 until=10>${index}<!--  ^?--></for>
-<for|index| until=10 step=2>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 until=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| until=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| until=10>
   <const/hoistedFromForUntil=() => index>
 </for>
@@ -658,10 +746,11 @@
 ] as const>
 <for of=list>Repeated!</for>
 <for|item, index, all| of=list>
-  ${item} ${index} ${all}<!--  ^?      ^?       ^?-->
+  ${item} ${index} ${all}
+  //  ^?      ^?       ^?
 </for>
 <for of=list by=(item, index) => `${item}-${index}`>
-  <!--               ^?    ^?-->
+  //               ^?    ^?
 </for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
@@ -675,9 +764,12 @@
   a: 1,
   b: 2,
 } as const>
-<for|key, value| in=record>${key} ${value}<!--  ^?     ^?--></for>
+<for|key, value| in=record>
+  ${key} ${value}
+  //  ^?     ^?
+</for>
 <for in=record by=(value, key) => `${value}-${key}`>
-  <!--                 ^?     ^?-->
+  //                 ^?     ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -686,12 +778,21 @@
   hoistedFromForIn;
   //^?
 </script>
-<for|index| to=10>${index}<!--  ^?--></for>
-<for to=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| to=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 to=10>${index}<!--  ^?--></for>
-<for|index| to=10 step=2>${index}<!--  ^?--></for>
+<for to=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 to=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| to=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| to=10>
   <const/hoistedFromForTo=() => index>
 </for>
@@ -699,12 +800,21 @@
   hoistedFromForUntil;
   //^?
 </script>
-<for|index| until=10>${index}<!--  ^?--></for>
-<for until=10 by=(index) => `${index}`>
-  <!--             ^?-->
+<for|index| until=10>
+  ${index}
+  //  ^?
 </for>
-<for|index| from=1 until=10>${index}<!--  ^?--></for>
-<for|index| until=10 step=2>${index}<!--  ^?--></for>
+<for until=10 by=(index) => `${index}`>
+  //             ^?
+</for>
+<for|index| from=1 until=10>
+  ${index}
+  //  ^?
+</for>
+<for|index| until=10 step=2>
+  ${index}
+  //  ^?
+</for>
 <for|index| until=10>
   <const/hoistedFromForUntil=() => index>
 </for>

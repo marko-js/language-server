@@ -328,9 +328,14 @@ function* getHovers(doc: TextDocument): Generator<Position> {
 
 /** Files linked from results, by where they are in the repo. */
 function normalizeURIs(text: string, fixtureDir: string) {
-  return text
-    .replaceAll(URI.file(fixtureDir).toString(), "<fixture>")
-    .replaceAll(URI.file(ROOT_DIR).toString(), "<root>");
+  return (
+    text
+      .replaceAll(URI.file(fixtureDir).toString(), "<fixture>")
+      .replaceAll(URI.file(ROOT_DIR).toString(), "<root>")
+      // A compiler's message names files by their path.
+      .replaceAll(fixtureDir, "<fixture>")
+      .replaceAll(ROOT_DIR, "<root>")
+  );
 }
 
 export function* loadMarkoFiles(dir: string): Generator<string> {

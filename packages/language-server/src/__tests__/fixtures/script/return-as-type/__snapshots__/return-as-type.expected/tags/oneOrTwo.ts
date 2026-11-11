@@ -64,7 +64,10 @@ const OneOrTwo = new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>,
     reference: Node,
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input>;
+  ): Marko.MountedTemplate<
+    typeof input,
+    typeof __marko_internal_template extends () => infer Return ? Return : never
+  >;
 
   api: typeof __marko_internal_api;
   _<A = 1>(

@@ -511,7 +511,14 @@ const ScriptService: Partial<Plugin> = {
       fileName,
       generatedOffset,
     );
-    if (!quickInfo) return;
+    // Through an anchor, a template TypeScript could not resolve (eg a core
+    // tag's types where Marko is not installed) has nothing to show.
+    if (
+      !quickInfo ||
+      (viaAnchor && quickInfo.kind === ts.ScriptElementKind.unknown)
+    ) {
+      return;
+    }
 
     const sourceRange = extracted
       ? (viaAnchor && extracted.hoverLocationAt(quickInfo.textSpan.start)) ||

@@ -65,7 +65,7 @@
   36 |
   37 | // As a concrete name
 > 38 | <div class=1/>
-     |      ^^^^^ Type 'number' is not assignable to type 'AttrClass'.
+     |      ^^^^^ Type '1' is not assignable to type 'AttrClass'.
   39 | <button href="/"/>
   40 |
   41 | // As a name of the constraint's type

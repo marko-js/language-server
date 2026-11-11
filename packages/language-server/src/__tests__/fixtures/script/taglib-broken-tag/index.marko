@@ -1,0 +1,9 @@
+// A tag whose taglib entry fails to load is reported on the tag, and the
+// rest of the template is still read.
+<missing-template/>
+<broken-json/>
+<ok-tag label="a"/>
+//  ^?
+<let/count=1/>
+<div>${count}</div>
+//      ^?

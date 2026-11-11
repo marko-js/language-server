@@ -101,6 +101,13 @@ export { type Component };
       label: "Go",
     },
   );
+  const __marko_internal_tag_12 = Marko._.resolveTemplate(
+    import("./lib/missing-types-button.d.marko"),
+  ).default;
+  Marko._.renderTemplate(__marko_internal_tag_12)()()(
+    //  ^?
+    {},
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
@@ -132,7 +139,7 @@ export default new (class Template extends Marko._.Template<{
     input: Marko.TemplateInput<Input>,
     reference: Node,
     position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input>;
+  ): Marko.MountedTemplate<typeof input, void>;
 
   api: typeof __marko_internal_api;
   _<A = 1>(

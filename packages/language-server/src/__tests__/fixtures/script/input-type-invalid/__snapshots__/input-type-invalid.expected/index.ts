@@ -56,7 +56,7 @@ const Input = new (
         input: Marko.TemplateInput<Input>,
         reference: Node,
         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-      ): Marko.MountedTemplate<typeof input>;
+      ): Marko.MountedTemplate<typeof input, void>;
       
   api: typeof __marko_internal_api,
   _<A = 1>(m?: A): () => A extends 3

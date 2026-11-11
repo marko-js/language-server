@@ -844,7 +844,7 @@ constructor(_) {}
               this.#extractor.write(
                 `${varShared("resolveTemplate")}(import("${importPath}")).`,
               );
-              this.#writeTemplateExport(tag, def);
+              this.#writeTemplateExport(tag);
             } else {
               this.#extractor.write(varShared("any"));
             }
@@ -857,7 +857,7 @@ constructor(_) {}
           this.#extractor.write(
             `${varShared("resolveTemplate")}(import("${importPath}")).`,
           );
-          this.#writeTemplateExport(tag, def);
+          this.#writeTemplateExport(tag);
         } else {
           this.#writeDynamicTagName(tag);
         }
@@ -1687,14 +1687,12 @@ constructor(_) {}
   }
 
   /**
-   * The `default` a tag reads off its template's module, with the tag's name
-   * mapped onto it if a template defines the tag (not a core tag's types):
-   * TypeScript's hover there shows the template's docs.
+   * The `default` a tag reads off its module (its types, as for a core tag,
+   * or its template), with the tag's name mapped onto it: TypeScript's hover
+   * there shows the comment above its `Input`.
    */
-  #writeTemplateExport(tag: Node.Tag, def: TagDefinition | undefined) {
-    this.#extractor
-      .anchor(def?.template ? tag.name : undefined, true)
-      .write("default");
+  #writeTemplateExport(tag: Node.Tag) {
+    this.#extractor.anchor(tag.name, true).write("default");
   }
 
   /** A tag's arguments, when they are passed before its input object. */
