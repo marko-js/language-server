@@ -1,4 +1,3 @@
-import { strip as stripJSONComments } from "@luxass/strip-json-comments";
 import type * as Compiler from "@marko/compiler";
 import type { TaglibLookup } from "@marko/compiler/babel-utils";
 import { createRequire } from "module";
@@ -7,6 +6,7 @@ import type TS from "typescript/lib/tsserverlibrary";
 import { fileURLToPath } from "url";
 
 import { ScriptLang } from "../extractors/script";
+import { stripComments } from "./strip-comments";
 
 export interface Meta {
   compiler: typeof Compiler;
@@ -142,8 +142,7 @@ export function getScriptLang(
   const dir = path.dirname(fileName);
   const config = getConfig(dir);
   const cache = config.cache.get(getScriptLang) as
-    | Map<string, ScriptLang>
-    | undefined;
+    Map<string, ScriptLang> | undefined;
   let scriptLang = cache?.get(dir);
 
   if (!scriptLang) {
@@ -287,8 +286,7 @@ function loadMeta(dir: string): Meta {
 
 function getTagLookupForProject(meta: Meta, dir: string): TaglibLookup {
   const cache = meta.config.cache.get(getTagLookupForProject) as
-    | undefined
-    | Map<string, TaglibLookup>;
+    undefined | Map<string, TaglibLookup>;
   let lookup = cache?.get(dir);
 
   if (lookup === undefined) {
@@ -320,9 +318,10 @@ function clearCacheForMeta(meta: Meta) {
   meta.compiler.taglib.clearCaches();
 }
 
+// Reads marko.json as Marko's compiler does: comments, but no trailing commas.
 function tryParseJSONWithComments(content: string) {
   try {
-    return JSON.parse(stripJSONComments(content));
+    return JSON.parse(stripComments(content));
   } catch {
     return undefined;
   }

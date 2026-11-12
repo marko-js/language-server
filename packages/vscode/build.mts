@@ -38,7 +38,7 @@ await build({
     "mocha-snap",
     "fast-glob",
     "tsx",
-    "canvas",
+    "@napi-rs/canvas",
     "browserslist",
   ],
   define: {

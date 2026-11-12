@@ -37,15 +37,13 @@ export function OpenTagName({
       tag.concise && tag.parent.type === NodeType.Program
     );
     for (const tag of lookup.getTagsSorted()) {
-      if (
-        !(
-          tag.name === "*" ||
-          tag.isNestedTag ||
-          (skipStatements && tag.parseOptions?.statement) ||
-          (tag.name[0] === "_" &&
-            /^@?marko[/-]|[\\/]node_modules[\\/]/.test(tag.filePath))
-        )
-      ) {
+      if (!(
+        tag.name === "*" ||
+        tag.isNestedTag ||
+        (skipStatements && tag.parseOptions?.statement) ||
+        (tag.name[0] === "_" &&
+          /^@?marko[/-]|[\\/]node_modules[\\/]/.test(tag.filePath))
+      )) {
         const completion = getTagNameCompletion({
           tag,
           range,

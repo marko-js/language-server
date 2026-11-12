@@ -4,7 +4,6 @@ packages:
 allowBuilds:
   "@vscode/vsce-sign": true
   esbuild: true
-  keytar: true
 
 linkWorkspacePackages: true
 
@@ -17,9 +16,5 @@ publicHoistPattern:
 # This repo depends on same-day marko releases; disable pnpm's release-age gate.
 minimumReleaseAge: 0
 
-overrides:
-  vscode-languageserver-types: 3.18.0
-
 patchedDependencies:
-  css-tree@3.2.1: patches/css-tree@3.2.1.patch
-  jsdom@29.1.1: patches/jsdom@29.1.1.patch
+  jsdom@31.0.0: patches/jsdom@31.0.0.patch

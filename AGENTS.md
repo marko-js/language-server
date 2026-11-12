@@ -31,7 +31,7 @@ Commands:
 - `pnpm run build` -- production build of all packages (sets `NODE_ENV=production`)
 - `pnpm run build:dev` -- builds only the vscode extension (inlines language-tools from source, self-contained for dev)
 
-The vscode build is the most complex: it bundles 4 entry points (including tests), copies TypeScript `lib.*.d.ts` files into `dist/`, patches jsdom/prettier internals, and minifies in production.
+The vscode build is the most complex: it bundles 4 entry points (including tests), copies TypeScript `lib.*.d.ts` files into `dist/`, drops the prettier plugins it does not use, and minifies in production. jsdom's sync-XHR worker, which cannot be bundled, is removed by `patches/jsdom@*.patch` (pnpm `patchedDependencies`).
 
 ## Test
 

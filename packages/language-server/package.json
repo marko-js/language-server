@@ -43,24 +43,23 @@
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
   },
   "dependencies": {
-    "@luxass/strip-json-comments": "^1.4.0",
     "@marko/compiler": "^5.43.2",
     "@marko/language-tools": "^2.7.1",
     "axe-core": "^4.14.0",
     "htmljs-parser": "^5.20.0",
-    "jsdom": "^29.1.1",
-    "marko": "^5.40.0",
-    "prettier": "^3.8.4",
+    "jsdom": "^31.0.0",
+    "marko": "^5.40.1",
+    "prettier": "^3.10.1",
     "prettier-plugin-marko": "^4.1.3",
     "relative-import-path": "^1.0.1",
     "typescript": "^6.0.3",
     "vscode-css-languageservice": "^6.3.10",
-    "vscode-languageserver": "^10.0.1",
-    "vscode-languageserver-textdocument": "^1.0.12",
-    "vscode-uri": "^3.1.0"
+    "vscode-languageserver": "^11.0.0",
+    "vscode-languageserver-textdocument": "^1.0.16",
+    "vscode-uri": "^3.2.0"
   },
   "devDependencies": {
-    "@types/jsdom": "28.0.3",
-    "tsx": "^4.22.4"
+    "@types/jsdom": "30.0.0",
+    "tsx": "^4.23.15"
   }
 }

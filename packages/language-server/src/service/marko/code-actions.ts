@@ -217,9 +217,7 @@ export const doCodeActionResolve: NonNullable<
   Plugin["doCodeActionResolve"]
 > = async (action, cancel) => {
   const data = action.data as
-    | MarkoFixActionData
-    | MarkoFixAllActionData
-    | undefined;
+    MarkoFixActionData | MarkoFixAllActionData | undefined;
   if (data?.source !== FIX_ACTION_SOURCE && data?.source !== FIX_ALL_SOURCE) {
     return; // not one of ours
   }

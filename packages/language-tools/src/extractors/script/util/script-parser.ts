@@ -114,8 +114,7 @@ export class ScriptParser {
       );
     if (expr) {
       return (expr as t.ObjectExpression).properties[0] as
-        | t.ObjectMethod
-        | undefined;
+        t.ObjectMethod | undefined;
     }
   }
 

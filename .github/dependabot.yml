@@ -18,3 +18,8 @@ updates:
       major:
         patterns: ["*"]
         update-types: ["major"]
+    ignore:
+      # Matches `engines.vscode` in packages/vscode, so the extension cannot
+      # type-check against APIs its oldest supported VS Code lacks; raise
+      # both together.
+      - dependency-name: "@types/vscode"

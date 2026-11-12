@@ -936,8 +936,7 @@ function getTSConfigFile(fileName: string) {
   const docFsDir = path.dirname(fileName);
   const cache = Project.getCache(docFsDir);
   let configFileCache = cache.get(getTSConfigFile) as
-    | Map<string, string | undefined>
-    | undefined;
+    Map<string, string | undefined> | undefined;
 
   if (configFileCache) {
     configFile = configFileCache.get(docFsDir);
@@ -971,8 +970,7 @@ export function getTSProject(docFsPath: string): TSProject {
   const basePath = (configFile && path.dirname(configFile)) || process.cwd();
   const cache = Project.getCache(configFile && basePath);
   let projectCache = cache.get(getTSProject) as
-    | Map<string, TSProject>
-    | undefined;
+    Map<string, TSProject> | undefined;
   let cached: TSProject | undefined;
 
   // The typescript project and it's language service is

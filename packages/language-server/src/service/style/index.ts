@@ -368,7 +368,17 @@ const StyleSheetService: Partial<Plugin> = {
       const result = extracted.service.doCodeActions(
         extracted.virtualDoc,
         generatedRange,
-        params.context,
+        {
+          ...params.context,
+          // The CSS service is typed for LSP 3.17, where a message is a string.
+          diagnostics: params.context.diagnostics.map((diag) => ({
+            ...diag,
+            message:
+              typeof diag.message === "string"
+                ? diag.message
+                : diag.message.value,
+          })),
+        },
         extracted.parsed,
       );
 

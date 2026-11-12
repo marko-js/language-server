@@ -65,8 +65,7 @@ export function clearMarkoCacheForFile(doc: TextDocument) {
 function getFileCache(dirname: string) {
   const cache = Project.getCache(dirname);
   let files = cache.get(getFileCache) as
-    | WeakMap<TextDocument, MarkoFile>
-    | undefined;
+    WeakMap<TextDocument, MarkoFile> | undefined;
   if (!files) cache.set(getFileCache, (files = new WeakMap()));
   return files;
 }
@@ -81,8 +80,7 @@ export function processDoc<T>(
 ): T {
   const file = getMarkoFile(doc);
   const cache = processorCaches.get(file.parsed) as
-    | Map<typeof process, T>
-    | undefined;
+    Map<typeof process, T> | undefined;
   let result: T | undefined;
 
   if (cache) {
