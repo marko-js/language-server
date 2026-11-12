@@ -1,0 +1,7 @@
+export interface Input {
+  item?: Marko.AttrTag<{ size?: "small" | "large" }>;
+}
+
+<for|item| of=input.item>
+  <span>${item.size}</span>
+</for>

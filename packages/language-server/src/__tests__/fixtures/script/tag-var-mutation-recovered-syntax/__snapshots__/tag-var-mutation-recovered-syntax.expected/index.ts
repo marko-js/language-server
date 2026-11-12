@@ -81,7 +81,7 @@ export default new (
       ): Marko.MountedTemplate<typeof input, void>;
       
   api: typeof __marko_internal_api,
-  _<A = 1>(m?: A): () => A extends 3
+  _<A = 1>(m?: A): () => A extends 2 | 3
     ? Marko._.RestAttrTagsRenderer<Input, void>
     : <I>(input: Marko.Directives & Input & Marko._.Relate<I, Marko.Directives & Input>) => Marko._.ReturnWithScope<I, void>;
 }> {}

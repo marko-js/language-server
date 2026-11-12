@@ -1,0 +1,2 @@
+src/__tests__/fixtures/tag-type-args/src/page.marko:3:7 - error TS2558
+Expected 0 type arguments, but got 1.

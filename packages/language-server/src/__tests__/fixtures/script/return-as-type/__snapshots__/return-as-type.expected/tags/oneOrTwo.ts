@@ -72,7 +72,7 @@ const OneOrTwo = new (class Template extends Marko._.Template<{
   api: typeof __marko_internal_api;
   _<A = 1>(
     m?: A,
-  ): () => A extends 3
+  ): () => A extends 2 | 3
     ? Marko._.RestAttrTagsRenderer<
         Input,
         typeof __marko_internal_template extends () => infer Return
