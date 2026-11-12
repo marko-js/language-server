@@ -1667,7 +1667,12 @@ constructor(_) {}
     if (restAttrTagsBody) {
       // Last, so that a message that prints the input shows what is written
       // on the tag first.
-      this.#extractor.write(`[${varShared("restAttrTags")}]: [\n`);
+      // Its key reports at the tag's name, as a renderer that does not take
+      // rest attribute tags would otherwise report nowhere in the template.
+      this.#extractor
+        .write("[")
+        .anchor(tag.name)
+        .write(`${varShared("restAttrTags")}]: [\n`);
       this.#writeAttrTagGroups(
         restAttrTagsBody,
         this.#getAttrTagsOwner(tag),

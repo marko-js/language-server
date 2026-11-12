@@ -21,29 +21,19 @@ for (const fixture of fs.readdirSync(FIXTURE_DIR)) {
 
   describe(`emit ${fixture}`, () => {
     const outDir = path.join(fixtureDir, "dist");
-    let reported: string;
     let emitted: string[];
 
     before(() => {
       // The previous run's output (including its `.tsbuildinfo`) would make the
       // solution builder consider the project up to date and skip emitting.
       fs.rmSync(outDir, { recursive: true, force: true });
-      reported = typeCheck(path.join(fixtureDir, "tsconfig.json"));
+      assert.equal(
+        typeCheck(path.join(fixtureDir, "tsconfig.json")),
+        "",
+        "expected the fixture to type check cleanly",
+      );
       emitted = findFiles(outDir, ".d.marko");
       assert.ok(emitted.length, "expected `.d.marko` files to be emitted");
-    });
-
-    it("reports the fixture's errors", async () => {
-      if (reported) {
-        await snapshot(reported, { file: "report.txt", dir: fixtureDir });
-      } else {
-        // Most fixtures type check cleanly, and keep no report.
-        assert.deepEqual(
-          findFiles(path.join(fixtureDir, "__snapshots__"), "report.txt"),
-          [],
-          "expected the fixture's errors to be reported",
-        );
-      }
     });
 
     it("emits declaration files", async () => {
