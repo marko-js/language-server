@@ -1,5 +1,35 @@
 # Change Log
 
+## 3.3.0
+
+### Minor Changes
+
+- [#621](https://github.com/marko-js/language-server/pull/621) [`ff493a0`](https://github.com/marko-js/language-server/commit/ff493a028838496832f9c995c9931d0f46417cac) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Show a template's doc comment wherever the template is used. A template that declares its `Input` names its template `Input` as well, so the comment above `Input` documents both: hovering the template imported by name (`import FancyButton from "./fancy-button.marko"`, `<FancyButton>`, `<${FancyButton}>`), or the name of a tag it defines (however the tag is found), shows the comment.
+
+### Patch Changes
+
+- [#629](https://github.com/marko-js/language-server/pull/629) [`34cec3a`](https://github.com/marko-js/language-server/commit/34cec3a631ccc1636e7b0970d08000c18ceb09d3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Show a core tag's doc comment when its name is hovered (eg `<id>`, `<await>`, or the deprecated `<effect>`), now that Marko documents each core tag above the `Input` of its types, as a template is documented. Hovering a tag whose template or types TypeScript cannot find (eg a core tag where Marko is not installed) no longer shows `any`.
+
+- [#631](https://github.com/marko-js/language-server/pull/631) [`83615c6`](https://github.com/marko-js/language-server/commit/83615c6b637d3f70ee95f12a8867055ab0bf9cc0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Check accessibility with jsdom 31, which reads CSS with its own engine instead of css-tree: the extension's server bundle is 1.3 MB smaller. jsdom 31 declares Node `^22.22.2 || ^24.15.0 || >=26`; the extension still runs on the Node 22.22.1 of VS Code 1.116.
+
+- [#631](https://github.com/marko-js/language-server/pull/631) [`83615c6`](https://github.com/marko-js/language-server/commit/83615c6b637d3f70ee95f12a8867055ab0bf9cc0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Update to `vscode-languageserver` 11 and `vscode-languageclient` 11. An incremental edit that joins a `\r` and a `\n` across its boundary no longer leaves a CRLF document's positions off by a line until it is reopened. The extension now sends documents open at startup to the server in order, and restarting the server no longer races the closing connection.
+
+- [#631](https://github.com/marko-js/language-server/pull/631) [`83615c6`](https://github.com/marko-js/language-server/commit/83615c6b637d3f70ee95f12a8867055ab0bf9cc0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Bundle the `marko` 5.40.1 types, which a project without Marko installed is checked with: `role` accepts every current ARIA role and role fallback lists, and `<link as>` and `<meta http-equiv>` accept their valid values.
+
+- [#629](https://github.com/marko-js/language-server/pull/629) [`34cec3a`](https://github.com/marko-js/language-server/commit/34cec3a631ccc1636e7b0970d08000c18ceb09d3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Build against `@marko/compiler` 5.43 and `marko` 5.40, whose taglib discovery reads only what is used. A project without Marko installed is read with them, and the bundled Marko types read a template's input and return types from `Marko.Template` alone. A tag whose `marko.json` entry or `marko-tag.json` fails to load is reported on the tags that use it.
+
+- [#631](https://github.com/marko-js/language-server/pull/631) [`83615c6`](https://github.com/marko-js/language-server/commit/83615c6b637d3f70ee95f12a8867055ab0bf9cc0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Read the comments in `marko.json` with the comment stripper Marko's compiler uses, instead of `@luxass/strip-json-comments`, which these packages no longer depend on. It accepts what the compiler accepts: a `/*` left unclosed at the end of the file now leaves `script-lang` unread, as the compiler fails to read that file, and a comment holding whitespace JSON does not allow (eg a non-breaking space) no longer does.
+
+- [#630](https://github.com/marko-js/language-server/pull/630) [`42f3dc1`](https://github.com/marko-js/language-server/commit/42f3dc14259f8de4bb510052193f119fb4405a21) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Show a notification again once three others of its kind have been shown since: it was only ever shown once a session.
+
+- [#631](https://github.com/marko-js/language-server/pull/631) [`83615c6`](https://github.com/marko-js/language-server/commit/83615c6b637d3f70ee95f12a8867055ab0bf9cc0) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Format with Prettier 3.10, so the scripts in a template are printed as it prints them: eg a union type after `as` or `=` that fits on the next line stays on it instead of being broken onto lines that start with `|`, and a JSDoc comment before an immediately invoked function moves inside its parentheses.
+
+- [#630](https://github.com/marko-js/language-server/pull/630) [`42f3dc1`](https://github.com/marko-js/language-server/commit/42f3dc14259f8de4bb510052193f119fb4405a21) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Format with a prettier or editorconfig config as it is on disk: one created, edited or deleted since the server started was ignored until it restarted, as prettier keeps the configs it loads. The server now has clients watch `.prettierrc*`, `prettier.config.*`, `.editorconfig` and `package.yaml` along with `package.json`, and forgets prettier's configs when one changes. A JS or TS config's edits still need a restart, since Node keeps the module prettier imported.
+
+- [#630](https://github.com/marko-js/language-server/pull/630) [`42f3dc1`](https://github.com/marko-js/language-server/commit/42f3dc14259f8de4bb510052193f119fb4405a21) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Format with the project's prettier config in VS Code when it is a `.prettierrc` without an extension, a `.prettierrc.yaml`/`.yml` or a `package.yaml` key: the extension's bundle left out the YAML parser prettier reads them with, so they were ignored and the defaults used. A prettier config that cannot be loaded is now reported in a warning rather than silently formatted without.
+
+- [#616](https://github.com/marko-js/language-server/pull/616) [`ab15839`](https://github.com/marko-js/language-server/commit/ab1583931e2bb5f9961a644af3b6accd38a9883a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Run the bundles in strict mode as intended: the `import.meta.url` banner sat above esbuild's `"use strict"` directive, so it no longer counted.
+
 ## 3.2.1
 
 ### Patch Changes

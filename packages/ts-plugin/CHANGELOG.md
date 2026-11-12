@@ -1,5 +1,13 @@
 # @marko/ts-plugin
 
+## 3.2.1
+
+### Patch Changes
+
+- [#629](https://github.com/marko-js/language-server/pull/629) [`34cec3a`](https://github.com/marko-js/language-server/commit/34cec3a631ccc1636e7b0970d08000c18ceb09d3) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Build against `@marko/compiler` 5.43 and `marko` 5.40, whose taglib discovery reads only what is used. A project without Marko installed is read with them, and the bundled Marko types read a template's input and return types from `Marko.Template` alone. A tag whose `marko.json` entry or `marko-tag.json` fails to load is reported on the tags that use it.
+
+- [#616](https://github.com/marko-js/language-server/pull/616) [`ab15839`](https://github.com/marko-js/language-server/commit/ab1583931e2bb5f9961a644af3b6accd38a9883a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Run the bundles in strict mode as intended: the `import.meta.url` banner sat above esbuild's `"use strict"` directive, so it no longer counted.
+
 ## 3.2.0
 
 ### Minor Changes
