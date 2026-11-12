@@ -1,16 +1,9 @@
-import { Project } from "@marko/language-tools";
 import assert from "assert";
 import path from "path";
 import { CancellationToken } from "vscode-languageserver";
 import { URI } from "vscode-uri";
 
 import MarkoLanguageService, { documents } from "../service";
-
-Project.setDefaultTypePaths({
-  internalTypesFile:
-    require.resolve("@marko/language-tools/marko.internal.d.ts"),
-  markoTypesFile: require.resolve("marko/index.d.ts"),
-});
 
 // Advertising `prepareProvider` means the editor asks for a rename range before
 // renaming. A plain embedded `<style>` is handled by the CSS service, so the

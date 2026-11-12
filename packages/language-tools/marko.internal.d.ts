@@ -93,11 +93,14 @@ declare global {
       ): ContentFor<Marko.Template<Input, Return>>;
       export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
-      export const Template: new <Overrides = unknown>() => {
+      // Also a type, for the `@extends` of a JavaScript template's class to
+      // name.
+      export type Template<Overrides = unknown> = {
         [
           K in Exclude<keyof Marko.Template, keyof Overrides>
         ]: Marko.Template[K];
       } & Overrides;
+      export const Template: new <Overrides = unknown>() => Template<Overrides>;
 
       export function noop(value: any): void;
 

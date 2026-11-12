@@ -96,6 +96,17 @@
   44 |   </if>
 ```
 
+### Ln 45, Col 4
+```marko
+  43 |     <@a/>
+  44 |   </if>
+> 45 |   <else-if>
+     |    ^ This kind of expression is always falsy.
+  46 |     <@b/>
+  47 |   </else-if>
+  48 | </>
+```
+
 ### Ln 50, Col 4
 ```marko
   48 | </>
@@ -116,6 +127,17 @@
   57 |   <if>
   58 |     <@a/>
   59 |   </if>
+```
+
+### Ln 57, Col 4
+```marko
+  55 |
+  56 | <${custom} x=1>
+> 57 |   <if>
+     |    ^^ This kind of expression is always falsy.
+  58 |     <@a/>
+  59 |   </if>
+  60 | </>
 ```
 
 ### Ln 62, Col 4

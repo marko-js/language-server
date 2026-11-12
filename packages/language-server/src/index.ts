@@ -9,12 +9,11 @@ import {
   DidChangeWatchedFilesNotification,
   FileChangeType,
   ProposedFeatures,
-  TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import type { TextDocument } from "vscode-languageserver-textdocument";
 
+import { getCapabilities } from "./capabilities";
 import service from "./service";
-import { markoCodeActionKinds } from "./service/marko/code-actions";
 import { clearConfigCacheOnChange } from "./service/marko/format";
 import { clearMarkoCacheForFile } from "./utils/file";
 import setupMessages from "./utils/messages";
@@ -72,48 +71,7 @@ connection.onInitialize(async (params) => {
   setupMessages(connection);
   await service.initialize(params);
 
-  return {
-    capabilities: {
-      textDocumentSync: TextDocumentSyncKind.Incremental,
-      documentFormattingProvider: true,
-      definitionProvider: true,
-      hoverProvider: true,
-      renameProvider: { prepareProvider: true },
-      codeActionProvider: {
-        resolveProvider: true,
-        codeActionKinds: markoCodeActionKinds,
-      },
-      referencesProvider: true,
-      documentLinkProvider: { resolveProvider: false },
-      colorProvider: true,
-      documentHighlightProvider: true,
-      documentSymbolProvider: true,
-      completionProvider: {
-        resolveProvider: true,
-        triggerCharacters: [
-          ".",
-          ":",
-          "<",
-          ">",
-          "@",
-          "/",
-          '"',
-          "'",
-          "`",
-          " ",
-          "=",
-          "*",
-          "#",
-          "$",
-          "+",
-          "^",
-          "(",
-          "[",
-          "-",
-        ],
-      },
-    },
-  };
+  return { capabilities: getCapabilities() };
 });
 
 connection.onInitialized(() => {
