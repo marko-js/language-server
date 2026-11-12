@@ -1032,7 +1032,9 @@ constructor(_) {}
     if (condition) {
       this.#extractor.copy(condition);
     } else {
-      this.#extractor.anchor(tag.name).write("undefined");
+      // The name is mapped inside the parentheses, so that an error on them
+      // covers the whole name and not only where it starts.
+      this.#extractor.write("(").anchor(tag.name).write("undefined)");
     }
   }
 

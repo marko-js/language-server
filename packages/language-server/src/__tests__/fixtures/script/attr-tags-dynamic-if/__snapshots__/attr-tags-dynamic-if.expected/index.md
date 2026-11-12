@@ -101,7 +101,7 @@
   43 |     <@a/>
   44 |   </if>
 > 45 |   <else-if>
-     |    ^ This kind of expression is always falsy.
+     |    ^^^^^^^ This kind of expression is always falsy.
   46 |     <@b/>
   47 |   </else-if>
   48 | </>
