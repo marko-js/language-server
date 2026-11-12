@@ -1,0 +1,8 @@
+exit 0
+
+dist/components/FancyButton.d.marko
+dist/counter.d.marko
+dist/greet.d.marko
+dist/js/js-counter.d.marko
+dist/pascal-case-tag.d.marko
+dist/static.d.marko

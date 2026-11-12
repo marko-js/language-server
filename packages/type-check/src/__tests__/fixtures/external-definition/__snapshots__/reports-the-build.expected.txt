@@ -1,0 +1,4 @@
+exit 0
+
+dist/consumer.d.marko
+dist/own.d.marko
