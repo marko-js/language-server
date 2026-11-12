@@ -23,7 +23,7 @@ export { type Component };
       component.state.count++;
     },
     [Marko._.content]: (() => {
-      state.count;
+      [state.count];
       return () => {
         return Marko._.voidReturn;
       };

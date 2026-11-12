@@ -71,7 +71,7 @@ export interface Input extends FancyInput {}
         value: Promise.resolve(buttonId),
         //^?
         [Marko._.contentFor(__marko_internal_tag_7)]: (n) => {
-          n;
+          [n];
           return Marko._.voidReturn;
         },
       });

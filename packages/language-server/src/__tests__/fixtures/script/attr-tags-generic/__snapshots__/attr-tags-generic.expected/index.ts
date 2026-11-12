@@ -22,7 +22,7 @@ export { type Component };
     then: {
       [Marko._.contentFor(__marko_internal_tag_1)]: (foo) => {
         //   ^?
-        foo;
+        [foo];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -47,9 +47,9 @@ export { type Component };
               then: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (foo) => {
                   //   ^?
-                  i;
+                  [i];
                   //^?
-                  foo;
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,

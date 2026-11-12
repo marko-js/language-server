@@ -9,6 +9,9 @@ export interface Input {
   renderBody: Marko.Body
 }
 
+<const/buttonTemplate: (typeof import("<fancy-button>"))["default"]=FancyButton/>
+//     ^?
+
 static {
     function greet() {
         return "hello world";

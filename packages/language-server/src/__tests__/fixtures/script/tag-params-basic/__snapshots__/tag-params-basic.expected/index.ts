@@ -15,8 +15,8 @@ export interface Input {}
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     [Marko._.contentFor(__marko_internal_tag_1)]: (a, b) => {
       //        ^? ^?
-      a;
-      b;
+      [a];
+      [b];
       return Marko._.voidReturn;
     },
   });
@@ -50,10 +50,12 @@ export interface Input {}
       }
     },
   });
-  () => {
-    hoistedFromTestTag;
-    //^?
-  };
+  [
+    () => {
+      hoistedFromTestTag;
+      //^?
+    },
+  ];
   var { hoistedFromTestTag: __marko_internal_hoist__hoistedFromTestTag } =
     Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_2));
   Marko._.noop({ hoistedFromTestTag, input, $global, $signal });

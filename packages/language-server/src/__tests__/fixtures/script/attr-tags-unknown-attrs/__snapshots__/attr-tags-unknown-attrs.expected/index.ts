@@ -24,7 +24,7 @@ export { type Component };
       size: "small",
       bogus: 1,
       [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
-        foo;
+        [foo];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -49,8 +49,8 @@ export { type Component };
                 size: "small",
                 bogus: 1,
                 [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
-                  name;
-                  foo;
+                  [name];
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -79,8 +79,8 @@ export { type Component };
               item: {
                 bogus: 1,
                 [Marko._.contentFor(__marko_internal_tag_3)]: ({ foo }) => {
-                  key;
-                  foo;
+                  [key];
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -109,8 +109,8 @@ export { type Component };
               item: {
                 bogus: 1,
                 [Marko._.contentFor(__marko_internal_tag_4)]: ({ foo }) => {
-                  i;
-                  foo;
+                  [i];
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -139,8 +139,8 @@ export { type Component };
               item: {
                 bogus: 1,
                 [Marko._.contentFor(__marko_internal_tag_5)]: ({ foo }) => {
-                  i;
-                  foo;
+                  [i];
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -170,8 +170,8 @@ export { type Component };
                   item: {
                     bogus: 1,
                     [Marko._.contentFor(__marko_internal_tag_6)]: ({ foo }) => {
-                      name;
-                      foo;
+                      [name];
+                      [foo];
                       return Marko._.voidReturn;
                     },
                     [Symbol.iterator]: Marko._.any,
@@ -208,7 +208,7 @@ export { type Component };
                   [Symbol.iterator]: Marko._.any,
                 },
                 [Marko._.contentFor(__marko_internal_tag_7)]: ({ foo }) => {
-                  foo;
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -244,7 +244,7 @@ export { type Component };
                   [Symbol.iterator]: Marko._.any,
                 },
                 [Marko._.contentFor(__marko_internal_tag_8)]: ({ foo }) => {
-                  foo;
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -267,7 +267,7 @@ export { type Component };
     item: {
       bogus: 1,
       [Marko._.contentFor(__marko_internal_tag_9)]: ({ foo }) => {
-        foo;
+        [foo];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -277,7 +277,7 @@ export { type Component };
         item: {
           bogus: 2,
           [Marko._.contentFor(__marko_internal_tag_9)]: ({ foo }) => {
-            foo;
+            [foo];
             return Marko._.voidReturn;
           },
           [Symbol.iterator]: Marko._.any,
@@ -288,7 +288,7 @@ export { type Component };
             item: {
               bogus: 3,
               [Marko._.contentFor(__marko_internal_tag_9)]: ({ foo }) => {
-                foo;
+                [foo];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -388,7 +388,7 @@ export { type Component };
                 item: {
                   bogus: bar,
                   [Marko._.contentFor(__marko_internal_tag_13)]: ({ foo }) => {
-                    foo;
+                    [foo];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -545,7 +545,7 @@ export { type Component };
                       : Marko._.never,
                   ]),
                   [Marko._.contentFor(__marko_internal_tag_18)]: (() => {
-                    name;
+                    [name];
                     return () => {
                       return Marko._.voidReturn;
                     };

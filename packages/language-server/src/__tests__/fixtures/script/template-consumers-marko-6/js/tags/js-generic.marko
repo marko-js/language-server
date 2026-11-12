@@ -1,0 +1,7 @@
+/**
+ * @template T
+ * @typedef {{ value: T, format?: (value: T) => string }} Input
+ */
+<const/formatted=input.format ? input.format(input.value) : String(input.value)/>
+<div>${formatted}</div>
+<return=input.value/>

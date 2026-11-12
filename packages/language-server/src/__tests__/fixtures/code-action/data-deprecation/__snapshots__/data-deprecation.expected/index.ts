@@ -14,7 +14,7 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     class: data.className,
     [Marko._.content]: (() => {
-      data.name;
+      [data.name];
       return () => {
         return Marko._.voidReturn;
       };

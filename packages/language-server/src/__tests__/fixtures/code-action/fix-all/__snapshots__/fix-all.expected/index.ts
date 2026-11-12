@@ -14,8 +14,8 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     class: data.theme,
     [Marko._.content]: (() => {
-      data.title;
-      data.body;
+      [data.title];
+      [data.body];
       return () => {
         return Marko._.voidReturn;
       };

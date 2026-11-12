@@ -14,7 +14,7 @@ export interface Component extends Marko._.ResolveComponent<
   );
   Marko._.renderNativeTag("button")()()({
     [Marko._.content]: (() => {
-      (input as Input).label;
+      [(input as Input).label];
       return () => {
         return Marko._.voidReturn;
       };

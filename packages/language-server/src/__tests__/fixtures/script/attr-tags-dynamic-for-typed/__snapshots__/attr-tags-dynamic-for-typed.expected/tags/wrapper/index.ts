@@ -30,7 +30,7 @@ export interface Input extends ChildInput {}
                   ...item,
                   extra: 1,
                   [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
-                    foo;
+                    [foo];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,

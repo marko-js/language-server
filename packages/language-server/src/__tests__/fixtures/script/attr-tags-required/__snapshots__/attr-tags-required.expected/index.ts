@@ -61,7 +61,7 @@ export { type Component };
     {
       req: {
         [Marko._.contentFor(__marko_internal_tag_2)]: (n) => {
-          n;
+          [n];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -87,7 +87,7 @@ export { type Component };
     {
       req: {
         [Marko._.contentFor(__marko_internal_tag_3)]: (n) => {
-          n;
+          [n];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,

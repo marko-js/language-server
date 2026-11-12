@@ -62,7 +62,7 @@ export { type Component };
       item: {
         size: "huge",
         [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
-          foo;
+          [foo];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -116,7 +116,7 @@ export { type Component };
       item: {
         bogus: 1,
         [Marko._.contentFor(__marko_internal_tag_4)]: ({ foo }) => {
-          foo;
+          [foo];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -128,7 +128,7 @@ export { type Component };
               item: {
                 size: "large",
                 [Marko._.contentFor(__marko_internal_tag_4)]: ({ foo }) => {
-                  foo;
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,

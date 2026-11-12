@@ -66,8 +66,8 @@ export interface Input {
         // checked in this fixture, which is typed with Marko 5: its body is `content`,
         // not the `renderBody` read here. They are checked in a Marko 6 project.)
         ({ heading, size }: { heading: string; size?: number }) => {
-          heading;
-          size;
+          [heading];
+          [size];
           return Marko._.voidReturn;
         },
     });

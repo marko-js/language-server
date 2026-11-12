@@ -24,7 +24,7 @@ export { type Component };
       option: {
         value: "a",
         [Marko._.contentFor(__marko_internal_tag_1)]: (v) => {
-          v;
+          [v];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -44,7 +44,7 @@ export { type Component };
       option: {
         value: "a",
         [Marko._.contentFor(__marko_internal_tag_2)]: (v) => {
-          v;
+          [v];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -80,7 +80,7 @@ export { type Component };
                 option: {
                   value: x,
                   [Marko._.contentFor(__marko_internal_tag_3)]: (v) => {
-                    v;
+                    [v];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -112,7 +112,7 @@ export { type Component };
             option: {
               value: "b",
               [Marko._.contentFor(__marko_internal_tag_4)]: (v) => {
-                v;
+                [v];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -138,7 +138,7 @@ export { type Component };
     },
     // Tag params: first occurrence static
     [Marko._.contentFor(__marko_internal_tag_5)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
   });
@@ -154,7 +154,7 @@ export { type Component };
     },
     // Tag params: only in a for
     [Marko._.contentFor(__marko_internal_tag_6)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -169,7 +169,7 @@ export { type Component };
               option: {
                 value: id,
                 [Marko._.contentFor(__marko_internal_tag_6)]: (o) => {
-                  o;
+                  [o];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -193,7 +193,7 @@ export { type Component };
     },
     // Tag params: only in a for with an error in another attribute tag (known: unknown)
     [Marko._.contentFor(__marko_internal_tag_7)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -231,7 +231,7 @@ export { type Component };
     },
     // Tag params: only in an if
     [Marko._.contentFor(__marko_internal_tag_8)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -265,7 +265,7 @@ export { type Component };
     },
     // Tag params: static first, another type in a for
     [Marko._.contentFor(__marko_internal_tag_9)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -307,7 +307,7 @@ export { type Component };
                   [Marko._.contentFor(__marko_internal_tag_10)]: (
                     o: string,
                   ) => {
-                    o;
+                    [o];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -328,7 +328,7 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_11)(Marko._.withRestAttrTags)()({
     // Type parameter only from a loop, with keys an occurrence lacks
     [Marko._.contentFor(__marko_internal_tag_11)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -362,7 +362,7 @@ export { type Component };
       [Symbol.iterator]: Marko._.any,
     },
     [Marko._.contentFor(__marko_internal_tag_12)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [

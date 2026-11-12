@@ -20,7 +20,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("button")()()({
     [Marko._.content]: (() => {
-      input.label;
+      [input.label];
       return () => {
         return Marko._.voidReturn;
       };

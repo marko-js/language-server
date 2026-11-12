@@ -19,7 +19,7 @@ export interface Input {
       of: input.a,
     },
     (a) => {
-      a.v;
+      [a.v];
       return Marko._.voidReturn;
     },
   );

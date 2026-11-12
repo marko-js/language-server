@@ -12,9 +12,8 @@ export { type Component }
     (Marko._.error, Marko._.any as MarkoRun.Context)
   );
 Marko._.renderNativeTag("div")()()({
-"data-x": (
-#2
-),
+"data-x": #2
+,
 
 });
 Marko._.renderNativeTag("div")()()({

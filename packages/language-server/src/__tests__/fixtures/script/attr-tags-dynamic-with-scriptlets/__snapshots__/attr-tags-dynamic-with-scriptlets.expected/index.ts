@@ -28,7 +28,7 @@ export { type Component };
                 //    ^?
                 a: {
                   [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-                    done;
+                    [done];
                     //      ^?
                     if (i === 5) {
                       done = true;
@@ -64,7 +64,7 @@ export { type Component };
               //          ^?
               a: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-                  doubleIndex;
+                  [doubleIndex];
                   return () => {
                     return Marko._.voidReturn;
                   };

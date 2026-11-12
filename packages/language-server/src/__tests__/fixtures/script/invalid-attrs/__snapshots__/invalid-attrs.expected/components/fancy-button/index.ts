@@ -15,7 +15,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
-      input.message;
+      [input.message];
       return () => {
         return Marko._.voidReturn;
       };

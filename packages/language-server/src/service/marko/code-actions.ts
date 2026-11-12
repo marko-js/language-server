@@ -311,6 +311,8 @@ async function buildFixEdit(
       originalText,
       filename || "untitled.marko",
       {
+        // As for its diagnostics, on the project's config.
+        ...Project.getConfig(filename && path.dirname(filename)),
         ...compilerConfig,
         code: true,
         applyFixes: fixes,

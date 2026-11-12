@@ -43,12 +43,18 @@ export async function activate(ctx: ExtensionContext) {
     synchronize: {
       // Synchronize the setting section 'marko' to the server
       configurationSection: "marko",
-      fileEvents: workspace.createFileSystemWatcher(
-        "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cts,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}",
-        false,
-        false,
-        false,
-      ),
+      fileEvents: [
+        workspace.createFileSystemWatcher(
+          "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,tsconfig.*.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}",
+        ),
+        // Tag directories moved or deleted as a whole, which are reported
+        // alone: a tags directory and the two levels of directories Marko
+        // discovers tags in. The language server watches the same with other
+        // clients.
+        workspace.createFileSystemWatcher("**/{tags,components}"),
+        workspace.createFileSystemWatcher("**/{tags,components}/*"),
+        workspace.createFileSystemWatcher("**/{tags,components}/*/*"),
+      ],
     },
   };
 

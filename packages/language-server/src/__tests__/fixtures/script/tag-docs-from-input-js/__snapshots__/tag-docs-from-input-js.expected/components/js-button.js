@@ -1,7 +1,7 @@
 /**
  * A button, typed with JSDoc.
  * @deprecated Use `<js-link>` instead.
- * @typedef {{ label: string }} Input
+ * @typedef {{ label: string; end?: "}" }} Input
  *//**
  * @extends {Marko.Component<Input>}
  * @abstract
@@ -23,7 +23,7 @@ export class Component extends Marko.Component {}
     );
     Marko._.renderNativeTag("button")()()({
       [Marko._.content]: (() => {
-        input.label;
+        [input.label];
         return () => {
           return Marko._.voidReturn;
         };

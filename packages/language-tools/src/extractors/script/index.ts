@@ -114,6 +114,7 @@ export enum ScriptLang {
 }
 
 export interface ExtractScriptOptions {
+  /** @deprecated Not used: a JS template's JSDoc `Input` is read without it. */
   ts?: typeof TS;
   parsed: Parsed;
   lookup: TaglibLookup;
@@ -136,7 +137,6 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #scriptLang: ScriptLang;
-  #ts: ExtractScriptOptions["ts"];
   #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
   #mutations: Repeatable<Mutation>;
   /** Whether the template declares its `Input` itself. */
@@ -158,7 +158,6 @@ class ScriptExtractor {
     this.#scriptLang = scriptLang;
     this.#parsed = parsed;
     this.#lookup = lookup;
-    this.#ts = opts.ts;
     this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
     this.#ast = new ScriptParser(parsed);
@@ -1017,7 +1016,10 @@ constructor(_) {}
 
   #writePlaceholder(placeholder: Node.Placeholder) {
     this.#writeComments(placeholder);
-    this.#extractor.write("(").copy(placeholder.value).write(");\n");
+    // In brackets, TypeScript recovers from a placeholder that does not parse
+    // (eg `a b`) within the array, where in parentheses it abandons the code
+    // around it too.
+    this.#extractor.write("[").copy(placeholder.value).write("];\n");
   }
 
   #writeScriptlet(scriptlet: Node.Scriptlet) {
@@ -1116,8 +1118,9 @@ constructor(_) {}
                     .write('"')
                     .anchor(defaultMapPosition)
                     .copy(name)
-                    .write('": (\n');
+                    .write('": ');
                   if (boundRange) {
+                    this.#extractor.write("(\n");
                     if (!boundRange.member) {
                       // Should have bound to an identifier, so we inline a function to assign to it.
                       const valueLiteral = this.#read(boundRange.value);
@@ -1208,8 +1211,11 @@ constructor(_) {}
                       this.#extractor.write(")");
                     }
                   } else {
+                    // Unwrapped, so that TypeScript recovers from a value that
+                    // does not parse (eg `#2`) within the property. The line
+                    // break ends a trailing line comment.
                     this.#copyWithMutationsReplaced(value.value);
-                    this.#extractor.write("\n)");
+                    this.#extractor.write("\n");
                   }
 
                   break;
@@ -2003,7 +2009,7 @@ constructor(_) {}
   #getInputType(program: Node.Program) {
     return this.#scriptLang === ScriptLang.ts
       ? this.#getTSInputType(program)
-      : this.#ts && this.#getJSDocInputType(program);
+      : this.#getJSDocInputType(program);
   }
 
   #getTSInputType(program: Node.Program) {
@@ -2068,7 +2074,7 @@ constructor(_) {}
     if (comments) {
       for (const comment of comments) {
         if (this.#code.charAt(comment.start + 1) === "*") {
-          const type = getJSDocInputType(this.#read(comment), this.#ts!);
+          const type = getJSDocInputType(this.#read(comment));
           if (type) {
             this.#declaresInput = true;
             WROTE_COMMENT.add(comment);

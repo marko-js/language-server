@@ -59,7 +59,7 @@ export { type Component };
       Marko._.renderNativeTag("p")()()({
         id: "p",
         [Marko._.content]: (() => {
-          year;
+          [year];
           return () => {
             return Marko._.voidReturn;
           };
@@ -69,7 +69,7 @@ export { type Component };
         Marko._.renderNativeTag("span")()()({
           class: "sub-note",
           [Marko._.content]: (() => {
-            isSmartOnly;
+            [isSmartOnly];
             return () => {
               return Marko._.voidReturn;
             };
@@ -79,7 +79,7 @@ export { type Component };
       Marko._.renderNativeTag("span")()()({
         class: "sub-note",
         [Marko._.content]: (() => {
-          type;
+          [type];
           return () => {
             return Marko._.voidReturn;
           };
@@ -98,9 +98,9 @@ export { type Component };
           Marko._.renderNativeTag("span")()()({
             id: i,
             [Marko._.content]: (() => {
-              mobile;
-              i;
-              all.length;
+              [mobile];
+              [i];
+              [all.length];
               return () => {
                 return Marko._.voidReturn;
               };
@@ -123,7 +123,7 @@ export { type Component };
       Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
         something: true,
         [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-          type;
+          [type];
           return () => {
             return Marko._.voidReturn;
           };
@@ -131,7 +131,7 @@ export { type Component };
       });
       Marko._.renderNativeTag("div")()()({
         [Marko._.content]: (() => {
-          ("<b>World</b>");
+          ["<b>World</b>"];
           return () => {
             return Marko._.voidReturn;
           };

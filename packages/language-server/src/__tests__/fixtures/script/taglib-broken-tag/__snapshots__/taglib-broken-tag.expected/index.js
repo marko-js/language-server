@@ -40,7 +40,7 @@
       );
       Marko._.renderNativeTag("div")()()({
         [Marko._.content]: (() => {
-          count;
+          [count];
           return () => {
             return Marko._.voidReturn;
           };

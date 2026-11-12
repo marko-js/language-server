@@ -32,7 +32,7 @@
         __marko_internal_change__count.count++;
       },
       [Marko._.content]: (() => {
-        count;
+        [count];
         return () => {
           return Marko._.voidReturn;
         };

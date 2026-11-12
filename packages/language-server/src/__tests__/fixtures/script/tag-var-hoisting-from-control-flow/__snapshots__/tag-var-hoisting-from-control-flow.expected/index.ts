@@ -53,7 +53,7 @@ export interface Input {}
                 )()()({
                   value: () => a.filter((e) => e.length),
                 });
-                baz;
+                [baz];
                 return new (class MarkoReturn<Return = void> {
                   readonly [Marko._.scope] = { c };
                   declare return: Return;
@@ -104,16 +104,18 @@ export interface Input {}
       }
     }
   })();
-  () => {
-    a;
-    //^?
-    b;
-    //^?
-    c;
-    //^?
-    d;
-    //^?
-  };
+  [
+    () => {
+      a;
+      //^?
+      b;
+      //^?
+      c;
+      //^?
+      d;
+      //^?
+    },
+  ];
   var {
     a: __marko_internal_hoist__a,
     b: __marko_internal_hoist__b,

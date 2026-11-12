@@ -15,7 +15,7 @@ export interface Input {
       of: input.part,
     },
     (part) => {
-      part.kind;
+      [part.kind];
       return Marko._.voidReturn;
     },
   );

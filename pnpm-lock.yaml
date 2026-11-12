@@ -124,6 +124,12 @@ importers:
         specifier: ^4.23.15
         version: 4.23.15
 
+  packages/language-server/src/__tests__/fixtures/script/template-consumers-marko-6:
+    dependencies:
+      marko:
+        specifier: ^6.4.11
+        version: 6.4.14
+
   packages/language-tools:
     dependencies:
       '@marko/compiler':
@@ -139,9 +145,6 @@ importers:
       '@types/babel__code-frame':
         specifier: ^7.27.0
         version: 7.27.0
-      '@typescript/vfs':
-        specifier: ^1.6.6
-        version: 1.6.6(supports-color@8.1.1)(typescript@6.0.3)
       marko:
         specifier: ^5.40.1
         version: 5.40.1
@@ -1039,11 +1042,6 @@ packages:
     resolution: {integrity: sha512-NAGrjn0Pitjqzq/GkgMC4kBYm233PQ8GffyQ9+kTA3AlNQYEzOf25EIM02BAHZv5FRJSpHpJk+OGUxVkOB93GQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/vfs@1.6.6':
-    resolution: {integrity: sha512-gXw0+tpchiQUjTcbnNIPnyLFIhbwJ7M1VaxLQ1vXhjQxtTBK3sdDLY1ih0jxCu1I5K3V0dDxq8CkVZtIMspC3A==}
-    peerDependencies:
-      typescript: '*'
-
   '@typespec/ts-http-runtime@0.3.10':
     resolution: {integrity: sha512-vddvvtZ7sejSlCv+OIkn2ztjB1O31Fc2JsxI/YK725r3elXXlF/J3o3lbXJFRhoeWRWK1tjdZ+GTi6Fdtrp+EA==}
     engines: {node: '>=22.0.0'}
@@ -1835,6 +1833,10 @@ packages:
     resolution: {integrity: sha512-0oTgCrgRCFfVsRFCobR2OgJEnqLCDX5Ey3O6yBSchRfYAKfPl8d5VyMjxhc8ysDMG39oVcfttYxvQiT+bQaeNg==}
     engines: {node: '>=22.12.0'}
     hasBin: true
+
+  marko@6.4.14:
+    resolution: {integrity: sha512-9PRtRcnj+rV6bJ3VqiJan5Aa6db+1q90VlIMU77vqe8IHzH69+1RP8wiQlp9+F4ZkRCVFkJiqaTqRI0IQaqgLg==}
+    engines: {node: '>=22.12.0'}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -3194,13 +3196,6 @@ snapshots:
       '@typescript-eslint/types': 8.72.2
       eslint-visitor-keys: 5.0.1
 
-  '@typescript/vfs@1.6.6(supports-color@8.1.1)(typescript@6.0.3)':
-    dependencies:
-      debug: 4.4.3(supports-color@8.1.1)
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@typespec/ts-http-runtime@0.3.10(supports-color@8.1.1)':
     dependencies:
       http-proxy-agent: 9.1.0(supports-color@8.1.1)
@@ -4036,6 +4031,13 @@ snapshots:
       raptor-util: 3.2.0
       self-closing-tags: 1.0.1
       warp10: 2.1.0
+
+  marko@6.4.14:
+    dependencies:
+      '@marko/compiler': 5.43.2
+      csstype: 3.2.3
+      fastest-levenshtein: 1.0.16
+      magic-string: 1.4.5
 
   math-intrinsics@1.1.0: {}
 

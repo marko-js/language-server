@@ -41,7 +41,7 @@ export interface Input {}
             of: [1],
           },
           (x) => {
-            x;
+            [x];
             return Marko._.voidReturn;
           },
         );

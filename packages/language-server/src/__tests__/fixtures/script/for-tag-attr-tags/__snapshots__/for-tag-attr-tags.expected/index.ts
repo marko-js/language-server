@@ -43,7 +43,7 @@ export { type Component };
                     // ^?
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-                        row.foo;
+                        [row.foo];
                         return () => {
                           return Marko._.voidReturn;
                         };
@@ -55,7 +55,7 @@ export { type Component };
                     // ^?     ^?
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-                        row.bar;
+                        [row.bar];
                         return () => {
                           return Marko._.voidReturn;
                         };
@@ -104,7 +104,7 @@ export { type Component };
                     // ^?
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-                        row.foo;
+                        [row.foo];
                         return () => {
                           return Marko._.voidReturn;
                         };
@@ -116,7 +116,7 @@ export { type Component };
                     // ^?     ^?
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-                        row.bar;
+                        [row.bar];
                         return () => {
                           return Marko._.voidReturn;
                         };

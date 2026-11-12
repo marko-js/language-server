@@ -16,12 +16,15 @@ export interface ProgramScope {
   parent: undefined;
   hoists: false;
   bindings: Bindings;
+  mutatedVars?: Map<Node.ParentNode, VarBinding[]>;
 }
 
 export interface TagScope {
   parent: Scope;
   hoists: boolean;
   bindings: undefined | Bindings;
+  /** The variables each tag in the scope declares that are assigned to. */
+  mutatedVars?: Map<Node.ParentNode, VarBinding[]>;
 }
 
 export type Binding = VarBinding | ParamBinding | HoistedBinding;
@@ -285,9 +288,7 @@ export function crawlProgramScope(parsed: Parsed, ast: ScriptParser) {
                               parentScope,
                               parsedValue.name,
                             );
-                            if (binding) {
-                              binding.mutated = true;
-                            }
+                            if (binding) markMutated(binding);
 
                             BoundAttrValueRange.set(attr.value, {
                               types,
@@ -421,25 +422,7 @@ export function getProgramBindings(node: Node.Program) {
 }
 
 export function getMutatedVars(tag: Node.Tag) {
-  const { bindings } = Scopes.get(tag.parent.body!)!;
-  let vars: Repeatable<VarBinding>;
-
-  for (const key in bindings) {
-    const binding = bindings[key];
-    if (
-      binding.type == BindingType.var &&
-      binding.node === tag &&
-      binding.mutated
-    ) {
-      if (vars) {
-        vars.push(binding);
-      } else {
-        vars = [binding];
-      }
-    }
-  }
-
-  return vars;
+  return Scopes.get(tag.parent.body!)?.mutatedVars?.get(tag);
 }
 
 export function getHoistSources(body: Node.ParentNode["body"]) {
@@ -763,6 +746,22 @@ function trackMutations(
   }
 }
 
+function markMutated(binding: VarBinding) {
+  if (binding.mutated) return;
+  binding.mutated = true;
+  // Kept on the scope, which each crawl of a template creates anew.
+  const mutatedVars = (binding.scope.mutatedVars ??= new Map());
+  const vars = mutatedVars.get(binding.node);
+  if (vars) {
+    // In the order the tag declares them, whichever is assigned to first.
+    let i = vars.length;
+    while (i && vars[i - 1].range.start > binding.range.start) i--;
+    vars.splice(i, 0, binding);
+  } else {
+    mutatedVars.set(binding.node, [binding]);
+  }
+}
+
 function flushMutations(
   scope: Scope,
   mutations: Mutation[],
@@ -773,7 +772,7 @@ function flushMutations(
     if (start == null || blockShadows.has(name)) continue;
     const binding = resolveWritableVar(scope, name);
     if (binding) {
-      binding.mutated = true;
+      markMutated(binding);
       mutations.push({ start, binding });
     }
   }

@@ -126,7 +126,7 @@ export { type Component };
       item: {
         x: 1,
         [Marko._.contentFor(__marko_internal_tag_7)]: ({ y }) => {
-          y.toFixed();
+          [y.toFixed()];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -142,7 +142,7 @@ export { type Component };
     item: {
       x: 1,
       [Marko._.contentFor(__marko_internal_tag_8)]: ({ y }) => {
-        y.toFixed();
+        [y.toFixed()];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
