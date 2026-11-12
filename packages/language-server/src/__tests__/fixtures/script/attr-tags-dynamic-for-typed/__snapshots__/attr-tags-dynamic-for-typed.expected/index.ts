@@ -30,8 +30,8 @@ export { type Component };
                 [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
                   Marko._.renderNativeTag("div")()()({
                     [Marko._.content]: (() => {
-                      name;
-                      foo;
+                      [name];
+                      [foo];
                       return () => {
                         return Marko._.voidReturn;
                       };
@@ -58,7 +58,7 @@ export { type Component };
       [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
         Marko._.renderNativeTag("div")()()({
           [Marko._.content]: (() => {
-            foo;
+            [foo];
             return () => {
               return Marko._.voidReturn;
             };

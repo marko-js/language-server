@@ -96,9 +96,9 @@ export interface Input {}
               {
                 a: {
                   [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
-                    item;
-                    index;
-                    all;
+                    [item];
+                    [index];
+                    [all];
                     return () => {
                       return Marko._.voidReturn;
                     };
@@ -129,7 +129,7 @@ export interface Input {}
               {
                 a: {
                   [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
-                    item;
+                    [item];
                     return () => {
                       return Marko._.voidReturn;
                     };
@@ -138,7 +138,7 @@ export interface Input {}
                 },
                 b: {
                   [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
-                    index;
+                    [index];
                     return () => {
                       return Marko._.voidReturn;
                     };
@@ -234,8 +234,8 @@ export interface Input {}
                 {
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_10)]: (() => {
-                      key;
-                      value;
+                      [key];
+                      [value];
                       return () => {
                         return Marko._.voidReturn;
                       };
@@ -321,7 +321,7 @@ export interface Input {}
                 {
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_14)]: (() => {
-                      index;
+                      [index];
                       return () => {
                         return Marko._.voidReturn;
                       };
@@ -352,7 +352,7 @@ export interface Input {}
                 {
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_15)]: (() => {
-                      index;
+                      [index];
                       return () => {
                         return Marko._.voidReturn;
                       };
@@ -383,7 +383,7 @@ export interface Input {}
                 {
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_16)]: (() => {
-                      index;
+                      [index];
                       return () => {
                         return Marko._.voidReturn;
                       };

@@ -159,7 +159,7 @@ export { type Component };
           items: [{ id: "a" }],
           // A generic tag infers its params
           [Marko._.contentFor(__marko_internal_tag_15)]: ({ item }) => {
-            item.id;
+            [item.id];
             return Marko._.voidReturn;
           },
         });
@@ -167,7 +167,7 @@ export { type Component };
         Marko._.renderDynamicTag(__marko_internal_tag_16)()()({
           items: [{ id: "b" }],
           [Marko._.contentFor(__marko_internal_tag_16)]: ({ item }) => {
-            item.id;
+            [item.id];
             return Marko._.voidReturn;
           },
         });
@@ -175,7 +175,7 @@ export { type Component };
         Marko._.renderDynamicTag(__marko_internal_tag_17)()()({
           items: [{ id: "c" }],
           [Marko._.contentFor(__marko_internal_tag_17)]: ({ item }) => {
-            item.id;
+            [item.id];
             return Marko._.voidReturn;
           },
         });
@@ -350,7 +350,7 @@ export { type Component };
           items: [{ id: 1 }],
           // Type args
           [Marko._.contentFor(__marko_internal_tag_31)]: ({ item }) => {
-            item.id;
+            [item.id];
             return Marko._.voidReturn;
           },
         });
@@ -360,7 +360,7 @@ export { type Component };
         }>()({
           items: [{ id: 1 }],
           [Marko._.contentFor(__marko_internal_tag_32)]: ({ item }) => {
-            item.id;
+            [item.id];
             return Marko._.voidReturn;
           },
         });

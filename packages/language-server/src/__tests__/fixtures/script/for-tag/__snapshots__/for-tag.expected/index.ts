@@ -53,9 +53,9 @@ export interface Input {}
         of: list,
       },
       (item, index, all) => {
-        item;
-        index;
-        all;
+        [item];
+        [index];
+        [all];
         return Marko._.voidReturn;
       },
     );
@@ -125,8 +125,8 @@ export interface Input {}
           in: record,
         },
         (key, value) => {
-          key;
-          value;
+          [key];
+          [value];
           return Marko._.voidReturn;
         },
       );
@@ -178,7 +178,7 @@ export interface Input {}
           to: 10,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );
@@ -197,7 +197,7 @@ export interface Input {}
           to: 10,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );
@@ -207,7 +207,7 @@ export interface Input {}
           step: 2,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );
@@ -250,7 +250,7 @@ export interface Input {}
           until: 10,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );
@@ -269,7 +269,7 @@ export interface Input {}
           until: 10,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );
@@ -279,7 +279,7 @@ export interface Input {}
           step: 2,
         },
         (index) => {
-          index;
+          [index];
           return Marko._.voidReturn;
         },
       );

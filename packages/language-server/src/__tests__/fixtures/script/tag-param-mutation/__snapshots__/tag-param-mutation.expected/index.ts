@@ -35,7 +35,7 @@ export interface Input {}
           },
           [Marko._.content]: (() => {
             //   ^?      ^?
-            val;
+            [val];
             return () => {
               return Marko._.voidReturn;
             };

@@ -7,6 +7,7 @@ import { get } from "@ebay/retriever";
   mobileList: Array<Mobile>;
   renderBody: Marko.Body;
 }
+//     ^?
 
 function greet() {
   return "hello world";
@@ -20,6 +21,9 @@ function __marko_internal_template(this: void) {
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
+  const buttonTemplate = Marko._.hoist(
+    () => __marko_internal_hoist__buttonTemplate,
+  );
   const year = Marko._.hoist(() => __marko_internal_hoist__year);
   const isSmartOnly = Marko._.hoist(() => __marko_internal_hoist__isSmartOnly);
   const type = Marko._.hoist(() => __marko_internal_hoist__type);
@@ -29,125 +33,139 @@ function __marko_internal_template(this: void) {
     import("@marko/runtime-tags/tags/const.d.marko"),
   ).default;
   {
-    const { year, isSmartOnly, type, mobileList, renderBody } =
+    const buttonTemplate: (typeof import("<fancy-button>"))["default"] =
       Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
       __marko_internal_tag_1,
     )()()({
-      value: input,
+      value: FancyButton,
     });
-    Marko._.renderNativeTag("div")()()({
-      class: "mobiles__list",
-      [Marko._.content]: (() => {
-        Marko._.renderNativeTag("p")()()({
-          id: "p",
-          [Marko._.content]: (() => {
-            year;
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        if (isSmartOnly) {
-          Marko._.renderNativeTag("span")()()({
-            class: "sub-note",
+    const __marko_internal_tag_2 = Marko._.resolveTemplate(
+      import("@marko/runtime-tags/tags/const.d.marko"),
+    ).default;
+    {
+      const { year, isSmartOnly, type, mobileList, renderBody } =
+        Marko._.returned(() => __marko_internal_rendered_2);
+      const __marko_internal_rendered_2 = Marko._.renderTemplate(
+        __marko_internal_tag_2,
+      )()()({
+        value: input,
+      });
+      Marko._.renderNativeTag("div")()()({
+        class: "mobiles__list",
+        [Marko._.content]: (() => {
+          Marko._.renderNativeTag("p")()()({
+            id: "p",
             [Marko._.content]: (() => {
-              isSmartOnly;
+              [year];
               return () => {
                 return Marko._.voidReturn;
               };
             })(),
           });
-        }
-        Marko._.renderNativeTag("span")()()({
-          class: "sub-note",
-          [Marko._.content]: (() => {
-            type;
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        Marko._.forOfTag(
-          {
-            of: mobileList,
-          },
-          (mobile, i, all) => {
-            Marko._.renderNativeTag("span")()()(
-              //                          ^?
-              {
-                id: i,
-                [Marko._.content]: (() => {
-                  mobile;
-                  i;
-                  all.length;
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
-              },
-            );
-            return Marko._.voidReturn;
-          },
-        );
-        Marko._.renderNativeTag("div")()()({
-          class: Marko._.interpolated`container`,
-          [Marko._.content]: (() => {
-            const __marko_internal_tag_2 = renderBody;
-            Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        const __marko_internal_tag_3 = FancyButton;
-        Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-          "no-update": true,
-          something: true,
-          [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-            type;
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        Marko._.renderNativeTag("div")()()({
-          [Marko._.content]: (() => {
-            ("<b>World</b>");
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
-        });
-        Marko._.renderNativeTag("div")()()({
-          [Marko._.content]: (() => {
-            Marko._.renderNativeTag("code")()()({
+          if (isSmartOnly) {
+            Marko._.renderNativeTag("span")()()({
+              class: "sub-note",
               [Marko._.content]: (() => {
+                [isSmartOnly];
                 return () => {
                   return Marko._.voidReturn;
                 };
               })(),
             });
-            return () => {
+          }
+          Marko._.renderNativeTag("span")()()({
+            class: "sub-note",
+            [Marko._.content]: (() => {
+              [type];
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          Marko._.forOfTag(
+            {
+              of: mobileList,
+            },
+            (mobile, i, all) => {
+              Marko._.renderNativeTag("span")()()(
+                //                          ^?
+                {
+                  id: i,
+                  [Marko._.content]: (() => {
+                    [mobile];
+                    [i];
+                    [all.length];
+                    return () => {
+                      return Marko._.voidReturn;
+                    };
+                  })(),
+                },
+              );
               return Marko._.voidReturn;
-            };
-          })(),
-        });
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
-    });
-    var __marko_internal_return = Marko._.returnTag({
-      value: 1,
-    });
-    var __marko_internal_hoist__year = year;
-    var __marko_internal_hoist__isSmartOnly = isSmartOnly;
-    var __marko_internal_hoist__type = type;
-    var __marko_internal_hoist__mobileList = mobileList;
-    var __marko_internal_hoist__renderBody = renderBody;
+            },
+          );
+          Marko._.renderNativeTag("div")()()({
+            class: Marko._.interpolated`container`,
+            [Marko._.content]: (() => {
+              const __marko_internal_tag_3 = renderBody;
+              Marko._.renderDynamicTag(__marko_internal_tag_3)()()({});
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          const __marko_internal_tag_4 = FancyButton;
+          Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+            "no-update": true,
+            something: true,
+            [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
+              [type];
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          Marko._.renderNativeTag("div")()()({
+            [Marko._.content]: (() => {
+              ["<b>World</b>"];
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          Marko._.renderNativeTag("div")()()({
+            [Marko._.content]: (() => {
+              Marko._.renderNativeTag("code")()()({
+                [Marko._.content]: (() => {
+                  return () => {
+                    return Marko._.voidReturn;
+                  };
+                })(),
+              });
+              return () => {
+                return Marko._.voidReturn;
+              };
+            })(),
+          });
+          return () => {
+            return Marko._.voidReturn;
+          };
+        })(),
+      });
+      var __marko_internal_return = Marko._.returnTag({
+        value: 1,
+      });
+      var __marko_internal_hoist__buttonTemplate = buttonTemplate;
+      var __marko_internal_hoist__year = year;
+      var __marko_internal_hoist__isSmartOnly = isSmartOnly;
+      var __marko_internal_hoist__type = type;
+      var __marko_internal_hoist__mobileList = mobileList;
+      var __marko_internal_hoist__renderBody = renderBody;
+    }
   }
   Marko._.noop({
+    buttonTemplate,
     year,
     isSmartOnly,
     type,

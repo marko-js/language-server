@@ -24,7 +24,7 @@ export interface Input {}
       item: {
         size: "small",
         [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
-          foo;
+          [foo];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -42,7 +42,7 @@ export interface Input {}
       item: {
         size: "small",
         [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
-          foo;
+          [foo];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -70,7 +70,7 @@ export interface Input {}
               item: {
                 size: "small",
                 [Marko._.contentFor(__marko_internal_tag_3)]: ({ foo }) => {
-                  foo;
+                  [foo];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -99,8 +99,8 @@ export interface Input {}
                 item: {
                   size: "small",
                   [Marko._.contentFor(__marko_internal_tag_4)]: ({ foo }) => {
-                    i;
-                    foo;
+                    [i];
+                    [foo];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -132,7 +132,7 @@ export interface Input {}
           {
             row: {
               [Marko._.contentFor(__marko_internal_tag_5)]: ({ bar }) => {
-                bar;
+                [bar];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -259,7 +259,7 @@ export interface Input {}
               item: {
                 label: "a",
                 [Marko._.contentFor(__marko_internal_tag_11)]: (n) => {
-                  n;
+                  [n];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,

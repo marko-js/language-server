@@ -1,0 +1,14 @@
+export interface Input<T> {
+  value: T;
+  label?: Parameters;
+  content?: Marko.Body<[T]>;
+}
+// Names a template may declare, which its generated type must not read.
+export interface Parameters {
+  text: string;
+}
+export type ReturnType = never;
+
+<let/current=input.value/>
+<${input.content}(current)/>
+<return=current valueChange(next: T) { current = next }/>

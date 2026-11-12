@@ -21,7 +21,7 @@ export class Component extends Marko.Component {}
     );
     Marko._.renderNativeTag("div")()()({
       [Marko._.content]: (() => {
-        input.label;
+        [input.label];
         return () => {
           return Marko._.voidReturn;
         };

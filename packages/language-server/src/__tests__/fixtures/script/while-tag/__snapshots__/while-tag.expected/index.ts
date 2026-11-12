@@ -14,7 +14,7 @@ export { type Component };
   let i = 0;
   while (++i < 10) {
     //       ^?
-    i;
+    [i];
   }
   i = 0;
   while (++i < 10) {}
@@ -23,7 +23,7 @@ export { type Component };
   i = 0;
   while (!done) {
     //      ^?
-    done;
+    [done];
     //  ^?
     if (++i === 5) {
       done = true;

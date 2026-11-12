@@ -19,7 +19,7 @@ export { type Component };
       if (
         count // a condition ending in a comment
       ) {
-        count.missingInIf;
+        [count.missingInIf];
       }
       return () => {
         return Marko._.voidReturn;
@@ -44,12 +44,11 @@ export { type Component };
     },
   });
   Marko._.renderNativeTag("div")()()({
-    // an attribute ending in a comment
-    "data-x": count,
+    "data-x": count, // an attribute ending in a comment
   });
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
-      count.missingAfter;
+      [count.missingAfter];
       return () => {
         return Marko._.voidReturn;
       };
@@ -69,7 +68,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
-      count.missingAfterExpectError;
+      [count.missingAfterExpectError];
       return () => {
         return Marko._.voidReturn;
       };

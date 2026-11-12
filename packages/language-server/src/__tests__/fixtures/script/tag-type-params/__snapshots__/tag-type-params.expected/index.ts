@@ -29,7 +29,7 @@ export interface Input {}
         })(__marko_internal_return);
       },
     });
-    result;
+    [result];
     var __marko_internal_hoist__result = result;
   }
   Marko._.noop({ result, input, $global, $signal });

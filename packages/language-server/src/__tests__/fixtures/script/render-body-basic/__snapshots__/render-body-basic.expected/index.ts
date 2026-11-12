@@ -17,7 +17,7 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_1)()()({
     [Marko._.contentFor(__marko_internal_tag_1)]: (name) => {
       //      ^?
-      name;
+      [name];
       return Marko._.voidReturn;
     },
   });

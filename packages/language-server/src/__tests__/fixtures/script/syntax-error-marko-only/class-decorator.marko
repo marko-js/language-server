@@ -1,0 +1,8 @@
+static function logged(_method: unknown, _context: ClassMethodDecoratorContext) {}
+
+class {
+  @logged
+  handleClick() {}
+}
+
+<button onClick("handleClick")>Save</button>

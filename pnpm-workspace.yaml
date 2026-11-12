@@ -1,5 +1,8 @@
 packages:
   - packages/*
+  # A language-server fixture of templates on Marko 6, which the repo's own
+  # `marko` (5) does not type.
+  - packages/language-server/src/__tests__/fixtures/script/template-consumers-marko-6
 
 allowBuilds:
   "@vscode/vsce-sign": true

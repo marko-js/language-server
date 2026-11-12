@@ -15,7 +15,7 @@ export interface Input {
   );
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
-      input.title;
+      [input.title];
       return () => {
         return Marko._.voidReturn;
       };

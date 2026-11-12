@@ -29,7 +29,7 @@ export interface Input<T> extends ChildInput<T> {}
                   ...item,
                   label: "x",
                   [Marko._.contentFor(__marko_internal_tag_1)]: (row) => {
-                    row;
+                    [row];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,

@@ -15,9 +15,8 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 // (`tion f(y: number)` reads `y: number` as a TSTypeCastExpression) must not
 // fail the template's analysis while it mutates a tag variable.
 {
-"value": (
-1
-),
+"value": 1
+,
 
 });
 const __marko_internal_change__x = Marko._.change("x", "value", __marko_internal_rendered_1.return);

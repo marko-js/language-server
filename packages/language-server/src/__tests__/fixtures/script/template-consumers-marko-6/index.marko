@@ -1,0 +1,57 @@
+import Counter from "./tags/counter.marko";
+//     ^?
+import Generic from "./tags/generic.marko";
+import JsTags from "./js/tags/js-tags.marko";
+import JsGeneric from "./js/tags/js-generic.marko";
+
+export function consume(el: Element) {
+  const html = Counter.render({ start: 1 });
+  //    ^?
+  const mounted = Counter.mount({ start: 1 }, el);
+  //    ^?
+  mounted.value = mounted.value + 1;
+  //      ^?
+  const genericValue = Generic.mount({ value: "x" }, el).value;
+  //    ^?
+  const jsName = JsTags.mount({ name: "x" }, el).value;
+  //    ^?
+  const jsGenericValue = JsGeneric.mount({ value: 1 }, el).value;
+  //    ^?
+  Counter.render;
+  //      ^?
+  Counter.mount;
+  //      ^?
+  Generic.render;
+  //      ^?
+  Generic.mount;
+  //      ^?
+  JsGeneric.mount;
+  //        ^?
+  Counter.mount({ start: "bad" }, el);
+  Generic.render({});
+  JsTags.mount({ name: 1 }, el);
+  return [html, genericValue, jsName, jsGenericValue];
+}
+
+export declare const counterInput: Marko.Input<typeof Counter>;
+//                   ^?
+export declare const genericInput: Marko.Input<typeof Generic>;
+//                   ^?
+export declare const jsInput: Marko.Input<typeof JsTags>;
+//                   ^?
+export declare const counterReturn: Marko.Return<typeof Counter>;
+//                   ^?
+export const genericTemplate: Marko.Template<any, any> = Generic;
+export const jsGenericTemplate: Marko.Template<any, any> = JsGeneric;
+
+<counter/count start=1/>
+<counter start="bad"/>
+<Counter/countByName start=2/>
+<${Counter}/countDynamic start=3/>
+<generic|item| value="x">${item}</generic>
+//                         ^?
+<${Generic}|item| value=1>${item}</>
+//                          ^?
+<JsTags/name name="x"/>
+<div>${count} ${countByName} ${countDynamic} ${name}</div>
+//      ^?      ^?             ^?              ^?

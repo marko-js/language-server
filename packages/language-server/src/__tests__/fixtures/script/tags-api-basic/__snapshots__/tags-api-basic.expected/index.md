@@ -1,35 +1,46 @@
 ## Hovers
-### Ln 31, Col 29
+### Ln 12, Col 8
 ```marko
-  29 |     <span class="sub-note">phoneType: ${type}</span>
-  30 |
-> 31 |     <for|mobile, i, all| of=mobileList>
+  10 | }
+  11 |
+> 12 | <const/buttonTemplate: (typeof import("<fancy-button>"))["default"]=FancyButton/>
+     |        ^ const buttonTemplate: Template
+  13 | //     ^?
+  14 |
+  15 | static {
+```
+
+### Ln 34, Col 29
+```marko
+  32 |     <span class="sub-note">phoneType: ${type}</span>
+  33 |
+> 34 |     <for|mobile, i, all| of=mobileList>
      |                             ^ const mobileList: Mobile[]
-  32 | //                          ^?
-  33 |       <span id=i>${mobile} ${i} ${all.length}</span>
-  34 | //                 ^?        ^?
+  35 | //                          ^?
+  36 |       <span id=i>${mobile} ${i} ${all.length}</span>
+  37 | //                 ^?        ^?
 ```
 
-### Ln 33, Col 20
+### Ln 36, Col 20
 ```marko
-  31 |     <for|mobile, i, all| of=mobileList>
-  32 | //                          ^?
-> 33 |       <span id=i>${mobile} ${i} ${all.length}</span>
+  34 |     <for|mobile, i, all| of=mobileList>
+  35 | //                          ^?
+> 36 |       <span id=i>${mobile} ${i} ${all.length}</span>
      |                    ^ (parameter) mobile: Mobile
-  34 | //                 ^?        ^?
-  35 |     </for>
-  36 |
+  37 | //                 ^?        ^?
+  38 |     </for>
+  39 |
 ```
 
-### Ln 33, Col 30
+### Ln 36, Col 30
 ```marko
-  31 |     <for|mobile, i, all| of=mobileList>
-  32 | //                          ^?
-> 33 |       <span id=i>${mobile} ${i} ${all.length}</span>
+  34 |     <for|mobile, i, all| of=mobileList>
+  35 | //                          ^?
+> 36 |       <span id=i>${mobile} ${i} ${all.length}</span>
      |                              ^ (parameter) i: number
-  34 | //                 ^?        ^?
-  35 |     </for>
-  36 |
+  37 | //                 ^?        ^?
+  38 |     </for>
+  39 |
 ```
 
 ## Diagnostics
@@ -64,47 +75,47 @@
   11 |
 ```
 
-### Ln 13, Col 14
+### Ln 16, Col 14
 ```marko
-  11 |
-  12 | static {
-> 13 |     function greet() {
+  14 |
+  15 | static {
+> 16 |     function greet() {
      |              ^^^^^ 'greet' is declared but its value is never read.
-  14 |         return "hello world";
-  15 |     }
-  16 | }
+  17 |         return "hello world";
+  18 |     }
+  19 | }
 ```
 
-### Ln 18, Col 12
+### Ln 21, Col 12
 ```marko
-  16 | }
-  17 |
-> 18 | static var useA = true;
+  19 | }
+  20 |
+> 21 | static var useA = true;
      |            ^^^^ 'useA' is declared but its value is never read.
-  19 |
-  20 | <const/{ year, isSmartOnly, type, mobileList, renderBody } = input/>
-  21 |
+  22 |
+  23 | <const/{ year, isSmartOnly, type, mobileList, renderBody } = input/>
+  24 |
 ```
 
-### Ln 33, Col 13
+### Ln 36, Col 13
 ```marko
-  31 |     <for|mobile, i, all| of=mobileList>
-  32 | //                          ^?
-> 33 |       <span id=i>${mobile} ${i} ${all.length}</span>
+  34 |     <for|mobile, i, all| of=mobileList>
+  35 | //                          ^?
+> 36 |       <span id=i>${mobile} ${i} ${all.length}</span>
      |             ^^ Type 'number' is not assignable to type 'AttrString'.
-  34 | //                 ^?        ^?
-  35 |     </for>
-  36 |
+  37 | //                 ^?        ^?
+  38 |     </for>
+  39 |
 ```
 
-### Ln 40, Col 28
+### Ln 43, Col 28
 ```marko
-  38 |         <${renderBody}/>
-  39 |     </div>
-> 40 |     <FancyButton no-update something=true>${type}</FancyButton>
+  41 |         <${renderBody}/>
+  42 |     </div>
+> 43 |     <FancyButton no-update something=true>${type}</FancyButton>
      |                            ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
-  41 |     <div>Hello $!{"<b>World</b>"}</div>
-  42 |     <div>Placeholder example: <code>\${someValue}</code></div>
-  43 | </div>
+  44 |     <div>Hello $!{"<b>World</b>"}</div>
+  45 |     <div>Placeholder example: <code>\${someValue}</code></div>
+  46 | </div>
 ```
 

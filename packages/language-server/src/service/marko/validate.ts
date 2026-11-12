@@ -69,11 +69,17 @@ export function getMarkoDiagnostics(doc: TextDocument): MarkoDiagnosticsResult {
   if (cached && cached.version === doc.version) return cached.result;
 
   const filename = getFSPath(doc);
+  const dir = filename && path.dirname(filename);
   let result: MarkoDiagnosticsResult;
   try {
-    const { meta } = Project.getCompiler(
-      filename && path.dirname(filename),
-    ).compileSync(doc.getText(), filename || "untitled.marko", compilerConfig);
+    // On the project's config, which names its translator: projects on
+    // different runtimes can share a compiler, whose own config is whichever
+    // was loaded last.
+    const { meta } = Project.getCompiler(dir).compileSync(
+      doc.getText(),
+      filename || "untitled.marko",
+      { ...Project.getConfig(dir), ...compilerConfig },
+    );
     result = { diagnostics: meta.diagnostics };
   } catch (error) {
     result = { error };

@@ -18,7 +18,7 @@ export { type Component };
       of: input.items,
     },
     (item) => {
-      String(item);
+      [String(item)];
       return Marko._.voidReturn;
     },
   );

@@ -59,28 +59,30 @@ export interface Input {}
           )()()({
             value: [1, 2, 3, 4, 5] as const,
           });
-          () => {
-            a;
-            //^?
-            b;
-            //^?
-            c;
-            //^?
-            d;
-            //^?
-            e;
-            //^?
-            f;
-            //^?
-            g;
-            //^?
-            h;
-            //^?
-            i;
-            //^?
-            j;
-            //^?
-          };
+          [
+            () => {
+              a;
+              //^?
+              b;
+              //^?
+              c;
+              //^?
+              d;
+              //^?
+              e;
+              //^?
+              f;
+              //^?
+              g;
+              //^?
+              h;
+              //^?
+              i;
+              //^?
+              j;
+              //^?
+            },
+          ];
           return () => {
             return new (class MarkoReturn<Return = void> {
               readonly [Marko._.scope] = { a, b, c, d, e, f, g, h, i, j };

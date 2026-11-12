@@ -35,18 +35,26 @@ let diagnosticTimeout: ReturnType<typeof setTimeout> | undefined;
 let canRegisterFileWatchers = false;
 
 // On-disk changes to these files affect Marko intellisense (imported
-// components, TS modules, styles, tag definitions, tsconfig, and dependency
-// manifests) and formatting (prettier and editorconfig configs). VS Code's
-// client watches most via `synchronize.fileEvents`, but other clients (e.g.
-// Zed) only send `didChangeWatchedFiles` for watchers the server registers
-// itself — so register them to keep caches in sync everywhere.
-const WATCHED_FILES_GLOB =
-  "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock,.prettierrc,.prettierrc.*,prettier.config.*,.editorconfig,package.yaml}";
+// components, TS modules, styles, tag definitions, tsconfigs and the configs
+// they extend, and dependency manifests), as do tag directories moved or
+// deleted as a whole, and formatting (prettier and editorconfig configs).
+// VS Code's client watches most via `synchronize.fileEvents`, but other
+// clients (e.g. Zed) only send `didChangeWatchedFiles` for watchers the server
+// registers itself — so register them to keep caches in sync everywhere.
+const WATCHED_FILES_GLOBS = [
+  "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,tsconfig.*.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock,.prettierrc,.prettierrc.*,prettier.config.*,.editorconfig,package.yaml}",
+  // Directories have no extension to match: a tags directory, and the two
+  // levels beneath it that Marko discovers tags in (a tag's own directory, or
+  // a directory grouping tags), are reported alone when moved or deleted.
+  "**/{tags,components}",
+  "**/{tags,components}/*",
+  "**/{tags,components}/*/*",
+];
 
 // Changes to these files can alter a project's setup or which tags its
 // templates find, so they clear the caches whatever the change.
 const projectFileReg =
-  /[\\/](?:(?:marko|package|tsconfig|jsconfig|package-lock|(?:[^\\/]+\.)?marko-tag)\.json|pnpm-lock\.yaml|yarn\.lock)$/;
+  /[\\/](?:(?:marko|package|tsconfig(?:\.[^\\/]+)?|jsconfig|package-lock|(?:[^\\/]+\.)?marko-tag)\.json|pnpm-lock\.yaml|yarn\.lock)$/;
 
 console.log = (...args: unknown[]) => {
   connection.console.log(args.map((v) => inspect(v)).join(" "));
@@ -114,7 +122,7 @@ connection.onInitialized(() => {
   // already watches these via its client-side `synchronize.fileEvents`.
   if (canRegisterFileWatchers) {
     void connection.client.register(DidChangeWatchedFilesNotification.type, {
-      watchers: [{ globPattern: WATCHED_FILES_GLOB }],
+      watchers: WATCHED_FILES_GLOBS.map((globPattern) => ({ globPattern })),
     });
   }
 });

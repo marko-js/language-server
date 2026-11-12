@@ -27,7 +27,7 @@ export { type Component };
         {
           href: href,
           [Marko._.content]: (() => {
-            title;
+            [title];
             return () => {
               return Marko._.voidReturn;
             };
@@ -49,7 +49,7 @@ export { type Component };
             {
               value: value,
               [Marko._.content]: (() => {
-                content;
+                [content];
                 return () => {
                   return Marko._.voidReturn;
                 };
@@ -85,7 +85,7 @@ export { type Component };
                 value: href,
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   // ^?
-                  title;
+                  [title];
                   return () => {
                     return Marko._.voidReturn;
                   };
@@ -107,7 +107,7 @@ export { type Component };
                 value: value,
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   // ^?
-                  content;
+                  [content];
                   return () => {
                     return Marko._.voidReturn;
                   };

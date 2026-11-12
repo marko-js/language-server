@@ -1,6 +1,8 @@
 {
   "include": ["./**/*"],
-  "exclude": ["**/__snapshots__"],
+  // The fixture on Marko 6 sets up a project of its own: one program cannot
+  // hold two runtimes' global `Marko`.
+  "exclude": ["**/__snapshots__", "script/template-consumers-marko-6"],
   "compilerOptions": {
     "lib": ["ESNext", "dom"],
     "strict": true,

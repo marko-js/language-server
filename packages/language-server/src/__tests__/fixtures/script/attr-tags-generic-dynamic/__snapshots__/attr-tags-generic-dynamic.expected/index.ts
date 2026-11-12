@@ -30,7 +30,7 @@ export { type Component };
       option: {
         value: "b",
         [Marko._.contentFor(__marko_internal_tag_1)]: (v) => {
-          v;
+          [v];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -62,7 +62,7 @@ export { type Component };
               option: {
                 value: 2,
                 [Marko._.contentFor(__marko_internal_tag_2)]: (v) => {
-                  v;
+                  [v];
                   return Marko._.voidReturn;
                 },
                 [Symbol.iterator]: Marko._.any,
@@ -87,7 +87,7 @@ export { type Component };
       option: {
         value: "a",
         [Marko._.contentFor(__marko_internal_tag_3)]: (v) => {
-          v;
+          [v];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -114,7 +114,7 @@ export { type Component };
     option: {
       value: "a",
       [Marko._.contentFor(__marko_internal_tag_4)]: (v) => {
-        v;
+        [v];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -132,7 +132,7 @@ export { type Component };
     option: {
       value: "a" as const,
       [Marko._.contentFor(__marko_internal_tag_5)]: (v) => {
-        v;
+        [v];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -161,7 +161,7 @@ export { type Component };
     },
     // From the attribute tags, into the tag's own content
     [Marko._.contentFor(__marko_internal_tag_6)]: (v) => {
-      v;
+      [v];
       return Marko._.voidReturn;
     },
     [Marko._.restAttrTags]: [
@@ -219,7 +219,7 @@ export { type Component };
                 option: {
                   value: x,
                   [Marko._.contentFor(__marko_internal_tag_8)]: (v) => {
-                    v;
+                    [v];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -244,7 +244,7 @@ export { type Component };
       option: {
         value: 1,
         [Marko._.contentFor(__marko_internal_tag_9)]: (v) => {
-          v;
+          [v];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -274,7 +274,7 @@ export { type Component };
       column: {
         header: "Id",
         [Marko._.contentFor(__marko_internal_tag_10)]: ({ row }) => {
-          row.id;
+          [row.id];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -285,7 +285,7 @@ export { type Component };
             header: "Id again",
             //                                ^?
             [Marko._.contentFor(__marko_internal_tag_10)]: ({ row }) => {
-              row.id;
+              [row.id];
               return Marko._.voidReturn;
             },
             [Symbol.iterator]: Marko._.any,
@@ -306,7 +306,7 @@ export { type Component };
     column: {
       header: "Id",
       [Marko._.contentFor(__marko_internal_tag_11)]: ({ row }) => {
-        row.id;
+        [row.id];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
@@ -317,7 +317,7 @@ export { type Component };
           header: "Id again",
           //                                ^?
           [Marko._.contentFor(__marko_internal_tag_11)]: ({ row }) => {
-            row.id;
+            [row.id];
             return Marko._.voidReturn;
           },
           [Symbol.iterator]: Marko._.any,
@@ -342,7 +342,7 @@ export { type Component };
       column: {
         header: "Id",
         [Marko._.contentFor(__marko_internal_tag_12)]: (row) => {
-          row.id;
+          [row.id];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -353,7 +353,7 @@ export { type Component };
             header: "Id again",
             //                            ^?
             [Marko._.contentFor(__marko_internal_tag_12)]: (row) => {
-              row.id;
+              [row.id];
               return Marko._.voidReturn;
             },
             [Symbol.iterator]: Marko._.any,
@@ -380,7 +380,7 @@ export { type Component };
             column: {
               header: "Id",
               [Marko._.contentFor(__marko_internal_tag_13)]: (row) => {
-                row.id;
+                [row.id];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -390,7 +390,7 @@ export { type Component };
             column: {
               header: "Id again",
               [Marko._.contentFor(__marko_internal_tag_13)]: (row) => {
-                row.id;
+                [row.id];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -446,7 +446,7 @@ export { type Component };
       column: {
         header: "Name",
         [Marko._.contentFor(__marko_internal_tag_15)]: (row) => {
-          row.name;
+          [row.name];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
@@ -456,7 +456,7 @@ export { type Component };
           column: {
             header: "Id",
             [Marko._.contentFor(__marko_internal_tag_15)]: (row) => {
-              row.id;
+              [row.id];
               return Marko._.voidReturn;
             },
             [Symbol.iterator]: Marko._.any,
@@ -483,7 +483,7 @@ export { type Component };
             column: {
               header: "Name",
               [Marko._.contentFor(__marko_internal_tag_16)]: (row) => {
-                row.name;
+                [row.name];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -493,7 +493,7 @@ export { type Component };
             column: {
               header: "Id",
               [Marko._.contentFor(__marko_internal_tag_16)]: (row) => {
-                row.id;
+                [row.id];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -553,7 +553,7 @@ export { type Component };
                 column: {
                   title: c,
                   [Marko._.contentFor(__marko_internal_tag_18)]: (row) => {
-                    row.name;
+                    [row.name];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -590,7 +590,7 @@ export { type Component };
                         [Marko._.contentFor(__marko_internal_tag_19)]: (
                           row,
                         ) => {
-                          row.name;
+                          [row.name];
                           return Marko._.voidReturn;
                         },
                         [Symbol.iterator]: Marko._.any,
@@ -626,7 +626,7 @@ export { type Component };
                     column: {
                       title: c,
                       [Marko._.contentFor(__marko_internal_tag_20)]: (row) => {
-                        row.name;
+                        [row.name];
                         return Marko._.voidReturn;
                       },
                       [Symbol.iterator]: Marko._.any,
@@ -665,7 +665,7 @@ export { type Component };
                     column: {
                       title: c,
                       [Marko._.contentFor(__marko_internal_tag_21)]: (row) => {
-                        row.name;
+                        [row.name];
                         return Marko._.voidReturn;
                       },
                       [Symbol.iterator]: Marko._.any,
@@ -699,7 +699,7 @@ export { type Component };
                 column: {
                   title: String(i),
                   [Marko._.contentFor(__marko_internal_tag_22)]: (row) => {
-                    row.name;
+                    [row.name];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -732,7 +732,7 @@ export { type Component };
                 column: {
                   title: key,
                   [Marko._.contentFor(__marko_internal_tag_23)]: (row) => {
-                    row.name;
+                    [row.name];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -763,7 +763,7 @@ export { type Component };
                   column: {
                     title: label,
                     [Marko._.contentFor(__marko_internal_tag_24)]: (row) => {
-                      row.name;
+                      [row.name];
                       return Marko._.voidReturn;
                     },
                     [Symbol.iterator]: Marko._.any,
@@ -807,7 +807,7 @@ export { type Component };
                 row: {
                   id: i,
                   [Marko._.contentFor(__marko_internal_tag_25)]: (r) => {
-                    r.name;
+                    [r.name];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -869,7 +869,7 @@ export { type Component };
                                   id: i,
                                   [Marko._.contentFor(__marko_internal_tag_27)]:
                                     (r) => {
-                                      r.name;
+                                      [r.name];
                                       return Marko._.voidReturn;
                                     },
                                   [Symbol.iterator]: Marko._.any,
@@ -914,7 +914,7 @@ export { type Component };
                   [Marko._.contentFor(__marko_internal_tag_28)]: (row: {
                     name: string;
                   }) => {
-                    row.name;
+                    [row.name];
                     return Marko._.voidReturn;
                   },
                   [Symbol.iterator]: Marko._.any,
@@ -954,7 +954,7 @@ export { type Component };
               [Marko._.contentFor(__marko_internal_tag_29)]: (r: {
                 name: string;
               }) => {
-                r.name;
+                [r.name];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -964,7 +964,7 @@ export { type Component };
             row: {
               id: 2,
               [Marko._.contentFor(__marko_internal_tag_29)]: (r) => {
-                r.name;
+                [r.name];
                 return Marko._.voidReturn;
               },
               [Symbol.iterator]: Marko._.any,
@@ -1008,7 +1008,7 @@ export { type Component };
                       [Marko._.contentFor(__marko_internal_tag_30)]: (r: {
                         name: string;
                       }) => {
-                        r.name;
+                        [r.name];
                         return Marko._.voidReturn;
                       },
                       [Symbol.iterator]: Marko._.any,
@@ -1018,7 +1018,7 @@ export { type Component };
                     row: {
                       id: 2,
                       [Marko._.contentFor(__marko_internal_tag_30)]: (r) => {
-                        r.name;
+                        [r.name];
                         return Marko._.voidReturn;
                       },
                       [Symbol.iterator]: Marko._.any,
