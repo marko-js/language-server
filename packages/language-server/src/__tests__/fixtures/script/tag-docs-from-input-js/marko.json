@@ -1,1 +1,8 @@
-{ "script-lang": "js" }
+{
+  // Read as Marko's compiler reads it: comments are allowed, "//" or "/*" in a
+  // string is not a comment, and an escaped quote does not end the string.
+  "taglib-id": "tag-docs-from-input-js \"//\" /* not a comment */",
+  /* a block comment
+     over two lines */
+  "script-lang": "js" // must still be read
+}

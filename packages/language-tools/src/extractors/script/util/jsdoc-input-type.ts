@@ -15,8 +15,7 @@ export default function getJSDocInputType(comment: string, ts: typeof TS) {
     ts.ScriptKind.JS,
   );
   const tags = (sourceFile.endOfFileToken as any).jsDoc?.[0]?.tags as
-    | TS.JSDocTag[]
-    | undefined;
+    TS.JSDocTag[] | undefined;
 
   if (!(tags && hasInputTypeDef(ts, sourceFile, tags))) return;
 

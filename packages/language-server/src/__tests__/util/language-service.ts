@@ -116,16 +116,14 @@ export function createLanguageService(
    */
   lsh.resolveModuleNames = (moduleNames, containingFile) => {
     const resolvedModules: (
-      | ts.ResolvedModuleFull
-      | ts.ResolvedModule
-      | undefined
+      ts.ResolvedModuleFull | ts.ResolvedModule | undefined
     )[] = moduleNames.map<ts.ResolvedModule | undefined>(
       (moduleName) =>
         ts.resolveModuleName(moduleName, containingFile, compilerOptions, sys)
           .resolvedModule,
     );
 
-    for (let i = resolvedModules.length; i--; ) {
+    for (let i = resolvedModules.length; i--;) {
       if (!resolvedModules[i]) {
         const moduleName = moduleNames[i];
         const processor = moduleName[0] !== "*" && getProcessor(moduleName);

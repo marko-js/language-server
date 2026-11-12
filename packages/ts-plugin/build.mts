@@ -25,7 +25,7 @@ await build({
   target: ["node16"],
   sourcemap: "linked",
   entryPoints: ["src/index.ts"],
-  external: ["canvas", "browserslist"],
+  external: ["@napi-rs/canvas", "browserslist"],
   define: {
     "import.meta.url": "_importMetaUrl",
   },

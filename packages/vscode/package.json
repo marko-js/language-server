@@ -140,12 +140,12 @@
   ],
   "devDependencies": {
     "@marko/language-server": "^3.4.1",
-    "@types/vscode": "^1.116.0",
-    "@vscode/test-electron": "^3.0.0",
-    "@vscode/vsce": "^3.9.2",
-    "ovsx": "^1.0.2",
-    "tsx": "^4.22.4",
-    "vscode-languageclient": "^10.0.1"
+    "@types/vscode": "~1.116.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.1.0",
+    "ovsx": "^1.4.0",
+    "tsx": "^4.23.15",
+    "vscode-languageclient": "^11.0.0"
   },
   "engines": {
     "vscode": "^1.116.0"

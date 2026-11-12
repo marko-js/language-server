@@ -94,10 +94,9 @@ declare global {
       export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
       export const Template: new <Overrides = unknown>() => {
-        [K in Exclude<
-          keyof Marko.Template,
-          keyof Overrides
-        >]: Marko.Template[K];
+        [
+          K in Exclude<keyof Marko.Template, keyof Overrides>
+        ]: Marko.Template[K];
       } & Overrides;
 
       export function noop(value: any): void;
@@ -192,9 +191,11 @@ declare global {
               infer Data,
             ]
           ? Data extends {
-              [K in `${SourceName extends string
-                ? SourceName
-                : LocalName}Change`]: (value: infer V, ...args: any[]) => any;
+              [
+                K in `${SourceName extends string
+                  ? SourceName
+                  : LocalName}Change`
+              ]: (value: infer V, ...args: any[]) => any;
             }
             ? { [K in LocalName]: V }
             : { readonly [K in LocalName]: unknown }
@@ -205,10 +206,7 @@ declare global {
         Owner extends Marko.Component,
         OwnerHandlers extends ComponentEventHandlers<Owner>,
         Handler extends
-          | keyof OwnerHandlers
-          | ((...args: any) => any)
-          | false
-          | void,
+          keyof OwnerHandlers | ((...args: any) => any) | false | void,
         Args extends readonly any[],
       >(
         owner: Owner,
@@ -259,11 +257,11 @@ declare global {
 
       export function forOfTag<
         Value,
-        Item extends [0] extends [1 & Value]
+        Item extends ([0] extends [1 & Value]
           ? any
           : Value extends Iterable<infer Item>
             ? Item
-            : never,
+            : never),
         BodyContent extends Marko.Body<
           [item: Item, index: number, all: Exclude<Value, false | void | null>],
           void
@@ -345,11 +343,11 @@ declare global {
       /** The attribute tags of a `<for of>`: its body's own type. */
       export function forOfAttrTag<
         Value,
-        Item extends [0] extends [1 & Value]
+        Item extends ([0] extends [1 & Value]
           ? any
           : Value extends readonly (infer Item)[] | Iterable<infer Item>
             ? Item
-            : never,
+            : never),
         Return,
       >(
         input: {
@@ -487,8 +485,9 @@ declare global {
                 ? BodyRenderer<Name>
                 : [Name] extends [
                       {
-                        [BodyContentKey in DefaultBodyContentKey]?: infer BodyValue extends
-                          AnyMarkoBody;
+                        [
+                          BodyContentKey in DefaultBodyContentKey
+                        ]?: infer BodyValue extends AnyMarkoBody;
                       },
                     ]
                   ? BodyRenderer<BodyValue>
@@ -700,11 +699,13 @@ interface NoAttrTags {
 
 /** The attribute tags of `Input` (the extractor marks each one), as `never`. */
 type NoAttrTagsIn<Input> = {
-  [Key in keyof Input as Input[Key] extends { [Symbol.iterator]: infer Mark }
-    ? 0 extends 1 & Mark
-      ? Key
+  [
+    Key in keyof Input as Input[Key] extends { [Symbol.iterator]: infer Mark }
+      ? 0 extends 1 & Mark
+        ? Key
+        : never
       : never
-    : never]: never;
+  ]: never;
 };
 
 /**
@@ -774,30 +775,31 @@ type BodyParamsWithDefault<Body extends AnyMarkoBody> =
     : never;
 
 type ComponentEventHandlers<Component extends Marko.Component> = {
-  [K in Exclude<
-    keyof Component,
-    Exclude<
-      keyof Marko.Component,
-      "emit" | "setState" | "setStateDirty" | "forceUpdate"
+  [
+    K in Exclude<
+      keyof Component,
+      Exclude<
+        keyof Marko.Component,
+        "emit" | "setState" | "setStateDirty" | "forceUpdate"
+      >
     >
-  >]: Component[K] extends (...args: any) => any ? Component[K] : never;
+  ]: Component[K] extends (...args: any) => any ? Component[K] : never;
 };
 
 type Scopes<Input> = [0] extends [1 & Input]
   ? never
-  :
-      | (Input[("content" | "renderBody") & keyof Input] extends infer Prop
-          ? Prop extends (...args: any[]) => { [Marko._.scope]: infer Scope }
-            ? Scope
-            : never
-          : never)
-      | (Input[string & keyof Input] extends infer Prop
-          ? Prop extends { [Symbol.iterator]: any }
-            ? Prop extends readonly any[]
-              ? never
-              : Scopes<Prop>
-            : never
-          : never);
+  : | (Input[("content" | "renderBody") & keyof Input] extends infer Prop
+        ? Prop extends (...args: any[]) => { [Marko._.scope]: infer Scope }
+          ? Scope
+          : never
+        : never)
+    | (Input[string & keyof Input] extends infer Prop
+        ? Prop extends { [Symbol.iterator]: any }
+          ? Prop extends readonly any[]
+            ? never
+            : Scopes<Prop>
+          : never
+        : never);
 
 type MergeScopes<Scopes> = {
   [K in Scopes extends Scopes ? keyof Scopes : never]: Scopes extends Scopes
@@ -915,11 +917,13 @@ type UnionKeys<T> = T extends unknown ? keyof T : never;
 type AttrTagNames<Input> = Record<string, never> &
   (Input extends infer Input extends {}
     ? {
-        [Key in keyof Input & string as `@${Input[Key] extends infer Value
-          ? Value extends Marko.AttrTag<any>
-            ? Key
-            : never
-          : never}`]: Input[Key];
+        [
+          Key in keyof Input & string as `@${Input[Key] extends infer Value
+            ? Value extends Marko.AttrTag<any>
+              ? Key
+              : never
+            : never}`
+        ]: Input[Key];
       }
     : never);
 

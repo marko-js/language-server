@@ -2005,8 +2005,7 @@ constructor(_) {}
         if (this.#testAtIndex(REG_INPUT_TYPE, node.start + "export ".length)) {
           this.#declaresInput = true;
           const exported = this.#ast.export(node) as
-            | undefined
-            | t.ExportNamedDeclaration;
+            undefined | t.ExportNamedDeclaration;
           const inputType = exported?.declaration as
             | t.TSInterfaceDeclaration
             | t.TSTypeAliasDeclaration
@@ -2169,7 +2168,7 @@ constructor(_) {}
   #getNamedAttrModifier(attr: Node.AttrNamed) {
     const start = attr.name.start;
     const end = attr.name.end;
-    for (let i = end - 1; i-- > start; ) {
+    for (let i = end - 1; i-- > start;) {
       if (this.#code.charAt(i) === ":") return { start: i + 1, end };
     }
   }

@@ -37,16 +37,15 @@
     "test": "mocha './src/**/__tests__/*.test.ts'"
   },
   "dependencies": {
-    "@luxass/strip-json-comments": "^1.4.0",
     "@marko/compiler": "^5.43.2",
     "htmljs-parser": "^5.20.0",
     "relative-import-path": "^1.0.1"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
-    "@typescript/vfs": "^1.6.4",
-    "marko": "^5.40.0",
+    "@typescript/vfs": "^1.6.6",
+    "marko": "^5.40.1",
     "mitata": "^1.0.34",
-    "tsx": "^4.22.4"
+    "tsx": "^4.23.15"
   }
 }

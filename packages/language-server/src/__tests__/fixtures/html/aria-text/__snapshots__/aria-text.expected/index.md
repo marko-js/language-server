@@ -1,12 +1,4 @@
 ## Diagnostics
-### Ln 1, Col 3
-```marko
-> 1 | p role="text"
-    |   ^^^^ Type '"text"' is not assignable to type 'AttrMissing | "alert" | "alertdialog" | "application" | "article" | "banner" | "button" | "cell" | "checkbox" | "columnheader" | "combobox" | "complementary" | ... 58 more ... | "treeitem"'.
-  2 |   -- body text
-  3 |   button
-```
-
 ### Ln 1, Col 1
 ```marko
 > 1 | p role="text"

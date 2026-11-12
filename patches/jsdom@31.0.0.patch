@@ -1,17 +1,13 @@
 diff --git a/lib/jsdom/living/xhr/XMLHttpRequest-impl.js b/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
-index cbf82b1..bda2edb 100644
+index 13ef2b262390bb9c1e8fdb26309e127e66b494eb..6f1871d63697c50eae591a10d3ed927f9dcb1ccc 100644
 --- a/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
 +++ b/lib/jsdom/living/xhr/XMLHttpRequest-impl.js
-@@ -28,8 +28,6 @@ const { parseJSONFromBytes } = require("../helpers/json");
+@@ -33,19 +33,12 @@ const { parseJSONFromBytes } = require("../helpers/json");
  const { asciiCaseInsensitiveMatch } = require("../helpers/strings");
  const { serializeEntryList } = require("./multipart-form-data");
  
 -const syncWorkerFile = require.resolve("./xhr-sync-worker.js");
 -
- // TODO: simplify after dropping Node.js v20 support
- function trimUint8Array(arr, newSize) {
-   if (arr.buffer.transfer) {
-@@ -41,14 +39,9 @@ function trimUint8Array(arr, newSize) {
  let syncWorker = null;
  
  function getSyncWorker() {

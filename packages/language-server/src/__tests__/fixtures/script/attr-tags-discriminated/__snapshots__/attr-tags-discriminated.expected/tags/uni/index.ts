@@ -1,6 +1,5 @@
 export type Input =
-  | { a: Marko.AttrTag<{ x?: number }> }
-  | { b: Marko.AttrTag<{ y?: number }> };
+  { a: Marko.AttrTag<{ x?: number }> } | { b: Marko.AttrTag<{ y?: number }> };
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;

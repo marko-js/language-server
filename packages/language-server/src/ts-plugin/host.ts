@@ -151,8 +151,7 @@ export function patch(
     ) => {
       let normalModuleLiterals = moduleLiterals as ts.StringLiteralLike[];
       let resolvedModules:
-        | undefined
-        | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
+        undefined | (ts.ResolvedModuleWithFailedLookupLocations | undefined)[];
 
       for (let i = 0; i < moduleLiterals.length; i++) {
         const moduleLiteral = moduleLiterals[i];
