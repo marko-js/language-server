@@ -31,7 +31,7 @@ function display(type: string, data: unknown) {
 
     // Only keep the last 3 messages.
     if (previousMessages.length > 3) {
-      previousMessages.unshift();
+      previousMessages.shift();
     }
   } else {
     previousMessagesByType.set(type, [msg]);

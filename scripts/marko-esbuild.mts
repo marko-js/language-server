@@ -115,8 +115,13 @@ export const markoBundlePlugins: Plugin[] = [
   {
     name: "prettier-optimize",
     setup(build) {
+      // Keep the parsers Marko formatting embeds, and yaml, which prettier's
+      // config loading imports to read `.prettierrc`, `.prettierrc.yaml|yml`
+      // and `package.yaml`: without it those configs are lost.
       build.onLoad({ filter: /\/prettier\/plugins\/.*$/ }, async (args) => {
-        if (!/\/(babel|estree|postcss|typescript)\.m?js$/.test(args.path)) {
+        if (
+          !/\/(babel|estree|postcss|typescript|yaml)\.m?js$/.test(args.path)
+        ) {
           return { contents: "", loader: "js" };
         }
       });

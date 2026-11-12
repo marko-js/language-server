@@ -12,8 +12,8 @@ import {
 describe("definition", () => {
   it("tag name", async () => {
     // The tag is written before the page opens (and becomes the edited
-    // document), so the page's directory finds it without a file watcher,
-    // which the test window, having no folder open, does not have.
+    // document), so the page's directory finds it without waiting on a file
+    // watcher's event.
     await writeTestFiles({
       "tag-name/components/example.marko": "<div/>",
     });
