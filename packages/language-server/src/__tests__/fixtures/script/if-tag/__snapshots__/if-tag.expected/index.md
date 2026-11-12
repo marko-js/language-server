@@ -115,7 +115,7 @@
   2 | <let/showAlt=false/>
   3 |
 > 4 | <if>
-    |  ^ This kind of expression is always falsy.
+    |  ^^ This kind of expression is always falsy.
   5 |   Hi
   6 | </if>
   7 |
@@ -126,7 +126,7 @@
   15 |
   16 | <div>
 > 17 |   <if>
-     |    ^ This kind of expression is always falsy.
+     |    ^^ This kind of expression is always falsy.
   18 |     Hello
   19 |   </if>
   20 |   World
@@ -137,7 +137,7 @@
   75 |   Hi
   76 | </if>
 > 77 | <else-if>
-     |  ^ This kind of expression is always falsy.
+     |  ^^^^^^^ This kind of expression is always falsy.
   78 |   Hi
   79 | </else-if>
   80 |
