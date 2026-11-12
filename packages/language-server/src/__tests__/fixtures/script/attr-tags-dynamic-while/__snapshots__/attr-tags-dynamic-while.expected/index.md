@@ -77,3 +77,14 @@
   32 |       No Condition.
 ```
 
+### Ln 30, Col 4
+```marko
+  28 |
+  29 | <${custom}>
+> 30 |   <while>
+     |    ^^^^^ This kind of expression is always falsy.
+  31 |     <@a>
+  32 |       No Condition.
+  33 |     </@a>
+```
+

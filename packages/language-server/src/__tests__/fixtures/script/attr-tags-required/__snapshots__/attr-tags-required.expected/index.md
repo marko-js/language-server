@@ -1,4 +1,15 @@
 ## Diagnostics
+### Ln 40, Col 4
+```marko
+  38 | // Only in a while: given
+  39 | <req-menu>
+> 40 |   <while=flag>
+     |    ^^^^^ This kind of expression is always falsy.
+  41 |     <@req/>
+  42 |   </while>
+  43 | </req-menu>
+```
+
 ### Ln 76, Col 11
 ```marko
   74 |

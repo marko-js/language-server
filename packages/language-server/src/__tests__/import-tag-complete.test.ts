@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 
-import { Project } from "@marko/language-tools";
 import path from "path";
 import { CancellationToken, type TextEdit } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -8,12 +7,6 @@ import { URI } from "vscode-uri";
 
 import { documents } from "../service";
 import MarkoPlugin from "../service/marko";
-
-Project.setDefaultTypePaths({
-  internalTypesFile:
-    require.resolve("@marko/language-tools/marko.internal.d.ts"),
-  markoTypesFile: require.resolve("marko/index.d.ts"),
-});
 
 // Tag completion resolves against the taglib's filesystem scan, so this reuses a
 // fixture that already ships discoverable `components/TestTagA.marko` /

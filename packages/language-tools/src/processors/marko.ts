@@ -316,10 +316,11 @@ const markoProcessor: ProcessorConfig = {
       }
 
       // Matched on both names so a source `export { something as "~api" }` is
-      // left alone.
+      // left alone. The name of a JavaScript template's declaration comes as
+      // an identifier rather than a string.
       const [{ name, propertyName }] = statement.exportClause.elements;
       return (
-        ts.isStringLiteral(name) &&
+        (ts.isStringLiteral(name) || ts.isIdentifier(name)) &&
         name.text === INTERNAL_API_EXPORT_NAME &&
         !!propertyName &&
         ts.isIdentifier(propertyName) &&

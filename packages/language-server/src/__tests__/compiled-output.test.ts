@@ -1,16 +1,9 @@
 import assert from "node:assert/strict";
 
-import { Project } from "@marko/language-tools";
 import path from "path";
 import { URI } from "vscode-uri";
 
 import MarkoLanguageService, { documents } from "../service";
-
-Project.setDefaultTypePaths({
-  internalTypesFile:
-    require.resolve("@marko/language-tools/marko.internal.d.ts"),
-  markoTypesFile: require.resolve("marko/index.d.ts"),
-});
 
 const FIXTURE_DIR = path.join(__dirname, "fixtures");
 

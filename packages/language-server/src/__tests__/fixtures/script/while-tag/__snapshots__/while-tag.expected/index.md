@@ -54,3 +54,15 @@
   20 |     $ done = true;
 ```
 
+## Diagnostics
+### Ln 24, Col 2
+```marko
+  22 | </while>
+  23 |
+> 24 | <while>
+     |  ^ This kind of expression is always falsy.
+  25 |   No Condition.
+  26 | </while>
+  27 |
+```
+

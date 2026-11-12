@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 
-import { Project } from "@marko/language-tools";
 import path from "path";
 import { CancellationToken } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -8,12 +7,6 @@ import { URI } from "vscode-uri";
 
 import { documents } from "../service";
 import MarkoPlugin from "../service/marko";
-
-Project.setDefaultTypePaths({
-  internalTypesFile:
-    require.resolve("@marko/language-tools/marko.internal.d.ts"),
-  markoTypesFile: require.resolve("marko/index.d.ts"),
-});
 
 // Reuses a fixture that ships a discoverable `components/TestTagA.marko`; the
 // consumer is an in-memory file in the fixture root.

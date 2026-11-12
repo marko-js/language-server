@@ -516,11 +516,13 @@ function ${templateName}() {\n`);
   class Template extends ${templateOverrideClass} {}
 );\n`);
     } else {
+      // The base is parenthesized, so its name is not compared with the
+      // `@extends` type's: the type of the class is the `@extends` type.
       this.#extractor.write(`(
   /**
    * @extends {${removeNewLines(templateOverrideClass)}}
    */
-  class Template extends ${templateBaseClass} {}
+  class Template extends (${templateBaseClass}) {}
 );\n`);
     }
     if (exportName) {
@@ -660,15 +662,14 @@ constructor(_) {}
               }
 
               this.#writeComments(child);
-              this.#extractor
-                .write("if (")
-                .copy(
-                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
-                    this.#getAttrValue(child, ATTR_UNNAMED) ||
-                    "undefined",
-                )
-                // On its own line: the condition can end in a line comment.
-                .write("\n) {\n");
+              this.#extractor.write("if (");
+              this.#writeCondition(
+                child,
+                this.#getRangeWithoutTrailingComma(child.args?.value) ||
+                  this.#getAttrValue(child, ATTR_UNNAMED),
+              );
+              // On its own line: the condition can end in a line comment.
+              this.#extractor.write("\n) {\n");
 
               const ifBody = this.#processBody(child);
               if (ifBody?.content) {
@@ -697,7 +698,9 @@ constructor(_) {}
                     needsAlternate = false;
                     this.#extractor.write("\n} else {\n");
                   } else {
-                    this.#extractor.write("\n} else if (undefined) {\n");
+                    this.#extractor.write("\n} else if (");
+                    this.#writeCondition(node, undefined);
+                    this.#extractor.write(") {\n");
                   }
 
                   const alternateBody = this.#processBody(node);
@@ -770,13 +773,12 @@ constructor(_) {}
             }
             case "while": {
               this.#writeComments(child);
-              this.#extractor
-                .write("while (\n")
-                .copy(
-                  this.#getRangeWithoutTrailingComma(child.args?.value) ||
-                    "undefined",
-                )
-                .write("\n) {\n");
+              this.#extractor.write("while (\n");
+              this.#writeCondition(
+                child,
+                this.#getRangeWithoutTrailingComma(child.args?.value),
+              );
+              this.#extractor.write("\n) {\n");
 
               const body = this.#processBody(child);
               if (body?.content) {
@@ -1020,6 +1022,18 @@ constructor(_) {}
     // (eg `a b`) within the array, where in parentheses it abandons the code
     // around it too.
     this.#extractor.write("[").copy(placeholder.value).write("];\n");
+  }
+
+  /**
+   * Copies a tag's condition. A tag without one gets `undefined` at its name,
+   * where TypeScript reports the condition it is missing as always falsy.
+   */
+  #writeCondition(tag: Node.Tag, condition: Range | undefined | false) {
+    if (condition) {
+      this.#extractor.copy(condition);
+    } else {
+      this.#extractor.anchor(tag.name).write("undefined");
+    }
   }
 
   #writeScriptlet(scriptlet: Node.Scriptlet) {
@@ -1432,10 +1446,9 @@ constructor(_) {}
           // into a ternary) from its first attribute tag, not the condition.
           this.#extractor.write("((");
           if (test) this.#anchorAttrTag(tag);
-          this.#extractor
-            .write("\n")
-            .copy(test || "undefined")
-            .write("\n) ? ");
+          this.#extractor.write("\n");
+          this.#writeCondition(tag, test);
+          this.#extractor.write("\n) ? ");
 
           this.#writeDynamicAttrTagBody(tag, owner);
 
@@ -1449,7 +1462,9 @@ constructor(_) {}
                 needsAlternate = false;
                 this.#extractor.write(": ");
               } else {
-                this.#extractor.write(": undefined ? ");
+                this.#extractor.write(": ");
+                this.#writeCondition(node, undefined);
+                this.#extractor.write(" ? ");
               }
 
               this.#writeDynamicAttrTagBody(node, owner);
@@ -1490,13 +1505,12 @@ constructor(_) {}
           this.#writeComments(tag);
           this.#extractor.write("((");
           if (tag.args) this.#anchorAttrTag(tag);
-          this.#extractor
-            .write("\n")
-            .copy(
-              this.#getRangeWithoutTrailingComma(tag.args?.value) ||
-                "undefined",
-            )
-            .write("\n) ? ");
+          this.#extractor.write("\n");
+          this.#writeCondition(
+            tag,
+            this.#getRangeWithoutTrailingComma(tag.args?.value),
+          );
+          this.#extractor.write("\n) ? ");
           this.#writeDynamicAttrTagBody(tag, owner);
           this.#extractor.write(` : ${varShared("never")})`);
           break;

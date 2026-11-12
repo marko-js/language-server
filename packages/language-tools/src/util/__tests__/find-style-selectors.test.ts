@@ -1,15 +1,11 @@
-import { extractCSSModule } from "@marko/language-tools";
 import assert from "assert";
-import path from "path";
+
+import { findStyleSelectors } from "../find-style-selectors";
 
 // `:global` selectors are not part of a CSS module's exports, so they must not
-// appear in the virtual module's type. `:local` (the default) stays exported.
+// appear in the type of a `<style>` module block. `:local` (the default) stays exported.
 function exportedNames(code: string) {
-  const out = extractCSSModule({
-    code,
-    fileName: path.join(__dirname, "styles.module.css"),
-  }).toString();
-  return new Set([...out.matchAll(/"([^"]+)":/g)].map((m) => m[1]));
+  return new Set(findStyleSelectors(code).keys());
 }
 
 describe("css module :global / :local", () => {

@@ -1,0 +1,14 @@
+// A template in JavaScript, typed with JSDoc.
+/** @typedef {{ start: number }} Input */
+
+class {
+  count = 0;
+  onCreate(/** @type {Input} */ input) {
+    this.count = input.start;
+  }
+  increment() {
+    this.count++;
+  }
+}
+
+<button on-click("increment")>${input.start}</button>
