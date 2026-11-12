@@ -448,14 +448,16 @@ function ${templateName}() {\n`);
     // A template's renderer (its `_`), in the form its first call takes (see
     // `Marko._.Renderer`). A tag without rest attribute tags renders by the
     // signature written here, which is cheaper to check than a named one (its
-    // type parameters can have short names, as the template has none).
+    // type parameters can have short names, as the template has none). One
+    // that takes no type arguments takes `2` like `3`: a tag giving it some
+    // anyway is reported for them, not for its rest attribute tags.
     const renderer = typeParamsStr
       ? `<${internalApply} = 1>(m?: ${internalApply}): ${internalApply} extends 0 | 2
     ? ${typeParamsStr}() => ${varShared("Renderer")}<Input${typeArgsStr}, ${returnTypeStr}, ${internalApply}>
     : ${internalApply} extends 1
     ? () => <${internalInput}, ${typeParams}>(input: Marko.Directives & Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeStr}>
     : () => <${internalInput}, ${typeParams}>(input: ${varShared("TagInput")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithRestAttrTagsScope")}<${internalInput}, ${returnTypeStr}>;`
-      : `<A = 1>(m?: A): () => A extends 3
+      : `<A = 1>(m?: A): () => A extends 2 | 3
     ? ${varShared("RestAttrTagsRenderer")}<Input, ${returnTypeStr}>
     : <I>(input: Marko.Directives & Input & ${varShared("Relate")}<I, Marko.Directives & Input>) => ${varShared("ReturnWithScope")}<I, ${returnTypeStr}>;`;
     const templateOverrideClass = `${templateBaseClass}<{${
