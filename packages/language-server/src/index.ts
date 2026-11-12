@@ -15,6 +15,7 @@ import type { TextDocument } from "vscode-languageserver-textdocument";
 
 import service from "./service";
 import { markoCodeActionKinds } from "./service/marko/code-actions";
+import { clearConfigCacheOnChange } from "./service/marko/format";
 import { clearMarkoCacheForFile } from "./utils/file";
 import setupMessages from "./utils/messages";
 import * as documents from "./utils/text-documents";
@@ -35,11 +36,12 @@ let canRegisterFileWatchers = false;
 
 // On-disk changes to these files affect Marko intellisense (imported
 // components, TS modules, styles, tag definitions, tsconfig, and dependency
-// manifests). VS Code's client watches them via `synchronize.fileEvents`, but
-// other clients (e.g. Zed) only send `didChangeWatchedFiles` for watchers the
-// server registers itself — so register them to keep caches in sync everywhere.
+// manifests) and formatting (prettier and editorconfig configs). VS Code's
+// client watches most via `synchronize.fileEvents`, but other clients (e.g.
+// Zed) only send `didChangeWatchedFiles` for watchers the server registers
+// itself — so register them to keep caches in sync everywhere.
 const WATCHED_FILES_GLOB =
-  "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock}";
+  "**/{*.ts,*.mts,*.cts,*.js,*.mjs,*.cjs,*.marko,*.module.css,*.module.scss,*.module.less,marko.json,marko-tag.json,tsconfig.json,jsconfig.json,package.json,package-lock.json,pnpm-lock.yaml,yarn.lock,.prettierrc,.prettierrc.*,prettier.config.*,.editorconfig,package.yaml}";
 
 // Changes to these files can alter a project's setup or which tags its
 // templates find, so they clear the caches whatever the change.
@@ -146,6 +148,7 @@ connection.onDidChangeWatchedFiles((params) => {
   ) {
     Project.clearCaches();
   }
+  clearConfigCacheOnChange(params.changes);
   documents.doChangeWatchedFiles(params);
 });
 

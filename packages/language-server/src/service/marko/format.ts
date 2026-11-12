@@ -2,12 +2,16 @@ import { createRequire } from "module";
 import path from "path";
 import * as prettier from "prettier";
 import * as markoPrettier from "prettier-plugin-marko";
-import { CancellationToken, TextEdit } from "vscode-languageserver";
+import {
+  CancellationToken,
+  type FileEvent,
+  TextEdit,
+} from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { START_POSITION } from "../../utils/constants";
 import { getFSPath } from "../../utils/file";
-import { displayError } from "../../utils/messages";
+import { displayError, displayWarning } from "../../utils/messages";
 import type { Plugin } from "../types";
 
 export interface FormatOptions {
@@ -51,6 +55,21 @@ export const format: Plugin["format"] = async (doc, params, cancel) => {
   return formatDocument(doc, params.options, cancel);
 };
 
+// The files prettier reads a config from, `.editorconfig` included.
+const configFileReg =
+  /[\\/](?:\.prettierrc(?:\.[^\\/]+)?|prettier\.config\.[^\\/]+|\.editorconfig|package\.(?:json|yaml))$/;
+
+/**
+ * Prettier keeps every config it finds and loads for the life of the process,
+ * so forget them when one is created, changed or deleted. A JS or TS config's
+ * edits are still not seen: Node keeps the module prettier first imported.
+ */
+export function clearConfigCacheOnChange(changes: FileEvent[]) {
+  if (changes.some(({ uri }) => configFileReg.test(uri))) {
+    void prettier.clearConfigCache();
+  }
+}
+
 /**
  * Formats Marko code with the project's prettier config over the given options.
  * The config's plugins are resolved from the config file, since prettier
@@ -72,7 +91,14 @@ export async function formatWithProjectConfig(
     ? await Promise.all([
         prettier
           .resolveConfig(filepath, { editorconfig: true })
-          .catch(() => null),
+          .catch((err) => {
+            // Formatting goes on with the defaults, but the user should know
+            // their config is being ignored.
+            displayWarning(
+              `Formatting without the project's prettier config, which could not be loaded: ${err instanceof Error ? err.message : err}`,
+            );
+            return null;
+          }),
         prettier.resolveConfigFile(filepath).catch(() => null),
       ])
     : [null, null];

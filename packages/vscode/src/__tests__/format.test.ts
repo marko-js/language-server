@@ -1,7 +1,9 @@
 import snap from "mocha-snap";
+import path from "path";
+import timers from "timers/promises";
 import vscode from "vscode";
 
-import { getTestDoc, updateTestDoc } from "./setup.test";
+import { getTestDoc, updateTestDoc, writeTestFiles } from "./setup.test";
 
 describe("format", () => {
   it("empty tag", async () => {
@@ -73,6 +75,60 @@ describe("format", () => {
     name="email"
     type="email"
 >
+
+`,
+    );
+  });
+
+  it("extensionless .prettierrc", async () => {
+    // Read through prettier's yaml plugin, which the bundle must keep. The page
+    // opens last so it becomes the edited document.
+    await writeTestFiles({ "prettierrc/.prettierrc": "useTabs: true\n" });
+    await writeTestFiles({ "prettierrc/index.marko": "" });
+    await snap.inline(
+      () => format("<div><section><p>one</p><p>two</p></section></div>"),
+      `
+<div>
+\t<section>
+\t\t<p>one</p>
+\t\t<p>two</p>
+\t</section>
+</div>
+
+`,
+    );
+  });
+
+  it("prettier config edited since the last format", async () => {
+    await writeTestFiles({ "edited-config/.prettierrc.json": "{}" });
+    await writeTestFiles({ "edited-config/index.marko": "" });
+    const src = "<div><section><p>one</p></section></div>";
+    await snap.inline(
+      async () => {
+        const before = await format(src);
+        await vscode.workspace.fs.writeFile(
+          vscode.Uri.file(
+            path.join(path.dirname(getTestDoc().fileName), ".prettierrc.json"),
+          ),
+          Buffer.from('{ "useTabs": true }'),
+        );
+        // Let the file event reach the server.
+        await timers.setTimeout(500);
+        return before + (await format(src));
+      },
+      `
+<div>
+    <section>
+        <p>one</p>
+    </section>
+</div>
+
+
+<div>
+\t<section>
+\t\t<p>one</p>
+\t</section>
+</div>
 
 `,
     );
