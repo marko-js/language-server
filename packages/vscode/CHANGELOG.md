@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.1
+
+### Patch Changes
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refresh the tags templates see when a tags directory (or a tag's directory in it) is moved or deleted as a whole, and when a tsconfig a project extends (eg `tsconfig.base.json`) changes. The VS Code extension also watches `.cjs` files, which its list named as a second `.cts`.
+
 ## 3.3.0
 
 ### Minor Changes

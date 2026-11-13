@@ -1,5 +1,19 @@
 # Change Log
 
+## 3.5.1
+
+### Patch Changes
+
+- [#641](https://github.com/marko-js/language-server/pull/641) [`687d7f0`](https://github.com/marko-js/language-server/commit/687d7f065a31443e51a3ec1df4c80f1c905ef21e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Type a template's `render`, `mount` and other methods with the Marko runtime's own `Marko.Template` rather than a copy of its methods in every template, so hovers on them show the runtime's documentation and the generated code is smaller (by over a third for `marko@5` templates) and go to definition from one lands in the runtime's types. A template's class is declared rather than written as an expression, so `mtc` writes declarations without spelling out each template's members (a tenth faster on large projects). On `marko@5` a template's `render` and `renderSync` return the runtime's `Marko.Out` and `Marko.RenderResult` (whose `getComponent()` is a `Marko.Component`, rather than the template's own component), and a generic template's `render` takes what the runtime's does (with marko 5.40.3 or later, a stream or a callback). `extractScript`'s `runtimeTypesCode` option and `Project.getTypeLibs()`'s `markoTypesCode` are no longer used and are deprecated.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Report a placeholder or attribute value that does not parse (eg `${count count}` or `data-x=[#2](https://github.com/marko-js/language-server/issues/2)`) where it is, without the errors it used to cause in the code around it: a placeholder is written in brackets and an attribute value unwrapped, which TypeScript recovers from within the placeholder or the attribute.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Check a template's Marko diagnostics and apply its fixes with its own project's translator. Projects on different Marko runtimes sharing one `@marko/compiler` (eg a pnpm workspace with Marko 5 and Marko 6 packages) got the translator of whichever project was loaded last, so a Marko 5 template could lose its fixes, or a Marko 6 template be checked as Marko 5.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Refresh the tags templates see when a tags directory (or a tag's directory in it) is moved or deleted as a whole, and when a tsconfig a project extends (eg `tsconfig.base.json`) changes. The VS Code extension also watches `.cjs` files, which its list named as a second `.cts`.
+- Updated dependencies [[`fd13ce4`](https://github.com/marko-js/language-server/commit/fd13ce47ba09a964fc0786d857f6671fc0adc77b), [`687d7f0`](https://github.com/marko-js/language-server/commit/687d7f065a31443e51a3ec1df4c80f1c905ef21e), [`e7927c3`](https://github.com/marko-js/language-server/commit/e7927c39dd81ecde9b93140c42dfe1cdb07a0895), [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627), [`e7927c3`](https://github.com/marko-js/language-server/commit/e7927c39dd81ecde9b93140c42dfe1cdb07a0895), [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627), [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627), [`ba3036f`](https://github.com/marko-js/language-server/commit/ba3036f5de49373bda582c0c87c2d124ae41f04f)]:
+  - @marko/language-tools@2.8.1
+
 ## 3.5.0
 
 ### Minor Changes
