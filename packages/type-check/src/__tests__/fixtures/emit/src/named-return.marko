@@ -1,0 +1,10 @@
+export interface Input {
+  start: number;
+}
+
+// Its own `Template` leaves the template's class an expression.
+static const Template = "named";
+
+<let/count=input.start/>
+<div>${Template}: ${count}</div>
+<return=count/>

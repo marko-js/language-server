@@ -48,8 +48,8 @@ importers:
         specifier: ^17.6.0
         version: 17.6.0
       marko:
-        specifier: ^5.40.1
-        version: 5.40.1
+        specifier: ^5.40.3
+        version: 5.40.3
       mocha:
         specifier: ^12.0.3
         version: 12.0.3
@@ -90,8 +90,8 @@ importers:
         specifier: ^31.0.0
         version: 31.0.0(patch_hash=a946b298ccd2d54ae8ea0c2af0d96b428cd3d6231c7d9ff50b1260200c3e3a1f)
       marko:
-        specifier: ^5.40.1
-        version: 5.40.1
+        specifier: ^5.40.3
+        version: 5.40.3
       prettier:
         specifier: ^3.10.1
         version: 3.10.1
@@ -146,8 +146,8 @@ importers:
         specifier: ^7.27.0
         version: 7.27.0
       marko:
-        specifier: ^5.40.1
-        version: 5.40.1
+        specifier: ^5.40.3
+        version: 5.40.3
       mitata:
         specifier: ^1.0.34
         version: 1.0.34
@@ -164,8 +164,8 @@ importers:
         specifier: ^2.8.0
         version: link:../language-tools
       marko:
-        specifier: ^5.40.1
-        version: 5.40.1
+        specifier: ^5.40.3
+        version: 5.40.3
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
@@ -746,8 +746,8 @@ packages:
     resolution: {integrity: sha512-bdtlZ/qN2bE3c6fmIEJ2fBbq82clJNuNmFQrZWHV3WEPQzFnSpUYNAblhayOKaZ0UgjunjsQZyCVkhuBm81xtA==}
     engines: {node: '>=22.12.0'}
 
-  '@marko/runtime-tags@6.4.14':
-    resolution: {integrity: sha512-3Hnxho2ZfrxUh88wJPRDXFgg/xDmfiW34Hq1y/iuRrZsHHowxutQra98EVppaN2Inq1NJk5JYYkZ5GEshW0dJw==}
+  '@marko/runtime-tags@6.4.15':
+    resolution: {integrity: sha512-WwT7vNvo4x3slLieWM0mGpG1Y1Fsf/OojAKzu2NJN8umh00k4sg4J4UU4jDawewIbkeBujDAEGE5fs6Ud7kP2Q==}
     engines: {node: '>=22.12.0'}
 
   '@napi-rs/keyring-darwin-arm64@1.3.0':
@@ -1829,8 +1829,8 @@ packages:
     engines: {node: '>= 20'}
     hasBin: true
 
-  marko@5.40.1:
-    resolution: {integrity: sha512-0oTgCrgRCFfVsRFCobR2OgJEnqLCDX5Ey3O6yBSchRfYAKfPl8d5VyMjxhc8ysDMG39oVcfttYxvQiT+bQaeNg==}
+  marko@5.40.3:
+    resolution: {integrity: sha512-+TZXmOMfynmK6Wv3ITdd6aFKMHiDNMnKoiZhyIPVGOL4dmKQDoR/v5GBOrvvyOcK7fn2+iT7ru6+qoHm0u9rTA==}
     engines: {node: '>=22.12.0'}
     hasBin: true
 
@@ -2929,7 +2929,7 @@ snapshots:
       relative-import-path: 1.0.1
       resolve-sync: 1.3.0
 
-  '@marko/runtime-tags@6.4.14':
+  '@marko/runtime-tags@6.4.15':
     dependencies:
       '@marko/compiler': 5.43.2
       csstype: 3.2.3
@@ -4015,10 +4015,10 @@ snapshots:
 
   marked@18.2.0: {}
 
-  marko@5.40.1:
+  marko@5.40.3:
     dependencies:
       '@marko/compiler': 5.43.2
-      '@marko/runtime-tags': 6.4.14
+      '@marko/runtime-tags': 6.4.15
       app-module-path: 2.2.0
       argly: 1.2.0
       browser-refresh-client: 1.1.4

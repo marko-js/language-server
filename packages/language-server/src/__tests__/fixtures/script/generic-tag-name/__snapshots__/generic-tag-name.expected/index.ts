@@ -146,45 +146,18 @@ export { type Component };
 })();
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
-const Input = new (class Template extends Marko._.Template<{
-  render<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-    stream?: {
-      write: (chunk: string) => void;
-      end: (chunk?: string) => void;
-    },
-  ): Marko.Out<Component<S, A>>;
-
-  render<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-    cb?: (
-      err: Error | null,
-      result: Marko.RenderResult<Component<S, A>>,
-    ) => void,
-  ): Marko.Out<Component<S, A>>;
-
-  renderSync<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-  ): Marko.RenderResult<Component<S, A>>;
-
-  renderToString<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-  ): string;
-
-  stream<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-  ): ReadableStream<string> & NodeJS.ReadableStream;
-
-  mount<S extends keyof Marko.NativeTags, A extends "a" | "button">(
-    input: Marko.TemplateInput<Input<S, A>>,
-    reference: Node,
-    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input, void>;
-
-  api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(
+class Template extends Marko._.GenericTemplate<
+  {
+    [__marko_internal_key in keyof Marko._.TemplateMethods]: <
+      S extends keyof Marko.NativeTags,
+      A extends "a" | "button",
+    >(
+      ...args: Marko._.MethodParams<Input<S, A>, void, __marko_internal_key>
+    ) => Marko._.MethodReturn<Input<S, A>, void, __marko_internal_key>;
+  } & { [Marko._.anyInput]: Input<any, any> },
+  <__marko_internal_apply = 1>(
     m?: __marko_internal_apply,
-  ): __marko_internal_apply extends 0 | 2
+  ) => __marko_internal_apply extends 0 | 2
     ? <
         S extends keyof Marko.NativeTags,
         A extends "a" | "button",
@@ -208,7 +181,8 @@ const Input = new (class Template extends Marko._.Template<{
           A extends "a" | "button",
         >(
           input: Marko._.TagInput<__marko_internal_input, Input<S, A>>,
-        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>;
-  [Marko._.anyInput]: Input<any, any>;
-}> {})();
+        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>,
+  "class"
+> {}
+const Input = new Template();
 export default Input;

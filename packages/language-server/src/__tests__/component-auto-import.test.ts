@@ -58,7 +58,7 @@ async function defaultExport(filename: string, text = "<div/>\n") {
     )) as { content: string } | undefined;
     return (out?.content ?? "")
       .split("\n")
-      .filter((line) => /export default|= new \(/.test(line))
+      .filter((line) => /export default|= new /.test(line))
       .join("\n");
   } finally {
     dispose();
@@ -68,31 +68,28 @@ async function defaultExport(filename: string, text = "<div/>\n") {
 describe("marko component default export naming", () => {
   it("names the export for a discoverable component file", async () => {
     const out = await defaultExport("components/my-component.marko");
-    assert.match(out, /const MyComponent = new \(/);
+    assert.match(out, /const MyComponent = new /);
     assert.match(out, /export default MyComponent;/);
   });
 
   it("uses the directory name for index / self-named tag files", async () => {
     assert.match(
       await defaultExport("components/data-table/index.marko"),
-      /const DataTable = new \(/,
+      /const DataTable = new /,
     );
     assert.match(
       await defaultExport("tags/widget/widget.marko"),
-      /const Widget = new \(/,
+      /const Widget = new /,
     );
   });
 
   it("leaves non-discoverable files as an anonymous export", async () => {
     // Not under a `components`/`tags` directory.
-    assert.match(
-      await defaultExport("src/Modal.marko"),
-      /export default new \(/,
-    );
+    assert.match(await defaultExport("src/Modal.marko"), /export default new /);
     // A nested file that isn't the index or the self-named tag file.
     const nested = await defaultExport("components/foo/bar.marko");
-    assert.match(nested, /export default new \(/);
-    assert.doesNotMatch(nested, /const \w+ = new \(/);
+    assert.match(nested, /export default new /);
+    assert.doesNotMatch(nested, /const \w+ = new /);
   });
 
   it("falls back to an anonymous export when the name appears in the source", async () => {
@@ -100,14 +97,14 @@ describe("marko component default export naming", () => {
       "components/widget.marko",
       "static const Widget = 1\n<div/>\n",
     );
-    assert.match(out, /export default new \(/);
-    assert.doesNotMatch(out, /const Widget = new \(/);
+    assert.match(out, /export default new /);
+    assert.doesNotMatch(out, /const Widget = new /);
   });
 
   it("skips naming when the tag name is not a valid identifier", async () => {
     assert.match(
       await defaultExport("components/3d-view.marko"),
-      /export default new \(/,
+      /export default new /,
     );
   });
 
@@ -119,7 +116,7 @@ describe("marko component default export naming", () => {
     // TypeScript cannot parse (TS1005/TS1134/TS1389).
     const out = await defaultExport("tags/my-button[variant].marko");
     assert.doesNotMatch(out, /\]/, "identifier must not contain `]`");
-    assert.match(out, /const MyButtonVariant = new \(/);
+    assert.match(out, /const MyButtonVariant = new /);
     assert.match(out, /export default MyButtonVariant;/);
   });
 

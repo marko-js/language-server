@@ -149,23 +149,6 @@ export interface Input {}
   });
   return;
 })();
-export default new (class Template extends Marko._.Template<{
-  render(input: Marko.TemplateInput<Input>): Marko.RenderedTemplate;
-
-  mount(
-    input: Marko.TemplateInput<Input>,
-    reference: Node,
-    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input, void>;
-
-  _<A = 1>(
-    m?: A,
-  ): () => A extends 2 | 3
-    ? Marko._.RestAttrTagsRenderer<Input, void>
-    : <I>(
-        input: Marko.Directives &
-          Input &
-          Marko._.Relate<I, Marko.Directives & Input>,
-      ) => Marko._.ReturnWithScope<I, void>;
-}> {})();
+class Template extends Marko._.Template<Input> {}
+export default new Template();
 //      ^?      ^?             ^?              ^?

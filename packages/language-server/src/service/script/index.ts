@@ -677,8 +677,6 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
       scriptLang: filename
         ? Project.getScriptLang(filename, markoScriptLang, ts, host)
         : markoScriptLang,
-      runtimeTypesCode: Project.getTypeLibs(tsProject.rootDir, ts, host)
-        ?.markoTypesCode,
     });
   });
 }

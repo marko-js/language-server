@@ -29,8 +29,9 @@ function __marko_internal_template() {
   Marko._.noop({ name, input, $global, $signal });
   return __marko_internal_return;
 }
-const Input = new /**
- * @extends { Marko._.Template<{              render(         input: Marko.TemplateInput<Input>,       ): Marko.RenderedTemplate;               mount(         input: Marko.TemplateInput<Input>,         reference: Node,         position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",       ): Marko.MountedTemplate<typeof input, typeof __marko_internal_template extends () => infer Return ? Return : never>;             _<A = 1>(m?: A): () => A extends 2 | 3     ? Marko._.RestAttrTagsRenderer<Input, typeof __marko_internal_template extends () => infer Return ? Return : never>     : <I>(input: Marko.Directives & Input & Marko._.Relate<I, Marko.Directives & Input>) => Marko._.ReturnWithScope<I, typeof __marko_internal_template extends () => infer Return ? Return : never>; }>}
+/**
+ * @extends { Marko._.Template<Input, Marko._.ReturnOf<typeof __marko_internal_template>>}
  */
-(class Template extends Marko._.Template {})();
+class Template extends Marko._.Template {}
+const Input = new Template();
 export default Input;

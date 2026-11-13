@@ -25,6 +25,7 @@ interface TypeLibs {
   markoRunTypesFile: string | undefined;
   markoRunGeneratedTypesFile: string | undefined;
   markoTypesFile: string | undefined;
+  /** @deprecated Not used: templates no longer copy from the runtime types. */
   markoTypesCode: string | undefined;
 }
 
@@ -70,6 +71,10 @@ export function getTypeLibs(
         markoRunTypesFile: string | undefined;
         markoRunGeneratedTypesFile: string | undefined;
         markoTypesFile: string;
+        /**
+         * @deprecated Not used: templates no longer copy from the runtime
+         * types.
+         */
         markoTypesCode: string;
       };
   if (typeLibs) return typeLibs;

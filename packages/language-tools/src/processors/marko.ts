@@ -120,7 +120,6 @@ const markoProcessor: ProcessorConfig = {
             ts,
             host,
           ),
-          runtimeTypesCode: runtimeTypes.markoTypesCode,
         });
       },
       print({ extracted: { parsed } }) {
@@ -168,6 +167,7 @@ const markoProcessor: ProcessorConfig = {
             statement === defaultExport || // skips the generated `export default ...`.
             statement === componentImpl || // skips the generated `class {}` since it needs special processing.
             statement === internalRenderImpl || // skips the internal template render code.
+            isTemplateClass(statement) || // skips the generated `class Template` (and the base TypeScript declares for a JavaScript one).
             isExportComponentType(statement) || // skips the generated `export { type Component }`.
             isImportComponentType(statement) || // skips the generated `import type Component from "..."`.
             isExportEmptyInputType(statement) || // skips empty exported Input, eg `export type Input = {}` or `export interface Input {}`.
@@ -228,11 +228,16 @@ const markoProcessor: ProcessorConfig = {
           code += `}${nlChar}`;
         }
 
-        if (internalRenderImpl) {
+        // The render function as the template's script declares it, which a
+        // declaration leaves out when nothing it declares names it.
+        const renderImpl = getRenderImpl(
+          ts.getOriginalNode(sourceFile) as ts.SourceFile,
+        );
+        if (renderImpl) {
           // Print the return type of the render function.
           // This is used to print the `<return>` tag.
           const returnType = typeChecker
-            .getSignatureFromDeclaration(internalRenderImpl)
+            .getSignatureFromDeclaration(renderImpl)
             ?.getReturnType();
           if (returnType) {
             const props = returnType.getProperties();
@@ -300,6 +305,26 @@ const markoProcessor: ProcessorConfig = {
     // The `"~api"` export is re-derived whenever the emitted `.d.marko` is
     // itself extracted, so both it and the `const` backing it are internal to
     // the extracted script and must not be printed into the declaration file.
+    // Generated only where the template's own code does not name `Template`.
+    function isTemplateClass(statement: ts.Statement) {
+      return (
+        (ts.isClassDeclaration(statement) &&
+          statement.name?.escapedText === "Template") ||
+        isVariableStatementForName(statement, "Template_base")
+      );
+    }
+
+    function getRenderImpl(sourceFile: ts.SourceFile) {
+      for (const statement of sourceFile.statements) {
+        if (
+          ts.isFunctionDeclaration(statement) &&
+          statement.name?.escapedText === "___marko_internal_template"
+        ) {
+          return statement;
+        }
+      }
+    }
+
     function isInternalApiVar(statement: ts.Statement) {
       return isVariableStatementForName(statement, INTERNAL_API_VAR);
     }

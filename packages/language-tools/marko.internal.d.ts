@@ -93,14 +93,100 @@ declare global {
       ): ContentFor<Marko.Template<Input, Return>>;
       export function contentFor<Name>(tag: Name): ContentFor<Name>;
 
-      // Also a type, for the `@extends` of a JavaScript template's class to
-      // name.
-      export type Template<Overrides = unknown> = {
-        [
-          K in Exclude<keyof Marko.Template, keyof Overrides>
-        ]: Marko.Template[K];
-      } & Overrides;
-      export const Template: new <Overrides = unknown>() => Template<Overrides>;
+      // A template's type: the runtime's own `Marko.Template<Input, Return>`
+      // (picked by its keys, so each member keeps the runtime's declaration
+      // and docs), its renderer, and the api it is written in (`"tags"`
+      // unless it says `"class"`, read by `ContentFor`). Also a type, for the
+      // `@extends` of a JavaScript template's class to name.
+      export type Template<Input, Return = void, Api = "tags"> = Omit<
+        Marko.Template<Input, Return>,
+        "_"
+      > & {
+        _: RendererOf<Input, Return>;
+        api: Api;
+      };
+      export const Template: new <
+        Input,
+        Return = void,
+        Api = "tags",
+      >() => Template<Input, Return, Api>;
+
+      // A template's renderer (its `_`), in the form its first call takes
+      // (see `Renderer`). A tag without rest attribute tags renders by the
+      // signature written here, which is cheaper to check than a named one.
+      // The renderer is named, so that a declaration spelling out the
+      // template's type names it, rather than the input it reads. A generic
+      // template writes its own.
+      export type RendererOf<Input, Return> = <A = 1>(
+        m?: A,
+      ) => () => A extends 2 | 3
+        ? RestAttrTagsRenderer<Input, Return>
+        : <I>(
+            input: Marko.Directives &
+              Input &
+              Relate<I, Marko.Directives & Input>,
+          ) => ReturnWithScope<I, Return>;
+
+      // A generic template: each of the runtime's methods redeclared generic
+      // (`Methods`, mapped by the runtime's keys, see `TemplateMethods`, with
+      // its input for any type arguments, `[anyInput]`), its renderer, and the
+      // api it is written in (as for `Template`). Any other member of the
+      // runtime's template (eg one a declaration merge adds) is the runtime's
+      // own. Its input for any type arguments is written by the template: a
+      // declaration spelling out its type can name its key only as written.
+      export type GenericTemplate<Methods, Renderer, Api = "tags"> = Omit<
+        Marko.Template,
+        keyof Methods
+      > &
+        Methods & {
+          _: Renderer;
+          api: Api;
+        };
+      export const GenericTemplate: new <
+        Methods,
+        Renderer,
+        Api = "tags",
+      >() => GenericTemplate<Methods, Renderer, Api>;
+
+      // What a generic template redeclares a method of the runtime's by, for
+      // its input with given type arguments.
+      export type MethodParams<
+        Input,
+        Return,
+        Key extends keyof Marko.Template,
+      > = ParamsOf<Marko.Template<Input, Return>[Key]>;
+      export type MethodReturn<
+        Input,
+        Return,
+        Key extends keyof Marko.Template,
+      > = ReturnOf<Marko.Template<Input, Return>[Key]>;
+
+      // The methods a generic template redeclares generic: the runtime's
+      // whose signature depends on the template's input or return (eg not
+      // `marko@5`'s `createOut`). It maps over their `keyof`, so each keeps
+      // the runtime's declaration and docs.
+      export type TemplateMethods = Pick<
+        Marko.Template,
+        {
+          [Key in keyof Marko.Template]-?: Marko.Template[Key] extends (
+            ...args: any
+          ) => any
+            ? Marko.Template<1, 1>[Key] extends Marko.Template<2, 2>[Key]
+              ? never
+              : Key
+            : never;
+        }[keyof Marko.Template]
+      >;
+
+      // What a function takes and returns, eg a template's render function,
+      // as a type argument. Generated code uses these rather than
+      // `Parameters` and `ReturnType`, which a template can shadow.
+      export type ParamsOf<Fn> = Fn extends (...args: infer Params) => any
+        ? Params
+        : never;
+      export type ReturnOf<Fn> = Fn extends (...args: any) => infer Return
+        ? Return
+        : never;
 
       export function noop(value: any): void;
 
