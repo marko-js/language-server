@@ -37,8 +37,8 @@
     "test": "mocha './src/**/__tests__/*.test.ts'"
   },
   "dependencies": {
-    "@marko/compiler": "^5.43.2",
-    "htmljs-parser": "^5.20.0",
+    "@marko/compiler": "^5.43.3",
+    "htmljs-parser": "^5.22.1",
     "relative-import-path": "^1.0.1"
   },
   "devDependencies": {
