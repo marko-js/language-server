@@ -75,8 +75,8 @@ importers:
   packages/language-server:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.2
-        version: 5.43.2
+        specifier: ^5.43.3
+        version: 5.43.3
       '@marko/language-tools':
         specifier: ^2.8.1
         version: link:../language-tools
@@ -84,8 +84,8 @@ importers:
         specifier: ^4.14.0
         version: 4.14.0
       htmljs-parser:
-        specifier: ^5.20.0
-        version: 5.20.0
+        specifier: ^5.22.1
+        version: 5.22.1
       jsdom:
         specifier: ^31.0.0
         version: 31.0.0(patch_hash=a946b298ccd2d54ae8ea0c2af0d96b428cd3d6231c7d9ff50b1260200c3e3a1f)
@@ -96,8 +96,8 @@ importers:
         specifier: ^3.10.1
         version: 3.10.1
       prettier-plugin-marko:
-        specifier: ^4.1.3
-        version: 4.1.3
+        specifier: ^4.1.4
+        version: 4.1.4
       relative-import-path:
         specifier: ^1.0.1
         version: 1.0.1
@@ -133,11 +133,11 @@ importers:
   packages/language-tools:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.2
-        version: 5.43.2
+        specifier: ^5.43.3
+        version: 5.43.3
       htmljs-parser:
-        specifier: ^5.20.0
-        version: 5.20.0
+        specifier: ^5.22.1
+        version: 5.22.1
       relative-import-path:
         specifier: ^1.0.1
         version: 1.0.1
@@ -176,8 +176,8 @@ importers:
   packages/type-check:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.2
-        version: 5.43.2
+        specifier: ^5.43.3
+        version: 5.43.3
       '@marko/language-tools':
         specifier: ^2.8.1
         version: link:../language-tools
@@ -543,15 +543,6 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@exodus/bytes@1.15.1':
-    resolution: {integrity: sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-    peerDependencies:
-      '@noble/hashes': ^1.8.0 || ^2.0.0
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
-
   '@exodus/bytes@1.16.0':
     resolution: {integrity: sha512-IcpW84uEn3N7ETtNZMlxKhfl6Pec8rUNGOTBtWbK1FKhJxIFAptZyVrvVRVBimAJxJCgc3PxepxkdWWG4DVzfA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
@@ -742,8 +733,8 @@ packages:
     resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
     engines: {node: '>=20.0.0'}
 
-  '@marko/compiler@5.43.2':
-    resolution: {integrity: sha512-bdtlZ/qN2bE3c6fmIEJ2fBbq82clJNuNmFQrZWHV3WEPQzFnSpUYNAblhayOKaZ0UgjunjsQZyCVkhuBm81xtA==}
+  '@marko/compiler@5.43.3':
+    resolution: {integrity: sha512-997joIL3xNKnPI9hs3SvjWL4Ktj/r+k7VzJdUa/BqwZckcJp0Up/uE+awwNSiw0dMLzxphII+PAapVVXbZ2ARw==}
     engines: {node: '>=22.12.0'}
 
   '@marko/runtime-tags@6.4.15':
@@ -1579,8 +1570,8 @@ packages:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
     engines: {node: ^22.13.0 || >=24.0.0}
 
-  htmljs-parser@5.20.0:
-    resolution: {integrity: sha512-hgqpYBbHzoNE0CYVhy1kWj9oPT98v+2VlKLHuap5Baqq2daGSELcKBQg4oLdGo1XjPBm+snPj86mdcZu+dhWJg==}
+  htmljs-parser@5.22.1:
+    resolution: {integrity: sha512-MwJFvRC7QJiE1NRmp6YJSHO3tTYd2inyRtoPIZlcB4h1+5lmMmQN4w3a0D2MTEhYuy/zwZshgl5HjknqmJEFvQ==}
 
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
@@ -1982,8 +1973,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-plugin-marko@4.1.3:
-    resolution: {integrity: sha512-FK8mXraA6c9SUuaUZjp2hEwjGMdU6KTlwSNmWTgVzSxnab2TzbnNPIjRkl5x8otM1KKmmSiGy/VRP4QaRJ+adQ==}
+  prettier-plugin-marko@4.1.4:
+    resolution: {integrity: sha512-YTnSTLjCoh+aeoN4b8oBhYdq1tWP8Rm/GWpxXBbeS6M36U5ZorZddPrUc92i2TlQ5r2KQ6d5LmCQmnE32bBlHg==}
 
   prettier-plugin-packagejson@3.1.0:
     resolution: {integrity: sha512-KxH8E68UGYVW4IDxZk7lLXKxVd8uY6g8ctfu+fNwA+bAKgCN66ZoRIcPtOHXDa1kDj/nLBZIgH8srP/1Yaz9iA==}
@@ -2748,8 +2739,6 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@exodus/bytes@1.15.1': {}
-
   '@exodus/bytes@1.16.0': {}
 
   '@humanfs/core@0.19.2':
@@ -2920,9 +2909,9 @@ snapshots:
       tinyglobby: 0.2.17
       yaml: 2.9.1
 
-  '@marko/compiler@5.43.2':
+  '@marko/compiler@5.43.3':
     dependencies:
-      htmljs-parser: 5.20.0
+      htmljs-parser: 5.22.1
       jsesc: 3.1.0
       kleur: 4.1.5
       magic-string: 1.4.5
@@ -2931,7 +2920,7 @@ snapshots:
 
   '@marko/runtime-tags@6.4.15':
     dependencies:
-      '@marko/compiler': 5.43.2
+      '@marko/compiler': 5.43.3
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
       magic-string: 1.4.5
@@ -3765,11 +3754,11 @@ snapshots:
 
   html-encoding-sniffer@7.0.0:
     dependencies:
-      '@exodus/bytes': 1.15.1
+      '@exodus/bytes': 1.16.0
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  htmljs-parser@5.20.0: {}
+  htmljs-parser@5.22.1: {}
 
   http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
@@ -4017,7 +4006,7 @@ snapshots:
 
   marko@5.40.3:
     dependencies:
-      '@marko/compiler': 5.43.2
+      '@marko/compiler': 5.43.3
       '@marko/runtime-tags': 6.4.15
       app-module-path: 2.2.0
       argly: 1.2.0
@@ -4034,7 +4023,7 @@ snapshots:
 
   marko@6.4.14:
     dependencies:
-      '@marko/compiler': 5.43.2
+      '@marko/compiler': 5.43.3
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
       magic-string: 1.4.5
@@ -4191,9 +4180,9 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-marko@4.1.3:
+  prettier-plugin-marko@4.1.4:
     dependencies:
-      htmljs-parser: 5.20.0
+      htmljs-parser: 5.22.1
 
   prettier-plugin-packagejson@3.1.0(prettier@3.10.1):
     dependencies:
