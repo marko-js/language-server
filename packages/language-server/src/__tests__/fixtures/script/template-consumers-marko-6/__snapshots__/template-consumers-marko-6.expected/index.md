@@ -85,6 +85,8 @@ import Counter
   19 |   //    ^?
 > 20 |   Counter.render;
      |           ^ (method) render(input: Marko.TemplateInput<Input>): Marko.RenderedTemplate
+---
+Render the template to a string.
   21 |   //      ^?
   22 |   Counter.mount;
   23 |   //      ^?
@@ -95,10 +97,12 @@ import Counter
   20 |   Counter.render;
   21 |   //      ^?
 > 22 |   Counter.mount;
-     |           ^ (method) mount(input: Marko.TemplateInput<Input>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input>, ((this: void) => {
+     |           ^ (method) mount(input: Marko.TemplateInput<Input>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input>, {
     value: number;
     valueChange(next: number): void;
-}) extends () => infer Return ? Return : never>
+}>
+---
+Render and attach the template to a DOM node.
   23 |   //      ^?
   24 |   Generic.render;
   25 |   //      ^?
@@ -110,6 +114,8 @@ import Counter
   23 |   //      ^?
 > 24 |   Generic.render;
      |           ^ (method) render<T>(input: Marko.TemplateInput<Input<T>>): Marko.RenderedTemplate
+---
+Render the template to a string.
   25 |   //      ^?
   26 |   Generic.mount;
   27 |   //      ^?
@@ -120,10 +126,12 @@ import Counter
   24 |   Generic.render;
   25 |   //      ^?
 > 26 |   Generic.mount;
-     |           ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
+     |           ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend" | undefined): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
     value: T;
     valueChange(next: T): void;
 }>
+---
+Render and attach the template to a DOM node.
   27 |   //      ^?
   28 |   JsGeneric.mount;
   29 |   //        ^?
@@ -134,9 +142,11 @@ import Counter
   26 |   Generic.mount;
   27 |   //      ^?
 > 28 |   JsGeneric.mount;
-     |             ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
+     |             ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend" | undefined): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
     value: T;
 }>
+---
+Render and attach the template to a DOM node.
   29 |   //        ^?
   30 |   Counter.mount({ start: "bad" }, el);
   31 |   Generic.render({});

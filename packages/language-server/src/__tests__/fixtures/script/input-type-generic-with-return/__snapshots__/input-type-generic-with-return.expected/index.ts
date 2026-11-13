@@ -18,50 +18,26 @@ function __marko_internal_template<T = string>(this: void) {
 }
 const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
-const Input = new (class Template extends Marko._.Template<{
-  render<T = string>(
-    input: Marko.TemplateInput<Input<T>>,
-    stream?: {
-      write: (chunk: string) => void;
-      end: (chunk?: string) => void;
-    },
-  ): Marko.Out<never>;
-
-  render<T = string>(
-    input: Marko.TemplateInput<Input<T>>,
-    cb?: (err: Error | null, result: Marko.RenderResult<never>) => void,
-  ): Marko.Out<never>;
-
-  renderSync<T = string>(
-    input: Marko.TemplateInput<Input<T>>,
-  ): Marko.RenderResult<never>;
-
-  renderToString<T = string>(input: Marko.TemplateInput<Input<T>>): string;
-
-  stream<T = string>(
-    input: Marko.TemplateInput<Input<T>>,
-  ): ReadableStream<string> & NodeJS.ReadableStream;
-
-  mount<T = string>(
-    input: Marko.TemplateInput<Input<T>>,
-    reference: Node,
-    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<
-    typeof input,
-    typeof __marko_internal_template<T> extends () => infer Return
-      ? Return
-      : never
-  >;
-
-  api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(
+class Template extends Marko._.GenericTemplate<
+  {
+    [__marko_internal_key in keyof Marko._.TemplateMethods]: <T = string>(
+      ...args: Marko._.MethodParams<
+        Input<T>,
+        Marko._.ReturnOf<typeof __marko_internal_template<T>>,
+        __marko_internal_key
+      >
+    ) => Marko._.MethodReturn<
+      Input<T>,
+      Marko._.ReturnOf<typeof __marko_internal_template<T>>,
+      __marko_internal_key
+    >;
+  } & { [Marko._.anyInput]: Input<any> },
+  <__marko_internal_apply = 1>(
     m?: __marko_internal_apply,
-  ): __marko_internal_apply extends 0 | 2
+  ) => __marko_internal_apply extends 0 | 2
     ? <T = string>() => Marko._.Renderer<
         Input<T>,
-        typeof __marko_internal_template<T> extends () => infer Return
-          ? Return
-          : never,
+        Marko._.ReturnOf<typeof __marko_internal_template<T>>,
         __marko_internal_apply
       >
     : __marko_internal_apply extends 1
@@ -71,18 +47,14 @@ const Input = new (class Template extends Marko._.Template<{
             Marko._.Relate<__marko_internal_input, Marko.Directives & Input<T>>,
         ) => Marko._.ReturnWithScope<
           __marko_internal_input,
-          typeof __marko_internal_template<T> extends () => infer Return
-            ? Return
-            : never
+          Marko._.ReturnOf<typeof __marko_internal_template<T>>
         >
       : () => <__marko_internal_input, T = string>(
           input: Marko._.TagInput<__marko_internal_input, Input<T>>,
         ) => Marko._.ReturnWithRestAttrTagsScope<
           __marko_internal_input,
-          typeof __marko_internal_template<T> extends () => infer Return
-            ? Return
-            : never
-        >;
-  [Marko._.anyInput]: Input<any>;
-}> {})();
+          Marko._.ReturnOf<typeof __marko_internal_template<T>>
+        >
+> {}
+const Input = new Template();
 export default Input;

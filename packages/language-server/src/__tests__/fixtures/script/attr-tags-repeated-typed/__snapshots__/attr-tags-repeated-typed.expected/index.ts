@@ -490,43 +490,6 @@ export { type Component };
 })();
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
-const Input = new (class Template extends Marko._.Template<{
-  render(
-    input: Marko.TemplateInput<Input>,
-    stream?: {
-      write: (chunk: string) => void;
-      end: (chunk?: string) => void;
-    },
-  ): Marko.Out<Component>;
-
-  render(
-    input: Marko.TemplateInput<Input>,
-    cb?: (err: Error | null, result: Marko.RenderResult<Component>) => void,
-  ): Marko.Out<Component>;
-
-  renderSync(input: Marko.TemplateInput<Input>): Marko.RenderResult<Component>;
-
-  renderToString(input: Marko.TemplateInput<Input>): string;
-
-  stream(
-    input: Marko.TemplateInput<Input>,
-  ): ReadableStream<string> & NodeJS.ReadableStream;
-
-  mount(
-    input: Marko.TemplateInput<Input>,
-    reference: Node,
-    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input, void>;
-
-  api: typeof __marko_internal_api;
-  _<A = 1>(
-    m?: A,
-  ): () => A extends 2 | 3
-    ? Marko._.RestAttrTagsRenderer<Input, void>
-    : <I>(
-        input: Marko.Directives &
-          Input &
-          Marko._.Relate<I, Marko.Directives & Input>,
-      ) => Marko._.ReturnWithScope<I, void>;
-}> {})();
+class Template extends Marko._.Template<Input, void, "class"> {}
+const Input = new Template();
 export default Input;

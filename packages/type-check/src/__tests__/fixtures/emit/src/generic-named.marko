@@ -1,0 +1,8 @@
+export interface Input<T> {
+  value: T;
+}
+
+// Its own `Template` leaves the template's class an expression.
+static const Template = "generic";
+
+<div>${Template}: ${String(input.value)}</div>

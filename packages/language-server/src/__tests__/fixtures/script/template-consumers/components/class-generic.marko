@@ -1,0 +1,12 @@
+export interface Input<T> {
+  value: T;
+}
+
+class {
+  declare state: { value: T };
+  onCreate(input: Input<T>) {
+    this.state = { value: input.value };
+  }
+}
+
+<div>${String(state.value)}</div>

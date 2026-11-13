@@ -36,45 +36,26 @@ export { type Component };
 })();
 const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
-const Input = new (class Template extends Marko._.Template<{
-  render<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-    stream?: {
-      write: (chunk: string) => void;
-      end: (chunk?: string) => void;
-    },
-  ): Marko.Out<Component<FirstName, LastName>>;
-
-  render<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-    cb?: (
-      err: Error | null,
-      result: Marko.RenderResult<Component<FirstName, LastName>>,
-    ) => void,
-  ): Marko.Out<Component<FirstName, LastName>>;
-
-  renderSync<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-  ): Marko.RenderResult<Component<FirstName, LastName>>;
-
-  renderToString<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-  ): string;
-
-  stream<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-  ): ReadableStream<string> & NodeJS.ReadableStream;
-
-  mount<FirstName extends string, LastName extends string>(
-    input: Marko.TemplateInput<Input<FirstName, LastName>>,
-    reference: Node,
-    position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend",
-  ): Marko.MountedTemplate<typeof input, void>;
-
-  api: typeof __marko_internal_api;
-  _<__marko_internal_apply = 1>(
+class Template extends Marko._.GenericTemplate<
+  {
+    [__marko_internal_key in keyof Marko._.TemplateMethods]: <
+      FirstName extends string,
+      LastName extends string,
+    >(
+      ...args: Marko._.MethodParams<
+        Input<FirstName, LastName>,
+        void,
+        __marko_internal_key
+      >
+    ) => Marko._.MethodReturn<
+      Input<FirstName, LastName>,
+      void,
+      __marko_internal_key
+    >;
+  } & { [Marko._.anyInput]: Input<any, any> },
+  <__marko_internal_apply = 1>(
     m?: __marko_internal_apply,
-  ): __marko_internal_apply extends 0 | 2
+  ) => __marko_internal_apply extends 0 | 2
     ? <FirstName extends string, LastName extends string>() => Marko._.Renderer<
         Input<FirstName, LastName>,
         void,
@@ -102,8 +83,9 @@ const Input = new (class Template extends Marko._.Template<{
             __marko_internal_input,
             Input<FirstName, LastName>
           >,
-        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>;
-  [Marko._.anyInput]: Input<any, any>;
-}> {})();
+        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>,
+  "class"
+> {}
+const Input = new Template();
 export default Input;
 //         ^?

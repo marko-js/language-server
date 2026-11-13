@@ -1,0 +1,10 @@
+/**
+ * @typedef {{ start: number }} Input
+ */
+class {
+  onCreate(/** @type {Input} */ input) {
+    this.state = { count: input.start };
+  }
+}
+
+<div>${state.count}</div>

@@ -33,7 +33,6 @@ import { getComponentName } from "./util/get-component-name";
 import { getRuntimeAPI, RuntimeAPI } from "./util/get-runtime-api";
 import { isTextOnlyScript } from "./util/is-text-only-script";
 import getJSDocInputType from "./util/jsdoc-input-type";
-import { getRuntimeOverrides } from "./util/runtime-overrides";
 import { ScriptParser } from "./util/script-parser";
 
 const SEP_EMPTY = "";
@@ -67,6 +66,8 @@ const RENDER_VAR = new WeakMap<Node.Tag, string>();
 const TEMPLATE_VAR = new WeakMap<Node.Tag, string>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
+// A `Template` the template's own code could declare or read.
+const templateNameReg = /(?<![.\w$])Template(?![\w$])/;
 
 type ProcessedBody = {
   content: Repeatable<Node.ChildNode>;
@@ -119,6 +120,10 @@ export interface ExtractScriptOptions {
   parsed: Parsed;
   lookup: TaglibLookup;
   scriptLang: ScriptLang;
+  /**
+   * @deprecated Not used: a template's type reads the runtime's methods
+   * from its types.
+   */
   runtimeTypesCode?: string;
   translator: Meta["config"]["translator"];
 }
@@ -137,7 +142,6 @@ class ScriptExtractor {
   #read: Parsed["read"];
   #lookup: TaglibLookup;
   #scriptLang: ScriptLang;
-  #runtimeTypes: ExtractScriptOptions["runtimeTypesCode"];
   #mutations: Repeatable<Mutation>;
   /** Whether the template declares its `Input` itself. */
   #declaresInput = false;
@@ -158,7 +162,6 @@ class ScriptExtractor {
     this.#scriptLang = scriptLang;
     this.#parsed = parsed;
     this.#lookup = lookup;
-    this.#runtimeTypes = opts.runtimeTypesCode;
     this.#extractor = new Extractor(parsed);
     this.#ast = new ScriptParser(parsed);
     this.#read = parsed.read.bind(parsed);
@@ -434,60 +437,53 @@ function ${templateName}() {\n`);
       this.#extractor.write("return;\n})();\n");
     }
 
-    const templateBaseClass = varShared("Template");
+    let templateBaseClass = varShared("Template");
     const internalApply = varLocal("apply");
-    const returnTypeStr = didReturn
-      ? `typeof ${
-          templateName + typeArgsStr
-        } extends () => infer Return ? Return : never`
-      : "void";
     const internalInput = varLocal("input");
     const typeParams = typeParamsStr.slice(1, -1);
     const apiVar = INTERNAL_API_VAR;
-    // A template's renderer (its `_`), in the form its first call takes (see
-    // `Marko._.Renderer`). A tag without rest attribute tags renders by the
-    // signature written here, which is cheaper to check than a named one (its
-    // type parameters can have short names, as the template has none). One
-    // that takes no type arguments takes `2` like `3`: a tag giving it some
-    // anyway is reported for them, not for its rest attribute tags.
-    const renderer = typeParamsStr
-      ? `<${internalApply} = 1>(m?: ${internalApply}): ${internalApply} extends 0 | 2
-    ? ${typeParamsStr}() => ${varShared("Renderer")}<Input${typeArgsStr}, ${returnTypeStr}, ${internalApply}>
+    // The template's return type as a type argument.
+    const returnTypeArg = didReturn
+      ? `${varShared("ReturnOf")}<typeof ${templateName + typeArgsStr}>`
+      : "void";
+    // The api a template is written in, given only for the Class API.
+    const apiArg = this.#api === RuntimeAPI.class ? `, "class"` : "";
+    let templateArgs: string;
+
+    if (typeParamsStr) {
+      // A generic template's type parameters are in scope only within each
+      // method, so each of the runtime's methods is redeclared generic. It
+      // maps over their `keyof`, so each keeps the runtime's declaration and
+      // docs. On `marko@5` types `render`'s two signatures are one.
+      const key = varLocal("key");
+      // Its renderer (its `_`) is its own, as the shared one (see
+      // `Marko._.RendererOf`) cannot see its type parameters: in the form its
+      // first call takes (see `Marko._.Renderer`), by the signature written
+      // here, which is cheaper to check than a named one (its type
+      // parameters can have short names, as the template has none).
+      const renderer = `<${internalApply} = 1>(m?: ${internalApply}) => ${internalApply} extends 0 | 2
+    ? ${typeParamsStr}() => ${varShared("Renderer")}<Input${typeArgsStr}, ${returnTypeArg}, ${internalApply}>
     : ${internalApply} extends 1
-    ? () => <${internalInput}, ${typeParams}>(input: Marko.Directives & Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeStr}>
-    : () => <${internalInput}, ${typeParams}>(input: ${varShared("TagInput")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithRestAttrTagsScope")}<${internalInput}, ${returnTypeStr}>;`
-      : `<A = 1>(m?: A): () => A extends 2 | 3
-    ? ${varShared("RestAttrTagsRenderer")}<Input, ${returnTypeStr}>
-    : <I>(input: Marko.Directives & Input & ${varShared("Relate")}<I, Marko.Directives & Input>) => ${varShared("ReturnWithScope")}<I, ${returnTypeStr}>;`;
-    const templateOverrideClass = `${templateBaseClass}<{${
-      this.#runtimeTypes
-        ? getRuntimeOverrides(
-            this.#api,
-            this.#runtimeTypes,
-            typeParamsStr,
-            typeArgsStr,
-            returnTypeStr,
-          )
-        : ""
+    ? () => <${internalInput}, ${typeParams}>(input: Marko.Directives & Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeArg}>
+    : () => <${internalInput}, ${typeParams}>(input: ${varShared("TagInput")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithRestAttrTagsScope")}<${internalInput}, ${returnTypeArg}>`;
+      const method = (part: string) =>
+        `${varShared(part)}<Input${typeArgsStr}, ${returnTypeArg}, ${key}>`;
+      templateBaseClass = varShared("GenericTemplate");
+      templateArgs = `{
+  [${key} in keyof ${varShared("TemplateMethods")}]: ${typeParamsStr}(...args: ${method("MethodParams")}) => ${method("MethodReturn")};
+} & { [${varShared("anyInput")}]: Input<${anyTypeArgsStr}> }, ${renderer}${apiArg}`;
+    } else {
+      // The renderer is the shared one, and the return type `void` by default.
+      templateArgs = `Input${
+        apiArg || didReturn ? `, ${returnTypeArg}${apiArg}` : ""
+      }`;
     }
-  ${this.#interop ? `api: typeof ${apiVar},` : ""}
-  _${renderer}${
-    anyTypeArgsStr
-      ? `\n  [${varShared("anyInput")}]: Input<${anyTypeArgsStr}>;`
-      : ""
-  }
-}>`;
+
+    const templateOverrideClass = `${templateBaseClass}<${templateArgs}>`;
 
     if (this.#interop) {
-      // Expose the resolved runtime api as a standalone export so tooling can
-      // read it via `import { "~api" as API } from "./template.marko"` without
-      // pulling in `Input` (and the circular dependencies it can cause) the way
-      // reading the default export's `api` property would. The default export's
-      // `api` property is derived from this same `const` (via `typeof`) so the
-      // literal is only written in one place. A plain `const` (rather than a
-      // type-only `declare`) is used so the same output is valid for both the
-      // `.ts` and `.js` extractions; it still surfaces the api as a
-      // `"tags"`/`"class"` string literal.
+      // The api the template is written in, for tooling to read without its
+      // types (and their imports): `import { "~api" as API } from "./x.marko"`.
       this.#extractor.write(
         `const ${apiVar} = "${this.#api}";\nexport { ${apiVar} as "${INTERNAL_API_EXPORT_NAME}" };\n`,
       );
@@ -508,22 +504,32 @@ function ${templateName}() {\n`);
         ? componentName
         : undefined;
 
-    this.#extractor
-      .write(exportName ? `const ${exportName} = new ` : `export default new `)
-      .anchor(START_OF_FILE);
-    if (this.#scriptLang === ScriptLang.ts) {
-      this.#extractor.write(`(
-  class Template extends ${templateOverrideClass} {}
-);\n`);
+    // The base of a JavaScript template's class is parenthesized, so its
+    // name is not compared with the `@extends` type's: the type of the class
+    // is the `@extends` type.
+    const templateClass =
+      this.#scriptLang === ScriptLang.ts
+        ? `class Template extends ${templateOverrideClass} {}`
+        : `/**
+ * @extends {${removeNewLines(templateOverrideClass)}}
+ */
+class Template extends (${templateBaseClass}) {}`;
+    const value = exportName
+      ? `const ${exportName} = new `
+      : `export default new `;
+    if (templateNameReg.test(this.#code)) {
+      // The template's code could name a `Template` of its own.
+      this.#extractor
+        .write(value)
+        .anchor(START_OF_FILE)
+        .write(`(\n${templateClass}\n);\n`);
     } else {
-      // The base is parenthesized, so its name is not compared with the
-      // `@extends` type's: the type of the class is the `@extends` type.
-      this.#extractor.write(`(
-  /**
-   * @extends {${removeNewLines(templateOverrideClass)}}
-   */
-  class Template extends (${templateBaseClass}) {}
-);\n`);
+      // Declared, so that a declaration of the template names its class,
+      // rather than spelling out each of its members.
+      this.#extractor
+        .write(`${templateClass}\n${value}`)
+        .anchor(START_OF_FILE)
+        .write("Template();\n");
     }
     if (exportName) {
       this.#extractor.write(`export default ${exportName};\n`);
