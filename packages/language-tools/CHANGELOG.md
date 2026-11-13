@@ -1,5 +1,25 @@
 # @marko/language-tools
 
+## 2.8.1
+
+### Patch Changes
+
+- [#638](https://github.com/marko-js/language-server/pull/638) [`fd13ce4`](https://github.com/marko-js/language-server/commit/fd13ce47ba09a964fc0786d857f6671fc0adc77b) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Underline the whole tag name of an `<if>`, `<else if>` or `<while>` that has no condition, instead of only where the name starts.
+
+- [#641](https://github.com/marko-js/language-server/pull/641) [`687d7f0`](https://github.com/marko-js/language-server/commit/687d7f065a31443e51a3ec1df4c80f1c905ef21e) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Type a template's `render`, `mount` and other methods with the Marko runtime's own `Marko.Template` rather than a copy of its methods in every template, so hovers on them show the runtime's documentation and the generated code is smaller (by over a third for `marko@5` templates) and go to definition from one lands in the runtime's types. A template's class is declared rather than written as an expression, so `mtc` writes declarations without spelling out each template's members (a tenth faster on large projects). On `marko@5` a template's `render` and `renderSync` return the runtime's `Marko.Out` and `Marko.RenderResult` (whose `getComponent()` is a `Marko.Component`, rather than the template's own component), and a generic template's `render` takes what the runtime's does (with marko 5.40.3 or later, a stream or a callback). `extractScript`'s `runtimeTypesCode` option and `Project.getTypeLibs()`'s `markoTypesCode` are no longer used and are deprecated.
+
+- [#637](https://github.com/marko-js/language-server/pull/637) [`e7927c3`](https://github.com/marko-js/language-server/commit/e7927c39dd81ecde9b93140c42dfe1cdb07a0895) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Leave the internal `__marko_internal_api` export out of the `.d.marko` that `mtc` writes for a JavaScript template, as for a TypeScript one. It was printed as `export { __marko_internal_api as ~api };`, which does not parse, so a package built from JavaScript templates shipped broken declarations.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Read the JSDoc `@typedef … Input` (and its `@template` type parameters) of a JavaScript template without TypeScript's parser, so `extractScript` finds it whether or not it is given `ts`. The `ts` option is no longer used and is deprecated.
+
+- [#637](https://github.com/marko-js/language-server/pull/637) [`e7927c3`](https://github.com/marko-js/language-server/commit/e7927c39dd81ecde9b93140c42dfe1cdb07a0895) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Report an `<if>`, `<else if>` or `<while>` that has no condition on the tag's name. TypeScript's error for it ("This kind of expression is always falsy") had no place in the template: the editor dropped it and `mtc` printed it with no location.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Find a template's mutated tag variables as they are found rather than by scanning every variable for each tag, which took quadratic time: a template with 3,000 of them now extracts in about 50ms instead of 600ms.
+
+- [#636](https://github.com/marko-js/language-server/pull/636) [`d441613`](https://github.com/marko-js/language-server/commit/d441613994d8cccd5cdb594ef82617911602c627) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Report a placeholder or attribute value that does not parse (eg `${count count}` or `data-x=[#2](https://github.com/marko-js/language-server/issues/2)`) where it is, without the errors it used to cause in the code around it: a placeholder is written in brackets and an attribute value unwrapped, which TypeScript recovers from within the placeholder or the attribute.
+
+- [#633](https://github.com/marko-js/language-server/pull/633) [`ba3036f`](https://github.com/marko-js/language-server/commit/ba3036f5de49373bda582c0c87c2d124ae41f04f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Report only the type arguments of a tag given type arguments it does not take. With repeated or conditional attribute tags, its input was also reported for having an internal `[Marko._.restAttrTags]` property, with no location in the template (`mtc` printed it; the editor dropped it). An error on that property now reports at the tag's name.
+
 ## 2.8.0
 
 ### Minor Changes
