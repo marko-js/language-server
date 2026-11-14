@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
-    "marko": "^5.40.3",
+    "marko": "^6.4.12",
     "mitata": "^1.0.34",
     "tsx": "^4.23.15"
   }
