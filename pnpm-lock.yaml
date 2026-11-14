@@ -78,7 +78,7 @@ importers:
         specifier: ^5.43.3
         version: 5.43.3
       '@marko/language-tools':
-        specifier: ^2.8.1
+        specifier: ^2.8.2
         version: link:../language-tools
       axe-core:
         specifier: ^4.14.0
@@ -179,7 +179,7 @@ importers:
         specifier: ^5.43.3
         version: 5.43.3
       '@marko/language-tools':
-        specifier: ^2.8.1
+        specifier: ^2.8.2
         version: link:../language-tools
       arg:
         specifier: ^5.0.2
@@ -194,7 +194,7 @@ importers:
   packages/vscode:
     devDependencies:
       '@marko/language-server':
-        specifier: ^3.5.1
+        specifier: ^3.5.2
         version: link:../language-server
       '@types/vscode':
         specifier: ~1.116.0

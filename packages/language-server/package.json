@@ -1,6 +1,6 @@
 {
   "name": "@marko/language-server",
-  "version": "3.5.1",
+  "version": "3.5.2",
   "description": "Marko Language Server",
   "keywords": [
     "autocomplete",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@marko/compiler": "^5.43.3",
-    "@marko/language-tools": "^2.8.1",
+    "@marko/language-tools": "^2.8.2",
     "axe-core": "^4.14.0",
     "htmljs-parser": "^5.22.1",
     "jsdom": "^31.0.0",
