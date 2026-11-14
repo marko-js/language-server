@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.5.2
+
+### Patch Changes
+
+- [#642](https://github.com/marko-js/language-server/pull/642) [`4f2c7a0`](https://github.com/marko-js/language-server/commit/4f2c7a0becf07cabc8eb5353936a0df6a0ad8fcb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.22.1, @marko/compiler 5.43.3 and prettier-plugin-marko 4.1.4, which all build on it: it fixes several misparses, reports unfinished concise constructs at EOF, and names what was unfinished in EOF diagnostics (eg "EOF reached while parsing scriptlet").
+- Updated dependencies [[`4f2c7a0`](https://github.com/marko-js/language-server/commit/4f2c7a0becf07cabc8eb5353936a0df6a0ad8fcb)]:
+  - @marko/language-tools@2.8.2
+
 ## 3.5.1
 
 ### Patch Changes

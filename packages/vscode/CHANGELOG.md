@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.2
+
+### Patch Changes
+
+- [#642](https://github.com/marko-js/language-server/pull/642) [`4f2c7a0`](https://github.com/marko-js/language-server/commit/4f2c7a0becf07cabc8eb5353936a0df6a0ad8fcb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Highlight like htmljs-parser 5.21: a spaced non-null `!` ends an attribute value (`a=x ! b`), a value continues past leading comments (`x=/* note */ 1`), `<!--->` is a whole comment, and a `/` after a keyword like `typeof` starts a regular expression.
+
 ## 3.3.1
 
 ### Patch Changes
