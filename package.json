@@ -29,13 +29,13 @@
     "globals": "^17.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "marko": "^5.40.3",
+    "marko": "^6.4.12",
     "mocha": "^12.0.3",
     "mocha-snap": "^5.0.1",
     "prettier": "^3.10.1",
     "prettier-plugin-packagejson": "^3.1.0",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.72.2"
   },
   "packageManager": "pnpm@11.15.1"
