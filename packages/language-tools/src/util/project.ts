@@ -226,8 +226,6 @@ export function setDefaultCompilerMeta(
       translator,
     },
   };
-
-  compiler.configure(defaultMeta.config);
 }
 
 function getMeta(dir?: string): Meta {
@@ -279,7 +277,6 @@ function loadMeta(dir: string): Meta {
           translator: require(translatorPath),
         },
       };
-      compiler.configure(cached.config);
       metaByTranslator.set(translatorPath, cached);
     }
 

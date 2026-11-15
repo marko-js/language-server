@@ -123,9 +123,12 @@ const markoProcessor: ProcessorConfig = {
         });
       },
       print({ extracted: { parsed } }) {
-        const { code, map } = Project.getCompiler(
-          path.dirname(parsed.filename),
-        ).compileSync(parsed.code, parsed.filename, compileConfig);
+        const dir = path.dirname(parsed.filename);
+        const { code, map } = Project.getCompiler(dir).compileSync(
+          parsed.code,
+          parsed.filename,
+          { ...Project.getConfig(dir), ...compileConfig },
+        );
         return { code, map };
       },
       printTypes({ printer, typeChecker, sourceFile, formatSettings }) {
