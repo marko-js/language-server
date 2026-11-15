@@ -37,13 +37,13 @@
     "test": "mocha './src/**/__tests__/*.test.ts'"
   },
   "dependencies": {
-    "@marko/compiler": "^5.43.3",
-    "htmljs-parser": "^5.22.1",
+    "@marko/compiler": "^5.43.4",
+    "htmljs-parser": "^5.22.2",
     "relative-import-path": "^1.0.1"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.27.0",
-    "marko": "^5.40.3",
+    "marko": "^5.40.4",
     "mitata": "^1.0.34",
     "tsx": "^4.23.15"
   }
