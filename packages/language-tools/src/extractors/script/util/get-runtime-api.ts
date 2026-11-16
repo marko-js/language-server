@@ -38,36 +38,30 @@ function detectAPIFromFileName(
   filename: string,
   lookup: TaglibLookup,
 ): RuntimeAPI | void {
-  const tagsDir = getTagsDir(filename);
-  if (tagsDir && !lookup.manualTagsDirs?.has(tagsDir)) {
-    return RuntimeAPI.tags;
-  }
-}
-
-function getTagsDir(filename: string) {
-  const pathSeparator = /\/|\\/.exec(filename)?.[0];
-  if (pathSeparator) {
-    let previousIndex = filename.length - 1;
-    while (previousIndex > 0) {
-      const index = filename.lastIndexOf(pathSeparator, previousIndex);
-      switch (previousIndex - index) {
-        case 4 /** "tags".length */: {
-          if (filename.startsWith("tags", index + 1)) {
-            return filename.slice(0, index + 5);
-          }
-          break;
-        }
-        case 10 /** "components".length */: {
-          if (filename.startsWith("components", index + 1)) {
-            return false;
-          }
-          break;
-        }
-      }
-      previousIndex = index - 1;
+  const dirs = lookup.discoveryDirs;
+  const separator = dirs && /\/|\\/.exec(filename)?.[0];
+  if (!separator) return;
+  // The nearest discovery dir holding the file decides, as in the compiler's
+  // interop translator. Those are `components` and `tags` dirs, so it is the
+  // nearest such segment of the path that was discovered (one above the
+  // package root was not).
+  let end = filename.length;
+  while (end > 0) {
+    const sep = filename.lastIndexOf(separator, end - 1);
+    if (sep < 0) return;
+    const len = end - sep - 1;
+    if (
+      ((len === 4 && filename.startsWith("tags", sep + 1)) ||
+        (len === 10 && filename.startsWith("components", sep + 1))) &&
+      dirs.includes(filename.slice(0, end))
+    ) {
+      // A `marko.json` `tags-dir` naming a `tags` dir keeps it Class API.
+      return len === 4 && !lookup.manualTagsDirs?.has(filename.slice(0, end))
+        ? RuntimeAPI.tags
+        : undefined;
     }
+    end = sep;
   }
-  return false;
 }
 
 function detectAPIFromProgram(
