@@ -1,5 +1,17 @@
 # @marko/language-tools
 
+## 2.8.2
+
+### Patch Changes
+
+- [#644](https://github.com/marko-js/language-server/pull/644) [`a6fd8de`](https://github.com/marko-js/language-server/commit/a6fd8de048a1d418571e527a8a613fb387e10e8a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Read a template's directory once for every template in it when looking for its component file, rather than once per template.
+
+- [#642](https://github.com/marko-js/language-server/pull/642) [`4f2c7a0`](https://github.com/marko-js/language-server/commit/4f2c7a0becf07cabc8eb5353936a0df6a0ad8fcb) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.22.1, @marko/compiler 5.43.3 and prettier-plugin-marko 4.1.4, which all build on it: it fixes several misparses, reports unfinished concise constructs at EOF, and names what was unfinished in EOF diagnostics (eg "EOF reached while parsing scriptlet").
+
+- [#645](https://github.com/marko-js/language-server/pull/645) [`42dd5e9`](https://github.com/marko-js/language-server/commit/42dd5e9189297eaa319a2d64ccc83cb6a1e18ae6) Thanks [@LuLaValva](https://github.com/LuLaValva)! - Stop calling `configure` on a project's `@marko/compiler`, which replaced the global config that bundler plugins such as `@marko/vite` compile with when they run in the same process.
+
+- [#644](https://github.com/marko-js/language-server/pull/644) [`a6fd8de`](https://github.com/marko-js/language-server/commit/a6fd8de048a1d418571e527a8a613fb387e10e8a) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Require htmljs-parser 5.22.2 and @marko/compiler 5.43.4: a line comment in a text tag's open tag (`<script// a</script>`) no longer throws, and templates parse faster.
+
 ## 2.8.1
 
 ### Patch Changes
