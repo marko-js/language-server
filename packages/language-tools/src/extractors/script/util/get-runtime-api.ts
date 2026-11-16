@@ -55,7 +55,10 @@ function detectAPIFromFileName(
         (len === 10 && filename.startsWith("components", sep + 1))) &&
       dirs.includes(filename.slice(0, end))
     ) {
-      return len === 4 ? RuntimeAPI.tags : undefined;
+      // A `marko.json` `tags-dir` naming a `tags` dir keeps it Class API.
+      return len === 4 && !lookup.manualTagsDirs?.has(filename.slice(0, end))
+        ? RuntimeAPI.tags
+        : undefined;
     }
     end = sep;
   }
