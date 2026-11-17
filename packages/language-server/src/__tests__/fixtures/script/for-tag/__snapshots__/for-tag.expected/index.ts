@@ -68,6 +68,16 @@ export interface Input {}
         return Marko._.voidReturn;
       },
     );
+    Marko._.forOfTag(
+      {
+        of: list,
+        by: (item) => item.value,
+      },
+      (item) => {
+        [item.value];
+        return Marko._.voidReturn;
+      },
+    );
     const __marko_internal_rendered_2 = Marko._.forOfTag(
       {
         of: list,
@@ -133,7 +143,7 @@ export interface Input {}
       Marko._.forInTag(
         {
           in: record,
-          by: (value, key) => `${value}-${key}`,
+          by: (key, value) => `${key}-${value}`,
         },
         () => {
           return Marko._.voidReturn;

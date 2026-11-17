@@ -72,282 +72,282 @@
   21 |
 ```
 
-### Ln 29, Col 3
+### Ln 33, Col 3
 ```marko
-  27 |
-  28 | <effect() {
-> 29 |   hoistedFromForOf;
+  31 |
+  32 | <effect() {
+> 33 |   hoistedFromForOf;
      |   ^ const hoistedFromForOf: (() => 1 | 2 | 3) & Iterable<1 | 2 | 3>
-  30 | //^?
-  31 | }/>
-  32 |
+  34 | //^?
+  35 | }/>
+  36 |
 ```
 
-### Ln 36, Col 5
+### Ln 40, Col 5
 ```marko
-  34 |
-  35 | <for|key, value| in=record>
-> 36 |   ${key} ${value}
+  38 |
+  39 | <for|key, value| in=record>
+> 40 |   ${key} ${value}
      |     ^ (parameter) key: "a" | "b"
-  37 | //  ^?     ^?
-  38 | </for>
-  39 |
+  41 | //  ^?     ^?
+  42 | </for>
+  43 |
 ```
 
-### Ln 36, Col 12
+### Ln 40, Col 12
 ```marko
-  34 |
-  35 | <for|key, value| in=record>
-> 36 |   ${key} ${value}
+  38 |
+  39 | <for|key, value| in=record>
+> 40 |   ${key} ${value}
      |            ^ (parameter) value: 1 | 2
-  37 | //  ^?     ^?
-  38 | </for>
-  39 |
-```
-
-### Ln 40, Col 20
-```marko
-  38 | </for>
-  39 |
-> 40 | <for in=record by=(value, key) => `${value}-${key}`>
-     |                    ^ (parameter) value: 1 | 2
-  41 | //                 ^?     ^?
+  41 | //  ^?     ^?
   42 | </for>
   43 |
 ```
 
-### Ln 40, Col 27
+### Ln 44, Col 20
 ```marko
-  38 | </for>
-  39 |
-> 40 | <for in=record by=(value, key) => `${value}-${key}`>
-     |                           ^ (parameter) key: "a" | "b"
-  41 | //                 ^?     ^?
   42 | </for>
   43 |
-```
-
-### Ln 49, Col 3
-```marko
+> 44 | <for in=record by=(key, value) => `${key}-${value}`>
+     |                    ^ (parameter) key: "a" | "b"
+  45 | //                 ^?   ^?
+  46 | </for>
   47 |
-  48 | <effect() {
-> 49 |   hoistedFromForIn;
+```
+
+### Ln 44, Col 25
+```marko
+  42 | </for>
+  43 |
+> 44 | <for in=record by=(key, value) => `${key}-${value}`>
+     |                         ^ (parameter) value: 1 | 2
+  45 | //                 ^?   ^?
+  46 | </for>
+  47 |
+```
+
+### Ln 53, Col 3
+```marko
+  51 |
+  52 | <effect() {
+> 53 |   hoistedFromForIn;
      |   ^ const hoistedFromForIn: (() => "a" | "b") & Iterable<"a" | "b">
-  50 | //^?
-  51 | }/>
-  52 |
+  54 | //^?
+  55 | }/>
+  56 |
 ```
 
-### Ln 54, Col 5
+### Ln 58, Col 5
 ```marko
-  52 |
-  53 | <for|index| to=10>
-> 54 |   ${index}
+  56 |
+  57 | <for|index| to=10>
+> 58 |   ${index}
      |     ^ (parameter) index: number
-  55 | //  ^?
-  56 | </for>
-  57 |
-```
-
-### Ln 58, Col 16
-```marko
-  56 | </for>
-  57 |
-> 58 | <for to=10 by=(index) => `${index}`>
-     |                ^ (parameter) index: number
-  59 | //             ^?
+  59 | //  ^?
   60 | </for>
   61 |
 ```
 
-### Ln 63, Col 5
+### Ln 62, Col 16
 ```marko
+  60 | </for>
   61 |
-  62 | <for|index| from=1 to=10>
-> 63 |   ${index}
-     |     ^ (parameter) index: number
-  64 | //  ^?
-  65 | </for>
-  66 |
+> 62 | <for to=10 by=(index) => `${index}`>
+     |                ^ (parameter) index: number
+  63 | //             ^?
+  64 | </for>
+  65 |
 ```
 
-### Ln 68, Col 5
+### Ln 67, Col 5
 ```marko
-  66 |
-  67 | <for|index| to=10 step=2>
-> 68 |   ${index}
+  65 |
+  66 | <for|index| from=1 to=10>
+> 67 |   ${index}
      |     ^ (parameter) index: number
-  69 | //  ^?
-  70 | </for>
-  71 |
+  68 | //  ^?
+  69 | </for>
+  70 |
 ```
 
-### Ln 77, Col 3
+### Ln 72, Col 5
 ```marko
+  70 |
+  71 | <for|index| to=10 step=2>
+> 72 |   ${index}
+     |     ^ (parameter) index: number
+  73 | //  ^?
+  74 | </for>
   75 |
-  76 | <effect() {
-> 77 |   hoistedFromForUntil;
+```
+
+### Ln 81, Col 3
+```marko
+  79 |
+  80 | <effect() {
+> 81 |   hoistedFromForUntil;
      |   ^ const hoistedFromForUntil: (() => number) & Iterable<number>
-  78 | //^?
-  79 | }/>
-  80 |
+  82 | //^?
+  83 | }/>
+  84 |
 ```
 
-### Ln 82, Col 5
+### Ln 86, Col 5
 ```marko
-  80 |
-  81 | <for|index| until=10>
-> 82 |   ${index}
+  84 |
+  85 | <for|index| until=10>
+> 86 |   ${index}
      |     ^ (parameter) index: number
-  83 | //  ^?
-  84 | </for>
-  85 |
-```
-
-### Ln 86, Col 16
-```marko
-  84 | </for>
-  85 |
-> 86 | <for until=10 by=(index) => `${index}`>
-     |                ^ (property) by?: ((index: number) => string) | undefined
-  87 | //             ^?
+  87 | //  ^?
   88 | </for>
   89 |
 ```
 
-### Ln 91, Col 5
+### Ln 90, Col 16
 ```marko
+  88 | </for>
   89 |
-  90 | <for|index| from=1 until=10>
-> 91 |   ${index}
-     |     ^ (parameter) index: number
-  92 | //  ^?
-  93 | </for>
-  94 |
+> 90 | <for until=10 by=(index) => `${index}`>
+     |                ^ (property) by?: ((index: number) => string | number) | undefined
+  91 | //             ^?
+  92 | </for>
+  93 |
 ```
 
-### Ln 96, Col 5
+### Ln 95, Col 5
 ```marko
-  94 |
-  95 | <for|index| until=10 step=2>
-> 96 |   ${index}
+  93 |
+  94 | <for|index| from=1 until=10>
+> 95 |   ${index}
      |     ^ (parameter) index: number
-  97 | //  ^?
-  98 | </for>
-  99 |
+  96 | //  ^?
+  97 | </for>
+  98 |
 ```
 
-### Ln 105, Col 3
+### Ln 100, Col 5
 ```marko
+   98 |
+   99 | <for|index| until=10 step=2>
+> 100 |   ${index}
+      |     ^ (parameter) index: number
+  101 | //  ^?
+  102 | </for>
   103 |
-  104 | <effect() {
-> 105 |   hoistedFromForUntil;
+```
+
+### Ln 109, Col 3
+```marko
+  107 |
+  108 | <effect() {
+> 109 |   hoistedFromForUntil;
       |   ^ const hoistedFromForUntil: (() => number) & Iterable<number>
-  106 | //^?
-  107 | }/>
-  108 |
+  110 | //^?
+  111 | }/>
+  112 |
 ```
 
 ## Diagnostics
-### Ln 28, Col 1
+### Ln 32, Col 1
 ```marko
-  26 | <for|item| of=list></for>
-  27 |
-> 28 | <effect() {
+  30 | <for|item| of=list></for>
+  31 |
+> 32 | <effect() {
      | ^^^^^^^^^^^
-> 29 |   hoistedFromForOf;
+> 33 |   hoistedFromForOf;
      | ^^^^^^^^^^^^^^^^^^^
-> 30 | //^?
+> 34 | //^?
      | ^^^^^^^^^^^^^^^^^^^
-> 31 | }/>
+> 35 | }/>
      | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
-  32 |
-  33 | <let/record={ a: 1, b: 2 } as const/>
-  34 |
+  36 |
+  37 | <let/record={ a: 1, b: 2 } as const/>
+  38 |
 ```
 
-### Ln 48, Col 1
+### Ln 52, Col 1
 ```marko
-  46 | </for>
-  47 |
-> 48 | <effect() {
+  50 | </for>
+  51 |
+> 52 | <effect() {
      | ^^^^^^^^^^^
-> 49 |   hoistedFromForIn;
+> 53 |   hoistedFromForIn;
      | ^^^^^^^^^^^^^^^^^^^
-> 50 | //^?
+> 54 | //^?
      | ^^^^^^^^^^^^^^^^^^^
-> 51 | }/>
+> 55 | }/>
      | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
-  52 |
-  53 | <for|index| to=10>
-  54 |   ${index}
+  56 |
+  57 | <for|index| to=10>
+  58 |   ${index}
 ```
 
-### Ln 76, Col 1
+### Ln 80, Col 1
 ```marko
-  74 | </for>
-  75 |
-> 76 | <effect() {
+  78 | </for>
+  79 |
+> 80 | <effect() {
      | ^^^^^^^^^^^
-> 77 |   hoistedFromForUntil;
+> 81 |   hoistedFromForUntil;
      | ^^^^^^^^^^^^^^^^^^^^^^
-> 78 | //^?
+> 82 | //^?
      | ^^^^^^^^^^^^^^^^^^^^^^
-> 79 | }/>
+> 83 | }/>
      | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
-  80 |
-  81 | <for|index| until=10>
-  82 |   ${index}
+  84 |
+  85 | <for|index| until=10>
+  86 |   ${index}
 ```
 
-### Ln 104, Col 1
+### Ln 108, Col 1
 ```marko
-  102 | </for>
-  103 |
-> 104 | <effect() {
+  106 | </for>
+  107 |
+> 108 | <effect() {
       | ^^^^^^^^^^^
-> 105 |   hoistedFromForUntil;
+> 109 |   hoistedFromForUntil;
       | ^^^^^^^^^^^^^^^^^^^^^^
-> 106 | //^?
+> 110 | //^?
       | ^^^^^^^^^^^^^^^^^^^^^^
-> 107 | }/>
+> 111 | }/>
       | ^^^^ The 'effect' tag has been replaced by the 'script' tag.
-  108 |
-  109 |
-  110 | <for|index|>
+  112 |
+  113 |
+  114 | <for|index|>
 ```
 
-### Ln 26, Col 6
+### Ln 30, Col 6
 ```marko
-  24 | </for>
-  25 |
-> 26 | <for|item| of=list></for>
+  28 | </for>
+  29 |
+> 30 | <for|item| of=list></for>
      |      ^^^^ 'item' is declared but its value is never read.
-  27 |
-  28 | <effect() {
-  29 |   hoistedFromForOf;
+  31 |
+  32 | <effect() {
+  33 |   hoistedFromForOf;
 ```
 
-### Ln 110, Col 2
+### Ln 114, Col 2
 ```marko
-  108 |
-  109 |
-> 110 | <for|index|>
-      |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ to: number; from?: number | undefined; step?: number | undefined; } | { until: number; from?: number | undefined; step?: number | undefined; } | { in: any; } | { of: any; }) & { by?: string | ((...args: unknown[]) => string) | undefined; }'.
-  111 |   Should error
-  112 | </for>
+  112 |
   113 |
+> 114 | <for|index|>
+      |  ^^^ Argument of type '{}' is not assignable to parameter of type '({ to: number; from?: number | undefined; step?: number | undefined; } | { until: number; from?: number | undefined; step?: number | undefined; } | { in: any; } | { of: any; }) & { by?: string | ((...args: unknown[]) => string | number) | undefined; }'.
+  115 |   Should error
+  116 | </for>
+  117 |
 ```
 
-### Ln 110, Col 6
+### Ln 114, Col 6
 ```marko
-  108 |
-  109 |
-> 110 | <for|index|>
+  112 |
+  113 |
+> 114 | <for|index|>
       |      ^^^^^ 'index' is declared but its value is never read.
-  111 |   Should error
-  112 | </for>
-  113 |
+  115 |   Should error
+  116 | </for>
+  117 |
 ```
 
 ## Code Actions
@@ -372,6 +372,7 @@
 <for of=list by=(item, index) => `${item}-${index}`>
   //               ^?    ^?
 </for>
+<for|item| of=list by=(item) => item.value>${item.value}</for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
 </for>
@@ -388,8 +389,8 @@
   ${key} ${value}
   //  ^?     ^?
 </for>
-<for in=record by=(value, key) => `${value}-${key}`>
-  //                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+  //                 ^?   ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -467,6 +468,7 @@
 <for of=list by=(item, index) => `${item}-${index}`>
   //               ^?    ^?
 </for>
+<for|item| of=list by=(item) => item.value>${item.value}</for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
 </for>
@@ -483,8 +485,8 @@
   ${key} ${value}
   //  ^?     ^?
 </for>
-<for in=record by=(value, key) => `${value}-${key}`>
-  //                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+  //                 ^?   ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -562,6 +564,7 @@
 <for of=list by=(item, index) => `${item}-${index}`>
   //               ^?    ^?
 </for>
+<for|item| of=list by=(item) => item.value>${item.value}</for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
 </for>
@@ -578,8 +581,8 @@
   ${key} ${value}
   //  ^?     ^?
 </for>
-<for in=record by=(value, key) => `${value}-${key}`>
-  //                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+  //                 ^?   ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -657,6 +660,7 @@
 <for of=list by=(item, index) => `${item}-${index}`>
   //               ^?    ^?
 </for>
+<for|item| of=list by=(item) => item.value>${item.value}</for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
 </for>
@@ -673,8 +677,8 @@
   ${key} ${value}
   //  ^?     ^?
 </for>
-<for in=record by=(value, key) => `${value}-${key}`>
-  //                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+  //                 ^?   ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
@@ -752,6 +756,7 @@
 <for of=list by=(item, index) => `${item}-${index}`>
   //               ^?    ^?
 </for>
+<for|item| of=list by=(item) => item.value>${item.value}</for>
 <for|item| of=list>
   <const/hoistedFromForOf=() => item.value>
 </for>
@@ -768,8 +773,8 @@
   ${key} ${value}
   //  ^?     ^?
 </for>
-<for in=record by=(value, key) => `${value}-${key}`>
-  //                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+  //                 ^?   ^?
 </for>
 <for|key| in=record>
   <const/hoistedFromForIn=() => key>
