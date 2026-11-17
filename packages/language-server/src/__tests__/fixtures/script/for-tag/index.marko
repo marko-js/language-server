@@ -19,6 +19,10 @@
 //               ^?    ^?
 </for>
 
+<for|item| of=list by=(item) => item.value>
+  ${item.value}
+</for>
+
 <for|item| of=list>
   <const/hoistedFromForOf = () => item.value/>
 </for>
@@ -37,8 +41,8 @@
 //  ^?     ^?
 </for>
 
-<for in=record by=(value, key) => `${value}-${key}`>
-//                 ^?     ^?
+<for in=record by=(key, value) => `${key}-${value}`>
+//                 ^?   ^?
 </for>
 
 <for|key| in=record>

@@ -358,7 +358,7 @@ declare global {
       >(
         input: {
           of: Value & (Iterable<unknown> | false | void | null);
-          by?: ((item: Item, index: number) => string) | string;
+          by?: ((item: Item, index: number) => string | number) | string;
         },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
@@ -372,7 +372,7 @@ declare global {
       >(
         input: {
           in: Value | false | void | null;
-          by?: (value: Value[keyof Value], key: keyof Value) => string;
+          by?: (key: keyof Value, value: Value[keyof Value]) => string | number;
         },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
@@ -387,7 +387,7 @@ declare global {
           to: To;
           from?: From;
           step?: Step;
-          by?: (index: number) => string;
+          by?: (index: number) => string | number;
         },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
@@ -402,7 +402,7 @@ declare global {
           until: Until;
           from?: From;
           step?: Step;
-          by?: (index: number) => string;
+          by?: (index: number) => string | number;
         },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
@@ -425,7 +425,7 @@ declare global {
           | {
               of: any;
             }
-        ) & { by?: string | ((...args: unknown[]) => string) },
+        ) & { by?: string | ((...args: unknown[]) => string | number) },
         content: BodyContent,
       ): ReturnAndScope<BodyContentScope<BodyContent>, void>;
 
