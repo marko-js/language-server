@@ -9,3 +9,7 @@ node_modules
 npm-debug.log
 package-lock.json
 yarn.lock
+
+# A package a language server fixture installs, and its snapshots.
+!packages/language-server/src/__tests__/fixtures/script/package-declarations/node_modules
+!packages/language-server/src/__tests__/fixtures/script/package-declarations/__snapshots__/package-declarations.expected/node_modules

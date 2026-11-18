@@ -1,6 +1,6 @@
 import {
   type Extracted,
-  getExt,
+  getTemplateDeclaration,
   isDefinitionFile,
   normalizePath,
   Processors,
@@ -224,36 +224,29 @@ export function patch(
             }
           }
 
-          if (resolvedFileName) {
-            if (isDefinitionFile(resolvedFileName)) {
-              if (!host.fileExists(resolvedFileName)) {
-                resolvedFileName = undefined;
-              }
-            } else {
-              const ext = getExt(resolvedFileName)!;
-              const definitionFile = `${resolvedFileName.slice(
-                0,
-                -ext.length,
-              )}.d${ext}`;
-              if (host.fileExists(definitionFile)) {
-                resolvedFileName = definitionFile;
-              } else if (!host.fileExists(resolvedFileName)) {
-                resolvedFileName = undefined;
-              }
-            }
+          const declaration =
+            resolvedFileName && getTemplateDeclaration(resolvedFileName, host);
+          if (declaration) {
+            resolvedFileName = declaration;
+          } else if (resolvedFileName && !host.fileExists(resolvedFileName)) {
+            resolvedFileName = undefined;
           }
 
           resolvedModules.push({
             resolvedModule: resolvedFileName
               ? {
                   resolvedFileName,
-                  extension: processor.getScriptExtension(resolvedFileName),
+                  extension: declaration?.endsWith(".ts")
+                    ? ts.Extension.Dts
+                    : processor.getScriptExtension(resolvedFileName),
                   // A package's declaration is a library's, as `mtc` reads
                   // it: not a file of the project, which TypeScript would
                   // hold to its `rootDir`. Its source stays the project's,
                   // so that a JavaScript template in a package is typed.
                   isExternalLibraryImport:
-                    isPackage && isDefinitionFile(resolvedFileName),
+                    isPackage &&
+                    (declaration !== undefined ||
+                      isDefinitionFile(resolvedFileName)),
                 }
               : undefined,
           });

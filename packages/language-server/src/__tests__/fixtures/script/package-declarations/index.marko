@@ -1,0 +1,17 @@
+import Greeting from "pkg/greeting.marko";
+import Legacy from "pkg/legacy.marko";
+import OwnTyped from "./components/own-typed.marko";
+
+// A template is typed by the declaration beside it: `x.d.marko.ts`, or a
+// legacy `x.d.marko`.
+<Greeting/greeted name="Ann"/>
+//        ^?      ^?
+<Greeting name=1/>
+<Legacy count=1/>
+//      ^?
+<div>${greeted.toUpperCase()}</div>
+
+// A declaration beside a template stands in for it wherever it is, a
+// project's own too.
+<OwnTyped name="Ann" title="Hi"/>
+//                   ^?
