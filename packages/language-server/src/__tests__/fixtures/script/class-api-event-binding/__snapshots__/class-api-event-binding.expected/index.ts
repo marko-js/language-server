@@ -18,25 +18,16 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/fancy-button/index.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     onClick: component.handleClick,
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/fancy-button/index.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()(
     //                     ^?
     {
       onClick: component.specialClick.bind(component, 1),
     },
   );
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./components/fancy-button/index.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()(
     //                     ^?
     {
       onClick: Marko._.bind(component, (ev) => {
@@ -53,3 +44,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/fancy-button/index.marko");

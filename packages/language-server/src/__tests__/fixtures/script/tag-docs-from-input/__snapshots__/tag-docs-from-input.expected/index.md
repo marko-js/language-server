@@ -202,7 +202,7 @@ A button typed by its declaration.
 
 [lib/missing-types-button.marko](<fixture>/lib/missing-types-button.marko)
   24 | //  ^?
-  25 | // Named again: what TypeScript reports of its missing declaration is at its tag.
+  25 | // Named again: its missing declaration is reported once, at the first tag.
   26 | <missing-types-button/>
 ```
 
@@ -214,36 +214,7 @@ A button typed by its declaration.
 > 23 | <missing-types-button/>
      |  ^^^^^^^^^^^^^^^^^^^^ Cannot find module './lib/missing-types-button.d.marko' or its corresponding type declarations.
   24 | //  ^?
-  25 | // Named again: what TypeScript reports of its missing declaration is at its tag.
+  25 | // Named again: its missing declaration is reported once, at the first tag.
   26 | <missing-types-button/>
-```
-
-### Ln 23, Col 2
-```marko
-  21 | <split-button label="Go"/>
-  22 | //  ^?
-> 23 | <missing-types-button/>
-     |  ^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
-  24 | //  ^?
-  25 | // Named again: what TypeScript reports of its missing declaration is at its tag.
-  26 | <missing-types-button/>
-```
-
-### Ln 26, Col 2
-```marko
-  24 | //  ^?
-  25 | // Named again: what TypeScript reports of its missing declaration is at its tag.
-> 26 | <missing-types-button/>
-     |  ^^^^^^^^^^^^^^^^^^^^ Cannot find module './lib/missing-types-button.d.marko' or its corresponding type declarations.
-  27 |
-```
-
-### Ln 26, Col 2
-```marko
-  24 | //  ^?
-  25 | // Named again: what TypeScript reports of its missing declaration is at its tag.
-> 26 | <missing-types-button/>
-     |  ^^^^^^^^^^^^^^^^^^^^ Object is of type 'unknown'.
-  27 |
 ```
 

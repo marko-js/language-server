@@ -7,11 +7,8 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context)
   );
 const x = Marko._.hoist(() => __marko_internal_hoist__x);
-const __marko_internal_tag_1 = (
-Marko._.resolveTemplate(import("@marko/runtime-tags/tags/let.d.marko")).default
-);
 {const x = Marko._.returned(() => __marko_internal_rendered_1);
-const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_1)()()(// A handler being typed that Babel recovers into parser-only nodes
+const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_module_1().default)()()(// A handler being typed that Babel recovers into parser-only nodes
 // (`tion f(y: number)` reads `y: number` as a TSTypeCastExpression) must not
 // fail the template's analysis while it mutates a tag variable.
 {
@@ -35,3 +32,4 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");

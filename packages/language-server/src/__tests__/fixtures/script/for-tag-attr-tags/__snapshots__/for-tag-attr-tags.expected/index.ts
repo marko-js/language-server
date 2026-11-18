@@ -10,17 +10,16 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/my-table.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@row"];
     Marko._.nestedAttrTagNames(input["@row"], (input) => {
       input["@cell"];
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
@@ -30,18 +29,18 @@ export type Component = Marko.Component<Input>;
           ],
         },
         (row) =>
-          Marko._.attrTags(__marko_internal_tag_1)([
+          Marko._.attrTags(__marko_internal_module_1)([
             {
               row: {
                 ...Marko._.givenAttrTags("cell"),
                 ...Marko._.attrTags(
-                  __marko_internal_tag_1,
+                  __marko_internal_module_1,
                   "row",
                 )([
                   {
                     // ^?
                     cell: {
-                      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+                      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
                         [row.foo];
                         return Marko._.voidBody;
                       })(),
@@ -51,7 +50,7 @@ export type Component = Marko.Component<Input>;
                   {
                     // ^?     ^?
                     cell: {
-                      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+                      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
                         [row.bar];
                         return Marko._.voidBody;
                       })(),
@@ -67,17 +66,16 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("row"),
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/my-table.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@row"];
     Marko._.nestedAttrTagNames(input["@row"], (input) => {
       input["@cell"];
       input["@cell"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
@@ -87,18 +85,18 @@ export type Component = Marko.Component<Input>;
           ] as const,
         },
         (row) =>
-          Marko._.attrTags(__marko_internal_tag_2)([
+          Marko._.attrTags(__marko_internal_module_1)([
             {
               row: {
                 ...Marko._.givenAttrTags("cell"),
                 ...Marko._.attrTags(
-                  __marko_internal_tag_2,
+                  __marko_internal_module_1,
                   "row",
                 )([
                   {
                     // ^?
                     cell: {
-                      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+                      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
                         [row.foo];
                         return Marko._.voidBody;
                       })(),
@@ -108,7 +106,7 @@ export type Component = Marko.Component<Input>;
                   {
                     // ^?     ^?
                     cell: {
-                      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+                      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
                         [row.bar];
                         return Marko._.voidBody;
                       })(),
@@ -131,3 +129,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/my-table.marko");

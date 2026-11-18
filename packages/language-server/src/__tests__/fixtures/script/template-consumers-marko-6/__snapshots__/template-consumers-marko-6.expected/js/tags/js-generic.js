@@ -13,13 +13,10 @@ function __marko_internal_template() {
     (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
   );
   const formatted = Marko._.hoist(() => __marko_internal_hoist__formatted);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("marko/tags/const.d.marko"),
-  ).default;
   {
     const formatted = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
       value: input.format ? input.format(input.value) : String(input.value),
     });
@@ -43,3 +40,6 @@ function __marko_internal_template() {
 class Template extends Marko._.GenericTemplate {}
 const Input = new Template();
 export default Input;
+function __marko_internal_module_1() {
+  return /** @type {typeof import("marko/tags/const.d.marko")} */ (Marko._.any);
+}

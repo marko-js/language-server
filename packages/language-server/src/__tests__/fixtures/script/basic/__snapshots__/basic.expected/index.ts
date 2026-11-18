@@ -11,13 +11,10 @@ export interface Input<T extends string> {
   const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
-      const __marko_internal_tag_2 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/let.d.marko"),
-      ).default;
       {
         const x = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
+          __marko_internal_module_1().default,
         )()()({
           value: () => 1,
         });
@@ -71,4 +68,5 @@ class Template extends Marko._.GenericTemplate<
 > {}
 const Input = new Template();
 export default Input;
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
 //   ^?

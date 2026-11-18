@@ -13,3 +13,6 @@ yarn.lock
 # A package a language server fixture installs, and its snapshots.
 !packages/language-server/src/__tests__/fixtures/script/package-declarations/node_modules
 !packages/language-server/src/__tests__/fixtures/script/package-declarations/__snapshots__/package-declarations.expected/node_modules
+
+# A package a type-check fixture installs.
+!packages/type-check/src/__tests__/fixtures/untyped-package/node_modules

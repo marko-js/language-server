@@ -11,14 +11,35 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/child.marko"),
-  ).default;
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
+    input["@foo"];
+    input["@foo"];
+  });
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
+    foo: {
+      bar: true,
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
+      {
+        foo: {
+          [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
+            [data];
+            return Marko._.voidReturn;
+          },
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+    ],
+  });
+  const __marko_internal_tag_1 = Child;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
     foo: {
       bar: true,
       [Symbol.iterator]: Marko._.any,
@@ -35,34 +56,12 @@ export type Component = Marko.Component<Input>;
       },
     ],
   });
-  const __marko_internal_tag_2 = Child;
+  const __marko_internal_tag_2 = true && Child;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@foo"];
     input["@foo"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
-    foo: {
-      bar: true,
-      [Symbol.iterator]: Marko._.any,
-    },
-    [Marko._.restAttrTags]: [
-      {
-        foo: {
-          [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
-            [data];
-            return Marko._.voidReturn;
-          },
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
-    ],
-  });
-  const __marko_internal_tag_3 = true && Child;
-  Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
-    input["@foo"];
-    input["@foo"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()(
     // This errors for now, because `typeof (some + expression)` is not allowed
     {
       foo: {
@@ -72,7 +71,7 @@ export type Component = Marko.Component<Input>;
       [Marko._.restAttrTags]: [
         {
           foo: {
-            [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
+            [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
               [data];
               return Marko._.voidReturn;
             },
@@ -89,3 +88,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/child.marko");

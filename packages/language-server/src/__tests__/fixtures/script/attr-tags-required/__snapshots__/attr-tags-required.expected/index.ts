@@ -20,14 +20,13 @@ export type Component = Marko.Component<Input>;
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const Req = Marko._.hoist(() => __marko_internal_hoist__Req);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/req-menu/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@req"];
     input["@req"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Every branch has it
     {
       [Marko._.restAttrTags]: [
@@ -48,18 +47,17 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("req"),
     },
   );
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./tags/req-menu/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@req"];
     input["@req"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Repeated, one with params (left out of TypeScript's first check)
     {
       req: {
-        [Marko._.contentFor(__marko_internal_tag_2)]: (n) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: (n) => {
           [n];
           return Marko._.voidReturn;
         },
@@ -74,18 +72,17 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./tags/req-menu/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@req"];
     input["@req"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Static, then possibly another
     {
       req: {
-        [Marko._.contentFor(__marko_internal_tag_3)]: (n) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: (n) => {
           [n];
           return Marko._.voidReturn;
         },
@@ -102,13 +99,12 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./tags/req-menu/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@req"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_4)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Only in an <if>, with an attribute: given, though not by every render
     {
       title: "x",
@@ -124,13 +120,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("req"),
     },
   );
-  const __marko_internal_tag_5 = Marko._.resolveTemplate(
-    import("./tags/req-menu/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_5, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@req"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_5)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Only in a while: given
     {
       [Marko._.restAttrTags]: [
@@ -145,11 +140,11 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("req"),
     },
   );
-  const __marko_internal_tag_6 = ReqMenu;
-  Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
+  const __marko_internal_tag_1 = ReqMenu;
+  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@req"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_6)(Marko._.withRestAttrTags)()(
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()(
     // Only in an <if>, by a dynamic tag: given
     {
       [Marko._.restAttrTags]: [
@@ -164,11 +159,11 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("req"),
     },
   );
-  const __marko_internal_tag_7 = flag ? ReqMenu : RMenu;
-  Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
+  const __marko_internal_tag_2 = flag ? ReqMenu : RMenu;
+  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@req"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_7)(Marko._.withRestAttrTags)()(
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()(
     // Only in an <if>, by one of several templates, with no other attribute: given
     {
       [Marko._.restAttrTags]: [
@@ -183,29 +178,26 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("req"),
     },
   );
-  const __marko_internal_tag_8 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/define.d.marko"),
-  ).default;
   {
-    const Req = Marko._.returned(() => __marko_internal_rendered_8);
-    const __marko_internal_rendered_8 = Marko._.renderTemplate(
-      __marko_internal_tag_8,
+    const Req = Marko._.returned(() => __marko_internal_rendered_3);
+    const __marko_internal_rendered_3 = Marko._.renderTemplate(
+      __marko_internal_module_2().default,
     )()()({
       // By a <define> tag
-      [Marko._.contentFor(__marko_internal_tag_8)]: (input: {
+      [Marko._.contentFor(__marko_internal_module_2)]: (input: {
         req: Marko.AttrTag<{ content?: Marko.Body }>;
       }) => {
-        const __marko_internal_tag_9 = input.req.content;
-        Marko._.renderDynamicTag(__marko_internal_tag_9)()()({});
+        const __marko_internal_tag_4 = input.req.content;
+        Marko._.renderDynamicTag(__marko_internal_tag_4)()()({});
         return Marko._.voidReturn;
       },
     });
-    const __marko_internal_tag_10 = Req;
-    Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
+    const __marko_internal_tag_5 = Req;
+    Marko._.attrTagNames(__marko_internal_tag_5, (input) => {
       input["@req"];
       input["@req"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_10)(
+    Marko._.renderDynamicTag(__marko_internal_tag_5)(
       Marko._.withRestAttrTags,
     )()({
       req: {
@@ -219,11 +211,11 @@ export type Component = Marko.Component<Input>;
         },
       ],
     });
-    const __marko_internal_tag_11 = Req;
-    Marko._.attrTagNames(__marko_internal_tag_11, (input) => {
+    const __marko_internal_tag_6 = Req;
+    Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
       input["@req"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_11)(
+    Marko._.renderDynamicTag(__marko_internal_tag_6)(
       Marko._.withRestAttrTags,
     )()({
       [Marko._.restAttrTags]: [
@@ -237,14 +229,13 @@ export type Component = Marko.Component<Input>;
       ],
       ...Marko._.givenAttrTags("req"),
     });
-    const __marko_internal_tag_12 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_12, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_12)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // An unknown attribute, with the attribute tag given
       {
         bogus: 1,
@@ -260,14 +251,13 @@ export type Component = Marko.Component<Input>;
         ],
       },
     );
-    const __marko_internal_tag_13 = Marko._.resolveTemplate(
-      import("./tags/idx-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_13, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_3, (input) => {
       input["@req"];
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_13)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_3().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // An input with an index signature
       {
         other: 1,
@@ -283,31 +273,25 @@ export type Component = Marko.Component<Input>;
         ],
       },
     );
-    const __marko_internal_tag_14 = Marko._.resolveTemplate(
-      import("./tags/idx-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_14, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_3, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_14)(Marko._.withRestAttrTags)()(
-      {
-        other: 1,
-        [Marko._.restAttrTags]: [
-          flag
-            ? {
-                req: {
-                  [Symbol.iterator]: Marko._.any,
-                },
-              }
-            : Marko._.never,
-        ],
-        ...Marko._.givenAttrTags("req"),
-      },
-    );
-    const __marko_internal_tag_15 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_15, (input) => {
+    Marko._.renderTemplate(__marko_internal_module_3().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      other: 1,
+      [Marko._.restAttrTags]: [
+        flag
+          ? {
+              req: {
+                [Symbol.iterator]: Marko._.any,
+              },
+            }
+          : Marko._.never,
+      ],
+      ...Marko._.givenAttrTags("req"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
       input["@req"];
       input["@req"];
@@ -359,7 +343,9 @@ export type Component = Marko.Component<Input>;
       input["@req"];
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_15)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Repeated 50 times, as rest attribute tags and in a for (each merged by name)
       {
         req: {
@@ -614,10 +600,7 @@ export type Component = Marko.Component<Input>;
         ],
       },
     );
-    const __marko_internal_tag_16 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_16, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
       input["@req"];
       input["@req"];
@@ -669,278 +652,277 @@ export type Component = Marko.Component<Input>;
       input["@req"];
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_16)(Marko._.withRestAttrTags)()(
-      {
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: [1] as const,
-            },
-            () =>
-              Marko._.attrTags(__marko_internal_tag_16)([
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: [1] as const,
+          },
+          () =>
+            Marko._.attrTags(__marko_internal_module_1)([
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-                {
-                  req: {
-                    [Symbol.iterator]: Marko._.any,
-                  },
+              },
+              {
+                req: {
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("req"),
-      },
-    );
-    const __marko_internal_tag_17 = Marko._.resolveTemplate(
-      import("./tags/rmenu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_17, (input) => {
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("req"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_4, (input) => {
       input["@item"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_17)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_4().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Required only in a <for> over an array literal
       {
         [Marko._.restAttrTags]: [
@@ -949,7 +931,7 @@ export type Component = Marko.Component<Input>;
               of: ["x", "y"],
             },
             (t) =>
-              Marko._.attrTags(__marko_internal_tag_17)([
+              Marko._.attrTags(__marko_internal_module_4)([
                 {
                   item: {
                     label: t,
@@ -962,13 +944,12 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("item"),
       },
     );
-    const __marko_internal_tag_18 = Marko._.resolveTemplate(
-      import("./tags/rmenu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_18, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_4, (input) => {
       input["@item"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_18)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_4().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Required only in a <for> over a non-empty const tuple
       {
         [Marko._.restAttrTags]: [
@@ -977,7 +958,7 @@ export type Component = Marko.Component<Input>;
               of: tuple,
             },
             (t) =>
-              Marko._.attrTags(__marko_internal_tag_18)([
+              Marko._.attrTags(__marko_internal_module_4)([
                 {
                   item: {
                     label: t,
@@ -990,13 +971,12 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("item"),
       },
     );
-    const __marko_internal_tag_19 = Marko._.resolveTemplate(
-      import("./tags/rmenu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_19, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_4, (input) => {
       input["@item"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_19)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_4().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Required only in a <for to=3>
       {
         [Marko._.restAttrTags]: [
@@ -1005,7 +985,7 @@ export type Component = Marko.Component<Input>;
               to: 3,
             },
             (i) =>
-              Marko._.attrTags(__marko_internal_tag_19)([
+              Marko._.attrTags(__marko_internal_module_4)([
                 {
                   item: {
                     label: String(i),
@@ -1018,13 +998,12 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("item"),
       },
     );
-    const __marko_internal_tag_20 = Marko._.resolveTemplate(
-      import("./tags/rmenu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_20, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_4, (input) => {
       input["@item"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_20)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_4().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Required only in a <for> over a possibly empty list: given
       {
         [Marko._.restAttrTags]: [
@@ -1033,7 +1012,7 @@ export type Component = Marko.Component<Input>;
               of: cols,
             },
             (t) =>
-              Marko._.attrTags(__marko_internal_tag_20)([
+              Marko._.attrTags(__marko_internal_module_4)([
                 {
                   item: {
                     label: t,
@@ -1046,17 +1025,16 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("item"),
       },
     );
-    const __marko_internal_tag_21 = Marko._.resolveTemplate(
-      import("./tags/rgrid/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_21, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_5, (input) => {
       input["@section"];
       Marko._.nestedAttrTagNames(input["@section"], (input) => {
         input["@row"];
         input["@row"];
       });
     });
-    Marko._.renderTemplate(__marko_internal_tag_21)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_5().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Nested required, in an attribute tag in a loop
       {
         [Marko._.restAttrTags]: [
@@ -1065,12 +1043,12 @@ export type Component = Marko.Component<Input>;
               of: [1, 2],
             },
             (i) =>
-              Marko._.attrTags(__marko_internal_tag_21)([
+              Marko._.attrTags(__marko_internal_module_5)([
                 {
                   section: {
                     ...Marko._.givenAttrTags("row"),
                     ...Marko._.attrTags(
-                      __marko_internal_tag_21,
+                      __marko_internal_module_5,
                       "section",
                     )([
                       {
@@ -1094,108 +1072,101 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("section"),
       },
     );
-    const __marko_internal_tag_22 = Marko._.resolveTemplate(
-      import("./tags/rgrid/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_22, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_5, (input) => {
       input["@section"];
       Marko._.nestedAttrTagNames(input["@section"], (input) => {
         input["@row"];
       });
     });
-    Marko._.renderTemplate(__marko_internal_tag_22)(Marko._.withRestAttrTags)()(
-      {
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: [1, 2],
-            },
-            (i) =>
-              Marko._.attrTags(__marko_internal_tag_22)([
-                {
-                  section: {
-                    ...Marko._.givenAttrTags("row"),
-                    ...Marko._.forOfAttrTag(
-                      {
-                        of: [i],
-                      },
-                      (j) =>
-                        Marko._.attrTags(
-                          __marko_internal_tag_22,
-                          "section",
-                        )([
-                          {
-                            row: {
-                              label: `${j}`,
-                              [Symbol.iterator]: Marko._.any,
-                            },
+    Marko._.renderTemplate(__marko_internal_module_5().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: [1, 2],
+          },
+          (i) =>
+            Marko._.attrTags(__marko_internal_module_5)([
+              {
+                section: {
+                  ...Marko._.givenAttrTags("row"),
+                  ...Marko._.forOfAttrTag(
+                    {
+                      of: [i],
+                    },
+                    (j) =>
+                      Marko._.attrTags(
+                        __marko_internal_module_5,
+                        "section",
+                      )([
+                        {
+                          row: {
+                            label: `${j}`,
+                            [Symbol.iterator]: Marko._.any,
                           },
-                        ]),
-                    ),
-                    [Symbol.iterator]: Marko._.any,
-                  },
+                        },
+                      ]),
+                  ),
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("section"),
-      },
-    );
-    const __marko_internal_tag_23 = Marko._.resolveTemplate(
-      import("./tags/rgrid/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_23, (input) => {
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("section"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_5, (input) => {
       input["@section"];
       Marko._.nestedAttrTagNames(input["@section"], (input) => {
         input["@row"];
         input["@row"];
       });
     });
-    Marko._.renderTemplate(__marko_internal_tag_23)(Marko._.withRestAttrTags)()(
-      {
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: [1, 2],
-            },
-            (i) =>
-              Marko._.attrTags(__marko_internal_tag_23)([
-                {
-                  section: {
-                    ...Marko._.givenAttrTags("row"),
-                    ...Marko._.attrTags(
-                      __marko_internal_tag_23,
-                      "section",
-                    )([
-                      i === 2
-                        ? {
-                            row: {
-                              [Symbol.iterator]: Marko._.any,
-                            },
-                          }
-                        : {
-                            row: {
-                              [Symbol.iterator]: Marko._.any,
-                            },
+    Marko._.renderTemplate(__marko_internal_module_5().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: [1, 2],
+          },
+          (i) =>
+            Marko._.attrTags(__marko_internal_module_5)([
+              {
+                section: {
+                  ...Marko._.givenAttrTags("row"),
+                  ...Marko._.attrTags(
+                    __marko_internal_module_5,
+                    "section",
+                  )([
+                    i === 2
+                      ? {
+                          row: {
+                            [Symbol.iterator]: Marko._.any,
                           },
-                    ]),
-                    [Symbol.iterator]: Marko._.any,
-                  },
+                        }
+                      : {
+                          row: {
+                            [Symbol.iterator]: Marko._.any,
+                          },
+                        },
+                  ]),
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("section"),
-      },
-    );
-    const __marko_internal_tag_24 = Marko._.resolveTemplate(
-      import("./tags/idx-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_24, (input) => {
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("section"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_3, (input) => {
       input["@other"];
       input["@other"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_24)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_3().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Given nowhere, by a tag with rest attribute tags => error
       {
         other: {
@@ -1210,40 +1181,36 @@ export type Component = Marko.Component<Input>;
         ],
       },
     );
-    const __marko_internal_tag_25 = Marko._.resolveTemplate(
-      import("./tags/idx-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_25, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_3, (input) => {
       input["@other"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_25)(Marko._.withRestAttrTags)()(
-      {
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: cols,
-            },
-            (t) =>
-              Marko._.attrTags(__marko_internal_tag_25)([
-                {
-                  other: {
-                    label: t,
-                    [Symbol.iterator]: Marko._.any,
-                  },
+    Marko._.renderTemplate(__marko_internal_module_3().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: cols,
+          },
+          (t) =>
+            Marko._.attrTags(__marko_internal_module_3)([
+              {
+                other: {
+                  label: t,
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("other"),
-      },
-    );
-    const __marko_internal_tag_26 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_26, (input) => {
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("other"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_26)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // The spread's is not checked: a <for> gives it
       {
         ...spread,
@@ -1253,7 +1220,7 @@ export type Component = Marko.Component<Input>;
               of: tuple,
             },
             (label) =>
-              Marko._.attrTags(__marko_internal_tag_26)([
+              Marko._.attrTags(__marko_internal_module_1)([
                 {
                   req: {
                     label: label,
@@ -1266,13 +1233,12 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("req"),
       },
     );
-    const __marko_internal_tag_27 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_27, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_27)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // The spread's is replaced by one that might be missing: given
       {
         ...withReq,
@@ -1289,41 +1255,37 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("req"),
       },
     );
-    const __marko_internal_tag_28 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_28, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_28)(Marko._.withRestAttrTags)()(
-      {
-        ...withReq,
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: cols,
-            },
-            (label) =>
-              Marko._.attrTags(__marko_internal_tag_28)([
-                {
-                  req: {
-                    label: label,
-                    [Symbol.iterator]: Marko._.any,
-                  },
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      ...withReq,
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: cols,
+          },
+          (label) =>
+            Marko._.attrTags(__marko_internal_module_1)([
+              {
+                req: {
+                  label: label,
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("req"),
-      },
-    );
-    const __marko_internal_tag_29 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_29, (input) => {
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("req"),
+    });
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_29)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // The spread's other attributes are still checked => error
       {
         ...{ title: 1 },
@@ -1333,7 +1295,7 @@ export type Component = Marko.Component<Input>;
               of: tuple,
             },
             (label) =>
-              Marko._.attrTags(__marko_internal_tag_29)([
+              Marko._.attrTags(__marko_internal_module_1)([
                 {
                   req: {
                     label: label,
@@ -1346,14 +1308,13 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("req"),
       },
     );
-    const __marko_internal_tag_30 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_30, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_30)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // Written once, it is the attribute already
       {
         ...spread,
@@ -1373,13 +1334,12 @@ export type Component = Marko.Component<Input>;
         ],
       },
     );
-    const __marko_internal_tag_31 = Marko._.resolveTemplate(
-      import("./tags/req-menu/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_31, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@req"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_31)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // An attribute of an attribute tag's name, the attribute tag in a <for>:
       // reported as overwritten, as Marko replaces it with the attribute tag
       {
@@ -1390,7 +1350,7 @@ export type Component = Marko.Component<Input>;
               of: tuple,
             },
             (label) =>
-              Marko._.attrTags(__marko_internal_tag_31)([
+              Marko._.attrTags(__marko_internal_module_1)([
                 {
                   req: {
                     label: label,
@@ -1403,30 +1363,27 @@ export type Component = Marko.Component<Input>;
         ...Marko._.givenAttrTags("req"),
       },
     );
-    const __marko_internal_tag_32 = Marko._.resolveTemplate(
-      import("./tags/rgrid/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_32, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_5, (input) => {
       input["@section"];
       Marko._.nestedAttrTagNames(input["@section"], (input) => {
         input["@row"];
       });
     });
-    Marko._.renderTemplate(__marko_internal_tag_32)()()(
+    Marko._.renderTemplate(__marko_internal_module_5().default)()()(
       // A required nested attribute tag given only in an <if> with a scriptlet, and
       // with its attribute tag in a <for>: given
       {
         section: {
           ...Marko._.givenAttrTags("row"),
           ...Marko._.attrTags(
-            __marko_internal_tag_32,
+            __marko_internal_module_5,
             "section",
           )([
             flag
               ? (() => {
                   const label = "a";
                   return Marko._.attrTags(
-                    __marko_internal_tag_32,
+                    __marko_internal_module_5,
                     "section",
                   )([
                     {
@@ -1443,49 +1400,46 @@ export type Component = Marko.Component<Input>;
         },
       },
     );
-    const __marko_internal_tag_33 = Marko._.resolveTemplate(
-      import("./tags/rgrid/index.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_33, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_5, (input) => {
       input["@section"];
       Marko._.nestedAttrTagNames(input["@section"], (input) => {
         input["@row"];
       });
     });
-    Marko._.renderTemplate(__marko_internal_tag_33)(Marko._.withRestAttrTags)()(
-      {
-        [Marko._.restAttrTags]: [
-          Marko._.forOfAttrTag(
-            {
-              of: cols,
-            },
-            (label) =>
-              Marko._.attrTags(__marko_internal_tag_33)([
-                {
-                  section: {
-                    ...Marko._.givenAttrTags("row"),
-                    ...Marko._.attrTags(
-                      __marko_internal_tag_33,
-                      "section",
-                    )([
-                      flag
-                        ? {
-                            row: {
-                              label: label,
-                              [Symbol.iterator]: Marko._.any,
-                            },
-                          }
-                        : Marko._.never,
-                    ]),
-                    [Symbol.iterator]: Marko._.any,
-                  },
+    Marko._.renderTemplate(__marko_internal_module_5().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      [Marko._.restAttrTags]: [
+        Marko._.forOfAttrTag(
+          {
+            of: cols,
+          },
+          (label) =>
+            Marko._.attrTags(__marko_internal_module_5)([
+              {
+                section: {
+                  ...Marko._.givenAttrTags("row"),
+                  ...Marko._.attrTags(
+                    __marko_internal_module_5,
+                    "section",
+                  )([
+                    flag
+                      ? {
+                          row: {
+                            label: label,
+                            [Symbol.iterator]: Marko._.any,
+                          },
+                        }
+                      : Marko._.never,
+                  ]),
+                  [Symbol.iterator]: Marko._.any,
                 },
-              ]),
-          ),
-        ],
-        ...Marko._.givenAttrTags("section"),
-      },
-    );
+              },
+            ]),
+        ),
+      ],
+      ...Marko._.givenAttrTags("section"),
+    });
     var __marko_internal_hoist__Req = Req;
   }
   Marko._.noop({ Req, component, state, out, input, $global, $signal });
@@ -1495,3 +1449,8 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./tags/req-menu/index.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/define.d.marko");
+declare function __marko_internal_module_3(): typeof import("./tags/idx-menu/index.marko");
+declare function __marko_internal_module_4(): typeof import("./tags/rmenu/index.marko");
+declare function __marko_internal_module_5(): typeof import("./tags/rgrid/index.marko");

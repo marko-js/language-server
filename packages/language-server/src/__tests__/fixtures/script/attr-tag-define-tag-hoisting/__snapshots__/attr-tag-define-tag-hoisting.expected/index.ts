@@ -8,15 +8,12 @@ export interface Input {}
   );
   const Foo = Marko._.hoist(() => __marko_internal_hoist__Foo);
   const nested = Marko._.hoist(() => __marko_internal_hoist__nested);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/define.d.marko"),
-  ).default;
   {
     const Foo = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
-      [Marko._.contentFor(__marko_internal_tag_1)]: (input: {
+      [Marko._.contentFor(__marko_internal_module_1)]: (input: {
         section: Marko.AttrTag<{ content: Marko.Body }>;
       }) => {
         const __marko_internal_tag_2 = input.section;
@@ -34,13 +31,10 @@ export interface Input {}
     )(Marko._.withRestAttrTags)()({
       section: {
         [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-          const __marko_internal_tag_4 = Marko._.resolveTemplate(
-            import("@marko/runtime-tags/tags/const.d.marko"),
-          ).default;
           {
             const nested = Marko._.returned(() => __marko_internal_rendered_4);
             const __marko_internal_rendered_4 = Marko._.renderTemplate(
-              __marko_internal_tag_4,
+              __marko_internal_module_2().default,
             )()()({
               value: () => 1,
             });
@@ -64,10 +58,7 @@ export interface Input {}
         },
       ],
     });
-    const __marko_internal_tag_5 = Marko._.resolveTemplate(
-      import("marko/src/core-tags/core/script.d.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_5)()()({
+    Marko._.renderTemplate(__marko_internal_module_3().default)()()({
       async value() {
         nested;
         // ^?
@@ -85,3 +76,6 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/define.d.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/const.d.marko");
+declare function __marko_internal_module_3(): typeof import("marko/src/core-tags/core/script.d.marko");

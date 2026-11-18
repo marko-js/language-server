@@ -9,10 +9,7 @@ export interface Input {}
   const b = Marko._.hoist(() => __marko_internal_hoist__b);
   const a = Marko._.hoist(() => __marko_internal_hoist__a);
   const c = Marko._.hoist(() => __marko_internal_hoist__c);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/comments.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@comment"];
     input["@comment"];
     Marko._.nestedAttrTagNames(input["@comment"], (input) => {
@@ -20,20 +17,17 @@ export interface Input {}
     });
   });
   const __marko_internal_rendered_1 = Marko._.renderTemplate(
-    __marko_internal_tag_1,
+    __marko_internal_module_1().default,
   )(Marko._.withRestAttrTags)()({
     comment: {
       id: Marko._.interpolated`a`,
       comment: {
         id: Marko._.interpolated`b`,
-        [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-          const __marko_internal_tag_2 = Marko._.resolveTemplate(
-            import("@marko/runtime-tags/tags/let.d.marko"),
-          ).default;
+        [Marko._.contentFor(__marko_internal_module_1)]: (() => {
           {
             const b = Marko._.returned(() => __marko_internal_rendered_2);
             const __marko_internal_rendered_2 = Marko._.renderTemplate(
-              __marko_internal_tag_2,
+              __marko_internal_module_2().default,
             )()()(
               //    ^?
               {
@@ -51,14 +45,11 @@ export interface Input {}
         })(),
         [Symbol.iterator]: Marko._.any,
       },
-      [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-        const __marko_internal_tag_3 = Marko._.resolveTemplate(
-          import("@marko/runtime-tags/tags/let.d.marko"),
-        ).default;
+      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
         {
           const a = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3,
+            __marko_internal_module_2().default,
           )()()({
             value: () => "a" as const,
           });
@@ -77,14 +68,11 @@ export interface Input {}
       {
         comment: {
           id: Marko._.interpolated`c`,
-          [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-            const __marko_internal_tag_4 = Marko._.resolveTemplate(
-              import("@marko/runtime-tags/tags/let.d.marko"),
-            ).default;
+          [Marko._.contentFor(__marko_internal_module_1)]: (() => {
             {
               const c = Marko._.returned(() => __marko_internal_rendered_4);
               const __marko_internal_rendered_4 = Marko._.renderTemplate(
-                __marko_internal_tag_4,
+                __marko_internal_module_2().default,
               )()()({
                 value: () => "c" as const,
               });
@@ -102,10 +90,7 @@ export interface Input {}
       },
     ],
   });
-  const __marko_internal_tag_5 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/effect.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_5)()()({
+  Marko._.renderTemplate(__marko_internal_module_3().default)()()({
     value() {
       a;
       //^?
@@ -127,3 +112,6 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/comments.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/let.d.marko");
+declare function __marko_internal_module_3(): typeof import("@marko/runtime-tags/tags/effect.d.marko");

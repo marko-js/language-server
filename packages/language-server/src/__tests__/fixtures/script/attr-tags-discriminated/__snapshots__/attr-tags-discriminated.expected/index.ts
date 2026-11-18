@@ -11,15 +11,14 @@ export type Component = Marko.Component<Input>;
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const flag = Math.random() > 0.5;
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/shape/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@part"];
     input["@part"];
     input["@part"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     part: {
       kind: "circle",
       radius: 1,
@@ -42,22 +41,21 @@ export type Component = Marko.Component<Input>;
       },
     ],
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./tags/shape/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@part"];
     input["@part"];
     input["@part"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
           of: [1, 2],
         },
         (i) =>
-          Marko._.attrTags(__marko_internal_tag_2)([
+          Marko._.attrTags(__marko_internal_module_1)([
             {
               part: {
                 kind: "circle",
@@ -86,14 +84,13 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("part"),
   });
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./tags/uni/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@a"];
     input["@a"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_2().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // A union input whose members have no key in common: an <if> is accepted, and
     // a wrong value in a <for> is reported at it
     {
@@ -113,20 +110,19 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./tags/uni/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@a"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_4)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_2().default)(
+    Marko._.withRestAttrTags,
+  )()({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
           of: [1, 2],
         },
         (i) =>
-          Marko._.attrTags(__marko_internal_tag_4)([
+          Marko._.attrTags(__marko_internal_module_2)([
             {
               a: {
                 x: String(i),
@@ -145,3 +141,5 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./tags/shape/index.marko");
+declare function __marko_internal_module_2(): typeof import("./tags/uni/index.marko");

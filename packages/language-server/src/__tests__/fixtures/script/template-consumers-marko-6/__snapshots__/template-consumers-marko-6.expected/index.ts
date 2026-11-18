@@ -55,52 +55,43 @@ export interface Input {}
     () => __marko_internal_hoist__countDynamic,
   );
   const name = Marko._.hoist(() => __marko_internal_hoist__name);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/counter.marko"),
-  ).default;
   {
     const count = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
       start: 1,
     });
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("./tags/counter.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    Marko._.renderTemplate(__marko_internal_module_1().default)()()({
       start: "bad",
     });
-    const __marko_internal_tag_3 = Counter;
+    const __marko_internal_tag_2 = Counter;
     {
-      const countByName = Marko._.returned(() => __marko_internal_rendered_3);
-      const __marko_internal_rendered_3 = Marko._.renderDynamicTag(
-        __marko_internal_tag_3,
+      const countByName = Marko._.returned(() => __marko_internal_rendered_2);
+      const __marko_internal_rendered_2 = Marko._.renderDynamicTag(
+        __marko_internal_tag_2,
       )()()({
         start: 2,
       });
-      const __marko_internal_tag_4 = Counter;
+      const __marko_internal_tag_3 = Counter;
       {
         const countDynamic = Marko._.returned(
-          () => __marko_internal_rendered_4,
+          () => __marko_internal_rendered_3,
         );
-        const __marko_internal_rendered_4 = Marko._.renderDynamicTag(
-          __marko_internal_tag_4,
+        const __marko_internal_rendered_3 = Marko._.renderDynamicTag(
+          __marko_internal_tag_3,
         )()()({
           start: 3,
         });
-        const __marko_internal_tag_5 = Marko._.resolveTemplate(
-          import("./tags/generic.marko"),
-        ).default;
-        Marko._.renderTemplate(__marko_internal_tag_5)()()({
+        Marko._.renderTemplate(__marko_internal_module_2().default)()()({
           value: "x",
           ["content"]: (item) => {
             [item];
             return Marko._.voidReturn;
           },
         });
-        const __marko_internal_tag_6 = Generic;
-        Marko._.renderDynamicTag(__marko_internal_tag_6)()()({
+        const __marko_internal_tag_4 = Generic;
+        Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
           value: 1,
           //                         ^?
           ["content"]: (item) => {
@@ -108,11 +99,11 @@ export interface Input {}
             return Marko._.voidReturn;
           },
         });
-        const __marko_internal_tag_7 = JsTags;
+        const __marko_internal_tag_5 = JsTags;
         {
-          const name = Marko._.returned(() => __marko_internal_rendered_7);
-          const __marko_internal_rendered_7 = Marko._.renderDynamicTag(
-            __marko_internal_tag_7,
+          const name = Marko._.returned(() => __marko_internal_rendered_5);
+          const __marko_internal_rendered_5 = Marko._.renderDynamicTag(
+            __marko_internal_tag_5,
           )()()(
             //                          ^?
             {
@@ -149,4 +140,6 @@ export interface Input {}
 })();
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./tags/counter.marko");
+declare function __marko_internal_module_2(): typeof import("./tags/generic.marko");
 //      ^?      ^?             ^?              ^?

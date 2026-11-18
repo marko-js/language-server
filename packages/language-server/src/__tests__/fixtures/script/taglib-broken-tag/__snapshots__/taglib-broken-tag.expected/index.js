@@ -19,19 +19,13 @@
     );
     const __marko_internal_tag_2 = Marko._.interpolated`broken-json`;
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({});
-    const __marko_internal_tag_3 = Marko._.resolveTemplate(
-      import("./components/ok-tag.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_3)()()({
+    Marko._.renderTemplate(__marko_internal_module_1().default)()()({
       label: "a",
     });
-    const __marko_internal_tag_4 = Marko._.resolveTemplate(
-      import("@marko/runtime-tags/tags/let.d.marko"),
-    ).default;
     {
-      const count = Marko._.returned(() => __marko_internal_rendered_4);
-      const __marko_internal_rendered_4 = Marko._.renderTemplate(
-        __marko_internal_tag_4,
+      const count = Marko._.returned(() => __marko_internal_rendered_3);
+      const __marko_internal_rendered_3 = Marko._.renderTemplate(
+        __marko_internal_module_2().default,
       )()()(
         //  ^?
         {
@@ -57,4 +51,14 @@ export { __marko_internal_api as "~api" };
  */
 class Template extends Marko._.Template {}
 export default new Template();
+function __marko_internal_module_1() {
+  return /** @type {typeof import("./components/ok-tag.marko")} */ (
+    Marko._.any
+  );
+}
+function __marko_internal_module_2() {
+  return /** @type {typeof import("@marko/runtime-tags/tags/let.d.marko")} */ (
+    Marko._.any
+  );
+}
 //      ^?

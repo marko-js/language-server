@@ -7,13 +7,12 @@ export interface Input<T> extends ChildInput<T> {}
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("../gchild/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // A generic one: clean, the body params typed by its type parameter
     {
       ...input,
@@ -23,12 +22,12 @@ export interface Input<T> extends ChildInput<T> {}
             of: input.item,
           },
           (item) =>
-            Marko._.attrTags(__marko_internal_tag_1)([
+            Marko._.attrTags(__marko_internal_module_1)([
               {
                 item: {
                   ...item,
                   label: "x",
-                  [Marko._.contentFor(__marko_internal_tag_1)]: (row) => {
+                  [Marko._.contentFor(__marko_internal_module_1)]: (row) => {
                     [row];
                     return Marko._.voidReturn;
                   },
@@ -68,3 +67,4 @@ class Template extends Marko._.GenericTemplate<
 > {}
 const Input = new Template();
 export default Input;
+declare function __marko_internal_module_1(): typeof import("../gchild/index.marko");
