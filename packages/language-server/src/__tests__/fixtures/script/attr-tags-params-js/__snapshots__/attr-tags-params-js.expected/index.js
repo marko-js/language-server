@@ -19,14 +19,37 @@ export class Component extends Marko.Component {}
       // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
       (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
     );
-    const __marko_internal_tag_1 = Marko._.resolveTemplate(
-      import("./components/child.marko"),
-    ).default;
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
+      input["@foo"];
+      input["@foo"];
+    });
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()({
+      foo: {
+        bar: true,
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
+        {
+          foo: {
+            [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
+              [data];
+              return Marko._.voidReturn;
+            },
+            [Symbol.iterator]: Marko._.any,
+          },
+        },
+      ],
+    });
+    const __marko_internal_tag_1 = Child;
     Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
       input["@foo"];
       input["@foo"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+    Marko._.renderDynamicTag(__marko_internal_tag_1)(
+      Marko._.withRestAttrTags,
+    )()({
       foo: {
         bar: true,
         [Symbol.iterator]: Marko._.any,
@@ -43,36 +66,12 @@ export class Component extends Marko.Component {}
         },
       ],
     });
-    const __marko_internal_tag_2 = Child;
+    const __marko_internal_tag_2 = true && Child;
     Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
       input["@foo"];
       input["@foo"];
     });
     Marko._.renderDynamicTag(__marko_internal_tag_2)(
-      Marko._.withRestAttrTags,
-    )()({
-      foo: {
-        bar: true,
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        {
-          foo: {
-            [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
-              [data];
-              return Marko._.voidReturn;
-            },
-            [Symbol.iterator]: Marko._.any,
-          },
-        },
-      ],
-    });
-    const __marko_internal_tag_3 = true && Child;
-    Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
-      input["@foo"];
-      input["@foo"];
-    });
-    Marko._.renderDynamicTag(__marko_internal_tag_3)(
       Marko._.withRestAttrTags,
     )()(
       // This errors for now, because `typeof (some + expression)` is not allowed
@@ -84,7 +83,7 @@ export class Component extends Marko.Component {}
         [Marko._.restAttrTags]: [
           {
             foo: {
-              [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
+              [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
                 [data];
                 return Marko._.voidReturn;
               },
@@ -94,13 +93,12 @@ export class Component extends Marko.Component {}
         ],
       },
     );
-    const __marko_internal_tag_4 = Marko._.resolveTemplate(
-      import("./components/child.marko"),
-    ).default;
-    Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+    Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@foo"];
     });
-    Marko._.renderTemplate(__marko_internal_tag_4)(Marko._.withRestAttrTags)()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)(
+      Marko._.withRestAttrTags,
+    )()(
       // In a <for>: the body param typed (the wrong value is not reported, as nothing
       // is in a JavaScript template)
       {
@@ -110,11 +108,11 @@ export class Component extends Marko.Component {}
               of: [1, 2],
             },
             (n) =>
-              Marko._.attrTags(__marko_internal_tag_4)([
+              Marko._.attrTags(__marko_internal_module_1)([
                 {
                   foo: {
                     bar: "no",
-                    [Marko._.contentFor(__marko_internal_tag_4)]: (data) => {
+                    [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
                       [data];
                       return Marko._.voidReturn;
                     },
@@ -138,3 +136,6 @@ export { __marko_internal_api as "~api" };
  */
 class Template extends Marko._.Template {}
 export default new Template();
+function __marko_internal_module_1() {
+  return /** @type {typeof import("./components/child.marko")} */ (Marko._.any);
+}

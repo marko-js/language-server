@@ -24,15 +24,12 @@ export interface Input {}
     a: {
       b: 1,
       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-        const __marko_internal_tag_2 = Marko._.resolveTemplate(
-          import("@marko/runtime-tags/tags/const.d.marko"),
-        ).default;
         {
           const hoistedFromStaticMember = Marko._.returned(
             () => __marko_internal_rendered_2,
           );
           const __marko_internal_rendered_2 = Marko._.renderTemplate(
-            __marko_internal_tag_2,
+            __marko_internal_module_1().default,
           )()()({
             value: () => 1 as const,
           });
@@ -56,10 +53,7 @@ export interface Input {}
       },
     ],
   });
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/effect.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_module_2().default)()()({
     value() {
       hoistedFromStaticMember;
       //^?
@@ -75,3 +69,5 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/const.d.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/effect.d.marko");

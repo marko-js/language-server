@@ -23,19 +23,13 @@ export type Component = Marko.Component<Input>;
       return Marko._.voidBody;
     })(),
   });
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("marko/src/core-tags/core/script.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     async [Marko._.never]() {
       count.missingInScript;
       // a script ending in a comment
     },
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("marko/src/core-tags/core/script.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     async [Marko._.never]() {
       count.missingInInlineScript; // also inline
     },
@@ -72,3 +66,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("marko/src/core-tags/core/script.d.marko");

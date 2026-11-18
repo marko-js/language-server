@@ -12,10 +12,7 @@ export interface Input {}
     Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`hello`,
     });
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("marko/src/core-tags/core/script.d.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_2)()()(
+    Marko._.renderTemplate(__marko_internal_module_1().default)()()(
       //      ^?
       {
         async value() {
@@ -33,3 +30,4 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("marko/src/core-tags/core/script.d.marko");

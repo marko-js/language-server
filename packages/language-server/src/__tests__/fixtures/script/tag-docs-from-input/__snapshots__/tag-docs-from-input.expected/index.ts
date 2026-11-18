@@ -10,109 +10,73 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/fancy-button.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     label: "Go",
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/plain-button.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()(
+  Marko._.renderTemplate(__marko_internal_module_2().default)()()(
     // ^?   ^?
     {
       label: "Go",
     },
   );
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./components/no-input.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()(
+  Marko._.renderTemplate(__marko_internal_module_3().default)()()(
     //    ^?
     {},
   );
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./components/generic-list.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_4)()()(
+  Marko._.renderTemplate(__marko_internal_module_4().default)()()(
     //  ^?
     {
       items: [1, 2],
     },
   );
-  const __marko_internal_tag_5 = Marko._.resolveTemplate(
-    import("./components/dir-button/index.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_5)()()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)()()(
     //  ^?
     {},
   );
-  const __marko_internal_tag_6 = Marko._.fallbackTemplate(
+  const __marko_internal_tag_1 = Marko._.fallbackTemplate(
     // @ts-ignore
     ShinyButton,
-    Marko._.resolveTemplate(import("./components/ShinyButton.marko")).default,
+    __marko_internal_module_6().default,
   );
-  Marko._.renderDynamicTag(__marko_internal_tag_6)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_1)()()(
     //  ^?
     {},
   );
-  const __marko_internal_tag_7 = Marko._.resolveTemplate(
-    import("./components/class-counter.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_7)()()(
+  Marko._.renderTemplate(__marko_internal_module_7().default)()()(
     //  ^?
     {
       start: 1,
     },
   );
-  const __marko_internal_tag_8 = Marko._.resolveTemplate(
-    import("./tags/tags-counter.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_8)()()(
+  Marko._.renderTemplate(__marko_internal_module_8().default)()()(
     //  ^?
     {
       start: 1,
     },
   );
-  const __marko_internal_tag_9 = Marko._.resolveTemplate(
-    import("./lib/button-impl.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_9)()()(
+  Marko._.renderTemplate(__marko_internal_module_9().default)()()(
     //  ^?
     {},
   );
-  const __marko_internal_tag_10 = Marko._.resolveTemplate(
-    import("./lib/typed-button.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_10)()()(
+  Marko._.renderTemplate(__marko_internal_module_10().default)()()(
     //  ^?
     {
       label: "Go",
     },
   );
-  const __marko_internal_tag_11 = Marko._.resolveTemplate(
-    import("./components/split-button/index.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_11)()()(
+  Marko._.renderTemplate(__marko_internal_module_11().default)()()(
     //  ^?
     {
       label: "Go",
     },
   );
-  const __marko_internal_tag_12 = Marko._.resolveTemplate(
-    import("./lib/missing-types-button.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_12)()()(
+  Marko._.renderTemplate(__marko_internal_module_12().default)()()(
     //  ^?
     {},
   );
-  const __marko_internal_tag_13 = Marko._.resolveTemplate(
-    import("./lib/missing-types-button.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_13)()()(
+  Marko._.renderTemplate(__marko_internal_module_12().default)()()(
     //  ^?
-    // Named again: what TypeScript reports of its missing declaration is at its tag.
+    // Named again: its missing declaration is reported once, at the first tag.
     {},
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
@@ -122,3 +86,15 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/fancy-button.marko");
+declare function __marko_internal_module_2(): typeof import("./components/plain-button.marko");
+declare function __marko_internal_module_3(): typeof import("./components/no-input.marko");
+declare function __marko_internal_module_4(): typeof import("./components/generic-list.marko");
+declare function __marko_internal_module_5(): typeof import("./components/dir-button/index.marko");
+declare function __marko_internal_module_6(): typeof import("./components/ShinyButton.marko");
+declare function __marko_internal_module_7(): typeof import("./components/class-counter.marko");
+declare function __marko_internal_module_8(): typeof import("./tags/tags-counter.marko");
+declare function __marko_internal_module_9(): typeof import("./lib/button-impl.marko");
+declare function __marko_internal_module_10(): typeof import("./lib/typed-button.d.marko");
+declare function __marko_internal_module_11(): typeof import("./components/split-button/index.marko");
+declare function __marko_internal_module_12(): typeof import("./lib/missing-types-button.d.marko");

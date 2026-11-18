@@ -189,15 +189,12 @@ export interface Input {}
           ? {
               item: {
                 [Marko._.contentFor(__marko_internal_tag_7)]: (() => {
-                  const __marko_internal_tag_8 = Marko._.resolveTemplate(
-                    import("@marko/runtime-tags/tags/const.d.marko"),
-                  ).default;
                   {
                     const fromUnion = Marko._.returned(
                       () => __marko_internal_rendered_8,
                     );
                     const __marko_internal_rendered_8 = Marko._.renderTemplate(
-                      __marko_internal_tag_8,
+                      __marko_internal_module_1().default,
                     )()()({
                       value: () => "union" as const,
                     });
@@ -217,39 +214,34 @@ export interface Input {}
       ],
     },
   );
-  const __marko_internal_tag_9 = Marko._.resolveTemplate(
-    import("marko/src/core-tags/core/script.d.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_9)()()({
+  Marko._.renderTemplate(__marko_internal_module_2().default)()()({
     async value() {
       fromUnion;
       // ^?
     },
   });
-  const __marko_internal_tag_10 = native;
-  Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
+  const __marko_internal_tag_9 = native;
+  Marko._.attrTagNames(__marko_internal_tag_9, (input) => {
     input["@item"];
+    input["@item"];
+  });
+  Marko._.renderDynamicTag(__marko_internal_tag_9)(Marko._.withRestAttrTags)()({
+    item: {
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
+      {
+        item: {
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+    ],
+  });
+  const __marko_internal_tag_10 = flag ? ClassMenu : "div";
+  Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
     input["@item"];
   });
   Marko._.renderDynamicTag(__marko_internal_tag_10)(Marko._.withRestAttrTags)()(
-    {
-      item: {
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        {
-          item: {
-            [Symbol.iterator]: Marko._.any,
-          },
-        },
-      ],
-    },
-  );
-  const __marko_internal_tag_11 = flag ? ClassMenu : "div";
-  Marko._.attrTagNames(__marko_internal_tag_11, (input) => {
-    input["@item"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_11)(Marko._.withRestAttrTags)()(
     // A template or a native tag: typed by the template (where both name their
     // content alike; `Menu`'s is `content`, a native tag's here `renderBody`)
     {
@@ -258,7 +250,7 @@ export interface Input {}
           ? {
               item: {
                 label: "a",
-                [Marko._.contentFor(__marko_internal_tag_11)]: (n) => {
+                [Marko._.contentFor(__marko_internal_tag_10)]: (n) => {
                   [n];
                   return Marko._.voidReturn;
                 },
@@ -280,3 +272,5 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/const.d.marko");
+declare function __marko_internal_module_2(): typeof import("marko/src/core-tags/core/script.d.marko");

@@ -10,16 +10,13 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/my-layout/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
       input["@item"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     section: {
       ...Marko._.givenAttrTags("item"),
       ...Marko._.forOfAttrTag(
@@ -28,12 +25,14 @@ export type Component = Marko.Component<Input>;
         },
         (name) =>
           Marko._.attrTags(
-            __marko_internal_tag_1,
+            __marko_internal_module_1,
             "section",
           )([
             {
               item: {
-                [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
+                [Marko._.contentFor(__marko_internal_module_1)]: ({
+                  label,
+                }) => {
                   Marko._.renderNativeTag("div")({
                     [Marko._.content]: (() => {
                       [name];
@@ -51,19 +50,16 @@ export type Component = Marko.Component<Input>;
       [Symbol.iterator]: Marko._.any,
     },
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./tags/my-layout/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
       input["@item"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     section: {
       item: {
-        [Marko._.contentFor(__marko_internal_tag_2)]: ({ label }) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: ({ label }) => {
           Marko._.renderNativeTag("div")({
             [Marko._.content]: (() => {
               [label];
@@ -84,3 +80,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./tags/my-layout/index.marko");

@@ -7,20 +7,14 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const hoisted = Marko._.hoist(() => __marko_internal_hoist__hoisted);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    [Marko._.contentFor(__marko_internal_tag_1)]: (a) => {
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    [Marko._.contentFor(__marko_internal_module_1)]: (a) => {
       [a];
       return Marko._.voidReturn;
     },
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
-    [Marko._.contentFor(__marko_internal_tag_2)]: (a) => {
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    [Marko._.contentFor(__marko_internal_module_1)]: (a) => {
       var __marko_internal_return = Marko._.returnTag({
         value: a,
       });
@@ -30,11 +24,8 @@ export interface Input {}
       })(__marko_internal_return);
     },
   });
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
-    [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    [Marko._.contentFor(__marko_internal_module_1)]: (() => {
       var __marko_internal_return = Marko._.returnTag({
         value: "b" as const,
       });
@@ -46,11 +37,8 @@ export interface Input {}
       };
     })(),
   });
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_4)()()({
-    [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    [Marko._.contentFor(__marko_internal_module_1)]: (() => {
       var __marko_internal_return = Marko._.returnTag({
         value: "c" as const,
       });
@@ -62,20 +50,14 @@ export interface Input {}
       };
     })(),
   });
-  const __marko_internal_tag_5 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  const __marko_internal_rendered_5 = Marko._.renderTemplate(
-    __marko_internal_tag_5,
+  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+    __marko_internal_module_1().default,
   )()()({
-    [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
-      const __marko_internal_tag_6 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/let.d.marko"),
-      ).default;
+    [Marko._.contentFor(__marko_internal_module_1)]: (() => {
       {
-        const hoisted = Marko._.returned(() => __marko_internal_rendered_6);
-        const __marko_internal_rendered_6 = Marko._.renderTemplate(
-          __marko_internal_tag_6,
+        const hoisted = Marko._.returned(() => __marko_internal_rendered_2);
+        const __marko_internal_rendered_2 = Marko._.renderTemplate(
+          __marko_internal_module_2().default,
         )()()({
           value: () => 1 as const,
         });
@@ -99,7 +81,7 @@ export interface Input {}
     },
   ];
   var { hoisted: __marko_internal_hoist__hoisted } = Marko._.hoisted(
-    Marko._.readScope(__marko_internal_rendered_5),
+    Marko._.readScope(__marko_internal_rendered_1),
   );
   Marko._.noop({ hoisted, input, $global, $signal });
   return;
@@ -108,3 +90,5 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/test-tag.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/let.d.marko");

@@ -10,28 +10,16 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     ["value"]: Marko._.tuple({ value: "hello!" }),
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     ["value"]: Marko._.tuple("hello!"),
   });
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     ["value"]: Marko._.tuple("hello!", 1),
   });
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./components/test-tag.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_4)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     ["value"]: Marko._.tuple("hello!", 1, 2),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
@@ -41,3 +29,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/test-tag.marko");

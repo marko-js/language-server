@@ -148,6 +148,11 @@ class ScriptExtractor {
   /** Whether the template declares its `Input` itself. */
   #declaresInput = false;
   #tagId = 1;
+  /**
+   * The function returning the module of each discovered template the file
+   * reads, by its import (see `#writeTemplates`).
+   */
+  #modules = new Map<string, { name: string; tag: Range | undefined }>();
   #attrTagTrees = new WeakMap<Node.Tag, AttrTagTree | undefined>();
   #closeBrackets: number[] = [0];
   constructor(opts: ExtractScriptOptions) {
@@ -548,6 +553,8 @@ class Template extends (${templateBaseClass}) {}`;
       this.#extractor.write(`export default ${exportName};\n`);
     }
 
+    this.#writeTemplates();
+
     this.#writeComments(program);
   }
 
@@ -836,6 +843,46 @@ constructor(_) {}
     return returnTag !== undefined;
   }
 
+  /**
+   * The discovered templates the file reads: a function returning each one's
+   * module, so that its import is written once (mapped to the first tag
+   * that reads it, where TypeScript reports a problem with it, eg a file
+   * that does not exist). Functions, which TypeScript types once, without
+   * following the code that calls them (as it would a variable's every
+   * read).
+   */
+  #writeTemplates() {
+    for (const [importPath, { name, tag }] of this.#modules) {
+      // Its type alone, which JavaScript (that cannot declare a function)
+      // casts to. Within the specifier, where an anchor maps a problem with
+      // it whole.
+      if (this.#scriptLang === ScriptLang.ts) {
+        this.#extractor
+          .write(`declare function ${name}(): typeof import("`)
+          .anchor(tag)
+          .write(`${importPath}");\n`);
+      } else {
+        this.#extractor
+          .write(`function ${name}() {\nreturn /** @type {typeof import("`)
+          .anchor(tag)
+          .write(`${importPath}")} */(${varShared("any")});\n}\n`);
+      }
+    }
+  }
+
+  /** The function returning a discovered template's module, first read by `tag`. */
+  #getModule(importPath: string, tag?: Node.Tag) {
+    let module = this.#modules.get(importPath);
+    if (!module) {
+      module = {
+        name: varLocal(`module_${this.#modules.size + 1}`),
+        tag: tag?.name,
+      };
+      this.#modules.set(importPath, module);
+    }
+    return module.name;
+  }
+
   #writeTag(tag: Node.Tag) {
     const tagName = tag.nameText;
     const def = tagName ? this.#lookup.getTag(tagName) : undefined;
@@ -851,7 +898,15 @@ constructor(_) {}
       const isIdentifier = tagName && REG_TAG_NAME_IDENTIFIER.test(tagName);
       const isMarkoFile = importPath?.endsWith(".marko");
 
-      if (isIdentifier || isMarkoFile || !importPath) {
+      if (isMarkoFile && !isIdentifier) {
+        // A discovered template: read where the tag uses it, from its
+        // module's function (see `#writeTemplates`), which the helpers given
+        // the template take in its place, so that the tag reads its
+        // `default` once, in its call.
+        isTemplate = true;
+        templateVar = this.#getModule(importPath!, tag);
+        TEMPLATE_VAR.set(tag, templateVar);
+      } else if (isIdentifier || isMarkoFile || !importPath) {
         templateVar = this.#getTemplateVar(tag, true);
         this.#extractor.write(`const ${templateVar} = (\n`);
 
@@ -863,8 +918,7 @@ constructor(_) {}
               `${varShared("fallbackTemplate")}(\n// @ts-ignore\n${tagName},\n`,
             );
             if (isMarkoFile) {
-              this.#writeTemplateImport(tag, importPath);
-              this.#writeTemplateExport(tag);
+              this.#writeTemplateExport(tag, this.#getModule(importPath, tag));
             } else {
               this.#extractor.write(varShared("any"));
             }
@@ -872,10 +926,6 @@ constructor(_) {}
           } else {
             this.#extractor.copy(tag.name);
           }
-        } else if (isMarkoFile) {
-          isTemplate = true;
-          this.#writeTemplateImport(tag, importPath!);
-          this.#writeTemplateExport(tag);
         } else {
           this.#writeDynamicTagName(tag);
         }
@@ -945,11 +995,13 @@ constructor(_) {}
         // Its name is not mapped: TypeScript has nothing to say of it, and
         // Marko describes the tag.
         .write(`${varShared("renderNativeTag")}("${tagName}")(`);
+    } else if (isTemplate) {
+      this.#extractor.write(`${varShared("renderTemplate")}(`);
+      this.#writeTemplateExport(tag, templateVar!);
+      this.#extractor.anchor(tag.name).write(")");
     } else if (templateVar) {
       this.#extractor
-        .write(
-          `${varShared(isTemplate ? "renderTemplate" : "renderDynamicTag")}(${templateVar}`,
-        )
+        .write(`${varShared("renderDynamicTag")}(${templateVar}`)
         .anchor(tag.name)
         .write(")");
     } else {
@@ -1751,24 +1803,14 @@ constructor(_) {}
   }
 
   /**
-   * The `default` a tag reads off its module (its types, as for a core tag,
-   * or its template), with the tag's name mapped onto it: TypeScript's hover
-   * there shows the comment above its `Input`.
+   * A tag's template: the default export of its file's module (its types,
+   * as for a core tag, or its template), with the tag's name mapped onto
+   * `default`: TypeScript's hover there shows the template's docs (the
+   * comment above its `Input`).
    */
-  #writeTemplateExport(tag: Node.Tag) {
+  #writeTemplateExport(tag: Node.Tag, module: string) {
+    this.#extractor.write(`${module}().`);
     this.#extractor.anchor(tag.name, true).write("default");
-  }
-
-  /**
-   * The module of a discovered template `tag` reads. Its specifier is mapped
-   * to the tag, so that TypeScript reports a problem with it (eg a file that
-   * does not exist) there.
-   */
-  #writeTemplateImport(tag: Node.Tag, importPath: string) {
-    this.#extractor
-      .write(`${varShared("resolveTemplate")}(import("`)
-      .anchor(tag.name)
-      .write(`${importPath}")).`);
   }
 
   /** A tag's arguments, when they are passed before its input object. */

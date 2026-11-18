@@ -24,7 +24,10 @@ async function build(dir: string, project: string): Promise<Build> {
   const { log } = console;
   const { exitCode } = process;
   console.log = (...args: unknown[]) => {
+    // Paths in `dir`, as mtc writes a file's and TypeScript a module's it
+    // resolved (eg an untyped package's): absolute, or from the cwd.
     const message = format(...args)
+      .replaceAll(`${dir}${path.sep}`, "")
       .replaceAll(`${path.relative(process.cwd(), dir)}${path.sep}`, "")
       .trim();
     if (message) messages.push(message);

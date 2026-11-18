@@ -8,13 +8,10 @@ export interface Input {}
   );
   const string = Marko._.hoist(() => __marko_internal_hoist__string);
   const inputId = Marko._.hoist(() => __marko_internal_hoist__inputId);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/let.d.marko"),
-  ).default;
   {
     const string = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
       value: "bar",
     });
@@ -23,12 +20,9 @@ export interface Input {}
       "value",
       __marko_internal_rendered_1.return,
     );
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("./components/test-tag.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    Marko._.renderTemplate(__marko_internal_module_2().default)()()({
       //  ^?
-      [Marko._.contentFor(__marko_internal_tag_2)]: (val) => {
+      [Marko._.contentFor(__marko_internal_module_2)]: (val) => {
         Marko._.renderNativeTag("button")({
           onClick() {
             __marko_internal_change__string.string = val;
@@ -42,18 +36,15 @@ export interface Input {}
         return Marko._.voidReturn;
       },
     });
-    const __marko_internal_rendered_3 = Marko._.forOfTag(
+    const __marko_internal_rendered_2 = Marko._.forOfTag(
       {
         of: [],
       },
       (_unused) => {
-        const __marko_internal_tag_4 = Marko._.resolveTemplate(
-          import("@marko/runtime-tags/tags/let.d.marko"),
-        ).default;
         {
-          const inputId = Marko._.returned(() => __marko_internal_rendered_4);
-          const __marko_internal_rendered_4 = Marko._.renderTemplate(
-            __marko_internal_tag_4,
+          const inputId = Marko._.returned(() => __marko_internal_rendered_3);
+          const __marko_internal_rendered_3 = Marko._.renderTemplate(
+            __marko_internal_module_1().default,
           )()()({
             value: "",
           });
@@ -77,7 +68,7 @@ export interface Input {}
     });
     var __marko_internal_hoist__string = string;
     var { inputId: __marko_internal_hoist__inputId } = Marko._.hoisted(
-      Marko._.readScope(__marko_internal_rendered_3),
+      Marko._.readScope(__marko_internal_rendered_2),
     );
   }
   Marko._.noop({ string, inputId, input, $global, $signal });
@@ -87,3 +78,5 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
+declare function __marko_internal_module_2(): typeof import("./components/test-tag.marko");

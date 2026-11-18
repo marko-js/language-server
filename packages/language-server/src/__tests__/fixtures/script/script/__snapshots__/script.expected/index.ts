@@ -13,13 +13,10 @@ export interface Input<T extends string> {
   const promise = Marko._.hoist(() => __marko_internal_hoist__promise);
   const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
-      const __marko_internal_tag_2 = Marko._.resolveTemplate(
-        import("@marko/runtime-tags/tags/let.d.marko"),
-      ).default;
       {
         const x = Marko._.returned(() => __marko_internal_rendered_2);
         const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_tag_2,
+          __marko_internal_module_1().default,
         )()()({
           value: 1,
         });
@@ -28,13 +25,10 @@ export interface Input<T extends string> {
           "value",
           __marko_internal_rendered_2.return,
         );
-        const __marko_internal_tag_3 = Marko._.resolveTemplate(
-          import("@marko/runtime-tags/tags/const.d.marko"),
-        ).default;
         {
           const y = Marko._.returned(() => __marko_internal_rendered_3);
           const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_tag_3,
+            __marko_internal_module_2().default,
           )()()({
             value: "hi",
           });
@@ -43,20 +37,14 @@ export interface Input<T extends string> {
             "value",
             __marko_internal_rendered_3.return,
           );
-          const __marko_internal_tag_4 = Marko._.resolveTemplate(
-            import("@marko/runtime-tags/tags/const.d.marko"),
-          ).default;
           {
             const promise = Marko._.returned(() => __marko_internal_rendered_4);
             const __marko_internal_rendered_4 = Marko._.renderTemplate(
-              __marko_internal_tag_4,
+              __marko_internal_module_2().default,
             )()()({
               value: Promise.resolve("world"),
             });
-            const __marko_internal_tag_5 = Marko._.resolveTemplate(
-              import("marko/src/core-tags/core/script.d.marko"),
-            ).default;
-            Marko._.renderTemplate(__marko_internal_tag_5)()()({
+            Marko._.renderTemplate(__marko_internal_module_3().default)()()({
               async value() {
                 console.log(x);
                 //              ^?
@@ -120,3 +108,6 @@ class Template extends Marko._.GenericTemplate<
 > {}
 const Input = new Template();
 export default Input;
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
+declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/const.d.marko");
+declare function __marko_internal_module_3(): typeof import("marko/src/core-tags/core/script.d.marko");

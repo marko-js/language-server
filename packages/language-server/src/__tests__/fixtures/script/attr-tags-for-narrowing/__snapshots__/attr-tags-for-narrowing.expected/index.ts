@@ -10,22 +10,21 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/list.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
           of: [1, 2, 3],
         },
         () =>
-          Marko._.attrTags(__marko_internal_tag_1)([
+          Marko._.attrTags(__marko_internal_module_1)([
             {
               item: {
                 size: "small",
@@ -39,7 +38,7 @@ export type Component = Marko.Component<Input>;
           of: [1, 2, 3],
         },
         () =>
-          Marko._.attrTags(__marko_internal_tag_1)([
+          Marko._.attrTags(__marko_internal_module_1)([
             {
               item: {
                 size: "small",
@@ -65,3 +64,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/list.marko");

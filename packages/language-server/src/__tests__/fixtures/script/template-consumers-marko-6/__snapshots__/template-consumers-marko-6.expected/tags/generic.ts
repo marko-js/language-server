@@ -16,13 +16,10 @@ function __marko_internal_template<T>(this: void) {
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const current = Marko._.hoist(() => __marko_internal_hoist__current);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("marko/tags/let.d.marko"),
-  ).default;
   {
     const current = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
       value: input.value,
     });
@@ -84,3 +81,4 @@ class Template extends Marko._.GenericTemplate<
 > {}
 const Input = new Template();
 export default Input;
+declare function __marko_internal_module_1(): typeof import("marko/tags/let.d.marko");

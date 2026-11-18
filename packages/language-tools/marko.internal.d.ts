@@ -65,6 +65,12 @@ declare global {
       //   ? (T | (U extends undefined ? () => undefined : never)) & Iterable<R>
       //   : never;
 
+      // Each helper given a tag's template takes a discovered one by the
+      // function returning its module (see `contentFor`).
+      export function attrTagNames<Template>(
+        module: () => { readonly default: Template },
+        fn: (input: AttrTagNames<InputFor<Template>>) => void,
+      ): void;
       export function attrTagNames<Tag>(
         tag: Tag & NotGeneric<Tag>,
         fn: (input: AttrTagNames<InputFor<Tag>>) => void,
@@ -88,6 +94,11 @@ declare global {
         name: Name,
       ): Marko.NativeTags[Name]["return"]["value"];
 
+      // A discovered template, by the function returning its module, so that
+      // its tag reads its `default` once, in its call.
+      export function contentFor<Template>(
+        module: () => { readonly default: Template },
+      ): ContentFor<Template>;
       export function contentFor<Name>(
         tag: Name & NotGeneric<Name>,
       ): ContentFor<Name>;
@@ -317,11 +328,6 @@ declare global {
         Marko.NativeTags[Name]["return"]
       >;
       export const missingTag: DefaultRenderer;
-      // A template's module, whose `default` a tag reads by its name, so
-      // TypeScript shows the template's docs there.
-      export function resolveTemplate<Module>(
-        imported: Promise<Module>,
-      ): Module;
       export function fallbackTemplate<Tag, Template>(
         tag: Tag,
         fallback: Template,
@@ -543,6 +549,12 @@ declare global {
        * given to its renderer where they are written, so that TypeScript
        * infers its type parameters from them too.
        */
+      export function attrTags<Template, Path extends readonly string[]>(
+        module: () => { readonly default: Template },
+        ...path: Path
+      ): CheckedAttrTags<
+        AttrTagGroup<AttrTagsInput<AnyInputFor<Template>, Path>>
+      >;
       export function attrTags<Tag, Path extends readonly string[]>(
         tag: Tag & NotGeneric<Tag>,
         ...path: Path

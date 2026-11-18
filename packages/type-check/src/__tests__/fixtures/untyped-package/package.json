@@ -1,0 +1,7 @@
+{
+  "name": "untyped-package",
+  "private": true,
+  "dependencies": {
+    "jspkg": "1.0.0"
+  }
+}

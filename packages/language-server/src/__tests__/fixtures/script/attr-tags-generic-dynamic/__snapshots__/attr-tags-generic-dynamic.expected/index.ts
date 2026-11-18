@@ -15,20 +15,19 @@ export type Component = Marko.Component<Input>;
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const flag = Math.random() > 0.5;
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_1)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // From an attribute, repeated
     {
       value: "a",
       option: {
         value: "b",
-        [Marko._.contentFor(__marko_internal_tag_1)]: (v) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -45,13 +44,12 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // From an attribute, in an if
     {
       value: 1,
@@ -60,7 +58,7 @@ export type Component = Marko.Component<Input>;
           ? {
               option: {
                 value: 2,
-                [Marko._.contentFor(__marko_internal_tag_2)]: (v) => {
+                [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
                   [v];
                   return Marko._.voidReturn;
                 },
@@ -72,20 +70,19 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("option"),
     },
   );
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // From an attribute and the attribute tags, as const
     {
       value: "a" as const,
       option: {
         value: "a",
-        [Marko._.contentFor(__marko_internal_tag_3)]: (v) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -102,35 +99,31 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_4 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_4)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     value: "a" as const,
     option: {
       value: "a",
-      [Marko._.contentFor(__marko_internal_tag_4)]: (v) => {
+      [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
       [Symbol.iterator]: Marko._.any,
     },
   });
-  const __marko_internal_tag_5 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_5, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_5)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     value: "a" as const,
     option: {
       value: "a" as const,
-      [Marko._.contentFor(__marko_internal_tag_5)]: (v) => {
+      [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
@@ -146,20 +139,19 @@ export type Component = Marko.Component<Input>;
       },
     ],
   });
-  const __marko_internal_tag_6 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_6)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()({
     option: {
       value: 1,
       [Symbol.iterator]: Marko._.any,
     },
     // From the attribute tags, into the tag's own content
-    [Marko._.contentFor(__marko_internal_tag_6)]: (v) => {
+    [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -172,14 +164,13 @@ export type Component = Marko.Component<Input>;
       },
     ],
   });
-  const __marko_internal_tag_7 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_7)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // An attribute tag that disagrees with the attribute
     {
       value: "a",
@@ -197,13 +188,12 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_8 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_8, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_8)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // From an attribute, in a for (its body is typed apart from the tag)
     {
       value: "a",
@@ -213,11 +203,11 @@ export type Component = Marko.Component<Input>;
             of: ["b", "c"],
           },
           (x) =>
-            Marko._.attrTags(__marko_internal_tag_8)([
+            Marko._.attrTags(__marko_internal_module_1)([
               {
                 option: {
                   value: x,
-                  [Marko._.contentFor(__marko_internal_tag_8)]: (v) => {
+                  [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
                     [v];
                     return Marko._.voidReturn;
                   },
@@ -230,19 +220,16 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("option"),
     },
   );
-  const __marko_internal_tag_9 = Marko._.resolveTemplate(
-    import("./tags/pick/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_9, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_9)<2>()<number>()(
+  Marko._.renderTemplate(__marko_internal_module_1().default)<2>()<number>()(
     // Given type arguments
     {
       option: {
         value: 1,
-        [Marko._.contentFor(__marko_internal_tag_9)]: (v) => {
+        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -259,20 +246,19 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_10 = Marko._.resolveTemplate(
-    import("./tags/a-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_10)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_2().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // From an attribute, into repeated attribute tags' params
     {
       rows: [{ id: "a" }],
       column: {
         header: "Id",
-        [Marko._.contentFor(__marko_internal_tag_10)]: ({ row }) => {
+        [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
           [row.id];
           return Marko._.voidReturn;
         },
@@ -283,7 +269,7 @@ export type Component = Marko.Component<Input>;
           column: {
             header: "Id again",
             //                                ^?
-            [Marko._.contentFor(__marko_internal_tag_10)]: ({ row }) => {
+            [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -293,18 +279,17 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_11 = Marko._.resolveTemplate(
-    import("./tags/a-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_11, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_11)<2>()<{ id: string }>()({
+  Marko._.renderTemplate(__marko_internal_module_2().default)<2>()<{
+    id: string;
+  }>()({
     rows: [],
     column: {
       header: "Id",
-      [Marko._.contentFor(__marko_internal_tag_11)]: ({ row }) => {
+      [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
         [row.id];
         return Marko._.voidReturn;
       },
@@ -315,7 +300,7 @@ export type Component = Marko.Component<Input>;
         column: {
           header: "Id again",
           //                                ^?
-          [Marko._.contentFor(__marko_internal_tag_11)]: ({ row }) => {
+          [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
             [row.id];
             return Marko._.voidReturn;
           },
@@ -324,14 +309,13 @@ export type Component = Marko.Component<Input>;
       },
     ],
   });
-  const __marko_internal_tag_12 = Marko._.resolveTemplate(
-    import("./tags/req-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_12, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_3, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_12)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_3().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // A required attribute tag, from an attribute: repeated, in an if, in a for
     {
       rows: [{ id: "a" }],
@@ -340,7 +324,7 @@ export type Component = Marko.Component<Input>;
       },
       column: {
         header: "Id",
-        [Marko._.contentFor(__marko_internal_tag_12)]: (row) => {
+        [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
           [row.id];
           return Marko._.voidReturn;
         },
@@ -351,7 +335,7 @@ export type Component = Marko.Component<Input>;
           column: {
             header: "Id again",
             //                            ^?
-            [Marko._.contentFor(__marko_internal_tag_12)]: (row) => {
+            [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -361,14 +345,13 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_13 = Marko._.resolveTemplate(
-    import("./tags/req-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_13, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_3, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_13)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_3().default)(
+    Marko._.withRestAttrTags,
+  )()({
     rows: [{ id: "a" }],
     sort(a, b) {
       return a.id.localeCompare(b.id);
@@ -378,7 +361,7 @@ export type Component = Marko.Component<Input>;
         ? {
             column: {
               header: "Id",
-              [Marko._.contentFor(__marko_internal_tag_13)]: (row) => {
+              [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -388,7 +371,7 @@ export type Component = Marko.Component<Input>;
         : {
             column: {
               header: "Id again",
-              [Marko._.contentFor(__marko_internal_tag_13)]: (row) => {
+              [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -398,13 +381,12 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("column"),
   });
-  const __marko_internal_tag_14 = Marko._.resolveTemplate(
-    import("./tags/req-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_14, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_3, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_14)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_3().default)(
+    Marko._.withRestAttrTags,
+  )()({
     rows: [{ id: "a" }],
     sort(a, b) {
       return a.id.localeCompare(b.id);
@@ -416,7 +398,7 @@ export type Component = Marko.Component<Input>;
         },
         //                                                ^?
         (header) =>
-          Marko._.attrTags(__marko_internal_tag_14)([
+          Marko._.attrTags(__marko_internal_module_3)([
             {
               column: {
                 header: header,
@@ -428,14 +410,13 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("column"),
   });
-  const __marko_internal_tag_15 = Marko._.resolveTemplate(
-    import("./tags/id-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_15, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_4, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_15)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_4().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // The same, with a constrained type parameter
     {
       rows: [{ id: "a", name: "A" }],
@@ -444,7 +425,7 @@ export type Component = Marko.Component<Input>;
       },
       column: {
         header: "Name",
-        [Marko._.contentFor(__marko_internal_tag_15)]: (row) => {
+        [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
           [row.name];
           return Marko._.voidReturn;
         },
@@ -454,7 +435,7 @@ export type Component = Marko.Component<Input>;
         {
           column: {
             header: "Id",
-            [Marko._.contentFor(__marko_internal_tag_15)]: (row) => {
+            [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -464,14 +445,13 @@ export type Component = Marko.Component<Input>;
       ],
     },
   );
-  const __marko_internal_tag_16 = Marko._.resolveTemplate(
-    import("./tags/id-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_16, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_4, (input) => {
     input["@column"];
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_16)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_4().default)(
+    Marko._.withRestAttrTags,
+  )()({
     rows: [{ id: "a", name: "A" }],
     sort(a, b) {
       return a.name.localeCompare(b.name);
@@ -481,7 +461,7 @@ export type Component = Marko.Component<Input>;
         ? {
             column: {
               header: "Name",
-              [Marko._.contentFor(__marko_internal_tag_16)]: (row) => {
+              [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
                 [row.name];
                 return Marko._.voidReturn;
               },
@@ -491,7 +471,7 @@ export type Component = Marko.Component<Input>;
         : {
             column: {
               header: "Id",
-              [Marko._.contentFor(__marko_internal_tag_16)]: (row) => {
+              [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -501,13 +481,12 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("column"),
   });
-  const __marko_internal_tag_17 = Marko._.resolveTemplate(
-    import("./tags/id-grid/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_17, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_4, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_17)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_4().default)(
+    Marko._.withRestAttrTags,
+  )()({
     rows: [{ id: "a", name: "A" }],
     sort(a, b) {
       return a.name.localeCompare(b.name);
@@ -518,7 +497,7 @@ export type Component = Marko.Component<Input>;
           of: ["Name", "Id"] as const,
         },
         (header) =>
-          Marko._.attrTags(__marko_internal_tag_17)([
+          Marko._.attrTags(__marko_internal_module_4)([
             {
               column: {
                 header: header,
@@ -530,13 +509,12 @@ export type Component = Marko.Component<Input>;
     ],
     ...Marko._.givenAttrTags("column"),
   });
-  const __marko_internal_tag_18 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_18, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_18)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, body param in a <for>: `any`, as in every loop's body
     // (checked apart from the tag, so without its type arguments)
     {
@@ -547,11 +525,11 @@ export type Component = Marko.Component<Input>;
             of: cols,
           },
           (c) =>
-            Marko._.attrTags(__marko_internal_tag_18)([
+            Marko._.attrTags(__marko_internal_module_5)([
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_tag_18)]: (row) => {
+                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -564,13 +542,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_19 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_19, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_19)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, a <for> in an <if>
     {
       rows: users,
@@ -582,11 +559,11 @@ export type Component = Marko.Component<Input>;
                   of: cols,
                 },
                 (c) =>
-                  Marko._.attrTags(__marko_internal_tag_19)([
+                  Marko._.attrTags(__marko_internal_module_5)([
                     {
                       column: {
                         title: c,
-                        [Marko._.contentFor(__marko_internal_tag_19)]: (
+                        [Marko._.contentFor(__marko_internal_module_5)]: (
                           row,
                         ) => {
                           [row.name];
@@ -603,13 +580,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_20 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_20, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_20)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, an <if> in a <for>
     {
       rows: users,
@@ -619,12 +595,14 @@ export type Component = Marko.Component<Input>;
             of: cols,
           },
           (c) =>
-            Marko._.attrTags(__marko_internal_tag_20)([
+            Marko._.attrTags(__marko_internal_module_5)([
               flag
                 ? {
                     column: {
                       title: c,
-                      [Marko._.contentFor(__marko_internal_tag_20)]: (row) => {
+                      [Marko._.contentFor(__marko_internal_module_5)]: (
+                        row,
+                      ) => {
                         [row.name];
                         return Marko._.voidReturn;
                       },
@@ -638,13 +616,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_21 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_21, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_21)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, nested <for>s
     {
       rows: users,
@@ -659,11 +636,13 @@ export type Component = Marko.Component<Input>;
                 of: g.items,
               },
               (c) =>
-                Marko._.attrTags(__marko_internal_tag_21)([
+                Marko._.attrTags(__marko_internal_module_5)([
                   {
                     column: {
                       title: c,
-                      [Marko._.contentFor(__marko_internal_tag_21)]: (row) => {
+                      [Marko._.contentFor(__marko_internal_module_5)]: (
+                        row,
+                      ) => {
                         [row.name];
                         return Marko._.voidReturn;
                       },
@@ -677,13 +656,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_22 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_22, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_22)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, <for to>
     {
       rows: users,
@@ -693,11 +671,11 @@ export type Component = Marko.Component<Input>;
             to: 2,
           },
           (i) =>
-            Marko._.attrTags(__marko_internal_tag_22)([
+            Marko._.attrTags(__marko_internal_module_5)([
               {
                 column: {
                   title: String(i),
-                  [Marko._.contentFor(__marko_internal_tag_22)]: (row) => {
+                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -710,13 +688,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_23 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_23, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_23)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, <for in>
     {
       rows: users,
@@ -726,11 +703,11 @@ export type Component = Marko.Component<Input>;
             in: record,
           },
           (key) =>
-            Marko._.attrTags(__marko_internal_tag_23)([
+            Marko._.attrTags(__marko_internal_module_5)([
               {
                 column: {
                   title: key,
-                  [Marko._.contentFor(__marko_internal_tag_23)]: (row) => {
+                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -743,13 +720,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_24 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_24, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_24)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // T from an attribute, an <if> body with a scriptlet: `any`, as in a loop's body
     {
       rows: users,
@@ -757,11 +733,11 @@ export type Component = Marko.Component<Input>;
         flag
           ? (() => {
               const label = "x";
-              return Marko._.attrTags(__marko_internal_tag_24)([
+              return Marko._.attrTags(__marko_internal_module_5)([
                 {
                   column: {
                     title: label,
-                    [Marko._.contentFor(__marko_internal_tag_24)]: (row) => {
+                    [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
                       [row.name];
                       return Marko._.voidReturn;
                     },
@@ -775,16 +751,13 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_25 = Marko._.resolveTemplate(
-    import("./tags/gpanel/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_25, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_6, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
       input["@row"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_25)()()(
+  Marko._.renderTemplate(__marko_internal_module_6().default)()()(
     // T from an attribute, a nested attribute tag's <for>: its body params are
     // `any` (known: a nested attribute tag's rest attribute tags are checked apart
     // from the tag, so without its type arguments)
@@ -799,13 +772,13 @@ export type Component = Marko.Component<Input>;
           },
           (i) =>
             Marko._.attrTags(
-              __marko_internal_tag_25,
+              __marko_internal_module_6,
               "section",
             )([
               {
                 row: {
                   id: i,
-                  [Marko._.contentFor(__marko_internal_tag_25)]: (r) => {
+                  [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
                     [r.name];
                     return Marko._.voidReturn;
                   },
@@ -818,13 +791,12 @@ export type Component = Marko.Component<Input>;
       },
     },
   );
-  const __marko_internal_tag_26 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_26, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_26)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // The same in a tag in the body of another tag's <for>: written as a tag of
     // its own, not as one of that tag's attribute tags
     {
@@ -835,21 +807,20 @@ export type Component = Marko.Component<Input>;
             of: cols,
           },
           (c) =>
-            Marko._.attrTags(__marko_internal_tag_26)([
+            Marko._.attrTags(__marko_internal_module_5)([
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_tag_26)]: (row) => {
-                    const __marko_internal_tag_27 = Marko._.resolveTemplate(
-                      import("./tags/gpanel/index.marko"),
-                    ).default;
-                    Marko._.attrTagNames(__marko_internal_tag_27, (input) => {
+                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                    Marko._.attrTagNames(__marko_internal_module_6, (input) => {
                       input["@section"];
                       Marko._.nestedAttrTagNames(input["@section"], (input) => {
                         input["@row"];
                       });
                     });
-                    Marko._.renderTemplate(__marko_internal_tag_27)()()({
+                    Marko._.renderTemplate(
+                      __marko_internal_module_6().default,
+                    )()()({
                       rows: [row],
                       section: {
                         title: c,
@@ -860,17 +831,18 @@ export type Component = Marko.Component<Input>;
                           },
                           (i) =>
                             Marko._.attrTags(
-                              __marko_internal_tag_27,
+                              __marko_internal_module_6,
                               "section",
                             )([
                               {
                                 row: {
                                   id: i,
-                                  [Marko._.contentFor(__marko_internal_tag_27)]:
-                                    (r) => {
-                                      [r.name];
-                                      return Marko._.voidReturn;
-                                    },
+                                  [Marko._.contentFor(
+                                    __marko_internal_module_6,
+                                  )]: (r) => {
+                                    [r.name];
+                                    return Marko._.voidReturn;
+                                  },
                                   [Symbol.iterator]: Marko._.any,
                                 },
                               },
@@ -890,13 +862,12 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_28 = Marko._.resolveTemplate(
-    import("./tags/gtable/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_28, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_5, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_tag_28)(Marko._.withRestAttrTags)()(
+  Marko._.renderTemplate(__marko_internal_module_5().default)(
+    Marko._.withRestAttrTags,
+  )()(
     // Annotated body params in a <for> on a generic tag
     {
       rows: users,
@@ -906,11 +877,11 @@ export type Component = Marko.Component<Input>;
             of: cols,
           },
           (c) =>
-            Marko._.attrTags(__marko_internal_tag_28)([
+            Marko._.attrTags(__marko_internal_module_5)([
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_tag_28)]: (row: {
+                  [Marko._.contentFor(__marko_internal_module_5)]: (row: {
                     name: string;
                   }) => {
                     [row.name];
@@ -925,17 +896,14 @@ export type Component = Marko.Component<Input>;
       ...Marko._.givenAttrTags("column"),
     },
   );
-  const __marko_internal_tag_29 = Marko._.resolveTemplate(
-    import("./tags/gpanel/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_29, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_6, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
       input["@row"];
       input["@row"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_29)()()(
+  Marko._.renderTemplate(__marko_internal_module_6().default)()()(
     // The same repeated: annotated body params are accepted, others are `any`,
     // also with its attribute tag in a <for>
     {
@@ -944,13 +912,13 @@ export type Component = Marko.Component<Input>;
         title: "s",
         ...Marko._.givenAttrTags("row"),
         ...Marko._.attrTags(
-          __marko_internal_tag_29,
+          __marko_internal_module_6,
           "section",
         )([
           {
             row: {
               id: 1,
-              [Marko._.contentFor(__marko_internal_tag_29)]: (r: {
+              [Marko._.contentFor(__marko_internal_module_6)]: (r: {
                 name: string;
               }) => {
                 [r.name];
@@ -962,7 +930,7 @@ export type Component = Marko.Component<Input>;
           {
             row: {
               id: 2,
-              [Marko._.contentFor(__marko_internal_tag_29)]: (r) => {
+              [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
                 [r.name];
                 return Marko._.voidReturn;
               },
@@ -974,17 +942,16 @@ export type Component = Marko.Component<Input>;
       },
     },
   );
-  const __marko_internal_tag_30 = Marko._.resolveTemplate(
-    import("./tags/gpanel/index.marko"),
-  ).default;
-  Marko._.attrTagNames(__marko_internal_tag_30, (input) => {
+  Marko._.attrTagNames(__marko_internal_module_6, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
       input["@row"];
       input["@row"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_tag_30)(Marko._.withRestAttrTags)()({
+  Marko._.renderTemplate(__marko_internal_module_6().default)(
+    Marko._.withRestAttrTags,
+  )()({
     rows: users,
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
@@ -992,19 +959,19 @@ export type Component = Marko.Component<Input>;
           of: cols,
         },
         (c) =>
-          Marko._.attrTags(__marko_internal_tag_30)([
+          Marko._.attrTags(__marko_internal_module_6)([
             {
               section: {
                 title: c,
                 ...Marko._.givenAttrTags("row"),
                 ...Marko._.attrTags(
-                  __marko_internal_tag_30,
+                  __marko_internal_module_6,
                   "section",
                 )([
                   {
                     row: {
                       id: 1,
-                      [Marko._.contentFor(__marko_internal_tag_30)]: (r: {
+                      [Marko._.contentFor(__marko_internal_module_6)]: (r: {
                         name: string;
                       }) => {
                         [r.name];
@@ -1016,7 +983,7 @@ export type Component = Marko.Component<Input>;
                   {
                     row: {
                       id: 2,
-                      [Marko._.contentFor(__marko_internal_tag_30)]: (r) => {
+                      [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
                         [r.name];
                         return Marko._.voidReturn;
                       },
@@ -1039,3 +1006,9 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./tags/pick/index.marko");
+declare function __marko_internal_module_2(): typeof import("./tags/a-grid/index.marko");
+declare function __marko_internal_module_3(): typeof import("./tags/req-grid/index.marko");
+declare function __marko_internal_module_4(): typeof import("./tags/id-grid/index.marko");
+declare function __marko_internal_module_5(): typeof import("./tags/gtable/index.marko");
+declare function __marko_internal_module_6(): typeof import("./tags/gpanel/index.marko");

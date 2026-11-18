@@ -18,25 +18,16 @@ export class Component extends Marko.Component {}
       // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
       (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
     );
-    const __marko_internal_tag_1 = Marko._.resolveTemplate(
-      import("./components/js-button.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_1)()()({
+    Marko._.renderTemplate(__marko_internal_module_1().default)()()({
       label: "Go",
     });
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("./components/js-link.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_2)()()(
+    Marko._.renderTemplate(__marko_internal_module_2().default)()()(
       // ^?
       {
         href: "/",
       },
     );
-    const __marko_internal_tag_3 = Marko._.resolveTemplate(
-      import("./components/js-no-input.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_3)()()(
+    Marko._.renderTemplate(__marko_internal_module_3().default)()()(
       // ^?
       {},
     );
@@ -51,4 +42,19 @@ export { __marko_internal_api as "~api" };
  */
 class Template extends Marko._.Template {}
 export default new Template();
+function __marko_internal_module_1() {
+  return /** @type {typeof import("./components/js-button.marko")} */ (
+    Marko._.any
+  );
+}
+function __marko_internal_module_2() {
+  return /** @type {typeof import("./components/js-link.marko")} */ (
+    Marko._.any
+  );
+}
+function __marko_internal_module_3() {
+  return /** @type {typeof import("./components/js-no-input.marko")} */ (
+    Marko._.any
+  );
+}
 // ^?

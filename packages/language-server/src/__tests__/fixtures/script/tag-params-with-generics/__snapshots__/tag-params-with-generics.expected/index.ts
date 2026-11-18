@@ -10,35 +10,26 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("./components/loader.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     value() {
       //      ^?    ^?
       return 1;
     },
-    [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
+    [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
       return Marko._.voidReturn;
     },
   });
-  const __marko_internal_tag_2 = Marko._.resolveTemplate(
-    import("./components/loader.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_2)()()({
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     value() {
       //      ^?    ^?
       return "hi" as const;
     },
-    [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
+    [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
       return Marko._.voidReturn;
     },
   });
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("./components/loader.marko"),
-  ).default;
-  Marko._.renderTemplate(__marko_internal_tag_3)()()({
-    [Marko._.contentFor(__marko_internal_tag_3)]: (data) => {
+  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    [Marko._.contentFor(__marko_internal_module_1)]: (data) => {
       return Marko._.voidReturn;
     },
   });
@@ -49,3 +40,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("./components/loader.marko");

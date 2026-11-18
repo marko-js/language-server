@@ -1,0 +1,9 @@
+exit 1
+
+src/app.marko:5:2 - error TS7016
+Could not find a declaration file for module 'jspkg/tags/js-tag/index.marko'. 'node_modules/jspkg/tags/js-tag/index.marko' implicitly has an 'any' type.
+
+src/app.marko:6:2 - error TS7016
+Could not find a declaration file for module 'jspkg/tags/plain-tag/index.marko'. 'node_modules/jspkg/tags/plain-tag/index.marko' implicitly has an 'any' type.
+
+dist/app.d.marko

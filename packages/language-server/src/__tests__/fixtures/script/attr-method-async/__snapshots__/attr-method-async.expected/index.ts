@@ -7,13 +7,10 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const count = Marko._.hoist(() => __marko_internal_hoist__count);
-  const __marko_internal_tag_1 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/let.d.marko"),
-  ).default;
   {
     const count = Marko._.returned(() => __marko_internal_rendered_1);
     const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_tag_1,
+      __marko_internal_module_1().default,
     )()()({
       value: 0,
     });
@@ -36,10 +33,7 @@ export interface Input {}
       },
       [Marko._.content]: Marko._.voidBody,
     });
-    const __marko_internal_tag_2 = Marko._.resolveTemplate(
-      import("./components/my-tag.marko"),
-    ).default;
-    Marko._.renderTemplate(__marko_internal_tag_2)()()({
+    Marko._.renderTemplate(__marko_internal_module_2().default)()()({
       async value(value: number) {
         __marko_internal_change__count.count = await Promise.resolve(value);
       },
@@ -53,3 +47,5 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
+declare function __marko_internal_module_2(): typeof import("./components/my-tag.marko");

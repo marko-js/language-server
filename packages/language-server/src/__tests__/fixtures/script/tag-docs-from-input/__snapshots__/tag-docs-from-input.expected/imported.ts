@@ -26,13 +26,10 @@ export interface Input extends FancyInput {}
       label: "Go",
     },
   );
-  const __marko_internal_tag_3 = Marko._.resolveTemplate(
-    import("@marko/runtime-tags/tags/const.d.marko"),
-  ).default;
   {
     const Button = Marko._.returned(() => __marko_internal_rendered_3);
     const __marko_internal_rendered_3 = Marko._.renderTemplate(
-      __marko_internal_tag_3,
+      __marko_internal_module_1().default,
     )()()(
       //  ^?
       {
@@ -46,31 +43,25 @@ export interface Input extends FancyInput {}
     const __marko_internal_tag_5 = Marko._.fallbackTemplate(
       // @ts-ignore
       ShinyButton,
-      Marko._.resolveTemplate(import("./components/ShinyButton.marko")).default,
+      __marko_internal_module_2().default,
     );
     Marko._.renderDynamicTag(__marko_internal_tag_5)()()(
       // ^?
       {},
     );
-    const __marko_internal_tag_6 = Marko._.resolveTemplate(
-      import("@marko/runtime-tags/tags/id.d.marko"),
-    ).default;
     {
       const buttonId = Marko._.returned(() => __marko_internal_rendered_6);
       const __marko_internal_rendered_6 = Marko._.renderTemplate(
-        __marko_internal_tag_6,
+        __marko_internal_module_3().default,
       )()()(
         // ^?
         // A core tag, documented by its types.
         {},
       );
-      const __marko_internal_tag_7 = Marko._.resolveTemplate(
-        import("marko/src/core-tags/core/await/index.d.marko"),
-      ).default;
-      Marko._.renderTemplate(__marko_internal_tag_7)()()({
+      Marko._.renderTemplate(__marko_internal_module_4().default)()()({
         value: Promise.resolve(buttonId),
         //^?
-        [Marko._.contentFor(__marko_internal_tag_7)]: (n) => {
+        [Marko._.contentFor(__marko_internal_module_4)]: (n) => {
           [n];
           return Marko._.voidReturn;
         },
@@ -87,4 +78,8 @@ export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 const Input = new Template();
 export default Input;
+declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/const.d.marko");
+declare function __marko_internal_module_2(): typeof import("./components/ShinyButton.marko");
+declare function __marko_internal_module_3(): typeof import("@marko/runtime-tags/tags/id.d.marko");
+declare function __marko_internal_module_4(): typeof import("marko/src/core-tags/core/await/index.d.marko");
 //^?
