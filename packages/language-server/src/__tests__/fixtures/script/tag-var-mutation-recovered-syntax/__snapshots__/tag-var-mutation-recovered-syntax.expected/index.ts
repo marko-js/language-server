@@ -26,11 +26,7 @@ Marko._.renderNativeTag("button")()()({
     __marko_internal_change__x.x = y;
   }
 },
-[Marko._.content]: (() => {
-return () => {
-return Marko._.voidReturn;
-}
-})(),
+[Marko._.content]: Marko._.voidBody,
 
 });
 var __marko_internal_hoist__x = x;

@@ -13,11 +13,7 @@ export { type Component };
   );
   Marko._.renderNativeTag("label")()()({
     for: "input",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("input")()()({
     type: "text",

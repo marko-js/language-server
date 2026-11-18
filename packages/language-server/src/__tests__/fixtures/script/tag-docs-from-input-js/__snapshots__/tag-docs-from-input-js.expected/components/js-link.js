@@ -23,11 +23,7 @@ export class Component extends Marko.Component {}
     );
     Marko._.renderNativeTag("a")()()({
       href: input.href,
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     Marko._.noop({ component, state, out, input, $global, $signal });
     return;

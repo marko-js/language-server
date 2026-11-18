@@ -13,39 +13,25 @@ export { type Component };
   );
   Marko._.renderNativeTag("label")()()({
     for: "one",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("label")()()({
     for: "one",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("input")()()({
     id: "one",
   });
   Marko._.renderNativeTag("label")()()({
     for: "two",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("label")()()({
     [Marko._.content]: (() => {
       Marko._.renderNativeTag("input")()()({
         id: "two",
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

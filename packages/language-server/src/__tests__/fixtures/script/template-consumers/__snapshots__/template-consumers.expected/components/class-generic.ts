@@ -21,9 +21,7 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
       [String(state.value)];
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

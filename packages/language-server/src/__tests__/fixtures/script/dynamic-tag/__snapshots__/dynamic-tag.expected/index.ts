@@ -19,19 +19,11 @@ export interface Input {}
     });
     const __marko_internal_tag_2 = Marko._.interpolated`h${size}`;
     Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
     });
     const __marko_internal_tag_3 = "hello";
     Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-      [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.contentFor(__marko_internal_tag_3)]: Marko._.voidBody,
     });
     const __marko_internal_tag_4 = Marko._.interpolated`${"hello"}-world`;
     Marko._.renderDynamicTag(__marko_internal_tag_4)()()({});

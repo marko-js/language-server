@@ -47,9 +47,7 @@ export interface Input {}
         [Marko._.content]: (() => {
           if (undefined) {
           }
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       if (show) {

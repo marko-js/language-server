@@ -13,19 +13,11 @@ export { type Component };
   );
   Marko._.renderNativeTag("div")()()({
     role: "region",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("div")()()({
     role: "region",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;

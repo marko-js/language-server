@@ -28,9 +28,7 @@ export { type Component };
           href: href,
           [Marko._.content]: (() => {
             [title];
-            return () => {
-              return Marko._.voidReturn;
-            };
+            return Marko._.voidBody;
           })(),
         },
       );
@@ -50,18 +48,14 @@ export { type Component };
               value: value,
               [Marko._.content]: (() => {
                 [content];
-                return () => {
-                  return Marko._.voidReturn;
-                };
+                return Marko._.voidBody;
               })(),
             },
           );
           return Marko._.voidReturn;
         },
       );
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
@@ -86,9 +80,7 @@ export { type Component };
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   // ^?
                   [title];
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
+                  return Marko._.voidBody;
                 })(),
                 [Symbol.iterator]: Marko._.any,
               },
@@ -108,9 +100,7 @@ export { type Component };
                 [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                   // ^?
                   [content];
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
+                  return Marko._.voidBody;
                 })(),
                 [Symbol.iterator]: Marko._.any,
               },

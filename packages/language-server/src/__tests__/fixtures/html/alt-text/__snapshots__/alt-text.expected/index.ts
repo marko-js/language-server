@@ -18,9 +18,7 @@ export { type Component };
         shape: "rect",
         href: "image-map",
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("img")()()({
@@ -33,9 +31,7 @@ export { type Component };
         src: "ebay-logo.png",
         alt: "eBay",
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("input")()()({
@@ -43,27 +39,15 @@ export { type Component };
   });
   Marko._.renderNativeTag("object")()()({
     id: "object",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("div")()()({
     role: "img",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("svg")()()({
     role: "img",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("img")()()({
     alt: "test",

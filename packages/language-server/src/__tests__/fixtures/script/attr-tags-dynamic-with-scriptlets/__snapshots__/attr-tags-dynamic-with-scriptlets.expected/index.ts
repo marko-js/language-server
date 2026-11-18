@@ -33,9 +33,7 @@ export { type Component };
                     if (i === 5) {
                       done = true;
                     }
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                   [Symbol.iterator]: Marko._.any,
                 },
@@ -65,9 +63,7 @@ export { type Component };
               a: {
                 [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                   [doubleIndex];
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
+                  return Marko._.voidBody;
                 })(),
                 [Symbol.iterator]: Marko._.any,
               },

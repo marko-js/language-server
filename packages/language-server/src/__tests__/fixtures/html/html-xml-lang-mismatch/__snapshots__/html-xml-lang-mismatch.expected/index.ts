@@ -18,20 +18,12 @@ export { type Component };
       Marko._.renderNativeTag("head")()()({
         [Marko._.content]: (() => {
           Marko._.renderNativeTag("title")()()({
-            [Marko._.content]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.content]: Marko._.voidBody,
           });
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

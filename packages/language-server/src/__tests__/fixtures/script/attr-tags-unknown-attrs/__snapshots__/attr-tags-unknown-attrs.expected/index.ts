@@ -546,9 +546,7 @@ export { type Component };
                   ]),
                   [Marko._.contentFor(__marko_internal_tag_18)]: (() => {
                     [name];
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                   [Symbol.iterator]: Marko._.any,
                 },

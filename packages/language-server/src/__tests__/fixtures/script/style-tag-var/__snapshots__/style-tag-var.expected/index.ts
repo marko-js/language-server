@@ -10,11 +10,7 @@ export interface Input {}
   {
     const styles = Marko._.any as { button: string; main: string };
     Marko._.renderNativeTag("style")()()({
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     Marko._.renderNativeTag("main")()()({
       id: styles.main,

@@ -26,11 +26,7 @@ export interface Input {}
       async onClick() {
         __marko_internal_change__count.count = await Promise.resolve(1);
       },
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     Marko._.renderNativeTag("button")()()({
       async onClick<T extends PointerEvent>(event: T) {
@@ -38,11 +34,7 @@ export interface Input {}
           event.detail,
         );
       },
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(
       import("./components/my-tag.marko"),

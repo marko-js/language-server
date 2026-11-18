@@ -44,9 +44,7 @@ export { type Component };
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                         [row.foo];
-                        return () => {
-                          return Marko._.voidReturn;
-                        };
+                        return Marko._.voidBody;
                       })(),
                       [Symbol.iterator]: Marko._.any,
                     },
@@ -56,9 +54,7 @@ export { type Component };
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                         [row.bar];
-                        return () => {
-                          return Marko._.voidReturn;
-                        };
+                        return Marko._.voidBody;
                       })(),
                       [Symbol.iterator]: Marko._.any,
                     },
@@ -105,9 +101,7 @@ export { type Component };
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                         [row.foo];
-                        return () => {
-                          return Marko._.voidReturn;
-                        };
+                        return Marko._.voidBody;
                       })(),
                       [Symbol.iterator]: Marko._.any,
                     },
@@ -117,9 +111,7 @@ export { type Component };
                     cell: {
                       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
                         [row.bar];
-                        return () => {
-                          return Marko._.voidReturn;
-                        };
+                        return Marko._.voidBody;
                       })(),
                       [Symbol.iterator]: Marko._.any,
                     },

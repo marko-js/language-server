@@ -48,11 +48,7 @@ export interface Input {}
             console.log(x);
           }
         },
-        [Marko._.content]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
+        [Marko._.content]: Marko._.voidBody,
       });
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("./components/my-tag.marko"),
@@ -66,11 +62,7 @@ export interface Input {}
                 x = 2;
                 console.log(x);
               },
-              [Marko._.content]: (() => {
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
+              [Marko._.content]: Marko._.voidBody,
             },
           );
           return Marko._.voidReturn;

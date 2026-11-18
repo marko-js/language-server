@@ -41,9 +41,7 @@
       Marko._.renderNativeTag("div")()()({
         [Marko._.content]: (() => {
           [count];
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       var __marko_internal_hoist__count = count;

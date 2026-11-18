@@ -20,11 +20,7 @@ export { type Component };
   const __marko_internal_tag_1 = input.tag;
   Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
     foo: 1,
-    [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.contentFor(__marko_internal_tag_1)]: Marko._.voidBody,
   });
   const __marko_internal_tag_2 = input.tag;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
@@ -48,11 +44,7 @@ export { type Component };
   const __marko_internal_tag_3 = Tag;
   Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
     foo: 1,
-    [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.contentFor(__marko_internal_tag_3)]: Marko._.voidBody,
   });
   const __marko_internal_tag_4 = Tag;
   Marko._.attrTagNames(__marko_internal_tag_4, (input) => {

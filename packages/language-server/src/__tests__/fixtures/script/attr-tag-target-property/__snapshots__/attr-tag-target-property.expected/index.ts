@@ -33,21 +33,13 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
     items: {
       x: 1,
-      [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
       [Symbol.iterator]: Marko._.any,
     },
     [Marko._.restAttrTags]: [
       {
         items: {
-          [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-            return () => {
-              return Marko._.voidReturn;
-            };
-          })(),
+          [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
           [Symbol.iterator]: Marko._.any,
         },
       },

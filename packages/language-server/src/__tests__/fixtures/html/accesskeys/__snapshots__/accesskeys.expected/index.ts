@@ -14,20 +14,12 @@ export { type Component };
   Marko._.renderNativeTag("a")()()({
     href: "google.com",
     accesskey: "g",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("a")()()({
     href: "github.com",
     accesskey: "g",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;

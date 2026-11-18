@@ -58,9 +58,7 @@ function __marko_internal_template(this: void) {
             id: "p",
             [Marko._.content]: (() => {
               [year];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           if (isSmartOnly) {
@@ -68,9 +66,7 @@ function __marko_internal_template(this: void) {
               class: "sub-note",
               [Marko._.content]: (() => {
                 [isSmartOnly];
-                return () => {
-                  return Marko._.voidReturn;
-                };
+                return Marko._.voidBody;
               })(),
             });
           }
@@ -78,9 +74,7 @@ function __marko_internal_template(this: void) {
             class: "sub-note",
             [Marko._.content]: (() => {
               [type];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           Marko._.forOfTag(
@@ -96,9 +90,7 @@ function __marko_internal_template(this: void) {
                     [mobile];
                     [i];
                     [all.length];
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                 },
               );
@@ -110,9 +102,7 @@ function __marko_internal_template(this: void) {
             [Marko._.content]: (() => {
               const __marko_internal_tag_3 = renderBody;
               Marko._.renderDynamicTag(__marko_internal_tag_3)()()({});
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           const __marko_internal_tag_4 = FancyButton;
@@ -121,36 +111,24 @@ function __marko_internal_template(this: void) {
             something: true,
             [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
               [type];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           Marko._.renderNativeTag("div")()()({
             [Marko._.content]: (() => {
               ["<b>World</b>"];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           Marko._.renderNativeTag("div")()()({
             [Marko._.content]: (() => {
               Marko._.renderNativeTag("code")()()({
-                [Marko._.content]: (() => {
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
+                [Marko._.content]: Marko._.voidBody,
               });
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       var __marko_internal_return = Marko._.returnTag({

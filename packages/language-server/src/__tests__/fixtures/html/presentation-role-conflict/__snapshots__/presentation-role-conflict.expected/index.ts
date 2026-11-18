@@ -15,30 +15,18 @@ export { type Component };
     role: "none",
     id: "global-attr",
     "aria-hidden": "true",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("button")()()({
     id: "natively-focusable",
     role: "none",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("li")()()({
     role: "presentation",
     id: "tabindex",
     tabindex: "0",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;

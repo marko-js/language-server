@@ -30,9 +30,7 @@ function __marko_internal_template(this: void) {
       },
       [Marko._.content]: (() => {
         [count];
-        return () => {
-          return Marko._.voidReturn;
-        };
+        return Marko._.voidBody;
       })(),
     });
     var __marko_internal_return = Marko._.returnTag({

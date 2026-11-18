@@ -106,11 +106,7 @@ export { type Component };
   Marko._.renderDynamicTag(__marko_internal_tag_7)()()({
     class: ["a", "b"],
     title: "x",
-    [Marko._.contentFor(__marko_internal_tag_7)]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.contentFor(__marko_internal_tag_7)]: Marko._.voidBody,
   });
   const __marko_internal_tag_8 = input.link;
   Marko._.renderDynamicTag(__marko_internal_tag_8)()()({

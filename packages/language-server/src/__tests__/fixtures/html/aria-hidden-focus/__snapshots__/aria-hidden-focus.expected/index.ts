@@ -17,15 +17,9 @@ export { type Component };
       Marko._.renderNativeTag("a")()()({
         href: "/",
         style: "position:absolute; top:-999em",
-        [Marko._.content]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
+        [Marko._.content]: Marko._.voidBody,
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("div")()()({
@@ -34,9 +28,7 @@ export { type Component };
       Marko._.renderNativeTag("input")()()({
         "aria-disabled": "true",
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("div")()()({
@@ -46,51 +38,29 @@ export { type Component };
         "aria-hidden": "false",
         [Marko._.content]: (() => {
           Marko._.renderNativeTag("button")()()({
-            [Marko._.content]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.content]: Marko._.voidBody,
           });
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("p")()()({
     tabindex: "0",
     "aria-hidden": "true",
-    [Marko._.content]: (() => {
-      return () => {
-        return Marko._.voidReturn;
-      };
-    })(),
+    [Marko._.content]: Marko._.voidBody,
   });
   Marko._.renderNativeTag("details")()()({
     "aria-hidden": "true",
     [Marko._.content]: (() => {
       Marko._.renderNativeTag("summary")()()({
-        [Marko._.content]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
+        [Marko._.content]: Marko._.voidBody,
       });
       Marko._.renderNativeTag("p")()()({
-        [Marko._.content]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
+        [Marko._.content]: Marko._.voidBody,
       });
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

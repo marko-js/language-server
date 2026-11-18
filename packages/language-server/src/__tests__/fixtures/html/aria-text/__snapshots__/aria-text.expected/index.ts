@@ -15,9 +15,7 @@ export { type Component };
     role: "text",
     [Marko._.content]: (() => {
       Marko._.renderNativeTag("button")()()({});
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

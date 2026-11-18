@@ -34,9 +34,7 @@ export { type Component };
           class: styles.notDefined,
         },
       );
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
