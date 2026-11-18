@@ -855,9 +855,7 @@ constructor(_) {}
               `${varShared("fallbackTemplate")}(\n// @ts-ignore\n${tagName},\n`,
             );
             if (isMarkoFile) {
-              this.#extractor.write(
-                `${varShared("resolveTemplate")}(import("${importPath}")).`,
-              );
+              this.#writeTemplateImport(tag, importPath);
               this.#writeTemplateExport(tag);
             } else {
               this.#extractor.write(varShared("any"));
@@ -868,9 +866,7 @@ constructor(_) {}
           }
         } else if (isMarkoFile) {
           isTemplate = true;
-          this.#extractor.write(
-            `${varShared("resolveTemplate")}(import("${importPath}")).`,
-          );
+          this.#writeTemplateImport(tag, importPath!);
           this.#writeTemplateExport(tag);
         } else {
           this.#writeDynamicTagName(tag);
@@ -1741,6 +1737,18 @@ constructor(_) {}
    */
   #writeTemplateExport(tag: Node.Tag) {
     this.#extractor.anchor(tag.name, true).write("default");
+  }
+
+  /**
+   * The module of a discovered template `tag` reads. Its specifier is mapped
+   * to the tag, so that TypeScript reports a problem with it (eg a file that
+   * does not exist) there.
+   */
+  #writeTemplateImport(tag: Node.Tag, importPath: string) {
+    this.#extractor
+      .write(`${varShared("resolveTemplate")}(import("`)
+      .anchor(tag.name)
+      .write(`${importPath}")).`);
   }
 
   /** A tag's arguments, when they are passed before its input object. */

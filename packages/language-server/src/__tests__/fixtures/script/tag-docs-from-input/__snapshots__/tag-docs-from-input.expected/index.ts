@@ -108,6 +108,14 @@ export { type Component };
     //  ^?
     {},
   );
+  const __marko_internal_tag_13 = Marko._.resolveTemplate(
+    import("./lib/missing-types-button.d.marko"),
+  ).default;
+  Marko._.renderTemplate(__marko_internal_tag_13)()()(
+    //  ^?
+    // Named again: what TypeScript reports of its missing declaration is at its tag.
+    {},
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
@@ -115,4 +123,3 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
-//  ^?

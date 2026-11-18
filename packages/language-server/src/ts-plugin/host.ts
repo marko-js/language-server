@@ -185,6 +185,7 @@ export function patch(
           processor = undefined;
         }
         if (processor) {
+          let isPackage = false;
           let resolvedFileName: string | undefined;
           if (fsPathReg.test(moduleName)) {
             // For fs paths just see if it exists on disk.
@@ -205,6 +206,7 @@ export function patch(
             );
 
             if (resolvedModule) {
+              isPackage = true;
               resolvedFileName = path.join(
                 resolvedModule.resolvedFileName,
                 "..",
@@ -246,7 +248,12 @@ export function patch(
               ? {
                   resolvedFileName,
                   extension: processor.getScriptExtension(resolvedFileName),
-                  isExternalLibraryImport: false,
+                  // A package's declaration is a library's, as `mtc` reads
+                  // it: not a file of the project, which TypeScript would
+                  // hold to its `rootDir`. Its source stays the project's,
+                  // so that a JavaScript template in a package is typed.
+                  isExternalLibraryImport:
+                    isPackage && isDefinitionFile(resolvedFileName),
                 }
               : undefined,
           });
