@@ -11,10 +11,10 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     "aria-hidden": "true",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("a")()()({
+      Marko._.renderNativeTag("a")({
         href: "/",
         style: "position:absolute; top:-999em",
         [Marko._.content]: Marko._.voidBody,
@@ -22,22 +22,22 @@ export { type Component };
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     "aria-hidden": "true",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("input")()()({
+      Marko._.renderNativeTag("input")({
         "aria-disabled": "true",
       });
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     "aria-hidden": "true",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("div")()()({
+      Marko._.renderNativeTag("div")({
         "aria-hidden": "false",
         [Marko._.content]: (() => {
-          Marko._.renderNativeTag("button")()()({
+          Marko._.renderNativeTag("button")({
             [Marko._.content]: Marko._.voidBody,
           });
           return Marko._.voidBody;
@@ -46,18 +46,18 @@ export { type Component };
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("p")()()({
+  Marko._.renderNativeTag("p")({
     tabindex: "0",
     "aria-hidden": "true",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("details")()()({
+  Marko._.renderNativeTag("details")({
     "aria-hidden": "true",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("summary")()()({
+      Marko._.renderNativeTag("summary")({
         [Marko._.content]: Marko._.voidBody,
       });
-      Marko._.renderNativeTag("p")()()({
+      Marko._.renderNativeTag("p")({
         [Marko._.content]: Marko._.voidBody,
       });
       return Marko._.voidBody;

@@ -22,13 +22,13 @@ export interface Input {}
       "value",
       __marko_internal_rendered_1.return,
     );
-    Marko._.renderNativeTag("button")()()({
+    Marko._.renderNativeTag("button")({
       async onClick() {
         __marko_internal_change__count.count = await Promise.resolve(1);
       },
       [Marko._.content]: Marko._.voidBody,
     });
-    Marko._.renderNativeTag("button")()()({
+    Marko._.renderNativeTag("button")({
       async onClick<T extends PointerEvent>(event: T) {
         __marko_internal_change__count.count = await Promise.resolve(
           event.detail,

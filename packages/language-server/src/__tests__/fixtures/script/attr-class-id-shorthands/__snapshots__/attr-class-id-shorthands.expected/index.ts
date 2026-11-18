@@ -17,31 +17,31 @@ export interface Input {}
     )()()({
       value: "hi",
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       id: Marko._.interpolated`test`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       id: Marko._.interpolated`test-${value}`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       id: Marko._.interpolated`${value}-test`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       id: Marko._.interpolated`${value}-test-${value}`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`test`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`hello world`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`test-${value}`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`${value}-test`,
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.interpolated`${value}-test-${value}`,
     });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(

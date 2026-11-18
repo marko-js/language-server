@@ -104,17 +104,6 @@
   30 |     <@item|{ foo }| size="large">${foo}</@item>
 ```
 
-### Ln 38, Col 4
-```marko
-  36 | <div>
-  37 |   <@item/>
-> 38 |   <@item/>
-     |    ^^^^^ Object literal may only specify known properties, and '"item"' does not exist in type 'Partial<Div>'.
-  39 | </div>
-  40 |
-  41 | // An error in the input and one in a <for>
-```
-
 ### Ln 42, Col 20
 ```marko
   40 |

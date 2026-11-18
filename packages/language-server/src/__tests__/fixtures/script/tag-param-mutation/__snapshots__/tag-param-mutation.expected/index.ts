@@ -29,7 +29,7 @@ export interface Input {}
     Marko._.renderTemplate(__marko_internal_tag_2)()()({
       //  ^?
       [Marko._.contentFor(__marko_internal_tag_2)]: (val) => {
-        Marko._.renderNativeTag("button")()()({
+        Marko._.renderNativeTag("button")({
           onClick() {
             __marko_internal_change__string.string = val;
           },
@@ -57,7 +57,7 @@ export interface Input {}
           )()()({
             value: "",
           });
-          Marko._.renderNativeTag("input")()()({
+          Marko._.renderNativeTag("input")({
             id: inputId,
           });
           return new (class MarkoReturn<Return = void> {
@@ -68,7 +68,7 @@ export interface Input {}
         }
       },
     );
-    Marko._.renderNativeTag("button")()()({
+    Marko._.renderNativeTag("button")({
       onClick() {
         inputId;
         // ^?

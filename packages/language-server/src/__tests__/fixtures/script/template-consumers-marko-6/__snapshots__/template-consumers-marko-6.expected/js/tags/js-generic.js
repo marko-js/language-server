@@ -23,7 +23,7 @@ function __marko_internal_template() {
     )()()({
       value: input.format ? input.format(input.value) : String(input.value),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       ["content"]: (() => {
         [formatted];
         return Marko._.voidBody;

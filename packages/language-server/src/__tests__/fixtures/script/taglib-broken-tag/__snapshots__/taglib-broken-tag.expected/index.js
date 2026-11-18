@@ -38,7 +38,7 @@
           value: 1,
         },
       );
-      Marko._.renderNativeTag("div")()()({
+      Marko._.renderNativeTag("div")({
         [Marko._.content]: (() => {
           [count];
           return Marko._.voidBody;

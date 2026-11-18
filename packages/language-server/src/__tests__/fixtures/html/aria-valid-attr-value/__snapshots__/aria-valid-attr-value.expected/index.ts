@@ -11,7 +11,7 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("input")()()({
+  Marko._.renderNativeTag("input")({
     type: "checkbox",
     "aria-label": "my checkbox",
     "aria-checked": "sometimes",

@@ -21,7 +21,7 @@ function __marko_internal_template(this: void) {
       "value",
       __marko_internal_rendered_1.return,
     );
-    Marko._.renderNativeTag("button")()()({
+    Marko._.renderNativeTag("button")({
       onClick() {
         __marko_internal_change__value.value++;
       },

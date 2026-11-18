@@ -43,7 +43,7 @@ export interface Input {}
       }
       if (show) {
       }
-      Marko._.renderNativeTag("div")()()({
+      Marko._.renderNativeTag("div")({
         [Marko._.content]: (() => {
           if (undefined) {
           }

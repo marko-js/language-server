@@ -8,7 +8,7 @@ export interface Input {}
   );
   const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const el = Marko._.hoist(() => __marko_internal_hoist__el);
-  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),
@@ -28,7 +28,7 @@ export interface Input {}
         [x];
         {
           const el = Marko._.el("button");
-          Marko._.renderNativeTag("button")()()({
+          Marko._.renderNativeTag("button")({
             onClick() {
               __marko_internal_change__x.x = 2;
               __marko_internal_change__x.x++;

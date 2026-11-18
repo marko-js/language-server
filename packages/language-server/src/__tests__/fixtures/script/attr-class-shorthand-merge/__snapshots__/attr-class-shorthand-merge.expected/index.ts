@@ -17,28 +17,28 @@ export interface Input {}
     )()()({
       value: "primary",
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn`, "foo"),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn other`, "foo"),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn`, value),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn`, ["a", "b"]),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn`, { active: true }),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`${value}`, "foo"),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`${value} other`, value),
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       class: Marko._.mergeClasses(Marko._.interpolated`btn`, 123),
     });
     const __marko_internal_tag_2 = Marko._.resolveTemplate(

@@ -20,7 +20,7 @@ export interface Input {}
     });
     {
       const $el = Marko._.el("div");
-      Marko._.renderNativeTag("div")()()({});
+      Marko._.renderNativeTag("div")({});
       const __marko_internal_tag_3 = Marko._.resolveTemplate(
         import("marko/src/core-tags/core/script.d.marko"),
       ).default;

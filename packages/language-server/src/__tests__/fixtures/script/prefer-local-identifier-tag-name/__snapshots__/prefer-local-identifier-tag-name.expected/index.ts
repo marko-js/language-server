@@ -35,7 +35,7 @@ export interface Input {}
     Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
       b: "hello",
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       [Marko._.content]: (() => {
         const __marko_internal_tag_4 = Marko._.resolveTemplate(
           import("@marko/runtime-tags/tags/const.d.marko"),

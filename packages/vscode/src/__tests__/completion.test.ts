@@ -52,6 +52,24 @@ style {
     );
   });
 
+  it("template global", async () => {
+    // One the template does not name yet: what a template may read is
+    // declared in every one, so that it is offered. Without the words of the
+    // open documents, so that the name is TypeScript's.
+    const editor = vscode.workspace.getConfiguration("editor");
+    await editor.update("wordBasedSuggestions", "off", true);
+    try {
+      await snap.inline(
+        () => suggest("<div>${$sig█}</div>"),
+        `
+<div>\${$signal}</div>
+`,
+      );
+    } finally {
+      await editor.update("wordBasedSuggestions", undefined, true);
+    }
+  });
+
   it("custom tag attr name", async () => {
     // As in the definition test: the tag is written before the page opens (and
     // becomes the edited document), so the page's directory finds it.

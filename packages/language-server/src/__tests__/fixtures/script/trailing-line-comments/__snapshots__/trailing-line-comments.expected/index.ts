@@ -14,7 +14,7 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
       if (
         count // a condition ending in a comment
@@ -41,26 +41,26 @@ export { type Component };
       count.missingInInlineScript; // also inline
     },
   });
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     "data-x": count, // an attribute ending in a comment
   });
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
       [count.missingAfter];
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("div")()()(
+  Marko._.renderNativeTag("div")(
     // A `@ts-expect-error` that ends a body applies to nothing after it: the next
     // tag's error is reported
     {
       [Marko._.content]: (() => {
-        Marko._.renderNativeTag("span")()()({});
+        Marko._.renderNativeTag("span")({});
         return Marko._.voidBody;
       })(),
     },
   );
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
       [count.missingAfterExpectError];
       return Marko._.voidBody;

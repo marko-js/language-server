@@ -19,7 +19,7 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 ,
 });
 const __marko_internal_change__x = Marko._.change("x", "value", __marko_internal_rendered_1.return);
-Marko._.renderNativeTag("button")()()({
+Marko._.renderNativeTag("button")({
 "onClick"(){
   tion update(y: number) {
     __marko_internal_change__x.x = y;

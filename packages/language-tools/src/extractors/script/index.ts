@@ -884,6 +884,24 @@ constructor(_) {}
       }
     }
 
+    // The renderer's form (see `Marko._.Renderer`): with rest attribute tags
+    // only for a tag that has them (and no arguments, which take its input).
+    // Never a native tag's: it supports no attribute tags, which the compiler
+    // reports.
+    const body = this.#processBody(tag);
+    const withRestAttrTags = !!(
+      body &&
+      !isHTML &&
+      !this.#getTagArgs(tag) &&
+      hasRestAttrTags(body)
+    );
+
+    if (isHTML && tag.typeArgs) {
+      // A native tag takes no type arguments: TypeScript reports them on a
+      // call that takes none.
+      this.#extractor.write("(() => {})").copy(tag.typeArgs).write("();\n");
+    }
+
     if (needsHoist || tag.var) {
       renderVar = this.#getRenderVar(tag, true);
 
@@ -916,9 +934,9 @@ constructor(_) {}
 
     if (isHTML) {
       this.#extractor
-        .write(`${varShared("renderNativeTag")}("`)
-        .copy(isEmptyRange(tag.name) ? tagName : tag.name)
-        .write('")');
+        // Its name is not mapped: TypeScript has nothing to say of it, and
+        // Marko describes the tag.
+        .write(`${varShared("renderNativeTag")}("${tagName}")(`);
     } else if (templateVar) {
       this.#extractor
         .write(
@@ -930,23 +948,17 @@ constructor(_) {}
       this.#extractor.write(varShared("missingTag"));
     }
 
-    // The renderer's form (see `Marko._.Renderer`): with rest attribute tags
-    // only for a tag that has them (and no arguments, which take its input).
-    const body = this.#processBody(tag);
-    const withRestAttrTags = !!(
-      body &&
-      !this.#getTagArgs(tag) &&
-      hasRestAttrTags(body)
-    );
-    if (tag.typeArgs) {
-      this.#extractor
-        .write(withRestAttrTags ? `<2>()` : `<0>()`)
-        .copy(tag.typeArgs)
-        .write("()(");
-    } else {
-      this.#extractor.write(
-        withRestAttrTags ? `(${varShared("withRestAttrTags")})()(` : "()()(",
-      );
+    if (!isHTML) {
+      if (tag.typeArgs) {
+        this.#extractor
+          .write(withRestAttrTags ? `<2>()` : `<0>()`)
+          .copy(tag.typeArgs)
+          .write("()(");
+      } else {
+        this.#extractor.write(
+          withRestAttrTags ? `(${varShared("withRestAttrTags")})()(` : "()()(",
+        );
+      }
     }
 
     this.#writeTagInputObject(tag, body, withRestAttrTags);

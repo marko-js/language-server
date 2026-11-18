@@ -120,13 +120,13 @@ export { type Component };
   Marko._.renderDynamicTag(__marko_internal_tag_10)()()({
     class: "x",
   });
-  Marko._.renderNativeTag("div")()()(
+  Marko._.renderNativeTag("div")(
     // As a concrete name
     {
       class: 1,
     },
   );
-  Marko._.renderNativeTag("button")()()({
+  Marko._.renderNativeTag("button")({
     href: "/",
   });
   const __marko_internal_tag_11 = anyTag;
