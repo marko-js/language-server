@@ -5,8 +5,7 @@ export interface Input<T = string> {
   onChange: (option: T) => unknown;
   //                   ^?
 }
-abstract class Component<T = string> extends Marko.Component<Input<T>> {}
-export { type Component };
+export type Component<T = string> = Marko.Component<Input<T>>;
 (function <T = string>(this: void) {
   const input = Marko._.any as Input<T>;
   const component = Marko._.any as Component<T>;

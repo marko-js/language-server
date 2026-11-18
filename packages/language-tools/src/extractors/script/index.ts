@@ -328,12 +328,20 @@ class ScriptExtractor {
         const body = componentClassBody || " {}";
 
         if (this.#scriptLang === ScriptLang.ts) {
-          this.#extractor
-            .write(
-              `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
-            )
-            .copy(body)
-            .write("\nexport { type Component }\n");
+          if (componentClassBody) {
+            this.#extractor
+              .write(
+                `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
+              )
+              .copy(body)
+              .write("\nexport { type Component }\n");
+          } else {
+            // A template with no class of its own: its component is Marko's,
+            // which its type says in a line, as a declaration of it does.
+            this.#extractor.write(
+              `export type Component${typeParamsStr} = Marko.Component<Input${typeArgsStr}>;\n`,
+            );
+          }
         } else {
           this.#extractor.write(`/**${jsDocTemplateTagsStr}
     * @extends {Marko.Component<Input${typeArgsStr}>}

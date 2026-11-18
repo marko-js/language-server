@@ -3,10 +3,7 @@ export interface Input<T extends Marko.Template> {
 }
 // As a template of the constraint's type
 declare const Tag: Marko.Template;
-abstract class Component<T extends Marko.Template> extends Marko.Component<
-  Input<T>
-> {}
-export { type Component };
+export type Component<T extends Marko.Template> = Marko.Component<Input<T>>;
 (function <T extends Marko.Template>(this: void) {
   const input = Marko._.any as Input<T>;
   const component = Marko._.any as Component<T>;

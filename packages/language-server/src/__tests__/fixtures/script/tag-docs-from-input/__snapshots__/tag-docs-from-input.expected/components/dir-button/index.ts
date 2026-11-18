@@ -1,6 +1,5 @@
 /** A button in a directory of its own. */ export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
-export { type Component };
+export type Component = Marko.Component<Input>;
 (function (this: void) {
   const input = Marko._.any as Input;
   const component = Marko._.any as Component;

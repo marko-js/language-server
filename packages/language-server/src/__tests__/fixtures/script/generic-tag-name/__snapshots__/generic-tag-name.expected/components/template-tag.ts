@@ -23,7 +23,7 @@ declare const Tag: Marko.Template<
   },
   void
 >;
-abstract class Component<
+export type Component<
   T extends Marko.Template<
     {
       value: string;
@@ -34,8 +34,7 @@ abstract class Component<
     },
     void
   >,
-> extends Marko.Component<Input<T>> {}
-export { type Component };
+> = Marko.Component<Input<T>>;
 (function <
   T extends Marko.Template<
     {

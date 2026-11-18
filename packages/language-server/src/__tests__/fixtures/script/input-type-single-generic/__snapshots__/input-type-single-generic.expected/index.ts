@@ -2,10 +2,7 @@ export interface Input<T extends { name: string }> {
   options: T[];
   onChange: (option: T) => unknown;
 }
-abstract class Component<T extends { name: string }> extends Marko.Component<
-  Input<T>
-> {}
-export { type Component };
+export type Component<T extends { name: string }> = Marko.Component<Input<T>>;
 (function <T extends { name: string }>(this: void) {
   const input = Marko._.any as Input<T>;
   const component = Marko._.any as Component<T>;

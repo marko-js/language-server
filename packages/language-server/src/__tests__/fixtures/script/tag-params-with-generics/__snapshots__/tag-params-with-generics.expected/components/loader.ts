@@ -3,10 +3,7 @@ export interface Input<TData = string> {
   value?: () => TData;
   key?: string;
 }
-abstract class Component<TData = string> extends Marko.Component<
-  Input<TData>
-> {}
-export { type Component };
+export type Component<TData = string> = Marko.Component<Input<TData>>;
 (function <TData = string>(this: void) {
   const input = Marko._.any as Input<TData>;
   const component = Marko._.any as Component<TData>;
