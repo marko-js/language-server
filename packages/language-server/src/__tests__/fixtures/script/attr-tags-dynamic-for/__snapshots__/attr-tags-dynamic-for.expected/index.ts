@@ -99,9 +99,7 @@ export interface Input {}
                     [item];
                     [index];
                     [all];
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                   [Symbol.iterator]: Marko._.any,
                 },
@@ -130,18 +128,14 @@ export interface Input {}
                 a: {
                   [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
                     [item];
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                   [Symbol.iterator]: Marko._.any,
                 },
                 b: {
                   [Marko._.contentFor(__marko_internal_tag_5)]: (() => {
                     [index];
-                    return () => {
-                      return Marko._.voidReturn;
-                    };
+                    return Marko._.voidBody;
                   })(),
                   [Symbol.iterator]: Marko._.any,
                 },
@@ -236,9 +230,7 @@ export interface Input {}
                     [Marko._.contentFor(__marko_internal_tag_10)]: (() => {
                       [key];
                       [value];
-                      return () => {
-                        return Marko._.voidReturn;
-                      };
+                      return Marko._.voidBody;
                     })(),
                     [Symbol.iterator]: Marko._.any,
                   },
@@ -322,9 +314,7 @@ export interface Input {}
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_14)]: (() => {
                       [index];
-                      return () => {
-                        return Marko._.voidReturn;
-                      };
+                      return Marko._.voidBody;
                     })(),
                     [Symbol.iterator]: Marko._.any,
                   },
@@ -353,9 +343,7 @@ export interface Input {}
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_15)]: (() => {
                       [index];
-                      return () => {
-                        return Marko._.voidReturn;
-                      };
+                      return Marko._.voidBody;
                     })(),
                     [Symbol.iterator]: Marko._.any,
                   },
@@ -384,9 +372,7 @@ export interface Input {}
                   a: {
                     [Marko._.contentFor(__marko_internal_tag_16)]: (() => {
                       [index];
-                      return () => {
-                        return Marko._.voidReturn;
-                      };
+                      return Marko._.voidBody;
                     })(),
                     [Symbol.iterator]: Marko._.any,
                   },

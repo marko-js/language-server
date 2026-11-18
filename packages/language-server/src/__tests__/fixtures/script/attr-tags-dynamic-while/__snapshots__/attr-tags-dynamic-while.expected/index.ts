@@ -24,9 +24,7 @@ export { type Component };
             a: {
               [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
                 [i];
-                return () => {
-                  return Marko._.voidReturn;
-                };
+                return Marko._.voidBody;
               })(),
               [Symbol.iterator]: Marko._.any,
             },
@@ -53,9 +51,7 @@ export { type Component };
                 if (++i === 5) {
                   done = true;
                 }
-                return () => {
-                  return Marko._.voidReturn;
-                };
+                return Marko._.voidBody;
               })(),
               [Symbol.iterator]: Marko._.any,
             },
@@ -73,11 +69,7 @@ export { type Component };
       undefined
         ? {
             a: {
-              [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-                return () => {
-                  return Marko._.voidReturn;
-                };
-              })(),
+              [Marko._.contentFor(__marko_internal_tag_3)]: Marko._.voidBody,
               [Symbol.iterator]: Marko._.any,
             },
           }

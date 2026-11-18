@@ -11,9 +11,7 @@ export interface Input {
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
       [input.title];
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ input, $global, $signal });

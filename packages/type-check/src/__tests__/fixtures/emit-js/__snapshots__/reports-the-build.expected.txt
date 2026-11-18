@@ -1,0 +1,4 @@
+exit 0
+
+dist/components/split.component.d.ts
+dist/components/split.d.marko

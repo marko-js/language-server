@@ -24,6 +24,9 @@ declare global {
         return: void;
       }
       export const voidReturn: Void;
+      // A body that returns nothing. A function, as reading a `const` is flow
+      // analysed, at a cost that grows with the template.
+      export function voidBody(): Void;
       export const scope: unique symbol;
       /**
        * The key of a tag's input that holds its rest attribute tags: each
@@ -216,12 +219,6 @@ declare global {
         Scopes<Input> | RestAttrTagsScopes<Input>,
         Return
       >;
-
-      export function instance<Constructor>(
-        constructor: Constructor,
-      ): Constructor extends abstract new (...args: any) => infer Instance
-        ? Instance
-        : never;
 
       export function readScopes<Rendered>(rendered: Rendered): MergeScopes<
         {

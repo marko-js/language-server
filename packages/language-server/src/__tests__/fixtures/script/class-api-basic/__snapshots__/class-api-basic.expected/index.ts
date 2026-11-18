@@ -60,9 +60,7 @@ export { type Component };
         id: "p",
         [Marko._.content]: (() => {
           [year];
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       if (isSmartOnly) {
@@ -70,9 +68,7 @@ export { type Component };
           class: "sub-note",
           [Marko._.content]: (() => {
             [isSmartOnly];
-            return () => {
-              return Marko._.voidReturn;
-            };
+            return Marko._.voidBody;
           })(),
         });
       }
@@ -80,9 +76,7 @@ export { type Component };
         class: "sub-note",
         [Marko._.content]: (() => {
           [type];
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
 
@@ -101,9 +95,7 @@ export { type Component };
               [mobile];
               [i];
               [all.length];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           return Marko._.voidReturn;
@@ -114,9 +106,7 @@ export { type Component };
         [Marko._.content]: (() => {
           const __marko_internal_tag_1 = input.renderBody;
           Marko._.renderDynamicTag(__marko_internal_tag_1)()()({});
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       const __marko_internal_tag_2 = FancyButton;
@@ -124,40 +114,28 @@ export { type Component };
         something: true,
         [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
           [type];
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       Marko._.renderNativeTag("div")()()({
         [Marko._.content]: (() => {
           ["<b>World</b>"];
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       Marko._.renderNativeTag("div")()()({
         [Marko._.content]: (() => {
           Marko._.renderNativeTag("code")()()({
-            [Marko._.content]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.content]: Marko._.voidBody,
           });
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         })(),
       });
       const __marko_internal_tag_3 = Missing;
       Marko._.renderDynamicTag(__marko_internal_tag_3)()()({});
       const __marko_internal_tag_4 = Marko._.interpolated`complex-missing`;
       Marko._.renderDynamicTag(__marko_internal_tag_4)()()({});
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

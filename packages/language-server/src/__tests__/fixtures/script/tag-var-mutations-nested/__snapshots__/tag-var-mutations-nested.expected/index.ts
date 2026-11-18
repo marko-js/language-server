@@ -28,11 +28,7 @@ export interface Input {}
         __marko_internal_change__x.x++;
         //^?
       },
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     const __marko_internal_tag_2 = Marko._.interpolated`foo`;
     const __marko_internal_rendered_2 = Marko._.renderDynamicTag(
@@ -61,11 +57,7 @@ export interface Input {}
               __marko_internal_change__y.y = "goodbye";
               //  ^?
             },
-            [Marko._.content]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.content]: Marko._.voidBody,
           });
           return () => {
             return new (class MarkoReturn<Return = void> {

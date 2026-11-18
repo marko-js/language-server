@@ -26,9 +26,7 @@ function __marko_internal_template() {
     Marko._.renderNativeTag("div")()()({
       ["content"]: (() => {
         [formatted];
-        return () => {
-          return Marko._.voidReturn;
-        };
+        return Marko._.voidBody;
       })(),
     });
     var __marko_internal_return = Marko._.returnTag({

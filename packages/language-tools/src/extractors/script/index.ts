@@ -71,6 +71,8 @@ const templateNameReg = /(?<![.\w$])Template(?![\w$])/;
 
 type ProcessedBody = {
   content: Repeatable<Node.ChildNode>;
+  /** Whether `content` has code to write (a tag, placeholder or scriptlet). */
+  hasCode: boolean;
   /**
    * The static attribute tags by repetition: the first of each name, then
    * the second of each repeated one, and so on.
@@ -349,7 +351,10 @@ class ScriptExtractor {
     const templateName = didReturn ? varLocal("template") : "";
 
     if (!didReturn) {
-      this.#extractor.write("(");
+      // After a `;` in JavaScript, so that a JSDoc comment before it (eg the
+      // `Input` typedef) is not read as the parenthesized function's too,
+      // which TypeScript would bind twice (TS2300).
+      this.#extractor.write(this.#scriptLang === ScriptLang.ts ? "(" : ";(");
     }
 
     if (this.#scriptLang === ScriptLang.ts) {
@@ -1656,30 +1661,38 @@ constructor(_) {}
         this.#extractor.copy(tag.typeParams).write("(\n");
         this.#copyWithMutationsReplaced(tag.params.value);
         this.#extractor.write("\n) => {\n");
+      } else if (!body?.hasCode) {
+        // Nothing to run (no content, or text alone): the body alone.
+        this.#extractor.write(varShared("voidBody"));
       } else {
+        // Run where the tag is (which TypeScript narrows its code in, as it
+        // does an immediately called function's), returning the body.
         this.#extractor.write(`(() => {\n`);
       }
 
-      let didReturn = false;
+      if (tag.params || body?.hasCode) {
+        let didReturn = false;
 
-      if (body?.content) {
-        didReturn = this.#writeChildren(body.content);
-      }
+        if (body?.content) {
+          didReturn = this.#writeChildren(body.content);
+        }
 
-      if (!tag.params) {
-        this.#extractor.write(`return () => {\n`);
-      }
+        const returned = didReturn ? varLocal("return") : undefined;
+        if (tag.params) {
+          this.#writeReturn(returned, tag.body);
+        } else if (!returned && !this.#hasScopeExpression(tag.body)) {
+          this.#extractor.write(`return ${varShared("voidBody")};\n`);
+        } else {
+          this.#extractor.write(`return () => {\n`);
+          this.#writeReturn(returned, tag.body);
+          this.#extractor.write("}\n");
+        }
 
-      this.#writeReturn(didReturn ? varLocal("return") : undefined, tag.body);
+        if (body?.content) {
+          this.#endChildren();
+        }
 
-      if (body?.content) {
-        this.#endChildren();
-      }
-
-      if (tag.params) {
-        this.#extractor.write("})");
-      } else {
-        this.#extractor.write("}\n})()");
+        this.#extractor.write(tag.params ? "})" : "})()");
       }
 
       this.#extractor.write(SEP_COMMA_NEW_LINE);
@@ -1798,6 +1811,7 @@ constructor(_) {}
     let staticAttrTags: ProcessedBody["staticAttrTags"];
     let attrTagCounts: Map<string, number> | undefined;
     let dynamicAttrTagParents: ProcessedBody["dynamicAttrTagParents"];
+    let hasCode = false;
     let i = 0;
 
     while (i <= last) {
@@ -1904,10 +1918,13 @@ constructor(_) {}
             } else {
               dynamicAttrTagParents = [child];
             }
-          } else if (content) {
-            content.push(child);
           } else {
-            content = [child];
+            hasCode = true;
+            if (content) {
+              content.push(child);
+            } else {
+              content = [child];
+            }
           }
 
           break;
@@ -1926,6 +1943,9 @@ constructor(_) {}
         }
 
         default:
+          hasCode ||=
+            child.type === NodeType.Placeholder ||
+            child.type === NodeType.Scriptlet;
           if (content) {
             content.push(child);
           } else {
@@ -1936,7 +1956,7 @@ constructor(_) {}
     }
 
     if (content || staticAttrTags || dynamicAttrTagParents) {
-      return { content, staticAttrTags, dynamicAttrTagParents };
+      return { content, hasCode, staticAttrTags, dynamicAttrTagParents };
     }
   }
 

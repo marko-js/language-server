@@ -56,9 +56,7 @@ export interface Input {}
           Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
             a: "hello",
           });
-          return () => {
-            return Marko._.voidReturn;
-          };
+          return Marko._.voidBody;
         }
       })(),
     });

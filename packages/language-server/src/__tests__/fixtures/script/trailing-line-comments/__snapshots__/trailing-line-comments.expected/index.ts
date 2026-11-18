@@ -21,9 +21,7 @@ export { type Component };
       ) {
         [count.missingInIf];
       }
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
@@ -49,9 +47,7 @@ export { type Component };
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
       [count.missingAfter];
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.renderNativeTag("div")()()(
@@ -60,18 +56,14 @@ export { type Component };
     {
       [Marko._.content]: (() => {
         Marko._.renderNativeTag("span")()()({});
-        return () => {
-          return Marko._.voidReturn;
-        };
+        return Marko._.voidBody;
       })(),
     },
   );
   Marko._.renderNativeTag("div")()()({
     [Marko._.content]: (() => {
       [count.missingAfterExpectError];
-      return () => {
-        return Marko._.voidReturn;
-      };
+      return Marko._.voidBody;
     })(),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

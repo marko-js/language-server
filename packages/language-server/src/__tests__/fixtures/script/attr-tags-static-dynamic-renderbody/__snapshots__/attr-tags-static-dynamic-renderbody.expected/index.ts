@@ -28,11 +28,7 @@ export interface Input {}
       Marko._.withRestAttrTags,
     )()({
       header: {
-        [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-          return () => {
-            return Marko._.voidReturn;
-          };
-        })(),
+        [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
         [Symbol.iterator]: Marko._.any,
       },
       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
@@ -45,20 +41,14 @@ export interface Input {}
             return Marko._.voidReturn;
           },
         );
-        return () => {
-          return Marko._.voidReturn;
-        };
+        return Marko._.voidBody;
       })(),
       [Marko._.restAttrTags]: [
         someCondition
           ? {
               //^?
               footer: {
-                [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
-                  return () => {
-                    return Marko._.voidReturn;
-                  };
-                })(),
+                [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
                 [Symbol.iterator]: Marko._.any,
               },
             }

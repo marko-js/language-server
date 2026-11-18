@@ -15,9 +15,7 @@ export { type Component }
 Marko._.renderNativeTag("div")()()({
 [Marko._.content]: (() => {
 [#2];
-return () => {
-return Marko._.voidReturn;
-}
+return Marko._.voidBody;
 })(),
 
 });

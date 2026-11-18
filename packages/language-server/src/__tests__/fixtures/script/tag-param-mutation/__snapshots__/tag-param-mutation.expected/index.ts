@@ -36,9 +36,7 @@ export interface Input {}
           [Marko._.content]: (() => {
             //   ^?      ^?
             [val];
-            return () => {
-              return Marko._.voidReturn;
-            };
+            return Marko._.voidBody;
           })(),
         });
         return Marko._.voidReturn;
@@ -75,11 +73,7 @@ export interface Input {}
         inputId;
         // ^?
       },
-      [Marko._.content]: (() => {
-        return () => {
-          return Marko._.voidReturn;
-        };
-      })(),
+      [Marko._.content]: Marko._.voidBody,
     });
     var __marko_internal_hoist__string = string;
     var { inputId: __marko_internal_hoist__inputId } = Marko._.hoisted(

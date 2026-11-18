@@ -56,11 +56,7 @@ export interface Input {}
       [Marko._.restAttrTags]: [
         {
           section: {
-            [Marko._.contentFor(__marko_internal_tag_3)]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.contentFor(__marko_internal_tag_3)]: Marko._.voidBody,
             [Symbol.iterator]: Marko._.any,
           },
         },

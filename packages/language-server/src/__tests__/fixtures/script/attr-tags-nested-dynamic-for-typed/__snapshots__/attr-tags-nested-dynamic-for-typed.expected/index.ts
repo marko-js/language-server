@@ -39,9 +39,7 @@ export { type Component };
                     [Marko._.content]: (() => {
                       [name];
                       [label];
-                      return () => {
-                        return Marko._.voidReturn;
-                      };
+                      return Marko._.voidBody;
                     })(),
                   });
                   return Marko._.voidReturn;
@@ -70,9 +68,7 @@ export { type Component };
           Marko._.renderNativeTag("div")()()({
             [Marko._.content]: (() => {
               [label];
-              return () => {
-                return Marko._.voidReturn;
-              };
+              return Marko._.voidBody;
             })(),
           });
           return Marko._.voidReturn;

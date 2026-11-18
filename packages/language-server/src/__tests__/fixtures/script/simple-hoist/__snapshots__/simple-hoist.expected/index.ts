@@ -34,11 +34,7 @@ export interface Input {}
               __marko_internal_change__x.x++;
               ++__marko_internal_change__x.x;
             },
-            [Marko._.content]: (() => {
-              return () => {
-                return Marko._.voidReturn;
-              };
-            })(),
+            [Marko._.content]: Marko._.voidBody,
           });
           return () => {
             return new (class MarkoReturn<Return = void> {
