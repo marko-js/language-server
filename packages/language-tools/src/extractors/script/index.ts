@@ -753,9 +753,9 @@ constructor(_) {}
                   `${varShared(getForTagRuntime(this.#parsed, child))}({\n`,
                 )
                 .anchor(child.name);
-              this.#writeAttrs(child);
+              // Each attribute ends its line, as the input does.
               this.#extractor
-                .write("\n}" + SEP_COMMA_NEW_LINE)
+                .write(this.#writeAttrs(child) ? "},\n" : "\n},\n")
                 .copy(child.typeParams)
                 .write("(\n");
               this.#writeComments(child);
@@ -778,7 +778,7 @@ constructor(_) {}
                 this.#endChildren();
               }
 
-              this.#extractor.write("\n});\n");
+              this.#extractor.write("});\n");
 
               break;
             }
@@ -880,7 +880,7 @@ constructor(_) {}
       const attrTagTree = this.#getTagAttrTagTree(tag);
       if (attrTagTree) {
         this.#writeAttrTagTree(attrTagTree, templateVar);
-        this.#extractor.write(";\n");
+        this.#extractor.write("\n");
       }
     }
 
@@ -1496,8 +1496,7 @@ constructor(_) {}
           );
           this.#anchorAttrTag(tag);
           this.#extractor.write("{\n").anchor(tag.name);
-          this.#writeAttrs(tag);
-          this.#extractor.write("\n}, \n");
+          this.#extractor.write(this.#writeAttrs(tag) ? "},\n" : "\n},\n");
           this.#writeComments(tag);
           this.#extractor
             .copy(tag.typeParams)
@@ -1726,7 +1725,8 @@ constructor(_) {}
     }
 
     if (writeInputObj) {
-      this.#extractor.write("\n}");
+      // What the input has ends its line (and an empty one is `{⏎}`).
+      this.#extractor.write("}");
     }
   }
 

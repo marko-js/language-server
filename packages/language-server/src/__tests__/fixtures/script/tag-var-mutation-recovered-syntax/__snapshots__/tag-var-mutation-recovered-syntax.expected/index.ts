@@ -17,7 +17,6 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 {
 "value": 1
 ,
-
 });
 const __marko_internal_change__x = Marko._.change("x", "value", __marko_internal_rendered_1.return);
 Marko._.renderNativeTag("button")()()({
@@ -27,7 +26,6 @@ Marko._.renderNativeTag("button")()()({
   }
 },
 [Marko._.content]: Marko._.voidBody,
-
 });
 var __marko_internal_hoist__x = x;
 }Marko._.noop({ x, input, $global, $signal });

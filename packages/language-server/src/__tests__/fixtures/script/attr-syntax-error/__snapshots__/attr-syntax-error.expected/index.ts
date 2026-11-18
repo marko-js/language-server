@@ -14,13 +14,11 @@ export { type Component }
 Marko._.renderNativeTag("div")()()({
 "data-x": #2
 ,
-
 });
 Marko._.renderNativeTag("div")()()({
 "onClick"(a, %b){
   console.log(#hello!);
 },
-
 });
 Marko._.noop({ component, state, out, input, $global, $signal });
 return;
