@@ -7,9 +7,11 @@ export interface Input {}
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
   const searchInput = Marko._.hoist(() => __marko_internal_hoist__searchInput);
-  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")({
+  const __marko_internal_rendered_1 = Marko._.renderNativeTagWithScope("div")({
     [Marko._.content]: (() => {
-      const __marko_internal_rendered_2 = Marko._.renderNativeTag("div")({
+      const __marko_internal_rendered_2 = Marko._.renderNativeTagWithScope(
+        "div",
+      )({
         onClick() {
           searchInput().focus();
           // ^?

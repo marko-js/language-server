@@ -15,7 +15,7 @@
   74 |
   75 | // An unknown attribute, with the attribute tag given
 > 76 | <req-menu bogus=1>
-     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   77 |   <@req/>
   78 |   <@req/>
   79 | </req-menu>
@@ -26,7 +26,7 @@
   260 |
   261 | // Given nowhere, by a tag with rest attribute tags => error
 > 262 | <idx-menu>
-      |  ^^^^^^^^ Argument of type '{ other: { [Symbol.iterator]: any; }; [attributeTags]: [{ other: { [Symbol.iterator]: any; }; }]; }' is not assignable to parameter of type 'Input & Directives<Input>'.
+      |  ^^^^^^^^ Argument of type '{ other: { [Symbol.iterator]: any; }; [attributeTags]: [{ other: { [Symbol.iterator]: any; }; }]; }' is not assignable to parameter of type 'Input & AttributeTags<Input>'.
   Property 'req' is missing in type '{ other: { [Symbol.iterator]: any; }; [attributeTags]: [{ other: { [Symbol.iterator]: any; }; }]; }' but required in type 'Input'.
   263 |   <@other/>
   264 |   <@other/>
@@ -38,7 +38,7 @@
   264 |   <@other/>
   265 | </idx-menu>
 > 266 | <idx-menu>
-      |  ^^^^^^^^ Argument of type '{ other: never; [attributeTags]: [NoInfer<{ other: { label: string; [Symbol.iterator]: any; }; }>]; }' is not assignable to parameter of type 'Input & Directives<Input>'.
+      |  ^^^^^^^^ Argument of type '{ other: never; [attributeTags]: [NoInfer<{ other: { label: string; [Symbol.iterator]: any; }; }>]; }' is not assignable to parameter of type 'Input & AttributeTags<Input>'.
   Property 'req' is missing in type '{ other: never; [attributeTags]: [NoInfer<{ other: { label: string; [Symbol.iterator]: any; }; }>]; }' but required in type 'Input'.
   267 |   <for|t| of=cols>
   268 |     <@other label=t/>
@@ -54,7 +54,7 @@
 > 294 |   <for|label| of=tuple>
       | ^^^^^^^^^^^^^^^^^^^^^^^
 > 295 |     <@req label=label/>
-      | ^^^^^^^^^^ Argument of type '{ req: never; [attributeTags]: [NoInfer<{ req: { label: "x" | "y"; [Symbol.iterator]: any; }; }>]; title: number; }' is not assignable to parameter of type 'Input & Directives<Input>'.
+      | ^^^^^^^^^^ Argument of type '{ req: never; [attributeTags]: [NoInfer<{ req: { label: "x" | "y"; [Symbol.iterator]: any; }; }>]; title: number; }' is not assignable to parameter of type 'Input & AttributeTags<Input>'.
   Type '{ req: never; [attributeTags]: [NoInfer<{ req: { label: "x" | "y"; [Symbol.iterator]: any; }; }>]; title: number; }' is not assignable to type 'Input'.
     Types of property 'title' are incompatible.
       Type 'number' is not assignable to type 'string'.

@@ -91,7 +91,7 @@
    7 | //  ^?
    8 | </key-tag>
 >  9 | <key-tag bogus-key=1/>
-     |          ^^^^^^^^^ Object literal may only specify known properties, and '"bogus-key"' does not exist in type 'Directives & Input'.
+     |          ^^^^^^^^^ Object literal may only specify known properties, and '"bogus-key"' does not exist in type 'Input'.
   10 | <key-tag bogus=1/>
   11 | <key-tag default="x"/>
   12 | <key-tag>
@@ -102,7 +102,7 @@
    8 | </key-tag>
    9 | <key-tag bogus-key=1/>
 > 10 | <key-tag bogus=1/>
-     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'.
+     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input'.
   11 | <key-tag default="x"/>
   12 | <key-tag>
   13 |   <@itme label="z"/>
@@ -124,7 +124,7 @@
   11 | <key-tag default="x"/>
   12 | <key-tag>
 > 13 |   <@itme label="z"/>
-     |    ^^^^^ Object literal may only specify known properties, and '"itme"' does not exist in type 'Directives & Input'.
+     |    ^^^^^ Object literal may only specify known properties, and '"itme"' does not exist in type 'Input'.
   14 | </key-tag>
   15 | <key-tag>
   16 |   <@my-itme label="z"/>
@@ -135,7 +135,7 @@
   14 | </key-tag>
   15 | <key-tag>
 > 16 |   <@my-itme label="z"/>
-     |    ^^^^^^^^ Object literal may only specify known properties, and '"my-itme"' does not exist in type 'Directives & Input'.
+     |    ^^^^^^^^ Object literal may only specify known properties, and '"my-itme"' does not exist in type 'Input'.
   17 | </key-tag>
   18 |
 ```

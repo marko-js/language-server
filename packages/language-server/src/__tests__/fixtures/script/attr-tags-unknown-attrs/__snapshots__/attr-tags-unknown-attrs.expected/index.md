@@ -163,7 +163,7 @@
   76 |
   77 | <menu>
 > 78 |   <@nope>
-     |    ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Directives & Input'.
+     |    ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Input'.
   79 |     <@row/>
   80 |     <@row/>
   81 |   </@nope>
@@ -256,7 +256,7 @@
   131 |   </if>
   132 |   <for of=[1, 2]>
 > 133 |     <@c/>
-      |      ^^ Object literal may only specify known properties, and '"c"' does not exist in type 'Partial<Directives>'.
+      |      ^^ Type '{ c: { [Symbol.iterator]: any; }; }' has no properties in common with type 'Directives'.
   134 |   </for>
   135 | </unk>
   136 |

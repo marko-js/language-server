@@ -15,7 +15,7 @@
   10 | <${input.tag} value="x"/>
   11 | <${input.tag} value=1/>
 > 12 | <${input.tag} value="x" bogus=1/>
-     |                         ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & { value: string; item?: AttrTag<{ x: number; renderBody?: Body<[{ y: number; }], void> | undefined; }> | undefined; }'.
+     |                         ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type '{ value: string; item?: AttrTag<{ x: number; renderBody?: Body<[{ y: number; }], void> | undefined; }> | undefined; }'.
   13 | <${input.tag} value="x">
   14 |   <@item x=1/>
   15 |   <@item x="2"/>
@@ -37,7 +37,7 @@
   21 |   void
   22 | >;
 > 23 | <${Tag} value="x" bogus=1/>
-     |                   ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & { value: string; item?: AttrTag<{ x: number; renderBody?: Body<[{ y: number; }], void> | undefined; }> | undefined; }'.
+     |                   ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type '{ value: string; item?: AttrTag<{ x: number; renderBody?: Body<[{ y: number; }], void> | undefined; }> | undefined; }'.
   24 | <${Tag} value="x">
   25 |   <@item x=1/>
   26 |   <@item x="2"/>

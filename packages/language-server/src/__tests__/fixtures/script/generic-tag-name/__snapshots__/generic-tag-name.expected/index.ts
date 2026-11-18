@@ -163,12 +163,8 @@ class Template extends Marko._.GenericTemplate<
           S extends keyof Marko.NativeTags,
           A extends "a" | "button",
         >(
-          input: Marko.Directives &
-            Input<S, A> &
-            Marko._.Relate<
-              __marko_internal_input,
-              Marko.Directives & Input<S, A>
-            >,
+          input: Input<S, A> &
+            Marko._.Relate<__marko_internal_input, Input<S, A>>,
         ) => Marko._.ReturnWithScope<__marko_internal_input, void>
       : () => <
           __marko_internal_input,

@@ -76,7 +76,7 @@
   37 | // As a concrete name
   38 | <div class=1/>
 > 39 | <button href="/"/>
-     |         ^^^^ Object literal may only specify known properties, and '"href"' does not exist in type 'Directives & Button'.
+     |         ^^^^ Object literal may only specify known properties, and '"href"' does not exist in type 'Button'.
   40 |
   41 | // As a name of the constraint's type
   42 | static declare const anyTag: keyof Marko.NativeTags;

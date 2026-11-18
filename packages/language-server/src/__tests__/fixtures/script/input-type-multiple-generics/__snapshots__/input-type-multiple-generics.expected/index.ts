@@ -67,11 +67,10 @@ class Template extends Marko._.GenericTemplate<
           LastName extends string,
           Extra,
         >(
-          input: Marko.Directives &
-            Input<FirstName, LastName, Extra> &
+          input: Input<FirstName, LastName, Extra> &
             Marko._.Relate<
               __marko_internal_input,
-              Marko.Directives & Input<FirstName, LastName, Extra>
+              Input<FirstName, LastName, Extra>
             >,
         ) => Marko._.ReturnWithScope<__marko_internal_input, void>
       : () => <

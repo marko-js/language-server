@@ -79,7 +79,7 @@
   73 |         <${input.renderBody}/>
   74 |     </div>
 > 75 |     <FancyButton something=true>${type}</FancyButton>
-     |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Directives & Input'.
+     |                  ^^^^^^^^^ Object literal may only specify known properties, and '"something"' does not exist in type 'Input'.
   76 |     <div>Hello $!{"<b>World</b>"}</div>
   77 |     <div>Placeholder example: <code>\${someValue}</code></div>
   78 |
