@@ -1,3 +1,13 @@
 import Hello from "../dep/hello.marko";
+import Typed from "../dep/typed.marko";
+import OwnTyped from "./own-typed.marko";
 
+// A template is typed by the declaration beside it: `x.d.marko.ts`, or a
+// legacy `x.d.marko`.
 <Hello name="world"/>
+<Typed/greeted name="world"/>
+<div>${greeted.toUpperCase()}</div>
+
+// A declaration beside a template stands in for it wherever it is, a
+// project's own too (its `x.d.marko` declares the `title`).
+<OwnTyped name="world" title="Hi"/>

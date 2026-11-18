@@ -3,7 +3,7 @@
 
 import { codeFrameColumns } from "@marko/compiler/internal/babel";
 import {
-  getExt,
+  getTemplateDeclaration,
   isDefinitionFile,
   type Location,
   Processors,
@@ -300,30 +300,25 @@ export default function run(opts: Options) {
               }
             }
 
-            if (resolvedFileName) {
-              if (isDefinitionFile(resolvedFileName)) {
-                if (!compilerHost.fileExists(resolvedFileName)) {
-                  resolvedFileName = undefined;
-                }
-              } else {
-                const ext = getExt(resolvedFileName)!;
-                const definitionFile = `${resolvedFileName.slice(
-                  0,
-                  -ext.length,
-                )}.d${ext}`;
-                if (compilerHost.fileExists(definitionFile)) {
-                  resolvedFileName = definitionFile;
-                } else if (!compilerHost.fileExists(resolvedFileName)) {
-                  resolvedFileName = undefined;
-                }
-              }
+            const declaration =
+              resolvedFileName &&
+              getTemplateDeclaration(resolvedFileName, compilerHost);
+            if (declaration) {
+              resolvedFileName = declaration;
+            } else if (
+              resolvedFileName &&
+              !compilerHost.fileExists(resolvedFileName)
+            ) {
+              resolvedFileName = undefined;
             }
 
             resolvedModules.push({
               resolvedModule: resolvedFileName
                 ? {
                     resolvedFileName,
-                    extension: processor.getScriptExtension(resolvedFileName),
+                    extension: declaration?.endsWith(".ts")
+                      ? ts.Extension.Dts
+                      : processor.getScriptExtension(resolvedFileName),
                     isExternalLibraryImport,
                   }
                 : undefined,

@@ -1,0 +1,10 @@
+export interface Input {
+  name: string;
+}
+declare const Input: Marko.Template<
+  Input,
+  {
+    value: string;
+  }
+>;
+export default Input;
