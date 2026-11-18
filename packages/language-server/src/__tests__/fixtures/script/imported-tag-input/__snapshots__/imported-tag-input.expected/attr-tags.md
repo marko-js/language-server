@@ -104,7 +104,7 @@
    8 |
    9 | // Repeated
 > 10 | <menu-tag bogus=1>
-     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   11 |   <@item|{ foo }| size="small">${foo}</@item>
   12 |   <@item|{ foo }|>${foo}</@item>
   13 | </menu-tag>
@@ -115,7 +115,7 @@
   12 |   <@item|{ foo }|>${foo}</@item>
   13 | </menu-tag>
 > 14 | <Menu bogus=1>
-     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   15 |   <@item|{ foo }| size="small">${foo}</@item>
   16 |   <@item|{ foo }|>${foo}</@item>
   17 | //                  ^?
@@ -126,7 +126,7 @@
   17 | //                  ^?
   18 | </Menu>
 > 19 | <${Menu} bogus=1>
-     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   20 |   <@item|{ foo }| size="small">${foo}</@item>
   21 |   <@item|{ foo }|>${foo}</@item>
   22 | //                  ^?
@@ -137,7 +137,7 @@
   24 |
   25 | // In an if
 > 26 | <menu-tag bogus=1>
-     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   27 |   <if=flag>
   28 |     <@item|{ foo }| size="small">${foo}</@item>
   29 |   </if>
@@ -148,7 +148,7 @@
   29 |   </if>
   30 | </menu-tag>
 > 31 | <Menu bogus=1>
-     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   32 |   <if=flag>
   33 |     <@item|{ foo }| size="small">${foo}</@item>
   34 | //                                 ^?
@@ -159,7 +159,7 @@
   35 |   </if>
   36 | </Menu>
 > 37 | <${Menu} bogus=1>
-     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   38 |   <if=flag>
   39 |     <@item|{ foo }| size="small">${foo}</@item>
   40 | //                                 ^?
@@ -170,7 +170,7 @@
   43 |
   44 | // In a for
 > 45 | <menu-tag bogus=1>
-     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   46 |   <for|name| of=["a", "b"]>
   47 |     <@item|{ foo }|>${name} ${foo}</@item>
   48 |   </for>
@@ -181,7 +181,7 @@
   48 |   </for>
   49 | </menu-tag>
 > 50 | <Menu bogus=1>
-     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   51 |   <for|name| of=["a", "b"]>
   52 |     <@item|{ foo }|>${name} ${foo}</@item>
   53 | //                            ^?
@@ -192,7 +192,7 @@
   54 |   </for>
   55 | </Menu>
 > 56 | <${Menu} bogus=1>
-     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & Directives<Input>'.
+     |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input & AttributeTags<Input>'.
   57 |   <for|name| of=["a", "b"]>
   58 |     <@item|{ foo }|>${name} ${foo}</@item>
   59 | //                            ^?
@@ -308,7 +308,7 @@
   91 |
   92 | // A generic tag's attribute tag
 > 93 | <pick-tag bogus=1>
-     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input<string>'.
+     |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string>'.
   94 |   <@option|v| value="a">${v}</@option>
   95 | //                        ^?
   96 | </pick-tag>
@@ -319,7 +319,7 @@
    95 | //                        ^?
    96 | </pick-tag>
 >  97 | <Pick bogus=1>
-      |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input<string>'.
+      |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string>'.
    98 |   <@option|v| value="a">${v}</@option>
    99 | //                        ^?
   100 | </Pick>
@@ -330,7 +330,7 @@
    99 | //                        ^?
   100 | </Pick>
 > 101 | <${Pick} bogus=1>
-      |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input<string>'.
+      |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string>'.
   102 |   <@option|v| value="a">${v}</@option>
   103 | //                        ^?
   104 | </>
@@ -341,7 +341,7 @@
   105 |
   106 | // A generic tag's repeated attribute tags, and ones in an if and a for
 > 107 | <pick-tag bogus=1>
-      |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & Directives<Input<string>>'.
+      |           ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & AttributeTags<Input<string>>'.
   108 |   <@option value="a"/>
   109 |   <@option value="b"/>
   110 |   <if=flag>
@@ -352,7 +352,7 @@
   115 |   </for>
   116 | </pick-tag>
 > 117 | <Pick bogus=1>
-      |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & Directives<Input<string>>'.
+      |       ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & AttributeTags<Input<string>>'.
   118 |   <@option value="a"/>
   119 |   <@option value="b"/>
   120 |   <if=flag>
@@ -363,7 +363,7 @@
   125 |   </for>
   126 | </Pick>
 > 127 | <${Pick} bogus=1>
-      |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & Directives<Input<string>>'.
+      |          ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input<string> & AttributeTags<Input<string>>'.
   128 |   <@option value="a"/>
   129 |   <@option value="b"/>
   130 |   <if=flag>

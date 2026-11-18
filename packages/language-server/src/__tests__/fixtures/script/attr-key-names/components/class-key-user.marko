@@ -1,0 +1,19 @@
+// In the Class API, Marko 5's directives are not a tag's input: they are
+// checked apart.
+class {}
+<for|row| of=[{ id: "a" }]>
+  <key-tag key=`row-${row.id}` no-update class="c"/>
+//         ^?          ^?      ^?
+</for>
+<key-tag key=1/>
+// A directive's modifier after a `:` is dropped: `key:scoped` is `key`.
+<key-tag key:scoped=1/>
+//       ^?
+// Names that only start like a directive's are attributes.
+<key-tag keyboard="k"/>
+<key-tag no-update-x=1/>
+// A native tag's directives are checked apart too, and a dynamic tag's.
+<div key="el" no-update-if(true) class="d"/>
+//   ^?
+<div key={}/>
+<${"span"} key="s" no-update-body/>

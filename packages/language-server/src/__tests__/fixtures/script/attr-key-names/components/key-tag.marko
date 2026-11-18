@@ -1,4 +1,5 @@
 export interface Input {
+  key?: string;
   "aria-label"?: string;
   class?: string;
   for?: string;

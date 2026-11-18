@@ -22,7 +22,7 @@
   1 | static const count = 1;
   2 |
 > 3 | <div data-x=#2/>
-    |              ^ Object literal may only specify known properties, and '2' does not exist in type 'Directives & Div'.
+    |              ^ Object literal may only specify known properties, and '2' does not exist in type 'HTMLAttributes<HTMLDivElement>'.
   4 |
 ```
 

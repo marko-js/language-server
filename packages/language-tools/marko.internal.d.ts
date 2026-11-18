@@ -50,6 +50,9 @@ declare global {
         override: Override,
       ): [0] extends [1 & Override] ? Marko.Global : Override;
 
+      /** A template's tag's Marko 5 directives, which are not its input. */
+      export function directives(directives: Marko.Directives): void;
+
       export function returned<T>(
         rendered: () => T,
       ): T extends { return: { value: infer Returned } } ? Returned : never;
@@ -135,11 +138,7 @@ declare global {
         m?: A,
       ) => () => A extends 2 | 3
         ? RestAttrTagsRenderer<Input, Return>
-        : <I>(
-            input: Marko.Directives &
-              Input &
-              Relate<I, Marko.Directives & Input>,
-          ) => ReturnWithScope<I, Return>;
+        : <I>(input: Input & Relate<I, Input>) => ReturnWithScope<I, Return>;
 
       // A generic template: each of the runtime's methods redeclared generic
       // (`Methods`, mapped by the runtime's keys, see `TemplateMethods`, with
@@ -318,10 +317,16 @@ declare global {
       export function renderTemplate<Name>(
         template: Name,
       ): TemplateRenderer<Name>;
-      // A native tag's renderer (see `Renderer`). A call, not a member of an
-      // object of renderers: one read by an index signature (eg a custom
-      // element's) is possibly undefined under `noUncheckedIndexedAccess`.
+      // A native tag's renderer: its input alone, which TypeScript checks
+      // without inferring anything. A call, not a member of an object of
+      // renderers: one read by an index signature (eg a custom element's) is
+      // possibly undefined under `noUncheckedIndexedAccess`.
       export function renderNativeTag<Name extends string>(
+        tag: Name,
+      ): (input: Marko.NativeTags[Name]["input"]) => void;
+      // The same for a tag whose scopes are read (its body hoists): it keeps
+      // the type of the input it is given (see `InputRenderer`).
+      export function renderNativeTagWithScope<Name extends string>(
         tag: Name,
       ): InputRenderer<
         Marko.NativeTags[Name]["input"],
@@ -508,7 +513,7 @@ declare global {
        * What each group of the attribute tags of a tag (or of its attribute
        * tag) with `Input` is checked against, as the renderer checks the input
        * itself. A group is what one repetition, `<if>` chain or loop body
-       * gives: an object of attribute tags, each name once (see `Directives`).
+       * gives: an object of attribute tags, each name once (see `AttributeTags`).
        */
       export type AttrTagGroup<Input> = [0] extends [1 & Input]
         ? unknown
@@ -519,7 +524,7 @@ declare global {
           : [UnionKeys<Input>] extends [never]
             ? [Input] extends [object]
               ? // No properties (`{}`), which TypeScript does not check for
-                // unknown ones: with the directives, as the input is checked.
+                // unknown ones: with a type whose properties are all optional.
                 Marko.Directives & Input
               : unknown extends Input
                 ? // A template that declares `unknown`: no input, as the
@@ -544,7 +549,7 @@ declare global {
       /**
        * The attribute tags of an attribute tag at `path` of a tag (or of the
        * tag itself, eg in a `<for>`) with rest attribute tags: its groups,
-       * merged by name as a renderer merges a tag's (see `Directives`), and
+       * merged by name as a renderer merges a tag's (see `AttributeTags`), and
        * checked against that attribute tag's type. A tag's own groups are
        * given to its renderer where they are written, so that TypeScript
        * infers its type parameters from them too.
@@ -659,17 +664,15 @@ declare global {
         : InputRenderer<Input, Return>;
 
       /**
-       * Renders a tag without rest attribute tags given its input, with
-       * `Marko.Directives`: related to it (with `Relate`), so that TypeScript types
-       * it by it and reports what it does not have, while
+       * Renders a tag without rest attribute tags given its input, related
+       * to it (with `Relate`), so that TypeScript types it by it and reports
+       * what it does not have, while
        * `__marko_internal_input` keeps its type for `Scopes`.
        */
       export interface InputRenderer<Input, Return> {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
         <__marko_internal_input extends unknown>(
-          input: Marko.Directives &
-            Input &
-            Relate<__marko_internal_input, Marko.Directives & Input>,
+          input: Input & Relate<__marko_internal_input, Input>,
         ): ReturnWithScope<__marko_internal_input, Return>;
         /** See `RestAttrTagsRenderer`. */
         readonly [rendererInput]?: (input: Input) => Input;
@@ -679,7 +682,7 @@ declare global {
        * Renders a tag given its input with rest attribute tags: its
        * attributes, the first attribute tag of each name written directly
        * under it, and (keyed by `restAttrTags`) its rest attribute tags as
-       * groups (see `Directives`). One argument, so that TypeScript infers
+       * groups (see `AttributeTags`). One argument, so that TypeScript infers
        * the tag's type parameters from both and reports each of their
        * errors. It is related to the input (with `Relate`), so that
        * TypeScript types it by it and reports what it does not have, while
@@ -745,7 +748,7 @@ type DynamicInputRenderer<Name> = {
   ): () => Mode extends 2 | 3
     ? DynamicInputRestAttrTagsRenderer<Name>
     : <Input extends Marko.Input<Name>>(
-        input: Marko.Directives & Input,
+        input: Input,
       ) => Marko._.ReturnWithScope<Input, Marko.Return<Name>>;
 };
 
@@ -753,19 +756,20 @@ type DynamicInputRenderer<Name> = {
  * A tag's input for its groups: `any` where it is not known (a bare
  * `Marko.Template`'s, or a body's `unknown` param), which takes anything, as
  * its attributes do (`unknown` would take none, see `AttrTagGroup`). A
- * compiled template's is read with the directives, so one that declares
+ * compiled template's is read as it is, so one that declares
  * `unknown` takes none.
  */
 type KnownInput<Input> = unknown extends Input ? any : Input;
 
 /** `DynamicInputRenderer` for a tag with rest attribute tags. */
 type DynamicInputRestAttrTagsRenderer<Name> = <
-  // With the directives, whose rest attribute tags the input object has, so
+  // With its groups, which the input object has, so
   // that TypeScript infers it, rather than this constraint, when it has no
   // other property in common with an input whose properties are all optional.
-  Input extends Directives<KnownInput<Marko.Input<Name>>> & Marko.Input<Name>,
+  Input extends AttributeTags<KnownInput<Marko.Input<Name>>> &
+    Marko.Input<Name>,
 >(
-  input: Directives<KnownInput<Marko.Input<Name>>> & Input,
+  input: AttributeTags<KnownInput<Marko.Input<Name>>> & Input,
 ) => Marko._.ReturnWithRestAttrTagsScope<Input, Marko.Return<Name>>;
 
 /**
@@ -778,13 +782,13 @@ type NativeTagsRenderer<Names extends keyof Marko.NativeTags> = {
     mode?: Mode,
   ): () => Mode extends 2 | 3
     ? <Input extends Marko.NativeTags[Names]["input"]>(
-        input: Directives<NoAttrTags> & Input & NoAttrTagsIn<Input>,
+        input: AttributeTags<NoAttrTags> & Input & NoAttrTagsIn<Input>,
       ) => Marko._.ReturnWithRestAttrTagsScope<
         Input,
         Marko.NativeTags[Names]["return"]
       >
     : <Input extends Marko.NativeTags[Names]["input"]>(
-        input: Marko.Directives & Input & NoAttrTagsIn<Input>,
+        input: Input & NoAttrTagsIn<Input>,
       ) => Marko._.ReturnWithScope<Input, Marko.NativeTags[Names]["return"]>;
 };
 
@@ -958,7 +962,7 @@ NoInfer<
 >;
 
 /** A tag's input with rest attribute tags. */
-type RestAttrTagsInput<Input> = Input & Directives<Input>;
+type RestAttrTagsInput<Input> = Input & AttributeTags<Input>;
 
 /** The key of `Marko._.InputRenderer`'s `Input`. */
 declare const rendererInput: unique symbol;
@@ -971,12 +975,12 @@ declare const rendererInput: unique symbol;
 declare const attributeTags: unique symbol;
 
 /**
- * `Marko.Directives`, with the rest attribute tags of a tag's input, as groups
+ * The rest attribute tags of a tag's input, as groups
  * (the static ones, an object per repetition, so that each has a name once; an
  * `<if>` chain or a `<while>`; or a `<for>`'s `for*AttrTag`), merged by name.
  * `| []` infers a tuple.
  */
-interface Directives<Input> extends Marko.Directives {
+interface AttributeTags<Input> {
   [attributeTags]?: readonly Marko._.AttrTagGroup<Input>[] | [];
 }
 

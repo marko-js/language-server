@@ -137,6 +137,8 @@ class ScriptExtractor {
   #code: string;
   #filename: string;
   #api: RuntimeAPI;
+  /** Whether the last `#writeAttrs` left directives out. */
+  #hasDirectives = false;
   #interop: boolean;
   #parsed: Parsed;
   #extractor: Extractor;
@@ -482,7 +484,7 @@ function ${templateName}() {\n`);
       const renderer = `<${internalApply} = 1>(m?: ${internalApply}) => ${internalApply} extends 0 | 2
     ? ${typeParamsStr}() => ${varShared("Renderer")}<Input${typeArgsStr}, ${returnTypeArg}, ${internalApply}>
     : ${internalApply} extends 1
-    ? () => <${internalInput}, ${typeParams}>(input: Marko.Directives & Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Marko.Directives & Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeArg}>
+    ? () => <${internalInput}, ${typeParams}>(input: Input${typeArgsStr} & ${varShared("Relate")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithScope")}<${internalInput}, ${returnTypeArg}>
     : () => <${internalInput}, ${typeParams}>(input: ${varShared("TagInput")}<${internalInput}, Input${typeArgsStr}>) => ${varShared("ReturnWithRestAttrTagsScope")}<${internalInput}, ${returnTypeArg}>`;
       const method = (part: string) =>
         `${varShared(part)}<Input${typeArgsStr}, ${returnTypeArg}, ${key}>`;
@@ -994,7 +996,9 @@ constructor(_) {}
       this.#extractor
         // Its name is not mapped: TypeScript has nothing to say of it, and
         // Marko describes the tag.
-        .write(`${varShared("renderNativeTag")}("${tagName}")(`);
+        .write(
+          `${varShared(needsHoist ? "renderNativeTagWithScope" : "renderNativeTag")}("${tagName}")(`,
+        );
     } else if (isTemplate) {
       this.#extractor.write(`${varShared("renderTemplate")}(`);
       this.#writeTemplateExport(tag, templateVar!);
@@ -1021,9 +1025,23 @@ constructor(_) {}
       }
     }
 
-    this.#writeTagInputObject(tag, body, withRestAttrTags);
+    // Marko 5's directives (`Marko.Directives`, eg `key`) on a tag in the
+    // Class API are not its input: they are typed apart, so that its input
+    // holds only what the tag's input declares.
+    const hasDirectives = this.#writeTagInputObject(
+      tag,
+      body,
+      withRestAttrTags,
+      this.#api === RuntimeAPI.class,
+    );
 
     this.#extractor.write(");\n");
+
+    if (hasDirectives) {
+      this.#extractor.write(`${varShared("directives")}({\n`);
+      this.#writeAttrs(tag, 2);
+      this.#extractor.write("});\n");
+    }
 
     if (mutatedVars) {
       for (const binding of mutatedVars) {
@@ -1122,9 +1140,16 @@ constructor(_) {}
     this.#extractor.copy(scriptlet.value).write(";\n");
   }
 
-  #writeAttrs(tag: Node.ParentTag) {
+  /**
+   * Writes a tag's attributes as properties: all of them (`0`), all but
+   * Marko 5's directives (`1`, which sets `#hasDirectives`), or those alone
+   * (`2`).
+   */
+  #writeAttrs(tag: Node.ParentTag, directives: 0 | 1 | 2 = 0) {
+    const onlyDirectives = directives === 2;
     let hasAttrs = false;
-    if (tag.shorthandId) {
+    let hasDirectives = false;
+    if (tag.shorthandId && !onlyDirectives) {
       hasAttrs = true;
       this.#extractor
         .write(`id: ${varShared("interpolated")}\``)
@@ -1139,7 +1164,7 @@ constructor(_) {}
       ? this.#getMergeableClassAttr(tag.attrs)
       : undefined;
 
-    if (tag.shorthandClassNames) {
+    if (tag.shorthandClassNames && !onlyDirectives) {
       let sep = SEP_EMPTY;
       hasAttrs = true;
       this.#extractor.write(
@@ -1168,10 +1193,19 @@ constructor(_) {}
     }
 
     if (tag.attrs) {
-      hasAttrs = true;
-
       for (const attr of tag.attrs) {
         if (attr === mergedClassAttr) continue;
+        if (
+          directives &&
+          (attr.type === NodeType.AttrNamed &&
+            isDirectiveName(this.#code, attr.name.start, attr.name.end)) !==
+            onlyDirectives
+        ) {
+          hasDirectives = !onlyDirectives;
+          continue;
+        }
+
+        hasAttrs = true;
         switch (attr.type) {
           case NodeType.AttrSpread:
             this.#extractor.write(`...(\n`);
@@ -1388,6 +1422,7 @@ constructor(_) {}
       }
     }
 
+    if (directives === 1) this.#hasDirectives = hasDirectives;
     return hasAttrs;
   }
 
@@ -1611,6 +1646,7 @@ constructor(_) {}
     tag: Node.ParentTag,
     body: ProcessedBody | undefined,
     withRestAttrTags?: boolean,
+    apartDirectives?: boolean,
   ) {
     if (!tag.params) this.#writeComments(tag);
 
@@ -1664,9 +1700,12 @@ constructor(_) {}
       }
     }
 
-    if (this.#writeAttrs(tag)) {
+    if (this.#writeAttrs(tag, apartDirectives ? 1 : 0)) {
       hasInput = true;
     }
+
+    // Read before the tag's body, whose tags set their own.
+    const hasDirectives = apartDirectives && this.#hasDirectives;
 
     const isScript = isTextOnlyScript(tag);
     let hasBodyContent = false;
@@ -1800,6 +1839,8 @@ constructor(_) {}
       // What the input has ends its line (and an empty one is `{⏎}`).
       this.#extractor.write("}");
     }
+
+    return hasDirectives;
   }
 
   /**
@@ -2614,4 +2655,26 @@ function removeNewLines(str: string) {
 
 function isEmptyRange(range: Range) {
   return range.start === range.end;
+}
+
+/**
+ * Whether an attribute's name (from `start` to `end` in `code`) is one of
+ * Marko 5's directives (`Marko.Directives`: `key`, `no-update`,
+ * `no-update-if`, `no-update-body`, `no-update-body-if`), maybe with a
+ * modifier after a `:` (`key:scoped`), which is dropped where the attribute
+ * is written.
+ */
+function isDirectiveName(code: string, start: number, end: number) {
+  let length: number;
+  if (code.startsWith("key", start)) {
+    length = 3;
+  } else if (code.startsWith("no-update", start)) {
+    length = code.startsWith("-body", start + 9) ? 14 : 9;
+    if (code.startsWith("-if", start + length)) length += 3;
+  } else {
+    return false;
+  }
+  const next = start + length;
+  // The name ends there, or its modifier follows a `:` (58).
+  return next === end || (next < end && code.charCodeAt(next) === 58);
 }

@@ -148,7 +148,7 @@
   10 |
   11 | // An attribute the tag does not have
 > 12 | <flat-tag title="x" bogus=1/>
-     |                     ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'.
+     |                     ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input'.
   13 | <Flat title="x" bogus=1/>
   14 | <ShortFlat title="x" bogus=1/>
   15 | <${Flat} title="x" bogus=1/>
@@ -159,7 +159,7 @@
   11 | // An attribute the tag does not have
   12 | <flat-tag title="x" bogus=1/>
 > 13 | <Flat title="x" bogus=1/>
-     |                 ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'.
+     |                 ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input'.
   14 | <ShortFlat title="x" bogus=1/>
   15 | <${Flat} title="x" bogus=1/>
   16 |
@@ -170,7 +170,7 @@
   12 | <flat-tag title="x" bogus=1/>
   13 | <Flat title="x" bogus=1/>
 > 14 | <ShortFlat title="x" bogus=1/>
-     |                      ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'.
+     |                      ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input'.
   15 | <${Flat} title="x" bogus=1/>
   16 |
   17 | // An attribute tag the tag does not have
@@ -181,7 +181,7 @@
   13 | <Flat title="x" bogus=1/>
   14 | <ShortFlat title="x" bogus=1/>
 > 15 | <${Flat} title="x" bogus=1/>
-     |                    ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Directives & Input'.
+     |                    ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'Input'.
   16 |
   17 | // An attribute tag the tag does not have
   18 | <flat-tag title="x"><@nope title="a"/></flat-tag>
@@ -192,7 +192,7 @@
   16 |
   17 | // An attribute tag the tag does not have
 > 18 | <flat-tag title="x"><@nope title="a"/></flat-tag>
-     |                      ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Directives & Input'.
+     |                      ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Input'.
   19 | <Flat title="x"><@nope title="a"/></Flat>
   20 | <${Flat} title="x"><@nope title="a"/></>
   21 |
@@ -203,7 +203,7 @@
   17 | // An attribute tag the tag does not have
   18 | <flat-tag title="x"><@nope title="a"/></flat-tag>
 > 19 | <Flat title="x"><@nope title="a"/></Flat>
-     |                  ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Directives & Input'.
+     |                  ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Input'.
   20 | <${Flat} title="x"><@nope title="a"/></>
   21 |
   22 | // A missing attribute
@@ -214,7 +214,7 @@
   18 | <flat-tag title="x"><@nope title="a"/></flat-tag>
   19 | <Flat title="x"><@nope title="a"/></Flat>
 > 20 | <${Flat} title="x"><@nope title="a"/></>
-     |                     ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Directives & Input'.
+     |                     ^^^^^ Object literal may only specify known properties, and '"nope"' does not exist in type 'Input'.
   21 |
   22 | // A missing attribute
   23 | <flat-tag count=1/>
@@ -225,7 +225,7 @@
   21 |
   22 | // A missing attribute
 > 23 | <flat-tag count=1/>
-     |           ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Directives & Input'.
+     |           ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{ count: number; }' but required in type 'Input'.
   24 | <Flat count=1/>
   25 | <${Flat} count=1/>
@@ -237,7 +237,7 @@
   22 | // A missing attribute
   23 | <flat-tag count=1/>
 > 24 | <Flat count=1/>
-     |       ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Directives & Input'.
+     |       ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{ count: number; }' but required in type 'Input'.
   25 | <${Flat} count=1/>
   26 |
@@ -249,7 +249,7 @@
   23 | <flat-tag count=1/>
   24 | <Flat count=1/>
 > 25 | <${Flat} count=1/>
-     |          ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Directives & Input'.
+     |          ^^^^^^^ Argument of type '{ count: number; }' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{ count: number; }' but required in type 'Input'.
   26 |
   27 | // The tag var
@@ -294,7 +294,7 @@
   87 |   </@group>
   88 | </>
 > 89 | <rec-tag/>
-     |  ^^^^^^^ Argument of type '{}' is not assignable to parameter of type 'Directives & Input'.
+     |  ^^^^^^^ Argument of type '{}' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{}' but required in type 'Input'.
   90 | <Rec/>
   91 | <${Rec}/>
@@ -306,7 +306,7 @@
   88 | </>
   89 | <rec-tag/>
 > 90 | <Rec/>
-     |  ^^^ Argument of type '{}' is not assignable to parameter of type 'Directives & Input'.
+     |  ^^^ Argument of type '{}' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{}' but required in type 'Input'.
   91 | <${Rec}/>
   92 |
@@ -318,7 +318,7 @@
   89 | <rec-tag/>
   90 | <Rec/>
 > 91 | <${Rec}/>
-     |  ^^^^^^ Argument of type '{}' is not assignable to parameter of type 'Directives & Input'.
+     |  ^^^^^^ Argument of type '{}' is not assignable to parameter of type 'Input'.
   Property 'title' is missing in type '{}' but required in type 'Input'.
   92 |
   93 | // Type args

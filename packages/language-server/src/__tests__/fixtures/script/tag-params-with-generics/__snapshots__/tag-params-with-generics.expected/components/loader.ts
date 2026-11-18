@@ -35,12 +35,8 @@ class Template extends Marko._.GenericTemplate<
       >
     : __marko_internal_apply extends 1
       ? () => <__marko_internal_input, TData = string>(
-          input: Marko.Directives &
-            Input<TData> &
-            Marko._.Relate<
-              __marko_internal_input,
-              Marko.Directives & Input<TData>
-            >,
+          input: Input<TData> &
+            Marko._.Relate<__marko_internal_input, Input<TData>>,
         ) => Marko._.ReturnWithScope<__marko_internal_input, void>
       : () => <__marko_internal_input, TData = string>(
           input: Marko._.TagInput<__marko_internal_input, Input<TData>>,

@@ -10,10 +10,12 @@ export type Component = Marko.Component<Input>;
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({});
+  Marko._.directives({
     "no-update-if": Math.random() > 0.5,
   });
-  Marko._.renderNativeTag("div")({
+  Marko._.renderNativeTag("div")({});
+  Marko._.directives({
     "no-update-if": "test",
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
