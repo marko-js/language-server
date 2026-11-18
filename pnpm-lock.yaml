@@ -48,8 +48,8 @@ importers:
         specifier: ^17.6.0
         version: 17.6.0
       marko:
-        specifier: ^5.40.4
-        version: 5.40.4
+        specifier: ^5.41.0
+        version: 5.41.0
       mocha:
         specifier: ^12.0.3
         version: 12.0.3
@@ -75,8 +75,8 @@ importers:
   packages/language-server:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.4
-        version: 5.43.4
+        specifier: ^5.43.5
+        version: 5.43.5
       '@marko/language-tools':
         specifier: ^2.8.2
         version: link:../language-tools
@@ -90,8 +90,8 @@ importers:
         specifier: ^31.0.0
         version: 31.0.0(patch_hash=a946b298ccd2d54ae8ea0c2af0d96b428cd3d6231c7d9ff50b1260200c3e3a1f)
       marko:
-        specifier: ^5.40.4
-        version: 5.40.4
+        specifier: ^5.41.0
+        version: 5.41.0
       prettier:
         specifier: ^3.10.1
         version: 3.10.1
@@ -127,14 +127,14 @@ importers:
   packages/language-server/src/__tests__/fixtures/script/template-consumers-marko-6:
     dependencies:
       marko:
-        specifier: ^6.4.16
-        version: 6.4.16
+        specifier: ^6.5.0
+        version: 6.5.0
 
   packages/language-tools:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.4
-        version: 5.43.4
+        specifier: ^5.43.5
+        version: 5.43.5
       htmljs-parser:
         specifier: ^5.22.2
         version: 5.22.2
@@ -146,8 +146,8 @@ importers:
         specifier: ^7.27.0
         version: 7.27.0
       marko:
-        specifier: ^5.40.4
-        version: 5.40.4
+        specifier: ^5.41.0
+        version: 5.41.0
       mitata:
         specifier: ^1.0.34
         version: 1.0.34
@@ -164,8 +164,8 @@ importers:
         specifier: ^2.8.0
         version: link:../language-tools
       marko:
-        specifier: ^5.40.4
-        version: 5.40.4
+        specifier: ^5.41.0
+        version: 5.41.0
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
@@ -176,8 +176,8 @@ importers:
   packages/type-check:
     dependencies:
       '@marko/compiler':
-        specifier: ^5.43.4
-        version: 5.43.4
+        specifier: ^5.43.5
+        version: 5.43.5
       '@marko/language-tools':
         specifier: ^2.8.2
         version: link:../language-tools
@@ -733,12 +733,12 @@ packages:
     resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
     engines: {node: '>=20.0.0'}
 
-  '@marko/compiler@5.43.4':
-    resolution: {integrity: sha512-8zIxG3Juf64uSHteNHtzZtsGs5x0ViWHccosNrpVMj8qOXFvmgykfYj4xUJFDYgDVg4LRSaHjk9HKtOa1WsNGQ==}
+  '@marko/compiler@5.43.5':
+    resolution: {integrity: sha512-80VS8HFgtgRXqmfyBLEkMytFRHmU14tD9Hb/nokz+7Qo2DqDfv03nL9kzDRw8pVQuDHR27yKzkFCYg8h9CsIrA==}
     engines: {node: '>=22.12.0'}
 
-  '@marko/runtime-tags@6.4.16':
-    resolution: {integrity: sha512-Bup+TOy49KgkUmhrAO4Hm/KCVd7+d/iMux5PCO9iOjWXaqMEkoG31UK9Rskhc6v5qgXGrtn5ujCtjoySSrTjRg==}
+  '@marko/runtime-tags@6.5.0':
+    resolution: {integrity: sha512-xpAYwLlp6PUAfzXYYVpzHda2gi2Z1SMWD/h8A/pxqWJfgRmoAsQreRE+6btk6IdfjlAc0veH6Kwx4McViMlBiQ==}
     engines: {node: '>=22.12.0'}
 
   '@napi-rs/keyring-darwin-arm64@1.3.0':
@@ -1820,13 +1820,13 @@ packages:
     engines: {node: '>= 20'}
     hasBin: true
 
-  marko@5.40.4:
-    resolution: {integrity: sha512-bfXruCiVwGp5aMtSeIMLKY0r6vNPIC+Rb9h78lVNUaqFJuLnQpUNc1vPV/mVoi7rOmVzPEE/sA8N6AsHM2qhdA==}
+  marko@5.41.0:
+    resolution: {integrity: sha512-SdowqVOoyb/xBakS6xszqlO/o8zqsOSnEyXTw0Oa21UExrOj3u841OYYHQc3vvlasgCRWDaZeXAFUfyRDPK+PQ==}
     engines: {node: '>=22.12.0'}
     hasBin: true
 
-  marko@6.4.16:
-    resolution: {integrity: sha512-fx68Qd0iwl/IBqTHSaeTIQivFFWUKXUHGsjptb77cmGeGI6o2A+G0f3iFVxf903szF1mVOZsewKLzUFjTCCVJA==}
+  marko@6.5.0:
+    resolution: {integrity: sha512-gBc1fjaRZ2UYZD/n/q+qfmf/+H4MRFFbXK/hRNJXcpQ24KHEmlz+RbjoY+Hr5+NV3yYxhe37JRz4NP1Y1wGh4g==}
     engines: {node: '>=22.12.0'}
 
   math-intrinsics@1.1.0:
@@ -2909,7 +2909,7 @@ snapshots:
       tinyglobby: 0.2.17
       yaml: 2.9.1
 
-  '@marko/compiler@5.43.4':
+  '@marko/compiler@5.43.5':
     dependencies:
       htmljs-parser: 5.22.2
       jsesc: 3.1.0
@@ -2918,9 +2918,9 @@ snapshots:
       relative-import-path: 1.0.1
       resolve-sync: 1.3.0
 
-  '@marko/runtime-tags@6.4.16':
+  '@marko/runtime-tags@6.5.0':
     dependencies:
-      '@marko/compiler': 5.43.4
+      '@marko/compiler': 5.43.5
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
       magic-string: 1.4.5
@@ -4004,10 +4004,10 @@ snapshots:
 
   marked@18.2.0: {}
 
-  marko@5.40.4:
+  marko@5.41.0:
     dependencies:
-      '@marko/compiler': 5.43.4
-      '@marko/runtime-tags': 6.4.16
+      '@marko/compiler': 5.43.5
+      '@marko/runtime-tags': 6.5.0
       app-module-path: 2.2.0
       argly: 1.2.0
       browser-refresh-client: 1.1.4
@@ -4021,9 +4021,9 @@ snapshots:
       self-closing-tags: 1.0.1
       warp10: 2.1.0
 
-  marko@6.4.16:
+  marko@6.5.0:
     dependencies:
-      '@marko/compiler': 5.43.4
+      '@marko/compiler': 5.43.5
       csstype: 3.2.3
       fastest-levenshtein: 1.0.16
       magic-string: 1.4.5

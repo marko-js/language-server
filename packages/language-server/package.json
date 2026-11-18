@@ -43,12 +43,12 @@
     "test:update": "mocha './src/**/__tests__/*.test.ts' --update"
   },
   "dependencies": {
-    "@marko/compiler": "^5.43.4",
+    "@marko/compiler": "^5.43.5",
     "@marko/language-tools": "^2.8.2",
     "axe-core": "^4.14.0",
     "htmljs-parser": "^5.22.2",
     "jsdom": "^31.0.0",
-    "marko": "^5.40.4",
+    "marko": "^5.41.0",
     "prettier": "^3.10.1",
     "prettier-plugin-marko": "^4.1.4",
     "relative-import-path": "^1.0.1",

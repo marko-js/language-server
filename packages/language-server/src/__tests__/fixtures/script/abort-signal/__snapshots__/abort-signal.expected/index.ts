@@ -14,14 +14,16 @@ export { type Component };
   const __marko_internal_tag_1 = Marko._.resolveTemplate(
     import("@marko/runtime-tags/tags/effect.d.marko"),
   ).default;
-  Marko._.renderTemplate(__marko_internal_tag_1)()()({
-    value() {
-      $signal.onabort = () => {
-        // ^?
-        console.log("aborted");
-      };
+  Marko._.renderTemplate(__marko_internal_tag_1)()()(
+    /* use tags */ {
+      value() {
+        $signal.onabort = () => {
+          // ^?
+          console.log("aborted");
+        };
+      },
     },
-  });
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
