@@ -14,7 +14,6 @@ const __marko_internal_rendered_1 = Marko._.renderTemplate(__marko_internal_tag_
 {
 "value": 1
 ,
-
 });
 }Marko._.noop({ input, $global, $signal });
 return;
