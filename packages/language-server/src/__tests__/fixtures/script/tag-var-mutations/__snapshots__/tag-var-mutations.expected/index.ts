@@ -22,37 +22,37 @@ export interface Input {}
       "value",
       __marko_internal_rendered_1.return,
     );
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function"() {
         __marko_internal_change__x.x++;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function"(y = __marko_internal_change__x.x++) {
         y;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function": () => {
         __marko_internal_change__x.x++;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function": (y = __marko_internal_change__x.x++) => {
         y;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function": function () {
         __marko_internal_change__x.x++;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function": function (y = __marko_internal_change__x.x++) {
         y;
       },
     });
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       "data-function"() {
         function testA() {
           __marko_internal_change__x.x++;

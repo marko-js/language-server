@@ -38,7 +38,7 @@ export interface Input {}
         "value",
         __marko_internal_rendered_2.return,
       );
-      Marko._.renderNativeTag("button")()()({
+      Marko._.renderNativeTag("button")({
         onClick() {
           [__marko_internal_change__x.x] = [2];
           ({ a: __marko_internal_change__x.x } = { a: 3 });
@@ -55,7 +55,7 @@ export interface Input {}
       ).default;
       Marko._.renderTemplate(__marko_internal_tag_3)()()({
         [Marko._.contentFor(__marko_internal_tag_3)]: (x) => {
-          Marko._.renderNativeTag("button")()()(
+          Marko._.renderNativeTag("button")(
             // The tag param shadows the outer `x` so this is not a tag var mutation.
             {
               onClick() {

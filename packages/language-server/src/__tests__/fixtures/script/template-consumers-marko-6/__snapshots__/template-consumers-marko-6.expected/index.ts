@@ -119,7 +119,7 @@ export interface Input {}
               name: "x",
             },
           );
-          Marko._.renderNativeTag("div")()()({
+          Marko._.renderNativeTag("div")({
             ["content"]: (() => {
               [count];
               [countByName];

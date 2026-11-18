@@ -22,7 +22,7 @@ export interface Input {}
       "value",
       __marko_internal_rendered_1.return,
     );
-    Marko._.renderNativeTag("div")()()({
+    Marko._.renderNativeTag("div")({
       onClick() {
         __marko_internal_change__x.x = "Hello!";
 

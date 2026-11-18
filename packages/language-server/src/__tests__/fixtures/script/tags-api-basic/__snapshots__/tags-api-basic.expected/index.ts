@@ -51,10 +51,10 @@ function __marko_internal_template(this: void) {
       )()()({
         value: input,
       });
-      Marko._.renderNativeTag("div")()()({
+      Marko._.renderNativeTag("div")({
         class: "mobiles__list",
         [Marko._.content]: (() => {
-          Marko._.renderNativeTag("p")()()({
+          Marko._.renderNativeTag("p")({
             id: "p",
             [Marko._.content]: (() => {
               [year];
@@ -62,7 +62,7 @@ function __marko_internal_template(this: void) {
             })(),
           });
           if (isSmartOnly) {
-            Marko._.renderNativeTag("span")()()({
+            Marko._.renderNativeTag("span")({
               class: "sub-note",
               [Marko._.content]: (() => {
                 [isSmartOnly];
@@ -70,7 +70,7 @@ function __marko_internal_template(this: void) {
               })(),
             });
           }
-          Marko._.renderNativeTag("span")()()({
+          Marko._.renderNativeTag("span")({
             class: "sub-note",
             [Marko._.content]: (() => {
               [type];
@@ -82,7 +82,7 @@ function __marko_internal_template(this: void) {
               of: mobileList,
             },
             (mobile, i, all) => {
-              Marko._.renderNativeTag("span")()()(
+              Marko._.renderNativeTag("span")(
                 //                          ^?
                 {
                   id: i,
@@ -97,7 +97,7 @@ function __marko_internal_template(this: void) {
               return Marko._.voidReturn;
             },
           );
-          Marko._.renderNativeTag("div")()()({
+          Marko._.renderNativeTag("div")({
             class: Marko._.interpolated`container`,
             [Marko._.content]: (() => {
               const __marko_internal_tag_3 = renderBody;
@@ -114,15 +114,15 @@ function __marko_internal_template(this: void) {
               return Marko._.voidBody;
             })(),
           });
-          Marko._.renderNativeTag("div")()()({
+          Marko._.renderNativeTag("div")({
             [Marko._.content]: (() => {
               ["<b>World</b>"];
               return Marko._.voidBody;
             })(),
           });
-          Marko._.renderNativeTag("div")()()({
+          Marko._.renderNativeTag("div")({
             [Marko._.content]: (() => {
-              Marko._.renderNativeTag("code")()()({
+              Marko._.renderNativeTag("code")({
                 [Marko._.content]: Marko._.voidBody,
               });
               return Marko._.voidBody;

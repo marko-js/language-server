@@ -11,45 +11,45 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("map")()()({
+  Marko._.renderNativeTag("map")({
     name: "Map",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("area")()()({
+      Marko._.renderNativeTag("area")({
         shape: "rect",
         href: "image-map",
       });
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("img")()()({
+  Marko._.renderNativeTag("img")({
     src: "source",
   });
-  Marko._.renderNativeTag("a")()()({
+  Marko._.renderNativeTag("a")({
     href: "ebay.com",
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("img")()()({
+      Marko._.renderNativeTag("img")({
         src: "ebay-logo.png",
         alt: "eBay",
       });
       return Marko._.voidBody;
     })(),
   });
-  Marko._.renderNativeTag("input")()()({
+  Marko._.renderNativeTag("input")({
     type: "image",
   });
-  Marko._.renderNativeTag("object")()()({
+  Marko._.renderNativeTag("object")({
     id: "object",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("div")()()({
+  Marko._.renderNativeTag("div")({
     role: "img",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("svg")()()({
+  Marko._.renderNativeTag("svg")({
     role: "img",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("img")()()({
+  Marko._.renderNativeTag("img")({
     alt: "test",
   });
   Marko._.noop({ component, state, out, input, $global, $signal });

@@ -22,7 +22,7 @@ export { type Component };
       of: input.tab,
     },
     ({ href, title }) => {
-      Marko._.renderNativeTag("a")()()(
+      Marko._.renderNativeTag("a")(
         // ^?
         {
           href: href,
@@ -35,14 +35,14 @@ export { type Component };
       return Marko._.voidReturn;
     },
   );
-  Marko._.renderNativeTag("select")()()({
+  Marko._.renderNativeTag("select")({
     [Marko._.content]: (() => {
       Marko._.forOfTag(
         {
           of: input.option,
         },
         ({ value, content }) => {
-          Marko._.renderNativeTag("option")()()(
+          Marko._.renderNativeTag("option")(
             // ^?
             {
               value: value,

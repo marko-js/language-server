@@ -23,7 +23,7 @@ export interface Input {}
       "value",
       __marko_internal_rendered_1.return,
     );
-    Marko._.renderNativeTag("button")()()({
+    Marko._.renderNativeTag("button")({
       onClick() {
         __marko_internal_change__x.x++;
         //^?
@@ -50,7 +50,7 @@ export interface Input {}
             "value",
             __marko_internal_rendered_3.return,
           );
-          Marko._.renderNativeTag("button")()()({
+          Marko._.renderNativeTag("button")({
             onClick() {
               __marko_internal_change__x.x++;
               //  ^?

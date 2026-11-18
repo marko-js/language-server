@@ -11,7 +11,7 @@ export interface Input<T extends string> {
   const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const y = Marko._.hoist(() => __marko_internal_hoist__y);
   const promise = Marko._.hoist(() => __marko_internal_hoist__promise);
-  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")()()({
+  const __marko_internal_rendered_1 = Marko._.renderNativeTag("div")({
     [Marko._.content]: (() => {
       const __marko_internal_tag_2 = Marko._.resolveTemplate(
         import("@marko/runtime-tags/tags/let.d.marko"),

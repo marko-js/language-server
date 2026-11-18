@@ -138,19 +138,21 @@ export { type Component };
       ],
     },
   );
-  Marko._.renderNativeTag("div")(Marko._.withRestAttrTags)()(
-    // On a native tag
+  Marko._.renderNativeTag("div")(
+    // On a native tag, which has none to type: the compiler reports them
     {
-      item: {
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
+      ...Marko._.attrTags(Marko._.any)([
         {
           item: {
             [Symbol.iterator]: Marko._.any,
           },
         },
-      ],
+        {
+          item: {
+            [Symbol.iterator]: Marko._.any,
+          },
+        },
+      ]),
     },
   );
   const __marko_internal_tag_5 = Marko._.resolveTemplate(

@@ -307,9 +307,15 @@ declare global {
       export function renderTemplate<Name>(
         template: Name,
       ): TemplateRenderer<Name>;
+      // A native tag's renderer (see `Renderer`). A call, not a member of an
+      // object of renderers: one read by an index signature (eg a custom
+      // element's) is possibly undefined under `noUncheckedIndexedAccess`.
       export function renderNativeTag<Name extends string>(
         tag: Name,
-      ): NativeTagRenderer<Name>;
+      ): InputRenderer<
+        Marko.NativeTags[Name]["input"],
+        Marko.NativeTags[Name]["return"]
+      >;
       export const missingTag: DefaultRenderer;
       // A template's module, whose `default` a tag reads by its name, so
       // TypeScript shows the template's docs there.
@@ -587,19 +593,11 @@ declare global {
           ? BaseRenderer<Input, Return>
           : DefaultRenderer;
 
-      // Each renderer's first call takes the form of renderer the tag needs
-      // (see `Renderer`): `1` (the default) for a tag without rest attribute
+      // Each renderer's first call (but a native tag's, see
+      // `renderNativeTag`) takes the form of renderer the tag needs (see
+      // `Renderer`): `1` (the default) for a tag without rest attribute
       // tags, `withRestAttrTags` (`3`) for one with them, and `0` and `2`
       // likewise for a generic template given type arguments.
-      export interface NativeTagRenderer<Name extends string> {
-        <Mode extends number = 1>(
-          mode?: Mode,
-        ): () => Renderer<
-          Marko.NativeTags[Name]["input"],
-          Marko.NativeTags[Name]["return"],
-          Mode
-        >;
-      }
 
       /**
        * A body's renderer: given its input, as a template's is, when its only

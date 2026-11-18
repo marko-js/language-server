@@ -44,7 +44,7 @@ export interface Input {}
         "value",
         __marko_internal_rendered_2.return,
       );
-      Marko._.renderNativeTag("div")()()(
+      Marko._.renderNativeTag("div")(
         //   ^?   ^?
         {
           onClick() {

@@ -17,6 +17,11 @@ export { type Component };
   Marko._.renderTemplate(__marko_internal_tag_1)<0>()<string>()({
     a: 1,
   });
+  (() => {})<string>();
+  Marko._.renderNativeTag("div")(
+    // A native tag takes none.
+    {},
+  );
   Marko._.noop({ component, state, out, input, $global, $signal });
   return;
 })();
@@ -24,3 +29,4 @@ const __marko_internal_api = "class";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input, void, "class"> {}
 export default new Template();
+// ^?

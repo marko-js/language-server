@@ -35,7 +35,7 @@ export { type Component };
             {
               item: {
                 [Marko._.contentFor(__marko_internal_tag_1)]: ({ label }) => {
-                  Marko._.renderNativeTag("div")()()({
+                  Marko._.renderNativeTag("div")({
                     [Marko._.content]: (() => {
                       [name];
                       [label];
@@ -65,7 +65,7 @@ export { type Component };
     section: {
       item: {
         [Marko._.contentFor(__marko_internal_tag_2)]: ({ label }) => {
-          Marko._.renderNativeTag("div")()()({
+          Marko._.renderNativeTag("div")({
             [Marko._.content]: (() => {
               [label];
               return Marko._.voidBody;

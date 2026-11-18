@@ -11,24 +11,24 @@ export { type Component };
     // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
     (Marko._.error, Marko._.any as MarkoRun.Context),
   );
-  Marko._.renderNativeTag("label")()()({
+  Marko._.renderNativeTag("label")({
     for: "one",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("label")()()({
+  Marko._.renderNativeTag("label")({
     for: "one",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("input")()()({
+  Marko._.renderNativeTag("input")({
     id: "one",
   });
-  Marko._.renderNativeTag("label")()()({
+  Marko._.renderNativeTag("label")({
     for: "two",
     [Marko._.content]: Marko._.voidBody,
   });
-  Marko._.renderNativeTag("label")()()({
+  Marko._.renderNativeTag("label")({
     [Marko._.content]: (() => {
-      Marko._.renderNativeTag("input")()()({
+      Marko._.renderNativeTag("input")({
         id: "two",
       });
       return Marko._.voidBody;
