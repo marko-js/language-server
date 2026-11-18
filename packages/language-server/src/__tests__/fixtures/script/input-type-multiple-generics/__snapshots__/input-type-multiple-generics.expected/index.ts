@@ -7,12 +7,11 @@ export interface Input<
   lastName: LastName;
   fullName: `${FirstName} ${LastName}`;
 }
-abstract class Component<
+export type Component<
   FirstName extends string,
   LastName extends string,
   Extra,
-> extends Marko.Component<Input<FirstName, LastName, Extra>> {}
-export { type Component };
+> = Marko.Component<Input<FirstName, LastName, Extra>>;
 (function <FirstName extends string, LastName extends string, Extra>(
   this: void,
 ) {

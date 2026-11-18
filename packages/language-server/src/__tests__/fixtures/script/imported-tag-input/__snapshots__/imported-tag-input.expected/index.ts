@@ -3,8 +3,7 @@ import Gen from "./tags/gen-tag/index.marko";
 import Rec from "./tags/rec-tag/index.marko";
 import ShortFlat from "./tags/flat-tag/index.marko";
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
-export { type Component };
+export type Component = Marko.Component<Input>;
 (function (this: void) {
   const input = Marko._.any as Input;
   const component = Marko._.any as Component;

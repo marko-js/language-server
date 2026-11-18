@@ -8,11 +8,10 @@ export interface Input<
 // As a name of the constraint's type
 declare const anyTag: keyof Marko.NativeTags;
 declare const linkTag: "a" | "button";
-abstract class Component<
+export type Component<
   S extends keyof Marko.NativeTags,
   A extends "a" | "button",
-> extends Marko.Component<Input<S, A>> {}
-export { type Component };
+> = Marko.Component<Input<S, A>>;
 (function <S extends keyof Marko.NativeTags, A extends "a" | "button">(
   this: void,
 ) {
