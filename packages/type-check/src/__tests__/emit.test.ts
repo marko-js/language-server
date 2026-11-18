@@ -70,6 +70,62 @@ for (const mtc of builds)
           }
         }
       });
+
+      it("emits a package another project can type check against", async function () {
+        if (!emitted.some(isDeclaration)) this.skip();
+        this.timeout(60000);
+
+        // The emitted files stand in for a published package, its templates
+        // typed by the declarations beside them (and a hand written
+        // `x.d.marko` by itself).
+        const consumerDir = path.join(outDir, "__consumer__");
+        let use = "";
+        for (const file of emitted) {
+          const name = path.relative(outDir, file).replaceAll(path.sep, "/");
+          const pkgFile = path.join(consumerDir, "pkg", name);
+          fs.mkdirSync(path.dirname(pkgFile), { recursive: true });
+          fs.copyFileSync(file, pkgFile);
+          const template = /^(.*)\.d\.marko(?:\.ts)?$/.exec(name)?.[1];
+          if (template) {
+            const id = `Template_${template.replace(/\W/g, "_")}`;
+            use += `import ${id} from "./pkg/${template}.marko";\nexport const ${id}Input: Marko.Input<typeof ${id}> = null!;\n`;
+          }
+        }
+
+        fs.writeFileSync(path.join(consumerDir, "use.ts"), use);
+        // And the fixture's own uses of the package, if it has them.
+        const files = ["use.ts"];
+        const usesDir = path.join(fixtureDir, "consumer");
+        if (fs.existsSync(usesDir)) {
+          for (const name of fs.readdirSync(usesDir)) {
+            fs.copyFileSync(
+              path.join(usesDir, name),
+              path.join(consumerDir, name),
+            );
+            files.push(name);
+          }
+        }
+
+        const consumer = path.join(consumerDir, "tsconfig.json");
+        fs.writeFileSync(
+          consumer,
+          JSON.stringify({
+            compilerOptions: {
+              strict: true,
+              noEmit: true,
+              target: "ESNext",
+              module: "preserve",
+              moduleResolution: "bundler",
+            },
+            files,
+          }),
+        );
+
+        assert.deepEqual(await mtc.build(consumerDir, consumer), {
+          code: 0,
+          messages: [],
+        });
+      });
     });
   }
 

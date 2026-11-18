@@ -1,0 +1,10 @@
+import Greet from "./pkg/greet.marko";
+import NamedReturn from "./pkg/named-return.marko";
+import GenericReturn from "./pkg/generic-return.marko";
+
+// Each tag's variable is typed by the return its declaration carries, a
+// generic one's by the type its attributes give it.
+<Greet/greeting name="Ann"/>
+<NamedReturn/count start=1/>
+<GenericReturn/value value=1/>
+<div>${greeting.count.toFixed()} ${count.toFixed()} ${value.toFixed()}</div>
