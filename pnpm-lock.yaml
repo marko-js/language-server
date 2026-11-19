@@ -78,7 +78,7 @@ importers:
         specifier: ^5.43.5
         version: 5.43.5
       '@marko/language-tools':
-        specifier: ^2.9.0
+        specifier: ^3.0.0
         version: link:../language-tools
       axe-core:
         specifier: ^4.14.0
@@ -158,10 +158,10 @@ importers:
   packages/ts-plugin:
     devDependencies:
       '@marko/language-server':
-        specifier: ^3.6.0
+        specifier: ^3.7.0
         version: link:../language-server
       '@marko/language-tools':
-        specifier: ^2.9.0
+        specifier: ^3.0.0
         version: link:../language-tools
       marko:
         specifier: ^5.43.0
@@ -179,7 +179,7 @@ importers:
         specifier: ^5.43.5
         version: 5.43.5
       '@marko/language-tools':
-        specifier: ^2.9.0
+        specifier: ^3.0.0
         version: link:../language-tools
       arg:
         specifier: ^5.0.2
@@ -194,7 +194,7 @@ importers:
   packages/vscode:
     devDependencies:
       '@marko/language-server':
-        specifier: ^3.6.0
+        specifier: ^3.7.0
         version: link:../language-server
       '@types/vscode':
         specifier: ~1.116.0

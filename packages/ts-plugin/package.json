@@ -1,6 +1,6 @@
 {
   "name": "@marko/ts-plugin",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "TypeScript Server plugin that resolves Marko (.marko) imports with types inside TypeScript files",
   "keywords": [
     "marko",
@@ -26,8 +26,8 @@
     "build": "tsx build.mts"
   },
   "devDependencies": {
-    "@marko/language-server": "^3.6.0",
-    "@marko/language-tools": "^2.9.0",
+    "@marko/language-server": "^3.7.0",
+    "@marko/language-tools": "^3.0.0",
     "marko": "^5.43.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"

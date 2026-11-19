@@ -1,5 +1,23 @@
 # @marko/language-tools
 
+## 3.0.0
+
+### Major Changes
+
+- [#665](https://github.com/marko-js/language-server/pull/665) [`cea7961`](https://github.com/marko-js/language-server/commit/cea79616b43e0daa2c67d480336caa726215d48f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - A template's declaration is now the one TypeScript emits for its script, which `mtc` writes as `x.d.marko.ts` (where it wrote a Marko syntax `x.d.marko`). It names only Marko's public types, as one written by hand would, so it is typed by whatever tools and runtime read it: `Marko.Template<Input, Return>`, or for a generic template `Marko.TemplateOf<<T>(input: Input<T>) => Return>`, its signature (which Marko's types declare as of `marko` 5.41 and 6.5, so a generic template is typed with at least those), from which a tag infers its type arguments. A generic template's own methods (`render`, `mount`, …) take its input for its type parameters' constraints, so a caller with a given input asserts it as a template of that input: `const numbers = List as Marko.Template<Input<number>>;`. A tag of a template is checked against the template's input alone, so its errors name that input, and Marko 5's directives (`key`, `no-update`, …), which a Class API template checks apart, are no longer offered among its attributes; a Tags API template has none, so they are attributes passed to its input. A legacy `x.d.marko` written by hand beside a template still stands in for it, and ships as it is written. A template no longer exports `"~api"`, the API it is written in: `@marko/run` reads that from a Class API template's `Component`.
+
+  A template's code is checked as the function the template's value is typed from: `input` is its parameter (its hover reads `(parameter) input: Input`) and `this` is the module's `undefined`, so reading a property of `this` reports that it is possibly undefined.
+
+  `Processors`' `printTypes`, the print context's `printer`, `typeChecker`, `sourceFile` and `formatSettings`, and the `INTERNAL_API_VAR` and `INTERNAL_API_EXPORT_NAME` exports are removed from `@marko/language-tools`: the declaration is TypeScript's own.
+
+### Patch Changes
+
+- [#665](https://github.com/marko-js/language-server/pull/665) [`cea7961`](https://github.com/marko-js/language-server/commit/cea79616b43e0daa2c67d480336caa726215d48f) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - A Class API template's type has its `Component` (`Marko.Template<Input, void> & { Component: typeof Component }`), in the declaration `mtc` emits for it too, which tells it from one written in the Tags API. A tag's body is given by the key of its template's API (`renderBody` or `content`), as the compiler gives it, whatever the tag's input declares; a tag's value typed by hand (eg a dynamic tag's `Marko.Template<Input>`) takes it by the key its input declares.
+
+- [#662](https://github.com/marko-js/language-server/pull/662) [`10dd629`](https://github.com/marko-js/language-server/commit/10dd6293e60018527a61c17ad0d5040bb315d002) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - Type a template's `class {}` block as a class rather than an abstract one: `Marko.Component` is not abstract, and nothing depended on it.
+
+- [#664](https://github.com/marko-js/language-server/pull/664) [`8dd3cec`](https://github.com/marko-js/language-server/commit/8dd3ceca3ffbbef98800577f8d3fb05b96776afc) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - A project's own template is typed from its source, whatever `x.d.marko.ts` sits beside it, as a `.ts` file is with a `.d.ts` beside it. The declaration types the template for other projects (eg in a package). A legacy `x.d.marko` still stands in for a template wherever it is.
+
 ## 2.9.0
 
 ### Minor Changes
