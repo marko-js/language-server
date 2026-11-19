@@ -5,7 +5,8 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
   "include": ["src"]
 }

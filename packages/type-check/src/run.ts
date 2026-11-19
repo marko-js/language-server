@@ -14,6 +14,8 @@ import color from "kleur";
 import path from "path";
 import ts from "typescript/lib/tsserverlibrary";
 
+import { loadCompileCache } from "./compile-cache";
+
 export const Display = {
   codeframe: "codeframe",
   condensed: "condensed",
@@ -571,7 +573,18 @@ export default function run(opts: Options) {
     return ext ? processors[ext] : undefined;
   };
 
+  const parsedCommandLines = new Map<
+    string,
+    ts.ParsedCommandLine | undefined
+  >();
   solutionHost.getParsedCommandLine = (fileName) => {
+    const configPath = path.resolve(fileName);
+    if (!parsedCommandLines.has(configPath)) {
+      parsedCommandLines.set(configPath, parseCommandLine(configPath));
+    }
+    return parsedCommandLines.get(configPath);
+  };
+  const parseCommandLine = (fileName: string) => {
     const parsedCommandLine = ts.getParsedCommandLineOfConfigFile(
       fileName,
       requiredTSCompilerOptions,
@@ -602,34 +615,61 @@ export default function run(opts: Options) {
     return parsedCommandLine;
   };
 
-  const compiledProjects = new Set<string>();
-  const compileTemplates = (project: string) => {
-    if (compiledProjects.has(project)) return;
-    compiledProjects.add(project);
+  const templates = new Set<string>();
+  const collectTemplates = (project: string) => {
+    if (parsedCommandLines.has(path.resolve(project))) return;
 
     const parsedCommandLine = solutionHost.getParsedCommandLine!(project);
     if (!parsedCommandLine) return;
 
     for (const reference of parsedCommandLine.projectReferences ?? []) {
-      compileTemplates(ts.resolveProjectReferencePath(reference));
+      collectTemplates(ts.resolveProjectReferencePath(reference));
     }
 
     for (const fileName of parsedCommandLine.fileNames) {
-      if (!fileName.endsWith(".marko")) continue;
-      const dir = path.dirname(fileName);
-      try {
-        Project.getCompiler(dir).compileFileSync(fileName, {
-          ...Project.getConfig(dir),
-          ...compileConfig,
-        });
-      } catch (err) {
-        report.out.push((err as Error).message);
-        report.hasErrors = true;
-      }
+      if (fileName.endsWith(".marko")) templates.add(fileName);
     }
+
+    return parsedCommandLine;
   };
 
-  compileTemplates(configFile);
+  const rootCommandLine = collectTemplates(configFile);
+  const compileCache = loadCompileCache(
+    rootCommandLine &&
+      ts
+        .getTsBuildInfoEmitOutputFilePath(rootCommandLine.options)
+        ?.replace(/(\.tsbuildinfo)?$/, ".marko.tsbuildinfo"),
+  );
+  const getCompilerVersion = (dir: string) => {
+    const compiler = Project.getCompiler(dir);
+    return `${compiler.version}:${compiler.getRuntimeVersion(Project.getConfig(dir).translator)}`;
+  };
+  const staleTemplates = [...templates].filter(
+    (fileName) =>
+      !compileCache.isClean(
+        fileName,
+        getCompilerVersion(path.dirname(fileName)),
+      ),
+  );
+  for (const fileName of staleTemplates) {
+    const dir = path.dirname(fileName);
+    try {
+      const { meta } = Project.getCompiler(dir).compileFileSync(fileName, {
+        ...Project.getConfig(dir),
+        ...compileConfig,
+      });
+      compileCache.setClean(fileName, getCompilerVersion(dir), [
+        ...meta.watchFiles,
+        ...(meta.analyzedTags ?? []),
+      ]);
+    } catch (err) {
+      const { message } = err as Error;
+      if (!report.out.includes(message)) report.out.push(message);
+      report.hasErrors = true;
+    }
+  }
+
+  compileCache.save();
   if (!report.hasErrors) {
     ts.createSolutionBuilder(solutionHost, [configFile], {}).build();
   }
