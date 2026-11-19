@@ -14,5 +14,8 @@ yarn.lock
 !packages/language-server/src/__tests__/fixtures/script/package-declarations/node_modules
 !packages/language-server/src/__tests__/fixtures/script/package-declarations/__snapshots__/package-declarations.expected/node_modules
 
+# The `@marko/run` types a language server fixture installs.
+!packages/language-server/src/__tests__/fixtures/script/marko-run-global/node_modules
+
 # A package a type-check fixture installs.
 !packages/type-check/src/__tests__/fixtures/untyped-package/node_modules

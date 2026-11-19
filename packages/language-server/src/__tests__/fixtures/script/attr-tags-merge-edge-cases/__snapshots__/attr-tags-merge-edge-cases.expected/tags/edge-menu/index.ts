@@ -10,10 +10,7 @@ export interface Input {
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   Marko._.forOfTag(
     {
       of: input.a,

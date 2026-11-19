@@ -674,6 +674,8 @@ function processScript(doc: TextDocument, tsProject: TSProject) {
       parsed,
       lookup,
       translator: Project.getConfig(dirname).translator,
+      markoRun: !!Project.getTypeLibs(tsProject.rootDir, ts, host)
+        .markoRunTypesFile,
       scriptLang: filename
         ? Project.getScriptLang(filename, markoScriptLang, ts, host)
         : markoScriptLang,

@@ -7,10 +7,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
   });
@@ -19,7 +16,7 @@ export type Component = Marko.Component<Input>;
     {
       option: {
         value: "a",
-        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -38,7 +35,7 @@ export type Component = Marko.Component<Input>;
     {
       option: {
         value: "a",
-        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -73,7 +70,7 @@ export type Component = Marko.Component<Input>;
               {
                 option: {
                   value: x,
-                  [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+                  ["content"]: (v) => {
                     [v];
                     return Marko._.voidReturn;
                   },
@@ -104,7 +101,7 @@ export type Component = Marko.Component<Input>;
         ? {
             option: {
               value: "b",
-              [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+              ["content"]: (v) => {
                 [v];
                 return Marko._.voidReturn;
               },
@@ -127,7 +124,7 @@ export type Component = Marko.Component<Input>;
       [Symbol.iterator]: Marko._.any,
     },
     // Tag params: first occurrence static
-    [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -142,7 +139,7 @@ export type Component = Marko.Component<Input>;
       p;
     },
     // Tag params: only in a for
-    [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -157,7 +154,7 @@ export type Component = Marko.Component<Input>;
             {
               option: {
                 value: id,
-                [Marko._.contentFor(__marko_internal_module_2)]: (o) => {
+                ["content"]: (o) => {
                   [o];
                   return Marko._.voidReturn;
                 },
@@ -180,7 +177,7 @@ export type Component = Marko.Component<Input>;
       p;
     },
     // Tag params: only in a for with an error in another attribute tag (known: unknown)
-    [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -217,7 +214,7 @@ export type Component = Marko.Component<Input>;
       p;
     },
     // Tag params: only in an if
-    [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -250,7 +247,7 @@ export type Component = Marko.Component<Input>;
       [Symbol.iterator]: Marko._.any,
     },
     // Tag params: static first, another type in a for
-    [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -289,9 +286,7 @@ export type Component = Marko.Component<Input>;
               {
                 option: {
                   value: id,
-                  [Marko._.contentFor(__marko_internal_module_2)]: (
-                    o: string,
-                  ) => {
+                  ["content"]: (o: string) => {
                     [o];
                     return Marko._.voidReturn;
                   },
@@ -311,7 +306,7 @@ export type Component = Marko.Component<Input>;
     Marko._.withRestAttrTags,
   )()({
     // Type parameter only from a loop, with keys an occurrence lacks
-    [Marko._.contentFor(__marko_internal_module_3)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -344,7 +339,7 @@ export type Component = Marko.Component<Input>;
       value: 3,
       [Symbol.iterator]: Marko._.any,
     },
-    [Marko._.contentFor(__marko_internal_module_3)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },

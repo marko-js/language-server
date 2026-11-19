@@ -10,10 +10,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const flag = Math.random() > 0.5;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@option"];
@@ -27,7 +24,7 @@ export type Component = Marko.Component<Input>;
       value: "a",
       option: {
         value: "b",
-        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -58,7 +55,7 @@ export type Component = Marko.Component<Input>;
           ? {
               option: {
                 value: 2,
-                [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+                ["content"]: (v) => {
                   [v];
                   return Marko._.voidReturn;
                 },
@@ -82,7 +79,7 @@ export type Component = Marko.Component<Input>;
       value: "a" as const,
       option: {
         value: "a",
-        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -106,7 +103,7 @@ export type Component = Marko.Component<Input>;
     value: "a" as const,
     option: {
       value: "a",
-      [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+      ["content"]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
@@ -123,7 +120,7 @@ export type Component = Marko.Component<Input>;
     value: "a" as const,
     option: {
       value: "a" as const,
-      [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+      ["content"]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
@@ -151,7 +148,7 @@ export type Component = Marko.Component<Input>;
       [Symbol.iterator]: Marko._.any,
     },
     // From the attribute tags, into the tag's own content
-    [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+    ["content"]: (v) => {
       [v];
       return Marko._.voidReturn;
     },
@@ -207,7 +204,7 @@ export type Component = Marko.Component<Input>;
               {
                 option: {
                   value: x,
-                  [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+                  ["content"]: (v) => {
                     [v];
                     return Marko._.voidReturn;
                   },
@@ -229,7 +226,7 @@ export type Component = Marko.Component<Input>;
     {
       option: {
         value: 1,
-        [Marko._.contentFor(__marko_internal_module_1)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
@@ -258,7 +255,7 @@ export type Component = Marko.Component<Input>;
       rows: [{ id: "a" }],
       column: {
         header: "Id",
-        [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
+        ["content"]: ({ row }) => {
           [row.id];
           return Marko._.voidReturn;
         },
@@ -269,7 +266,7 @@ export type Component = Marko.Component<Input>;
           column: {
             header: "Id again",
             //                                ^?
-            [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
+            ["content"]: ({ row }) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -289,7 +286,7 @@ export type Component = Marko.Component<Input>;
     rows: [],
     column: {
       header: "Id",
-      [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
+      ["content"]: ({ row }) => {
         [row.id];
         return Marko._.voidReturn;
       },
@@ -300,7 +297,7 @@ export type Component = Marko.Component<Input>;
         column: {
           header: "Id again",
           //                                ^?
-          [Marko._.contentFor(__marko_internal_module_2)]: ({ row }) => {
+          ["content"]: ({ row }) => {
             [row.id];
             return Marko._.voidReturn;
           },
@@ -324,7 +321,7 @@ export type Component = Marko.Component<Input>;
       },
       column: {
         header: "Id",
-        [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
+        ["content"]: (row) => {
           [row.id];
           return Marko._.voidReturn;
         },
@@ -335,7 +332,7 @@ export type Component = Marko.Component<Input>;
           column: {
             header: "Id again",
             //                            ^?
-            [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
+            ["content"]: (row) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -361,7 +358,7 @@ export type Component = Marko.Component<Input>;
         ? {
             column: {
               header: "Id",
-              [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
+              ["content"]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -371,7 +368,7 @@ export type Component = Marko.Component<Input>;
         : {
             column: {
               header: "Id again",
-              [Marko._.contentFor(__marko_internal_module_3)]: (row) => {
+              ["content"]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -425,7 +422,7 @@ export type Component = Marko.Component<Input>;
       },
       column: {
         header: "Name",
-        [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
+        ["content"]: (row) => {
           [row.name];
           return Marko._.voidReturn;
         },
@@ -435,7 +432,7 @@ export type Component = Marko.Component<Input>;
         {
           column: {
             header: "Id",
-            [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
+            ["content"]: (row) => {
               [row.id];
               return Marko._.voidReturn;
             },
@@ -461,7 +458,7 @@ export type Component = Marko.Component<Input>;
         ? {
             column: {
               header: "Name",
-              [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
+              ["content"]: (row) => {
                 [row.name];
                 return Marko._.voidReturn;
               },
@@ -471,7 +468,7 @@ export type Component = Marko.Component<Input>;
         : {
             column: {
               header: "Id",
-              [Marko._.contentFor(__marko_internal_module_4)]: (row) => {
+              ["content"]: (row) => {
                 [row.id];
                 return Marko._.voidReturn;
               },
@@ -529,7 +526,7 @@ export type Component = Marko.Component<Input>;
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                  ["content"]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -563,9 +560,7 @@ export type Component = Marko.Component<Input>;
                     {
                       column: {
                         title: c,
-                        [Marko._.contentFor(__marko_internal_module_5)]: (
-                          row,
-                        ) => {
+                        ["content"]: (row) => {
                           [row.name];
                           return Marko._.voidReturn;
                         },
@@ -600,9 +595,7 @@ export type Component = Marko.Component<Input>;
                 ? {
                     column: {
                       title: c,
-                      [Marko._.contentFor(__marko_internal_module_5)]: (
-                        row,
-                      ) => {
+                      ["content"]: (row) => {
                         [row.name];
                         return Marko._.voidReturn;
                       },
@@ -640,9 +633,7 @@ export type Component = Marko.Component<Input>;
                   {
                     column: {
                       title: c,
-                      [Marko._.contentFor(__marko_internal_module_5)]: (
-                        row,
-                      ) => {
+                      ["content"]: (row) => {
                         [row.name];
                         return Marko._.voidReturn;
                       },
@@ -675,7 +666,7 @@ export type Component = Marko.Component<Input>;
               {
                 column: {
                   title: String(i),
-                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                  ["content"]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -707,7 +698,7 @@ export type Component = Marko.Component<Input>;
               {
                 column: {
                   title: key,
-                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                  ["content"]: (row) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -737,7 +728,7 @@ export type Component = Marko.Component<Input>;
                 {
                   column: {
                     title: label,
-                    [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                    ["content"]: (row) => {
                       [row.name];
                       return Marko._.voidReturn;
                     },
@@ -778,7 +769,7 @@ export type Component = Marko.Component<Input>;
               {
                 row: {
                   id: i,
-                  [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
+                  ["content"]: (r) => {
                     [r.name];
                     return Marko._.voidReturn;
                   },
@@ -811,7 +802,7 @@ export type Component = Marko.Component<Input>;
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                  ["content"]: (row) => {
                     Marko._.attrTagNames(__marko_internal_module_6, (input) => {
                       input["@section"];
                       Marko._.nestedAttrTagNames(input["@section"], (input) => {
@@ -837,9 +828,7 @@ export type Component = Marko.Component<Input>;
                               {
                                 row: {
                                   id: i,
-                                  [Marko._.contentFor(
-                                    __marko_internal_module_6,
-                                  )]: (r) => {
+                                  ["content"]: (r) => {
                                     [r.name];
                                     return Marko._.voidReturn;
                                   },
@@ -881,9 +870,7 @@ export type Component = Marko.Component<Input>;
               {
                 column: {
                   title: c,
-                  [Marko._.contentFor(__marko_internal_module_5)]: (row: {
-                    name: string;
-                  }) => {
+                  ["content"]: (row: { name: string }) => {
                     [row.name];
                     return Marko._.voidReturn;
                   },
@@ -918,9 +905,7 @@ export type Component = Marko.Component<Input>;
           {
             row: {
               id: 1,
-              [Marko._.contentFor(__marko_internal_module_6)]: (r: {
-                name: string;
-              }) => {
+              ["content"]: (r: { name: string }) => {
                 [r.name];
                 return Marko._.voidReturn;
               },
@@ -930,7 +915,7 @@ export type Component = Marko.Component<Input>;
           {
             row: {
               id: 2,
-              [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
+              ["content"]: (r) => {
                 [r.name];
                 return Marko._.voidReturn;
               },
@@ -971,9 +956,7 @@ export type Component = Marko.Component<Input>;
                   {
                     row: {
                       id: 1,
-                      [Marko._.contentFor(__marko_internal_module_6)]: (r: {
-                        name: string;
-                      }) => {
+                      ["content"]: (r: { name: string }) => {
                         [r.name];
                         return Marko._.voidReturn;
                       },
@@ -983,7 +966,7 @@ export type Component = Marko.Component<Input>;
                   {
                     row: {
                       id: 2,
-                      [Marko._.contentFor(__marko_internal_module_6)]: (r) => {
+                      ["content"]: (r) => {
                         [r.name];
                         return Marko._.voidReturn;
                       },

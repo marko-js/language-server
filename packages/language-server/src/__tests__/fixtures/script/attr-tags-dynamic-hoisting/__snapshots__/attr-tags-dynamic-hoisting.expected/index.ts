@@ -6,10 +6,7 @@ export interface Input {}
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const Box = Marko._.hoist(() => __marko_internal_hoist__Box);
   const Untyped = Marko._.hoist(() => __marko_internal_hoist__Untyped);
   const fromRepeated = Marko._.hoist(
@@ -37,7 +34,7 @@ export interface Input {}
     // Repeated
     {
       section: {
-        [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+        ["content"]: (() => {
           {
             const fromRepeated = Marko._.returned(
               () => __marko_internal_rendered_2,
@@ -83,7 +80,7 @@ export interface Input {}
         flag
           ? {
               section: {
-                [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+                ["content"]: (() => {
                   {
                     const fromIf = Marko._.returned(
                       () => __marko_internal_rendered_4,
@@ -126,7 +123,7 @@ export interface Input {}
             Marko._.attrTags(__marko_internal_module_1)([
               {
                 section: {
-                  [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+                  ["content"]: (() => {
                     {
                       const fromFor = Marko._.returned(
                         () => __marko_internal_rendered_6,
@@ -176,7 +173,7 @@ export interface Input {}
         )([
           {
             row: {
-              [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+              ["content"]: (() => {
                 {
                   const fromNested = Marko._.returned(
                     () => __marko_internal_rendered_8,
@@ -206,7 +203,7 @@ export interface Input {}
         ]),
         [Symbol.iterator]: Marko._.any,
       },
-      [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+      ["content"]: (() => {
         {
           const fromContent = Marko._.returned(
             () => __marko_internal_rendered_9,
@@ -392,7 +389,7 @@ export interface Input {}
                   {
                     column: {
                       title: c,
-                      [Marko._.contentFor(__marko_internal_module_5)]: (() => {
+                      ["content"]: (() => {
                         {
                           const fromLoop = Marko._.returned(
                             () => __marko_internal_rendered_19,
@@ -448,7 +445,7 @@ export interface Input {}
               ? {
                   column: {
                     title: "a",
-                    [Marko._.contentFor(__marko_internal_module_5)]: (row) => {
+                    ["content"]: (row) => {
                       {
                         const besideError = Marko._.returned(
                           () => __marko_internal_rendered_21,
@@ -498,29 +495,26 @@ export interface Input {}
                   return Marko._.attrTags(__marko_internal_module_1)([
                     {
                       section: {
-                        [Marko._.contentFor(__marko_internal_module_1)]:
-                          (() => {
-                            {
-                              const fromScriptletIf = Marko._.returned(
-                                () => __marko_internal_rendered_23,
-                              );
-                              const __marko_internal_rendered_23 =
-                                Marko._.renderTemplate(
-                                  __marko_internal_module_2().default,
-                                )()()({
-                                  value: () => label,
-                                });
-                              return () => {
-                                return new (class MarkoReturn<Return = void> {
-                                  readonly [Marko._.scope] = {
-                                    fromScriptletIf,
-                                  };
-                                  declare return: Return;
-                                  constructor(_?: Return) {}
-                                })();
-                              };
-                            }
-                          })(),
+                        ["content"]: (() => {
+                          {
+                            const fromScriptletIf = Marko._.returned(
+                              () => __marko_internal_rendered_23,
+                            );
+                            const __marko_internal_rendered_23 =
+                              Marko._.renderTemplate(
+                                __marko_internal_module_2().default,
+                              )()()({
+                                value: () => label,
+                              });
+                            return () => {
+                              return new (class MarkoReturn<Return = void> {
+                                readonly [Marko._.scope] = { fromScriptletIf };
+                                declare return: Return;
+                                constructor(_?: Return) {}
+                              })();
+                            };
+                          }
+                        })(),
                         [Symbol.iterator]: Marko._.any,
                       },
                     },
@@ -561,7 +555,7 @@ export interface Input {}
                   [Symbol.iterator]: Marko._.any,
                 },
                 cell: {
-                  [Marko._.contentFor(__marko_internal_module_1)]: (() => {
+                  ["content"]: (() => {
                     {
                       const fromCell = Marko._.returned(
                         () => __marko_internal_rendered_25,

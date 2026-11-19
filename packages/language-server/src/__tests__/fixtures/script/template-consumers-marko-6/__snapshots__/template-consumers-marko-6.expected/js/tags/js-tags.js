@@ -6,10 +6,7 @@
 function __marko_internal_template() {
   const input = /** @type {Input} */ (Marko._.any);
   const $signal = /** @type {AbortSignal} */ (Marko._.any);
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
-  );
+  const $global = /** @type {Marko.Global} */ (Marko._.any);
   const name = Marko._.hoist(() => __marko_internal_hoist__name);
   {
     const name = Marko._.returned(() => __marko_internal_rendered_1);

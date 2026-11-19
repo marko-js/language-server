@@ -2,10 +2,7 @@ export interface Input {}
 (function (this: void) {
   const input = Marko._.any as Input;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const list = Marko._.hoist(() => __marko_internal_hoist__list);
   const record = Marko._.hoist(() => __marko_internal_hoist__record);
   const hoistedFromForOf = Marko._.hoist(

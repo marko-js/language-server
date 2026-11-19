@@ -1,5 +1,5 @@
-export type Input = Component["input"];
-export interface Component extends Marko._.ResolveComponent<
+export type Input = Marko.ComponentInput<typeof import("./component")>;
+export interface Component extends Marko.ComponentOf<
   typeof import("./component")
 > {}
 (function (this: void) {
@@ -8,10 +8,7 @@ export interface Component extends Marko._.ResolveComponent<
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   Marko._.renderNativeTag("div")({
     onClick: component.handleClickMissing,
   });

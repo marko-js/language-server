@@ -8,10 +8,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const flag = Math.random() > 0.5;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
@@ -27,7 +24,7 @@ export type Component = Marko.Component<Input>;
       bogus: 1,
       item: {
         size: "small",
-        [Marko._.contentFor(__marko_internal_module_1)]: ({ foo }) => {
+        ["content"]: ({ foo }) => {
           [foo];
           return Marko._.voidReturn;
         },
@@ -36,7 +33,7 @@ export type Component = Marko.Component<Input>;
       [Marko._.restAttrTags]: [
         {
           item: {
-            [Marko._.contentFor(__marko_internal_module_1)]: ({ foo }) => {
+            ["content"]: ({ foo }) => {
               [foo];
               return Marko._.voidReturn;
             },
@@ -114,7 +111,7 @@ export type Component = Marko.Component<Input>;
           ? {
               item: {
                 size: "small",
-                [Marko._.contentFor(__marko_internal_module_1)]: ({ foo }) => {
+                ["content"]: ({ foo }) => {
                   [foo];
                   return Marko._.voidReturn;
                 },
@@ -188,9 +185,7 @@ export type Component = Marko.Component<Input>;
             Marko._.attrTags(__marko_internal_module_1)([
               {
                 item: {
-                  [Marko._.contentFor(__marko_internal_module_1)]: ({
-                    foo,
-                  }) => {
+                  ["content"]: ({ foo }) => {
                     [name];
                     [foo];
                     return Marko._.voidReturn;
@@ -272,7 +267,7 @@ export type Component = Marko.Component<Input>;
     {
       item: {
         bogus: 1,
-        [Marko._.contentFor(__marko_internal_module_1)]: ({ foo }) => {
+        ["content"]: ({ foo }) => {
           [foo];
           return Marko._.voidReturn;
         },
@@ -283,7 +278,7 @@ export type Component = Marko.Component<Input>;
           ? {
               item: {
                 bogus: 2,
-                [Marko._.contentFor(__marko_internal_module_1)]: ({ foo }) => {
+                ["content"]: ({ foo }) => {
                   [foo];
                   return Marko._.voidReturn;
                 },
@@ -300,9 +295,7 @@ export type Component = Marko.Component<Input>;
               {
                 item: {
                   size: "tiny",
-                  [Marko._.contentFor(__marko_internal_module_1)]: ({
-                    foo,
-                  }) => {
+                  ["content"]: ({ foo }) => {
                     [name];
                     [foo];
                     return Marko._.voidReturn;
@@ -422,7 +415,7 @@ export type Component = Marko.Component<Input>;
       bogus: 1,
       option: {
         value: "a",
-        [Marko._.contentFor(__marko_internal_module_2)]: (v) => {
+        ["content"]: (v) => {
           [v];
           return Marko._.voidReturn;
         },
