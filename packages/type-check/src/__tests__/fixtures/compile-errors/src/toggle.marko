@@ -1,0 +1,8 @@
+<let/open=false>
+<if(open)>Open</if>
+function toggle() {
+  open = !open;
+}
+<for|item| of=[1, 2]>
+  <div key=item>${item}</div>
+</for>

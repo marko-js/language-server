@@ -46,6 +46,16 @@ const isSourceMapExtensionReg = /\.map$/;
 const skipRemapExtensionsReg =
   /\.(?:[cm]?jsx?|json|marko|css|less|sass|scss|styl|stylus|pcss|postcss|sss|a?png|jpe?g|jfif|pipeg|pjp|gif|svg|ico|web[pm]|avif|mp4|ogg|mp3|wav|flac|aac|opus|woff2?|eot|[ot]tf|webmanifest|pdf|txt)$/;
 
+const compileConfig = {
+  code: false,
+  output: "html",
+  babelConfig: {
+    babelrc: false,
+    configFile: false,
+    browserslistConfigFile: false,
+  },
+} as const;
+
 const extractCache = new Map<
   string,
   ReturnType<Processors.Processor["extract"]>
@@ -132,6 +142,7 @@ export default function run(opts: Options) {
     formatSettings,
     hasErrors: false,
   };
+  const markoFileNames = new Set<string>();
   const extraExtensions = Processors.extensions.map((extension) => ({
     extension,
     isMixedContent: false,
@@ -577,6 +588,12 @@ export default function run(opts: Options) {
     );
     if (!parsedCommandLine) return;
 
+    for (const fileName of parsedCommandLine.fileNames) {
+      if (fileName.endsWith(".marko")) {
+        markoFileNames.add(fileName);
+      }
+    }
+
     const finalRootNames = new Set(parsedCommandLine.fileNames);
     for (const name in processors) {
       const rootNames =
@@ -593,6 +610,18 @@ export default function run(opts: Options) {
   };
 
   ts.createSolutionBuilder(solutionHost, [configFile], {}).build();
+  for (const fileName of markoFileNames) {
+    const dir = path.dirname(fileName);
+    try {
+      Project.getCompiler(dir).compileFileSync(fileName, {
+        ...Project.getConfig(dir),
+        ...compileConfig,
+      });
+    } catch (err) {
+      report.out.push((err as Error).message);
+      report.hasErrors = true;
+    }
+  }
   process.exitCode = report.hasErrors ? 1 : 0;
   console.log(
     report.out.join(
