@@ -34,7 +34,11 @@ function detectAPIFromTranslator(
   }
 }
 
-function detectAPIFromFileName(
+/**
+ * The api a template's path alone decides, as it does for the compiler: one
+ * in a discovered `tags` dir is written in the Tags API.
+ */
+export function detectAPIFromFileName(
   filename: string,
   lookup: TaglibLookup,
 ): RuntimeAPI | void {

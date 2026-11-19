@@ -15,10 +15,7 @@ export class Component extends Marko.Component {}
     const state = Marko._.state(component);
     const out = /** @type {Marko.Out} */ (Marko._.any);
     const $signal = /** @type {AbortSignal} */ (Marko._.any);
-    const $global = Marko._.getGlobal(
-      // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-      (Marko._.error, /** @type {MarkoRun.Context} */ (Marko._.any)),
-    );
+    const $global = /** @type {Marko.Global} */ (Marko._.any);
     Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@foo"];
       input["@foo"];

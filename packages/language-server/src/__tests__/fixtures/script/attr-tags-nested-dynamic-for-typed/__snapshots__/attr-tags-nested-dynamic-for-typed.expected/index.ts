@@ -6,10 +6,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@section"];
     Marko._.nestedAttrTagNames(input["@section"], (input) => {
@@ -30,9 +27,7 @@ export type Component = Marko.Component<Input>;
           )([
             {
               item: {
-                [Marko._.contentFor(__marko_internal_module_1)]: ({
-                  label,
-                }) => {
+                ["content"]: ({ label }) => {
                   Marko._.renderNativeTag("div")({
                     [Marko._.content]: (() => {
                       [name];
@@ -59,7 +54,7 @@ export type Component = Marko.Component<Input>;
   Marko._.renderTemplate(__marko_internal_module_1().default)()()({
     section: {
       item: {
-        [Marko._.contentFor(__marko_internal_module_1)]: ({ label }) => {
+        ["content"]: ({ label }) => {
           Marko._.renderNativeTag("div")({
             [Marko._.content]: (() => {
               [label];

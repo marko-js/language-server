@@ -113,6 +113,7 @@ const markoProcessor: ProcessorConfig = {
           ts,
           parsed,
           translator: Project.getConfig(dir).translator,
+          markoRun: !!runtimeTypes.markoRunTypesFile,
           lookup: Project.getTagLookup(dir),
           scriptLang: Project.getScriptLang(
             fileName,

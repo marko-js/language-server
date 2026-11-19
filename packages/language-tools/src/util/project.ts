@@ -64,19 +64,25 @@ export function getTypeLibs(
   host: TS.ModuleResolutionHost,
 ) {
   const config = getConfig(rootDir);
-  let typeLibs = config.cache.get(getTypeLibs) as
+  // By project: each resolves the types from its own directory.
+  let byDir = config.cache.get(getTypeLibs) as
     | undefined
-    | {
-        internalTypesFile: string;
-        markoRunTypesFile: string | undefined;
-        markoRunGeneratedTypesFile: string | undefined;
-        markoTypesFile: string;
-        /**
-         * @deprecated Not used: templates no longer copy from the runtime
-         * types.
-         */
-        markoTypesCode: string;
-      };
+    | Map<
+        string,
+        {
+          internalTypesFile: string;
+          markoRunTypesFile: string | undefined;
+          markoRunGeneratedTypesFile: string | undefined;
+          markoTypesFile: string;
+          /**
+           * @deprecated Not used: templates no longer copy from the runtime
+           * types.
+           */
+          markoTypesCode: string;
+        }
+      >;
+  if (!byDir) config.cache.set(getTypeLibs, (byDir = new Map()));
+  let typeLibs = byDir.get(rootDir);
   if (typeLibs) return typeLibs;
   const resolveTypeCompilerOptions: TS.CompilerOptions = {
     moduleResolution: ts.ModuleResolutionKind.Bundler,
@@ -120,8 +126,8 @@ export function getTypeLibs(
     );
   }
 
-  config.cache.set(
-    getTypeLibs,
+  byDir.set(
+    rootDir,
     (typeLibs = {
       internalTypesFile,
       markoTypesFile,

@@ -46,10 +46,6 @@ declare global {
       export const withRestAttrTags: 3;
       export const any: any;
 
-      export function getGlobal<Override>(
-        override: Override,
-      ): [0] extends [1 & Override] ? Marko.Global : Override;
-
       /** A template's tag's Marko 5 directives, which are not its input. */
       export function directives(directives: Marko.Directives): void;
 
@@ -712,17 +708,6 @@ declare global {
         ? RestAttrTagsInput<Input> & Relate<Actual, RestAttrTagsInput<Input>>
         : never;
 
-      export type ResolveComponent<Component> = CheckNever<
-        ComponentOf<
-          InstanceOf<
-            Component extends { default: infer Component }
-              ? Component
-              : Component
-          >
-        >,
-        Marko.Component
-      >;
-
       export type Relate<A, B> = B extends A ? A : B;
     }
   }
@@ -1026,10 +1011,6 @@ type AttrTagNames<Input> = Record<string, never> &
         ]: Input[Key];
       }
     : never);
-
-type CheckNever<T, If, Else = T> = [T] extends [never] ? If : Else;
-type ComponentOf<T> = T extends Marko.Component ? T : T & Marko.Component;
-type InstanceOf<T> = T extends abstract new () => infer R ? R : T;
 
 type UnionToIntersection<T> = (T extends any ? (_: T) => any : never) extends (
   _: infer U,

@@ -10,10 +10,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const discovered = Marko._.hoist(() => __marko_internal_hoist__discovered);
   const imported = Marko._.hoist(() => __marko_internal_hoist__imported);
   const dynamic = Marko._.hoist(() => __marko_internal_hoist__dynamic);
@@ -139,7 +136,7 @@ export type Component = Marko.Component<Input>;
         Marko._.renderTemplate(__marko_internal_module_3().default)()()({
           items: [{ id: "a" }],
           // A generic tag infers its params
-          [Marko._.contentFor(__marko_internal_module_3)]: ({ item }) => {
+          ["content"]: ({ item }) => {
             [item.id];
             return Marko._.voidReturn;
           },
@@ -165,7 +162,7 @@ export type Component = Marko.Component<Input>;
         )()()({
           items: [{ id: "d" }],
           // A var hoisted from its body
-          [Marko._.contentFor(__marko_internal_module_3)]: ({ item }) => {
+          ["content"]: ({ item }) => {
             {
               const discoveredHoisted = Marko._.returned(
                 () => __marko_internal_rendered_14,
@@ -308,7 +305,7 @@ export type Component = Marko.Component<Input>;
         }>()({
           items: [{ id: 1 }],
           // Type args
-          [Marko._.contentFor(__marko_internal_module_3)]: ({ item }) => {
+          ["content"]: ({ item }) => {
             [item.id];
             return Marko._.voidReturn;
           },

@@ -3,10 +3,7 @@ export interface Input<T> extends ChildInput<T> {}
 (function <T>(this: void) {
   const input = Marko._.any as Input<T>;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
@@ -27,7 +24,7 @@ export interface Input<T> extends ChildInput<T> {}
                 item: {
                   ...item,
                   label: "x",
-                  [Marko._.contentFor(__marko_internal_module_1)]: (row) => {
+                  ["content"]: (row) => {
                     [row];
                     return Marko._.voidReturn;
                   },

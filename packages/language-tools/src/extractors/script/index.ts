@@ -30,7 +30,11 @@ import {
 } from "./util/attach-scopes";
 import { getComponentFilename } from "./util/get-component-filename";
 import { getComponentName } from "./util/get-component-name";
-import { getRuntimeAPI, RuntimeAPI } from "./util/get-runtime-api";
+import {
+  detectAPIFromFileName,
+  getRuntimeAPI,
+  RuntimeAPI,
+} from "./util/get-runtime-api";
 import { isTextOnlyScript } from "./util/is-text-only-script";
 import getJSDocInputType from "./util/jsdoc-input-type";
 import { ScriptParser } from "./util/script-parser";
@@ -64,6 +68,11 @@ const IF_TAG_ALTERNATES = new WeakMap<IfTag, IfTagAlternates>();
 const TAG_ID = new WeakMap<Node.Tag, number>();
 const RENDER_VAR = new WeakMap<Node.Tag, string>();
 const TEMPLATE_VAR = new WeakMap<Node.Tag, string>();
+/**
+ * Tags of a template in a `tags` dir (so Tags API) in a project with both
+ * runtimes: their body is `content`, whatever their input declares.
+ */
+const TAGS_API_TAG = new WeakSet<Node.Tag>();
 const WROTE_COMMENT = new WeakSet<Node.Comment>();
 const START_OF_FILE: Range = { start: 0, end: 0 };
 // A `Template` the template's own code could declare or read.
@@ -128,6 +137,8 @@ export interface ExtractScriptOptions {
    */
   runtimeTypesCode?: string;
   translator: Meta["config"]["translator"];
+  /** Whether the project has `@marko/run`'s types, whose `$global` is. */
+  markoRun?: boolean;
 }
 export function extractScript(opts: ExtractScriptOptions) {
   return new ScriptExtractor(opts).end();
@@ -140,6 +151,7 @@ class ScriptExtractor {
   /** Whether the last `#writeAttrs` left directives out. */
   #hasDirectives = false;
   #interop: boolean;
+  #markoRun: boolean;
   #parsed: Parsed;
   #extractor: Extractor;
   #ast: ScriptParser;
@@ -168,6 +180,7 @@ class ScriptExtractor {
     this.#filename = parsed.filename;
     this.#api = api;
     this.#interop = interop;
+    this.#markoRun = !!opts.markoRun;
     this.#scriptLang = scriptLang;
     this.#parsed = parsed;
     this.#lookup = lookup;
@@ -297,7 +310,9 @@ class ScriptExtractor {
       if (this.#scriptLang === ScriptLang.ts) {
         this.#extractor.write(
           isExternalComponentFile
-            ? "export type Input = Component['input'];\n"
+            ? // A split component's input is its component's, by Marko's own
+              // type for it: a declaration of the template names nothing else.
+              `export type Input = Marko.ComponentInput<typeof import("${stripExt(relativeImportPath(this.#filename, componentFileName))}")>;\n`
             : `export interface Input {}\n`,
         );
       } else {
@@ -316,8 +331,10 @@ class ScriptExtractor {
               `import type Component from ${componentImport};\nexport type { Component };\n`,
             );
           } else {
+            // Its component file's (a class, or an object), by Marko's own
+            // type for it.
             this.#extractor.write(
-              `export interface Component extends ${varShared("ResolveComponent")}<typeof import(${componentImport})> {}\n`,
+              `export interface Component extends Marko.ComponentOf<typeof import(${componentImport})> {}\n`,
             );
           }
         } else {
@@ -327,7 +344,7 @@ class ScriptExtractor {
             );
           } else {
             this.#extractor.write(
-              `/** @typedef {${varShared("ResolveComponent")}<typeof import(${componentImport})>} Component */\n`,
+              `/** @typedef {Marko.ComponentOf<typeof import(${componentImport})>} Component */\n`,
             );
           }
         }
@@ -393,10 +410,7 @@ function ${templateName}() {\n`);
       : ""
   }
   const $signal = ${this.#getCastedType("AbortSignal")};
-  const $global = ${varShared("getGlobal")}(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (${varShared("error")}, ${this.#getCastedType("MarkoRun.Context")})
-  );\n`);
+  const $global = ${this.#getCastedType(this.#markoRun ? "Run.Context" : "Marko.Global")};\n`);
 
     const body = this.#processBody(program); // TODO: handle top level attribute tags.
     const bindings = getProgramBindings(program);
@@ -908,6 +922,12 @@ constructor(_) {}
         isTemplate = true;
         templateVar = this.#getModule(importPath!, tag);
         TEMPLATE_VAR.set(tag, templateVar);
+        if (
+          this.#interop &&
+          detectAPIFromFileName(resolveTagFile(def)!, this.#lookup)
+        ) {
+          TAGS_API_TAG.add(tag);
+        }
       } else if (isIdentifier || isMarkoFile || !importPath) {
         templateVar = this.#getTemplateVar(tag, true);
         this.#extractor.write(`const ${templateVar} = (\n`);
@@ -1747,10 +1767,11 @@ constructor(_) {}
       this.#extractor.write("[").anchor(tag.name);
 
       if (this.#interop) {
-        const templateVar = this.#getTemplateVar(
-          tag.type === NodeType.AttrTag ? tag.owner! : tag,
-        );
-        if (templateVar) {
+        const owner = tag.type === NodeType.AttrTag ? tag.owner! : tag;
+        const templateVar = this.#getTemplateVar(owner);
+        if (TAGS_API_TAG.has(owner)) {
+          this.#extractor.write('"content"');
+        } else if (templateVar) {
           this.#extractor.write(`${varShared("contentFor")}(${templateVar})`);
         } else {
           this.#extractor.write(varShared("content"));

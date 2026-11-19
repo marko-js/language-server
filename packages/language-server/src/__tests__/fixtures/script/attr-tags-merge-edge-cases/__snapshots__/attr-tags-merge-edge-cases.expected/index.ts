@@ -6,10 +6,7 @@ export type Component = Marko.Component<Input>;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.getGlobal(
-    // @ts-expect-error We expect the compiler to error because we are checking if the MarkoRun.Context is defined.
-    (Marko._.error, Marko._.any as MarkoRun.Context),
-  );
+  const $global = Marko._.any as Marko.Global;
   const flag = Math.random() > 0.5;
   const list = [1, 2];
   const extra = { v: 1, unknown: true };
@@ -25,7 +22,7 @@ export type Component = Marko.Component<Input>;
     {
       a: {
         v: 1,
-        [Marko._.contentFor(__marko_internal_module_1)]: ({ n }) => {
+        ["content"]: ({ n }) => {
           [n];
           return Marko._.voidReturn;
         },
@@ -39,7 +36,7 @@ export type Component = Marko.Component<Input>;
       [Marko._.restAttrTags]: [
         {
           a: {
-            [Marko._.contentFor(__marko_internal_module_1)]: ({ n }) => {
+            ["content"]: ({ n }) => {
               [n];
               return Marko._.voidReturn;
             },
@@ -66,9 +63,7 @@ export type Component = Marko.Component<Input>;
               ...Marko._.attrTags(__marko_internal_module_1)([
                 {
                   a: {
-                    [Marko._.contentFor(__marko_internal_module_1)]: ({
-                      n,
-                    }) => {
+                    ["content"]: ({ n }) => {
                       [n];
                       return Marko._.voidReturn;
                     },
@@ -127,9 +122,7 @@ export type Component = Marko.Component<Input>;
                     {
                       a: {
                         v: i + j,
-                        [Marko._.contentFor(__marko_internal_module_1)]: ({
-                          n,
-                        }) => {
+                        ["content"]: ({ n }) => {
                           [n];
                           return Marko._.voidReturn;
                         },
@@ -160,9 +153,7 @@ export type Component = Marko.Component<Input>;
                     {
                       a: {
                         v: i,
-                        [Marko._.contentFor(__marko_internal_module_1)]: ({
-                          n,
-                        }) => {
+                        ["content"]: ({ n }) => {
                           [n];
                           return Marko._.voidReturn;
                         },
