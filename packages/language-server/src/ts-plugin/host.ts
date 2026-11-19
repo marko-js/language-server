@@ -27,6 +27,7 @@ export function patch(
   >,
   resolutionCache: ts.ModuleResolutionCache | undefined,
   host: ts.LanguageServiceHost,
+  isOwn: (fileName: string) => boolean,
   ps?: InstanceType<typeof ts.server.ProjectService>,
 ) {
   const processors = Processors.create({
@@ -225,7 +226,8 @@ export function patch(
           }
 
           const declaration =
-            resolvedFileName && getTemplateDeclaration(resolvedFileName, host);
+            resolvedFileName &&
+            getTemplateDeclaration(resolvedFileName, host, isOwn);
           if (declaration) {
             resolvedFileName = declaration;
           } else if (resolvedFileName && !host.fileExists(resolvedFileName)) {

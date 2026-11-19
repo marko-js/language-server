@@ -302,7 +302,7 @@ export default function run(opts: Options) {
 
             const declaration =
               resolvedFileName &&
-              getTemplateDeclaration(resolvedFileName, compilerHost);
+              getTemplateDeclaration(resolvedFileName, compilerHost, isOwn);
             if (declaration) {
               resolvedFileName = declaration;
             } else if (
@@ -357,6 +357,8 @@ export default function run(opts: Options) {
       };
 
       const rootFileNames = new Set(rootNames?.map(getCanonicalFileName));
+      const isOwn = (fileName: string) =>
+        rootFileNames.has(getCanonicalFileName(fileName));
       const getSourceFile = compilerHost.getSourceFile.bind(compilerHost);
       compilerHost.getSourceFile = (
         fileName,

@@ -1,6 +1,7 @@
 import Hello from "../dep/hello.marko";
 import Typed from "../dep/typed.marko";
 import OwnTyped from "./own-typed.marko";
+import OwnEmitted from "./own-emitted.marko";
 
 // A template is typed by the declaration beside it: `x.d.marko.ts`, or a
 // legacy `x.d.marko`.
@@ -8,6 +9,10 @@ import OwnTyped from "./own-typed.marko";
 <Typed/greeted name="world"/>
 <div>${greeted.toUpperCase()}</div>
 
-// A declaration beside a template stands in for it wherever it is, a
-// project's own too (its `x.d.marko` declares the `title`).
+// A legacy `x.d.marko` stands in for a template wherever it is, a project's
+// own too (its `x.d.marko` declares the `title`).
 <OwnTyped name="world" title="Hi"/>
+
+// A project's own template is read from its source, whatever `x.d.marko.ts`
+// was emitted beside it (here a stale one requiring `stale`).
+<OwnEmitted name="Ann"/>
