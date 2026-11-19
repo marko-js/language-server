@@ -68,8 +68,19 @@ function detectAPIFromProgram(
   parsed: Parsed,
   program: Node.Program,
 ): RuntimeAPI | void {
-  if (program.comments) {
-    switch (parsed.read(program.comments[0].value).trim()) {
+  // A `use tags` or `use class` comment at the start of the template: the
+  // parser gives a comment to the node after it (the program, if none is).
+  const firstStatic = program.static[0];
+  const firstChild = program.body[0];
+  const first =
+    firstStatic && (!firstChild || firstStatic.start < firstChild.start)
+      ? firstStatic
+      : firstChild;
+  const comment = (
+    first ? (first as Partial<Node.Commentable>).comments : program.comments
+  )?.[0];
+  if (comment) {
+    switch (parsed.read(comment.value).trim()) {
       case "use tags":
         return RuntimeAPI.tags;
       case "use class":
