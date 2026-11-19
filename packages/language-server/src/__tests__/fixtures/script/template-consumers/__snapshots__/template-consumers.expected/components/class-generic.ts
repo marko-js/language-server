@@ -1,7 +1,7 @@
 export interface Input<T> {
   value: T;
 }
-abstract class Component<T> extends Marko.Component<Input<T>> {
+class Component<T> extends Marko.Component<Input<T>> {
   declare state: { value: T };
   onCreate(input: Input<T>) {
     this.state = { value: input.value };

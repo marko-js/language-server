@@ -4,7 +4,6 @@
  * @property {string} href The address.
  *//**
  * @extends {Marko.Component<Input>}
- * @abstract
  */
 export class Component extends Marko.Component {}
 (

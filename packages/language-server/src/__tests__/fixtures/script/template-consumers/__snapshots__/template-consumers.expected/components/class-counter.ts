@@ -1,7 +1,7 @@
 export interface Input {
   start: number;
 }
-abstract class Component extends Marko.Component<Input> {
+class Component extends Marko.Component<Input> {
   declare state: { count: number };
   onCreate(input: Input) {
     this.state = { count: input.start };

@@ -1,6 +1,6 @@
 function logged(_method: unknown, _context: ClassMethodDecoratorContext) {}
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {
+class Component extends Marko.Component<Input> {
   @logged
   handleClick() {}
 }

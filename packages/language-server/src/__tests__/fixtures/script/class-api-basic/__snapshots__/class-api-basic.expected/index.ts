@@ -16,7 +16,7 @@ var useA = true;
 type Mobile = {
   brandName: string;
 };
-abstract class Component extends Marko.Component<Input> {
+class Component extends Marko.Component<Input> {
   declare state: {
     something: boolean;
   };

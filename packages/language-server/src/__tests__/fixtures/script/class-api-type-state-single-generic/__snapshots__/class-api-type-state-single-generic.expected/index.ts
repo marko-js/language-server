@@ -1,7 +1,7 @@
 export interface Input<T extends string> {
   name: T;
 }
-abstract class Component<T extends string> extends Marko.Component<Input<T>> {
+class Component<T extends string> extends Marko.Component<Input<T>> {
   declare state: {
     name: T;
     //        ^?

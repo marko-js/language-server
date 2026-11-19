@@ -1,7 +1,6 @@
 /** @typedef {Record<string, unknown>} Input */
 /**
  * @extends {Marko.Component<Input>}
- * @abstract
  */
 export class Component extends Marko.Component {}
 (

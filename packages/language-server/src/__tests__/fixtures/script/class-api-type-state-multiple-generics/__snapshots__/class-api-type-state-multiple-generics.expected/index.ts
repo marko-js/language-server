@@ -2,7 +2,7 @@ export interface Input<FirstName extends string, LastName extends string> {
   firstName: FirstName;
   lastName: LastName;
 }
-abstract class Component<
+class Component<
   FirstName extends string,
   LastName extends string,
 > extends Marko.Component<Input<FirstName, LastName>> {

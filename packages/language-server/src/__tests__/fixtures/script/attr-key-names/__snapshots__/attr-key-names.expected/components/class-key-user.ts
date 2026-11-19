@@ -1,7 +1,7 @@
 // In the Class API, Marko 5's directives are not a tag's input: they are
 // checked apart.
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {}
+class Component extends Marko.Component<Input> {}
 export { type Component };
 (function (this: void) {
   const input = Marko._.any as Input;

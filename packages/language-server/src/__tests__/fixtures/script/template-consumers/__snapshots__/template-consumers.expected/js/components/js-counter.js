@@ -2,7 +2,6 @@
  * @typedef {{ start: number }} Input
  *//**
  * @extends {Marko.Component<Input>}
- * @abstract
  */
 export class Component extends Marko.Component {
   onCreate(/** @type {Input} */ input) {
