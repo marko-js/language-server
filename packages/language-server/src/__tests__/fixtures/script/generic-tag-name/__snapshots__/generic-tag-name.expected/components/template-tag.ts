@@ -35,184 +35,127 @@ export type Component<
     void
   >,
 > = Marko.Component<Input<T>>;
-(function <
-  T extends Marko.Template<
-    {
-      value: string;
-      item?: Marko.AttrTag<{
-        x: number;
-        renderBody?: Marko.Body<[{ y: number }]>;
-      }>;
-    },
-    void
-  >,
->(this: void) {
-  const input = Marko._.any as Input<T>;
-  const component = Marko._.any as Component<T>;
-  const state = Marko._.state(component);
-  const out = Marko._.any as Marko.Out;
-  const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.any as Marko.Global;
-  const __marko_internal_tag_1 = input.tag;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({
-    value: "x",
-  });
-  const __marko_internal_tag_2 = input.tag;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()({
-    value: 1,
-  });
-  const __marko_internal_tag_3 = input.tag;
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
-    value: "x",
-    bogus: 1,
-  });
-  const __marko_internal_tag_4 = input.tag;
-  Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
-    input["@item"];
-    input["@item"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_4)(Marko._.withRestAttrTags)()({
-    value: "x",
-    item: {
-      x: 1,
-      [Symbol.iterator]: Marko._.any,
-    },
-    [Marko._.restAttrTags]: [
+const Input = Marko._.templateOf(
+  <
+    T extends Marko.Template<
       {
-        item: {
-          x: "2",
-          [Symbol.iterator]: Marko._.any,
-        },
+        value: string;
+        item?: Marko.AttrTag<{
+          x: number;
+          renderBody?: Marko.Body<[{ y: number }]>;
+        }>;
       },
-    ],
-  });
-  const __marko_internal_tag_5 = Tag;
-  Marko._.renderDynamicTag(__marko_internal_tag_5)()()({
-    value: "x",
-    bogus: 1,
-  });
-  const __marko_internal_tag_6 = Tag;
-  Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
-    input["@item"];
-    input["@item"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_6)(Marko._.withRestAttrTags)()({
-    value: "x",
-    item: {
-      x: 1,
-      [Symbol.iterator]: Marko._.any,
-    },
-    [Marko._.restAttrTags]: [
-      {
-        item: {
-          x: "2",
-          [Symbol.iterator]: Marko._.any,
-        },
-      },
-    ],
-  });
-  const __marko_internal_tag_7 = input.tag;
-  Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
-    input["@item"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_7)()()(
-    // Content params by the constraint
-    {
+      void
+    >,
+  >(
+    input: Input<T>,
+  ) => {
+    const component = Marko._.any as Component<T>;
+    const state = Marko._.state(component);
+    const out = Marko._.any as Marko.Out;
+    const $signal = Marko._.any as AbortSignal;
+    const $global = Marko._.any as Marko.Global;
+    const __marko_internal_tag_1 = input.tag;
+    Marko._.renderDynamicTag(__marko_internal_tag_1)({
+      value: "x",
+    });
+    const __marko_internal_tag_2 = input.tag;
+    Marko._.renderDynamicTag(__marko_internal_tag_2)({
+      value: 1,
+    });
+    const __marko_internal_tag_3 = input.tag;
+    Marko._.renderDynamicTag(__marko_internal_tag_3)({
+      value: "x",
+      bogus: 1,
+    });
+    const __marko_internal_tag_4 = input.tag;
+    Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
+      input["@item"];
+      input["@item"];
+    });
+    Marko._.renderDynamicTagWithRestAttrTags(
+      __marko_internal_tag_4,
+      Marko._.signature(__marko_internal_tag_4),
+      Marko._.actualInput,
+    )({
       value: "x",
       item: {
         x: 1,
-        [Marko._.contentFor(__marko_internal_tag_7)]: ({ y }) => {
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
+        {
+          item: {
+            x: "2",
+            [Symbol.iterator]: Marko._.any,
+          },
+        },
+      ],
+    });
+    const __marko_internal_tag_5 = Tag;
+    Marko._.renderDynamicTag(__marko_internal_tag_5)({
+      value: "x",
+      bogus: 1,
+    });
+    const __marko_internal_tag_6 = Tag;
+    Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
+      input["@item"];
+      input["@item"];
+    });
+    Marko._.renderDynamicTagWithRestAttrTags(
+      __marko_internal_tag_6,
+      Marko._.signature(__marko_internal_tag_6),
+      Marko._.actualInput,
+    )({
+      value: "x",
+      item: {
+        x: 1,
+        [Symbol.iterator]: Marko._.any,
+      },
+      [Marko._.restAttrTags]: [
+        {
+          item: {
+            x: "2",
+            [Symbol.iterator]: Marko._.any,
+          },
+        },
+      ],
+    });
+    const __marko_internal_tag_7 = input.tag;
+    Marko._.attrTagNames(__marko_internal_tag_7, (input) => {
+      input["@item"];
+    });
+    Marko._.renderDynamicTag(__marko_internal_tag_7)(
+      // Content params by the constraint
+      {
+        value: "x",
+        item: {
+          x: 1,
+          [Marko._.contentFor(__marko_internal_tag_7, "item")]: ({ y }) => {
+            [y.toFixed()];
+            return Marko._.voidReturn;
+          },
+          [Symbol.iterator]: Marko._.any,
+        },
+      },
+    );
+    const __marko_internal_tag_8 = Tag;
+    Marko._.attrTagNames(__marko_internal_tag_8, (input) => {
+      input["@item"];
+    });
+    Marko._.renderDynamicTag(__marko_internal_tag_8)({
+      value: "x",
+      item: {
+        x: 1,
+        [Marko._.contentFor(__marko_internal_tag_8, "item")]: ({ y }) => {
           [y.toFixed()];
           return Marko._.voidReturn;
         },
         [Symbol.iterator]: Marko._.any,
       },
-    },
-  );
-  const __marko_internal_tag_8 = Tag;
-  Marko._.attrTagNames(__marko_internal_tag_8, (input) => {
-    input["@item"];
-  });
-  Marko._.renderDynamicTag(__marko_internal_tag_8)()()({
-    value: "x",
-    item: {
-      x: 1,
-      [Marko._.contentFor(__marko_internal_tag_8)]: ({ y }) => {
-        [y.toFixed()];
-        return Marko._.voidReturn;
-      },
-      [Symbol.iterator]: Marko._.any,
-    },
-  });
-  Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.GenericTemplate<
-  {
-    [__marko_internal_key in keyof Marko._.TemplateMethods]: <
-      T extends Marko.Template<
-        {
-          value: string;
-          item?: Marko.AttrTag<{
-            x: number;
-            renderBody?: Marko.Body<[{ y: number }]>;
-          }>;
-        },
-        void
-      >,
-    >(
-      ...args: Marko._.MethodParams<Input<T>, void, __marko_internal_key>
-    ) => Marko._.MethodReturn<Input<T>, void, __marko_internal_key>;
-  } & { [Marko._.anyInput]: Input<any> },
-  <__marko_internal_apply = 1>(
-    m?: __marko_internal_apply,
-  ) => __marko_internal_apply extends 0 | 2
-    ? <
-        T extends Marko.Template<
-          {
-            value: string;
-            item?: Marko.AttrTag<{
-              x: number;
-              renderBody?: Marko.Body<[{ y: number }]>;
-            }>;
-          },
-          void
-        >,
-      >() => Marko._.Renderer<Input<T>, void, __marko_internal_apply>
-    : __marko_internal_apply extends 1
-      ? () => <
-          __marko_internal_input,
-          T extends Marko.Template<
-            {
-              value: string;
-              item?: Marko.AttrTag<{
-                x: number;
-                renderBody?: Marko.Body<[{ y: number }]>;
-              }>;
-            },
-            void
-          >,
-        >(
-          input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>,
-        ) => Marko._.ReturnWithScope<__marko_internal_input, void>
-      : () => <
-          __marko_internal_input,
-          T extends Marko.Template<
-            {
-              value: string;
-              item?: Marko.AttrTag<{
-                x: number;
-                renderBody?: Marko.Body<[{ y: number }]>;
-              }>;
-            },
-            void
-          >,
-        >(
-          input: Marko._.TagInput<__marko_internal_input, Input<T>>,
-        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>,
-  "class"
-> {}
-const Input = new Template();
+    });
+    Marko._.noop({ component, state, out, input, $global, $signal });
+  },
+  Marko.Component,
+);
 export default Input;

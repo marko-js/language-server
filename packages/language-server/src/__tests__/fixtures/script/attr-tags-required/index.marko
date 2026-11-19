@@ -1,6 +1,7 @@
 static const tuple = ["x", "y"] as const;
 static const cols = ["x", "y"];
 import ReqMenu from "./tags/req-menu/index.marko";
+import GenericClassBody from "./components/generic-class-body.marko";
 import RMenu from "./tags/rmenu/index.marko";
 static const flag = Math.random() > 0.5;
 
@@ -329,3 +330,26 @@ static const withReq = { req: { label: "a", *[Symbol.iterator]() {} } };
     </@section>
   </for>
 </rgrid>
+
+// An attribute tag that requires `renderBody` is given its body by it
+<required-body-table>
+  <@header>Seller</@header>
+</required-body-table>
+
+// A Tags API template is given its body as `content`, whatever its input
+// declares => error
+<class-keyed-body>Seller</class-keyed-body>
+
+// A Class API template's body is its `renderBody`, whatever else its input
+// declares
+<class-content-attr content="a">Seller</class-content-attr>
+<generic-class-body|value| value=1 content="a">${value.toFixed()}</generic-class-body>
+// And as a tag's value
+<GenericClassBody|value| value=1 content="a">${value.toFixed()}</GenericClassBody>
+<${GenericClassBody}|value| value=1 content="a">${value.toFixed()}</>
+
+// And a Tags API template's is its `content`, wherever it is => error
+<tags-keyed-body>Seller</tags-keyed-body>
+
+// A body given to a template that takes none is named by its key => error
+<class-no-body>Seller</class-no-body>

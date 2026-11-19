@@ -115,3 +115,16 @@
   i;
 //^?
 }/>
+
+static let label: string | undefined = "a";
+static const fixedLabel: string | undefined = "a";
+export function clearLabel() {
+  label = undefined;
+}
+
+// Static code runs once, before the template's code (which runs at each
+// render, after `clearLabel` may have): `label` is not narrowed there, a
+// `const` is.
+<if=true>
+  ${label.length} ${fixedLabel.length}
+</if>

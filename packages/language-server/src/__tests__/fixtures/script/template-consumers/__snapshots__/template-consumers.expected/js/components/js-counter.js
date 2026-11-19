@@ -8,12 +8,11 @@ export class Component extends Marko.Component {
     this.state = { count: input.start };
   }
 }
-(
+const Input = Marko._.template(
   /**
-   * @this {void}
+   * @param {Input} input
    */
-  function () {
-    const input = /** @type {Input} */ (Marko._.any);
+  (input) => {
     const component = /** @type {Component} */ (Marko._.any);
     const state = Marko._.state(component);
     const out = /** @type {Marko.Out} */ (Marko._.any);
@@ -26,14 +25,7 @@ export class Component extends Marko.Component {
       })(),
     });
     Marko._.noop({ component, state, out, input, $global, $signal });
-    return;
-  }
-)();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-/**
- * @extends { Marko._.Template<Input, void, "class">}
- */
-class Template extends Marko._.Template {}
-const Input = new Template();
+  },
+  Component,
+);
 export default Input;

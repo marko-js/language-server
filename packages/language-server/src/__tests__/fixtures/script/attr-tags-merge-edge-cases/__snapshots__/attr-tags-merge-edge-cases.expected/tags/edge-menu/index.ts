@@ -7,8 +7,7 @@ export interface Input {
     content?: Marko.Body;
   }>;
 }
-(function (this: void) {
-  const input = Marko._.any as Input;
+const Input: Marko.Template<Input, void> = Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   Marko._.forOfTag(
@@ -21,10 +20,5 @@ export interface Input {
     },
   );
   Marko._.noop({ input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-const Input = new Template();
+});
 export default Input;

@@ -1,5 +1,7 @@
 import Greeting from "pkg/greeting.marko";
 import Legacy from "pkg/legacy.marko";
+import List from "pkg/list.marko";
+import Panel from "pkg/panel.marko";
 import OwnTyped from "./components/own-typed.marko";
 import OwnEmitted from "./components/own-emitted.marko";
 
@@ -8,9 +10,15 @@ import OwnEmitted from "./components/own-emitted.marko";
 <Greeting/greeted name="Ann"/>
 //        ^?      ^?
 <Greeting name=1/>
+<List/first items=[1, 2]/>
+//    ^?
 <Legacy count=1/>
 //      ^?
-<div>${greeted.toUpperCase()}</div>
+<div>${greeted.toUpperCase()} ${first.toFixed()}</div>
+
+// A declaration of a Class API template has its `Component`, as `mtc` writes
+// it: its body is its `renderBody`.
+<Panel>Hi</Panel>
 
 // A legacy `x.d.marko` stands in for a template wherever it is, a project's
 // own too.

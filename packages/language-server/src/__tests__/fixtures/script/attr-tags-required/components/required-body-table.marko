@@ -1,0 +1,7 @@
+export interface Input {
+  // A Class API attribute tag that requires its body by `renderBody`, while
+  // it declares `content` too (eg as native attributes it extends do).
+  header: Marko.AttrTag<{ content?: Marko.Body; renderBody: Marko.Body }>;
+}
+
+<table/>

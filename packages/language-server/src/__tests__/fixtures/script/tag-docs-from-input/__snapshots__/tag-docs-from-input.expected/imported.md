@@ -22,7 +22,9 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
    7 | //                             ^?
    8 |
 >  9 | <FancyButton label="Go"/>
-     |    ^ (alias) const FancyButton: Template
+     |    ^ (alias) const FancyButton: Marko.Template<FancyInput, void> & {
+    Component: typeof Marko.Component;
+}
 import FancyButton
 ---
 A button with a fancy border, see {@link https://example.com/fancy the guide}.  
@@ -40,7 +42,9 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
    9 | <FancyButton label="Go"/>
   10 | // ^?
 > 11 | <${FancyButton} label="Go"/>
-     |     ^ (alias) const FancyButton: Template
+     |     ^ (alias) const FancyButton: Marko.Template<FancyInput, void> & {
+    Component: typeof Marko.Component;
+}
 import FancyButton
 ---
 A button with a fancy border, see {@link https://example.com/fancy the guide}.  
@@ -58,7 +62,9 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
   12 | //  ^?
   13 | <const/Button=FancyButton/>
 > 14 | <Button label="Go"/>
-     |    ^ const Button: Template
+     |    ^ const Button: Marko.Template<FancyInput, void> & {
+    Component: typeof Marko.Component;
+}
   15 | // ^?
   16 | <ShinyButton/>
   17 | // ^?
@@ -72,7 +78,7 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
      |    ^ Custom Marko tag discovered from:
 
 [components/ShinyButton.marko](<fixture>/components/ShinyButton.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button that shines.
   17 | // ^?
@@ -86,7 +92,7 @@ A button that shines.
   19 | // A core tag, documented by its types.
 > 20 | <id/buttonId/>
      |   ^ Core Marko &lt;id&gt; tag.
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, {
 ---
 Exposes a short unique id string through its tag variable, for `id=` and
 aria attributes.
@@ -103,7 +109,7 @@ aria attributes.
   21 | //^?
 > 22 | <await|n|=Promise.resolve(buttonId)>${n}</await>
      |   ^ Core Marko &lt;await&gt; tag.
-(alias) const Input: Template
+(alias) const Input: Marko.TemplateOf<(<T>(input: Input<T>) => void)> & {
 ---
 Renders asynchronously with the result of the promise in its argument:
 `@then` with the value it resolves to, `@catch` with the error it rejects

@@ -1,10 +1,19 @@
 exit 0
 
-dist/components/FancyButton.d.marko
-dist/counter.d.marko
-dist/generic-named.d.marko
-dist/greet.d.marko
-dist/js/js-counter.d.marko
-dist/named-return.d.marko
-dist/pascal-case-tag.d.marko
-dist/static.d.marko
+dist/components/FancyButton.d.marko.ts
+dist/components/split-component-input.component.d.ts
+dist/components/split-component-input.d.marko.ts
+dist/components/split-local-input.component.d.ts
+dist/components/split-local-input.d.marko.ts
+dist/components/split-object.component.d.ts
+dist/components/split-object.d.marko.ts
+dist/components/split-own-input.component.d.ts
+dist/components/split-own-input.d.marko.ts
+dist/counter.d.marko.ts
+dist/generic-named.d.marko.ts
+dist/generic-return.d.marko.ts
+dist/greet.d.marko.ts
+dist/js/js-counter.d.marko.ts
+dist/named-return.d.marko.ts
+dist/pascal-case-tag.d.marko.ts
+dist/static.d.marko.ts

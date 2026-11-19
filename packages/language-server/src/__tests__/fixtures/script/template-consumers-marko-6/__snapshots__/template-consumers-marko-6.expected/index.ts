@@ -42,8 +42,7 @@ export declare const counterReturn: Marko.Return<typeof Counter>;
 export const genericTemplate: Marko.Template<any, any> = Generic;
 export const jsGenericTemplate: Marko.Template<any, any> = JsGeneric;
 export interface Input {}
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const count = Marko._.hoist(() => __marko_internal_hoist__count);
@@ -54,12 +53,10 @@ export interface Input {}
   const name = Marko._.hoist(() => __marko_internal_hoist__name);
   {
     const count = Marko._.returned(() => __marko_internal_rendered_1);
-    const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_module_1().default,
-    )()()({
+    const __marko_internal_rendered_1 = __marko_internal_module_1().default._({
       start: 1,
     });
-    Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+    __marko_internal_module_1().default._({
       start: "bad",
     });
     const __marko_internal_tag_2 = Counter;
@@ -67,7 +64,7 @@ export interface Input {}
       const countByName = Marko._.returned(() => __marko_internal_rendered_2);
       const __marko_internal_rendered_2 = Marko._.renderDynamicTag(
         __marko_internal_tag_2,
-      )()()({
+      )({
         start: 2,
       });
       const __marko_internal_tag_3 = Counter;
@@ -77,10 +74,10 @@ export interface Input {}
         );
         const __marko_internal_rendered_3 = Marko._.renderDynamicTag(
           __marko_internal_tag_3,
-        )()()({
+        )({
           start: 3,
         });
-        Marko._.renderTemplate(__marko_internal_module_2().default)()()({
+        __marko_internal_module_2().default._({
           value: "x",
           ["content"]: (item) => {
             [item];
@@ -88,7 +85,7 @@ export interface Input {}
           },
         });
         const __marko_internal_tag_4 = Generic;
-        Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+        Marko._.renderDynamicTag(__marko_internal_tag_4)({
           value: 1,
           //                         ^?
           ["content"]: (item) => {
@@ -101,7 +98,7 @@ export interface Input {}
           const name = Marko._.returned(() => __marko_internal_rendered_5);
           const __marko_internal_rendered_5 = Marko._.renderDynamicTag(
             __marko_internal_tag_5,
-          )()()(
+          )(
             //                          ^?
             {
               name: "x",
@@ -133,10 +130,7 @@ export interface Input {}
     $global,
     $signal,
   });
-  return;
-})();
-class Template extends Marko._.Template<Input> {}
-export default new Template();
+});
 declare function __marko_internal_module_1(): typeof import("./tags/counter.marko");
 declare function __marko_internal_module_2(): typeof import("./tags/generic.marko");
 //      ^?      ^?             ^?              ^?

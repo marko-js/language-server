@@ -2,25 +2,22 @@ export type Input = Marko.ComponentInput<typeof import("./component")>;
 export interface Component extends Marko.ComponentOf<
   typeof import("./component")
 > {}
-(function (this: void) {
-  const input = Marko._.any as Input;
-  const component = Marko._.any as Component;
-  const state = Marko._.state(component);
-  const out = Marko._.any as Marko.Out;
-  const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.any as Marko.Global;
-  Marko._.renderNativeTag("div")({
-    onClick: component.handleClickMissing,
-  });
-  Marko._.renderNativeTag("div")({
-    onClick: component["strange-handler"],
-  });
-  console.log(component);
-  Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+export default Marko._.template(
+  (input: Input) => {
+    const component = Marko._.any as Component;
+    const state = Marko._.state(component);
+    const out = Marko._.any as Marko.Out;
+    const $signal = Marko._.any as AbortSignal;
+    const $global = Marko._.any as Marko.Global;
+    Marko._.renderNativeTag("div")({
+      onClick: component.handleClickMissing,
+    });
+    Marko._.renderNativeTag("div")({
+      onClick: component["strange-handler"],
+    });
+    console.log(component);
+    Marko._.noop({ component, state, out, input, $global, $signal });
+  },
+  Marko._.any as typeof import("./component"),
+);
 //            ^?

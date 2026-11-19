@@ -1,32 +1,31 @@
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+  __marko_internal_module_1().default._({
     label: "Go",
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)()()(
+  __marko_internal_module_2().default._(
     // ^?   ^?
     {
       label: "Go",
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_3().default)()()(
+  __marko_internal_module_3().default._(
     //    ^?
     {},
   );
-  Marko._.renderTemplate(__marko_internal_module_4().default)()()(
+  __marko_internal_module_4().default._(
     //  ^?
     {
       items: [1, 2],
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_5().default)()()(
+  __marko_internal_module_5().default._(
     //  ^?
     {},
   );
@@ -35,54 +34,49 @@ export type Component = Marko.Component<Input>;
     ShinyButton,
     __marko_internal_module_6().default,
   );
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(
     //  ^?
     {},
   );
-  Marko._.renderTemplate(__marko_internal_module_7().default)()()(
+  __marko_internal_module_7().default._(
     //  ^?
     {
       start: 1,
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_8().default)()()(
+  __marko_internal_module_8().default._(
     //  ^?
     {
       start: 1,
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_9().default)()()(
+  __marko_internal_module_9().default._(
     //  ^?
     {},
   );
-  Marko._.renderTemplate(__marko_internal_module_10().default)()()(
+  __marko_internal_module_10().default._(
     //  ^?
     {
       label: "Go",
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_11().default)()()(
+  __marko_internal_module_11().default._(
     //  ^?
     {
       label: "Go",
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_12().default)()()(
+  __marko_internal_module_12().default._(
     //  ^?
     {},
   );
-  Marko._.renderTemplate(__marko_internal_module_12().default)()()(
+  __marko_internal_module_12().default._(
     //  ^?
     // Named again: its missing declaration is reported once, at the first tag.
     {},
   );
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);
 declare function __marko_internal_module_1(): typeof import("./components/fancy-button.marko");
 declare function __marko_internal_module_2(): typeof import("./components/plain-button.marko");
 declare function __marko_internal_module_3(): typeof import("./components/no-input.marko");

@@ -3,44 +3,23 @@ export interface Input<T> {
 }
 import type Component from "./component";
 export type { Component };
-(function <T>(this: void) {
-  const input = Marko._.any as Input<T>;
-  const component = Marko._.any as Component<T>;
-  const state = Marko._.state(component);
-  const out = Marko._.any as Marko.Out;
-  const $signal = Marko._.any as AbortSignal;
-  const $global = Marko._.any as Marko.Global;
-  Marko._.renderNativeTag("div")({
-    onClick: component.handleClickMissing,
-  });
-  Marko._.renderNativeTag("div")({
-    onClick: component["strange-handler"],
-  });
-  console.log(component.input);
-  Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.GenericTemplate<
-  {
-    [__marko_internal_key in keyof Marko._.TemplateMethods]: <T>(
-      ...args: Marko._.MethodParams<Input<T>, void, __marko_internal_key>
-    ) => Marko._.MethodReturn<Input<T>, void, __marko_internal_key>;
-  } & { [Marko._.anyInput]: Input<any> },
-  <__marko_internal_apply = 1>(
-    m?: __marko_internal_apply,
-  ) => __marko_internal_apply extends 0 | 2
-    ? <T>() => Marko._.Renderer<Input<T>, void, __marko_internal_apply>
-    : __marko_internal_apply extends 1
-      ? () => <__marko_internal_input, T>(
-          input: Input<T> & Marko._.Relate<__marko_internal_input, Input<T>>,
-        ) => Marko._.ReturnWithScope<__marko_internal_input, void>
-      : () => <__marko_internal_input, T>(
-          input: Marko._.TagInput<__marko_internal_input, Input<T>>,
-        ) => Marko._.ReturnWithRestAttrTagsScope<__marko_internal_input, void>,
-  "class"
-> {}
-const Input = new Template();
+const Input = Marko._.templateOf(
+  <T,>(input: Input<T>) => {
+    const component = Marko._.any as Component<T>;
+    const state = Marko._.state(component);
+    const out = Marko._.any as Marko.Out;
+    const $signal = Marko._.any as AbortSignal;
+    const $global = Marko._.any as Marko.Global;
+    Marko._.renderNativeTag("div")({
+      onClick: component.handleClickMissing,
+    });
+    Marko._.renderNativeTag("div")({
+      onClick: component["strange-handler"],
+    });
+    console.log(component.input);
+    Marko._.noop({ component, state, out, input, $global, $signal });
+  },
+  Marko._.any as typeof import("./component"),
+);
 export default Input;
 //                      ^?

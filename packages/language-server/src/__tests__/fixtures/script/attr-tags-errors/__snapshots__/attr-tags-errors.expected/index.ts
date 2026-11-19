@@ -13,8 +13,7 @@ declare const tpl: Marko.Template;
 declare const anyBody: Marko.Body<[unknown]>;
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -24,9 +23,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In the attributes and an attribute tag
     {
       size: "huge",
@@ -48,9 +45,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In two attribute tags
     {
       item: {
@@ -75,9 +70,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In an attribute tag and one in an <if>
     {
       item: {
@@ -100,9 +93,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In an attribute tag with params, beside an <if>
     {
       item: {
@@ -150,9 +141,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // An error in the input and one in a <for>
     {
       rows: users,
@@ -179,9 +168,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // Unknown attribute in a <for> on a generic tag
     {
       rows: users,
@@ -208,9 +195,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // Wrong value in a <for> on a generic tag
     {
       rows: users,
@@ -236,9 +221,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@column"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // Missing attribute in a <for> on a generic tag
     {
       rows: users,
@@ -264,9 +247,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@colum"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // Unknown attribute tag name in a <for> on a generic tag
     {
       rows: users,
@@ -293,9 +274,7 @@ export type Component = Marko.Component<Input>;
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_module_3().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_3(__marko_internal_module_3().default)(
     // A static occurrence and a <for> disagree on T
     {
       option: {
@@ -323,7 +302,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_4, (input) => {
     input["@footer"];
   });
-  Marko._.renderTemplate(__marko_internal_module_4().default)()()(
+  __marko_internal_module_4().default._(
     // An attribute tag declared as a plain object (not `Marko.AttrTag`): reported
     // once and in an <if>, as main reports one written once
     {
@@ -336,9 +315,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_4, (input) => {
     input["@footer"];
   });
-  Marko._.renderTemplate(__marko_internal_module_4().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_4(__marko_internal_module_4().default)({
     [Marko._.restAttrTags]: [
       flag
         ? {
@@ -355,7 +332,10 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)<2>()<string>()(
+  Marko._.restAttrTagsRenderer(
+    __marko_internal_module_1().default._<string>,
+    Marko._.actualInput,
+  )(
     // Type arguments on a tag that takes none, with repeated attribute tags
     {
       item: {
@@ -376,9 +356,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // A wrong value only an <else> gives: reported from its attribute tag
     {
       item: {
@@ -403,9 +381,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     [Marko._.restAttrTags]: [
       n++ < 2
         ? {
@@ -422,7 +398,11 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@x"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()(
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_1,
+    Marko._.signature(__marko_internal_tag_1),
+    Marko._.actualInput,
+  )(
     // A body that takes no input, given attribute tags in a <for>
     {
       [Marko._.restAttrTags]: [
@@ -448,7 +428,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(
     // A tag with arguments takes its attributes after them: its attribute tags
     // are not checked against its first argument
     1,
@@ -475,7 +455,11 @@ export type Component = Marko.Component<Input>;
     input["@a"];
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()(
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_3,
+    Marko._.signature(__marko_internal_tag_3),
+    Marko._.actualInput,
+  )(
     // A template whose input is not known takes any attribute tag, also in an <if>
     // or a <for>
     {
@@ -512,7 +496,11 @@ export type Component = Marko.Component<Input>;
     input["@a"];
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_4)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_4,
+    Marko._.signature(__marko_internal_tag_4),
+    Marko._.actualInput,
+  )({
     a: {
       [Symbol.iterator]: Marko._.any,
     },
@@ -540,13 +528,28 @@ export type Component = Marko.Component<Input>;
     ],
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);
 declare function __marko_internal_module_1(): typeof import("./tags/menu/index.marko");
 declare function __marko_internal_module_2(): typeof import("./tags/gtable/index.marko");
 declare function __marko_internal_module_3(): typeof import("./tags/sel/index.marko");
 declare function __marko_internal_module_4(): typeof import("./tags/plain/index.marko");
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_2(
+  template = __marko_internal_module_2().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_3(
+  template = __marko_internal_module_3().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_4(
+  template = __marko_internal_module_4().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}

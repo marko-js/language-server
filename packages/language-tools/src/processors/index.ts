@@ -27,18 +27,10 @@ export interface Processor {
     code: string;
     map?: any;
   };
-  printTypes(context: PrintContext): {
-    code: string;
-    map?: any;
-  };
 }
 
 export interface PrintContext {
   extracted: Extracted;
-  printer: ts.Printer;
-  sourceFile: ts.SourceFile;
-  typeChecker: ts.TypeChecker;
-  formatSettings: Required<ts.FormatCodeSettings>;
 }
 
 const configs: ProcessorConfig[] = [marko, cssModule];

@@ -1,0 +1,10 @@
+class {}
+
+export interface Input {
+  // An attribute of the Tags API's body's name: its body is still its
+  // `renderBody`, as it is written in the Class API.
+  content: string;
+  renderBody?: Marko.Body;
+}
+
+<div title=input.content><${input.renderBody}/></div>

@@ -1,7 +1,6 @@
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -12,13 +11,17 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_1, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_1,
+    Marko._.signature(__marko_internal_tag_1),
+    Marko._.actualInput,
+  )({
     [Marko._.restAttrTags]: [
       ++i < 10
         ? {
             //         ^?
             a: {
-              [Marko._.contentFor(__marko_internal_tag_1)]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_1, "a")]: (() => {
                 [i];
                 return Marko._.voidBody;
               })(),
@@ -35,13 +38,17 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_2, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_2,
+    Marko._.signature(__marko_internal_tag_2),
+    Marko._.actualInput,
+  )({
     [Marko._.restAttrTags]: [
       !done
         ? {
             //        ^?
             a: {
-              [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
+              [Marko._.contentFor(__marko_internal_tag_2, "a")]: (() => {
                 [done];
                 //      ^?
                 if (++i === 5) {
@@ -60,12 +67,17 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@a"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_3,
+    Marko._.signature(__marko_internal_tag_3),
+    Marko._.actualInput,
+  )({
     [Marko._.restAttrTags]: [
       undefined
         ? {
             a: {
-              [Marko._.contentFor(__marko_internal_tag_3)]: Marko._.voidBody,
+              [Marko._.contentFor(__marko_internal_tag_3, "a")]:
+                Marko._.voidBody,
               [Symbol.iterator]: Marko._.any,
             },
           }
@@ -74,9 +86,4 @@ export type Component = Marko.Component<Input>;
     ...Marko._.givenAttrTags("a"),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);

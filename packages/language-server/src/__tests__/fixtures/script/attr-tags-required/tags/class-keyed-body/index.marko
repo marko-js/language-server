@@ -1,0 +1,7 @@
+export interface Input {
+  // Never given: a template in a `tags` dir is written in the Tags API, whose
+  // body is its `content`.
+  renderBody: Marko.Body;
+}
+
+<${input.renderBody}/>

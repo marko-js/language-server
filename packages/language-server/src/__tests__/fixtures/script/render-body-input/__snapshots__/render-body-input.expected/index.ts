@@ -3,13 +3,12 @@ export interface Input {
   pair: Marko.Body<[a: string, b: number]>;
   plain: Marko.Body;
 }
-(function (this: void) {
-  const input = Marko._.any as Input;
+const Input: Marko.Template<Input, void> = Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const Card = Marko._.hoist(() => __marko_internal_hoist__Card);
   const __marko_internal_tag_1 = input.content;
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_1)(
     // A body whose only param is its input is given attributes, checked as a
     // tag's are.
     {
@@ -18,43 +17,41 @@ export interface Input {
     },
   );
   const __marko_internal_tag_2 = input.content;
-  Marko._.renderDynamicTag(__marko_internal_tag_2)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_2)(
     //                ^?
     {
       title: 1,
     },
   );
   const __marko_internal_tag_3 = input.content;
-  Marko._.renderDynamicTag(__marko_internal_tag_3)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_3)({
     title: "a",
     bogus: 1,
   });
   const __marko_internal_tag_4 = input.content;
-  Marko._.renderDynamicTag(__marko_internal_tag_4)()()({});
+  Marko._.renderDynamicTag(__marko_internal_tag_4)({});
   const __marko_internal_tag_5 = input.pair;
-  Marko._.renderDynamicTag(__marko_internal_tag_5)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_5)(
     // A body with other params is given arguments.
     "a",
     1,
   );
   const __marko_internal_tag_6 = input.pair;
-  Marko._.renderDynamicTag(__marko_internal_tag_6)()()("a", "b");
+  Marko._.renderDynamicTag(__marko_internal_tag_6)("a", "b");
   const __marko_internal_tag_7 = input.pair;
-  Marko._.renderDynamicTag(__marko_internal_tag_7)()()("a");
+  Marko._.renderDynamicTag(__marko_internal_tag_7)("a");
   const __marko_internal_tag_8 = input.plain;
-  Marko._.renderDynamicTag(__marko_internal_tag_8)()()(
+  Marko._.renderDynamicTag(__marko_internal_tag_8)(
     // A body with no params takes nothing.
     {},
   );
   const __marko_internal_tag_9 = input.plain;
-  Marko._.renderDynamicTag(__marko_internal_tag_9)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_9)({
     bogus: 1,
   });
   {
     const Card = Marko._.returned(() => __marko_internal_rendered_10);
-    const __marko_internal_rendered_10 = Marko._.renderTemplate(
-      __marko_internal_module_1().default,
-    )()()({
+    const __marko_internal_rendered_10 = __marko_internal_module_1().default._({
       // A <define> with attributes is such a body too. (Its attributes are not
       [Marko._.contentFor(__marko_internal_module_1)]:
         // checked in this fixture, which is typed with Marko 5: its body is `content`,
@@ -66,32 +63,27 @@ export interface Input {
         },
     });
     const __marko_internal_tag_11 = Card;
-    Marko._.renderDynamicTag(__marko_internal_tag_11)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_11)({
       heading: "a",
       size: 1,
     });
     const __marko_internal_tag_12 = Card;
-    Marko._.renderDynamicTag(__marko_internal_tag_12)()()(
+    Marko._.renderDynamicTag(__marko_internal_tag_12)(
       //    ^?
       {
         heading: 1,
       },
     );
     const __marko_internal_tag_13 = Card;
-    Marko._.renderDynamicTag(__marko_internal_tag_13)()()({
+    Marko._.renderDynamicTag(__marko_internal_tag_13)({
       heading: "a",
       bogus: 1,
     });
     const __marko_internal_tag_14 = Card;
-    Marko._.renderDynamicTag(__marko_internal_tag_14)()()({});
+    Marko._.renderDynamicTag(__marko_internal_tag_14)({});
     var __marko_internal_hoist__Card = Card;
   }
   Marko._.noop({ Card, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-const Input = new Template();
+});
 export default Input;
 declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/define.d.marko");

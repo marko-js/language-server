@@ -142,7 +142,7 @@
   49 | <gtable rows=users>
   50 |   <for|c| of=cols>
 > 51 |     <@column title=c bogus=1/>
-     |                      ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type 'AttrTag<{ title: string; width?: number | undefined; content?: Body<[any], void> | undefined; }>'.
+     |                      ^^^^^ Object literal may only specify known properties, and '"bogus"' does not exist in type '{ title: string; width?: number | undefined; content?: Body<any, void> | undefined; [Symbol.iterator]: () => Iterator<{ title: string; width?: number | undefined; content?: Body<...> | undefined; }, any, any>; }'.
   52 |   </for>
   53 | </gtable>
   54 |
@@ -186,8 +186,7 @@
   63 | <gtable rows=users>
   64 |   <for|c| of=cols>
 > 65 |     <@column width=1/>
-     |      ^^^^^^^ Type '{ width: number; [Symbol.iterator]: any; }' is not assignable to type 'AttrTag<{ title: string; width?: number | undefined; content?: Body<[any], void> | undefined; }>'.
-  Property 'title' is missing in type '{ width: number; [Symbol.iterator]: any; }' but required in type '{ title: string; width?: number | undefined; content?: Body<[any], void> | undefined; }'.
+     |      ^^^^^^^ Property 'title' is missing in type '{ width: number; [Symbol.iterator]: any; }' but required in type '{ title: string; width?: number | undefined; content?: Body<any, void> | undefined; [Symbol.iterator]: () => Iterator<{ title: string; width?: number | undefined; content?: Body<...> | undefined; }, any, any>; }'.
   66 |   </for>
   67 | </gtable>
   68 |
@@ -198,7 +197,7 @@
   70 | <gtable rows=users>
   71 |   <for|c| of=cols>
 > 72 |     <@colum title=c/>
-     |      ^^^^^^ Object literal may only specify known properties, and '"colum"' does not exist in type 'Partial<Input<any>>'.
+     |      ^^^^^^ Object literal may only specify known properties, and '"colum"' does not exist in type 'Partial<{ rows: unknown[]; caption?: string | undefined; column?: { title: string; width?: number | undefined; content?: Body<any, void> | undefined; [Symbol.iterator]: () => Iterator<{ title: string; width?: number | undefined; content?: Body<...> | undefined; }, any, any>; } | undefined; }>'.
   73 |   </for>
   74 | </gtable>
   75 |
@@ -249,7 +248,7 @@
   94 |
   95 | // Type arguments on a tag that takes none, with repeated attribute tags
 > 96 | <menu<string>>
-     |       ^^^^^^ Expected 0 type arguments, but got 1.
+     |       ^^^^^^ Type '(input: Input) => void' has no signatures for which the type argument list is applicable.
   97 |   <@item size="small"/>
   98 |   <@item size="large"/>
   99 | </menu>

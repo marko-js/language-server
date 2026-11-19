@@ -1,6 +1,19 @@
 // This is a typescript file which defines utilities used in the output of the typescript extractor.
 declare global {
   namespace Marko {
+    // A template's signature as a tag, which a tag calls. Declared only here:
+    // in Marko's types it would be an overload, and every error match neither.
+    export interface Template<Input, Return> {
+      /** Types only: its signature as a tag, never one to call. */
+      _(input: Input): Return;
+    }
+    // And `TemplateOf` with a mark: what tells a template typed by its
+    // signature (eg a generic one) from another, now that every one has `_`.
+    export interface TemplateOf<Signature extends (input: any) => any> {
+      /** Types only: never set. */
+      readonly [templateOfMark]: true;
+    }
+
     export interface Directives {}
 
     // Extend the Body type to keep track of what is yielded (used for scope hoisted types).
@@ -35,13 +48,6 @@ declare global {
        */
       export const restAttrTags: typeof attributeTags;
       export const never: never;
-      /**
-       * The key, in a generic template, of its input with `any` for each type
-       * parameter. `attrTags` reads it, as it checks attribute tags apart
-       * from the tag (a loop's body, an `<if>`'s with a scriptlet, an
-       * attribute tag's own) and so cannot see the tag's type arguments.
-       */
-      export const anyInput: unique symbol;
       /** A renderer's form for a tag with rest attribute tags. */
       export const withRestAttrTags: 3;
       export const any: any;
@@ -49,9 +55,10 @@ declare global {
       /** A template's tag's Marko 5 directives, which are not its input. */
       export function directives(directives: Marko.Directives): void;
 
-      export function returned<T>(
-        rendered: () => T,
-      ): T extends { return: { value: infer Returned } } ? Returned : never;
+      /** A tag variable's value: what its tag returns (`Marko.Return`). */
+      export function returned<Rendered>(
+        rendered: () => Rendered,
+      ): TagReturnOf<Rendered> extends { value: infer Value } ? Value : never;
 
       export function hoist<T>(
         value: () => T,
@@ -93,109 +100,77 @@ declare global {
         name: Name,
       ): Marko.NativeTags[Name]["return"]["value"];
 
-      // A discovered template, by the function returning its module, so that
-      // its tag reads its `default` once, in its call.
+      /**
+       * The key a discovered template's tag's body is given by: see
+       * `ContentFor`.
+       */
       export function contentFor<Template>(
         module: () => { readonly default: Template },
       ): ContentFor<Template>;
-      export function contentFor<Name>(
+      // And a tag's value's (eg a dynamic tag's), which may be typed by hand:
+      // see `ValueContentFor`.
+      export function contentFor<Name, Path extends readonly string[]>(
         tag: Name & NotGeneric<Name>,
-      ): ContentFor<Name>;
-      export function contentFor<Input, Return>(
+        ...path: Path
+      ): ValueContentFor<Name, Path>;
+      export function contentFor<Input, Return, Path extends readonly string[]>(
         tag: Marko.Template<Input, Return>,
-      ): ContentFor<Marko.Template<Input, Return>>;
-      export function contentFor<Name>(tag: Name): ContentFor<Name>;
+        ...path: Path
+      ): ValueContentFor<Marko.Template<Input, Return>, Path>;
+      export function contentFor<Name, Path extends readonly string[]>(
+        tag: Name,
+        ...path: Path
+      ): ValueContentFor<Name, Path>;
 
-      // A template's type: the runtime's own `Marko.Template<Input, Return>`
-      // (picked by its keys, so each member keeps the runtime's declaration
-      // and docs), its renderer, and the api it is written in (`"tags"`
-      // unless it says `"class"`, read by `ContentFor`). Also a type, for the
-      // `@extends` of a JavaScript template's class to name.
-      export type Template<Input, Return = void, Api = "tags"> = Omit<
-        Marko.Template<Input, Return>,
-        "_"
-      > & {
-        _: RendererOf<Input, Return>;
-        api: Api;
-      };
-      export const Template: new <
-        Input,
-        Return = void,
-        Api = "tags",
-      >() => Template<Input, Return, Api>;
+      /**
+       * A template's value: the runtime's `Marko.Template<Input, Return>`,
+       * typed from its code.
+       */
+      export function template<Input, Return>(
+        code: (input: Input) => Return,
+      ): Marko.Template<Input, Return>;
+      /**
+       * And a Class API template's, which has its `Component`: what tells
+       * it from one written in the Tags API (see `ContentFor`).
+       */
+      export function template<Input, Return, Component>(
+        code: (input: Input) => Return,
+        component: Component,
+      ): Marko.Template<Input, Return> & { Component: Component };
+      /**
+       * A generic template's value: `Marko.TemplateOf` its code's signature,
+       * which a tag calls (`_`).
+       */
+      export function templateOf<Signature extends (input: any) => any>(
+        code: Signature,
+      ): Marko.TemplateOf<Signature>;
+      export function templateOf<
+        Signature extends (input: any) => any,
+        Component,
+      >(
+        code: Signature,
+        component: Component,
+      ): Marko.TemplateOf<Signature> & { Component: Component };
 
-      // A template's renderer (its `_`), in the form its first call takes
-      // (see `Renderer`). A tag without rest attribute tags renders by the
-      // signature written here, which is cheaper to check than a named one.
-      // The renderer is named, so that a declaration spelling out the
-      // template's type names it, rather than the input it reads. A generic
-      // template writes its own.
-      export type RendererOf<Input, Return> = <A = 1>(
-        m?: A,
-      ) => () => A extends 2 | 3
-        ? RestAttrTagsRenderer<Input, Return>
-        : <I>(input: Input & Relate<I, Input>) => ReturnWithScope<I, Return>;
-
-      // A generic template: each of the runtime's methods redeclared generic
-      // (`Methods`, mapped by the runtime's keys, see `TemplateMethods`, with
-      // its input for any type arguments, `[anyInput]`), its renderer, and the
-      // api it is written in (as for `Template`). Any other member of the
-      // runtime's template (eg one a declaration merge adds) is the runtime's
-      // own. Its input for any type arguments is written by the template: a
-      // declaration spelling out its type can name its key only as written.
-      export type GenericTemplate<Methods, Renderer, Api = "tags"> = Omit<
-        Marko.Template,
-        keyof Methods
-      > &
-        Methods & {
-          _: Renderer;
-          api: Api;
-        };
-      export const GenericTemplate: new <
-        Methods,
-        Renderer,
-        Api = "tags",
-      >() => GenericTemplate<Methods, Renderer, Api>;
-
-      // What a generic template redeclares a method of the runtime's by, for
-      // its input with given type arguments.
-      export type MethodParams<
-        Input,
-        Return,
-        Key extends keyof Marko.Template,
-      > = ParamsOf<Marko.Template<Input, Return>[Key]>;
-      export type MethodReturn<
-        Input,
-        Return,
-        Key extends keyof Marko.Template,
-      > = ReturnOf<Marko.Template<Input, Return>[Key]>;
-
-      // The methods a generic template redeclares generic: the runtime's
-      // whose signature depends on the template's input or return (eg not
-      // `marko@5`'s `createOut`). It maps over their `keyof`, so each keeps
-      // the runtime's declaration and docs.
-      export type TemplateMethods = Pick<
-        Marko.Template,
-        {
-          [Key in keyof Marko.Template]-?: Marko.Template[Key] extends (
-            ...args: any
-          ) => any
-            ? Marko.Template<1, 1>[Key] extends Marko.Template<2, 2>[Key]
-              ? never
-              : Key
-            : never;
-        }[keyof Marko.Template]
-      >;
-
-      // What a function takes and returns, eg a template's render function,
-      // as a type argument. Generated code uses these rather than
-      // `Parameters` and `ReturnType`, which a template can shadow.
-      export type ParamsOf<Fn> = Fn extends (...args: infer Params) => any
-        ? Params
-        : never;
-      export type ReturnOf<Fn> = Fn extends (...args: any) => infer Return
-        ? Return
-        : never;
+      /**
+       * The signature of the template a tag renders. Generic itself, so that
+       * TypeScript propagates its type parameters into the renderer.
+       */
+      export function signature<Template>(
+        template: Template,
+      ): Template extends {
+        readonly [templateOfMark]: true;
+        readonly _: infer Signature;
+      }
+        ? Signature
+        : Template extends Marko.Template<infer Input, infer Return>
+          ? (input: Input) => Return
+          : never;
+      /**
+       * The input a tag is given: its type parameter propagates into the
+       * renderer, which keeps the input's type for `Scopes`.
+       */
+      export function actualInput<Input>(input: Input): Input;
 
       export function noop(value: any): void;
 
@@ -282,7 +257,7 @@ declare global {
               infer SourceName,
               infer Data,
             ]
-          ? Data extends {
+          ? TagReturnOf<Data> extends {
               [
                 K in `${SourceName extends string
                   ? SourceName
@@ -310,9 +285,23 @@ declare global {
           : Handler
         : (...args: any) => any; // If typescript ever actually supports partial application maybe we do this.
 
-      export function renderTemplate<Name>(
-        template: Name,
-      ): TemplateRenderer<Name>;
+      /**
+       * A template's renderer, derived from its signature where it is used: a
+       * generic template's type arguments are inferred from a tag's input.
+       */
+      export const renderer: TemplateInputRenderer &
+        // Given no signature (eg type arguments a template does not take, which
+        // TypeScript reports): any input, so that the error is not repeated.
+        ((
+          signature: unknown,
+          actualInput: unknown,
+        ) => <Input>(input: Input) => ReturnWithScope<Input, void>);
+      /** `renderer`, for a tag with rest attribute tags. */
+      export const restAttrTagsRenderer: SignatureRestAttrTagsRenderer &
+        ((
+          signature: unknown,
+          actualInput: unknown,
+        ) => <Input>(input: Input) => ReturnWithRestAttrTagsScope<Input, void>);
       // A native tag's renderer: its input alone, which TypeScript checks
       // without inferring anything. A call, not a member of an object of
       // renderers: one read by an index signature (eg a custom element's) is
@@ -333,19 +322,71 @@ declare global {
         tag: Tag,
         fallback: Template,
       ): [0] extends [1 & Tag] ? Template : Tag;
+      /**
+       * A dynamic tag's renderer, by the type of what it names (see
+       * `DynamicRenderer`). A function: TypeScript types it once, not per read.
+       */
+      export function renderDynamicTag<
+        Name extends { readonly [templateOfMark]: true },
+        Input,
+        Return,
+        Actual,
+      >(
+        tag: Name & NotUnion<Name>,
+        signature: (input: Input) => Return,
+        actualInput: (input: Actual) => Actual,
+      ): (
+        input: Input & Relate<Actual, Input>,
+      ) => ReturnWithScope<Actual, Return>;
       export function renderDynamicTag<Name>(
         tag: Name & NotGeneric<Name>,
-      ): DynamicRenderer<Name>;
+        ...derived: unknown[]
+      ): DynamicRenderer<Name, 1>;
       // A name of a type parameter's type (eg `as: S`) defers
       // `DynamicRenderer`, which is then not callable: such a name is checked
       // by the constraint it has, as with the other helpers given a tag.
       export function renderDynamicTag<Name extends keyof Marko.NativeTags>(
         tag: Name,
-      ): NativeTagsRenderer<Name>;
+        ...derived: unknown[]
+      ): NativeTagsRenderer<Name, 1>;
       export function renderDynamicTag<Input, Return>(
         tag: Marko.Template<Input, Return>,
-      ): BaseRenderer<InputOrAny<Input>, Return>;
-      export function renderDynamicTag<Name>(tag: Name): DynamicRenderer<Name>;
+        ...derived: unknown[]
+      ): Renderer<InputOrAny<Input>, Return, 1>;
+      export function renderDynamicTag<Name>(
+        tag: Name,
+        ...derived: unknown[]
+      ): DynamicRenderer<Name, 1>;
+      /** `renderDynamicTag`, for a tag with rest attribute tags. */
+      export function renderDynamicTagWithRestAttrTags<
+        Name extends { readonly [templateOfMark]: true },
+        Input,
+        Return,
+        Actual,
+      >(
+        tag: Name & NotUnion<Name>,
+        signature: (input: Input) => Return,
+        actualInput: (input: Actual) => Actual,
+      ): (
+        input: TagInput<Actual, Input>,
+      ) => ReturnWithRestAttrTagsScope<Actual, Return>;
+      export function renderDynamicTagWithRestAttrTags<Name>(
+        tag: Name & NotGeneric<Name>,
+        ...derived: unknown[]
+      ): DynamicRenderer<Name, 3>;
+      // A name of a type parameter's type (eg `as: S`) defers `DynamicRenderer`
+      // (not callable): it is checked by its constraint.
+      export function renderDynamicTagWithRestAttrTags<
+        Name extends keyof Marko.NativeTags,
+      >(tag: Name, ...derived: unknown[]): NativeTagsRenderer<Name, 3>;
+      export function renderDynamicTagWithRestAttrTags<Input, Return>(
+        tag: Marko.Template<Input, Return>,
+        ...derived: unknown[]
+      ): Renderer<InputOrAny<Input>, Return, 3>;
+      export function renderDynamicTagWithRestAttrTags<Name>(
+        tag: Name,
+        ...derived: unknown[]
+      ): DynamicRenderer<Name, 3>;
 
       export function returnTag<
         Input extends {
@@ -569,25 +610,28 @@ declare global {
         ...path: Path
       ): CheckedAttrTags<AttrTagGroup<AttrTagsInput<AnyInputFor<Tag>, Path>>>;
 
-      export type DynamicRenderer<Name> = [0] extends [1 & Name]
-        ? DefaultRenderer
-        : [Name] extends [{ _: infer Renderer }]
-          ? // A template (eg an imported one) renders by its own renderer, as
-            // by its discovered name: generic, and checked for unknown
-            // attributes. A union of templates takes any of their inputs.
+      export type DynamicRenderer<Name, Mode> = [0] extends [1 & Name]
+        ? DefaultInputRenderer<Mode>
+        : [Name] extends [{ readonly [templateOfMark]: true }]
+          ? // A generic template renders by its signature as is: its result is
+            // its return alone. A union of templates takes any of their inputs.
             IsUnion<Name> extends false
-            ? Renderer
-            : DynamicInputRenderer<Name>
+            ? Mode extends 2 | 3
+              ? RestAttrTagsRenderer<AnyInputFor<Name>, Marko.Return<Name>>
+              : Name extends { readonly _: infer Signature }
+                ? Signature
+                : never
+            : DynamicInputRenderer<Name, Mode>
           : [Name] extends [Marko.Template<infer Input, infer Return>]
             ? // A template typed only as `Marko.Template`: by its input, as
-              // TemplateRenderer renders one.
+              // `renderer` renders one.
               IsUnion<Name> extends false
-              ? BaseRenderer<InputOrAny<Input>, Return>
-              : DynamicInputRenderer<Name>
+              ? Renderer<InputOrAny<Input>, Return, Mode>
+              : DynamicInputRenderer<Name, Mode>
             : [Name] extends [Marko.Template<any, any> | string]
-              ? DynamicInputRenderer<Name>
+              ? DynamicInputRenderer<Name, Mode>
               : [Name] extends [AnyMarkoBody]
-                ? BodyRenderer<Name>
+                ? BodyRenderer<Name, Mode>
                 : [Name] extends [
                       {
                         [
@@ -595,22 +639,21 @@ declare global {
                         ]?: infer BodyValue extends AnyMarkoBody;
                       },
                     ]
-                  ? BodyRenderer<BodyValue>
-                  : DefaultRenderer;
+                  ? BodyRenderer<BodyValue, Mode>
+                  : [Name] extends [DefaultRenderer]
+                    ? // `missingTag`, a tag of no known type.
+                      DefaultInputRenderer<Mode>
+                    : [Name] extends [(input: infer Input) => infer Return]
+                      ? // A generic template's signature given type
+                        // arguments (`signature(tag)<T>`): by its input, as
+                        // one typed only as `Marko.Template`.
+                        Renderer<Input, Return, Mode>
+                      : DefaultInputRenderer<Mode>;
 
-      export type TemplateRenderer<Template> = Template extends {
-        _: infer Renderer;
-      }
-        ? Renderer
-        : Template extends Marko.Template<infer Input, infer Return>
-          ? BaseRenderer<Input, Return>
-          : DefaultRenderer;
-
-      // Each renderer's first call (but a native tag's, see
-      // `renderNativeTag`) takes the form of renderer the tag needs (see
-      // `Renderer`): `1` (the default) for a tag without rest attribute
-      // tags, `withRestAttrTags` (`3`) for one with them, and `0` and `2`
-      // likewise for a generic template given type arguments.
+      /** The renderer of a tag of unknown type: any input. */
+      export type DefaultInputRenderer<Mode> = Mode extends 2 | 3
+        ? <Input>(input: Input) => ReturnWithRestAttrTagsScope<Input, void>
+        : <Input>(input: Input) => ReturnWithScope<Input, void>;
 
       /**
        * A body's renderer: given its input, as a template's is, when its only
@@ -618,34 +661,47 @@ declare global {
        * cheaper to check than its arguments, else given its arguments.
        * With rest attribute tags (`Mode` `2` or `3`), its input has them.
        */
-      export interface BodyRenderer<Body extends AnyMarkoBody> {
-        <Mode extends number = 1>(
-          mode?: Mode,
-        ): () => [0] extends [1 & BodyParamsWithDefault<Body>]
-          ? BodyArgsRenderer<Body>
-          : BodyParamsWithDefault<Body> extends readonly [input?: infer Input]
-            ? Mode extends 2 | 3
-              ? RestAttrTagsRenderer<
-                  KnownInput<Input>,
-                  Body extends Marko.Body<any, infer Return> ? Return : never
-                >
-              : BodyInputRenderer<
-                  Input,
-                  Body extends Marko.Body<any, infer Return> ? Return : never
-                >
-            : BodyArgsRenderer<Body>;
-      }
+      export type BodyRenderer<Body extends AnyMarkoBody, Mode> = [0] extends [
+        1 & BodyParamsWithDefault<Body>,
+      ]
+        ? BodyArgsRenderer<Body>
+        : BodyParamsWithDefault<Body> extends readonly [input?: infer Input]
+          ? Mode extends 2 | 3
+            ? RestAttrTagsRenderer<
+                KnownInput<Input>,
+                Body extends Marko.Body<any, infer Return> ? Return : never
+              >
+            : BodyInputRenderer<
+                Input,
+                Body extends Marko.Body<any, infer Return> ? Return : never
+              >
+          : BodyArgsRenderer<Body>;
 
-      export interface BaseRenderer<Input, Return = void> {
-        <Mode extends number = 1>(
-          mode?: Mode,
-        ): () => Renderer<Input, Return, Mode>;
-      }
+      /**
+       * See `renderer`: its input is the template's alone, as a tag's call of
+       * its signature takes it.
+       */
+      export type TemplateInputRenderer = <Input, Return, Actual>(
+        signature: (input: Input) => Return,
+        actualInput: (input: Actual) => Actual,
+      ) => (
+        input: Input & Relate<Actual, Input>,
+      ) => ReturnWithScope<Actual, Return>;
+
+      /** See `restAttrTagsRenderer`. */
+      export type SignatureRestAttrTagsRenderer = <Input, Return, Actual>(
+        signature: (input: Input) => Return,
+        actualInput: (input: Actual) => Actual,
+      ) => (
+        input: TagInput<Actual, Input>,
+      ) => ReturnWithRestAttrTagsScope<Actual, Return>;
 
       export interface DefaultRenderer {
         <Mode extends number = 1>(
           mode?: Mode,
-        ): () => Mode extends 2 | 3
+        ): (
+          ...signature: unknown[]
+        ) => Mode extends 2 | 3
           ? <Input>(input: Input) => ReturnWithRestAttrTagsScope<Input, void>
           : <Input>(input: Input) => ReturnWithScope<Input, void>;
       }
@@ -699,10 +755,8 @@ declare global {
       }
 
       /**
-       * What a generic template's renderer takes with rest attribute tags, as
-       * `RestAttrTagsRenderer` does: named to keep its trailer short, and a
-       * conditional type, so that once `Actual` is inferred TypeScript prints
-       * it as the intersection, not by this name.
+       * What a generic template's renderer takes with rest attribute tags. A
+       * conditional type, so that TypeScript prints it resolved, not by name.
        */
       export type TagInput<Actual, Input> = [Actual] extends [unknown]
         ? RestAttrTagsInput<Input> & Relate<Actual, RestAttrTagsInput<Input>>
@@ -712,6 +766,9 @@ declare global {
     }
   }
 }
+
+/** The key of `Marko.TemplateOf`'s mark. */
+declare const templateOfMark: unique symbol;
 
 declare abstract class MarkoReturn<Return> {
   return: Return;
@@ -727,15 +784,11 @@ type AnyMarkoBody = Marko.Body<any, any>;
  * attribute tags are checked against any of the inputs (a native tag has
  * none).
  */
-type DynamicInputRenderer<Name> = {
-  <Mode extends number = 1>(
-    mode?: Mode,
-  ): () => Mode extends 2 | 3
-    ? DynamicInputRestAttrTagsRenderer<Name>
-    : <Input extends Marko.Input<Name>>(
-        input: Input,
-      ) => Marko._.ReturnWithScope<Input, Marko.Return<Name>>;
-};
+type DynamicInputRenderer<Name, Mode> = Mode extends 2 | 3
+  ? DynamicInputRestAttrTagsRenderer<Name>
+  : <Input extends Marko.Input<Name>>(
+      input: Input,
+    ) => Marko._.ReturnWithScope<Input, Marko.Return<Name>>;
 
 /**
  * A tag's input for its groups: `any` where it is not known (a bare
@@ -762,20 +815,19 @@ type DynamicInputRestAttrTagsRenderer<Name> = <
  * union of them (with their rest attribute tags): `Relate` defers for a type
  * parameter's names.
  */
-type NativeTagsRenderer<Names extends keyof Marko.NativeTags> = {
-  <Mode extends number = 1>(
-    mode?: Mode,
-  ): () => Mode extends 2 | 3
-    ? <Input extends Marko.NativeTags[Names]["input"]>(
-        input: AttributeTags<NoAttrTags> & Input & NoAttrTagsIn<Input>,
-      ) => Marko._.ReturnWithRestAttrTagsScope<
-        Input,
-        Marko.NativeTags[Names]["return"]
-      >
-    : <Input extends Marko.NativeTags[Names]["input"]>(
-        input: Input & NoAttrTagsIn<Input>,
-      ) => Marko._.ReturnWithScope<Input, Marko.NativeTags[Names]["return"]>;
-};
+type NativeTagsRenderer<
+  Names extends keyof Marko.NativeTags,
+  Mode,
+> = Mode extends 2 | 3
+  ? <Input extends Marko.NativeTags[Names]["input"]>(
+      input: AttributeTags<NoAttrTags> & Input & NoAttrTagsIn<Input>,
+    ) => Marko._.ReturnWithRestAttrTagsScope<
+      Input,
+      Marko.NativeTags[Names]["return"]
+    >
+  : <Input extends Marko.NativeTags[Names]["input"]>(
+      input: Input & NoAttrTagsIn<Input>,
+    ) => Marko._.ReturnWithScope<Input, Marko.NativeTags[Names]["return"]>;
 
 /** What a native tag takes as attribute tags: none. */
 interface NoAttrTags {
@@ -801,6 +853,9 @@ type InputOrAny<Input> = unknown extends Input
   ? Record<string, unknown>
   : Input;
 
+/** `never` for a union. */
+type NotUnion<T> = IsUnion<T> extends false ? unknown : never;
+
 /** `never` for a type parameter's type, which defers conditional types. */
 type NotGeneric<T> = [T] extends [never] ? never : unknown;
 
@@ -816,6 +871,10 @@ type BodyContentScope<BodyContent> = BodyContent extends (...params: any) => {
 }
   ? Scope
   : never;
+
+/** A tag's return, from its renderer's result, or a signature's own. */
+type TagReturnOf<Rendered> =
+  Rendered extends ReturnAndScope<any, infer Return> ? Return : Rendered;
 
 /**
  * An interface, not a type alias: TypeScript resolves an interface's members,
@@ -916,12 +975,22 @@ type MergeAttrTags<Groups extends readonly any[]> = Groups extends unknown
   : never;
 
 /**
- * `InputFor`, but a generic template's with `any` type arguments, and `any`
- * where it is not known (see `KnownInput`).
+ * `InputFor`, but `any` where it is not known, and a generic template's with
+ * its bodies' params `any`: `attrTags` checks attribute tags apart.
  */
-type AnyInputFor<Tag> = Tag extends { [Marko._.anyInput]: infer Input }
-  ? Input
+type AnyInputFor<Tag> = Tag extends { readonly [templateOfMark]: true }
+  ? AnyBodies<InputFor<Tag>>
   : KnownInput<InputFor<Tag>>;
+
+/** An input with each body's params (its own, and its attribute tags') `any`. */
+type AnyBodies<Input> =
+  Input extends Marko.Body<any, infer Return>
+    ? Marko.Body<any, Return>
+    : Input extends (...args: any) => any
+      ? Input
+      : Input extends object
+        ? { [Key in keyof Input]: AnyBodies<Input[Key]> }
+        : Input;
 
 type AttrTagsInput<
   Input,
@@ -1023,15 +1092,47 @@ type DefaultBodyContentKey = keyof Exclude<
   Marko.Template<any, any> | Marko.Body<any, any> | string
 >;
 
-type ContentFor<Name> = [0] extends [1 & Name]
+/**
+ * The key a discovered template's tag's body is given by, as the compiler
+ * picks it: `renderBody` for one with a `Component`, else `content`.
+ */
+type ContentFor<Template> = [0] extends [1 & Template]
   ? DefaultBodyContentKey
-  : Name extends { api: infer API }
-    ? API extends "tags"
+  : [Template] extends [{ Component: any }]
+    ? "renderBody"
+    : "content";
+
+/**
+ * And a tag's value's: one with no `Component` may be a Class API template
+ * typed by hand, so it takes its body by the key its input declares.
+ */
+type ValueContentFor<Name, Path extends readonly string[]> = [0] extends [
+  1 & Name,
+]
+  ? DefaultBodyContentKey
+  : [Name] extends [{ Component: any }]
+    ? "renderBody"
+    : BodyContentKeyOf<
+        Exclude<AttrTagsInput<InputFor<Name>, Path>, undefined | null>
+      >;
+
+/**
+ * The key an input declares its body by: the one it requires, else the one
+ * it has; one with both or neither takes the runtime's.
+ */
+type BodyContentKeyOf<Input> = [0] extends [1 & Input]
+  ? DefaultBodyContentKey
+  : [Input] extends [{ renderBody: any }]
+    ? "renderBody"
+    : [Input] extends [{ content: any }]
       ? "content"
-      : API extends "class"
-        ? "renderBody"
-        : DefaultBodyContentKey
-    : DefaultBodyContentKey;
+      : "content" extends UnionKeys<Input>
+        ? "renderBody" extends UnionKeys<Input>
+          ? DefaultBodyContentKey
+          : "content"
+        : "renderBody" extends UnionKeys<Input>
+          ? "renderBody"
+          : DefaultBodyContentKey;
 
 type InputFor<Name> = 0 extends 1 & Name
   ? any
@@ -1039,9 +1140,7 @@ type InputFor<Name> = 0 extends 1 & Name
     ? Name extends keyof Marko.NativeTags
       ? Marko.NativeTags[Name]["input"]
       : Record<string, unknown>
-    : Name extends
-          | Marko.Template<infer Input, any>
-          | { _(): () => (input: infer Input) => any }
+    : Name extends Marko.Template<infer Input, any>
       ? Input
       : Name extends
             | Marko.Body<infer Args, any>

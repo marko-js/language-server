@@ -187,3 +187,13 @@
   96 |
 ```
 
+### Ln 129, Col 5
+```marko
+  127 | // `const` is.
+  128 | <if=true>
+> 129 |   ${label.length} ${fixedLabel.length}
+      |     ^^^^^ 'label' is possibly 'undefined'.
+  130 | </if>
+  131 |
+```
+

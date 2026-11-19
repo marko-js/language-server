@@ -46,11 +46,27 @@ mtc -p ./jsconfig.json -d condensed
 
 ### What files are emitted?
 
-Outputs files are similar to the [`tsc` cli in build mode](https://www.typescriptlang.org/docs/handbook/project-references.html). Meaning `.js` and `.d.ts` files will be output (depending on your project config). Beyond that `.marko` files _with their types stripped_ and an associated `.d.marko` file will be output that serve a similar purpose to the `.js` and `.d.ts` files.
+Outputs files are similar to the [`tsc` cli in build mode](https://www.typescriptlang.org/docs/handbook/project-references.html). Meaning `.js` and `.d.ts` files will be output (depending on your project config). Beyond that `.marko` files _with their types stripped_ and an associated `.d.marko.ts` file will be output that serve the same purpose as the `.js` and `.d.ts` files.
+
+### What is a `.d.marko.ts` file?
+
+A template's declaration: the one TypeScript emits for the template's script, as it emits a `.d.ts` for a `.ts` file. It names only Marko's own types, as one written by hand would:
+
+```ts
+export interface Input<T> {
+  items: T[];
+}
+declare const Input: Marko.TemplateOf<<T>(input: Input<T>) => void>;
+export default Input;
+```
+
+A template is a `Marko.Template<Input, Return>`, and a generic one is `Marko.TemplateOf` its signature, from which a tag infers its type arguments (`Marko.TemplateOf` is declared by Marko's types as of `marko` 5.41 and 6.5). A Class API template's also has its `Component` (`Marko.Template<Input, void> & { Component: typeof Component }`), which tells it from one written in the Tags API. A split component's template takes its component's input, `Marko.ComponentInput<typeof import("./x.component")>`, and exports its `Component` as `Marko.ComponentOf<typeof import("./x.component")>` (as of `marko` 5.43). Its methods are those of the runtime that reads it; a generic template's take its input for its type parameters' constraints, so to call them with a given input, assert it as a template of that input: `const numbers = List as Marko.Template<Input<number>>;`.
+
+A template of another project (eg a package's) with an `x.d.marko.ts` next to it is typed by the declaration, as a `.js` file is by its `.d.ts`. That is what TypeScript itself reads for an import of `x.marko`, with `allowArbitraryExtensions`. A project's own template is typed from its source, and its declaration is emitted from it, whatever `x.d.marko.ts` is beside it (eg the one a build without an `outDir` wrote).
 
 ### What is a `.d.marko` file?
 
-A `.d.marko` files is similar to a `.d.ts` file. All script content in the file will be processed as if the Marko script-lang was typescript and the Marko-VSCode plugin and this CLI will both prefer loading a `.d.marko` over an adjacent `.marko` file. The `.d.marko` files output by this tool will strip out any runtime code such that only type information is in the `.d.marko` output.
+A declaration written in Marko syntax, whose script is read as TypeScript, which this tool emitted before `.d.marko.ts`. One is still read next to a template that has no `.d.marko.ts`, or where a tag's `types` names it (as Marko's own core tags do), and one written by hand in a project ships as it is written.
 
 ### Does this replace `tsc`?
 

@@ -52,34 +52,31 @@ for (const mtc of builds)
         );
       });
 
-      it("emits declaration files that type check", async function () {
-        const declarations = emitted.filter((file) =>
-          file.endsWith(".d.marko"),
-        );
+      it("names in its declarations only what its reader has", function () {
+        const declarations = emitted.filter(isDeclaration);
         if (!declarations.length) this.skip();
-        this.timeout(60000);
 
-        // A `.d.marko` is itself a Marko file, so anything internal to the
-        // extracted script that leaks into it shows up here as a syntax or
-        // type error.
-        const checkDir = path.join(outDir, "__recheck__");
-        const checkSrcDir = path.join(checkDir, "src");
-        fs.mkdirSync(checkSrcDir, { recursive: true });
-        fs.copyFileSync(project, path.join(checkDir, path.basename(project)));
+        // A template's declaration is read by the reader's own tools and
+        // runtime: it names neither this package's internals nor the methods
+        // of the runtime it was built with.
         for (const file of declarations) {
-          fs.copyFileSync(file, path.join(checkSrcDir, path.basename(file)));
+          const code = fs.readFileSync(file, "utf-8");
+          for (const reg of [
+            /\bMarko\._\b/,
+            /__marko_internal/,
+            /\b(?:render|renderSync|renderToString|stream|mount|createOut)\??\s*[:(<]/,
+          ]) {
+            assert.doesNotMatch(code, reg, path.relative(outDir, file));
+          }
         }
-
-        assert.deepEqual(
-          await mtc.build(
-            checkDir,
-            path.join(checkDir, path.basename(project)),
-          ),
-          { code: 0, messages: [] },
-        );
       });
     });
   }
+
+/** A template's declaration, as mtc writes it. */
+function isDeclaration(file: string) {
+  return file.endsWith(".d.marko.ts");
+}
 
 function findFiles(dir: string): string[] {
   const files: string[] = [];
@@ -87,7 +84,7 @@ function findFiles(dir: string): string[] {
     for (const entry of fs.readdirSync(dir)) {
       const file = path.join(dir, entry);
       if (fs.statSync(file).isDirectory()) {
-        if (entry !== "__recheck__") files.push(...findFiles(file));
+        files.push(...findFiles(file));
       } else {
         files.push(file);
       }

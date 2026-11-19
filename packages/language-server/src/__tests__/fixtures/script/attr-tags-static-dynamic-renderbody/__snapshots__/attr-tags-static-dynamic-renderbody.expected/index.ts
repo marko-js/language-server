@@ -1,6 +1,5 @@
 export interface Input {}
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const someCondition = Marko._.hoist(
@@ -8,9 +7,7 @@ export interface Input {}
   );
   {
     const someCondition = Marko._.returned(() => __marko_internal_rendered_1);
-    const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_module_1().default,
-    )()()({
+    const __marko_internal_rendered_1 = __marko_internal_module_1().default._({
       value: false,
     });
     const __marko_internal_tag_2 = custom;
@@ -18,11 +15,14 @@ export interface Input {}
       input["@header"];
       input["@footer"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2)(
-      Marko._.withRestAttrTags,
-    )()({
+    Marko._.renderDynamicTagWithRestAttrTags(
+      __marko_internal_tag_2,
+      Marko._.signature(__marko_internal_tag_2),
+      Marko._.actualInput,
+    )({
       header: {
-        [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
+        [Marko._.contentFor(__marko_internal_tag_2, "header")]:
+          Marko._.voidBody,
         [Symbol.iterator]: Marko._.any,
       },
       [Marko._.contentFor(__marko_internal_tag_2)]: (() => {
@@ -42,7 +42,8 @@ export interface Input {}
           ? {
               //^?
               footer: {
-                [Marko._.contentFor(__marko_internal_tag_2)]: Marko._.voidBody,
+                [Marko._.contentFor(__marko_internal_tag_2, "footer")]:
+                  Marko._.voidBody,
                 [Symbol.iterator]: Marko._.any,
               },
             }
@@ -53,10 +54,5 @@ export interface Input {}
     var __marko_internal_hoist__someCondition = someCondition;
   }
   Marko._.noop({ someCondition, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-export default new Template();
+});
 declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
