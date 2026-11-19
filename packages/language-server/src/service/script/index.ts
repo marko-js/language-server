@@ -1000,9 +1000,11 @@ export function getTSProject(docFsPath: string): TSProject {
 
   options.rootDir = basePath;
 
+  const ownFiles = new Set(fileNames);
+
   // Only ts like files can inject globals into the project, so we filter out everything else.
-  const potentialGlobalFiles = new Set<string>(
-    fileNames.filter((file) => /\.[cm]?ts$/.test(file)),
+  const potentialGlobalFiles = fileNames.filter((file) =>
+    /\.[cm]?ts$/.test(file),
   );
 
   const tsPkgFile =
@@ -1133,6 +1135,7 @@ export function getTSProject(docFsPath: string): TSProject {
         return snapshot;
       },
     },
+    (fileName) => ownFiles.has(fileName),
   );
 
   const tsProject: TSProject = {

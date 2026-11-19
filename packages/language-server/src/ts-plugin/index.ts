@@ -73,6 +73,10 @@ export function init({ typescript: ts }: InitOptions): ts.server.PluginModule {
           extractCache,
           (tsProject as any).getModuleResolutionCache(),
           lsh,
+          (fileName) => {
+            const info = ps.getScriptInfo(fileName);
+            return info !== undefined && tsProject.isRoot(info);
+          },
           ps,
         );
 

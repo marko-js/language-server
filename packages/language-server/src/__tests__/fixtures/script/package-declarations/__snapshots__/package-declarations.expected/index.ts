@@ -1,6 +1,7 @@
 import Greeting from "pkg/greeting.marko";
 import Legacy from "pkg/legacy.marko";
 import OwnTyped from "./components/own-typed.marko";
+import OwnEmitted from "./components/own-emitted.marko";
 export interface Input {}
 (function (this: void) {
   const input = Marko._.any as Input;
@@ -41,11 +42,20 @@ export interface Input {}
     );
     const __marko_internal_tag_4 = OwnTyped;
     Marko._.renderDynamicTag(__marko_internal_tag_4)()()(
-      // A declaration beside a template stands in for it wherever it is, a
-      // project's own too.
+      // A legacy `x.d.marko` stands in for a template wherever it is, a project's
+      // own too.
       {
         name: "Ann",
         title: "Hi",
+      },
+    );
+    const __marko_internal_tag_5 = OwnEmitted;
+    Marko._.renderDynamicTag(__marko_internal_tag_5)()()(
+      //                   ^?
+      // A project's own template is read from its source, whatever `x.d.marko.ts`
+      // was emitted beside it (here a stale one requiring `stale`).
+      {
+        name: "Ann",
       },
     );
     var __marko_internal_hoist__greeted = greeted;
@@ -57,4 +67,3 @@ const __marko_internal_api = "tags";
 export { __marko_internal_api as "~api" };
 class Template extends Marko._.Template<Input> {}
 export default new Template();
-//                   ^?

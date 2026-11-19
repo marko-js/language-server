@@ -1,5 +1,6 @@
 exit 0
 
 dist/consumer.d.marko
+dist/own-emitted.d.marko
 dist/own-typed.d.marko
 dist/own.d.marko
