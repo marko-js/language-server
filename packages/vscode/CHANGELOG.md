@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.4.0
+
+### Minor Changes
+
+- [#655](https://github.com/marko-js/language-server/pull/655) [`a6bfe6f`](https://github.com/marko-js/language-server/commit/a6bfe6ffb1d1788f836c456b32ed682237d5f9ad) Thanks [@DylanPiercey](https://github.com/DylanPiercey)! - A template with a `x.d.marko.ts` beside it is typed by that declaration in the editor and in `mtc`, as a `.js` file is by its `.d.ts`, and as TypeScript itself reads one for an import of `x.marko`. A legacy Marko syntax `x.d.marko` is read as before, where there is no `x.d.marko.ts`. `@marko/language-tools` adds `getTemplateDeclaration`, which finds a template's declaration as they do.
+
 ## 3.3.2
 
 ### Patch Changes
