@@ -1,10 +1,6 @@
 exit 1
 
-src/toggle.marko:7:8 - error TS2353
-Object literal may only specify known properties, and '"key"' does not exist in type 'HTMLAttributes<HTMLDivElement>'.
-
-
-    at src/toggle.marko:2:5
+at src/toggle.marko:2:5
       1 | <let/open=false>
     > 2 | <if(open)>Open</if>
         |     ^^^^ Tag does not support arguments. Write the condition as a value attribute instead: `<if=condition>`.
@@ -36,5 +32,3 @@ Object literal may only specify known properties, and '"key"' does not exist in 
         |           ^^^^^^ The closing "div" tag does not match the corresponding opening "span" tag
       3 |
 
-dist/toggle.d.marko
-dist/unclosed.d.marko
