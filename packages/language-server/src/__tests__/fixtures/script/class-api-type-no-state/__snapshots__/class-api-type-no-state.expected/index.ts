@@ -1,5 +1,5 @@
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {
+class Component extends Marko.Component<Input> {
   onMount() {}
 }
 export { type Component };

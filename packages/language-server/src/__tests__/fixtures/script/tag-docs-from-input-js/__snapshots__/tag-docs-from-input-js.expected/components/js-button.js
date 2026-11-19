@@ -4,7 +4,6 @@
  * @typedef {{ label: string; end?: "}" }} Input
  *//**
  * @extends {Marko.Component<Input>}
- * @abstract
  */
 export class Component extends Marko.Component {}
 (

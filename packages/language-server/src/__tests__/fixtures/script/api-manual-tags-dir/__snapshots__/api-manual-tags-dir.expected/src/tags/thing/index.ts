@@ -1,5 +1,5 @@
 export interface Input {}
-abstract class Component extends Marko.Component<Input> {
+class Component extends Marko.Component<Input> {
   count = 0;
 }
 export { type Component };

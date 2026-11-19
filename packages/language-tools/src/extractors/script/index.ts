@@ -355,7 +355,7 @@ class ScriptExtractor {
           if (componentClassBody) {
             this.#extractor
               .write(
-                `abstract class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
+                `class Component${typeParamsStr} extends Marko.Component<Input${typeArgsStr}>`,
               )
               .copy(body)
               .write("\nexport { type Component }\n");
@@ -369,7 +369,6 @@ class ScriptExtractor {
         } else {
           this.#extractor.write(`/**${jsDocTemplateTagsStr}
     * @extends {Marko.Component<Input${typeArgsStr}>}
-    * @abstract
     */\n`);
           this.#extractor
             .write(`export class Component extends Marko.Component`)
