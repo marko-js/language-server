@@ -18,18 +18,6 @@ export default {
         // A CSS module's runtime value comes from the bundler; nothing to emit.
         return { code: extracted.toString() };
       },
-      printTypes({ sourceFile, printer }) {
-        // `sourceFile` is TypeScript's declaration-transformed file, so its
-        // statements already form a valid `.d.ts`.
-        let code = "";
-        for (const statement of sourceFile.statements) {
-          code +=
-            printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile) +
-            "\n";
-        }
-
-        return { code };
-      },
     };
   },
 } satisfies ProcessorConfig;

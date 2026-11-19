@@ -1,0 +1,9 @@
+class {}
+
+export interface Input<T> {
+  value: T;
+  content: string;
+  renderBody?: Marko.Body<[T]>;
+}
+
+<div><${input.renderBody}(input.value)/></div>

@@ -5,7 +5,7 @@
     |    ^ Custom Marko tag discovered from:
 
 [components/js-button.marko](<fixture>/components/js-button.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button, typed with JSDoc.
   2 | // ^?
@@ -21,7 +21,7 @@ A button, typed with JSDoc.
     |    ^ Custom Marko tag discovered from:
 
 [components/js-link.marko](<fixture>/components/js-link.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A link, typed with JSDoc.
   4 | // ^?
@@ -37,7 +37,7 @@ A link, typed with JSDoc.
     |    ^ Custom Marko tag discovered from:
 
 [components/js-no-input.marko](<fixture>/components/js-no-input.marko)
-(alias) const JsNoInput: Template
+(alias) const JsNoInput: Marko.Template<Input, void> & {
   6 | // ^?
   7 |
 ```

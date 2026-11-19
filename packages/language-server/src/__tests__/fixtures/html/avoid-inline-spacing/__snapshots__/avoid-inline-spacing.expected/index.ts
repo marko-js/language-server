@@ -1,7 +1,6 @@
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -29,9 +28,4 @@ export type Component = Marko.Component<Input>;
     [Marko._.content]: Marko._.voidBody,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);

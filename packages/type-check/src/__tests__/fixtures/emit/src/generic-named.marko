@@ -1,5 +1,6 @@
 export interface Input<T> {
   value: T;
+  valueChange?: (value: T) => void;
 }
 
 // Its own `Template` leaves the template's class an expression.

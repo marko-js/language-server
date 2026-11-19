@@ -1,6 +1,5 @@
 export interface Input {}
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const x = Marko._.hoist(() => __marko_internal_hoist__x);
@@ -9,15 +8,14 @@ export interface Input {}
     [Marko._.content]: (() => {
       {
         const x = Marko._.returned(() => __marko_internal_rendered_2);
-        const __marko_internal_rendered_2 = Marko._.renderTemplate(
-          __marko_internal_module_1().default,
-        )()()({
-          value: 1,
-        });
+        const __marko_internal_rendered_2 =
+          __marko_internal_module_1().default._({
+            value: 1,
+          });
         const __marko_internal_change__x = Marko._.change(
           "x",
           "value",
-          __marko_internal_rendered_2.return,
+          __marko_internal_rendered_2,
         );
         [x];
         {
@@ -41,7 +39,7 @@ export interface Input {}
       }
     })(),
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)()()({
+  __marko_internal_module_2().default._({
     value() {
       console.log(el());
       //            ^?
@@ -50,11 +48,6 @@ export interface Input {}
   var { x: __marko_internal_hoist__x, el: __marko_internal_hoist__el } =
     Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_1));
   Marko._.noop({ x, el, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-export default new Template();
+});
 declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
 declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/effect.d.marko");

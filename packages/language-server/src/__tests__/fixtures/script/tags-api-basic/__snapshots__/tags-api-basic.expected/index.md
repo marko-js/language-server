@@ -4,7 +4,9 @@
   10 | }
   11 |
 > 12 | <const/buttonTemplate: (typeof import("<fancy-button>"))["default"]=FancyButton/>
-     |        ^ const buttonTemplate: Template
+     |        ^ const buttonTemplate: Marko.Template<Input, void> & {
+    Component: typeof Marko.Component;
+}
   13 | //     ^?
   14 |
   15 | static {

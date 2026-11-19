@@ -1,33 +1,30 @@
 export interface Input {}
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const x = Marko._.hoist(() => __marko_internal_hoist__x);
   const y = Marko._.hoist(() => __marko_internal_hoist__y);
   {
     const x = Marko._.returned(() => __marko_internal_rendered_1);
-    const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_module_1().default,
-    )()()({
+    const __marko_internal_rendered_1 = __marko_internal_module_1().default._({
       value: 1,
     });
     const __marko_internal_change__x = Marko._.change(
       "x",
       "value",
-      __marko_internal_rendered_1.return,
+      __marko_internal_rendered_1,
     );
     {
       const y = Marko._.returned(() => __marko_internal_rendered_2);
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_module_1().default,
-      )()()({
-        value: [2],
-      });
+      const __marko_internal_rendered_2 = __marko_internal_module_1().default._(
+        {
+          value: [2],
+        },
+      );
       const __marko_internal_change__y = Marko._.change(
         "y",
         "value",
-        __marko_internal_rendered_2.return,
+        __marko_internal_rendered_2,
       );
       Marko._.renderNativeTag("button")({
         onClick() {
@@ -41,7 +38,7 @@ export interface Input {}
         },
         [Marko._.content]: Marko._.voidBody,
       });
-      Marko._.renderTemplate(__marko_internal_module_2().default)()()({
+      __marko_internal_module_2().default._({
         [Marko._.contentFor(__marko_internal_module_2)]: (x) => {
           Marko._.renderNativeTag("button")(
             // The tag param shadows the outer `x` so this is not a tag var mutation.
@@ -61,11 +58,6 @@ export interface Input {}
     }
   }
   Marko._.noop({ x, y, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-export default new Template();
+});
 declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/let.d.marko");
 declare function __marko_internal_module_2(): typeof import("./components/my-tag.marko");

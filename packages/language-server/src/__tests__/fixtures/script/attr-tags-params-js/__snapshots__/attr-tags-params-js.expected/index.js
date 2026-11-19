@@ -4,12 +4,11 @@ import Child from "./components/child.marko";
  * @extends {Marko.Component<Input>}
  */
 export class Component extends Marko.Component {}
-(
+export default Marko._.template(
   /**
-   * @this {void}
+   * @param {Input} input
    */
-  function () {
-    const input = /** @type {Input} */ (Marko._.any);
+  (input) => {
     const component = /** @type {Component} */ (Marko._.any);
     const state = Marko._.state(component);
     const out = /** @type {Marko.Out} */ (Marko._.any);
@@ -19,9 +18,7 @@ export class Component extends Marko.Component {}
       input["@foo"];
       input["@foo"];
     });
-    Marko._.renderTemplate(__marko_internal_module_1().default)(
-      Marko._.withRestAttrTags,
-    )()({
+    __marko_internal_renderer_1(__marko_internal_module_1().default)({
       foo: {
         bar: true,
         [Symbol.iterator]: Marko._.any,
@@ -43,9 +40,11 @@ export class Component extends Marko.Component {}
       input["@foo"];
       input["@foo"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_1)(
-      Marko._.withRestAttrTags,
-    )()({
+    Marko._.renderDynamicTagWithRestAttrTags(
+      __marko_internal_tag_1,
+      Marko._.signature(__marko_internal_tag_1),
+      Marko._.actualInput,
+    )({
       foo: {
         bar: true,
         [Symbol.iterator]: Marko._.any,
@@ -53,7 +52,7 @@ export class Component extends Marko.Component {}
       [Marko._.restAttrTags]: [
         {
           foo: {
-            [Marko._.contentFor(__marko_internal_tag_1)]: (data) => {
+            [Marko._.contentFor(__marko_internal_tag_1, "foo")]: (data) => {
               [data];
               return Marko._.voidReturn;
             },
@@ -67,9 +66,11 @@ export class Component extends Marko.Component {}
       input["@foo"];
       input["@foo"];
     });
-    Marko._.renderDynamicTag(__marko_internal_tag_2)(
-      Marko._.withRestAttrTags,
-    )()(
+    Marko._.renderDynamicTagWithRestAttrTags(
+      __marko_internal_tag_2,
+      Marko._.signature(__marko_internal_tag_2),
+      Marko._.actualInput,
+    )(
       // This errors for now, because `typeof (some + expression)` is not allowed
       {
         foo: {
@@ -79,7 +80,7 @@ export class Component extends Marko.Component {}
         [Marko._.restAttrTags]: [
           {
             foo: {
-              [Marko._.contentFor(__marko_internal_tag_2)]: (data) => {
+              [Marko._.contentFor(__marko_internal_tag_2, "foo")]: (data) => {
                 [data];
                 return Marko._.voidReturn;
               },
@@ -92,9 +93,7 @@ export class Component extends Marko.Component {}
     Marko._.attrTagNames(__marko_internal_module_1, (input) => {
       input["@foo"];
     });
-    Marko._.renderTemplate(__marko_internal_module_1().default)(
-      Marko._.withRestAttrTags,
-    )()(
+    __marko_internal_renderer_1(__marko_internal_module_1().default)(
       // In a <for>: the body param typed (the wrong value is not reported, as nothing
       // is in a JavaScript template)
       {
@@ -122,16 +121,14 @@ export class Component extends Marko.Component {}
       },
     );
     Marko._.noop({ component, state, out, input, $global, $signal });
-    return;
-  }
-)();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-/**
- * @extends { Marko._.Template<Input, void, "class">}
- */
-class Template extends Marko._.Template {}
-export default new Template();
+  },
+  Component,
+);
 function __marko_internal_module_1() {
   return /** @type {typeof import("./components/child.marko")} */ (Marko._.any);
+}
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
 }

@@ -1,7 +1,6 @@
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -13,9 +12,7 @@ export type Component = Marko.Component<Input>;
     input["@part"];
     input["@part"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     part: {
       kind: "circle",
       radius: 1,
@@ -43,9 +40,7 @@ export type Component = Marko.Component<Input>;
     input["@part"];
     input["@part"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
@@ -85,9 +80,7 @@ export type Component = Marko.Component<Input>;
     input["@a"];
     input["@a"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // A union input whose members have no key in common: an <if> is accepted, and
     // a wrong value in a <for> is reported at it
     {
@@ -110,9 +103,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@a"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_2(__marko_internal_module_2().default)({
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
         {
@@ -132,11 +123,16 @@ export type Component = Marko.Component<Input>;
     ...Marko._.givenAttrTags("a"),
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);
 declare function __marko_internal_module_1(): typeof import("./tags/shape/index.marko");
 declare function __marko_internal_module_2(): typeof import("./tags/uni/index.marko");
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_2(
+  template = __marko_internal_module_2().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}

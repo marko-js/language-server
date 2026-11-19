@@ -3,7 +3,10 @@
 ```marko
 > 1 | import Counter from "./tags/counter.marko";
     |        ^ (alias) interface Counter
-(alias) const Counter: Template
+(alias) const Counter: Marko.Template<Input, {
+    value: number;
+    valueChange(next: number): void;
+}>
 import Counter
   2 | //     ^?
   3 | import Generic from "./tags/generic.marko";
@@ -51,7 +54,7 @@ import Counter
   12 |   mounted.value = mounted.value + 1;
   13 |   //      ^?
 > 14 |   const genericValue = Generic.mount({ value: "x" }, el).value;
-     |         ^ const genericValue: string
+     |         ^ const genericValue: unknown
   15 |   //    ^?
   16 |   const jsName = JsTags.mount({ name: "x" }, el).value;
   17 |   //    ^?
@@ -73,7 +76,7 @@ import Counter
   16 |   const jsName = JsTags.mount({ name: "x" }, el).value;
   17 |   //    ^?
 > 18 |   const jsGenericValue = JsGeneric.mount({ value: 1 }, el).value;
-     |         ^ const jsGenericValue: number
+     |         ^ const jsGenericValue: unknown
   19 |   //    ^?
   20 |   Counter.render;
   21 |   //      ^?
@@ -84,7 +87,7 @@ import Counter
   18 |   const jsGenericValue = JsGeneric.mount({ value: 1 }, el).value;
   19 |   //    ^?
 > 20 |   Counter.render;
-     |           ^ (method) render(input: Marko.TemplateInput<Input>): Marko.RenderedTemplate
+     |           ^ (method) Marko.Template<Input, { value: number; valueChange(next: number): void; }>.render(input: Marko.TemplateInput<Input>): Marko.RenderedTemplate
 ---
 Render the template to a string.
   21 |   //      ^?
@@ -97,7 +100,7 @@ Render the template to a string.
   20 |   Counter.render;
   21 |   //      ^?
 > 22 |   Counter.mount;
-     |           ^ (method) mount(input: Marko.TemplateInput<Input>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input>, {
+     |           ^ (method) Marko.Template<Input, { value: number; valueChange(next: number): void; }>.mount(input: Marko.TemplateInput<Input>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input>, {
     value: number;
     valueChange(next: number): void;
 }>
@@ -113,7 +116,7 @@ Render and attach the template to a DOM node.
   22 |   Counter.mount;
   23 |   //      ^?
 > 24 |   Generic.render;
-     |           ^ (method) render<T>(input: Marko.TemplateInput<Input<T>>): Marko.RenderedTemplate
+     |           ^ (method) Marko.Template<Input<unknown>, { value: unknown; valueChange(next: unknown): void; }>.render(input: Marko.TemplateInput<Input<unknown>>): Marko.RenderedTemplate
 ---
 Render the template to a string.
   25 |   //      ^?
@@ -126,9 +129,9 @@ Render the template to a string.
   24 |   Generic.render;
   25 |   //      ^?
 > 26 |   Generic.mount;
-     |           ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend" | undefined): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
-    value: T;
-    valueChange(next: T): void;
+     |           ^ (method) Marko.Template<Input<unknown>, { value: unknown; valueChange(next: unknown): void; }>.mount(input: Marko.TemplateInput<Input<unknown>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input<unknown>>, {
+    value: unknown;
+    valueChange(next: unknown): void;
 }>
 ---
 Render and attach the template to a DOM node.
@@ -142,8 +145,8 @@ Render and attach the template to a DOM node.
   26 |   Generic.mount;
   27 |   //      ^?
 > 28 |   JsGeneric.mount;
-     |             ^ (method) mount<T>(input: Marko.TemplateInput<Input<T>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend" | undefined): Marko.MountedTemplate<Marko.TemplateInput<Input<T>>, {
-    value: T;
+     |             ^ (method) Marko.Template<Input<unknown>, { value: unknown; }>.mount(input: Marko.TemplateInput<Input<unknown>>, reference: Node, position?: "afterbegin" | "afterend" | "beforebegin" | "beforeend"): Marko.MountedTemplate<Marko.TemplateInput<Input<unknown>>, {
+    value: unknown;
 }>
 ---
 Render and attach the template to a DOM node.

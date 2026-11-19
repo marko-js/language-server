@@ -5,7 +5,7 @@
     |    ^ Custom Marko tag discovered from:
 
 [components/fancy-button.marko](<fixture>/components/fancy-button.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button with a fancy border, see {@link https://example.com/fancy the guide}.  
 
@@ -23,7 +23,7 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
     |         ^ Custom Marko tag discovered from:
 
 [components/fancy-button.marko](<fixture>/components/fancy-button.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button with a fancy border, see {@link https://example.com/fancy the guide}.  
 
@@ -43,7 +43,7 @@ A button with a fancy border, see {@link https://example.com/fancy the guide}.
     |       ^ Custom Marko tag discovered from:
 
 [components/plain-button.marko](<fixture>/components/plain-button.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A plain button.
   4 | //    ^?
@@ -59,7 +59,7 @@ A plain button.
     |     ^ Custom Marko tag discovered from:
 
 [components/no-input.marko](<fixture>/components/no-input.marko)
-(alias) const NoInput: Template
+(alias) const NoInput: Marko.Template<Input, void> & {
   6 | //  ^?
   7 | <generic-list items=[1, 2]/>
   8 | //  ^?
@@ -73,7 +73,7 @@ A plain button.
      |     ^ Custom Marko tag discovered from:
 
 [components/generic-list.marko](<fixture>/components/generic-list.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.TemplateOf<(<T>(input: Input<T>) => void)> & {
 ---
 A list of any items.
    8 | //  ^?
@@ -89,7 +89,7 @@ A list of any items.
      |     ^ Custom Marko tag discovered from:
 
 [components/dir-button/index.marko](<fixture>/components/dir-button/index.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button in a directory of its own.
   10 | //  ^?
@@ -105,7 +105,7 @@ A button in a directory of its own.
      |     ^ Custom Marko tag discovered from:
 
 [components/ShinyButton.marko](<fixture>/components/ShinyButton.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button that shines.
   12 | //  ^?
@@ -121,7 +121,7 @@ A button that shines.
      |     ^ Custom Marko tag discovered from:
 
 [components/class-counter.marko](<fixture>/components/class-counter.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 Counts clicks, with the Class API.
   14 | //  ^?
@@ -137,7 +137,7 @@ Counts clicks, with the Class API.
      |     ^ Custom Marko tag discovered from:
 
 [tags/tags-counter.marko](<fixture>/tags/tags-counter.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void>
 ---
 Counts clicks, with the Tags API.  
 
@@ -155,7 +155,7 @@ Counts clicks, with the Tags API.
      |     ^ Custom Marko tag discovered from:
 
 [lib/button-impl.marko](<fixture>/lib/button-impl.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button registered under another name in `marko.json`.
   18 | //  ^?
@@ -171,7 +171,7 @@ A button registered under another name in `marko.json`.
      |     ^ Custom Marko tag discovered from:
 
 [lib/typed-button.marko](<fixture>/lib/typed-button.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
 ---
 A button typed by its declaration.
   20 | //  ^?
@@ -187,7 +187,7 @@ A button typed by its declaration.
      |     ^ Custom Marko tag discovered from:
 
 [components/split-button/index.marko](<fixture>/components/split-button/index.marko)
-(alias) const SplitButton: Template
+(alias) const SplitButton: Marko.Template<Input, void> & {
   22 | //  ^?
   23 | <missing-types-button/>
   24 | //  ^?

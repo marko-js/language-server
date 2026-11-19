@@ -2,8 +2,9 @@ export interface Input {
   user?: { name: string; email: string };
 }
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+const Input: Marko.Template<Input, void> & {
+  Component: typeof Marko.Component;
+} = Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -16,9 +17,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       size: "small",
       ["content"]: ({ foo }) => {
@@ -44,9 +43,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       ["content"]: ({ foo }) => {
         [foo];
@@ -73,9 +70,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       ["content"]: ({ foo }) => {
         [foo];
@@ -107,9 +102,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     [Marko._.restAttrTags]: [
       flag
         ? {
@@ -143,7 +136,7 @@ export type Component = Marko.Component<Input>;
       input["@row"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+  __marko_internal_module_1().default._({
     item: {
       ...Marko._.givenAttrTags("row"),
       ...Marko._.attrTags(
@@ -174,9 +167,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       size: "huge",
       [Symbol.iterator]: Marko._.any,
@@ -197,9 +188,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       bogus: 1,
       ["content"]: ({ foo }) => {
@@ -224,9 +213,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       ["content"]: ({ foo }) => {
         [foo];
@@ -253,9 +240,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_1(__marko_internal_module_1().default)({
     item: {
       ["content"]: ({ foo }) => {
         [foo];
@@ -291,7 +276,7 @@ export type Component = Marko.Component<Input>;
       input["@row"];
     });
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+  __marko_internal_module_1().default._({
     item: {
       ...Marko._.givenAttrTags("row"),
       ...Marko._.attrTags(
@@ -326,9 +311,7 @@ export type Component = Marko.Component<Input>;
       input["@item"];
       input["@item"];
     });
-    Marko._.renderTemplate(__marko_internal_module_2().default)(
-      Marko._.withRestAttrTags,
-    )()({
+    __marko_internal_renderer_2(__marko_internal_module_2().default)({
       item: {
         label: input.user.name,
         [Symbol.iterator]: Marko._.any,
@@ -353,9 +336,7 @@ export type Component = Marko.Component<Input>;
   }
   {
     const both = Marko._.returned(() => __marko_internal_rendered_1);
-    const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_module_3().default,
-    )()()(
+    const __marko_internal_rendered_1 = __marko_internal_module_3().default._(
       // A bind on a repeated attribute tag: clean when the variable takes what its
       // change handler gives
       {
@@ -365,15 +346,13 @@ export type Component = Marko.Component<Input>;
     const __marko_internal_change__both = Marko._.change(
       "both",
       "value",
-      __marko_internal_rendered_1.return,
+      __marko_internal_rendered_1,
     );
     Marko._.attrTagNames(__marko_internal_module_4, (input) => {
       input["@group"];
       input["@group"];
     });
-    Marko._.renderTemplate(__marko_internal_module_4().default)(
-      Marko._.withRestAttrTags,
-    )()({
+    __marko_internal_renderer_3(__marko_internal_module_4().default)({
       group: {
         selected: both,
         selectedChange(
@@ -401,9 +380,7 @@ export type Component = Marko.Component<Input>;
     });
     {
       const text = Marko._.returned(() => __marko_internal_rendered_2);
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_module_3().default,
-      )()()(
+      const __marko_internal_rendered_2 = __marko_internal_module_3().default._(
         // Else an error at the bind, as on one written once
         {
           value: "a",
@@ -412,15 +389,13 @@ export type Component = Marko.Component<Input>;
       const __marko_internal_change__text = Marko._.change(
         "text",
         "value",
-        __marko_internal_rendered_2.return,
+        __marko_internal_rendered_2,
       );
       Marko._.attrTagNames(__marko_internal_module_4, (input) => {
         input["@group"];
         input["@group"];
       });
-      Marko._.renderTemplate(__marko_internal_module_4().default)(
-        Marko._.withRestAttrTags,
-      )()({
+      __marko_internal_renderer_3(__marko_internal_module_4().default)({
         group: {
           selected: text,
           selectedChange(
@@ -451,14 +426,24 @@ export type Component = Marko.Component<Input>;
     }
   }
   Marko._.noop({ both, text, component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-const Input = new Template();
+}, Marko.Component);
 export default Input;
 declare function __marko_internal_module_1(): typeof import("./tags/menu/index.marko");
 declare function __marko_internal_module_2(): typeof import("./tags/list/index.marko");
 declare function __marko_internal_module_3(): typeof import("@marko/runtime-tags/tags/let.d.marko");
 declare function __marko_internal_module_4(): typeof import("./tags/groups/index.marko");
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_2(
+  template = __marko_internal_module_2().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_3(
+  template = __marko_internal_module_4().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}

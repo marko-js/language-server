@@ -85,6 +85,17 @@
   9 | <key-tag bogus-key=1/>
 ```
 
+### Ln 19, Col 10
+```marko
+  17 | </key-tag>
+  18 | // The Tags API has no directives: `key` is an attribute, passed to the input.
+> 19 | <key-tag key="row-1"/>
+     |          ^ (property) Input.key?: string | undefined
+  20 | //       ^?
+  21 | <key-tag no-update/>
+  22 |
+```
+
 ## Diagnostics
 ### Ln 9, Col 10
 ```marko
@@ -137,6 +148,16 @@
 > 16 |   <@my-itme label="z"/>
      |    ^^^^^^^^ Object literal may only specify known properties, and '"my-itme"' does not exist in type 'Input'.
   17 | </key-tag>
-  18 |
+  18 | // The Tags API has no directives: `key` is an attribute, passed to the input.
+  19 | <key-tag key="row-1"/>
+```
+
+### Ln 21, Col 10
+```marko
+  19 | <key-tag key="row-1"/>
+  20 | //       ^?
+> 21 | <key-tag no-update/>
+     |          ^^^^^^^^^ Object literal may only specify known properties, and '"no-update"' does not exist in type 'Input'.
+  22 |
 ```
 

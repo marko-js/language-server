@@ -421,10 +421,6 @@ export default function run(opts: Options) {
       ) => {
         let writeFile = _writeFile;
         if (_writeFile) {
-          const typeChecker = program.getTypeChecker();
-          const printer = ts.createPrinter({
-            noEmitHelpers: true,
-          });
           writeFile = (
             fileName,
             _text,
@@ -451,13 +447,6 @@ export default function run(opts: Options) {
               const extracted = extractCache.get(
                 getCanonicalFileName(sourceFile.fileName),
               )!;
-              const printContext: Processors.PrintContext = {
-                extracted,
-                printer,
-                typeChecker,
-                sourceFile,
-                formatSettings: report.formatSettings,
-              };
 
               // Compound extensions (eg `.module.css`) keep TypeScript's
               // natural `foo.module.css.d.ts` name and only emit the `.d.ts`.
@@ -465,7 +454,7 @@ export default function run(opts: Options) {
                 if (!fileName.endsWith(ts.Extension.Dts)) return;
                 _writeFile(
                   fileName,
-                  processor.printTypes(printContext).code,
+                  _text,
                   writeByteOrderMark,
                   onError,
                   sourceFiles,
@@ -493,35 +482,30 @@ export default function run(opts: Options) {
               }
 
               const isDts = inExt === inDtsExt;
-              let outFileName = fileName;
+              const outBase = fileName.slice(0, -inExt.length);
+              let outFileName: string;
+              let text: string;
 
               if (isDefinitionFile(sourceFile.fileName)) {
-                if (!isDts) return; // Don't double emit `.d.marko` files.
-                outFileName = fileName.slice(0, -inExt.length) + processorExt;
+                // A hand written `x.d.marko` ships as it is written.
+                if (!isDts) return;
+                outFileName = outBase + processorExt;
+                text = extracted.parsed.code;
+              } else if (isDts) {
+                // TypeScript's declaration of the template's script, as
+                // `x.d.marko.ts`; a legacy `x.d.marko` beside it ships instead.
+                const base = sourceFile.fileName.slice(0, -processorExt.length);
+                if (program.getSourceFile(`${base}.d${processorExt}`)) return;
+                outFileName = `${outBase}.d${processorExt}${ts.Extension.Ts}`;
+                text = _text;
               } else {
-                if (
-                  isDts &&
-                  program.getSourceFile(
-                    `${sourceFile.fileName.slice(
-                      0,
-                      -processorExt.length,
-                    )}.d${processorExt}`,
-                  )
-                ) {
-                  // If a `.d.marko` file exists, don't emit the source files `.d.marko`.
-                  return;
-                }
-                outFileName =
-                  fileName.slice(0, -inExt.length) +
-                  (isDts ? ".d" : "") +
-                  processorExt;
+                outFileName = outBase + processorExt;
+                text = processor.print({ extracted }).code;
               }
 
               _writeFile(
                 outFileName,
-                isDts
-                  ? processor.printTypes(printContext).code
-                  : processor.print(printContext).code,
+                text,
                 writeByteOrderMark,
                 onError,
                 sourceFiles,

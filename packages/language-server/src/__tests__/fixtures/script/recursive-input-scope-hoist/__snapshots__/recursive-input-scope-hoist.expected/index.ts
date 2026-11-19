@@ -1,6 +1,5 @@
 export interface Input {}
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const b = Marko._.hoist(() => __marko_internal_hoist__b);
@@ -13,9 +12,9 @@ export interface Input {}
       input["@comment"];
     });
   });
-  const __marko_internal_rendered_1 = Marko._.renderTemplate(
+  const __marko_internal_rendered_1 = __marko_internal_renderer_1(
     __marko_internal_module_1().default,
-  )(Marko._.withRestAttrTags)()({
+  )({
     comment: {
       id: Marko._.interpolated`a`,
       comment: {
@@ -23,14 +22,13 @@ export interface Input {}
         [Marko._.contentFor(__marko_internal_module_1)]: (() => {
           {
             const b = Marko._.returned(() => __marko_internal_rendered_2);
-            const __marko_internal_rendered_2 = Marko._.renderTemplate(
-              __marko_internal_module_2().default,
-            )()()(
-              //    ^?
-              {
-                value: () => "b" as const,
-              },
-            );
+            const __marko_internal_rendered_2 =
+              __marko_internal_module_2().default._(
+                //    ^?
+                {
+                  value: () => "b" as const,
+                },
+              );
             return () => {
               return new (class MarkoReturn<Return = void> {
                 readonly [Marko._.scope] = { b };
@@ -45,11 +43,10 @@ export interface Input {}
       [Marko._.contentFor(__marko_internal_module_1)]: (() => {
         {
           const a = Marko._.returned(() => __marko_internal_rendered_3);
-          const __marko_internal_rendered_3 = Marko._.renderTemplate(
-            __marko_internal_module_2().default,
-          )()()({
-            value: () => "a" as const,
-          });
+          const __marko_internal_rendered_3 =
+            __marko_internal_module_2().default._({
+              value: () => "a" as const,
+            });
           return () => {
             return new (class MarkoReturn<Return = void> {
               readonly [Marko._.scope] = { a };
@@ -68,11 +65,10 @@ export interface Input {}
           [Marko._.contentFor(__marko_internal_module_1)]: (() => {
             {
               const c = Marko._.returned(() => __marko_internal_rendered_4);
-              const __marko_internal_rendered_4 = Marko._.renderTemplate(
-                __marko_internal_module_2().default,
-              )()()({
-                value: () => "c" as const,
-              });
+              const __marko_internal_rendered_4 =
+                __marko_internal_module_2().default._({
+                  value: () => "c" as const,
+                });
               return () => {
                 return new (class MarkoReturn<Return = void> {
                   readonly [Marko._.scope] = { c };
@@ -87,7 +83,7 @@ export interface Input {}
       },
     ],
   });
-  Marko._.renderTemplate(__marko_internal_module_3().default)()()({
+  __marko_internal_module_3().default._({
     value() {
       a;
       //^?
@@ -103,12 +99,12 @@ export interface Input {}
     c: __marko_internal_hoist__c,
   } = Marko._.hoisted(Marko._.readScope(__marko_internal_rendered_1));
   Marko._.noop({ b, a, c, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input> {}
-export default new Template();
+});
 declare function __marko_internal_module_1(): typeof import("./components/comments.marko");
 declare function __marko_internal_module_2(): typeof import("@marko/runtime-tags/tags/let.d.marko");
 declare function __marko_internal_module_3(): typeof import("@marko/runtime-tags/tags/effect.d.marko");
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}

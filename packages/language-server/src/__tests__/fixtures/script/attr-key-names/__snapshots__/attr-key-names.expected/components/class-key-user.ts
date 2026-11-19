@@ -3,8 +3,9 @@
 export interface Input {}
 class Component extends Marko.Component<Input> {}
 export { type Component };
-(function (this: void) {
-  const input = Marko._.any as Input;
+const ClassKeyUser: Marko.Template<Input, void> & {
+  Component: typeof Component;
+} = Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -15,7 +16,7 @@ export { type Component };
       of: [{ id: "a" }],
     },
     (row) => {
-      Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+      __marko_internal_module_1().default._({
         class: "c",
       });
       Marko._.directives({
@@ -25,25 +26,25 @@ export { type Component };
       return Marko._.voidReturn;
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()({});
+  __marko_internal_module_1().default._({});
   Marko._.directives({
     key: 1,
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()(
+  __marko_internal_module_1().default._(
     // A directive's modifier after a `:` is dropped: `key:scoped` is `key`.
     {},
   );
   Marko._.directives({
     key: 1,
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()(
+  __marko_internal_module_1().default._(
     //       ^?
     // Names that only start like a directive's are attributes.
     {
       keyboard: "k",
     },
   );
-  Marko._.renderTemplate(__marko_internal_module_1().default)()()({
+  __marko_internal_module_1().default._({
     "no-update-x": 1,
   });
   Marko._.renderNativeTag("div")(
@@ -64,17 +65,12 @@ export { type Component };
     key: {},
   });
   const __marko_internal_tag_1 = "span";
-  Marko._.renderDynamicTag(__marko_internal_tag_1)()()({});
+  Marko._.renderDynamicTag(__marko_internal_tag_1)({});
   Marko._.directives({
     key: "s",
     "no-update-body": true,
   });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-const ClassKeyUser = new Template();
+}, Component);
 export default ClassKeyUser;
 declare function __marko_internal_module_1(): typeof import("./key-tag.marko");

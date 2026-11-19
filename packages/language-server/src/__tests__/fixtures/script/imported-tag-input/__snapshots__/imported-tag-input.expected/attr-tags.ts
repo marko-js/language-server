@@ -2,8 +2,7 @@ import Menu from "./tags/menu-tag/index.marko";
 import Pick from "./tags/pick-tag/index.marko";
 export interface Input {}
 export type Component = Marko.Component<Input>;
-(function (this: void) {
-  const input = Marko._.any as Input;
+export default Marko._.template((input: Input) => {
   const component = Marko._.any as Component;
   const state = Marko._.state(component);
   const out = Marko._.any as Marko.Out;
@@ -14,9 +13,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // Each tag is rendered by its discovered name, as an imported identifier and
     // as `<${X}>`: all report the same.
     // Repeated
@@ -48,11 +45,15 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_1)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_1,
+    Marko._.signature(__marko_internal_tag_1),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     item: {
       size: "small",
-      [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
+      [Marko._.contentFor(__marko_internal_tag_1, "item")]: ({ foo }) => {
         [foo];
         return Marko._.voidReturn;
       },
@@ -61,7 +62,7 @@ export type Component = Marko.Component<Input>;
     [Marko._.restAttrTags]: [
       {
         item: {
-          [Marko._.contentFor(__marko_internal_tag_1)]: ({ foo }) => {
+          [Marko._.contentFor(__marko_internal_tag_1, "item")]: ({ foo }) => {
             [foo];
             return Marko._.voidReturn;
           },
@@ -75,11 +76,15 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_2)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_2,
+    Marko._.signature(__marko_internal_tag_2),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     item: {
       size: "small",
-      [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
+      [Marko._.contentFor(__marko_internal_tag_2, "item")]: ({ foo }) => {
         [foo];
         return Marko._.voidReturn;
       },
@@ -88,7 +93,7 @@ export type Component = Marko.Component<Input>;
     [Marko._.restAttrTags]: [
       {
         item: {
-          [Marko._.contentFor(__marko_internal_tag_2)]: ({ foo }) => {
+          [Marko._.contentFor(__marko_internal_tag_2, "item")]: ({ foo }) => {
             [foo];
             return Marko._.voidReturn;
           },
@@ -100,9 +105,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In an if
     {
       bogus: 1,
@@ -127,14 +130,20 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_3, (input) => {
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_3)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_3,
+    Marko._.signature(__marko_internal_tag_3),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     [Marko._.restAttrTags]: [
       flag
         ? {
             item: {
               size: "small",
-              [Marko._.contentFor(__marko_internal_tag_3)]: ({ foo }) => {
+              [Marko._.contentFor(__marko_internal_tag_3, "item")]: ({
+                foo,
+              }) => {
                 [foo];
                 return Marko._.voidReturn;
               },
@@ -149,14 +158,20 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_4, (input) => {
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_4)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_4,
+    Marko._.signature(__marko_internal_tag_4),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     [Marko._.restAttrTags]: [
       flag
         ? {
             item: {
               size: "small",
-              [Marko._.contentFor(__marko_internal_tag_4)]: ({ foo }) => {
+              [Marko._.contentFor(__marko_internal_tag_4, "item")]: ({
+                foo,
+              }) => {
                 [foo];
                 return Marko._.voidReturn;
               },
@@ -170,9 +185,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_1, (input) => {
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // In a for
     {
       bogus: 1,
@@ -203,7 +216,11 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_5, (input) => {
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_5)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_5,
+    Marko._.signature(__marko_internal_tag_5),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
@@ -214,7 +231,9 @@ export type Component = Marko.Component<Input>;
           Marko._.attrTags(__marko_internal_tag_5)([
             {
               item: {
-                [Marko._.contentFor(__marko_internal_tag_5)]: ({ foo }) => {
+                [Marko._.contentFor(__marko_internal_tag_5, "item")]: ({
+                  foo,
+                }) => {
                   [name];
                   [foo];
                   return Marko._.voidReturn;
@@ -231,7 +250,11 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_6, (input) => {
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_6)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_6,
+    Marko._.signature(__marko_internal_tag_6),
+    Marko._.actualInput,
+  )({
     bogus: 1,
     [Marko._.restAttrTags]: [
       Marko._.forOfAttrTag(
@@ -242,7 +265,9 @@ export type Component = Marko.Component<Input>;
           Marko._.attrTags(__marko_internal_tag_6)([
             {
               item: {
-                [Marko._.contentFor(__marko_internal_tag_6)]: ({ foo }) => {
+                [Marko._.contentFor(__marko_internal_tag_6, "item")]: ({
+                  foo,
+                }) => {
                   [name];
                   [foo];
                   return Marko._.voidReturn;
@@ -260,9 +285,7 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderTemplate(__marko_internal_module_1().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_1(__marko_internal_module_1().default)(
     // An attribute the attribute tags do not have
     {
       item: {
@@ -314,10 +337,14 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_7)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_7,
+    Marko._.signature(__marko_internal_tag_7),
+    Marko._.actualInput,
+  )({
     item: {
       bogus: 1,
-      [Marko._.contentFor(__marko_internal_tag_7)]: ({ foo }) => {
+      [Marko._.contentFor(__marko_internal_tag_7, "item")]: ({ foo }) => {
         [foo];
         return Marko._.voidReturn;
       },
@@ -328,7 +355,9 @@ export type Component = Marko.Component<Input>;
         ? {
             item: {
               bogus: 2,
-              [Marko._.contentFor(__marko_internal_tag_7)]: ({ foo }) => {
+              [Marko._.contentFor(__marko_internal_tag_7, "item")]: ({
+                foo,
+              }) => {
                 [foo];
                 return Marko._.voidReturn;
               },
@@ -345,7 +374,9 @@ export type Component = Marko.Component<Input>;
             {
               item: {
                 size: "tiny",
-                [Marko._.contentFor(__marko_internal_tag_7)]: ({ foo }) => {
+                [Marko._.contentFor(__marko_internal_tag_7, "item")]: ({
+                  foo,
+                }) => {
                   [name];
                   [foo];
                   return Marko._.voidReturn;
@@ -363,10 +394,14 @@ export type Component = Marko.Component<Input>;
     input["@item"];
     input["@item"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_8)(Marko._.withRestAttrTags)()({
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_8,
+    Marko._.signature(__marko_internal_tag_8),
+    Marko._.actualInput,
+  )({
     item: {
       bogus: 1,
-      [Marko._.contentFor(__marko_internal_tag_8)]: ({ foo }) => {
+      [Marko._.contentFor(__marko_internal_tag_8, "item")]: ({ foo }) => {
         [foo];
         return Marko._.voidReturn;
       },
@@ -377,7 +412,9 @@ export type Component = Marko.Component<Input>;
         ? {
             item: {
               bogus: 2,
-              [Marko._.contentFor(__marko_internal_tag_8)]: ({ foo }) => {
+              [Marko._.contentFor(__marko_internal_tag_8, "item")]: ({
+                foo,
+              }) => {
                 [foo];
                 return Marko._.voidReturn;
               },
@@ -394,7 +431,9 @@ export type Component = Marko.Component<Input>;
             {
               item: {
                 size: "tiny",
-                [Marko._.contentFor(__marko_internal_tag_8)]: ({ foo }) => {
+                [Marko._.contentFor(__marko_internal_tag_8, "item")]: ({
+                  foo,
+                }) => {
                   [name];
                   [foo];
                   return Marko._.voidReturn;
@@ -409,7 +448,7 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)()()(
+  __marko_internal_module_2().default._(
     // A generic tag's attribute tag
     {
       bogus: 1,
@@ -427,11 +466,11 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_9, (input) => {
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_9)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_9)({
     bogus: 1,
     option: {
       value: "a",
-      [Marko._.contentFor(__marko_internal_tag_9)]: (v) => {
+      [Marko._.contentFor(__marko_internal_tag_9, "option")]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
@@ -442,11 +481,11 @@ export type Component = Marko.Component<Input>;
   Marko._.attrTagNames(__marko_internal_tag_10, (input) => {
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_10)()()({
+  Marko._.renderDynamicTag(__marko_internal_tag_10)({
     bogus: 1,
     option: {
       value: "a",
-      [Marko._.contentFor(__marko_internal_tag_10)]: (v) => {
+      [Marko._.contentFor(__marko_internal_tag_10, "option")]: (v) => {
         [v];
         return Marko._.voidReturn;
       },
@@ -459,9 +498,7 @@ export type Component = Marko.Component<Input>;
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()(
+  __marko_internal_renderer_2(__marko_internal_module_2().default)(
     // A generic tag's repeated attribute tags, and ones in an if and a for
     {
       bogus: 1,
@@ -508,45 +545,47 @@ export type Component = Marko.Component<Input>;
     input["@option"];
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_11)(Marko._.withRestAttrTags)()(
-    {
-      bogus: 1,
-      option: {
-        value: "a",
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        {
-          option: {
-            value: "b",
-            [Symbol.iterator]: Marko._.any,
-          },
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_11,
+    Marko._.signature(__marko_internal_tag_11),
+    Marko._.actualInput,
+  )({
+    bogus: 1,
+    option: {
+      value: "a",
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
+      {
+        option: {
+          value: "b",
+          [Symbol.iterator]: Marko._.any,
         },
-        flag
-          ? {
+      },
+      flag
+        ? {
+            option: {
+              value: "c",
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+      Marko._.forOfAttrTag(
+        {
+          of: ["d"],
+        },
+        (x) =>
+          Marko._.attrTags(__marko_internal_tag_11)([
+            {
               option: {
-                value: "c",
+                value: x,
                 [Symbol.iterator]: Marko._.any,
               },
-            }
-          : Marko._.never,
-        Marko._.forOfAttrTag(
-          {
-            of: ["d"],
-          },
-          (x) =>
-            Marko._.attrTags(__marko_internal_tag_11)([
-              {
-                option: {
-                  value: x,
-                  [Symbol.iterator]: Marko._.any,
-                },
-              },
-            ]),
-        ),
-      ],
-    },
-  );
+            },
+          ]),
+      ),
+    ],
+  });
   const __marko_internal_tag_12 = Pick;
   Marko._.attrTagNames(__marko_internal_tag_12, (input) => {
     input["@option"];
@@ -554,52 +593,52 @@ export type Component = Marko.Component<Input>;
     input["@option"];
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_12)(Marko._.withRestAttrTags)()(
-    {
-      bogus: 1,
-      option: {
-        value: "a",
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        {
-          option: {
-            value: "b",
-            [Symbol.iterator]: Marko._.any,
-          },
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_12,
+    Marko._.signature(__marko_internal_tag_12),
+    Marko._.actualInput,
+  )({
+    bogus: 1,
+    option: {
+      value: "a",
+      [Symbol.iterator]: Marko._.any,
+    },
+    [Marko._.restAttrTags]: [
+      {
+        option: {
+          value: "b",
+          [Symbol.iterator]: Marko._.any,
         },
-        flag
-          ? {
+      },
+      flag
+        ? {
+            option: {
+              value: "c",
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+      Marko._.forOfAttrTag(
+        {
+          of: ["d"],
+        },
+        (x) =>
+          Marko._.attrTags(__marko_internal_tag_12)([
+            {
               option: {
-                value: "c",
+                value: x,
                 [Symbol.iterator]: Marko._.any,
               },
-            }
-          : Marko._.never,
-        Marko._.forOfAttrTag(
-          {
-            of: ["d"],
-          },
-          (x) =>
-            Marko._.attrTags(__marko_internal_tag_12)([
-              {
-                option: {
-                  value: x,
-                  [Symbol.iterator]: Marko._.any,
-                },
-              },
-            ]),
-        ),
-      ],
-    },
-  );
+            },
+          ]),
+      ),
+    ],
+  });
   Marko._.attrTagNames(__marko_internal_module_2, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderTemplate(__marko_internal_module_2().default)(
-    Marko._.withRestAttrTags,
-  )()({
+  __marko_internal_renderer_2(__marko_internal_module_2().default)({
     option: {
       value: "a",
       bogus: 1,
@@ -622,57 +661,66 @@ export type Component = Marko.Component<Input>;
     input["@option"];
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_13)(Marko._.withRestAttrTags)()(
-    {
-      option: {
-        value: "a",
-        bogus: 1,
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        flag
-          ? {
-              option: {
-                value: "b",
-                bogus: 2,
-                [Symbol.iterator]: Marko._.any,
-              },
-            }
-          : Marko._.never,
-      ],
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_13,
+    Marko._.signature(__marko_internal_tag_13),
+    Marko._.actualInput,
+  )({
+    option: {
+      value: "a",
+      bogus: 1,
+      [Symbol.iterator]: Marko._.any,
     },
-  );
+    [Marko._.restAttrTags]: [
+      flag
+        ? {
+            option: {
+              value: "b",
+              bogus: 2,
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+  });
   const __marko_internal_tag_14 = Pick;
   Marko._.attrTagNames(__marko_internal_tag_14, (input) => {
     input["@option"];
     input["@option"];
   });
-  Marko._.renderDynamicTag(__marko_internal_tag_14)(Marko._.withRestAttrTags)()(
-    {
-      option: {
-        value: "a",
-        bogus: 1,
-        [Symbol.iterator]: Marko._.any,
-      },
-      [Marko._.restAttrTags]: [
-        flag
-          ? {
-              option: {
-                value: "b",
-                bogus: 2,
-                [Symbol.iterator]: Marko._.any,
-              },
-            }
-          : Marko._.never,
-      ],
+  Marko._.renderDynamicTagWithRestAttrTags(
+    __marko_internal_tag_14,
+    Marko._.signature(__marko_internal_tag_14),
+    Marko._.actualInput,
+  )({
+    option: {
+      value: "a",
+      bogus: 1,
+      [Symbol.iterator]: Marko._.any,
     },
-  );
+    [Marko._.restAttrTags]: [
+      flag
+        ? {
+            option: {
+              value: "b",
+              bogus: 2,
+              [Symbol.iterator]: Marko._.any,
+            },
+          }
+        : Marko._.never,
+    ],
+  });
   Marko._.noop({ component, state, out, input, $global, $signal });
-  return;
-})();
-const __marko_internal_api = "class";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<Input, void, "class"> {}
-export default new Template();
+}, Marko.Component);
 declare function __marko_internal_module_1(): typeof import("./tags/menu-tag/index.marko");
 declare function __marko_internal_module_2(): typeof import("./tags/pick-tag/index.marko");
+function __marko_internal_renderer_1(
+  template = __marko_internal_module_1().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}
+function __marko_internal_renderer_2(
+  template = __marko_internal_module_2().default,
+) {
+  return Marko._.restAttrTagsRenderer(template._, Marko._.actualInput);
+}

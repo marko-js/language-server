@@ -14,8 +14,7 @@ function greet() {
 }
 
 var useA = true;
-function __marko_internal_template(this: void) {
-  const input = Marko._.any as Input;
+const Input = Marko._.template((input: Input) => {
   const $signal = Marko._.any as AbortSignal;
   const $global = Marko._.any as Marko.Global;
   const buttonTemplate = Marko._.hoist(
@@ -29,19 +28,17 @@ function __marko_internal_template(this: void) {
   {
     const buttonTemplate: (typeof import("<fancy-button>"))["default"] =
       Marko._.returned(() => __marko_internal_rendered_1);
-    const __marko_internal_rendered_1 = Marko._.renderTemplate(
-      __marko_internal_module_1().default,
-    )()()({
+    const __marko_internal_rendered_1 = __marko_internal_module_1().default._({
       value: FancyButton,
     });
     {
       const { year, isSmartOnly, type, mobileList, renderBody } =
         Marko._.returned(() => __marko_internal_rendered_2);
-      const __marko_internal_rendered_2 = Marko._.renderTemplate(
-        __marko_internal_module_1().default,
-      )()()({
-        value: input,
-      });
+      const __marko_internal_rendered_2 = __marko_internal_module_1().default._(
+        {
+          value: input,
+        },
+      );
       Marko._.renderNativeTag("div")({
         class: "mobiles__list",
         [Marko._.content]: (() => {
@@ -92,12 +89,12 @@ function __marko_internal_template(this: void) {
             class: Marko._.interpolated`container`,
             [Marko._.content]: (() => {
               const __marko_internal_tag_3 = renderBody;
-              Marko._.renderDynamicTag(__marko_internal_tag_3)()()({});
+              Marko._.renderDynamicTag(__marko_internal_tag_3)({});
               return Marko._.voidBody;
             })(),
           });
           const __marko_internal_tag_4 = FancyButton;
-          Marko._.renderDynamicTag(__marko_internal_tag_4)()()({
+          Marko._.renderDynamicTag(__marko_internal_tag_4)({
             "no-update": true,
             something: true,
             [Marko._.contentFor(__marko_internal_tag_4)]: (() => {
@@ -145,13 +142,6 @@ function __marko_internal_template(this: void) {
     $signal,
   });
   return __marko_internal_return;
-}
-const __marko_internal_api = "tags";
-export { __marko_internal_api as "~api" };
-class Template extends Marko._.Template<
-  Input,
-  Marko._.ReturnOf<typeof __marko_internal_template>
-> {}
-const Input = new Template();
+});
 export default Input;
 declare function __marko_internal_module_1(): typeof import("@marko/runtime-tags/tags/const.d.marko");

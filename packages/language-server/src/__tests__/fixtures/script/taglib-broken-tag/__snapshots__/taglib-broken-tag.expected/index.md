@@ -7,7 +7,7 @@
     |     ^ Custom Marko tag discovered from:
 
 [components/ok-tag.marko](<fixture>/components/ok-tag.marko)
-(alias) const Input: Template
+(alias) const Input: Marko.Template<Input, void> & {
   6 | //  ^?
   7 | <let/count=1/>
   8 | <div>${count}</div>
